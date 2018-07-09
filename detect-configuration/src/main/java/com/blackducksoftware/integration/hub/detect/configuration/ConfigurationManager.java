@@ -73,6 +73,8 @@ public class ConfigurationManager {
     }
 
     public void initialize(final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
+        setIntialValues(detectOptions);
+
         resolveTildeInPaths();
         resolveTargetAndOutputDirectories();
         resolvePolicyProperties();
@@ -81,6 +83,10 @@ public class ConfigurationManager {
         resolveAirGapPaths();
 
         updateDetectProperties(detectOptions);
+    }
+
+    private void setIntialValues(final List<DetectOption> detectOptions) {
+        hubOfflineMode = detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE);
     }
 
     private void resolveTildeInPaths() throws DetectUserFriendlyException {

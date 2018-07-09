@@ -37,8 +37,6 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -48,12 +46,12 @@ public class DepPackager {
 
     private final ExecutableRunner executableRunner;
     private final ExternalIdFactory externalIdFactory;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final boolean shouldRunDepInit;
 
-    public DepPackager(final ExecutableRunner executableRunner, final ExternalIdFactory externalIdFactory, final DetectConfigWrapper detectConfigWrapper) {
+    public DepPackager(final ExecutableRunner executableRunner, final ExternalIdFactory externalIdFactory, final boolean shouldRunDepInit) {
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.shouldRunDepInit = shouldRunDepInit;
     }
 
     public DependencyGraph makeDependencyGraph(final String sourcePath, final String goDepExecutable) throws IOException {
@@ -79,7 +77,7 @@ public class DepPackager {
         }
 
         // by default, we won't run 'init' and 'ensure' anymore so just return an empty string
-        if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_GO_RUN_DEP_INIT)) {
+        if (!shouldRunDepInit) {
             logger.info("Skipping Dep commands 'init' and 'ensure'");
             return "";
         }
@@ -121,7 +119,7 @@ public class DepPackager {
             gopkgTomlFile.delete();
             FileUtils.deleteDirectory(vendorDirectory);
             if (vendorDirectoryExistedBefore) {
-                logger.info("Restoring back up ${vendorDirectory.getAbsolutePath()} from ${vendorDirectoryBackup.getAbsolutePath()}");
+                logger.info("Restoring back up " + vendorDirectory.getAbsolutePath() + " from " + vendorDirectoryBackup.getAbsolutePath());
                 FileUtils.moveDirectory(vendorDirectoryBackup, vendorDirectory);
             }
         }

@@ -76,6 +76,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfileExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetConfig;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager;
@@ -96,6 +97,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockExtract
 import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
@@ -134,6 +136,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.SearchSummar
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
+import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -457,7 +460,7 @@ public class BeanConfiguration {
 
     @Bean
     public CondaCliExtractor condaCliExtractor() {
-        return new CondaCliExtractor(condaListParser(), externalIdFactory(), executableRunner(), detectConfigWrapper());
+        return new CondaCliExtractor(condaListParser(), externalIdFactory(), executableRunner(), detectConfigWrapper().getProperty(DetectProperty.DETECT_CONDA_ENVIRONMENT_NAME));
     }
 
     @Bean
@@ -512,7 +515,7 @@ public class BeanConfiguration {
 
     @Bean
     public DepPackager depPackager() {
-        return new DepPackager(executableRunner(), externalIdFactory(), detectConfigWrapper());
+        return new DepPackager(executableRunner(), externalIdFactory(), detectConfigWrapper().getBooleanProperty(DetectProperty.DETECT_GO_RUN_DEP_INIT));
     }
 
     @Bean
@@ -527,7 +530,7 @@ public class BeanConfiguration {
 
     @Bean
     public GradleInspectorExtractor gradleInspectorExtractor() {
-        return new GradleInspectorExtractor(executableRunner(), detectFileFinder(), detectFileManager(), gradleReportParser(), detectConfigWrapper());
+        return new GradleInspectorExtractor(executableRunner(), detectFileFinder(), detectFileManager(), gradleReportParser(), detectConfigWrapper().getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND));
     }
 
     @Bean
@@ -547,12 +550,14 @@ public class BeanConfiguration {
 
     @Bean
     public MavenCodeLocationPackager mavenCodeLocationPackager() {
-        return new MavenCodeLocationPackager(externalIdFactory());
+        final ExcludedIncludedFilter moduleFilter = new ExcludedIncludedFilter(detectConfigWrapper().getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_MODULES),
+                detectConfigWrapper().getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_MODULES));
+        return new MavenCodeLocationPackager(externalIdFactory(), moduleFilter);
     }
 
     @Bean
     public MavenCliExtractor mavenCliExtractor() {
-        return new MavenCliExtractor(executableRunner(), mavenCodeLocationPackager(), detectConfigWrapper());
+        return new MavenCliExtractor(executableRunner(), mavenCodeLocationPackager(), detectConfigWrapper().getProperty(DetectProperty.DETECT_MAVEN_BUILD_COMMAND), detectConfigWrapper().getProperty(DetectProperty.DETECT_MAVEN_SCOPE));
     }
 
     @Bean
@@ -572,12 +577,12 @@ public class BeanConfiguration {
 
     @Bean
     public NpmCliExtractor npmCliExtractor() {
-        return new NpmCliExtractor(executableRunner(), detectFileManager(), npmCliDependencyFinder(), detectConfigWrapper());
+        return new NpmCliExtractor(executableRunner(), detectFileManager(), npmCliDependencyFinder(), detectConfigWrapper().getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES));
     }
 
     @Bean
     public NpmLockfileExtractor npmLockfileExtractor() {
-        return new NpmLockfileExtractor(npmLockfilePackager(), detectConfigWrapper());
+        return new NpmLockfileExtractor(npmLockfilePackager(), detectConfigWrapper().getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES));
     }
 
     @Bean
@@ -591,8 +596,13 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public NugetConfig nugetConfig() {
+        return new NugetConfig(detectConfigWrapper());
+    }
+
+    @Bean
     public NugetInspectorExtractor nugetInspectorExtractor() {
-        return new NugetInspectorExtractor(detectFileManager(), nugetInspectorPackager(), executableRunner(), detectFileFinder(), detectConfigWrapper());
+        return new NugetInspectorExtractor(detectFileManager(), nugetInspectorPackager(), executableRunner(), detectFileFinder(), nugetConfig());
     }
 
     @Bean
@@ -627,7 +637,7 @@ public class BeanConfiguration {
 
     @Bean
     public PipenvExtractor pipenvExtractor() {
-        return new PipenvExtractor(executableRunner(), pipenvGraphParser(), detectConfigWrapper());
+        return new PipenvExtractor(executableRunner(), pipenvGraphParser(), detectConfigWrapper().getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME), detectConfigWrapper().getProperty(DetectProperty.DETECT_PIP_PROJECT_VERSION_NAME));
     }
 
     @Bean
@@ -637,7 +647,7 @@ public class BeanConfiguration {
 
     @Bean
     public PipInspectorExtractor pipInspectorExtractor() {
-        return new PipInspectorExtractor(executableRunner(), pipInspectorTreeParser(), detectConfigWrapper());
+        return new PipInspectorExtractor(executableRunner(), pipInspectorTreeParser(), detectConfigWrapper().getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME));
     }
 
     @Bean
@@ -657,7 +667,12 @@ public class BeanConfiguration {
 
     @Bean
     public SbtResolutionCacheExtractor sbtResolutionCacheExtractor() {
-        return new SbtResolutionCacheExtractor(detectFileFinder(), externalIdFactory(), detectConfigWrapper());
+        final String included = detectConfigWrapper().getProperty(DetectProperty.DETECT_SBT_INCLUDED_CONFIGURATIONS);
+        final String excluded = detectConfigWrapper().getProperty(DetectProperty.DETECT_SBT_EXCLUDED_CONFIGURATIONS);
+
+        final int depth = detectConfigWrapper().getIntegerProperty(DetectProperty.DETECT_SEARCH_DEPTH);
+
+        return new SbtResolutionCacheExtractor(detectFileFinder(), externalIdFactory(), new ExcludedIncludedFilter(excluded, included), depth);
     }
 
     @Bean
@@ -667,7 +682,7 @@ public class BeanConfiguration {
 
     @Bean
     public YarnLockExtractor yarnLockExtractor() {
-        return new YarnLockExtractor(externalIdFactory(), yarnListParser(), executableRunner(), detectConfigWrapper());
+        return new YarnLockExtractor(externalIdFactory(), yarnListParser(), executableRunner(), detectConfigWrapper().getBooleanProperty(DetectProperty.DETECT_YARN_PROD_ONLY));
     }
 
 }

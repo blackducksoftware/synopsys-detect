@@ -33,8 +33,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -48,26 +46,24 @@ public class GradleInspectorExtractor {
     private final DetectFileFinder detectFileFinder;
     private final DetectFileManager detectFileManager;
     private final GradleReportParser gradleReportParser;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final String gradleBuildCommand;
 
     public GradleInspectorExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final DetectFileManager detectFileManager,
-            final GradleReportParser gradleReportParser, final DetectConfigWrapper detectConfigWrapper) {
+            final GradleReportParser gradleReportParser, final String gradleBuildCommand) {
         this.executableRunner = executableRunner;
         this.detectFileFinder = detectFileFinder;
         this.detectFileManager = detectFileManager;
         this.gradleReportParser = gradleReportParser;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.gradleBuildCommand = gradleBuildCommand;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String gradleExe, final String gradleInspector, final ExtractionId extractionId) {
         try {
             final File outputDirectory = detectFileManager.getOutputDirectory("Gradle", extractionId);
 
-            String gradleCommand = detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND);
-
             final List<String> arguments = new ArrayList<>();
-            if (StringUtils.isNotBlank(gradleCommand)) {
-                gradleCommand = gradleCommand.replaceAll("dependencies", "").trim();
+            if (StringUtils.isNotBlank(gradleBuildCommand)) {
+                final String gradleCommand = gradleBuildCommand.replaceAll("dependencies", "").trim();
                 for (final String arg : gradleCommand.split(" ")) {
                     if (StringUtils.isNotBlank(arg)) {
                         arguments.add(arg);

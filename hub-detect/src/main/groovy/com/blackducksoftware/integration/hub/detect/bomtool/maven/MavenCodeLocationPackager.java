@@ -57,13 +57,14 @@ public class MavenCodeLocationPackager {
     private boolean parsingProjectSection;
     private int level;
     private MutableDependencyGraph currentGraph = null;
+    private final ExcludedIncludedFilter moduleFilter;
 
-    public MavenCodeLocationPackager(final ExternalIdFactory externalIdFactory) {
+    public MavenCodeLocationPackager(final ExternalIdFactory externalIdFactory, final ExcludedIncludedFilter moduleFilter) {
         this.externalIdFactory = externalIdFactory;
+        this.moduleFilter = moduleFilter;
     }
 
-    public List<MavenParseResult> extractCodeLocations(final BomToolType bomToolType, final String sourcePath, final String mavenOutputText, final String excludedModules, final String includedModules) {
-        final ExcludedIncludedFilter filter = new ExcludedIncludedFilter(excludedModules, includedModules);
+    public List<MavenParseResult> extractCodeLocations(final BomToolType bomToolType, final String sourcePath, final String mavenOutputText) {
         codeLocations = new ArrayList<>();
         currentMavenProject = null;
         dependencyParentStack = new Stack<>();
@@ -95,7 +96,7 @@ public class MavenCodeLocationPackager {
                 // this is the first line of a new code location, the following lines will be the tree of dependencies for this code location
                 currentGraph = new MutableMapDependencyGraph();
                 final MavenParseResult mavenProject = createMavenParseResult(bomToolType, sourcePath, line, currentGraph);
-                if (null != mavenProject && filter.shouldInclude(mavenProject.projectName)) {
+                if (null != mavenProject && moduleFilter.shouldInclude(mavenProject.projectName)) {
                     this.currentMavenProject = mavenProject;
                     codeLocations.add(mavenProject);
                 } else {

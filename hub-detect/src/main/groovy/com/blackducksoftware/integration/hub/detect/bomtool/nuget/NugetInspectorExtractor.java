@@ -40,8 +40,6 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -59,15 +57,15 @@ public class NugetInspectorExtractor {
     private final NugetInspectorPackager nugetInspectorPackager;
     private final ExecutableRunner executableRunner;
     private final DetectFileFinder detectFileFinder;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final NugetConfig nugetConfig;
 
     public NugetInspectorExtractor(final DetectFileManager detectFileManager, final NugetInspectorPackager nugetInspectorPackager, final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder,
-            final DetectConfigWrapper detectConfigWrapper) {
+            final NugetConfig nugetConfig) {
         this.detectFileManager = detectFileManager;
         this.nugetInspectorPackager = nugetInspectorPackager;
         this.executableRunner = executableRunner;
         this.detectFileFinder = detectFileFinder;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.nugetConfig = nugetConfig;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String inspectorExe, final ExtractionId extractionId) {
@@ -76,25 +74,25 @@ public class NugetInspectorExtractor {
 
             final List<String> options = new ArrayList<>(Arrays.asList(
                     "--target_path=" + directory.toString(),
-                    "--output_directory=" + outputDirectory.getCanonicalPath(),
-                    "--ignore_failure=" + detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NUGET_IGNORE_FAILURE)));
+                    "--output_directory=" + outputDirectory.getCanonicalPath()));
+            if (nugetConfig.isIgnoreFailure()) {
+                options.add("--ignore_failure=true");
+            } else {
+                options.add("--ignore_failure=false");
+            }
 
-            final String nugetExcludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_EXCLUDED_MODULES);
-            if (StringUtils.isNotBlank(nugetExcludedModules)) {
-                options.add("--excluded_modules=" + nugetExcludedModules);
+            if (StringUtils.isNotBlank(nugetConfig.getExcludedModules())) {
+                options.add("--excluded_modules=" + nugetConfig.getExcludedModules());
             }
-            final String nugetIncludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INCLUDED_MODULES);
-            if (StringUtils.isNotBlank(nugetIncludedModules)) {
-                options.add("--included_modules=" + nugetIncludedModules);
+            if (StringUtils.isNotBlank(nugetConfig.getIncludedModules())) {
+                options.add("--included_modules=" + nugetConfig.getIncludedModules());
             }
-            final String nugetPackagesRepo = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL);
-            if (StringUtils.isNotBlank(nugetPackagesRepo)) {
-                final String packagesRepos = Arrays.asList(nugetPackagesRepo).stream().collect(Collectors.joining(","));
+            if (StringUtils.isNotBlank(nugetConfig.getPackageRepoUrl())) {
+                final String packagesRepos = Arrays.asList(nugetConfig.getPackageRepoUrl()).stream().collect(Collectors.joining(","));
                 options.add("--packages_repo_url=" + packagesRepos);
             }
-            final String nugetConfigPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
-            if (StringUtils.isNotBlank(nugetConfigPath)) {
-                options.add("--nuget_config_path=" + nugetConfigPath);
+            if (StringUtils.isNotBlank(nugetConfig.getNugetConfigPath())) {
+                options.add("--nuget_config_path=" + nugetConfig.getNugetConfigPath());
             }
             if (logger.isTraceEnabled()) {
                 options.add("-v");

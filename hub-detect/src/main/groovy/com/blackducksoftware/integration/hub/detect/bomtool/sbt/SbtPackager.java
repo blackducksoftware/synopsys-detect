@@ -62,13 +62,12 @@ public class SbtPackager {
         this.detectFileFinder = detectFileFinder;
     }
 
-    List<SbtDependencyModule> makeModuleAggregate(final List<File> reportFiles, final String include, final String exclude) throws SAXException, IOException, ParserConfigurationException {
+    List<SbtDependencyModule> makeModuleAggregate(final List<File> reportFiles, final ExcludedIncludedFilter moduleFilter) throws SAXException, IOException, ParserConfigurationException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder = factory.newDocumentBuilder();
 
         final SbtReportParser parser = new SbtReportParser();
         final SbtDependencyResolver resolver = new SbtDependencyResolver(externalIdFactory);
-        final ExcludedIncludedFilter filter = new ExcludedIncludedFilter(exclude, include);
         final SbtModuleAggregator aggregator = new SbtModuleAggregator();
 
         final List<SbtDependencyModule> modules = new ArrayList<>();
@@ -80,7 +79,7 @@ public class SbtPackager {
             modules.add(tree);
         }
 
-        final List<SbtDependencyModule> includedModules = modules.stream().filter(module -> filter.shouldInclude(module.configuration)).collect(Collectors.toList());
+        final List<SbtDependencyModule> includedModules = modules.stream().filter(module -> moduleFilter.shouldInclude(module.configuration)).collect(Collectors.toList());
 
         if (modules.size() <= 0) {
             logger.warn("No sbt configurations were found in report folder.");
@@ -93,8 +92,8 @@ public class SbtPackager {
         return aggregator.aggregateModules(includedModules);
     }
 
-    public SbtProject extractProject(final String path, final int depth, final String included, final String excluded) throws IOException, SAXException, ParserConfigurationException {
-        final List<SbtDependencyModule> rawModules = extractModules(path, depth, included, excluded);
+    public SbtProject extractProject(final String path, final int depth, final ExcludedIncludedFilter moduleFilter) throws IOException, SAXException, ParserConfigurationException {
+        final List<SbtDependencyModule> rawModules = extractModules(path, depth, moduleFilter);
         final List<SbtDependencyModule> modules = rawModules.stream().filter(it -> it.graph != null).collect(Collectors.toList());
         final int skipped = rawModules.size() - modules.size();
         if (skipped > 0) {
@@ -141,7 +140,7 @@ public class SbtPackager {
         return version;
     }
 
-    List<SbtDependencyModule> extractModules(final String path, final int depth, final String included, final String excluded) throws IOException, SAXException, ParserConfigurationException {
+    List<SbtDependencyModule> extractModules(final String path, final int depth, final ExcludedIncludedFilter moduleFilter) throws IOException, SAXException, ParserConfigurationException {
         final List<File> sbtFiles = detectFileFinder.findFilesToDepth(path, BUILD_SBT_FILENAME, depth);
         final List<File> resolutionCaches = detectFileFinder.findDirectoriesContainingDirectoriesToDepth(path, REPORT_SEARCH_PATTERN, depth);
 
@@ -156,14 +155,14 @@ public class SbtPackager {
             final File sbtDirectory = sbtFile.getParentFile();
             final File reportPath = new File(sbtDirectory, REPORT_FILE_DIRECTORY);
 
-            final List<SbtDependencyModule> foundModules = extractReportModules(path, reportPath, sbtDirectory, included, excluded, usedReports);
+            final List<SbtDependencyModule> foundModules = extractReportModules(path, reportPath, sbtDirectory, moduleFilter, usedReports);
             modules.addAll(foundModules);
         }
 
         for (final File resCache : resolutionCaches) {
             logger.debug("Found resolution cache : " + resCache.getCanonicalPath());
             final File reportPath = new File(resCache, REPORT_DIRECTORY);
-            final List<SbtDependencyModule> foundModules = extractReportModules(path, reportPath, resCache.getParentFile(), included, excluded, usedReports);
+            final List<SbtDependencyModule> foundModules = extractReportModules(path, reportPath, resCache.getParentFile(), moduleFilter, usedReports);
             modules.addAll(foundModules);
         }
 
@@ -195,7 +194,7 @@ public class SbtPackager {
         return file.getCanonicalPath().startsWith(projectPath.getCanonicalPath());
     }
 
-    List<SbtDependencyModule> extractReportModules(final String path, final File reportPath, final File source, final String included, final String excluded, final List<String> usedReports)
+    List<SbtDependencyModule> extractReportModules(final String path, final File reportPath, final File source, final ExcludedIncludedFilter moduleFilter, final List<String> usedReports)
             throws IOException, SAXException, ParserConfigurationException {
         final List<SbtDependencyModule> modules = new ArrayList<>();
         final String canonical = reportPath.getCanonicalPath();
@@ -209,7 +208,7 @@ public class SbtPackager {
             if (reportFiles == null || reportFiles.size() <= 0) {
                 logger.debug("No reports were found in: ${reportPath}");
             } else {
-                final List<SbtDependencyModule> aggregatedModules = makeModuleAggregate(reportFiles, included, excluded);
+                final List<SbtDependencyModule> aggregatedModules = makeModuleAggregate(reportFiles, moduleFilter);
 
                 if (aggregatedModules == null) {
                     logger.debug("No dependencies were generated for report folder: ${reportPath}");

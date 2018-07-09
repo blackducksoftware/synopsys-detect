@@ -31,8 +31,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -41,12 +39,12 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 public class PipInspectorExtractor {
     private final ExecutableRunner executableRunner;
     private final PipInspectorTreeParser pipInspectorTreeParser;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final String pipProjectName;
 
-    public PipInspectorExtractor(final ExecutableRunner executableRunner, final PipInspectorTreeParser pipInspectorTreeParser, final DetectConfigWrapper detectConfigWrapper) {
+    public PipInspectorExtractor(final ExecutableRunner executableRunner, final PipInspectorTreeParser pipInspectorTreeParser, final String pipProjectName) {
         this.executableRunner = executableRunner;
         this.pipInspectorTreeParser = pipInspectorTreeParser;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.pipProjectName = pipProjectName;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) {
@@ -88,7 +86,7 @@ public class PipInspectorExtractor {
     }
 
     private String getProjectName(final File directory, final String pythonExe, final File setupFile) throws ExecutableRunnerException {
-        String projectName = detectConfigWrapper.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME);
+        String projectName = pipProjectName;
 
         if (setupFile != null && setupFile.exists() && StringUtils.isBlank(projectName)) {
             final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(

@@ -35,8 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -51,13 +49,13 @@ public class NpmCliExtractor {
     private final ExecutableRunner executableRunner;
     private final DetectFileManager detectFileManager;
     private final NpmCliDependencyFinder npmCliDependencyFinder;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final boolean includeDevDeps;
 
-    public NpmCliExtractor(final ExecutableRunner executableRunner, final DetectFileManager detectFileManager, final NpmCliDependencyFinder npmCliDependencyFinder, final DetectConfigWrapper detectConfigWrapper) {
+    public NpmCliExtractor(final ExecutableRunner executableRunner, final DetectFileManager detectFileManager, final NpmCliDependencyFinder npmCliDependencyFinder, final boolean includeDevDeps) {
         this.executableRunner = executableRunner;
         this.detectFileManager = detectFileManager;
         this.npmCliDependencyFinder = npmCliDependencyFinder;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.includeDevDeps = includeDevDeps;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String npmExe, final ExtractionId extractionId) {
@@ -65,7 +63,6 @@ public class NpmCliExtractor {
         final File npmLsOutputFile = detectFileManager.getOutputFile(outputDirectory, NpmCliExtractor.OUTPUT_FILE);
         final File npmLsErrorFile = detectFileManager.getOutputFile(outputDirectory, NpmCliExtractor.ERROR_FILE);
 
-        final boolean includeDevDeps = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
         final List<String> exeArgs = Arrays.asList("ls", "-json");
         if (!includeDevDeps) {
             exeArgs.add("-prod");

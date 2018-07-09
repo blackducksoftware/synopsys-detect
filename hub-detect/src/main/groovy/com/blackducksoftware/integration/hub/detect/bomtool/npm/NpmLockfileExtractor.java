@@ -30,17 +30,15 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class NpmLockfileExtractor {
     private final NpmLockfilePackager npmLockfilePackager;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final boolean includeDevDeps;
 
-    public NpmLockfileExtractor(final NpmLockfilePackager npmLockfilePackager, final DetectConfigWrapper detectConfigWrapper) {
+    public NpmLockfileExtractor(final NpmLockfilePackager npmLockfilePackager, final boolean includeDevDeps) {
         this.npmLockfilePackager = npmLockfilePackager;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.includeDevDeps = includeDevDeps;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File lockfile) {
@@ -52,7 +50,6 @@ public class NpmLockfileExtractor {
         }
 
         try {
-            final boolean includeDevDeps = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
             final NpmParseResult result = npmLockfilePackager.parse(bomToolType, directory.getCanonicalPath(), lockText, includeDevDeps);
             return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
         } catch (final IOException e) {
