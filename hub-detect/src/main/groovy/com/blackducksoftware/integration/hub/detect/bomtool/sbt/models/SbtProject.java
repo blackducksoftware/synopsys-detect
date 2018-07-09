@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -26,7 +26,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models;
 import java.util.List;
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 
 public class SbtProject {
     public String projectName;
