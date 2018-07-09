@@ -33,16 +33,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 public class Apk extends LinuxPackageManager {
     private static final String PKG_MGR_NAME = "apk";
-    private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("apk --version");
+    private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
+    private static final String APK_INFO_SUBCOMMAND = "info";
+    private static final String APK_WHO_OWNS_OPTION = "--who-owns";
     private static final String EXPECTED_TEXT = "apk-tools ";
-    private static final String QUERY_ARCH_COMMAND = "apk info --print-arch";
-    private static final String QUERY_DEPENDENCY_FILE_COMMAND_PATTERN = "apk info --who-owns %s";
+    private static final List<String> QUERY_ARCH_COMMAND_ARGS = Arrays.asList(APK_INFO_SUBCOMMAND, "--print-arch");
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -65,20 +67,19 @@ public class Apk extends LinuxPackageManager {
     }
 
     @Override
-    public List<PackageDetails> getDependencyDetails(final CommandStringExecutor executor, final Set<File> filesForIScan, final DependencyFile dependencyFile) {
+    public List<PackageDetails> getDependencyDetails(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final DependencyFile dependencyFile) {
         final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
-        final String getPackageCommand = String.format(QUERY_DEPENDENCY_FILE_COMMAND_PATTERN, dependencyFile.getFile().getAbsolutePath());
         try {
             if (architecture == null) {
-                architecture = executor.execute(new File("."), null, QUERY_ARCH_COMMAND).trim();
+                architecture = executableRunner.executeQuietly(PKG_MGR_NAME, QUERY_ARCH_COMMAND_ARGS).getStandardOutput().trim();
                 logger.debug(String.format("architecture: %s", architecture));
             }
-            final String queryPackageOutput = executor.execute(new File("."), null, getPackageCommand);
+            final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(PKG_MGR_NAME, APK_INFO_SUBCOMMAND, APK_WHO_OWNS_OPTION, dependencyFile.getFile().getAbsolutePath());
             logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput));
-            addToPackageList(dependencyDetailsList, queryPackageOutput);
+            addToPackageList(dependencyDetailsList, queryPackageOutput.getStandardOutput());
             return dependencyDetailsList;
-        } catch (ExecutableRunnerException | IntegrationException e) {
-            logger.error(String.format("Error executing %s: %s", getPackageCommand, e.getMessage()));
+        } catch (final ExecutableRunnerException e) {
+            logger.error(String.format("Error executing %s: %s", PKG_MGR_NAME, e.getMessage()));
             if (!dependencyFile.isInBuildDir()) {
                 logger.info(String.format("%s should be scanned by iScan", dependencyFile.getFile().getAbsolutePath()));
                 filesForIScan.add(dependencyFile.getFile());

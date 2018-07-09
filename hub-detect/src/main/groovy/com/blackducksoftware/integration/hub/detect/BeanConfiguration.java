@@ -43,7 +43,6 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.Apk;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangPackageManagerFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CommandStringExecutor;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependencyFileManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.Dpkg;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.LinuxPackageManager;
@@ -408,11 +407,6 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public CommandStringExecutor commandStringExecutor() {
-        return new CommandStringExecutor(executableRunner());
-    }
-
-    @Bean
     public DependencyFileManager dependencyFileManager() {
         return new DependencyFileManager();
     }
@@ -434,7 +428,7 @@ public class BeanConfiguration {
 
     @Bean
     public CLangExtractor cLangExtractor() {
-        return new CLangExtractor(externalIdFactory(), commandStringExecutor(), dependencyFileManager(), detectFileManager());
+        return new CLangExtractor(externalIdFactory(), executableRunner(), dependencyFileManager(), detectFileManager());
     }
 
     @Bean

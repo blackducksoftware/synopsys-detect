@@ -49,9 +49,24 @@ public class ExecutableRunner {
         return execute(exe);
     }
 
+    public ExecutableOutput executeQuietly(final String exePath, final String... args) throws ExecutableRunnerException {
+        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
+        return executeQuietly(exe);
+    }
+
     public ExecutableOutput execute(final String exePath, final List<String> args) throws ExecutableRunnerException {
         final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, args);
         return execute(exe);
+    }
+
+    public ExecutableOutput executeQuietly(final String exePath, final List<String> args) throws ExecutableRunnerException {
+        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, args);
+        return execute(exe);
+    }
+
+    public ExecutableOutput executeFromDirQuietly(final File workingDir, final String exePath, final List<String> args) throws ExecutableRunnerException {
+        final Executable exe = new Executable(workingDir, exePath, args);
+        return executeQuietly(exe);
     }
 
     public ExecutableOutput execute(final File exePath, final String... args) throws ExecutableRunnerException {

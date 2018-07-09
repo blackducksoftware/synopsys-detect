@@ -43,7 +43,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
@@ -54,27 +53,27 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.google.gson.Gson;
 
 public class CLangExtractor {
-    private static final String COMPILE_CMD_PATTERN_WITH_DEPENDENCY_OUTPUT_FILE = "%s -M -MF %s";
     public static final String DEPS_MK_FILENAME_PATTERN = "deps_%s_%d.mk";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Set<File> processedDependencyFiles = new HashSet<>(200);
     private final Set<PackageDetails> processedDependencies = new HashSet<>(40);
 
     private final ExternalIdFactory externalIdFactory;
-    private final CommandStringExecutor executor;
+    private final ExecutableRunner executableRunner;
     private final DependencyFileManager dependencyFileManager;
     private final DetectFileManager detectFileManager;
 
-    public CLangExtractor(final ExternalIdFactory externalIdFactory, final CommandStringExecutor executor, final DependencyFileManager dependencyFileManager,
+    public CLangExtractor(final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final DependencyFileManager dependencyFileManager,
             final DetectFileManager detectFileManager) {
         this.externalIdFactory = externalIdFactory;
-        this.executor = executor;
+        this.executableRunner = executableRunner;
         this.dependencyFileManager = dependencyFileManager;
         this.detectFileManager = detectFileManager;
     }
@@ -154,7 +153,7 @@ public class CLangExtractor {
         final Function<File, Set<PackageDetails>> convertFileToPackages = (final File f) -> {
             logger.trace(String.format("Querying package manager for %s", f.getAbsolutePath()));
             final DependencyFile dependencyFileWithMetaData = new DependencyFile(isUnder(sourceDir, f) ? true : false, f);
-            final Set<PackageDetails> packages = new HashSet<>(pkgMgr.getDependencyDetails(executor, filesForIScan, dependencyFileWithMetaData));
+            final Set<PackageDetails> packages = new HashSet<>(pkgMgr.getDependencyDetails(executableRunner, filesForIScan, dependencyFileWithMetaData));
             logger.debug(String.format("Found %d packages for %s", packages.size(), f.getAbsolutePath()));
             return packages;
         };
@@ -232,14 +231,35 @@ public class CLangExtractor {
         final String sourceFilenameBase = getFilenameBase(compileCommand.file);
         final String depsMkFilename = String.format(DEPS_MK_FILENAME_PATTERN, sourceFilenameBase, randomInt);
         final File depsMkFile = new File(workingDir, depsMkFilename);
-        final String generateDependenciesFileCommand = String.format(COMPILE_CMD_PATTERN_WITH_DEPENDENCY_OUTPUT_FILE, compileCommand.command, depsMkFile.getAbsolutePath());
         try {
-            executor.execute(new File(compileCommand.directory), null, generateDependenciesFileCommand);
-        } catch (ExecutableRunnerException | IntegrationException e) {
-            logger.debug(String.format("Error compiling with command '%s': %s", generateDependenciesFileCommand, e.getMessage()));
+            executableRunner.executeFromDirQuietly(new File(compileCommand.directory), getCompilerCommand(compileCommand.command),
+                    getArgsForGeneratingDepsMkFile(compileCommand.command, depsMkFile.getAbsolutePath()));
+        } catch (final ExecutableRunnerException e) {
+            logger.debug(String.format("Error generating dependencies file for command '%s': %s", compileCommand.command, e.getMessage()));
             return Optional.empty();
         }
         return Optional.of(depsMkFile);
+    }
+
+    private String getCompilerCommand(final String origCompileCommand) {
+        final String[] parts = origCompileCommand.trim().split("\\s+");
+        return parts[0];
+    }
+
+    private List<String> getArgsForGeneratingDepsMkFile(final String origCompileCommand, final String depsMkFilePath) {
+        final String[] parts = origCompileCommand.trim().split("\\s+");
+        final List<String> argList = new ArrayList<>(parts.length + 3);
+        int partIndex = 0;
+        for (final String part : parts) {
+            if (partIndex > 0) {
+                argList.add(part);
+            }
+            partIndex++;
+        }
+        argList.add("-M");
+        argList.add("-MF");
+        argList.add(depsMkFilePath);
+        return argList;
     }
 
     // TODO belongs elsewhere?

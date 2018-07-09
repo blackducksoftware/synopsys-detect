@@ -32,16 +32,17 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 public class Rpm extends LinuxPackageManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String PKG_MGR_NAME = "rpm";
-    private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("rpm --version");
+    private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
     private static final String EXPECTED_TEXT = "RPM version";
-    private static final String QUERY_DEPENDENCY_FILE_COMMAND_PATTERN = "rpm -qf %s";
+    private static final String RPM_GET_PKG_INFO_OPTION = "-qf";
 
     private final List<Forge> forges = Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT);
 
@@ -56,16 +57,15 @@ public class Rpm extends LinuxPackageManager {
     }
 
     @Override
-    public List<PackageDetails> getDependencyDetails(final CommandStringExecutor executor, final Set<File> filesForIScan, final DependencyFile dependencyFile) {
+    public List<PackageDetails> getDependencyDetails(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final DependencyFile dependencyFile) {
         final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
-        final String getPackageCommand = String.format(QUERY_DEPENDENCY_FILE_COMMAND_PATTERN, dependencyFile.getFile().getAbsolutePath());
         try {
-            final String queryPackageOutput = executor.execute(new File("."), null, getPackageCommand);
+            final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(PKG_MGR_NAME, RPM_GET_PKG_INFO_OPTION, dependencyFile.getFile().getAbsolutePath());
             logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput));
-            addToPackageList(dependencyDetailsList, queryPackageOutput);
+            addToPackageList(dependencyDetailsList, queryPackageOutput.getStandardOutput());
             return dependencyDetailsList;
-        } catch (ExecutableRunnerException | IntegrationException e) {
-            logger.error(String.format("Error executing %s: %s", getPackageCommand, e.getMessage()));
+        } catch (final ExecutableRunnerException e) {
+            logger.error(String.format("Error executing %s to get package details: %s", PKG_MGR_NAME, e.getMessage()));
             if (!dependencyFile.isInBuildDir()) {
                 logger.info(String.format("%s should be scanned by iScan", dependencyFile.getFile().getAbsolutePath()));
                 filesForIScan.add(dependencyFile.getFile());

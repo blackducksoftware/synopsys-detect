@@ -33,16 +33,18 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 public class Dpkg extends LinuxPackageManager {
 
     private static final String PKG_MGR_NAME = "dpkg";
     private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
+    private static final String DPKG_WHO_OWNS_OPTION = "-S";
+    private static final String DPKG_GET_PKG_INFO_OPTION = "-s";
     private static final String EXPECTED_TEXT = "package management program version";
-    private static final String QUERY_DEPENDENCY_FILE_COMMAND_PATTERN = "dpkg -S %s";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -79,15 +81,14 @@ public class Dpkg extends LinuxPackageManager {
     }
 
     @Override
-    public List<PackageDetails> getDependencyDetails(final CommandStringExecutor executor, final Set<File> filesForIScan, final DependencyFile dependencyFile) {
+    public List<PackageDetails> getDependencyDetails(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final DependencyFile dependencyFile) {
         final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
-        final String getPackageCommand = String.format(QUERY_DEPENDENCY_FILE_COMMAND_PATTERN, dependencyFile.getFile().getAbsolutePath());
         try {
-            final String queryPackageOutput = executor.execute(new File("."), null, getPackageCommand);
-            logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput));
-            addToPackageList(executor, dependencyDetailsList, queryPackageOutput);
-        } catch (ExecutableRunnerException | IntegrationException e) {
-            logger.debug(String.format("Error executing %s: %s", getPackageCommand, e.getMessage()));
+            final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(PKG_MGR_NAME, DPKG_WHO_OWNS_OPTION, dependencyFile.getFile().getAbsolutePath());
+            logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput.getStandardOutput()));
+            addToPackageList(executableRunner, dependencyDetailsList, queryPackageOutput.getStandardOutput());
+        } catch (final ExecutableRunnerException e) {
+            logger.debug(String.format("Error executing %s to get package list: %s", PKG_MGR_NAME, e.getMessage()));
             if (!dependencyFile.isInBuildDir()) {
                 logger.trace(String.format("%s should be scanned by iScan", dependencyFile.getFile().getAbsolutePath()));
                 filesForIScan.add(dependencyFile.getFile());
@@ -98,7 +99,7 @@ public class Dpkg extends LinuxPackageManager {
         return dependencyDetailsList;
     }
 
-    private void addToPackageList(final CommandStringExecutor executor, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
+    private void addToPackageList(final ExecutableRunner executableRunner, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
             if (!valid(packageLine)) {
@@ -110,7 +111,7 @@ public class Dpkg extends LinuxPackageManager {
             final String packageName = packageNameArchParts[0];
             final String packageArch = packageNameArchParts[1];
             logger.debug(String.format("package name: %s; arch: %s", packageName, packageArch));
-            final Optional<String> packageVersion = getPackageVersion(executor, packageName);
+            final Optional<String> packageVersion = getPackageVersion(executableRunner, packageName);
             final PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion.orElse(null), packageArch);
             dependencyDetailsList.add(dependencyDetails);
         }
@@ -123,16 +124,14 @@ public class Dpkg extends LinuxPackageManager {
         return false;
     }
 
-    private Optional<String> getPackageVersion(final CommandStringExecutor executor, final String packageName) {
-
-        final String getPackageVersionCommand = String.format("dpkg -s %s", packageName);
+    private Optional<String> getPackageVersion(final ExecutableRunner executableRunner, final String packageName) {
         try {
-            final String packageStatusOutput = executor.execute(new File("."), null, getPackageVersionCommand);
+            final ExecutableOutput packageStatusOutput = executableRunner.executeQuietly(PKG_MGR_NAME, DPKG_GET_PKG_INFO_OPTION, packageName);
             logger.debug(String.format("packageStatusOutput: %s", packageStatusOutput));
-            final Optional<String> packageVersion = getPackageVersionFromStatusOutput(packageName, packageStatusOutput);
+            final Optional<String> packageVersion = getPackageVersionFromStatusOutput(packageName, packageStatusOutput.getStandardOutput());
             return packageVersion;
-        } catch (ExecutableRunnerException | IntegrationException e) {
-            logger.error(String.format("Error executing %s: %s", getPackageVersionCommand, e.getMessage()));
+        } catch (final ExecutableRunnerException e) {
+            logger.error(String.format("Error executing %s to get package info: %s", PKG_MGR_NAME, e.getMessage()));
         }
 
         return Optional.empty();

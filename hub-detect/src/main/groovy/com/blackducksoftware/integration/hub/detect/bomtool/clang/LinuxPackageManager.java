@@ -59,7 +59,7 @@ public abstract class LinuxPackageManager {
     public abstract List<Forge> getForges();
 
     // TODO Should not use CommandStringExecutor here; each pkg mgr could easily build the list of args
-    public abstract List<PackageDetails> getDependencyDetails(CommandStringExecutor executor, Set<File> filesForIScan, DependencyFile dependencyFile);
+    public abstract List<PackageDetails> getDependencyDetails(ExecutableRunner executableRunner, Set<File> filesForIScan, DependencyFile dependencyFile);
 
     public abstract List<String> getCheckPresenceCommandArgs();
 
