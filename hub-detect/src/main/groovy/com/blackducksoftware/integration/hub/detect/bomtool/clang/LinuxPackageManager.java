@@ -34,7 +34,7 @@ import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public abstract class PkgMgr {
+public abstract class LinuxPackageManager {
     // TODO Should not use CommandStringExecutor here; each pkg mgr could easily build the list of args
     public boolean applies(final CommandStringExecutor executor) {
         try {

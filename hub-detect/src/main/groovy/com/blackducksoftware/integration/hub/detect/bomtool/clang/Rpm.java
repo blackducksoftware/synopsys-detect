@@ -37,7 +37,7 @@ import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public class Rpm extends PkgMgr {
+public class Rpm extends LinuxPackageManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String PKG_MGR_NAME = "rpm";
     private static final String VERSION_COMMAND = "rpm --version";

@@ -37,7 +37,7 @@ import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public class Dpkg extends PkgMgr {
+public class Dpkg extends LinuxPackageManager {
 
     private static final String PKG_MGR_NAME = "dpkg";
     private static final String VERSION_COMMAND = "dpkg --version";

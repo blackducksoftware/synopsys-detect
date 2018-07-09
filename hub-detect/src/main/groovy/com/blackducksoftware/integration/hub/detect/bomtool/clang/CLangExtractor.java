@@ -66,13 +66,13 @@ public class CLangExtractor {
     private final Set<File> processedDependencyFiles = new HashSet<>(200);
     private final Set<PackageDetails> processedDependencies = new HashSet<>(40);
 
-    private final List<PkgMgr> pkgMgrs;
+    private final List<LinuxPackageManager> pkgMgrs;
     private final ExternalIdFactory externalIdFactory;
     private final CommandStringExecutor executor;
     private final DependencyFileManager dependencyFileManager;
     private final DetectFileManager detectFileManager;
 
-    public CLangExtractor(final List<PkgMgr> pkgMgrs, final ExternalIdFactory externalIdFactory, final CommandStringExecutor executor, final DependencyFileManager dependencyFileManager,
+    public CLangExtractor(final List<LinuxPackageManager> pkgMgrs, final ExternalIdFactory externalIdFactory, final CommandStringExecutor executor, final DependencyFileManager dependencyFileManager,
             final DetectFileManager detectFileManager) {
         this.pkgMgrs = pkgMgrs;
         this.externalIdFactory = externalIdFactory;
@@ -88,7 +88,7 @@ public class CLangExtractor {
             final File outputDirectory = detectFileManager.getOutputDirectory("CLang", extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> filesForIScan = ConcurrentHashMap.newKeySet(64);
-            final PkgMgr pkgMgr = selectPkgMgr();
+            final LinuxPackageManager pkgMgr = selectPkgMgr();
             final List<CompileCommand> compileCommands = parseCompileCommandsFile(jsonCompilationDatabaseFile);
             final List<Dependency> bdioComponents = compileCommands.parallelStream()
                     .map(compileCommandToDependencyFilePathsConverter(outputDirectory))
@@ -130,7 +130,7 @@ public class CLangExtractor {
         return accumulateNewDependencies;
     }
 
-    private Function<PackageDetails, List<Dependency>> packageToDependenciesConverter(final PkgMgr pkgMgr) {
+    private Function<PackageDetails, List<Dependency>> packageToDependenciesConverter(final LinuxPackageManager pkgMgr) {
         final Function<PackageDetails, List<Dependency>> convertPackageToDependencies = (final PackageDetails pkg) -> {
             final List<Dependency> dependencies = new ArrayList<>();
             logger.debug(String.format("Package name//arch//version: %s//%s//%s", pkg.getPackageName().orElse("<missing>"), pkg.getPackageArch().orElse("<missing>"),
@@ -153,7 +153,7 @@ public class CLangExtractor {
         return accumulateNewPackages;
     }
 
-    private Function<File, Set<PackageDetails>> fileToPackagesConverter(final File sourceDir, final Set<File> filesForIScan, final PkgMgr pkgMgr) {
+    private Function<File, Set<PackageDetails>> fileToPackagesConverter(final File sourceDir, final Set<File> filesForIScan, final LinuxPackageManager pkgMgr) {
         final Function<File, Set<PackageDetails>> convertFileToPackages = (final File f) -> {
             logger.trace(String.format("Querying package manager for %s", f.getAbsolutePath()));
             final DependencyFile dependencyFileWithMetaData = new DependencyFile(isUnder(sourceDir, f) ? true : false, f);
@@ -208,7 +208,7 @@ public class CLangExtractor {
         return dependencyGraph;
     }
 
-    private List<Dependency> getBdioComponents(final PkgMgr pkgMgr, final String name, final String version, final String arch) {
+    private List<Dependency> getBdioComponents(final LinuxPackageManager pkgMgr, final String name, final String version, final String arch) {
         final List<Dependency> dependencies = new ArrayList<>();
         final String externalId = String.format("%s/%s/%s", name, version, arch);
         logger.trace(String.format("Constructed externalId: %s", externalId));
@@ -228,9 +228,9 @@ public class CLangExtractor {
         return Arrays.asList(compileCommands);
     }
 
-    private PkgMgr selectPkgMgr() throws IntegrationException {
-        PkgMgr pkgMgr = null;
-        for (final PkgMgr pkgMgrCandidate : pkgMgrs) {
+    private LinuxPackageManager selectPkgMgr() throws IntegrationException {
+        LinuxPackageManager pkgMgr = null;
+        for (final LinuxPackageManager pkgMgrCandidate : pkgMgrs) {
             if (pkgMgrCandidate.applies(executor)) {
                 pkgMgr = pkgMgrCandidate;
                 break;

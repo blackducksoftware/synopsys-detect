@@ -45,7 +45,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangExtractor
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CommandStringExecutor;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependencyFileManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.Dpkg;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.PkgMgr;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.LinuxPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.Rpm;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockParser;
@@ -432,7 +432,7 @@ public class BeanConfiguration {
 
     @Bean
     public CLangExtractor cLangExtractor() {
-        final List<PkgMgr> pkgMgrs = new ArrayList<>();
+        final List<LinuxPackageManager> pkgMgrs = new ArrayList<>();
         pkgMgrs.add(apk());
         pkgMgrs.add(dpkg());
         pkgMgrs.add(rpm());
