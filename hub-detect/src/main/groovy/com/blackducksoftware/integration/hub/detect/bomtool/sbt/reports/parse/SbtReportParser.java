@@ -28,71 +28,51 @@ import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtCaller;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtModule;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtReport;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtRevision;
+import com.blackducksoftware.integration.hub.detect.util.XmlUtil;
 
 public class SbtReportParser {
     public SbtReport parseReportFromXml(final Document xmlReport) {
         final SbtReport report = new SbtReport();
-        final Node infoNode = getNode("info", xmlReport);
-        report.organisation = getAttribute("organisation", infoNode);
-        report.module = getAttribute("module", infoNode);
-        report.revision = getAttribute("revision", infoNode);
-        report.configuration = getAttribute("conf", infoNode);
+        final Node infoNode = XmlUtil.getNode("info", xmlReport);
+        report.organisation = XmlUtil.getAttribute("organisation", infoNode);
+        report.module = XmlUtil.getAttribute("module", infoNode);
+        report.revision = XmlUtil.getAttribute("revision", infoNode);
+        report.configuration = XmlUtil.getAttribute("conf", infoNode);
         report.dependencies = new ArrayList<>();
 
-        final Node dependencies = getNode("dependencies", xmlReport);
-        final List<Node> modules = getNodeList("module", dependencies);
+        final Node dependencies = XmlUtil.getNode("dependencies", xmlReport);
+        final List<Node> modules = XmlUtil.getNodeList("module", dependencies);
 
         modules.forEach(xmlModule -> {
             final SbtModule module = new SbtModule();
-            module.name = getAttribute("name", xmlModule);
-            module.organisation = getAttribute("organisation", xmlModule);
+            module.name = XmlUtil.getAttribute("name", xmlModule);
+            module.organisation = XmlUtil.getAttribute("organisation", xmlModule);
             module.revisions = new ArrayList<>();
             report.dependencies.add(module);
 
-            final List<Node> revisions = getNodeList("revision", xmlModule);
+            final List<Node> revisions = XmlUtil.getNodeList("revision", xmlModule);
             revisions.forEach(xmlRevision -> {
                 final SbtRevision revision = new SbtRevision();
-                revision.name = getAttribute("name", xmlRevision);
+                revision.name = XmlUtil.getAttribute("name", xmlRevision);
                 revision.callers = new ArrayList<>();
                 module.revisions.add(revision);
 
-                final List<Node> callers = getNodeList("caller", xmlRevision);
+                final List<Node> callers = XmlUtil.getNodeList("caller", xmlRevision);
                 callers.forEach(xmlCaller -> {
                     final SbtCaller caller = new SbtCaller();
-                    caller.callerOrganisation = getAttribute("organisation", xmlCaller);
-                    caller.callerName = getAttribute("name", xmlCaller);
-                    caller.callerRevision = getAttribute("callerrev", xmlCaller);
+                    caller.callerOrganisation = XmlUtil.getAttribute("organisation", xmlCaller);
+                    caller.callerName = XmlUtil.getAttribute("name", xmlCaller);
+                    caller.callerRevision = XmlUtil.getAttribute("callerrev", xmlCaller);
                     revision.callers.add(caller);
                 });
             });
         });
         return report;
-    }
-
-    Node getNode(final String key, final Node parentNode) {
-        return getNodeList(key, parentNode).get(0);
-    }
-
-    List<Node> getNodeList(final String key, final Node parentNode) {
-        final List<Node> nodes = new ArrayList<>();
-        final NodeList childNodes = parentNode.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            final Node childNode = childNodes.item(i);
-            if (childNode.getNodeName().equals(key)) {
-                nodes.add(childNode);
-            }
-        }
-        return nodes;
-    }
-
-    String getAttribute(final String key, final Node node) {
-        return node.getAttributes().getNamedItem("organisation").getTextContent();
     }
 
 }
