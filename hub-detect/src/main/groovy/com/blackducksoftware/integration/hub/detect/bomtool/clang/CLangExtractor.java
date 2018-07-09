@@ -133,12 +133,12 @@ public class CLangExtractor {
     private Function<PackageDetails, List<Dependency>> packageToDependenciesConverter(final LinuxPackageManager pkgMgr) {
         final Function<PackageDetails, List<Dependency>> convertPackageToDependencies = (final PackageDetails pkg) -> {
             final List<Dependency> dependencies = new ArrayList<>();
-            logger.debug(String.format("Package name//arch//version: %s//%s//%s", pkg.getPackageName().orElse("<missing>"), pkg.getPackageArch().orElse("<missing>"),
-                    pkg.getPackageVersion().orElse("<missing>")));
+            logger.debug(String.format("Package name//arch//version: %s//%s//%s", pkg.getPackageName(), pkg.getPackageArch(),
+                    pkg.getPackageVersion()));
             if (dependencyAlreadyProcessed(pkg)) {
                 logger.trace(String.format("dependency %s has already been processed", pkg.toString()));
-            } else if (pkg.getPackageName().isPresent() && pkg.getPackageVersion().isPresent() && pkg.getPackageArch().isPresent()) {
-                dependencies.addAll(getBdioComponents(pkgMgr, pkg.getPackageName().get(), pkg.getPackageVersion().get(), pkg.getPackageArch().get()));
+            } else if (pkg.getPackageName() != null && pkg.getPackageVersion() != null && pkg.getPackageArch() != null) {
+                dependencies.addAll(getBdioComponents(pkgMgr, pkg.getPackageName(), pkg.getPackageVersion(), pkg.getPackageArch()));
             }
             return dependencies;
         };

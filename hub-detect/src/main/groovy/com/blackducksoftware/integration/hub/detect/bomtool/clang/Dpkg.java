@@ -111,7 +111,7 @@ public class Dpkg extends LinuxPackageManager {
             final String packageArch = packageNameArchParts[1];
             logger.debug(String.format("package name: %s; arch: %s", packageName, packageArch));
             final Optional<String> packageVersion = getPackageVersion(executor, packageName);
-            final PackageDetails dependencyDetails = new PackageDetails(Optional.of(packageName), packageVersion, Optional.of(packageArch));
+            final PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion.orElse(null), packageArch);
             dependencyDetailsList.add(dependencyDetails);
         }
     }

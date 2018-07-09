@@ -23,31 +23,29 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import java.util.Optional;
-
 import org.apache.commons.lang3.builder.RecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 public class PackageDetails {
-    private final Optional<String> packageName;
-    private final Optional<String> packageVersion;
-    private final Optional<String> packageArch;
+    private final String packageName;
+    private final String packageVersion;
+    private final String packageArch;
 
-    public PackageDetails(final Optional<String> packageName, final Optional<String> packageVersion, final Optional<String> packageArch) {
+    public PackageDetails(final String packageName, final String packageVersion, final String packageArch) {
         this.packageName = packageName;
         this.packageVersion = packageVersion;
         this.packageArch = packageArch;
     }
 
-    public Optional<String> getPackageName() {
+    public String getPackageName() {
         return packageName;
     }
 
-    public Optional<String> getPackageVersion() {
+    public String getPackageVersion() {
         return packageVersion;
     }
 
-    public Optional<String> getPackageArch() {
+    public String getPackageArch() {
         return packageArch;
     }
 

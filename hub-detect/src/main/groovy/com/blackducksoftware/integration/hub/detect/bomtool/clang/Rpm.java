@@ -27,7 +27,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -76,7 +75,7 @@ public class Rpm extends LinuxPackageManager {
                 final int secondToLastDashIndex = nameVersion.lastIndexOf('-');
                 final String versionRelease = packageLine.substring(secondToLastDashIndex + 1, lastDotIndex);
                 final String artifact = packageLine.substring(0, secondToLastDashIndex);
-                final PackageDetails dependencyDetails = new PackageDetails(Optional.ofNullable(artifact), Optional.ofNullable(versionRelease), Optional.ofNullable(arch));
+                final PackageDetails dependencyDetails = new PackageDetails(artifact, versionRelease, arch);
                 dependencyDetailsList.add(dependencyDetails);
             }
             return dependencyDetailsList;

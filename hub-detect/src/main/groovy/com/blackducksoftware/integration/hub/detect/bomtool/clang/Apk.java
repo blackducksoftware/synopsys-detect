@@ -27,7 +27,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -106,7 +105,7 @@ public class Apk extends LinuxPackageManager {
                 if (!component.startsWith(".")) {
                     final String externalId = String.format("%s/%s/%s", component, version, architecture);
                     logger.debug(String.format("Constructed externalId: %s", externalId));
-                    final PackageDetails dependencyDetails = new PackageDetails(Optional.ofNullable(component), Optional.ofNullable(version), Optional.ofNullable(architecture));
+                    final PackageDetails dependencyDetails = new PackageDetails(component, version, architecture);
                     dependencyDetailsList.add(dependencyDetails);
                 }
             }
