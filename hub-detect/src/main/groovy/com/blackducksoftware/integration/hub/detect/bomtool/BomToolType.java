@@ -31,7 +31,6 @@ public enum BomToolType {
     DOCKER,
     GO_CLI,
     GO_LOCK,
-    GO_DEPS,
     GO_VNDR,
     GRADLE_INSPECTOR,
     REBAR,

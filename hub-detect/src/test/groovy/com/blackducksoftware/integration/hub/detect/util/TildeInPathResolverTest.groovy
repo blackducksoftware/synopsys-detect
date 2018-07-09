@@ -1,11 +1,12 @@
 package com.blackducksoftware.integration.hub.detect.util
 
+import org.junit.Assert
+import org.junit.Test
+
 import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType
-import org.junit.Assert
-import org.junit.Test
 
 class TildeInPathResolverTest {
     @Test
@@ -13,7 +14,7 @@ class TildeInPathResolverTest {
         DetectConfigWrapper detectConfigWrapper = new DetectConfigWrapper(null)
         detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, '~/Documents/source/integration/hub-detect')
 
-        DetectInfo detectInfo = new DetectInfo(null)
+        DetectInfo detectInfo = new DetectInfo()
         detectInfo.currentOs = OperatingSystemType.LINUX
         TildeInPathResolver resolver = new TildeInPathResolver(detectInfo)
 
@@ -27,7 +28,7 @@ class TildeInPathResolverTest {
         DetectConfigWrapper detectConfigWrapper = new DetectConfigWrapper(null)
         detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, '~/Documents/source/integration/hub-detect')
 
-        DetectInfo detectInfo = new DetectInfo(null)
+        DetectInfo detectInfo = new DetectInfo()
         detectInfo.currentOs = OperatingSystemType.WINDOWS
         println detectInfo.getCurrentOs()
         TildeInPathResolver resolver = new TildeInPathResolver(detectInfo)
@@ -42,7 +43,7 @@ class TildeInPathResolverTest {
         DetectConfigWrapper detectConfigWrapper = new DetectConfigWrapper(null)
         detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, '/Documents/~source/~/integration/hub-detect')
 
-        DetectInfo detectInfo = new DetectInfo(null)
+        DetectInfo detectInfo = new DetectInfo()
         detectInfo.currentOs = OperatingSystemType.LINUX
         TildeInPathResolver resolver = new TildeInPathResolver(detectInfo)
 

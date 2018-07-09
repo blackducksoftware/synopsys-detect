@@ -1,15 +1,14 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.pip
 
-import static org.junit.Assert.*;
-
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
+import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
 import org.junit.Before
 import org.junit.Test
 
-import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipenvGraphParser
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import static org.junit.Assert.*
 
 class PipEnvTreeParserTest {
     private PipenvGraphParser parser
@@ -25,8 +24,7 @@ class PipEnvTreeParserTest {
 
     @Before
     void init() {
-        parser = new PipenvGraphParser()
-        parser.externalIdFactory = new ExternalIdFactory()
+        parser = new PipenvGraphParser(new ExternalIdFactory())
     }
 
     @Test
@@ -65,7 +63,7 @@ class PipEnvTreeParserTest {
         i am not a valid file
         the result should be null
         """
-        DetectCodeLocation root = parser.parse("name", "version", pipFreezeOutput, Arrays.asList(invalidText.split("\r?\n")), '')
+        DetectCodeLocation root = parser.parse(BomToolType.PIP_ENV, "name", "version", pipFreezeOutput, Arrays.asList(invalidText.split("\r?\n")), '')
         assertNull(root)
     }
 }

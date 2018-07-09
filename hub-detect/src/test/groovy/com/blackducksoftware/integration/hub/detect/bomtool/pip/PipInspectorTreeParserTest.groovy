@@ -11,17 +11,14 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip
 
-import static org.junit.Assert.*
-
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
+import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-
-import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipInspectorTreeParser
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class PipInspectorTreeParserTest {
     private PipInspectorTreeParser parser
@@ -36,8 +33,7 @@ class PipInspectorTreeParserTest {
 
     @Before
     void init() {
-        parser = new PipInspectorTreeParser()
-        parser.externalIdFactory = new ExternalIdFactory()
+        parser = new PipInspectorTreeParser(new ExternalIdFactory())
     }
 
     @Test
@@ -71,7 +67,7 @@ class PipInspectorTreeParserTest {
         the result should be null
         """
         invalidText = invalidText.split("\r?\n").join(System.lineSeparator)
-        DetectCodeLocation root = parser.parse(invalidText, '')
+        DetectCodeLocation root = parser.parse(BomToolType.PIP_INSPECTOR, invalidText, '')
         Assert.assertNull(root)
     }
 }

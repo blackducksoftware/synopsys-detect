@@ -31,36 +31,28 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenCodeLocationPackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenParseResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class MavenCliExtractor {
     private final ExecutableRunner executableRunner;
-    private final DetectFileFinder detectFileFinder;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
-    public MavenCliExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final MavenCodeLocationPackager mavenCodeLocationPackager, final DetectConfigWrapper detectConfigWrapper) {
+    public MavenCliExtractor(final ExecutableRunner executableRunner, final MavenCodeLocationPackager mavenCodeLocationPackager, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner;
-        this.detectFileFinder = detectFileFinder;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
         this.detectConfigWrapper = detectConfigWrapper;
     }
 
-    public Extraction extract(final File directory, final String mavenExe) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final String mavenExe) {
         try {
             String mavenCommand = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_BUILD_COMMAND);
             if (StringUtils.isNotBlank(mavenCommand)) {
@@ -74,7 +66,7 @@ public class MavenCliExtractor {
             if (StringUtils.isNotBlank(mavenCommand)) {
                 arguments.addAll(Arrays.asList(mavenCommand.split(" ")));
             }
-            String mavenScope = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_SCOPE);
+            final String mavenScope = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_SCOPE);
             if (StringUtils.isNotBlank(mavenScope)) {
                 arguments.add(String.format("-Dscope=%s", mavenScope));
             }
@@ -87,7 +79,7 @@ public class MavenCliExtractor {
 
                 final String excludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_MODULES);
                 final String includedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_MODULES);
-                final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
+                final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(bomToolType, directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
 
                 final List<DetectCodeLocation> codeLocations = mavenResults.stream()
                         .map(it -> it.codeLocation)

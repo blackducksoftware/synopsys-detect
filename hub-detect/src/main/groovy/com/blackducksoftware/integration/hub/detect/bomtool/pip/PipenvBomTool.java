@@ -26,17 +26,17 @@ package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 import java.io.File;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.FilesNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExecutableNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FilesNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class PipenvBomTool extends BomTool {
     public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
@@ -92,7 +92,7 @@ public class PipenvBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return pipenvExtractor.extract(environment.getDirectory(), pythonExe, pipenvExe, setupFile);
+        return pipenvExtractor.extract(this.getBomToolType(), environment.getDirectory(), pythonExe, pipenvExe, setupFile);
     }
 
 }

@@ -72,7 +72,7 @@ public class ConfigurationManager {
         this.detectConfigWrapper = detectConfigWrapper;
     }
 
-    public void initialize(List<DetectOption> detectOptions) throws DetectUserFriendlyException {
+    public void initialize(final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
         resolveTildeInPaths();
         resolveTargetAndOutputDirectories();
         resolvePolicyProperties();
@@ -87,7 +87,7 @@ public class ConfigurationManager {
         if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_RESOLVE_TILDE_IN_PATHS)) {
             try {
                 tildeInPathResolver.resolveTildeInAllPathFields(USER_HOME, detectConfigWrapper);
-            } catch (IllegalAccessException e) {
+            } catch (final IllegalAccessException e) {
                 throw new DetectUserFriendlyException(String.format("There was a problem resolving the tilde's in the paths. %s", e.getMessage()), e, ExitCodeType.FAILURE_CONFIGURATION);
             }
         }
@@ -103,7 +103,7 @@ public class ConfigurationManager {
         String bdioOutputDirectoryPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH);
         String scanOutputDirectoryPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH);
 
-        File sourceDirectory = new File(sourcePath);
+        final File sourceDirectory = new File(sourcePath);
 
         // make sure the path is absolute
         try {
@@ -111,7 +111,7 @@ public class ConfigurationManager {
             outputDirectoryPath = createDirectoryPath(outputDirectoryPath, USER_HOME, "blackduck");
             bdioOutputDirectoryPath = createDirectoryPath(bdioOutputDirectoryPath, outputDirectoryPath, "bdio");
             scanOutputDirectoryPath = createDirectoryPath(scanOutputDirectoryPath, outputDirectoryPath, "scan");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new DetectUserFriendlyException(String.format("There was a problem creating . %s", e.getMessage()), e, ExitCodeType.FAILURE_CONFIGURATION);
         }
         ensureDirectoryExists(outputDirectoryPath, "The system property 'user.home' will be used by default, but the output directory must exist.");
@@ -125,7 +125,7 @@ public class ConfigurationManager {
     }
 
     private void resolvePolicyProperties() {
-        String policyCheckFailOnSeverities = detectConfigWrapper.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES);
+        final String policyCheckFailOnSeverities = detectConfigWrapper.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES);
         final boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
         if (atLeastOnePolicySeverity) {
             boolean allSeverities = false;
@@ -139,11 +139,13 @@ public class ConfigurationManager {
             if (allSeverities) {
                 final List<String> allPolicyTypes = Arrays.stream(PolicySeverityType.values()).filter(type -> type != PolicySeverityType.UNSPECIFIED).map(type -> type.toString()).collect(Collectors.toList());
                 this.policyCheckFailOnSeverities = StringUtils.join(allPolicyTypes, ",");
+            } else {
+                this.policyCheckFailOnSeverities = StringUtils.join(splitSeverities, ",");
             }
         }
     }
 
-    private void resolveSignatureScannerProperties(List<DetectOption> detectOptions) throws DetectUserFriendlyException {
+    private void resolveSignatureScannerProperties(final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
         int hubSignatureScannerParallelProcessors = detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS);
         if (hubSignatureScannerParallelProcessors == -1) {
             hubSignatureScannerParallelProcessors = Runtime.getRuntime().availableProcessors();
@@ -196,7 +198,7 @@ public class ConfigurationManager {
         nugetInspectorAirGapPath = getInspectorAirGapPath(detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH), NUGET);
     }
 
-    private void updateDetectProperties(List<DetectOption> detectOptions) {
+    private void updateDetectProperties(final List<DetectOption> detectOptions) {
         updateOptionValue(detectOptions, DetectProperty.DETECT_SOURCE_PATH, sourcePath);
         detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, sourcePath);
 
@@ -231,7 +233,7 @@ public class ConfigurationManager {
         detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH, nugetInspectorAirGapPath);
     }
 
-    private void updateOptionValue(List<DetectOption> detectOptions, final DetectProperty detectProperty, final String value) {
+    private void updateOptionValue(final List<DetectOption> detectOptions, final DetectProperty detectProperty, final String value) {
         detectOptions.stream().forEach(option -> {
             if (option.getDetectProperty() == detectProperty) {
                 option.setPostInitValue(value);
@@ -239,7 +241,7 @@ public class ConfigurationManager {
         });
     }
 
-    private void addFieldWarning(List<DetectOption> detectOptions, final DetectProperty detectProperty, final String warning) {
+    private void addFieldWarning(final List<DetectOption> detectOptions, final DetectProperty detectProperty, final String warning) {
         detectOptions.stream().forEach(option -> {
             if (option.getDetectProperty() == detectProperty) {
                 option.addWarning(warning);
@@ -247,7 +249,8 @@ public class ConfigurationManager {
         });
     }
 
-    private void requestDeprecation(List<DetectOption> detectOptions, final DetectProperty detectProperty) {
+    @SuppressWarnings("unused")
+    private void requestDeprecation(final List<DetectOption> detectOptions, final DetectProperty detectProperty) {
         detectOptions.stream().forEach(option -> {
             if (option.getDetectProperty() == detectProperty) {
                 option.requestDeprecation();

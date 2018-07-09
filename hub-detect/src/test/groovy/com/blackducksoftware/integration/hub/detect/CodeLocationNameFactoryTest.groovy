@@ -13,11 +13,12 @@ package com.blackducksoftware.integration.hub.detect
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameService
-import com.blackducksoftware.integration.hub.detect.codelocation.DockerScanCodeLocationNameService
-import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameService
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BomCodeLocationNameService
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerScanCodeLocationNameService
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.ScanCodeLocationNameService
+
 import org.junit.Test
 
 import static org.junit.Assert.assertEquals
@@ -27,9 +28,8 @@ class CodeLocationNameFactoryTest {
     public void testScanCodeLocationNameFactory() {
         String expected = 'hub-common-rest/target/hub-common-rest/2.5.1-SNAPSHOT scan'
 
-        DetectFileFinder detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileFinder
-        ScanCodeLocationNameService scanCodeLocationNameFactory = new ScanCodeLocationNameService()
-        scanCodeLocationNameFactory.detectFileFinder = detectFileManager
+        DetectFileFinder detectFileFinder = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileFinder
+        ScanCodeLocationNameService scanCodeLocationNameFactory = new ScanCodeLocationNameService(detectFileFinder)
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String scanTargetPath = '/Users/ekerwin/Documents/source/integration/hub-common-rest/target'
@@ -46,9 +46,8 @@ class CodeLocationNameFactoryTest {
     public void testDockerScanCodeLocationNameFactory() {
         String expected = 'dockerTar.tar.gz/hub-common-rest/2.5.1-SNAPSHOT scan'
 
-        DetectFileFinder detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileFinder
-        DockerScanCodeLocationNameService dockerScanCodeLocationNameService = new DockerScanCodeLocationNameService()
-        dockerScanCodeLocationNameService.detectFileFinder = detectFileManager
+        DetectFileFinder detectFileFinder = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileFinder
+        DockerScanCodeLocationNameService dockerScanCodeLocationNameService = new DockerScanCodeLocationNameService(detectFileFinder)
 
         String dockerTarFileName = 'dockerTar.tar.gz'
         String projectName = 'hub-common-rest'
@@ -68,7 +67,8 @@ class CodeLocationNameFactoryTest {
 
         ExternalIdFactory factory = new ExternalIdFactory();
         ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
-        BomCodeLocationNameService bomCodeLocationNameFactory = new BomCodeLocationNameService()
+        DetectFileFinder detectFileFinder = new DetectFileFinder()
+        BomCodeLocationNameService bomCodeLocationNameFactory = new BomCodeLocationNameService(detectFileFinder)
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String codeLocationPath = '/Users/ekerwin/Documents/source/integration/hub-common-rest/child'
@@ -87,7 +87,8 @@ class CodeLocationNameFactoryTest {
 
         ExternalIdFactory factory = new ExternalIdFactory();
         ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
-        BomCodeLocationNameService bomCodeLocationNameFactory = new BomCodeLocationNameService()
+        DetectFileFinder detectFileFinder = new DetectFileFinder()
+        BomCodeLocationNameService bomCodeLocationNameFactory = new BomCodeLocationNameService(detectFileFinder)
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String codeLocationPath = '/Users/ekerwin/Documents/source/integration/hub-common-rest/hub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-rest'

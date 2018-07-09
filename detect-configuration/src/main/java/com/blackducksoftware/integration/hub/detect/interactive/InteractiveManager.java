@@ -28,26 +28,22 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.InteractiveMode;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.InteractiveReader;
 
-@Component
 public class InteractiveManager {
     private final Logger logger = LoggerFactory.getLogger(InteractiveManager.class);
 
-    @Autowired
-    DetectOptionManager detectOptionManager;
+    private final DetectOptionManager detectOptionManager;
+    private final DefaultInteractiveMode defaultInteractiveMode;
 
-    @Autowired
-    List<InteractiveMode> interactiveModes;
-
-    @Autowired
-    DefaultInteractiveMode defaultInteractiveMode;
+    public InteractiveManager(final DetectOptionManager detectOptionManager, final DefaultInteractiveMode defaultInteractiveMode) {
+        this.detectOptionManager = detectOptionManager;
+        this.defaultInteractiveMode = defaultInteractiveMode;
+    }
 
     public void interact(final InteractiveReader interactiveReader, final PrintStream printStream) {
         final InteractiveMode interactiveMode = defaultInteractiveMode;

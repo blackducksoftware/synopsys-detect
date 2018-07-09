@@ -30,23 +30,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleParseResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleReportParser;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class GradleInspectorExtractor {
     private final ExecutableRunner executableRunner;
     private final DetectFileFinder detectFileFinder;
@@ -54,7 +50,6 @@ public class GradleInspectorExtractor {
     private final GradleReportParser gradleReportParser;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public GradleInspectorExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final DetectFileManager detectFileManager,
             final GradleReportParser gradleReportParser, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner;
@@ -64,9 +59,9 @@ public class GradleInspectorExtractor {
         this.detectConfigWrapper = detectConfigWrapper;
     }
 
-    public Extraction extract(final File directory, final String gradleExe, final String gradleInspector, final ExtractionId extractionId) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final String gradleExe, final String gradleInspector, final ExtractionId extractionId) {
         try {
-            File outputDirectory = detectFileManager.getOutputDirectory("Gradle", extractionId);
+            final File outputDirectory = detectFileManager.getOutputDirectory("Gradle", extractionId);
 
             String gradleCommand = detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND);
 
@@ -84,14 +79,11 @@ public class GradleInspectorExtractor {
             arguments.add(String.format("-DGRADLEEXTRACTIONDIR=%s", outputDirectory.getCanonicalPath()));
             arguments.add("--info");
 
-            //logger.info("using ${gradleInspectorManager.getInitScriptPath()} as the path for the gradle init script");
+            // logger.info("using " + gradleInspectorManager.getInitScriptPath() + " as the path for the gradle init script");
             final Executable executable = new Executable(directory, gradleExe, arguments);
             final ExecutableOutput output = executableRunner.execute(executable);
 
             if (output.getReturnCode() == 0) {
-                final File buildDirectory = new File(directory, "build");
-                final File blackduckDirectory = new File(buildDirectory, "blackduck");
-
                 final List<File> codeLocationFiles = detectFileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
 
                 final List<DetectCodeLocation> codeLocations = new ArrayList<>();
@@ -100,7 +92,7 @@ public class GradleInspectorExtractor {
                 if (codeLocationFiles != null) {
                     for (final File file : codeLocationFiles) {
                         final InputStream stream = new FileInputStream(file);
-                        final GradleParseResult result = gradleReportParser.parseDependencies(stream);
+                        final GradleParseResult result = gradleReportParser.parseDependencies(bomToolType, stream);
                         stream.close();
                         final DetectCodeLocation codeLocation = result.codeLocation;
                         codeLocations.add(codeLocation);

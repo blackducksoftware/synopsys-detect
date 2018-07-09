@@ -14,8 +14,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.conda
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.conda.parse.CondaListElement
-import com.blackducksoftware.integration.hub.detect.bomtool.conda.parse.CondaListParser
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.google.gson.GsonBuilder
@@ -25,13 +23,12 @@ import org.junit.Test
 import static org.junit.Assert.assertEquals
 
 class CondaListParserTest {
-    private final CondaListParser condaListParser = new CondaListParser()
+    private CondaListParser condaListParser
     private final TestUtil testUtil = new TestUtil()
 
     @Before
     public void init() {
-        condaListParser.gson = new GsonBuilder().setPrettyPrinting().create()
-        condaListParser.externalIdFactory = new ExternalIdFactory()
+        condaListParser = new CondaListParser(new GsonBuilder().setPrettyPrinting().create(), new ExternalIdFactory())
     }
 
     @Test

@@ -32,25 +32,20 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-@Component
 public class NpmExecutableFinder {
     private final Logger logger = LoggerFactory.getLogger(NpmExecutableFinder.class);
 
-    private final DetectFileManager detectFileManager;
     private final ExecutableManager executableManager;
     private final ExecutableRunner executableRunner;
     private final DetectConfigWrapper detectConfigWrapper;
@@ -58,10 +53,8 @@ public class NpmExecutableFinder {
     private String foundNpm = null;
     private boolean hasLookedForNpm = false;
 
-    @Autowired
-    public NpmExecutableFinder(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
+    public NpmExecutableFinder(final ExecutableManager executableManager, final ExecutableRunner executableRunner,
             final DetectConfigWrapper detectConfigWrapper) {
-        this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.detectConfigWrapper = detectConfigWrapper;

@@ -24,17 +24,17 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.FilesNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.InspectorNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FilesNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.InspectorNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class NugetSolutionBomTool extends BomTool {
     static final String[] SUPPORTED_SOLUTION_PATTERNS = new String[] { "*.sln" };
@@ -75,7 +75,7 @@ public class NugetSolutionBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return nugetInspectorExtractor.extract(environment.getDirectory(), inspectorExe, extractionId);
+        return nugetInspectorExtractor.extract(this.getBomToolType(), environment.getDirectory(), inspectorExe, extractionId);
     }
 
 }

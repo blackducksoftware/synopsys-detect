@@ -25,9 +25,6 @@ package com.blackducksoftware.integration.hub.detect.help;
 
 import java.util.Arrays;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class ArgumentStateParser {
 
     public ArgumentState parseArgs(String[] args) {

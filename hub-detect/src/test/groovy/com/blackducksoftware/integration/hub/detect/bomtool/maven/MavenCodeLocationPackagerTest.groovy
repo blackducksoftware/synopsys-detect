@@ -1,14 +1,14 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.maven
 
-import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenCodeLocationPackager
-import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenParseResult
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import static org.junit.Assert.*
+
 import org.junit.Test
 
-import static org.junit.Assert.*
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
+import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
 
 class MavenCodeLocationPackagerTest {
     private TestUtil testUtil = new TestUtil()
@@ -188,7 +188,6 @@ class MavenCodeLocationPackagerTest {
         assertFalse(mavenCodeLocationPackager.isDependencyTreeUpdates("+- com.google.guava:guava:jar:15.0:compile"))
 
         assertFalse(mavenCodeLocationPackager.isDependencyTreeUpdates("|  \\- com.google.guava:guava:jar:15.0:compile"))
-
     }
 
     @Test
@@ -220,7 +219,6 @@ class MavenCodeLocationPackagerTest {
         assertTrue(mavenCodeLocationPackager.isGav("group:artifact:type:classifier:version:scope"))
 
         assertTrue(mavenCodeLocationPackager.isGav("group:artifact:type:classifier:version:scope:garbage"))
-
     }
 
     @Test
@@ -309,10 +307,10 @@ class MavenCodeLocationPackagerTest {
 
     private void createNewCodeLocationTest(String mavenOutputText, String expectedResourcePath, int numberOfCodeLocations, String excludedModules, String includedModules) {
         def mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
-        List<MavenParseResult> result = mavenCodeLocationPackager.extractCodeLocations('/test/path', mavenOutputText, excludedModules, includedModules)
+        List<MavenParseResult> result = mavenCodeLocationPackager.extractCodeLocations(BomToolType.MAVEN_POM_CLI, '/test/path', mavenOutputText, excludedModules, includedModules)
         assertEquals(numberOfCodeLocations, result.size())
         DetectCodeLocation codeLocation = result[0].codeLocation
-       
+
         testUtil.testJsonResource(expectedResourcePath, codeLocation)
     }
 }

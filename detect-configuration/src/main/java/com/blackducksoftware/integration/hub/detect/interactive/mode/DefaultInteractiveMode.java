@@ -23,20 +23,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.interactive.mode;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
 import com.blackducksoftware.integration.log.SilentLogger;
 
-@Component
 public class DefaultInteractiveMode extends InteractiveMode {
     private final HubServiceWrapper hubServiceWrapper;
     private final DetectOptionManager detectOptionManager;
 
-    @Autowired
     public DefaultInteractiveMode(final HubServiceWrapper hubServiceWrapper, final DetectOptionManager detectOptionManager) {
         this.hubServiceWrapper = hubServiceWrapper;
         this.detectOptionManager = detectOptionManager;

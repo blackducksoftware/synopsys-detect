@@ -30,19 +30,15 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
-@Component
 public class DockerProperties {
     private final DetectConfigWrapper detectConfigWrapper;
     private final AdditionalPropertyConfig additionalPropertyConfig;
 
-    @Autowired
     public DockerProperties(final DetectConfigWrapper detectConfigWrapper, final AdditionalPropertyConfig additionalPropertyConfig) {
         this.detectConfigWrapper = detectConfigWrapper;
         this.additionalPropertyConfig = additionalPropertyConfig;

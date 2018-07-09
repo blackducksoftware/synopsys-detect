@@ -42,8 +42,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
@@ -52,17 +50,15 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.executor.CommandStringExecutor;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.pkgmgr.PkgMgr;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.google.gson.Gson;
 
-@Component
 public class CLangExtractor {
     private static final String COMPILE_CMD_PATTERN_WITH_DEPENDENCY_OUTPUT_FILE = "%s -M -MF %s";
     public static final String DEPS_MK_FILENAME_PATTERN = "deps_%s_%d.mk";
@@ -70,20 +66,20 @@ public class CLangExtractor {
     private final Set<File> processedDependencyFiles = new HashSet<>(200);
     private final Set<PackageDetails> processedDependencies = new HashSet<>(40);
 
-    @Autowired
-    private List<PkgMgr> pkgMgrs;
+    private final List<PkgMgr> pkgMgrs;
+    private final ExternalIdFactory externalIdFactory;
+    private final CommandStringExecutor executor;
+    private final DependencyFileManager dependencyFileManager;
+    private final DetectFileManager detectFileManager;
 
-    @Autowired
-    private ExternalIdFactory externalIdFactory;
-
-    @Autowired
-    private CommandStringExecutor executor;
-
-    @Autowired
-    private DependencyFileManager dependencyFileManager;
-
-    @Autowired
-    private DetectFileManager detectFileManager;
+    public CLangExtractor(final List<PkgMgr> pkgMgrs, final ExternalIdFactory externalIdFactory, final CommandStringExecutor executor, final DependencyFileManager dependencyFileManager,
+            final DetectFileManager detectFileManager) {
+        this.pkgMgrs = pkgMgrs;
+        this.externalIdFactory = externalIdFactory;
+        this.executor = executor;
+        this.dependencyFileManager = dependencyFileManager;
+        this.detectFileManager = detectFileManager;
+    }
 
     public Extraction extract(final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
         try {
@@ -109,7 +105,7 @@ public class CLangExtractor {
                     .reduce(new ArrayList<Dependency>(), dependenciesAccumulator());
             final MutableDependencyGraph dependencyGraph = populateGraph(bdioComponents);
             final ExternalId externalId = externalIdFactory.createPathExternalId(pkgMgr.getDefaultForge(), rootDir.toString());
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CLANG, rootDir.toString(), externalId, dependencyGraph).build();
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CLANG, BomToolType.CLANG, rootDir.toString(), externalId, dependencyGraph).build();
             logFilesForIScan(filesForIScan);
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {
