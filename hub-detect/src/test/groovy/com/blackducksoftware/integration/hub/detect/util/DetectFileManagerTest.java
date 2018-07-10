@@ -3,7 +3,7 @@ package com.blackducksoftware.integration.hub.detect.util;
 import org.junit.Assert;
 import org.junit.Test;
 
-class DetectFileManagerTest {
+public class DetectFileManagerTest {
     @Test
     public void extractFinalPieceFromPath() {
         final DetectFileFinder detectFileManager = new DetectFileFinder();

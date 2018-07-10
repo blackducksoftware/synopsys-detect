@@ -8,9 +8,9 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWr
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 
-class TildeInPathResolverTest {
+public class TildeInPathResolverTest {
     @Test
-    void testResolvingTilde() throws IllegalArgumentException, IllegalAccessException {
+    public void testResolvingTilde() throws IllegalArgumentException, IllegalAccessException {
         final DetectConfigWrapper detectConfigWrapper = new DetectConfigWrapper(null);
         detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, "~/Documents/source/integration/hub-detect");
 
@@ -23,7 +23,7 @@ class TildeInPathResolverTest {
     }
 
     @Test
-    void testResolvingTildeInWindows() throws IllegalArgumentException, IllegalAccessException {
+    public void testResolvingTildeInWindows() throws IllegalArgumentException, IllegalAccessException {
         final DetectConfigWrapper detectConfigWrapper = new DetectConfigWrapper(null);
         detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, "~/Documents/source/integration/hub-detect");
 
@@ -37,7 +37,7 @@ class TildeInPathResolverTest {
     }
 
     @Test
-    void testResolvingTildeInTheMiddleOfAPath() throws IllegalArgumentException, IllegalAccessException {
+    public void testResolvingTildeInTheMiddleOfAPath() throws IllegalArgumentException, IllegalAccessException {
         final DetectConfigWrapper detectConfigWrapper = new DetectConfigWrapper(null);
         detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, "/Documents/~source/~/integration/hub-detect");
 
