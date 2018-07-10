@@ -31,7 +31,7 @@ public class CodeLocationNameFactoryTest {
         final String expected = "hub-common-rest/target/hub-common-rest/2.5.1-SNAPSHOT scan";
 
         final DetectFileFinder detectFileFinder = mock(DetectFileFinder.class);
-        when(detectFileFinder.extractFinalPieceFromPath("")).thenReturn("hub-common-rest");
+        when(detectFileFinder.extractFinalPieceFromPath("/Users/ekerwin/Documents/source/integration/hub-common-rest")).thenReturn("hub-common-rest");
         final ScanCodeLocationNameService scanCodeLocationNameFactory = new ScanCodeLocationNameService(detectFileFinder);
 
         final String sourcePath = "/Users/ekerwin/Documents/source/integration/hub-common-rest";
