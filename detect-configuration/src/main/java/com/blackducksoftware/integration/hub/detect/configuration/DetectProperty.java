@@ -156,7 +156,8 @@ public enum DetectProperty {
     DETECT_BOM_TOOL_SEARCH_DEPTH("detect.bom.tool.search.depth", DetectPropertyType.INTEGER, "0"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
-    @HelpDescription("If true, the bom tool search will continue to look for bom tools to the maximum search depth, even if they applied earlier in the path.")
+    @HelpDescription("If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.")
+    @HelpDetailed("If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc.\r\nIf false, Detect will only find bom tools in subdirectories of a project if they of a different type such as an Npm project in a subdirectory of a Gradle project.")
     DETECT_BOM_TOOL_SEARCH_CONTINUE("detect.bom.tool.search.continue", DetectPropertyType.BOOLEAN, "false"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
@@ -164,7 +165,8 @@ public enum DetectProperty {
     DETECT_BOM_TOOL_SEARCH_EXCLUSION("detect.bom.tool.search.exclusion", DetectPropertyType.STRING_ARRAY),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
-    @HelpDescription("If true, the bom tool search will exclude the default directory names.")
+    @HelpDescription("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.")
+    @HelpDetailed("If true, these directories will be excluded from the bom tool search: " + BomToolSearchExcludedDirectories.DIRECTORY_NAMES)
     DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS("detect.bom.tool.search.exclusion.defaults", DetectPropertyType.BOOLEAN, "true"),
 
     @HelpGroup(primary = GROUP_BOMTOOL, additional = { SEARCH_GROUP_SEARCH })
