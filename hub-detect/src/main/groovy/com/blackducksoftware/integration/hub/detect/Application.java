@@ -179,24 +179,11 @@ public class Application implements ApplicationRunner {
                 phoneHomeManager.startPhoneHome();
             }
 
-            final DetectProject detectProject = detectProjectManager.createDetectProject();
+            runDetect();
 
-            logger.info("Project Name: " + detectProject.getProjectName());
-            logger.info("Project Version Name: " + detectProject.getProjectVersion());
-
-            if (!detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
-                final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject);
-                hubManager.performPostHubActions(detectProject, projectVersionView);
-            } else if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
-                hubSignatureScanner.scanPathsOffline(detectProject);
-            }
-
-            for (final ExitCodeReporter exitCodeReporter : exitCodeReporters) {
-                exitCodeType = ExitCodeType.getWinningExitCodeType(exitCodeType, exitCodeReporter.getExitCodeType());
-            }
-
+            exitCodeType = getExitCodeFromCompletedRun();
         } catch (final Exception e) {
-            populateExitCodeFromExceptionDetails(e);
+            exitCodeType = getExitCodeFromExceptionDetails(e);
         } finally {
             cleanupRun();
         }
@@ -204,7 +191,35 @@ public class Application implements ApplicationRunner {
         endRun(startTime);
     }
 
-    private void populateExitCodeFromExceptionDetails(final Exception e) {
+    private void runDetect() throws DetectUserFriendlyException, IntegrationException, InterruptedException {
+        final DetectProject detectProject = detectProjectManager.createDetectProject();
+
+        logger.info("Project Name: " + detectProject.getProjectName());
+        logger.info("Project Version Name: " + detectProject.getProjectVersion());
+
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
+            if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
+                hubSignatureScanner.scanPathsOffline(detectProject);
+            }
+        } else {
+            final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject);
+            hubManager.performPostHubActions(detectProject, projectVersionView);
+        }
+    }
+
+    private ExitCodeType getExitCodeFromCompletedRun() {
+        ExitCodeType exitCodeType = this.exitCodeType;
+
+        for (final ExitCodeReporter exitCodeReporter : exitCodeReporters) {
+            exitCodeType = ExitCodeType.getWinningExitCodeType(exitCodeType, exitCodeReporter.getExitCodeType());
+        }
+
+        return exitCodeType;
+    }
+
+    private ExitCodeType getExitCodeFromExceptionDetails(final Exception e) {
+        final ExitCodeType exitCodeType;
+
         if (e instanceof DetectUserFriendlyException) {
             if (e.getCause() != null) {
                 logger.debug(e.getCause().getMessage(), e.getCause());
@@ -221,6 +236,8 @@ public class Application implements ApplicationRunner {
             exitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
         logger.error(e.getMessage());
+
+        return exitCodeType;
     }
 
     private void cleanupRun() {
