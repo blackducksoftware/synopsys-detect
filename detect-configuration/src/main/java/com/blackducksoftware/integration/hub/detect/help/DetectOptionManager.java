@@ -131,13 +131,13 @@ public class DetectOptionManager {
         }
     }
 
-    public List<DetectOption> findUnacceptableValues() throws DetectUserFriendlyException {
-        final List<DetectOption> unacceptableDetectOptions = detectOptions.stream()
-                .filter(DetectOption::isStrictAcceptableValues)
-                .filter(option -> !option.isCurrentValueAcceptable().isValid())
+    public List<DetectOption> findInvalidDetectOptions() throws DetectUserFriendlyException {
+        final List<DetectOption> invalidDetectOptions = detectOptions.stream()
+                .filter(DetectOption::hasStrictValidation)
+                .filter(option -> !option.validate().isValid())
                 .collect(Collectors.toList());
 
-        return unacceptableDetectOptions;
+        return invalidDetectOptions;
     }
 
     private DetectOption processField(final DetectProperty detectProperty, final String currentValue) {
@@ -149,15 +149,15 @@ public class DetectOptionManager {
                 defaultValue = detectProperty.getDefaultValue();
             }
 
-            List<String> acceptableValues = new ArrayList<>();
+            List<String> validValues = new ArrayList<>();
             boolean isCommaSeparatedList = false;
-            boolean strictAcceptableValue = false;
-            boolean caseSensitiveAcceptableValues = false;
+            boolean strictValidation = false;
+            boolean caseSensitiveValidation = false;
             final AcceptableValues acceptableValueAnnotation = field.getAnnotation(AcceptableValues.class);
             if (acceptableValueAnnotation != null) {
-                acceptableValues = Arrays.asList(acceptableValueAnnotation.value());
-                strictAcceptableValue = acceptableValueAnnotation.strict();
-                caseSensitiveAcceptableValues = acceptableValueAnnotation.caseSensitive();
+                validValues = Arrays.asList(acceptableValueAnnotation.value());
+                strictValidation = acceptableValueAnnotation.strict();
+                caseSensitiveValidation = acceptableValueAnnotation.caseSensitive();
                 isCommaSeparatedList = acceptableValueAnnotation.isCommaSeparatedList();
             }
 
@@ -176,9 +176,9 @@ public class DetectOptionManager {
 
             DetectOption detectOption;
             if (isCommaSeparatedList) {
-                detectOption = new DetectListOption(detectProperty, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, resolvedValue);
+                detectOption = new DetectListOption(detectProperty, strictValidation, caseSensitiveValidation, validValues, help, resolvedValue);
             } else {
-                detectOption = new DetectSingleOption(detectProperty, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, resolvedValue);
+                detectOption = new DetectSingleOption(detectProperty, strictValidation, caseSensitiveValidation, validValues, help, resolvedValue);
             }
 
             return detectOption;

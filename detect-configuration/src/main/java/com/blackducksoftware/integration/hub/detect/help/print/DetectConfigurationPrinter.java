@@ -71,8 +71,8 @@ public class DetectConfigurationPrinter {
                     text = displayName + " = " + fieldValue + " [" + option.getResolvedValue() + "]";
                 }
 
-                if (option.getAcceptableValues().size() > 0) {
-                    final DetectOption.OptionValidationResult validationResult = option.isAcceptableValue(fieldValue);
+                if (option.getValidValues().size() > 0) {
+                    final DetectOption.OptionValidationResult validationResult = option.validateValue(fieldValue);
                     if (!validationResult.isValid()) {
                         text += String.format(" [%s]", validationResult.getValidationMessage());
                     }

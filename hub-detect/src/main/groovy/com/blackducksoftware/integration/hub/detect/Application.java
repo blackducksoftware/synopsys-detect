@@ -155,9 +155,9 @@ public class Application implements ApplicationRunner {
                 throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
             }
 
-            final List<DetectOption> unacceptableDetectOtions = detectOptionManager.findUnacceptableValues();
+            final List<DetectOption> unacceptableDetectOtions = detectOptionManager.findInvalidDetectOptions();
             if (unacceptableDetectOtions.size() > 0) {
-                throw new DetectUserFriendlyException(unacceptableDetectOtions.get(0).getUnacceptableValueMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
+                throw new DetectUserFriendlyException(unacceptableDetectOtions.get(0).validate().getValidationMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
             }
 
             if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION)) {
