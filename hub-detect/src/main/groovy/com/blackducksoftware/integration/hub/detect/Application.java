@@ -85,8 +85,6 @@ public class Application implements ApplicationRunner {
     private final PhoneHomeManager phoneHomeManager;
     private final ArgumentStateParser argumentStateParser;
 
-    private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
-
     @Autowired
     public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final AdditionalPropertyConfig additionalPropertyConfig, final DetectConfigWrapper detectConfigWrapper,
             final ConfigurationManager configurationManager, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
@@ -118,6 +116,7 @@ public class Application implements ApplicationRunner {
     @Override
     public void run(final ApplicationArguments applicationArguments) throws Exception {
         final long startTime = System.currentTimeMillis();
+        ExitCodeType detectExitCode = ExitCodeType.SUCCESS;
 
         try {
             detectInfo.init();
@@ -181,14 +180,14 @@ public class Application implements ApplicationRunner {
 
             runDetect();
 
-            exitCodeType = getExitCodeFromCompletedRun();
+            detectExitCode = getExitCodeFromCompletedRun(detectExitCode);
         } catch (final Exception e) {
-            exitCodeType = getExitCodeFromExceptionDetails(e);
+            detectExitCode = getExitCodeFromExceptionDetails(e);
         } finally {
-            cleanupRun();
+            cleanupRun(detectExitCode);
         }
 
-        endRun(startTime);
+        endRun(startTime, detectExitCode);
     }
 
     private void runDetect() throws DetectUserFriendlyException, IntegrationException, InterruptedException {
@@ -207,40 +206,40 @@ public class Application implements ApplicationRunner {
         }
     }
 
-    private ExitCodeType getExitCodeFromCompletedRun() {
-        ExitCodeType exitCodeType = this.exitCodeType;
+    private ExitCodeType getExitCodeFromCompletedRun(final ExitCodeType initialExitCodeType) {
+        ExitCodeType completedRunExitCodeType = initialExitCodeType;
 
         for (final ExitCodeReporter exitCodeReporter : exitCodeReporters) {
-            exitCodeType = ExitCodeType.getWinningExitCodeType(exitCodeType, exitCodeReporter.getExitCodeType());
+            completedRunExitCodeType = ExitCodeType.getWinningExitCodeType(completedRunExitCodeType, exitCodeReporter.getExitCodeType());
         }
 
-        return exitCodeType;
+        return completedRunExitCodeType;
     }
 
     private ExitCodeType getExitCodeFromExceptionDetails(final Exception e) {
-        final ExitCodeType exitCodeType;
+        final ExitCodeType exceptionExitCodeType;
 
         if (e instanceof DetectUserFriendlyException) {
             if (e.getCause() != null) {
                 logger.debug(e.getCause().getMessage(), e.getCause());
             }
             final DetectUserFriendlyException friendlyException = (DetectUserFriendlyException) e;
-            exitCodeType = friendlyException.getExitCodeType();
+            exceptionExitCodeType = friendlyException.getExitCodeType();
         } else if (e instanceof IntegrationException) {
             logger.error("An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Hub Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg");
             logger.debug(e.getMessage(), e);
-            exitCodeType = ExitCodeType.FAILURE_GENERAL_ERROR;
+            exceptionExitCodeType = ExitCodeType.FAILURE_GENERAL_ERROR;
         } else {
             logger.error("An unknown/unexpected error occurred");
             logger.debug(e.getMessage(), e);
-            exitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
+            exceptionExitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
         logger.error(e.getMessage());
 
-        return exitCodeType;
+        return exceptionExitCodeType;
     }
 
-    private void cleanupRun() {
+    private void cleanupRun(final ExitCodeType currentExitCodeType) {
         try {
             phoneHomeManager.endPhoneHome();
         } catch (final Exception e) {
@@ -248,22 +247,26 @@ public class Application implements ApplicationRunner {
         }
 
         if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT)) {
-            detectSummaryManager.logDetectResults(new Slf4jIntLogger(logger), exitCodeType);
+            detectSummaryManager.logDetectResults(new Slf4jIntLogger(logger), currentExitCodeType);
         }
 
         detectFileManager.cleanupDirectories();
     }
 
-    private void endRun(final long startTime) {
+    private void endRun(final long startTime, final ExitCodeType finalExitCodeType) {
         final long endTime = System.currentTimeMillis();
+        final int finalExitCode = finalExitCodeType.getExitCode();
+
         logger.info(String.format("Hub-Detect run duration: %s", DurationFormatUtils.formatPeriod(startTime, endTime, "HH'h' mm'm' ss's' SSS'ms'")));
-        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS) && exitCodeType.getExitCode() != 0) {
-            logger.warn(String.format("Forcing success: Exiting with 0. Desired exit code was %s.", exitCodeType.getExitCode()));
+
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS) && finalExitCode != 0) {
+            logger.warn(String.format("Forcing success: Exiting with exit code 0. Ignored exit code was %s.", finalExitCode));
             System.exit(0);
-        } else if (exitCodeType.getExitCode() != 0) {
-            logger.error(String.format("Exiting with code %s - %s", exitCodeType.getExitCode(), exitCodeType.toString()));
+        } else if (finalExitCode != 0) {
+            logger.error(String.format("Exiting with code %s - %s", finalExitCode, finalExitCodeType.toString()));
         }
-        System.exit(exitCodeType.getExitCode());
+
+        System.exit(finalExitCode);
     }
 
 }
