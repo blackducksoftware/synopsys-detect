@@ -26,12 +26,12 @@ package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 import org.apache.commons.lang3.builder.RecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
-public class PackageDetails {
+public class CLangPackageDetails {
     private final String packageName;
     private final String packageVersion;
     private final String packageArch;
 
-    public PackageDetails(final String packageName, final String packageVersion, final String packageArch) {
+    public CLangPackageDetails(final String packageName, final String packageVersion, final String packageArch) {
         this.packageName = packageName;
         this.packageVersion = packageVersion;
         this.packageArch = packageArch;
@@ -75,7 +75,7 @@ public class PackageDetails {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final PackageDetails other = (PackageDetails) obj;
+        final CLangPackageDetails other = (CLangPackageDetails) obj;
         if (packageArch == null) {
             if (other.packageArch != null) {
                 return false;

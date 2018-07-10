@@ -51,17 +51,17 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 public class CLangExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Set<File> processedDependencyFiles = new HashSet<>(200);
-    private final Set<PackageDetails> processedDependencies = new HashSet<>(40);
+    private final Set<CLangPackageDetails> processedDependencies = new HashSet<>(40);
 
     private final ExecutableRunner executableRunner;
     private final CLangDependenciesListFileManager dependenciesListFileManager;
     private final DetectFileManager detectFileManager;
     private final CLangCompileCommandsJsonFileParser compileCommandsJsonFileParser;
-    private final CodeLocationAssembler codeLocationAssembler;
+    private final CLangCodeLocationAssembler codeLocationAssembler;
 
     public CLangExtractor(final ExecutableRunner executableRunner,
             final DetectFileManager detectFileManager, final CLangDependenciesListFileManager dependenciesListFileManager,
-            final CLangCompileCommandsJsonFileParser compileCommandsJsonFileParser, final CodeLocationAssembler codeLocationAssembler) {
+            final CLangCompileCommandsJsonFileParser compileCommandsJsonFileParser, final CLangCodeLocationAssembler codeLocationAssembler) {
         this.executableRunner = executableRunner;
         this.detectFileManager = detectFileManager;
         this.dependenciesListFileManager = dependenciesListFileManager;
@@ -69,14 +69,14 @@ public class CLangExtractor {
         this.codeLocationAssembler = codeLocationAssembler;
     }
 
-    public Extraction extract(final LinuxPackageManager pkgMgr, final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
+    public Extraction extract(final CLangLinuxPackageManager pkgMgr, final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
-            final File rootDir = FileUtils.getRootDir(givenDir, depth);
+            final File rootDir = CLangFileUtils.getRootDir(givenDir, depth);
             final File outputDirectory = detectFileManager.getOutputDirectory("CLang", extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> filesForIScan = ConcurrentHashMap.newKeySet(64);
-            final List<CompileCommand> compileCommands = compileCommandsJsonFileParser.parse(jsonCompilationDatabaseFile);
+            final List<CLangCompileCommand> compileCommands = compileCommandsJsonFileParser.parse(jsonCompilationDatabaseFile);
             final List<Dependency> bdioComponents = compileCommands.parallelStream()
                     .map(compileCommandToDependencyFilePathsConverter(outputDirectory))
                     .reduce(ConcurrentHashMap.newKeySet(), pathsAccumulator()).parallelStream()
@@ -104,8 +104,8 @@ public class CLangExtractor {
         return accumulateNewDependencies;
     }
 
-    private Function<PackageDetails, List<Dependency>> packageToDependenciesConverter(final LinuxPackageManager pkgMgr) {
-        final Function<PackageDetails, List<Dependency>> convertPackageToDependencies = (final PackageDetails pkg) -> {
+    private Function<CLangPackageDetails, List<Dependency>> packageToDependenciesConverter(final CLangLinuxPackageManager pkgMgr) {
+        final Function<CLangPackageDetails, List<Dependency>> convertPackageToDependencies = (final CLangPackageDetails pkg) -> {
             final List<Dependency> dependencies = new ArrayList<>();
             logger.debug(String.format("Package name//arch//version: %s//%s//%s", pkg.getPackageName(), pkg.getPackageArch(),
                     pkg.getPackageVersion()));
@@ -119,19 +119,19 @@ public class CLangExtractor {
         return convertPackageToDependencies;
     }
 
-    private BinaryOperator<Set<PackageDetails>> packageAccumulator() {
-        final BinaryOperator<Set<PackageDetails>> accumulateNewPackages = (allPackages, newPackages) -> {
+    private BinaryOperator<Set<CLangPackageDetails>> packageAccumulator() {
+        final BinaryOperator<Set<CLangPackageDetails>> accumulateNewPackages = (allPackages, newPackages) -> {
             allPackages.addAll(newPackages);
             return allPackages;
         };
         return accumulateNewPackages;
     }
 
-    private Function<File, Set<PackageDetails>> fileToPackagesConverter(final File sourceDir, final Set<File> filesForIScan, final LinuxPackageManager pkgMgr) {
-        final Function<File, Set<PackageDetails>> convertFileToPackages = (final File f) -> {
+    private Function<File, Set<CLangPackageDetails>> fileToPackagesConverter(final File sourceDir, final Set<File> filesForIScan, final CLangLinuxPackageManager pkgMgr) {
+        final Function<File, Set<CLangPackageDetails>> convertFileToPackages = (final File f) -> {
             logger.trace(String.format("Querying package manager for %s", f.getAbsolutePath()));
-            final DependencyDetails dependencyFileWithMetaData = new DependencyDetails(FileUtils.isUnder(sourceDir, f) ? true : false, f);
-            final Set<PackageDetails> packages = new HashSet<>(pkgMgr.getPackages(executableRunner, filesForIScan, dependencyFileWithMetaData));
+            final CLangDependencyFileDetails dependencyFileWithMetaData = new CLangDependencyFileDetails(CLangFileUtils.isUnder(sourceDir, f) ? true : false, f);
+            final Set<CLangPackageDetails> packages = new HashSet<>(pkgMgr.getPackages(executableRunner, filesForIScan, dependencyFileWithMetaData));
             logger.debug(String.format("Found %d packages for %s", packages.size(), f.getAbsolutePath()));
             return packages;
         };
@@ -162,8 +162,8 @@ public class CLangExtractor {
         return accumulateNewPaths;
     }
 
-    private Function<CompileCommand, Set<String>> compileCommandToDependencyFilePathsConverter(final File workingDir) {
-        final Function<CompileCommand, Set<String>> convertCompileCommandToDependencyFilePaths = (final CompileCommand compileCommand) -> {
+    private Function<CLangCompileCommand, Set<String>> compileCommandToDependencyFilePathsConverter(final File workingDir) {
+        final Function<CLangCompileCommand, Set<String>> convertCompileCommandToDependencyFilePaths = (final CLangCompileCommand compileCommand) -> {
             logger.info(String.format("Analyzing source file: %s", compileCommand.file));
             final Set<String> dependencyFilePaths = new HashSet<>();
             final Optional<File> depsMkFile = dependenciesListFileManager.generate(workingDir, compileCommand);
@@ -174,7 +174,7 @@ public class CLangExtractor {
         return convertCompileCommandToDependencyFilePaths;
     }
 
-    private List<Dependency> getDependencies(final LinuxPackageManager pkgMgr, final String name, final String version, final String arch) {
+    private List<Dependency> getDependencies(final CLangLinuxPackageManager pkgMgr, final String name, final String version, final String arch) {
         final List<Dependency> dependencies = new ArrayList<>();
         final String externalId = String.format("%s/%s/%s", name, version, arch);
         logger.trace(String.format("Constructed externalId: %s", externalId));
@@ -195,7 +195,7 @@ public class CLangExtractor {
         return false;
     }
 
-    private boolean dependencyAlreadyProcessed(final PackageDetails dependency) {
+    private boolean dependencyAlreadyProcessed(final CLangPackageDetails dependency) {
         if (processedDependencies.contains(dependency)) {
             return true;
         }

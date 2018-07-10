@@ -34,10 +34,10 @@ import org.apache.commons.io.FileUtils;
 import com.google.gson.Gson;
 
 public class CLangCompileCommandsJsonFileParser {
-    public List<CompileCommand> parse(final File compileCommandsJsonFile) throws IOException {
+    public List<CLangCompileCommand> parse(final File compileCommandsJsonFile) throws IOException {
         final String compileCommandsJson = FileUtils.readFileToString(compileCommandsJsonFile, StandardCharsets.UTF_8);
         final Gson gson = new Gson();
-        final CompileCommand[] compileCommands = gson.fromJson(compileCommandsJson, CompileCommand[].class);
+        final CLangCompileCommand[] compileCommands = gson.fromJson(compileCommandsJson, CLangCompileCommand[].class);
         return Arrays.asList(compileCommands);
     }
 }

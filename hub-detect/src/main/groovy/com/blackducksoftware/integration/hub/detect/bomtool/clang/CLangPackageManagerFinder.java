@@ -32,18 +32,18 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 public class CLangPackageManagerFinder {
     private final ExecutableRunner executableRunner;
-    private final List<LinuxPackageManager> pkgMgrs;
+    private final List<CLangLinuxPackageManager> pkgMgrs;
 
-    private LinuxPackageManager foundPkgMgr = null;
+    private CLangLinuxPackageManager foundPkgMgr = null;
     private boolean hasLookedForPkgMgr = false;
 
     public CLangPackageManagerFinder(final ExecutableRunner executableRunner,
-            final List<LinuxPackageManager> pkgMgrs) {
+            final List<CLangLinuxPackageManager> pkgMgrs) {
         this.executableRunner = executableRunner;
         this.pkgMgrs = pkgMgrs;
     }
 
-    public LinuxPackageManager findPkgMgr(final BomToolEnvironment environment) throws BomToolException {
+    public CLangLinuxPackageManager findPkgMgr(final BomToolEnvironment environment) throws BomToolException {
         try {
             if (!hasLookedForPkgMgr) {
                 foundPkgMgr = findPkgMgr();
@@ -55,9 +55,9 @@ public class CLangPackageManagerFinder {
         }
     }
 
-    private LinuxPackageManager findPkgMgr() throws IntegrationException {
-        LinuxPackageManager pkgMgr = null;
-        for (final LinuxPackageManager pkgMgrCandidate : pkgMgrs) {
+    private CLangLinuxPackageManager findPkgMgr() throws IntegrationException {
+        CLangLinuxPackageManager pkgMgr = null;
+        for (final CLangLinuxPackageManager pkgMgrCandidate : pkgMgrs) {
             if (pkgMgrCandidate.applies(executableRunner)) {
                 pkgMgr = pkgMgrCandidate;
                 break;

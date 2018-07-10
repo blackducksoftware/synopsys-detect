@@ -50,7 +50,7 @@ public class CLangDependenciesListFileManager {
     }
 
     public Optional<File> generate(final File workingDir,
-            final CompileCommand compileCommand) {
+            final CLangCompileCommand compileCommand) {
 
         final String depsMkFilename = deriveDependenciesListFilename(compileCommand);
         final File depsMkFile = new File(workingDir, depsMkFilename);
@@ -93,7 +93,7 @@ public class CLangDependenciesListFileManager {
         return dependencyFilePaths;
     }
 
-    private String deriveDependenciesListFilename(final CompileCommand compileCommand) {
+    private String deriveDependenciesListFilename(final CLangCompileCommand compileCommand) {
         final int randomInt = (int) (Math.random() * 1000);
         final String sourceFilenameBase = getFilenameBase(compileCommand.file);
         final String depsMkFilename = String.format(DEPS_MK_FILENAME_PATTERN, sourceFilenameBase, randomInt);

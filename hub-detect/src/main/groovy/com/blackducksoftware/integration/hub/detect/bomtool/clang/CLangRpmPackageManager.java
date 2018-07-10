@@ -37,7 +37,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public class RpmPackageManager extends LinuxPackageManager {
+public class CLangRpmPackageManager extends CLangLinuxPackageManager {
     private static final String PKG_MGR_NAME = "rpm";
     private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
     private static final String VERSION_OUTPUT_EXPECTED_TEXT = "RPM version";
@@ -57,8 +57,8 @@ public class RpmPackageManager extends LinuxPackageManager {
     }
 
     @Override
-    public List<PackageDetails> getPackages(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final DependencyDetails dependencyFile) {
-        final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
+    public List<CLangPackageDetails> getPackages(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final CLangDependencyFileDetails dependencyFile) {
+        final List<CLangPackageDetails> dependencyDetailsList = new ArrayList<>(3);
         try {
             final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(PKG_MGR_NAME, GET_PKG_INFO_OPTION, dependencyFile.getFile().getAbsolutePath());
             logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput));
@@ -76,7 +76,7 @@ public class RpmPackageManager extends LinuxPackageManager {
         }
     }
 
-    private void addToPackageList(final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
+    private void addToPackageList(final List<CLangPackageDetails> dependencyDetailsList, final String queryPackageOutput) {
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
             if (!valid(packageLine)) {
@@ -90,7 +90,7 @@ public class RpmPackageManager extends LinuxPackageManager {
             final int secondToLastDashIndex = nameVersion.lastIndexOf('-');
             final String versionRelease = packageLine.substring(secondToLastDashIndex + 1, lastDotIndex);
             final String artifact = packageLine.substring(0, secondToLastDashIndex);
-            final PackageDetails dependencyDetails = new PackageDetails(artifact, versionRelease, arch);
+            final CLangPackageDetails dependencyDetails = new CLangPackageDetails(artifact, versionRelease, arch);
             dependencyDetailsList.add(dependencyDetails);
         }
     }

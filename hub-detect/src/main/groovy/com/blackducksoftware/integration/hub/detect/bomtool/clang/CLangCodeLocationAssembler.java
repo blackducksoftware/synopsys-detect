@@ -36,10 +36,10 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
-public class CodeLocationAssembler {
+public class CLangCodeLocationAssembler {
     private final ExternalIdFactory externalIdFactory;
 
-    public CodeLocationAssembler(final ExternalIdFactory externalIdFactory) {
+    public CLangCodeLocationAssembler(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 

@@ -23,22 +23,17 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import java.io.File;
+import org.apache.commons.lang3.builder.RecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
-public class DependencyDetails {
-    private final boolean inBuildDir;
-    private final File file;
+// Loaded from json via Gson
+public class CLangCompileCommand {
+    public String directory;
+    public String command;
+    public String file;
 
-    public DependencyDetails(final boolean inBuildDir, final File file) {
-        this.inBuildDir = inBuildDir;
-        this.file = file;
-    }
-
-    public boolean isInBuildDir() {
-        return inBuildDir;
-    }
-
-    public File getFile() {
-        return file;
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE);
     }
 }

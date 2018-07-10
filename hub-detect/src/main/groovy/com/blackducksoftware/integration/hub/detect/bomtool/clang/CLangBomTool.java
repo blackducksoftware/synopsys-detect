@@ -45,7 +45,7 @@ public class CLangBomTool extends BomTool {
     private final DetectFileFinder fileFinder;
     private final CLangPackageManagerFinder pkgMgrFinder;
 
-    private LinuxPackageManager pkgMgr;
+    private CLangLinuxPackageManager pkgMgr;
 
     public CLangBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final CLangPackageManagerFinder pkgMgrFinder, final CLangExtractor cLangExtractor) {
         super(environment, "Clang", BomToolGroupType.CLANG, BomToolType.CLANG);

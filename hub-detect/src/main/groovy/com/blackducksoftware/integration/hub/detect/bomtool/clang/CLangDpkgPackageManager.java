@@ -38,7 +38,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public class DpkgPackageManager extends LinuxPackageManager {
+public class CLangDpkgPackageManager extends CLangLinuxPackageManager {
     private static final String PKG_MGR_NAME = "dpkg";
     private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
     private static final String VERSION_OUTPUT_EXPECTED_TEXT = "package management program version";
@@ -79,8 +79,8 @@ public class DpkgPackageManager extends LinuxPackageManager {
     }
 
     @Override
-    public List<PackageDetails> getPackages(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final DependencyDetails dependencyFile) {
-        final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
+    public List<CLangPackageDetails> getPackages(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final CLangDependencyFileDetails dependencyFile) {
+        final List<CLangPackageDetails> dependencyDetailsList = new ArrayList<>(3);
         try {
             final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(PKG_MGR_NAME, WHO_OWNS_OPTION, dependencyFile.getFile().getAbsolutePath());
             logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput.getStandardOutput()));
@@ -97,7 +97,7 @@ public class DpkgPackageManager extends LinuxPackageManager {
         return dependencyDetailsList;
     }
 
-    private void addToPackageList(final ExecutableRunner executableRunner, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
+    private void addToPackageList(final ExecutableRunner executableRunner, final List<CLangPackageDetails> dependencyDetailsList, final String queryPackageOutput) {
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
             if (!valid(packageLine)) {
@@ -110,7 +110,7 @@ public class DpkgPackageManager extends LinuxPackageManager {
             final String packageArch = packageNameArchParts[1];
             logger.debug(String.format("package name: %s; arch: %s", packageName, packageArch));
             final Optional<String> packageVersion = getPackageVersion(executableRunner, packageName);
-            final PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion.orElse(null), packageArch);
+            final CLangPackageDetails dependencyDetails = new CLangPackageDetails(packageName, packageVersion.orElse(null), packageArch);
             dependencyDetailsList.add(dependencyDetails);
         }
     }

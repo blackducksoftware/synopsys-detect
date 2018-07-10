@@ -29,8 +29,8 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FileUtils {
-    private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
+public class CLangFileUtils {
+    private static final Logger logger = LoggerFactory.getLogger(CLangFileUtils.class);
 
     public static File getRootDir(final File givenDir, int depth) {
         logger.debug(String.format("givenDir: %s; depth: %d", givenDir, depth));

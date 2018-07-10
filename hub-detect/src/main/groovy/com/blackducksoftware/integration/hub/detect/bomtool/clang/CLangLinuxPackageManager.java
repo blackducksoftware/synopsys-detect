@@ -34,7 +34,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public abstract class LinuxPackageManager {
+public abstract class CLangLinuxPackageManager {
 
     public boolean applies(final ExecutableRunner executor) {
         try {
@@ -58,7 +58,7 @@ public abstract class LinuxPackageManager {
 
     public abstract List<Forge> getForges();
 
-    public abstract List<PackageDetails> getPackages(ExecutableRunner executableRunner, Set<File> filesForIScan, DependencyDetails dependencyFile);
+    public abstract List<CLangPackageDetails> getPackages(ExecutableRunner executableRunner, Set<File> filesForIScan, CLangDependencyFileDetails dependencyFile);
 
     public abstract List<String> getCheckPresenceCommandArgs();
 
