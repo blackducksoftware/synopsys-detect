@@ -111,7 +111,7 @@ public class Rebar3TreeParser {
         return result;
     }
 
-    private Dependency createDependencyFromLine(final String line) {
+    Dependency createDependencyFromLine(final String line) {
 
         final String nameVersionLine = reduceLineToNameVersion(line);
         final String name = nameVersionLine.substring(0, nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER));
@@ -121,7 +121,7 @@ public class Rebar3TreeParser {
         return new Dependency(name, version, externalId);
     }
 
-    private String reduceLineToNameVersion(String line) {
+    String reduceLineToNameVersion(String line) {
 
         final List<String> ignoredSpecialCharacters = Arrays.asList(LAST_DEPENDENCY_CHARACTER, NTH_DEPENDENCY_CHARACTER, INNER_LEVEL_CHARACTER);
         for (final String specialCharacter : ignoredSpecialCharacters) {
@@ -137,7 +137,7 @@ public class Rebar3TreeParser {
         return line.trim();
     }
 
-    private int getDependencyLevelFromLine(String line) {
+    int getDependencyLevelFromLine(String line) {
         int level = 0;
         while (line.startsWith(INNER_LEVEL_PREFIX) || line.startsWith(OUTER_LEVEL_PREFIX)) {
             line = line.substring(3);
@@ -147,7 +147,7 @@ public class Rebar3TreeParser {
         return level;
     }
 
-    private boolean isProject(final String line) {
+    boolean isProject(final String line) {
         String forgeString = "";
         if (line.endsWith(")")) {
             forgeString = line.substring(line.lastIndexOf("("));

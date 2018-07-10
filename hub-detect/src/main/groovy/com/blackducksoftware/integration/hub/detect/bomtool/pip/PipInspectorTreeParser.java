@@ -148,7 +148,7 @@ public class PipInspectorTreeParser {
         return node;
     }
 
-    private Dependency lineToDependency(final String line) {
+    Dependency lineToDependency(final String line) {
         if (!line.contains(SEPARATOR)) {
             return null;
         }
@@ -162,7 +162,7 @@ public class PipInspectorTreeParser {
         return node;
     }
 
-    private int getCurrentIndentation(String line) {
+    int getCurrentIndentation(String line) {
         int currentIndentation = 0;
         while (line.startsWith(INDENTATION)) {
             currentIndentation++;
