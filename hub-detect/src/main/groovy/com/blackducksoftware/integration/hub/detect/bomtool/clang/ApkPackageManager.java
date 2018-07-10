@@ -41,10 +41,10 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class ApkPackageManager extends LinuxPackageManager {
     private static final String PKG_MGR_NAME = "apk";
     private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
-    private static final String APK_INFO_SUBCOMMAND = "info";
-    private static final String APK_WHO_OWNS_OPTION = "--who-owns";
-    private static final String EXPECTED_TEXT = "apk-tools ";
-    private static final List<String> QUERY_ARCH_COMMAND_ARGS = Arrays.asList(APK_INFO_SUBCOMMAND, "--print-arch");
+    private static final String VERSION_OUTPUT_EXPECTED_TEXT = "apk-tools ";
+    private static final String INFO_SUBCOMMAND = "info";
+    private static final String WHO_OWNS_OPTION = "--who-owns";
+    private static final String GET_ARCHITECTURE_OPTION = "--print-arch";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -71,10 +71,10 @@ public class ApkPackageManager extends LinuxPackageManager {
         final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
         try {
             if (architecture == null) {
-                architecture = executableRunner.executeQuietly(PKG_MGR_NAME, QUERY_ARCH_COMMAND_ARGS).getStandardOutput().trim();
+                architecture = executableRunner.executeQuietly(PKG_MGR_NAME, INFO_SUBCOMMAND, GET_ARCHITECTURE_OPTION).getStandardOutput().trim();
                 logger.debug(String.format("architecture: %s", architecture));
             }
-            final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(PKG_MGR_NAME, APK_INFO_SUBCOMMAND, APK_WHO_OWNS_OPTION, dependencyFile.getFile().getAbsolutePath());
+            final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(PKG_MGR_NAME, INFO_SUBCOMMAND, WHO_OWNS_OPTION, dependencyFile.getFile().getAbsolutePath());
             logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput));
             addToPackageList(dependencyDetailsList, queryPackageOutput.getStandardOutput());
             return dependencyDetailsList;
@@ -139,7 +139,7 @@ public class ApkPackageManager extends LinuxPackageManager {
 
     @Override
     public String getCheckPresenceCommandOutputExpectedText() {
-        return EXPECTED_TEXT;
+        return VERSION_OUTPUT_EXPECTED_TEXT;
     }
 
     @Override

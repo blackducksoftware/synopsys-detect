@@ -39,15 +39,13 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 public class DpkgPackageManager extends LinuxPackageManager {
-
     private static final String PKG_MGR_NAME = "dpkg";
     private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
-    private static final String DPKG_WHO_OWNS_OPTION = "-S";
-    private static final String DPKG_GET_PKG_INFO_OPTION = "-s";
-    private static final String EXPECTED_TEXT = "package management program version";
+    private static final String VERSION_OUTPUT_EXPECTED_TEXT = "package management program version";
+    private static final String WHO_OWNS_OPTION = "-S";
+    private static final String GET_PKG_INFO_OPTION = "-s";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final List<Forge> forges = Arrays.asList(Forge.UBUNTU, Forge.DEBIAN);
 
     @Override
@@ -72,7 +70,7 @@ public class DpkgPackageManager extends LinuxPackageManager {
 
     @Override
     public String getCheckPresenceCommandOutputExpectedText() {
-        return EXPECTED_TEXT;
+        return VERSION_OUTPUT_EXPECTED_TEXT;
     }
 
     @Override
@@ -84,7 +82,7 @@ public class DpkgPackageManager extends LinuxPackageManager {
     public List<PackageDetails> getPackages(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final DependencyDetails dependencyFile) {
         final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
         try {
-            final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(PKG_MGR_NAME, DPKG_WHO_OWNS_OPTION, dependencyFile.getFile().getAbsolutePath());
+            final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(PKG_MGR_NAME, WHO_OWNS_OPTION, dependencyFile.getFile().getAbsolutePath());
             logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput.getStandardOutput()));
             addToPackageList(executableRunner, dependencyDetailsList, queryPackageOutput.getStandardOutput());
         } catch (final ExecutableRunnerException e) {
@@ -126,7 +124,7 @@ public class DpkgPackageManager extends LinuxPackageManager {
 
     private Optional<String> getPackageVersion(final ExecutableRunner executableRunner, final String packageName) {
         try {
-            final ExecutableOutput packageStatusOutput = executableRunner.executeQuietly(PKG_MGR_NAME, DPKG_GET_PKG_INFO_OPTION, packageName);
+            final ExecutableOutput packageStatusOutput = executableRunner.executeQuietly(PKG_MGR_NAME, GET_PKG_INFO_OPTION, packageName);
             logger.debug(String.format("packageStatusOutput: %s", packageStatusOutput));
             final Optional<String> packageVersion = getPackageVersionFromStatusOutput(packageName, packageStatusOutput.getStandardOutput());
             return packageVersion;
