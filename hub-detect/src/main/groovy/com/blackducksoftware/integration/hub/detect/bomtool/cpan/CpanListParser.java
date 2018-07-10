@@ -69,7 +69,7 @@ public class CpanListParser {
         return graph;
     }
 
-    private Map<String, String> createNameVersionMap(final List<String> listText) {
+    Map<String, String> createNameVersionMap(final List<String> listText) {
         final Map<String, String> nameVersionMap = new HashMap<>();
 
         for (final String line : listText) {
@@ -94,7 +94,7 @@ public class CpanListParser {
         return nameVersionMap;
     }
 
-    private List<String> getDirectModuleNames(final List<String> directDependenciesText) {
+    List<String> getDirectModuleNames(final List<String> directDependenciesText) {
         final List<String> modules = new ArrayList<>();
         for (final String line : directDependenciesText) {
             if (StringUtils.isBlank(line)) {
