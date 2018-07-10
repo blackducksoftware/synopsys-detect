@@ -1,5 +1,8 @@
 package com.blackducksoftware.integration.hub.detect.util;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,7 +17,9 @@ public class TildeInPathResolverTest {
         final DetectConfigWrapper detectConfigWrapper = new DetectConfigWrapper(null);
         detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, "~/Documents/source/integration/hub-detect");
 
-        final DetectInfo detectInfo = new DetectInfo(OperatingSystemType.LINUX, "1.0.0");
+        final DetectInfo detectInfo = mock(DetectInfo.class);
+        when(detectInfo.getCurrentOs()).thenReturn(OperatingSystemType.LINUX);
+
         final TildeInPathResolver resolver = new TildeInPathResolver(detectInfo);
 
         resolver.resolveTildeInAllPathFields("/Users/ekerwin", detectConfigWrapper);
@@ -27,8 +32,9 @@ public class TildeInPathResolverTest {
         final DetectConfigWrapper detectConfigWrapper = new DetectConfigWrapper(null);
         detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, "~/Documents/source/integration/hub-detect");
 
-        final DetectInfo detectInfo = new DetectInfo(OperatingSystemType.WINDOWS, "1.0.0");
-        System.out.println(detectInfo.getCurrentOs());
+        final DetectInfo detectInfo = mock(DetectInfo.class);
+        when(detectInfo.getCurrentOs()).thenReturn(OperatingSystemType.WINDOWS);
+
         final TildeInPathResolver resolver = new TildeInPathResolver(detectInfo);
 
         resolver.resolveTildeInAllPathFields("/Users/ekerwin", detectConfigWrapper);
@@ -41,7 +47,9 @@ public class TildeInPathResolverTest {
         final DetectConfigWrapper detectConfigWrapper = new DetectConfigWrapper(null);
         detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, "/Documents/~source/~/integration/hub-detect");
 
-        final DetectInfo detectInfo = new DetectInfo(OperatingSystemType.LINUX, "1.0.0");
+        final DetectInfo detectInfo = mock(DetectInfo.class);
+        when(detectInfo.getCurrentOs()).thenReturn(OperatingSystemType.LINUX);
+
         final TildeInPathResolver resolver = new TildeInPathResolver(detectInfo);
 
         resolver.resolveTildeInAllPathFields("/Users/ekerwin", detectConfigWrapper);
