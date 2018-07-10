@@ -120,7 +120,7 @@ public class YarnListParser extends BaseYarnParser {
         }
     }
 
-    private Optional<String> parseNameFromFuzzy(final String fuzzyName) {
+    Optional<String> parseNameFromFuzzy(final String fuzzyName) {
         if (StringUtils.isBlank(fuzzyName)) {
             return Optional.empty();
         }
