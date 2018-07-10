@@ -105,7 +105,7 @@ public class PipenvGraphParser {
         }
     }
 
-    private int getLevel(final String line) {
+    int getLevel(final String line) {
         String consumableLine = line;
         int level = 0;
 
@@ -117,7 +117,7 @@ public class PipenvGraphParser {
         return level;
     }
 
-    private Optional<Dependency> getDependencyFromLine(final Map<String, String[]> pipFreezeMap, final String line) {
+    Optional<Dependency> getDependencyFromLine(final Map<String, String[]> pipFreezeMap, final String line) {
         Dependency dependency = null;
         String name = null;
         String version = null;

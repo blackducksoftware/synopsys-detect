@@ -51,8 +51,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.util.XmlUtil;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 
-import groovy.transform.TypeChecked;
-
 public class PearDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(PearDependencyFinder.class);
 
@@ -78,7 +76,6 @@ public class PearDependencyFinder {
         return result;
     }
 
-    @TypeChecked
     public DependencyGraph parsePearDependencyList(final ExecutableOutput pearListing, final ExecutableOutput pearDependencies) {
         DependencyGraph graph = new MutableMapDependencyGraph();
 
@@ -94,8 +91,7 @@ public class PearDependencyFinder {
         return graph;
     }
 
-    @TypeChecked
-    private List<String> findDependencyNames(final List<String> content) {
+    List<String> findDependencyNames(final List<String> content) {
         final List<String> nameList = new ArrayList<>();
 
         if (content.size() > 5) {
@@ -139,8 +135,7 @@ public class PearDependencyFinder {
         return array[array.length - 1];
     }
 
-    @TypeChecked
-    private DependencyGraph createPearDependencyGraphFromList(final List<String> dependencyList, final List<String> dependencyNames) {
+    DependencyGraph createPearDependencyGraphFromList(final List<String> dependencyList, final List<String> dependencyNames) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         if (dependencyList.size() > 3) {
