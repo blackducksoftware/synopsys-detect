@@ -41,7 +41,7 @@ import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangDependenciesListFileManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangDependenciesListFileParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangPackageManagerFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DpkgPackageManager;
@@ -407,8 +407,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public CLangDependenciesListFileManager cLangDependenciesListFileManager() {
-        return new CLangDependenciesListFileManager();
+    public CLangDependenciesListFileParser cLangDependenciesListFileManager() {
+        return new CLangDependenciesListFileParser();
     }
 
     @Bean

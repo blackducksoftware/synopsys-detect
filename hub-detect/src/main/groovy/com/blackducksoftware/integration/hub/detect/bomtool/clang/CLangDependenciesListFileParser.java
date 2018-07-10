@@ -34,7 +34,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CLangDependenciesListFileManager {
+public class CLangDependenciesListFileParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public List<String> parse(final File depsMkFile) {
@@ -64,11 +64,5 @@ public class CLangDependenciesListFileManager {
             return new ArrayList<>(0);
         }
         return dependencyFilePaths;
-    }
-
-    public void remove(final File depsMkFile) {
-        if (depsMkFile != null) {
-            depsMkFile.delete();
-        }
     }
 }

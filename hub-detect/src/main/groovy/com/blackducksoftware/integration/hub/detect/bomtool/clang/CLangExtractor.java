@@ -25,10 +25,8 @@ package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +36,6 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -58,7 +55,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.google.gson.Gson;
 
 public class CLangExtractor {
     public static final String DEPS_MK_FILENAME_PATTERN = "deps_%s_%d.mk";
@@ -68,15 +64,17 @@ public class CLangExtractor {
 
     private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;
-    private final CLangDependenciesListFileManager dependencyFileManager;
+    private final CLangDependenciesListFileParser dependencyFileManager;
     private final DetectFileManager detectFileManager;
+    private final CLangCompileCommandsJsonFileParser compileCommandsJsonFileParser;
 
     public CLangExtractor(final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner,
-            final DetectFileManager detectFileManager, final CLangDependenciesListFileManager dependencyFileManager) {
+            final DetectFileManager detectFileManager, final CLangDependenciesListFileParser dependencyFileManager) {
         this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
         this.detectFileManager = detectFileManager;
         this.dependencyFileManager = dependencyFileManager;
+        this.compileCommandsJsonFileParser = new CLangCompileCommandsJsonFileParser(); // TODO inject this
     }
 
     public Extraction extract(final LinuxPackageManager pkgMgr, final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
@@ -86,7 +84,7 @@ public class CLangExtractor {
             final File outputDirectory = detectFileManager.getOutputDirectory("CLang", extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> filesForIScan = ConcurrentHashMap.newKeySet(64);
-            final List<CompileCommand> compileCommands = parseCompileCommandsFile(jsonCompilationDatabaseFile);
+            final List<CompileCommand> compileCommands = compileCommandsJsonFileParser.parse(jsonCompilationDatabaseFile);
             final List<Dependency> bdioComponents = compileCommands.parallelStream()
                     .map(compileCommandToDependencyFilePathsConverter(outputDirectory))
                     .reduce(ConcurrentHashMap.newKeySet(), pathsAccumulator()).parallelStream()
@@ -188,7 +186,7 @@ public class CLangExtractor {
             final Set<String> dependencyFilePaths = new HashSet<>();
             final Optional<File> depsMkFile = generateDependencyFileByCompiling(workingDir, compileCommand);
             dependencyFilePaths.addAll(dependencyFileManager.parse(depsMkFile.orElse(null)));
-            dependencyFileManager.remove(depsMkFile.orElse(null));
+            depsMkFile.ifPresent(f -> f.delete());
             return dependencyFilePaths;
         };
         return convertCompileCommandToDependencyFilePaths;
@@ -213,13 +211,6 @@ public class CLangExtractor {
             dependencies.add(dep);
         }
         return dependencies;
-    }
-
-    private List<CompileCommand> parseCompileCommandsFile(final File compileCommandsJsonFile) throws IOException {
-        final String compileCommandsJson = FileUtils.readFileToString(compileCommandsJsonFile, StandardCharsets.UTF_8);
-        final Gson gson = new Gson();
-        final CompileCommand[] compileCommands = gson.fromJson(compileCommandsJson, CompileCommand[].class);
-        return Arrays.asList(compileCommands);
     }
 
     private Optional<File> generateDependencyFileByCompiling(final File workingDir,
