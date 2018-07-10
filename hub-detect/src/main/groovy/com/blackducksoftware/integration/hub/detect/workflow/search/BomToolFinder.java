@@ -72,7 +72,7 @@ public class BomToolFinder {
         }
 
         for (final File directory : directoriesToSearch) {
-            if (options.getExcludedDirectories().contains(directory.getName())) {
+            if (depth > 0 && options.getExcludedDirectories().contains(directory.getName())) { // NEVER skip at depth 0.
                 logger.info("Skipping excluded directory: " + directory.getPath());
                 continue;
             }
