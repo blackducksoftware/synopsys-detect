@@ -42,9 +42,10 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransform
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangCompileCommandsJsonFileParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangDependenciesListFileParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangDependenciesListFileManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangPackageManagerFinder;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CodeLocationAssembler;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DpkgPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.LinuxPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.RpmPackageManager;
@@ -408,8 +409,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public CLangDependenciesListFileParser cLangDependenciesListFileParser() {
-        return new CLangDependenciesListFileParser();
+    public CLangDependenciesListFileManager cLangDependenciesListFileParser() {
+        return new CLangDependenciesListFileManager(executableRunner());
     }
 
     @Bean
@@ -418,8 +419,13 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public CodeLocationAssembler codeLocationAssembler() {
+        return new CodeLocationAssembler(externalIdFactory());
+    }
+
+    @Bean
     public CLangExtractor cLangExtractor() {
-        return new CLangExtractor(externalIdFactory(), executableRunner(), detectFileManager(), cLangDependenciesListFileParser(), cLangCompileCommandsJsonFileParser());
+        return new CLangExtractor(executableRunner(), detectFileManager(), cLangDependenciesListFileParser(), cLangCompileCommandsJsonFileParser(), codeLocationAssembler());
     }
 
     @Bean
