@@ -64,17 +64,18 @@ public class CLangExtractor {
 
     private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;
-    private final CLangDependenciesListFileParser dependencyFileManager;
+    private final CLangDependenciesListFileParser dependencyFileParser;
     private final DetectFileManager detectFileManager;
     private final CLangCompileCommandsJsonFileParser compileCommandsJsonFileParser;
 
     public CLangExtractor(final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner,
-            final DetectFileManager detectFileManager, final CLangDependenciesListFileParser dependencyFileManager) {
+            final DetectFileManager detectFileManager, final CLangDependenciesListFileParser dependencyFileParser,
+            final CLangCompileCommandsJsonFileParser compileCommandsJsonFileParser) {
         this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
         this.detectFileManager = detectFileManager;
-        this.dependencyFileManager = dependencyFileManager;
-        this.compileCommandsJsonFileParser = new CLangCompileCommandsJsonFileParser(); // TODO inject this
+        this.dependencyFileParser = dependencyFileParser;
+        this.compileCommandsJsonFileParser = compileCommandsJsonFileParser;
     }
 
     public Extraction extract(final LinuxPackageManager pkgMgr, final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
@@ -185,7 +186,7 @@ public class CLangExtractor {
             logger.info(String.format("Analyzing source file: %s", compileCommand.file));
             final Set<String> dependencyFilePaths = new HashSet<>();
             final Optional<File> depsMkFile = generateDependencyFileByCompiling(workingDir, compileCommand);
-            dependencyFilePaths.addAll(dependencyFileManager.parse(depsMkFile.orElse(null)));
+            dependencyFilePaths.addAll(dependencyFileParser.parse(depsMkFile.orElse(null)));
             depsMkFile.ifPresent(f -> f.delete());
             return dependencyFilePaths;
         };
