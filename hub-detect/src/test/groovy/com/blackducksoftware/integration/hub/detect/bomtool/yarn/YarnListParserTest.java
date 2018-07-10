@@ -1,20 +1,29 @@
-package com.blackducksoftware.integration.hub.detect.bomtool.yarn
+package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
 
-import static org.junit.Assert.*
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import org.junit.Test
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
-import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import org.junit.Test;
+
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil;
+import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
 
 public class YarnListParserTest {
     private final TestUtil testUtil = new TestUtil();
 
     @Test
     public void parseYarnListTest() {
-        List<String> designedYarnLock = new ArrayList<>();
+        final List<String> designedYarnLock = new ArrayList<>();
         designedYarnLock.add("async@~0.9.0:");
         designedYarnLock.add("  version \"0.9.2\"");
         designedYarnLock.add("  resolved \"http://nexus/nexus3/repository/npm-all/async/-/async-0.9.2.tgz#aea74d5e61c1f899613bf64bda66d4c78f2fd17d\"");
@@ -25,15 +34,15 @@ public class YarnListParserTest {
         designedYarnLock.add("  version \"0.0.8\"");
         designedYarnLock.add("  resolved \"http://nexus/nexus3/repository/npm-all/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d\"");
 
-        YarnListParser yarnListParser = new YarnListParser();
-        String yarnListText = testUtil.getResourceAsUTF8String("/yarn/yarn.list.txt");
-        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, Arrays.asList(yarnListText.split(System.lineSeparator())));
+        final YarnListParser yarnListParser = new YarnListParser();
+        final String yarnListText = testUtil.getResourceAsUTF8String("/yarn/yarn.list.txt");
+        final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, Arrays.asList(yarnListText.split(System.lineSeparator())));
         DependencyGraphResourceTestUtil.assertGraph("/yarn/list_expected_graph.json", dependencyGraph);
     }
 
     @Test
     public void parseYarnListWithResolvableVersions() {
-        List<String> designedYarnLock = new ArrayList<>();
+        final List<String> designedYarnLock = new ArrayList<>();
         designedYarnLock.add("ajv@5.5.2:");
         designedYarnLock.add("  version \"5.5.2\"");
         designedYarnLock.add("  resolved \"http://nexus/nexus3/repository/npm-all/ajv/-/ajv-4.11.8.tgz#82ffb02b29e662ae53bdc20af15947706739c536\"");
@@ -61,46 +70,46 @@ public class YarnListParserTest {
         designedYarnLock.add("  version \"4.2.1\"");
         designedYarnLock.add("  resolved \"http://nexus/nexus3/repository/npm-all/hoek/-/hoek-4.2.1.tgz#9634502aa12c445dd5a7c5734b572bb8738aacbb\"");
 
-        YarnListParser yarnListParser = new YarnListParser();
-        String yarnListText = testUtil.getResourceAsUTF8String("/yarn/yarn.list.res.txt");
-        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, Arrays.asList(yarnListText.split(System.lineSeparator())));
+        final YarnListParser yarnListParser = new YarnListParser();
+        final String yarnListText = testUtil.getResourceAsUTF8String("/yarn/yarn.list.res.txt");
+        final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, Arrays.asList(yarnListText.split(System.lineSeparator())));
         DependencyGraphResourceTestUtil.assertGraph("/yarn/list_expected_graph_2.json", dependencyGraph);
     }
 
     @Test
     public void testDependencyInYarnListAndNotInLock() {
-        List<String> designedYarnLock = new ArrayList<>();
+        final List<String> designedYarnLock = new ArrayList<>();
         designedYarnLock.add("ajv@5.5.2:");
         designedYarnLock.add("  version \"5.5.2\"");
         designedYarnLock.add("");
 
-        List<String> testLines = new ArrayList<>();
+        final List<String> testLines = new ArrayList<>();
         testLines.add("yarn list v1.5.1");
         testLines.add("├─ abab@1.0.4");
 
-        YarnListParser yarnListParser = new YarnListParser();
-        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
+        final YarnListParser yarnListParser = new YarnListParser();
+        final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
 
-        List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
+        final List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
 
         assertEquals(0, tempList.size());
     }
 
     @Test
     public void testThatYarnListLineAtBeginningIsIgnored() {
-        List<String> designedYarnLock = new ArrayList<>();
+        final List<String> designedYarnLock = new ArrayList<>();
         designedYarnLock.add("abab@5.5.2:");
         designedYarnLock.add("  version \"5.5.2\"");
         designedYarnLock.add("");
 
-        List<String> testLines = new ArrayList<>();
+        final List<String> testLines = new ArrayList<>();
         testLines.add("yarn list v1.5.1");
         testLines.add("├─ abab@1.0.4");
 
-        YarnListParser yarnListParser = new YarnListParser();
-        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
+        final YarnListParser yarnListParser = new YarnListParser();
+        final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
 
-        List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
+        final List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
 
         assertNotNull(tempList.get(0));
         assertEquals(1, tempList.size());
@@ -108,7 +117,7 @@ public class YarnListParserTest {
 
     @Test
     public void testThatYarnListWithOnlyTopLevelDependenciesIsParsedCorrectly() {
-        List<String> designedYarnLock = new ArrayList<>();
+        final List<String> designedYarnLock = new ArrayList<>();
         designedYarnLock.add("esprima@5.5.2:");
         designedYarnLock.add("  version \"5.5.2\"");
         designedYarnLock.add("");
@@ -116,14 +125,14 @@ public class YarnListParserTest {
         designedYarnLock.add("  version \"5.5.2\"");
         designedYarnLock.add("");
 
-        List<String> testLines = new ArrayList<>();
+        final List<String> testLines = new ArrayList<>();
         testLines.add("├─ esprima@3.1.3");
         testLines.add("└─ extsprintf@1.3.0");
 
-        YarnListParser yarnListParser = new YarnListParser();
-        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
+        final YarnListParser yarnListParser = new YarnListParser();
+        final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
 
-        List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
+        final List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
 
         assertListContainsDependency("esprima", tempList);
         assertListContainsDependency("extsprintf", tempList);
@@ -131,7 +140,7 @@ public class YarnListParserTest {
 
     @Test
     public void testThatYarnListWithGrandchildIsParsedCorrectly() {
-        List<String> designedYarnLock = new ArrayList<>();
+        final List<String> designedYarnLock = new ArrayList<>();
         designedYarnLock.add("yargs-parser@5.5.2:");
         designedYarnLock.add("  version \"5.5.2\"");
         designedYarnLock.add("");
@@ -139,17 +148,19 @@ public class YarnListParserTest {
         designedYarnLock.add("  version \"5.5.2\"");
         designedYarnLock.add("");
 
-        List<String> testLines = new ArrayList<>();
+        final List<String> testLines = new ArrayList<>();
         testLines.add("├─ yargs-parser@4.2.1");
         testLines.add("│  └─ camelcase@^3.0.0");
 
-        YarnListParser yarnListParser = new YarnListParser();
-        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
+        final YarnListParser yarnListParser = new YarnListParser();
+        final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
 
-        List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
+        final List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
         List<ExternalId> kidsList = new ArrayList<>();
         for (int i = 0; i < tempList.size(); i++) {
-            if ("yargs-parser".equals(tempList.get(i).name)) kidsList = new ArrayList<>(dependencyGraph.getChildrenExternalIdsForParent(tempList.get(i)));
+            if ("yargs-parser".equals(tempList.get(i).name)) {
+                kidsList = new ArrayList<>(dependencyGraph.getChildrenExternalIdsForParent(tempList.get(i)));
+            }
         }
 
         assertListContainsDependency("yargs-parser", tempList);
@@ -158,7 +169,7 @@ public class YarnListParserTest {
 
     @Test
     public void testThatYarnListWithGreatGrandchildrenIsParsedCorrectly() {
-        List<String> designedYarnLock = new ArrayList<>();
+        final List<String> designedYarnLock = new ArrayList<>();
         designedYarnLock.add("yargs-parser@5.5.2:");
         designedYarnLock.add("  version \"5.5.2\"");
         designedYarnLock.add("");
@@ -169,18 +180,20 @@ public class YarnListParserTest {
         designedYarnLock.add("  version \"5.5.2\"");
         designedYarnLock.add("");
 
-        List<String> testLines = new ArrayList<>();
+        final List<String> testLines = new ArrayList<>();
         testLines.add("├─ yargs-parser@4.2.1");
         testLines.add("│  └─ camelcase@^3.0.0");
         testLines.add("│  │  └─ ms@0.7.2");
 
-        YarnListParser yarnListParser = new YarnListParser();
-        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
+        final YarnListParser yarnListParser = new YarnListParser();
+        final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
 
-        List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
+        final List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
         List<ExternalId> kidsList = new ArrayList<>();
         for (int i = 0; i < tempList.size(); i++) {
-            if ("yargs-parser".equals(tempList.get(i).name)) kidsList = new ArrayList<>(dependencyGraph.getChildrenExternalIdsForParent(tempList.get(i)));
+            if ("yargs-parser".equals(tempList.get(i).name)) {
+                kidsList = new ArrayList<>(dependencyGraph.getChildrenExternalIdsForParent(tempList.get(i)));
+            }
         }
         System.out.println(tempList);
         System.out.println(kidsList);
@@ -192,7 +205,7 @@ public class YarnListParserTest {
 
     @Test
     public void testParseNameFromFuzzy() {
-        YarnListParser yarnListParser = new YarnListParser();
+        final YarnListParser yarnListParser = new YarnListParser();
 
         Optional<String> name = yarnListParser.parseNameFromFuzzy(null);
         assertFalse(name.isPresent());
@@ -221,7 +234,7 @@ public class YarnListParserTest {
         assertEquals("tr46", name.get());
     }
 
-    private void assertListContainsDependency(String dep, List<ExternalId> list) {
+    private void assertListContainsDependency(final String dep, final List<ExternalId> list) {
         System.out.println(dep);
         for (int i = 0; i < list.size(); i++) {
             if (dep.equals(list.get(i).name)) {
