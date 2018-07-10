@@ -35,14 +35,14 @@ public class CLangExtractorTest {
     public void test() throws IOException {
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final DetectFileManager detectFileManager = Mockito.mock(DetectFileManager.class);
-        final CLangDependenciesListFileManager dependenciesListFileManager = Mockito.mock(CLangDependenciesListFileManager.class);
-        final CLangCompileCommandsJsonFileParser compileCommandsJsonFileParser = Mockito.mock(CLangCompileCommandsJsonFileParser.class);
-        final CLangCodeLocationAssembler codeLocationAssembler = Mockito.mock(CLangCodeLocationAssembler.class);
+        final DependenciesListFileManager dependenciesListFileManager = Mockito.mock(DependenciesListFileManager.class);
+        final CompileCommandsJsonFileParser compileCommandsJsonFileParser = Mockito.mock(CompileCommandsJsonFileParser.class);
+        final CodeLocationAssembler codeLocationAssembler = Mockito.mock(CodeLocationAssembler.class);
         final CLangExtractor extractor = new CLangExtractor(executableRunner,
                 detectFileManager, dependenciesListFileManager,
                 compileCommandsJsonFileParser, codeLocationAssembler);
 
-        final CLangLinuxPackageManager pkgMgr = Mockito.mock(CLangLinuxPackageManager.class);
+        final LinuxPackageManager pkgMgr = Mockito.mock(LinuxPackageManager.class);
         final File givenDir = new File("src/test/resources/clang/source/build");
         final int depth = 1;
         final ExtractionId extractionId = new ExtractionId(EXTRACTION_ID);
@@ -51,8 +51,8 @@ public class CLangExtractorTest {
         Mockito.when(detectFileManager.getOutputDirectory(Mockito.anyString(), Mockito.any(ExtractionId.class))).thenReturn(new File("src/test/resources/clang/output"));
         // final List<CLangCompileCommand> compileCommands = compileCommandsJsonFileParser.parse(jsonCompilationDatabaseFile);
 
-        final List<CLangCompileCommand> compileCommands = new ArrayList<>();
-        final CLangCompileCommand compileCommand = new CLangCompileCommand();
+        final List<CompileCommand> compileCommands = new ArrayList<>();
+        final CompileCommand compileCommand = new CompileCommand();
         compileCommand.directory = "src/test/resources/clang/source";
         compileCommand.file = "src/test/resources/clang/source/hello_world.cpp";
         compileCommand.command = "gcc hello_world.cpp";

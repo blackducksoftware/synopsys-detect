@@ -38,7 +38,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public class CLangApkPackageManager extends CLangLinuxPackageManager {
+public class ApkPackageManager extends LinuxPackageManager {
     private static final String PKG_MGR_NAME = "apk";
     private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
     private static final String VERSION_OUTPUT_EXPECTED_TEXT = "apk-tools ";
@@ -67,8 +67,8 @@ public class CLangApkPackageManager extends CLangLinuxPackageManager {
     }
 
     @Override
-    public List<CLangPackageDetails> getPackages(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final CLangDependencyFileDetails dependencyFile) {
-        final List<CLangPackageDetails> dependencyDetailsList = new ArrayList<>(3);
+    public List<PackageDetails> getPackages(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final DependencyFileDetails dependencyFile) {
+        final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
         try {
             if (architecture == null) {
                 architecture = executableRunner.executeQuietly(PKG_MGR_NAME, INFO_SUBCOMMAND, GET_ARCHITECTURE_OPTION).getStandardOutput().trim();
@@ -90,7 +90,7 @@ public class CLangApkPackageManager extends CLangLinuxPackageManager {
         }
     }
 
-    private void addToPackageList(final List<CLangPackageDetails> dependencyDetailsList, final String queryPackageOutput) {
+    private void addToPackageList(final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
             if (!valid(packageLine)) {
@@ -113,7 +113,7 @@ public class CLangApkPackageManager extends CLangLinuxPackageManager {
             if (!component.startsWith(".")) {
                 final String externalId = String.format("%s/%s/%s", component, version, architecture);
                 logger.debug(String.format("Constructed externalId: %s", externalId));
-                final CLangPackageDetails dependencyDetails = new CLangPackageDetails(component, version, architecture);
+                final PackageDetails dependencyDetails = new PackageDetails(component, version, architecture);
                 dependencyDetailsList.add(dependencyDetails);
             }
         }

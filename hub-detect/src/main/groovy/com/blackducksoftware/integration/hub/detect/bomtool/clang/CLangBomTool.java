@@ -43,11 +43,11 @@ public class CLangBomTool extends BomTool {
     private final CLangExtractor cLangExtractor;
     private File jsonCompilationDatabaseFile = null;
     private final DetectFileFinder fileFinder;
-    private final CLangPackageManagerFinder pkgMgrFinder;
+    private final PackageManagerFinder pkgMgrFinder;
 
-    private CLangLinuxPackageManager pkgMgr;
+    private LinuxPackageManager pkgMgr;
 
-    public CLangBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final CLangPackageManagerFinder pkgMgrFinder, final CLangExtractor cLangExtractor) {
+    public CLangBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final PackageManagerFinder pkgMgrFinder, final CLangExtractor cLangExtractor) {
         super(environment, "Clang", BomToolGroupType.CLANG, BomToolType.CLANG);
         this.fileFinder = fileFinder;
         this.pkgMgrFinder = pkgMgrFinder;

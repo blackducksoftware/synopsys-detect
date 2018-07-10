@@ -40,17 +40,17 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public class CLangDependenciesListFileManager {
+public class DependenciesListFileManager {
     public static final String DEPS_MK_FILENAME_PATTERN = "deps_%s_%d.mk";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
 
-    public CLangDependenciesListFileManager(final ExecutableRunner executableRunner) {
+    public DependenciesListFileManager(final ExecutableRunner executableRunner) {
         this.executableRunner = executableRunner;
     }
 
     public Optional<File> generate(final File workingDir,
-            final CLangCompileCommand compileCommand) {
+            final CompileCommand compileCommand) {
 
         final String depsMkFilename = deriveDependenciesListFilename(compileCommand);
         final File depsMkFile = new File(workingDir, depsMkFilename);
@@ -93,7 +93,7 @@ public class CLangDependenciesListFileManager {
         return dependencyFilePaths;
     }
 
-    private String deriveDependenciesListFilename(final CLangCompileCommand compileCommand) {
+    private String deriveDependenciesListFilename(final CompileCommand compileCommand) {
         final int randomInt = (int) (Math.random() * 1000);
         final String sourceFilenameBase = getFilenameBase(compileCommand.file);
         final String depsMkFilename = String.format(DEPS_MK_FILENAME_PATTERN, sourceFilenameBase, randomInt);

@@ -23,17 +23,21 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import org.apache.commons.lang3.builder.RecursiveToStringStyle;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
-// Loaded from json via Gson
-public class CLangCompileCommand {
-    public String directory;
-    public String command;
-    public String file;
+import org.apache.commons.io.FileUtils;
 
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE);
+import com.google.gson.Gson;
+
+public class CompileCommandsJsonFileParser {
+    public List<CompileCommand> parse(final File compileCommandsJsonFile) throws IOException {
+        final String compileCommandsJson = FileUtils.readFileToString(compileCommandsJsonFile, StandardCharsets.UTF_8);
+        final Gson gson = new Gson();
+        final CompileCommand[] compileCommands = gson.fromJson(compileCommandsJson, CompileCommand[].class);
+        return Arrays.asList(compileCommands);
     }
 }

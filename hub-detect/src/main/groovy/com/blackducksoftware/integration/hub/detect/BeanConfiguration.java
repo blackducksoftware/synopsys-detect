@@ -40,15 +40,15 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangApkPackageManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangCompileCommandsJsonFileParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangDependenciesListFileManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CompileCommandsJsonFileParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependenciesListFileManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangPackageManagerFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangCodeLocationAssembler;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangDpkgPackageManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangLinuxPackageManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangRpmPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageManagerFinder;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CodeLocationAssembler;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.DpkgPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.LinuxPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.RpmPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaCliExtractor;
@@ -409,18 +409,18 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public CLangDependenciesListFileManager cLangDependenciesListFileParser() {
-        return new CLangDependenciesListFileManager(executableRunner());
+    public DependenciesListFileManager cLangDependenciesListFileParser() {
+        return new DependenciesListFileManager(executableRunner());
     }
 
     @Bean
-    public CLangCompileCommandsJsonFileParser cLangCompileCommandsJsonFileParser() {
-        return new CLangCompileCommandsJsonFileParser();
+    public CompileCommandsJsonFileParser cLangCompileCommandsJsonFileParser() {
+        return new CompileCommandsJsonFileParser();
     }
 
     @Bean
-    public CLangCodeLocationAssembler codeLocationAssembler() {
-        return new CLangCodeLocationAssembler(externalIdFactory());
+    public CodeLocationAssembler codeLocationAssembler() {
+        return new CodeLocationAssembler(externalIdFactory());
     }
 
     @Bean
@@ -429,12 +429,12 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public CLangPackageManagerFinder cLangPackageManagerFinder() {
-        final List<CLangLinuxPackageManager> pkgMgrs = new ArrayList<>();
-        pkgMgrs.add(new CLangApkPackageManager());
-        pkgMgrs.add(new CLangDpkgPackageManager());
-        pkgMgrs.add(new CLangRpmPackageManager());
-        return new CLangPackageManagerFinder(executableRunner(), pkgMgrs);
+    public PackageManagerFinder cLangPackageManagerFinder() {
+        final List<LinuxPackageManager> pkgMgrs = new ArrayList<>();
+        pkgMgrs.add(new ApkPackageManager());
+        pkgMgrs.add(new DpkgPackageManager());
+        pkgMgrs.add(new RpmPackageManager());
+        return new PackageManagerFinder(executableRunner(), pkgMgrs);
     }
 
     @Bean

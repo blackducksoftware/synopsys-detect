@@ -30,20 +30,20 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
-public class CLangPackageManagerFinder {
+public class PackageManagerFinder {
     private final ExecutableRunner executableRunner;
-    private final List<CLangLinuxPackageManager> pkgMgrs;
+    private final List<LinuxPackageManager> pkgMgrs;
 
-    private CLangLinuxPackageManager foundPkgMgr = null;
+    private LinuxPackageManager foundPkgMgr = null;
     private boolean hasLookedForPkgMgr = false;
 
-    public CLangPackageManagerFinder(final ExecutableRunner executableRunner,
-            final List<CLangLinuxPackageManager> pkgMgrs) {
+    public PackageManagerFinder(final ExecutableRunner executableRunner,
+            final List<LinuxPackageManager> pkgMgrs) {
         this.executableRunner = executableRunner;
         this.pkgMgrs = pkgMgrs;
     }
 
-    public CLangLinuxPackageManager findPkgMgr(final BomToolEnvironment environment) throws BomToolException {
+    public LinuxPackageManager findPkgMgr(final BomToolEnvironment environment) throws BomToolException {
         try {
             if (!hasLookedForPkgMgr) {
                 foundPkgMgr = findPkgMgr();
@@ -55,9 +55,9 @@ public class CLangPackageManagerFinder {
         }
     }
 
-    private CLangLinuxPackageManager findPkgMgr() throws IntegrationException {
-        CLangLinuxPackageManager pkgMgr = null;
-        for (final CLangLinuxPackageManager pkgMgrCandidate : pkgMgrs) {
+    private LinuxPackageManager findPkgMgr() throws IntegrationException {
+        LinuxPackageManager pkgMgr = null;
+        for (final LinuxPackageManager pkgMgrCandidate : pkgMgrs) {
             if (pkgMgrCandidate.applies(executableRunner)) {
                 pkgMgr = pkgMgrCandidate;
                 break;
