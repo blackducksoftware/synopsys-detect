@@ -80,10 +80,12 @@ public class CLangExtractor {
             final List<CompileCommand> compileCommands = compileCommandsJsonFileParser.parse(jsonCompilationDatabaseFile);
             final List<Dependency> bdioComponents = compileCommands.parallelStream()
                     .flatMap(compileCommandToDependencyFilePathsConverter(outputDirectory))
+                    .collect(Collectors.toSet()).parallelStream()
                     .filter((final String path) -> StringUtils.isNotBlank(path))
                     .map((final String path) -> new File(path))
                     .filter(fileIsNewPredicate())
                     .flatMap(fileToPackagesConverter(rootDir, filesForIScan, pkgMgr))
+                    .collect(Collectors.toSet()).parallelStream()
                     .flatMap(packageToDependenciesConverter(pkgMgr))
                     .collect(Collectors.toList());
 
