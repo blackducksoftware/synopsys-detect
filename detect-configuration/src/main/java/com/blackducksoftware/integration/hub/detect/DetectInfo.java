@@ -39,6 +39,15 @@ public class DetectInfo {
     private OperatingSystemType currentOs = null;
     private String detectVersion;
 
+    public DetectInfo() { // must call init at a later date before use.
+
+    }
+
+    public DetectInfo(final OperatingSystemType currentOs, final String detectVersion) {
+        this.currentOs = currentOs;
+        this.detectVersion = detectVersion;
+    }
+
     public void init() {
         try {
             detectVersion = ResourceUtil.getResourceAsString(getClass(), "/version.txt", StandardCharsets.UTF_8.toString());
