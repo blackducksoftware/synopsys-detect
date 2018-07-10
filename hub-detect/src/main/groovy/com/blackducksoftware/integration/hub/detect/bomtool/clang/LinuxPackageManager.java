@@ -35,34 +35,55 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 public abstract class LinuxPackageManager {
+    private final String pkgMgrName;
+    private final List<Forge> forges;
+    private final Logger logger;
+    private final List<String> checkPresenceCommandArgs;
+    private final String checkPresenceCommandOutputExpectedText;
+
+    public LinuxPackageManager(final Logger logger, final String pkgMgrName, final List<Forge> forges, final List<String> checkPresenceCommandArgs, final String checkPresenceCommandOutputExpectedText) {
+        this.logger = logger;
+        this.pkgMgrName = pkgMgrName;
+        this.forges = forges;
+        this.checkPresenceCommandArgs = checkPresenceCommandArgs;
+        this.checkPresenceCommandOutputExpectedText = checkPresenceCommandOutputExpectedText;
+    }
+
+    public abstract List<PackageDetails> getPackages(ExecutableRunner executableRunner, Set<File> filesForIScan, DependencyFileDetails dependencyFile);
 
     public boolean applies(final ExecutableRunner executor) {
         try {
             final ExecutableOutput versionOutput = executor.execute(getPkgMgrName(), getCheckPresenceCommandArgs());
-            getLogger().debug(String.format("packageStatusOutput: %s", versionOutput.getStandardOutput()));
+            logger.debug(String.format("packageStatusOutput: %s", versionOutput.getStandardOutput()));
             if (versionOutput.getStandardOutput().contains(getCheckPresenceCommandOutputExpectedText())) {
-                getLogger().info(String.format("Found package manager %s", getPkgMgrName()));
+                logger.info(String.format("Found package manager %s", getPkgMgrName()));
                 return true;
             }
-            getLogger().debug(String.format("Output of %s %s does not look right; concluding that the dpkg package manager is not present. The output: %s", getPkgMgrName(), getCheckPresenceCommandArgs(), versionOutput));
+            logger.debug(String.format("Output of %s %s does not look right; concluding that the dpkg package manager is not present. The output: %s", getPkgMgrName(), getCheckPresenceCommandArgs(), versionOutput));
         } catch (final ExecutableRunnerException e) {
-            getLogger().debug(String.format("Error executing %s %s; concluding that the dpkg package manager is not present. The error: %s", getPkgMgrName(), getCheckPresenceCommandArgs(), e.getMessage()));
+            logger.debug(String.format("Error executing %s %s; concluding that the dpkg package manager is not present. The error: %s", getPkgMgrName(), getCheckPresenceCommandArgs(), e.getMessage()));
             return false;
         }
         return false;
     }
 
-    public abstract String getPkgMgrName();
+    public String getPkgMgrName() {
+        return pkgMgrName;
+    }
 
-    public abstract Forge getDefaultForge();
+    public Forge getDefaultForge() {
+        return forges.get(0);
+    }
 
-    public abstract List<Forge> getForges();
+    public List<Forge> getForges() {
+        return forges;
+    }
 
-    public abstract List<PackageDetails> getPackages(ExecutableRunner executableRunner, Set<File> filesForIScan, DependencyFileDetails dependencyFile);
+    public List<String> getCheckPresenceCommandArgs() {
+        return checkPresenceCommandArgs;
+    }
 
-    public abstract List<String> getCheckPresenceCommandArgs();
-
-    public abstract String getCheckPresenceCommandOutputExpectedText();
-
-    public abstract Logger getLogger();
+    public String getCheckPresenceCommandOutputExpectedText() {
+        return checkPresenceCommandOutputExpectedText;
+    }
 }

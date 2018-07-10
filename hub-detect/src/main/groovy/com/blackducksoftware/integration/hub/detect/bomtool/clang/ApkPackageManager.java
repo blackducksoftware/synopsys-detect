@@ -45,25 +45,12 @@ public class ApkPackageManager extends LinuxPackageManager {
     private static final String INFO_SUBCOMMAND = "info";
     private static final String WHO_OWNS_OPTION = "--who-owns";
     private static final String GET_ARCHITECTURE_OPTION = "--print-arch";
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private final List<Forge> forges = Arrays.asList(Forge.ALPINE);
+    private final static Logger logger = LoggerFactory.getLogger(ApkPackageManager.class);
     private String architecture = null;
 
-    @Override
-    public String getPkgMgrName() {
-        return PKG_MGR_NAME;
-    }
-
-    @Override
-    public Forge getDefaultForge() {
-        return forges.get(0);
-    }
-
-    @Override
-    public List<Forge> getForges() {
-        return forges;
+    public ApkPackageManager() {
+        super(logger, PKG_MGR_NAME, Arrays.asList(Forge.ALPINE), VERSION_COMMAND_ARGS,
+                VERSION_OUTPUT_EXPECTED_TEXT);
     }
 
     @Override
@@ -130,21 +117,6 @@ public class ApkPackageManager extends LinuxPackageManager {
             }
         }
         return component;
-    }
-
-    @Override
-    public List<String> getCheckPresenceCommandArgs() {
-        return VERSION_COMMAND_ARGS;
-    }
-
-    @Override
-    public String getCheckPresenceCommandOutputExpectedText() {
-        return VERSION_OUTPUT_EXPECTED_TEXT;
-    }
-
-    @Override
-    public Logger getLogger() {
-        return logger;
     }
 
     private boolean valid(final String packageLine) {

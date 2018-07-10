@@ -43,17 +43,11 @@ public class RpmPackageManager extends LinuxPackageManager {
     private static final String VERSION_OUTPUT_EXPECTED_TEXT = "RPM version";
     private static final String GET_PKG_INFO_OPTION = "-qf";
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final List<Forge> forges = Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT);
+    private final static Logger logger = LoggerFactory.getLogger(RpmPackageManager.class);
 
-    @Override
-    public Forge getDefaultForge() {
-        return forges.get(0);
-    }
-
-    @Override
-    public List<Forge> getForges() {
-        return forges;
+    public RpmPackageManager() {
+        super(logger, PKG_MGR_NAME, Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT), VERSION_COMMAND_ARGS,
+                VERSION_OUTPUT_EXPECTED_TEXT);
     }
 
     @Override
@@ -93,26 +87,6 @@ public class RpmPackageManager extends LinuxPackageManager {
             final PackageDetails dependencyDetails = new PackageDetails(artifact, versionRelease, arch);
             dependencyDetailsList.add(dependencyDetails);
         }
-    }
-
-    @Override
-    public String getPkgMgrName() {
-        return PKG_MGR_NAME;
-    }
-
-    @Override
-    public List<String> getCheckPresenceCommandArgs() {
-        return VERSION_COMMAND_ARGS;
-    }
-
-    @Override
-    public String getCheckPresenceCommandOutputExpectedText() {
-        return VERSION_OUTPUT_EXPECTED_TEXT;
-    }
-
-    @Override
-    public Logger getLogger() {
-        return logger;
     }
 
     private boolean valid(final String packageLine) {

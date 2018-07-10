@@ -44,38 +44,11 @@ public class DpkgPackageManager extends LinuxPackageManager {
     private static final String VERSION_OUTPUT_EXPECTED_TEXT = "package management program version";
     private static final String WHO_OWNS_OPTION = "-S";
     private static final String GET_PKG_INFO_OPTION = "-s";
+    private final static Logger logger = LoggerFactory.getLogger(DpkgPackageManager.class);
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final List<Forge> forges = Arrays.asList(Forge.UBUNTU, Forge.DEBIAN);
-
-    @Override
-    public Forge getDefaultForge() {
-        return forges.get(0);
-    }
-
-    @Override
-    public List<Forge> getForges() {
-        return forges;
-    }
-
-    @Override
-    public String getPkgMgrName() {
-        return PKG_MGR_NAME;
-    }
-
-    @Override
-    public List<String> getCheckPresenceCommandArgs() {
-        return VERSION_COMMAND_ARGS;
-    }
-
-    @Override
-    public String getCheckPresenceCommandOutputExpectedText() {
-        return VERSION_OUTPUT_EXPECTED_TEXT;
-    }
-
-    @Override
-    public Logger getLogger() {
-        return logger;
+    public DpkgPackageManager() {
+        super(logger, PKG_MGR_NAME, Arrays.asList(Forge.UBUNTU, Forge.DEBIAN), VERSION_COMMAND_ARGS,
+                VERSION_OUTPUT_EXPECTED_TEXT);
     }
 
     @Override
