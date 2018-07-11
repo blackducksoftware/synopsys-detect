@@ -24,21 +24,20 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
-public class DependencyFile {
-    private final boolean inBuildDir;
-    private final File file;
+import org.apache.commons.io.FileUtils;
 
-    public DependencyFile(final boolean inBuildDir, final File file) {
-        this.inBuildDir = inBuildDir;
-        this.file = file;
-    }
+import com.google.gson.Gson;
 
-    public boolean isInBuildDir() {
-        return inBuildDir;
-    }
-
-    public File getFile() {
-        return file;
+public class CompileCommandsJsonFileParser {
+    public List<CompileCommand> parse(final File compileCommandsJsonFile) throws IOException {
+        final String compileCommandsJson = FileUtils.readFileToString(compileCommandsJsonFile, StandardCharsets.UTF_8);
+        final Gson gson = new Gson();
+        final CompileCommand[] compileCommands = gson.fromJson(compileCommandsJson, CompileCommand[].class);
+        return Arrays.asList(compileCommands);
     }
 }

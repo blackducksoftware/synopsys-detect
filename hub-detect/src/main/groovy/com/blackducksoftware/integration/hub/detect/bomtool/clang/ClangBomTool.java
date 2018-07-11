@@ -33,19 +33,24 @@ import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExecutableNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-public class CLangBomTool extends BomTool {
+public class ClangBomTool extends BomTool {
     private static final String JSON_COMPILATION_DATABASE_FILENAME = "compile_commands.json";
-    private final CLangExtractor cLangExtractor;
+    private final ClangExtractor cLangExtractor;
     private File jsonCompilationDatabaseFile = null;
     private final DetectFileFinder fileFinder;
+    private final PackageManagerFinder pkgMgrFinder;
 
-    public CLangBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final CLangExtractor cLangExtractor) {
+    private LinuxPackageManager pkgMgr;
+
+    public ClangBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final PackageManagerFinder pkgMgrFinder, final ClangExtractor cLangExtractor) {
         super(environment, "Clang", BomToolGroupType.CLANG, BomToolType.CLANG);
         this.fileFinder = fileFinder;
+        this.pkgMgrFinder = pkgMgrFinder;
         this.cLangExtractor = cLangExtractor;
     }
 
@@ -61,12 +66,16 @@ public class CLangBomTool extends BomTool {
 
     @Override
     public BomToolResult extractable() throws BomToolException {
+        pkgMgr = pkgMgrFinder.findPkgMgr(environment);
+        if (pkgMgr == null) {
+            return new ExecutableNotFoundBomToolResult("supported Linux package manager");
+        }
         return new PassedBomToolResult();
     }
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return cLangExtractor.extract(environment.getDirectory(), environment.getDepth(), extractionId, jsonCompilationDatabaseFile);
+        return cLangExtractor.extract(pkgMgr, environment.getDirectory(), environment.getDepth(), extractionId, jsonCompilationDatabaseFile);
     }
 
 }

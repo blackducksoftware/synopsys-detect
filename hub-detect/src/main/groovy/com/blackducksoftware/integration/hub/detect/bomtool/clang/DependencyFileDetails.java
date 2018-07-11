@@ -23,29 +23,22 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.RecursiveToStringStyle;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import java.io.File;
 
-// Loaded from json via Gson
-public class CompileCommand {
-    public String directory;
-    public String command;
-    public String file;
+public class DependencyFileDetails {
+    private final boolean inBuildDir;
+    private final File file;
 
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE);
+    public DependencyFileDetails(final boolean inBuildDir, final File file) {
+        this.inBuildDir = inBuildDir;
+        this.file = file;
     }
 
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+    public boolean isInBuildDir() {
+        return inBuildDir;
     }
 
-    @Override
-    public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public File getFile() {
+        return file;
     }
 }

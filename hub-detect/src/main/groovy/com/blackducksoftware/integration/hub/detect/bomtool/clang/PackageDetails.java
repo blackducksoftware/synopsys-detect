@@ -23,31 +23,31 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import java.util.Optional;
-
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.RecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 public class PackageDetails {
-    private final Optional<String> packageName;
-    private final Optional<String> packageVersion;
-    private final Optional<String> packageArch;
+    private final String packageName;
+    private final String packageVersion;
+    private final String packageArch;
 
-    public PackageDetails(final Optional<String> packageName, final Optional<String> packageVersion, final Optional<String> packageArch) {
+    public PackageDetails(final String packageName, final String packageVersion, final String packageArch) {
         this.packageName = packageName;
         this.packageVersion = packageVersion;
         this.packageArch = packageArch;
     }
 
-    public Optional<String> getPackageName() {
+    public String getPackageName() {
         return packageName;
     }
 
-    public Optional<String> getPackageVersion() {
+    public String getPackageVersion() {
         return packageVersion;
     }
 
-    public Optional<String> getPackageArch() {
+    public String getPackageArch() {
         return packageArch;
     }
 
@@ -58,48 +58,12 @@ public class PackageDetails {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (packageArch == null ? 0 : packageArch.hashCode());
-        result = prime * result + (packageName == null ? 0 : packageName.hashCode());
-        result = prime * result + (packageVersion == null ? 0 : packageVersion.hashCode());
-        return result;
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final PackageDetails other = (PackageDetails) obj;
-        if (packageArch == null) {
-            if (other.packageArch != null) {
-                return false;
-            }
-        } else if (!packageArch.equals(other.packageArch)) {
-            return false;
-        }
-        if (packageName == null) {
-            if (other.packageName != null) {
-                return false;
-            }
-        } else if (!packageName.equals(other.packageName)) {
-            return false;
-        }
-        if (packageVersion == null) {
-            if (other.packageVersion != null) {
-                return false;
-            }
-        } else if (!packageVersion.equals(other.packageVersion)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, obj);
     }
 
 }
