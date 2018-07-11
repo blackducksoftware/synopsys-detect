@@ -58,6 +58,7 @@ public class CLangExtractor {
     private final DetectFileManager detectFileManager;
     private final CompileCommandsJsonFileParser compileCommandsJsonFileParser;
     private final CodeLocationAssembler codeLocationAssembler;
+    private final SimpleBdioFactory bdioFactory;
 
     public CLangExtractor(final ExecutableRunner executableRunner,
             final DetectFileManager detectFileManager, final DependenciesListFileManager dependenciesListFileManager,
@@ -67,6 +68,7 @@ public class CLangExtractor {
         this.dependenciesListFileManager = dependenciesListFileManager;
         this.compileCommandsJsonFileParser = compileCommandsJsonFileParser;
         this.codeLocationAssembler = codeLocationAssembler;
+        this.bdioFactory = new SimpleBdioFactory();
     }
 
     public Extraction extract(final LinuxPackageManager pkgMgr, final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
@@ -152,8 +154,8 @@ public class CLangExtractor {
         final String externalId = String.format("%s/%s/%s", name, version, arch);
         logger.trace(String.format("Constructed externalId: %s", externalId));
         for (final Forge forge : pkgMgr.getForges()) {
-            final ExternalId extId = new SimpleBdioFactory().createArchitectureExternalId(forge, name, version, arch);
-            final Dependency dep = new SimpleBdioFactory().createDependency(name, version, extId);
+            final ExternalId extId = bdioFactory.createArchitectureExternalId(forge, name, version, arch);
+            final Dependency dep = bdioFactory.createDependency(name, version, extId);
             logger.debug(String.format("forge: %s: adding %s version %s as child to dependency node tree; externalId: %s", forge.getName(), dep.name, dep.version, dep.externalId.createBdioId()));
             dependencies.add(dep);
         }
