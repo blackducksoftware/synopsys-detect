@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.help.DetectOption.OptionValidationResult;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
 
 public class DetectOptionManager {
@@ -119,6 +120,26 @@ public class DetectOptionManager {
         }
     }
 
+    public void applyInteractiveOptions(final List<InteractiveOption> interactiveOptions) {
+        for (final InteractiveOption interactiveOption : interactiveOptions) {
+            for (final DetectOption detectOption : detectOptions) {
+                if (detectOption.getDetectProperty().equals(interactiveOption.getDetectProperty())) {
+                    detectOption.setInteractiveValue(interactiveOption.getInteractiveValue());
+                    detectConfigWrapper.setDetectProperty(detectOption.getDetectProperty(), interactiveOption.getInteractiveValue());
+                    break;
+                }
+            }
+        }
+    }
+
+    public List<OptionValidationResult> getAllInvalidOptionResults() throws DetectUserFriendlyException {
+        return detectOptions.stream()
+                .filter(DetectOption::hasStrictValidation)
+                .map(DetectOption::validate)
+                .filter(validationResult -> !validationResult.isValid())
+                .collect(Collectors.toList());
+    }
+
     private DetectOption processField(final DetectProperty detectProperty, final String currentValue) {
         try {
             final Field field = DetectProperty.class.getField(detectProperty.name());
@@ -128,15 +149,15 @@ public class DetectOptionManager {
                 defaultValue = detectProperty.getDefaultValue();
             }
 
-            List<String> acceptableValues = new ArrayList<>();
+            List<String> validValues = new ArrayList<>();
             boolean isCommaSeparatedList = false;
-            boolean strictAcceptableValue = false;
-            boolean caseSensitiveAcceptableValues = false;
+            boolean strictValidation = false;
+            boolean caseSensitiveValidation = false;
             final AcceptableValues acceptableValueAnnotation = field.getAnnotation(AcceptableValues.class);
             if (acceptableValueAnnotation != null) {
-                acceptableValues = Arrays.asList(acceptableValueAnnotation.value());
-                strictAcceptableValue = acceptableValueAnnotation.strict();
-                caseSensitiveAcceptableValues = acceptableValueAnnotation.caseSensitive();
+                validValues = Arrays.asList(acceptableValueAnnotation.value());
+                strictValidation = acceptableValueAnnotation.strict();
+                caseSensitiveValidation = acceptableValueAnnotation.caseSensitive();
                 isCommaSeparatedList = acceptableValueAnnotation.isCommaSeparatedList();
             }
 
@@ -155,9 +176,9 @@ public class DetectOptionManager {
 
             DetectOption detectOption;
             if (isCommaSeparatedList) {
-                detectOption = new DetectListOption(detectProperty, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, resolvedValue);
+                detectOption = new DetectListOption(detectProperty, strictValidation, caseSensitiveValidation, validValues, help, resolvedValue);
             } else {
-                detectOption = new DetectSingleOption(detectProperty, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, resolvedValue);
+                detectOption = new DetectSingleOption(detectProperty, strictValidation, caseSensitiveValidation, validValues, help, resolvedValue);
             }
 
             return detectOption;
@@ -197,31 +218,6 @@ public class DetectOptionManager {
         }
 
         return help;
-    }
-
-    public List<DetectOption> findUnacceptableValues() throws DetectUserFriendlyException {
-        final List<DetectOption> unacceptableDetectOptions = new ArrayList<>();
-        for (final DetectOption option : detectOptions) {
-            if (option.isStrictAcceptableValues()) {
-                final DetectOption.OptionValidationResult validationResult = option.isAcceptableValue(option.getResolvedValue());
-                if (!validationResult.isValid()) {
-                    unacceptableDetectOptions.add(option);
-                }
-            }
-        }
-        return unacceptableDetectOptions;
-    }
-
-    public void applyInteractiveOptions(final List<InteractiveOption> interactiveOptions) {
-        for (final InteractiveOption interactiveOption : interactiveOptions) {
-            for (final DetectOption detectOption : detectOptions) {
-                if (detectOption.getDetectProperty().equals(interactiveOption.getDetectProperty())) {
-                    detectOption.setInteractiveValue(interactiveOption.getInteractiveValue());
-                    detectConfigWrapper.setDetectProperty(detectOption.getDetectProperty(), interactiveOption.getInteractiveValue());
-                    break;
-                }
-            }
-        }
     }
 
 }

@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.configuration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,9 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
+import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
+import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
+import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 
 public class ConfigurationManager {
@@ -49,6 +53,8 @@ public class ConfigurationManager {
 
     private final TildeInPathResolver tildeInPathResolver;
     private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectInfoPrinter detectInfoPrinter;
+    private final DetectConfigurationPrinter detectConfigurationPrinter;
 
     private List<String> bomToolSearchDirectoryExclusions;
 
@@ -65,9 +71,11 @@ public class ConfigurationManager {
     private String nugetInspectorAirGapPath;
     // end properties to be updated
 
-    public ConfigurationManager(final TildeInPathResolver tildeInPathResolver, final DetectConfigWrapper detectConfigWrapper) {
+    public ConfigurationManager(final TildeInPathResolver tildeInPathResolver, final DetectConfigWrapper detectConfigWrapper, final DetectInfoPrinter detectInfoPrinter, final DetectConfigurationPrinter detectConfigurationPrinter) {
         this.tildeInPathResolver = tildeInPathResolver;
         this.detectConfigWrapper = detectConfigWrapper;
+        this.detectInfoPrinter = detectInfoPrinter;
+        this.detectConfigurationPrinter = detectConfigurationPrinter;
     }
 
     public void initialize(final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
@@ -79,6 +87,11 @@ public class ConfigurationManager {
         resolveAirGapPaths();
 
         updateDetectProperties(detectOptions);
+    }
+
+    public void printConfiguration(final PrintStream printstream, final DetectInfo detectInfo, final List<DetectOption> detectOptions) {
+        detectInfoPrinter.printInfo(printstream, detectInfo);
+        detectConfigurationPrinter.print(printstream, detectOptions);
     }
 
     private void resolveTildeInPaths() throws DetectUserFriendlyException {
@@ -182,7 +195,7 @@ public class ConfigurationManager {
             bomToolSearchDirectoryExclusions.add(exclusion);
         }
         if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS)) {
-            List<String> defaultExcludedNames = Arrays.stream(BomToolSearchExcludedDirectories.values()).map(BomToolSearchExcludedDirectories::getDirectoryName).collect(Collectors.toList());
+            final List<String> defaultExcludedNames = Arrays.stream(BomToolSearchExcludedDirectories.values()).map(BomToolSearchExcludedDirectories::getDirectoryName).collect(Collectors.toList());
             bomToolSearchDirectoryExclusions.addAll(defaultExcludedNames);
         }
     }

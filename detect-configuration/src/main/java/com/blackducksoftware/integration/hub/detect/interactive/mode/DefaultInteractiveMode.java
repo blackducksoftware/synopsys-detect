@@ -38,7 +38,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
     }
 
     @Override
-    public void interact() {
+    public void configure() {
         printWelcome();
 
         final Boolean connectToHub = askYesOrNo("Would you like to connect to a Hub Instance?");

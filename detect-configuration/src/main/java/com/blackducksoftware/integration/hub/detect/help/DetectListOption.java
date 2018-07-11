@@ -23,46 +23,38 @@
  */
 package com.blackducksoftware.integration.hub.detect.help;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
+import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
 public class DetectListOption extends DetectOption {
-
-    public DetectListOption(final DetectProperty detectProperty, final boolean strictAcceptableValues, final boolean caseSensitiveAcceptableValues, final List<String> acceptableValues,
-            final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
-        super(detectProperty, strictAcceptableValues, caseSensitiveAcceptableValues, acceptableValues, detectOptionHelp, resolvedValue);
+    public DetectListOption(final DetectProperty detectProperty, final boolean strictValidation, final boolean caseSensitiveValidation, final List<String> validValues, final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
+        super(detectProperty, strictValidation, caseSensitiveValidation, validValues, detectOptionHelp, resolvedValue);
     }
 
-    public OptionValidationResult isAcceptableValue(final String value) {
+    @Override
+    public OptionValidationResult validateValue(final String value) {
         OptionValidationResult result;
-        if (null != value) {
-            String[] splitValues = value.split(",");
-            List<String> badValues = new ArrayList<>();
-            for (String splitValue : splitValues) {
-                Boolean isValueAcceptable = getAcceptableValues().stream()
-                        .anyMatch(it -> {
-                            if (getCaseSensistiveAcceptableValues()) {
-                                return it.equals(splitValue);
-                            } else {
-                                return it.equalsIgnoreCase(splitValue);
-                            }
-                        });
-                if (!isValueAcceptable) {
-                    badValues.add(splitValue);
-                }
-            }
-            if (badValues.size() > 0) {
-                result = new OptionValidationResult(false, String.format("unknown value(s): %s", StringUtils.join(badValues, ",")));
-            } else {
-                result = new OptionValidationResult(true, "");
-            }
+
+        if (null == value) {
+            result = OptionValidationResult.valid("");
         } else {
-            result = new OptionValidationResult(true, "");
+            final List<String> splitValues = Arrays.asList(value.split(","));
+            final List<String> badValues = splitValues.stream().filter(splitValue -> !validValuesContains(splitValue)).collect(Collectors.toList());
+
+            if (badValues.size() > 0) {
+                final String validationMesssage = String.format("%s: Unknown values %s, acceptable values are %s",
+                        getDetectProperty().getPropertyName(),
+                        badValues.stream().collect(Collectors.joining(",")),
+                        getValidValues().stream().collect(Collectors.joining(",")));
+                result = OptionValidationResult.invalid(validationMesssage);
+            } else {
+                result = OptionValidationResult.valid("");
+            }
         }
+
         return result;
     }
 

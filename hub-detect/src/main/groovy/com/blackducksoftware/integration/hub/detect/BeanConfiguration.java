@@ -102,6 +102,8 @@ import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
+import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
+import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
@@ -206,6 +208,16 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public DetectInfoPrinter detectInfoPrinter() {
+        return new DetectInfoPrinter();
+    }
+
+    @Bean
+    public DetectConfigurationPrinter detectConfigurationPrinter() {
+        return new DetectConfigurationPrinter();
+    }
+
+    @Bean
     public TildeInPathResolver tildeInPathResolver() {
         return new TildeInPathResolver(detectInfo());
     }
@@ -217,7 +229,7 @@ public class BeanConfiguration {
 
     @Bean
     public ConfigurationManager configurationManager() {
-        return new ConfigurationManager(tildeInPathResolver(), detectConfigWrapper());
+        return new ConfigurationManager(tildeInPathResolver(), detectConfigWrapper(), detectInfoPrinter(), detectConfigurationPrinter());
     }
 
     @Bean
