@@ -66,9 +66,6 @@ import com.blackducksoftware.integration.log.Slf4jIntLogger;
 public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
 
-    private static final boolean EXIT = false;
-    private static final boolean CONTINUE = true;
-
     private final DetectOptionManager detectOptionManager;
     private final DetectInfo detectInfo;
     private final AdditionalPropertyConfig additionalPropertyConfig;
@@ -85,6 +82,11 @@ public class Application implements ApplicationRunner {
     private final List<ExitCodeReporter> exitCodeReporters;
     private final PhoneHomeManager phoneHomeManager;
     private final ArgumentStateParser argumentStateParser;
+
+    private enum WorkflowStep {
+        EXIT_WITH_SUCCESS,
+        RUN_DETECT;
+    }
 
     @Autowired
     public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final AdditionalPropertyConfig additionalPropertyConfig, final DetectConfigWrapper detectConfigWrapper,
@@ -118,8 +120,8 @@ public class Application implements ApplicationRunner {
         final long startTime = System.currentTimeMillis();
         ExitCodeType detectExitCode = ExitCodeType.SUCCESS;
         try {
-            final boolean continueAfterInitialization = initializeDetect(applicationArguments.getSourceArgs());
-            if (continueAfterInitialization) {
+            final WorkflowStep nextWorkflowStep = initializeDetect(applicationArguments.getSourceArgs());
+            if (nextWorkflowStep == WorkflowStep.RUN_DETECT) {
                 runDetect();
                 detectExitCode = getExitCodeFromCompletedRun(detectExitCode);
             }
@@ -132,7 +134,7 @@ public class Application implements ApplicationRunner {
         endRun(startTime, detectExitCode);
     }
 
-    private boolean initializeDetect(final String[] sourceArgs) throws IntegrationException, DetectUserFriendlyException {
+    private WorkflowStep initializeDetect(final String[] sourceArgs) throws IntegrationException, DetectUserFriendlyException {
         detectInfo.init();
         additionalPropertyConfig.init();
         detectConfigWrapper.init();
@@ -144,12 +146,12 @@ public class Application implements ApplicationRunner {
 
         if (argumentState.isHelp() || argumentState.isDeprecatedHelp() || argumentState.isVerboseHelp()) {
             helpPrinter.printAppropriateHelpMessage(System.out, options, argumentState);
-            return EXIT;
+            return WorkflowStep.EXIT_WITH_SUCCESS;
         }
 
         if (argumentState.isHelpDocument()) {
             helpHtmlWriter.writeHelpMessage(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()));
-            return EXIT;
+            return WorkflowStep.EXIT_WITH_SUCCESS;
         }
 
         if (argumentState.isInteractive()) {
@@ -176,12 +178,12 @@ public class Application implements ApplicationRunner {
 
         if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION)) {
             hubServiceWrapper.assertHubConnection(new SilentLogger());
-            return EXIT;
+            return WorkflowStep.EXIT_WITH_SUCCESS;
         }
 
         if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_HUB) && !hubServiceWrapper.testHubConnection(new SilentLogger())) {
             logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_DISABLE_WITHOUT_HUB.getPropertyName()));
-            return EXIT;
+            return WorkflowStep.EXIT_WITH_SUCCESS;
         }
 
         if (detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
@@ -192,7 +194,7 @@ public class Application implements ApplicationRunner {
             phoneHomeManager.startPhoneHome();
         }
 
-        return CONTINUE;
+        return WorkflowStep.RUN_DETECT;
     }
 
     private void runDetect() throws IntegrationException, DetectUserFriendlyException, InterruptedException {
