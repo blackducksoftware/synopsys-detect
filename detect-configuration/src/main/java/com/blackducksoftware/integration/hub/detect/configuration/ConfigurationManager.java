@@ -65,7 +65,7 @@ public class ConfigurationManager {
     private String scanOutputDirectoryPath;
     private String policyCheckFailOnSeverities;
     private int hubSignatureScannerParallelProcessors;
-    private boolean hubOfflineMode;
+    private boolean hubOfflineMode = true;
     private String dockerInspectorAirGapPath;
     private String gradleInspectorAirGapPath;
     private String nugetInspectorAirGapPath;

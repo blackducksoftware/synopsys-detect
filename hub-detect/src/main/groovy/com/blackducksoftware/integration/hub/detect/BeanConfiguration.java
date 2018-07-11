@@ -121,6 +121,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerScanCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.ScanCodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionSummaryReporter;
@@ -164,6 +165,11 @@ public class BeanConfiguration {
         final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
         final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
         return new SimpleBdioFactory(bdioPropertyHelper, bdioNodeFactory, dependencyGraphTransformer, externalIdFactory(), gson());
+    }
+
+    @Bean
+    public BomToolProfiler bomToolProfiler() {
+        return new BomToolProfiler();
     }
 
     @Bean
@@ -333,7 +339,7 @@ public class BeanConfiguration {
 
     @Bean
     public BomToolSearchProvider bomToolSearchProvider() throws ParserConfigurationException {
-        return new BomToolSearchProvider(bomToolFactory());
+        return new BomToolSearchProvider(bomToolFactory(), bomToolProfiler());
     }
 
     @Bean
@@ -358,7 +364,7 @@ public class BeanConfiguration {
 
     @Bean
     public ExtractionManager extractionManager() {
-        return new ExtractionManager(preparationSummaryReporter(), extractionReporter());
+        return new ExtractionManager(preparationSummaryReporter(), extractionReporter(), bomToolProfiler());
     }
 
     @Bean

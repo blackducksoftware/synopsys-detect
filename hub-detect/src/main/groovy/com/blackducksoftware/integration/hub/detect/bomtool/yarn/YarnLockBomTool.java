@@ -43,7 +43,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Standard
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
 
 public class YarnLockBomTool extends BomTool {
-    public static final String YARN_LOCK_FILENAME = "yarn.lock";
+    private static final String YARN_LOCK_FILENAME = "yarn.lock";
 
     private final DetectFileFinder fileFinder;
     private final StandardExecutableFinder standardExecutableFinder;
@@ -79,6 +79,7 @@ public class YarnLockBomTool extends BomTool {
             yarnExe = yarn.toString();
         }
 
+        // TODO: (Jordan) I think we removed the non-yarn exe mode so shouldn't we force a Yarn Exe now?
         if (productionDependenciesOnly && StringUtils.isBlank(yarnExe)) {
             return new ExecutableNotFoundBomToolResult("Could not find the Yarn executable, can not get the production only dependencies.");
         }

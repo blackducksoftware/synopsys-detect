@@ -38,16 +38,19 @@ import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManage
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExceptionBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.BomToolProfiler;
 
 public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
     private final PreparationSummaryReporter preparationSummaryReporter;
     private final ExtractionReporter extractionReporter;
+    private final BomToolProfiler bomToolProfiler;
 
-    public ExtractionManager(final PreparationSummaryReporter preparationSummaryReporter, final ExtractionReporter extractionReporter) {
+    public ExtractionManager(final PreparationSummaryReporter preparationSummaryReporter, final ExtractionReporter extractionReporter, final BomToolProfiler bomToolProfiler) {
         this.preparationSummaryReporter = preparationSummaryReporter;
         this.extractionReporter = extractionReporter;
+        this.bomToolProfiler = bomToolProfiler;
     }
 
     private int extractions = 0;
@@ -69,11 +72,13 @@ public class ExtractionManager {
 
     private void prepare(final BomToolEvaluation result) {
         if (result.isApplicable()) {
+            bomToolProfiler.extractableStarted(result.getBomTool());
             try {
                 result.setExtractable(result.getBomTool().extractable());
             } catch (final Exception e) {
                 result.setExtractable(new ExceptionBomToolResult(e));
             }
+            bomToolProfiler.extractableEnded(result.getBomTool());
         }
     }
 
@@ -82,7 +87,9 @@ public class ExtractionManager {
             extractions++;
             final ExtractionId extractionId = new ExtractionId(Integer.toString(extractions));
             extractionReporter.startedExtraction(result.getBomTool(), extractionId);
+            bomToolProfiler.extractionStarted(result.getBomTool());
             result.setExtraction(result.getBomTool().extract(extractionId));
+            bomToolProfiler.extractionEnded(result.getBomTool());
             extractionReporter.endedExtraction(result.getExtraction());
         }
 

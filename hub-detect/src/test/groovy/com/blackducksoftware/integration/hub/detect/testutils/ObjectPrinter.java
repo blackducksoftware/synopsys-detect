@@ -12,6 +12,10 @@ import org.slf4j.LoggerFactory;
 public class ObjectPrinter {
     private final static Logger logger = LoggerFactory.getLogger(ObjectPrinter.class);
 
+    public static void printObject(final Object guy) {
+        printObject(null, guy);
+    }
+
     public static void printObject(final String prefix, final Object guy) {
         for (final Field field : guy.getClass().getFields()) {
             final String name = field.getName();
