@@ -47,6 +47,7 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
+import com.blackducksoftware.integration.hub.detect.help.DetectOption.OptionValidationResult;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
@@ -171,9 +172,9 @@ public class Application implements ApplicationRunner {
             throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
         }
 
-        final List<DetectOption> unacceptableDetectOtions = detectOptionManager.findInvalidDetectOptions();
-        if (unacceptableDetectOtions.size() > 0) {
-            throw new DetectUserFriendlyException(unacceptableDetectOtions.get(0).validate().getValidationMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
+        final List<OptionValidationResult> invalidDetectOptionResults = detectOptionManager.getAllInvalidOptionResults();
+        if (!invalidDetectOptionResults.isEmpty()) {
+            throw new DetectUserFriendlyException(invalidDetectOptionResults.get(0).getValidationMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
         if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION)) {
@@ -200,8 +201,8 @@ public class Application implements ApplicationRunner {
     private void runDetect() throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         final DetectProject detectProject = detectProjectManager.createDetectProject();
 
-        logger.info("Project Name: " + detectProject.getProjectName());
-        logger.info("Project Version Name: " + detectProject.getProjectVersion());
+        logger.info(String.format("Project Name: %s", detectProject.getProjectName()));
+        logger.info(String.format("Project Version Name: %s", detectProject.getProjectVersion()));
 
         if (detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
             hubManager.performOfflineHubActions(detectProject);

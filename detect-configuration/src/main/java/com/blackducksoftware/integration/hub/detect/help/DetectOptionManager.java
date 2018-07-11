@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.help.DetectOption.OptionValidationResult;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
 
 public class DetectOptionManager {
@@ -131,13 +132,12 @@ public class DetectOptionManager {
         }
     }
 
-    public List<DetectOption> findInvalidDetectOptions() throws DetectUserFriendlyException {
-        final List<DetectOption> invalidDetectOptions = detectOptions.stream()
+    public List<OptionValidationResult> getAllInvalidOptionResults() throws DetectUserFriendlyException {
+        return detectOptions.stream()
                 .filter(DetectOption::hasStrictValidation)
-                .filter(option -> !option.validate().isValid())
+                .map(DetectOption::validate)
+                .filter(validationResult -> !validationResult.isValid())
                 .collect(Collectors.toList());
-
-        return invalidDetectOptions;
     }
 
     private DetectOption processField(final DetectProperty detectProperty, final String currentValue) {
