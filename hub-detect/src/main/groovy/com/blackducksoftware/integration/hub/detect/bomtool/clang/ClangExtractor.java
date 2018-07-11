@@ -48,7 +48,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-public class CLangExtractor {
+public class ClangExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Set<File> processedDependencyFiles = new HashSet<>(200);
     private final Set<PackageDetails> processedDependencies = new HashSet<>(40);
@@ -60,7 +60,7 @@ public class CLangExtractor {
     private final CodeLocationAssembler codeLocationAssembler;
     private final SimpleBdioFactory bdioFactory;
 
-    public CLangExtractor(final ExecutableRunner executableRunner,
+    public ClangExtractor(final ExecutableRunner executableRunner,
             final DetectFileManager detectFileManager, final DependenciesListFileManager dependenciesListFileManager,
             final CompileCommandsJsonFileParser compileCommandsJsonFileParser, final CodeLocationAssembler codeLocationAssembler) {
         this.executableRunner = executableRunner;
@@ -75,7 +75,7 @@ public class CLangExtractor {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final File rootDir = FileUtils.getRootDir(givenDir, depth);
-            final File outputDirectory = detectFileManager.getOutputDirectory("CLang", extractionId);
+            final File outputDirectory = detectFileManager.getOutputDirectory("Clang", extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> filesForIScan = ConcurrentHashMap.newKeySet(64);
             final List<CompileCommand> compileCommands = compileCommandsJsonFileParser.parse(jsonCompilationDatabaseFile);

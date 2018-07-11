@@ -64,7 +64,7 @@ public class CLangExtractorTest {
         final CompileCommandsJsonFileParser compileCommandsJsonFileParser = Mockito.mock(CompileCommandsJsonFileParser.class);
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
-        final CLangExtractor extractor = new CLangExtractor(executableRunner,
+        final ClangExtractor extractor = new ClangExtractor(executableRunner,
                 detectFileManager, dependenciesListFileManager,
                 compileCommandsJsonFileParser, codeLocationAssembler);
 

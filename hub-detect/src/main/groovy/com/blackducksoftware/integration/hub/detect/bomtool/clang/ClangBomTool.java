@@ -38,16 +38,16 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoun
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-public class CLangBomTool extends BomTool {
+public class ClangBomTool extends BomTool {
     private static final String JSON_COMPILATION_DATABASE_FILENAME = "compile_commands.json";
-    private final CLangExtractor cLangExtractor;
+    private final ClangExtractor cLangExtractor;
     private File jsonCompilationDatabaseFile = null;
     private final DetectFileFinder fileFinder;
     private final PackageManagerFinder pkgMgrFinder;
 
     private LinuxPackageManager pkgMgr;
 
-    public CLangBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final PackageManagerFinder pkgMgrFinder, final CLangExtractor cLangExtractor) {
+    public ClangBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final PackageManagerFinder pkgMgrFinder, final ClangExtractor cLangExtractor) {
         super(environment, "Clang", BomToolGroupType.CLANG, BomToolType.CLANG);
         this.fileFinder = fileFinder;
         this.pkgMgrFinder = pkgMgrFinder;
