@@ -26,7 +26,6 @@ package com.blackducksoftware.integration.hub.detect.configuration;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +43,6 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
-import com.blackducksoftware.integration.util.ResourceUtil;
 
 public class ConfigurationManager {
     public static final String NUGET = "nuget";
@@ -190,18 +188,14 @@ public class ConfigurationManager {
         }
     }
 
-    private void resolveBomToolSearchProperties() throws DetectUserFriendlyException {
+    private void resolveBomToolSearchProperties() {
         bomToolSearchDirectoryExclusions = new ArrayList<>();
         for (final String exclusion : detectConfigWrapper.getStringArrayProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION)) {
             bomToolSearchDirectoryExclusions.add(exclusion);
         }
-        try {
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS)) {
-                final String fileContent = ResourceUtil.getResourceAsString(ConfigurationManager.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
-                bomToolSearchDirectoryExclusions.addAll(Arrays.asList(fileContent.split("\r?\n")));
-            }
-        } catch (final IOException e) {
-            throw new DetectUserFriendlyException(String.format("Could not determine the directories to exclude from the bom tool search. %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS)) {
+            final List<String> defaultExcludedNames = Arrays.stream(BomToolSearchExcludedDirectories.values()).map(BomToolSearchExcludedDirectories::getDirectoryName).collect(Collectors.toList());
+            bomToolSearchDirectoryExclusions.addAll(defaultExcludedNames);
         }
     }
 

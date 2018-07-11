@@ -26,6 +26,7 @@ package com.blackducksoftware.integration.hub.detect.util.executable;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -46,6 +47,26 @@ public class ExecutableRunner {
     public ExecutableOutput execute(final String exePath, final String... args) throws ExecutableRunnerException {
         final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
         return execute(exe);
+    }
+
+    public ExecutableOutput executeQuietly(final String exePath, final String... args) throws ExecutableRunnerException {
+        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
+        return executeQuietly(exe);
+    }
+
+    public ExecutableOutput execute(final String exePath, final List<String> args) throws ExecutableRunnerException {
+        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, args);
+        return execute(exe);
+    }
+
+    public ExecutableOutput executeQuietly(final String exePath, final List<String> args) throws ExecutableRunnerException {
+        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, args);
+        return execute(exe);
+    }
+
+    public ExecutableOutput executeFromDirQuietly(final File workingDir, final String exePath, final List<String> args) throws ExecutableRunnerException {
+        final Executable exe = new Executable(workingDir, exePath, args);
+        return executeQuietly(exe);
     }
 
     public ExecutableOutput execute(final File exePath, final String... args) throws ExecutableRunnerException {

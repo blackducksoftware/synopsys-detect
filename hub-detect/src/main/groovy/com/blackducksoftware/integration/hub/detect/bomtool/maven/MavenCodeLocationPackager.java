@@ -168,7 +168,7 @@ public class MavenCodeLocationPackager {
         return null;
     }
 
-    private String calculateCurrentLevelAndCleanLine(final String line) {
+    String calculateCurrentLevelAndCleanLine(final String line) {
         level = 0;
         String cleanedLine = line;
         for (final String pattern : indentationStrings) {
@@ -181,7 +181,7 @@ public class MavenCodeLocationPackager {
         return cleanedLine;
     }
 
-    private Dependency textToDependency(final String componentText) {
+    Dependency textToDependency(final String componentText) {
         if (!isGav(componentText)) {
             return null;
         }
@@ -200,7 +200,7 @@ public class MavenCodeLocationPackager {
         return new Dependency(artifact, version, externalId);
     }
 
-    private Dependency textToProject(final String componentText) {
+    Dependency textToProject(final String componentText) {
         if (!isGav(componentText)) {
             return null;
         }
@@ -222,7 +222,7 @@ public class MavenCodeLocationPackager {
         return new Dependency(artifact, version, externalId);
     }
 
-    private boolean isLineRelevant(final String line) {
+    boolean isLineRelevant(final String line) {
         final String editableLine = line;
         if (!doesLineContainSegmentsInOrder(line, "[", "INFO", "]")) {
             // Does not contain [INFO]
@@ -238,7 +238,7 @@ public class MavenCodeLocationPackager {
         return true;
     }
 
-    private String trimLogLevel(final String line) {
+    String trimLogLevel(final String line) {
         final String editableLine = line;
 
         final int index = indexOfEndOfSegments(line, "[", "INFO", "]");
@@ -250,12 +250,12 @@ public class MavenCodeLocationPackager {
         return trimmedLine;
     }
 
-    private boolean isProjectSection(final String line) {
+    boolean isProjectSection(final String line) {
         // We only want to parse the dependency:tree output
         return doesLineContainSegmentsInOrder(line, "---", "maven-dependency-plugin", ":", "tree");
     }
 
-    private boolean isDependencyTreeUpdates(final String line) {
+    boolean isDependencyTreeUpdates(final String line) {
         if (line.contains("checking for updates")) {
             return true;
         } else {
@@ -263,7 +263,7 @@ public class MavenCodeLocationPackager {
         }
     }
 
-    private boolean isGav(final String componentText) {
+    boolean isGav(final String componentText) {
         final String debugMessage = String.format("%s does not look like a GAV we recognize", componentText);
         final String[] gavParts = componentText.split(":");
         if (gavParts.length >= 4) {
@@ -279,7 +279,7 @@ public class MavenCodeLocationPackager {
         return false;
     }
 
-    private boolean doesLineContainSegmentsInOrder(final String line, final String... segments) {
+    boolean doesLineContainSegmentsInOrder(final String line, final String... segments) {
         Boolean lineContainsSegments = true;
 
         final int index = indexOfEndOfSegments(line, segments);
@@ -290,7 +290,7 @@ public class MavenCodeLocationPackager {
         return lineContainsSegments;
     }
 
-    private int indexOfEndOfSegments(final String line, final String... segments) {
+    int indexOfEndOfSegments(final String line, final String... segments) {
         int endOfSegments = -1;
         if (segments.length > 0) {
             endOfSegments = 0;

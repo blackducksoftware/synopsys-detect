@@ -40,13 +40,15 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.Apk;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CommandStringExecutor;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependencyFileManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.Dpkg;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.PkgMgr;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.Rpm;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CompileCommandsJsonFileParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependenciesListFileManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageManagerFinder;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CodeLocationAssembler;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.DpkgPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.LinuxPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.RpmPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaCliExtractor;
@@ -322,7 +324,8 @@ public class BeanConfiguration {
 
     @Bean
     public BomToolFactory bomToolFactory() throws ParserConfigurationException {
-        return new BomToolFactory(detectConfigWrapper(), detectFileFinder(), standardExecutableFinder(), cLangExtractor(), composerLockExtractor(), condaCliExtractor(), cpanCliExtractor(), dockerExtractor(), dockerInspectorManager(),
+        return new BomToolFactory(detectConfigWrapper(), detectFileFinder(), standardExecutableFinder(), cLangExtractor(), cLangPackageManagerFinder(), composerLockExtractor(), condaCliExtractor(), cpanCliExtractor(), dockerExtractor(),
+                dockerInspectorManager(),
                 gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(), mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(),
                 npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(), pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(),
                 podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
@@ -418,38 +421,32 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public CommandStringExecutor commandStringExecutor() {
-        return new CommandStringExecutor(executableRunner());
+    public DependenciesListFileManager cLangDependenciesListFileParser() {
+        return new DependenciesListFileManager(executableRunner());
     }
 
     @Bean
-    public DependencyFileManager dependencyFileManager() {
-        return new DependencyFileManager();
+    public CompileCommandsJsonFileParser cLangCompileCommandsJsonFileParser() {
+        return new CompileCommandsJsonFileParser();
     }
 
     @Bean
-    public Apk apk() {
-        return new Apk();
+    public CodeLocationAssembler codeLocationAssembler() {
+        return new CodeLocationAssembler(externalIdFactory());
     }
 
     @Bean
-    public Dpkg dpkg() {
-        return new Dpkg();
+    public ClangExtractor cLangExtractor() {
+        return new ClangExtractor(executableRunner(), detectFileManager(), cLangDependenciesListFileParser(), cLangCompileCommandsJsonFileParser(), codeLocationAssembler());
     }
 
     @Bean
-    public Rpm rpm() {
-        return new Rpm();
-    }
-
-    @Bean
-    public CLangExtractor cLangExtractor() {
-        final List<PkgMgr> pkgMgrs = new ArrayList<>();
-        pkgMgrs.add(apk());
-        pkgMgrs.add(dpkg());
-        pkgMgrs.add(rpm());
-
-        return new CLangExtractor(pkgMgrs, externalIdFactory(), commandStringExecutor(), dependencyFileManager(), detectFileManager());
+    public PackageManagerFinder cLangPackageManagerFinder() {
+        final List<LinuxPackageManager> pkgMgrs = new ArrayList<>();
+        pkgMgrs.add(new ApkPackageManager());
+        pkgMgrs.add(new DpkgPackageManager());
+        pkgMgrs.add(new RpmPackageManager());
+        return new PackageManagerFinder(executableRunner(), pkgMgrs);
     }
 
     @Bean

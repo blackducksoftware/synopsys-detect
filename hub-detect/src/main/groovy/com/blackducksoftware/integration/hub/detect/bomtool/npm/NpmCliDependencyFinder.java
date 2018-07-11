@@ -71,7 +71,7 @@ public class NpmCliDependencyFinder {
         return convertNpmJsonFileToCodeLocation(bomToolType, sourcePath, FileUtils.readFileToString(npmLsOutputFile, StandardCharsets.UTF_8));
     }
 
-    private NpmParseResult convertNpmJsonFileToCodeLocation(final BomToolType bomToolType, final String sourcePath, final String npmLsOutput) {
+    NpmParseResult convertNpmJsonFileToCodeLocation(final BomToolType bomToolType, final String sourcePath, final String npmLsOutput) {
         final JsonObject npmJson = new JsonParser().parse(npmLsOutput).getAsJsonObject();
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
