@@ -56,7 +56,6 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.HubSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
 import com.blackducksoftware.integration.log.SilentLogger;
@@ -66,6 +65,9 @@ import com.blackducksoftware.integration.log.Slf4jIntLogger;
 @Import({ BeanConfiguration.class })
 public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
+
+    private static final boolean EXIT = false;
+    private static final boolean CONTINUE = true;
 
     private final DetectOptionManager detectOptionManager;
     private final DetectInfo detectInfo;
@@ -77,7 +79,6 @@ public class Application implements ApplicationRunner {
     private final HelpHtmlWriter helpHtmlWriter;
     private final HubManager hubManager;
     private final HubServiceWrapper hubServiceWrapper;
-    private final HubSignatureScanner hubSignatureScanner;
     private final DetectSummaryManager detectSummaryManager;
     private final InteractiveManager interactiveManager;
     private final DetectFileManager detectFileManager;
@@ -88,7 +89,7 @@ public class Application implements ApplicationRunner {
     @Autowired
     public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final AdditionalPropertyConfig additionalPropertyConfig, final DetectConfigWrapper detectConfigWrapper,
             final ConfigurationManager configurationManager, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
-            final HubServiceWrapper hubServiceWrapper, final HubSignatureScanner hubSignatureScanner, final DetectSummaryManager detectSummaryManager, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
+            final HubServiceWrapper hubServiceWrapper, final DetectSummaryManager detectSummaryManager, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
             final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final ArgumentStateParser argumentStateParser) {
         this.detectOptionManager = detectOptionManager;
         this.detectInfo = detectInfo;
@@ -100,7 +101,6 @@ public class Application implements ApplicationRunner {
         this.helpHtmlWriter = helpHtmlWriter;
         this.hubManager = hubManager;
         this.hubServiceWrapper = hubServiceWrapper;
-        this.hubSignatureScanner = hubSignatureScanner;
         this.detectSummaryManager = detectSummaryManager;
         this.interactiveManager = interactiveManager;
         this.detectFileManager = detectFileManager;
@@ -117,70 +117,12 @@ public class Application implements ApplicationRunner {
     public void run(final ApplicationArguments applicationArguments) throws Exception {
         final long startTime = System.currentTimeMillis();
         ExitCodeType detectExitCode = ExitCodeType.SUCCESS;
-
         try {
-            detectInfo.init();
-            additionalPropertyConfig.init();
-            detectConfigWrapper.init();
-            detectOptionManager.init();
-
-            final List<DetectOption> options = detectOptionManager.getDetectOptions();
-
-            final ArgumentState argumentState = argumentStateParser.parseArgs(applicationArguments.getSourceArgs());
-
-            if (argumentState.isHelp() || argumentState.isDeprecatedHelp() || argumentState.isVerboseHelp()) {
-                helpPrinter.printAppropriateHelpMessage(System.out, options, argumentState);
-                return;
+            final boolean continueAfterInitialization = initializeDetect(applicationArguments.getSourceArgs());
+            if (continueAfterInitialization) {
+                runDetect();
+                detectExitCode = getExitCodeFromCompletedRun(detectExitCode);
             }
-
-            if (argumentState.isHelpDocument()) {
-                helpHtmlWriter.writeHelpMessage(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()));
-                return;
-            }
-
-            if (argumentState.isInteractive()) {
-                interactiveManager.configureInInteractiveMode();
-            }
-
-            configurationManager.initialize(options);
-            detectOptionManager.postInit();
-
-            logger.info("Configuration processed completely.");
-
-            if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT)) {
-                configurationManager.printConfiguration(System.out, detectInfo, options);
-            }
-
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_FAIL_CONFIG_WARNING) && options.stream().anyMatch(DetectOption::hasWarnings)) {
-                throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
-            }
-
-            final List<DetectOption> unacceptableDetectOtions = detectOptionManager.findInvalidDetectOptions();
-            if (unacceptableDetectOtions.size() > 0) {
-                throw new DetectUserFriendlyException(unacceptableDetectOtions.get(0).validate().getValidationMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
-            }
-
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION)) {
-                hubServiceWrapper.assertHubConnection(new SilentLogger());
-                return;
-            }
-
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_HUB) && !hubServiceWrapper.testHubConnection(new SilentLogger())) {
-                logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_DISABLE_WITHOUT_HUB.getPropertyName()));
-                return;
-            }
-
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
-                phoneHomeManager.initOffline();
-            } else {
-                hubServiceWrapper.init();
-                phoneHomeManager.init(hubServiceWrapper.createPhoneHomeService());
-                phoneHomeManager.startPhoneHome();
-            }
-
-            runDetect();
-
-            detectExitCode = getExitCodeFromCompletedRun(detectExitCode);
         } catch (final Exception e) {
             detectExitCode = getExitCodeFromExceptionDetails(e);
         } finally {
@@ -190,16 +132,77 @@ public class Application implements ApplicationRunner {
         endRun(startTime, detectExitCode);
     }
 
-    private void runDetect() throws DetectUserFriendlyException, IntegrationException, InterruptedException {
+    private boolean initializeDetect(final String[] sourceArgs) throws IntegrationException, DetectUserFriendlyException {
+        detectInfo.init();
+        additionalPropertyConfig.init();
+        detectConfigWrapper.init();
+        detectOptionManager.init();
+
+        final List<DetectOption> options = detectOptionManager.getDetectOptions();
+
+        final ArgumentState argumentState = argumentStateParser.parseArgs(sourceArgs);
+
+        if (argumentState.isHelp() || argumentState.isDeprecatedHelp() || argumentState.isVerboseHelp()) {
+            helpPrinter.printAppropriateHelpMessage(System.out, options, argumentState);
+            return EXIT;
+        }
+
+        if (argumentState.isHelpDocument()) {
+            helpHtmlWriter.writeHelpMessage(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()));
+            return EXIT;
+        }
+
+        if (argumentState.isInteractive()) {
+            interactiveManager.configureInInteractiveMode();
+        }
+
+        configurationManager.initialize(options);
+        detectOptionManager.postInit();
+
+        logger.info("Configuration processed completely.");
+
+        if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT)) {
+            configurationManager.printConfiguration(System.out, detectInfo, options);
+        }
+
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_FAIL_CONFIG_WARNING) && options.stream().anyMatch(DetectOption::hasWarnings)) {
+            throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
+        }
+
+        final List<DetectOption> unacceptableDetectOtions = detectOptionManager.findInvalidDetectOptions();
+        if (unacceptableDetectOtions.size() > 0) {
+            throw new DetectUserFriendlyException(unacceptableDetectOtions.get(0).validate().getValidationMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
+        }
+
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION)) {
+            hubServiceWrapper.assertHubConnection(new SilentLogger());
+            return EXIT;
+        }
+
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_HUB) && !hubServiceWrapper.testHubConnection(new SilentLogger())) {
+            logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_DISABLE_WITHOUT_HUB.getPropertyName()));
+            return EXIT;
+        }
+
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
+            phoneHomeManager.initOffline();
+        } else {
+            hubServiceWrapper.init();
+            phoneHomeManager.init(hubServiceWrapper.createPhoneHomeService());
+            phoneHomeManager.startPhoneHome();
+        }
+
+        return CONTINUE;
+    }
+
+    private void runDetect() throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         final DetectProject detectProject = detectProjectManager.createDetectProject();
 
         logger.info("Project Name: " + detectProject.getProjectName());
         logger.info("Project Version Name: " + detectProject.getProjectVersion());
 
         if (detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
-            if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
-                hubSignatureScanner.scanPathsOffline(detectProject);
-            }
+            hubManager.performOfflineHubActions(detectProject);
         } else {
             final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject);
             hubManager.performPostHubActions(detectProject, projectVersionView);
