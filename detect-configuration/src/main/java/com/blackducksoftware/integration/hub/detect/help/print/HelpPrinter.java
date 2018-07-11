@@ -40,18 +40,18 @@ public class HelpPrinter {
         final List<DetectOption> deprecatedOptions = allOptions.stream().filter(it -> it.getDetectOptionHelp().isDeprecated).collect(Collectors.toList());
         final List<String> allPrintGroups = getPrintGroups(currentOptions);
 
-        if (state.isVerboseHelp) {
+        if (state.isVerboseHelp()) {
             printVerboseOptions(writer, currentOptions, null);
-        } else if (state.isDeprecatedHelp) {
+        } else if (state.isDeprecatedHelp()) {
             printOptions(writer, deprecatedOptions, "Showing only deprecated properties.");
         } else {
-            if (state.parsedValue != null) {
-                if (isProperty(currentOptions, state.parsedValue)) {
-                    printDetailedHelp(writer, allOptions, state.parsedValue);
-                } else if (isPrintGroup(allPrintGroups, state.parsedValue)) {
-                    printHelpFilteredByPrintGroup(writer, currentOptions, state.parsedValue);
+            if (state.getParsedValue() != null) {
+                if (isProperty(currentOptions, state.getParsedValue())) {
+                    printDetailedHelp(writer, allOptions, state.getParsedValue());
+                } else if (isPrintGroup(allPrintGroups, state.getParsedValue())) {
+                    printHelpFilteredByPrintGroup(writer, currentOptions, state.getParsedValue());
                 } else {
-                    printHelpFilteredBySearchTerm(writer, currentOptions, state.parsedValue);
+                    printHelpFilteredBySearchTerm(writer, currentOptions, state.getParsedValue());
                 }
             } else {
                 printDefaultHelp(writer, currentOptions);

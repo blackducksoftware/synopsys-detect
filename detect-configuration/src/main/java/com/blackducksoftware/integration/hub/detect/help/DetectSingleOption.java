@@ -24,31 +24,26 @@
 package com.blackducksoftware.integration.hub.detect.help;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
 public class DetectSingleOption extends DetectOption {
-
-    public DetectSingleOption(final DetectProperty detectProperty, final boolean strictAcceptableValues, final boolean caseSensitiveAcceptableValues, final List<String> acceptableValues,
-            final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
-        super(detectProperty, strictAcceptableValues, caseSensitiveAcceptableValues, acceptableValues, detectOptionHelp, resolvedValue);
+    public DetectSingleOption(final DetectProperty detectProperty, final boolean strictValidation, final boolean caseSensitiveValidation, final List<String> validValues, final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
+        super(detectProperty, strictValidation, caseSensitiveValidation, validValues, detectOptionHelp, resolvedValue);
     }
 
-    public OptionValidationResult isAcceptableValue(final String value) {
-        Boolean isValueAcceptable = getAcceptableValues().stream()
-                .anyMatch(it -> {
-                    if (getCaseSensistiveAcceptableValues()) {
-                        return it.equals(value);
-                    } else {
-                        return it.equalsIgnoreCase(value);
-                    }
-                });
+    @Override
+    public OptionValidationResult validateValue(final String value) {
         OptionValidationResult result;
-        if (isValueAcceptable) {
-            result = new OptionValidationResult(true, "");
+
+        if (validValuesContains(value)) {
+            result = OptionValidationResult.valid("");
         } else {
-            result = new OptionValidationResult(false, "unknown value");
+            final String validationMesssage = String.format("%s: Unknown value '%s', acceptable values are %s", getDetectProperty().getPropertyName(), value, getValidValues().stream().collect(Collectors.joining(",")));
+            result = OptionValidationResult.invalid(validationMesssage);
         }
+
         return result;
     }
 

@@ -13,8 +13,8 @@ public class ArgumentStateParserTests {
         final String[] args = new String[] {"-h", "value"};
         final ArgumentState state = parser.parseArgs(args);
 
-        Assert.assertTrue(state.isHelp);
-        Assert.assertEquals(state.parsedValue, "value");
+        Assert.assertTrue(state.isHelp());
+        Assert.assertEquals(state.getParsedValue(), "value");
     }
 
     @Test
@@ -23,8 +23,8 @@ public class ArgumentStateParserTests {
         final String[] args = new String[] {"-h", "-ignoreme"};
         final ArgumentState state = parser.parseArgs(args);
 
-        Assert.assertTrue(state.isHelp);
-        Assert.assertNull(state.parsedValue);
+        Assert.assertTrue(state.isHelp());
+        Assert.assertNull(state.getParsedValue());
     }
 
     @Test
@@ -33,8 +33,8 @@ public class ArgumentStateParserTests {
         final String[] args = new String[] {"--propert", "--property", "-h", "--property", "--property"};
         final ArgumentState state = parser.parseArgs(args);
 
-        Assert.assertTrue(state.isHelp);
-        Assert.assertNull(state.parsedValue);
+        Assert.assertTrue(state.isHelp());
+        Assert.assertNull(state.getParsedValue());
     }
 
     @Test
@@ -43,8 +43,8 @@ public class ArgumentStateParserTests {
         final String[] args = new String[] {"--property", "--property", "-h", "value"};
         final ArgumentState state = parser.parseArgs(args);
 
-        Assert.assertTrue(state.isHelp);
-        Assert.assertEquals(state.parsedValue, "value");
+        Assert.assertTrue(state.isHelp());
+        Assert.assertEquals(state.getParsedValue(), "value");
     }
 
     @Test
@@ -53,8 +53,8 @@ public class ArgumentStateParserTests {
         final String[] args = new String[] {"-h", "value", "--property", "--property", "--property"};
         final ArgumentState state = parser.parseArgs(args);
 
-        Assert.assertTrue(state.isHelp);
-        Assert.assertEquals(state.parsedValue, "value");
+        Assert.assertTrue(state.isHelp());
+        Assert.assertEquals(state.getParsedValue(), "value");
     }
 
 

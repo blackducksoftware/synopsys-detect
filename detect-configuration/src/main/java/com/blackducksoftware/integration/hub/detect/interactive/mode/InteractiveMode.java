@@ -24,7 +24,6 @@
 package com.blackducksoftware.integration.hub.detect.interactive.mode;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -52,7 +51,7 @@ public abstract class InteractiveMode {
         this.interactiveReader = reader;
     }
 
-    public abstract void interact();
+    public abstract void configure();
 
     public String askQuestion(final String question) {
         printStream.println(question);
@@ -196,10 +195,6 @@ public abstract class InteractiveMode {
             printStream.println();
             printStream.println("Succesfully saved to '" + applicationsProperty.getCanonicalPath() + "'!");
             outputStream.close();
-        } catch (final FileNotFoundException e) {
-            printStream.println(e);
-            printStream.println("Failed to write to application.properties.");
-            throw new RuntimeException(e);
         } catch (final IOException e) {
             printStream.println(e);
             printStream.println("Failed to write to application.properties.");

@@ -119,6 +119,12 @@ public class HubManager implements ExitCodeReporter {
         return projectVersionView;
     }
 
+    public void performOfflineHubActions(final DetectProject detectProject) throws IntegrationException {
+        if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
+            hubSignatureScanner.scanPathsOffline(detectProject);
+        }
+    }
+
     public void performPostHubActions(final DetectProject detectProject, final ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
         try {
             if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)) || detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF) || detectConfigWrapper
@@ -174,8 +180,8 @@ public class HubManager implements ExitCodeReporter {
 
     public void waitForBomUpdate(final CodeLocationService codeLocationService, final HubService hubService, final ScanStatusService scanStatusService) throws IntegrationException, InterruptedException {
         final List<CodeLocationView> allCodeLocations = new ArrayList<>();
-        for (String codeLocationName : codeLocationNameManager.getCodeLocationNames()) {
-            CodeLocationView codeLocationView = codeLocationService.getCodeLocationByName(codeLocationName);
+        for (final String codeLocationName : codeLocationNameManager.getCodeLocationNames()) {
+            final CodeLocationView codeLocationView = codeLocationService.getCodeLocationByName(codeLocationName);
             allCodeLocations.add(codeLocationView);
         }
         final List<ScanSummaryView> scanSummaryViews = new ArrayList<>();

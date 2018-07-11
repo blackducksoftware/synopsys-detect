@@ -23,8 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class SbtModuleAggregator {
     private final Logger logger = LoggerFactory.getLogger(SbtModuleAggregator.class);
 
     List<SbtDependencyModule> aggregateModules(final List<SbtDependencyModule> modules) {
-        final List<SbtAggregate> aggregates = uniqueAggregates(modules);
+        final Set<SbtAggregate> aggregates = uniqueAggregates(modules);
 
         return aggregates.stream().map(aggregate -> {
             final SbtDependencyModule aggregated = new SbtDependencyModule();
@@ -74,14 +74,7 @@ public class SbtModuleAggregator {
         return aggregate;
     }
 
-    List<SbtAggregate> uniqueAggregates(final List<SbtDependencyModule> modules) {
-        final List<SbtAggregate> found = new ArrayList<>();
-        modules.forEach(module -> {
-            final SbtAggregate aggregate = moduleToAggregate(module);
-            if (!found.contains(aggregate)) {
-                found.add(aggregate);
-            }
-        });
-        return found;
+    Set<SbtAggregate> uniqueAggregates(final List<SbtDependencyModule> modules) {
+        return modules.stream().map(module -> moduleToAggregate(module)).collect(Collectors.toSet());
     }
 }

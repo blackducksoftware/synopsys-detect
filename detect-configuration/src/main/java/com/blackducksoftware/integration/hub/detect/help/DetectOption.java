@@ -35,9 +35,9 @@ import com.blackducksoftware.integration.hub.detect.help.print.HelpTextWriter;
 
 public abstract class DetectOption {
     private final DetectProperty detectProperty;
-    private final List<String> acceptableValues;
-    private final boolean strictAcceptableValues;
-    private final boolean caseSensitiveAcceptableValues;
+    private final List<String> validValues;
+    private final boolean strictValidation;
+    private final boolean caseSensitiveValidation;
     private final DetectOptionHelp detectOptionHelp;
     private final String resolvedValue;
 
@@ -49,11 +49,11 @@ public abstract class DetectOption {
     private String postInitValue = null;
     private boolean requestedDeprecation = false;
 
-    public DetectOption(final DetectProperty detectProperty, final boolean strictAcceptableValues, final boolean caseSensitiveAcceptableValues, final List<String> acceptableValues, final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
+    public DetectOption(final DetectProperty detectProperty, final boolean strictValidation, final boolean caseSensitiveValidation, final List<String> validValues, final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
         this.detectProperty = detectProperty;
-        this.strictAcceptableValues = strictAcceptableValues;
-        this.caseSensitiveAcceptableValues = caseSensitiveAcceptableValues;
-        this.acceptableValues = acceptableValues;
+        this.strictValidation = strictValidation;
+        this.caseSensitiveValidation = caseSensitiveValidation;
+        this.validValues = validValues;
         this.detectOptionHelp = detectOptionHelp;
         this.resolvedValue = resolvedValue;
     }
@@ -94,20 +94,16 @@ public abstract class DetectOption {
         return detectOptionHelp;
     }
 
-    public boolean isStrictAcceptableValues() {
-        return strictAcceptableValues;
+    public boolean hasStrictValidation() {
+        return strictValidation;
     }
 
-    public boolean isCaseSensitiveAcceptableValues() {
-        return caseSensitiveAcceptableValues;
+    public boolean hasCaseSensitiveValidation() {
+        return caseSensitiveValidation;
     }
 
-    public List<String> getAcceptableValues() {
-        return acceptableValues;
-    }
-
-    public boolean getCaseSensistiveAcceptableValues() {
-        return caseSensitiveAcceptableValues;
+    public List<String> getValidValues() {
+        return validValues;
     }
 
     public String getResolvedValue() {
@@ -143,15 +139,19 @@ public abstract class DetectOption {
         setFinalValueType(finalValueType);
     }
 
-    public abstract OptionValidationResult isAcceptableValue(final String value);
+    public abstract OptionValidationResult validateValue(final String value);
+
+    public OptionValidationResult validate() {
+        return validateValue(resolvedValue);
+    }
 
     public void printOption(final HelpTextWriter writer) {
         String description = getDetectOptionHelp().description;
         if (getDetectOptionHelp().isDeprecated) {
             description = "Will be removed in version " + getDetectOptionHelp().deprecationVersion + ". " + description;
         }
-        if (getAcceptableValues().size() > 0) {
-            description += " (" + getAcceptableValues().stream().collect(Collectors.joining("|")) + ")";
+        if (getValidValues().size() > 0) {
+            description += " (" + getValidValues().stream().collect(Collectors.joining("|")) + ")";
         }
         String propertyName = "";
         String defaultValue = "";
@@ -174,8 +174,8 @@ public abstract class DetectOption {
         }
         writer.println("Property description: " + getDetectOptionHelp().description);
         writer.println("Property default value: " + detectProperty.getDefaultValue());
-        if (getAcceptableValues().size() > 0) {
-            writer.println("Property acceptable values: " + getAcceptableValues().stream().collect(Collectors.joining(", ")));
+        if (getValidValues().size() > 0) {
+            writer.println("Property acceptable values: " + getValidValues().stream().collect(Collectors.joining(", ")));
         }
         writer.println("");
 
@@ -190,8 +190,8 @@ public abstract class DetectOption {
     public HelpHtmlOption createHtmlOption() {
         final String description = getDetectOptionHelp().description;
         String acceptableValues = "";
-        if (getAcceptableValues().size() > 0) {
-            acceptableValues = getAcceptableValues().stream().collect(Collectors.joining(", "));
+        if (getValidValues().size() > 0) {
+            acceptableValues = getValidValues().stream().collect(Collectors.joining(", "));
         }
         String deprecationNotice = "";
         if (getDetectOptionHelp().isDeprecated) {
@@ -211,19 +211,27 @@ public abstract class DetectOption {
     }
 
     public enum FinalValueType {
-        DEFAULT,        // the final value is the value in the default attribute
-        INTERACTIVE,    // the final value is from the interactive prompt
-        LATEST,         // the final value was resolved from latest
-        CALCULATED,     // the resolved value was not set and final value was set during init
-        SUPPLIED,       // the final value most likely came from spring
-        OVERRIDE        // the resolved value was set but during init a new value was set
+        DEFAULT, // the final value is the value in the default attribute
+        INTERACTIVE, // the final value is from the interactive prompt
+        LATEST, // the final value was resolved from latest
+        CALCULATED, // the resolved value was not set and final value was set during init
+        SUPPLIED, // the final value most likely came from spring
+        OVERRIDE // the resolved value was set but during init a new value was set
     }
 
-    public class OptionValidationResult {
+    public static class OptionValidationResult {
         private final boolean isValid;
         private final String validationMessage;
 
-        protected OptionValidationResult(final boolean isValid, final String validationMessage) {
+        public static OptionValidationResult valid(final String message) {
+            return new OptionValidationResult(true, message);
+        }
+
+        public static OptionValidationResult invalid(final String message) {
+            return new OptionValidationResult(false, message);
+        }
+
+        private OptionValidationResult(final boolean isValid, final String validationMessage) {
             this.isValid = isValid;
             this.validationMessage = validationMessage;
         }
@@ -235,6 +243,14 @@ public abstract class DetectOption {
         public String getValidationMessage() {
             return validationMessage;
         }
+    }
+
+    protected boolean validValuesContains(final String value) {
+        if (hasCaseSensitiveValidation()) {
+            return getValidValues().contains(value);
+        }
+
+        return getValidValues().stream().anyMatch(validValue -> validValue.equalsIgnoreCase(value));
     }
 
 }
