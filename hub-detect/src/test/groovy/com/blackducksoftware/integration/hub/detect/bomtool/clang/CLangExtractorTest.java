@@ -6,8 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.junit.AfterClass;
@@ -50,7 +50,7 @@ public class CLangExtractorTest {
         compileCommands.add(compileCommand);
 
         final File stdLibIncludeFile = new File("/usr/include/stdlib.h");
-        final List<String> dependencyFilePaths = new ArrayList<>();
+        final Set<String> dependencyFilePaths = new HashSet<>();
         dependencyFilePaths.add("src/test/resources/clang/source/myinclude.h");
         dependencyFilePaths.add(stdLibIncludeFile.getAbsolutePath());
 
@@ -58,9 +58,7 @@ public class CLangExtractorTest {
         final DetectFileManager detectFileManager = Mockito.mock(DetectFileManager.class);
         final DependenciesListFileManager dependenciesListFileManager = Mockito.mock(DependenciesListFileManager.class);
 
-        final File depsMkFile = new File("src/test/resources/clang/deps.mk");
-        Mockito.when(dependenciesListFileManager.generate(outputDir, compileCommand)).thenReturn(Optional.of(depsMkFile));
-        Mockito.when(dependenciesListFileManager.parse(depsMkFile)).thenReturn(dependencyFilePaths);
+        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommand)).thenReturn(dependencyFilePaths);
         Mockito.when(executableRunner.executeFromDirQuietly(Mockito.any(File.class), Mockito.anyString(), Mockito.anyList())).thenReturn(new ExecutableOutput(0, "", ""));
 
         final CompileCommandsJsonFileParser compileCommandsJsonFileParser = Mockito.mock(CompileCommandsJsonFileParser.class);

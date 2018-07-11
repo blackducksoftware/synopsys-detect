@@ -27,7 +27,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -142,10 +141,7 @@ public class CLangExtractor {
     private Function<CompileCommand, Stream<String>> compileCommandToDependencyFilePathsConverter(final File workingDir) {
         final Function<CompileCommand, Stream<String>> convertCompileCommandToDependencyFilePaths = (final CompileCommand compileCommand) -> {
             logger.info(String.format("Analyzing source file: %s", compileCommand.file));
-            final Set<String> dependencyFilePaths = new HashSet<>();
-            final Optional<File> depsMkFile = dependenciesListFileManager.generate(workingDir, compileCommand);
-            dependencyFilePaths.addAll(dependenciesListFileManager.parse(depsMkFile.orElse(null)));
-            depsMkFile.ifPresent(f -> f.delete());
+            final Set<String> dependencyFilePaths = dependenciesListFileManager.generateDependencyFilePaths(workingDir, compileCommand);
             return dependencyFilePaths.stream();
         };
         return convertCompileCommandToDependencyFilePaths;

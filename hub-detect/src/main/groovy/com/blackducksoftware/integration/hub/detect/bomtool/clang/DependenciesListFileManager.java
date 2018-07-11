@@ -29,8 +29,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -49,9 +51,16 @@ public class DependenciesListFileManager {
         this.executableRunner = executableRunner;
     }
 
-    public Optional<File> generate(final File workingDir,
-            final CompileCommand compileCommand) {
+    public Set<String> generateDependencyFilePaths(final File workingDir, final CompileCommand compileCommand) {
+        final Set<String> dependencyFilePaths = new HashSet<>();
+        final Optional<File> depsMkFile = generate(workingDir, compileCommand);
+        dependencyFilePaths.addAll(parse(depsMkFile.orElse(null)));
+        depsMkFile.ifPresent(f -> f.delete());
+        return dependencyFilePaths;
+    }
 
+    private Optional<File> generate(final File workingDir,
+            final CompileCommand compileCommand) {
         final String depsMkFilename = deriveDependenciesListFilename(compileCommand);
         final File depsMkFile = new File(workingDir, depsMkFilename);
         try {
@@ -64,7 +73,7 @@ public class DependenciesListFileManager {
         return Optional.of(depsMkFile);
     }
 
-    public List<String> parse(final File depsMkFile) {
+    private List<String> parse(final File depsMkFile) {
         if (depsMkFile == null) {
             return new ArrayList<>(0);
         }
