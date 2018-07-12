@@ -43,6 +43,8 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 public class DependenciesListFileManager {
+    private static final String REPLACEMENT_OUTPUT_FILENAME = "/dev/null";
+    private static final String COMPILER_OUTPUT_FILE_OPTION = "-o";
     public static final String DEPS_MK_FILENAME_PATTERN = "deps_%s_%d.mk";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
@@ -120,7 +122,12 @@ public class DependenciesListFileManager {
         int partIndex = 0;
         for (final String part : parts) {
             if (partIndex > 0) {
-                argList.add(part);
+                if (COMPILER_OUTPUT_FILE_OPTION.equals(parts[partIndex - 1])) {
+                    logger.trace(String.format("Replacing compiler output file %s with %s", part, REPLACEMENT_OUTPUT_FILENAME));
+                    argList.add(REPLACEMENT_OUTPUT_FILENAME);
+                } else {
+                    argList.add(part);
+                }
             }
             partIndex++;
         }
