@@ -41,13 +41,13 @@ import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CodeLocationAssembler;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CompileCommandsJsonFileParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependenciesListFileManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageManagerFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CodeLocationAssembler;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DpkgPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.LinuxPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageManagerFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.RpmPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockParser;
@@ -122,6 +122,9 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Docker
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerScanCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.ScanCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticLogManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionSummaryReporter;
@@ -157,6 +160,21 @@ public class BeanConfiguration {
     @Bean
     public Gson gson() {
         return new GsonBuilder().setPrettyPrinting().create();
+    }
+
+    @Bean
+    public DiagnosticManager diagnosticManager() {
+        return new DiagnosticManager(detectConfigWrapper(), bomToolProfiler(), diagnosticReportManager(), diagnosticLogManager());
+    }
+
+    @Bean
+    public DiagnosticLogManager diagnosticLogManager() {
+        return new DiagnosticLogManager();
+    }
+
+    @Bean
+    public DiagnosticReportManager diagnosticReportManager() {
+        return new DiagnosticReportManager();
     }
 
     @Bean
@@ -280,7 +298,7 @@ public class BeanConfiguration {
 
     @Bean
     public DetectFileManager detectFileManager() {
-        return new DetectFileManager(detectConfigWrapper());
+        return new DetectFileManager(detectConfigWrapper(), diagnosticManager());
     }
 
     @Bean
@@ -413,7 +431,7 @@ public class BeanConfiguration {
 
     @Bean
     public BdioUploader bdioUploader() {
-        return new BdioUploader(detectConfigWrapper());
+        return new BdioUploader(detectConfigWrapper(), detectFileManager());
     }
 
     @Bean

@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.testutils.ObjectPrinter;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction.ExtractionResultType;
 
 public class ExtractionReporter {
@@ -42,7 +41,7 @@ public class ExtractionReporter {
         // TODO: Replicate SUPER AWESOME printing from before... probably can't as nicely.
         // logger.info("Extractor: " + bomTool.getExtractorClass().getSimpleName());
         // logger.info("Context: " + bomTool.getExtractionContextClass().getSimpleName());
-        ObjectPrinter.printObject(bomTool);
+        // ObjectPrinter.printObject(bomTool);
         logger.info(ReportConstants.SEPERATOR);
     }
 

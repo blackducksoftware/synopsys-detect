@@ -6,46 +6,54 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportWriter;
 
 public class ObjectPrinter {
-    private final static Logger logger = LoggerFactory.getLogger(ObjectPrinter.class);
 
-    public static void printObject(final Object guy) {
-        printObject(null, guy);
+    public static void printObject(final DiagnosticReportWriter writer, final String prefix, final Object guy) {
+        for (final Field field : guy.getClass().getFields()) {
+            printField(field, writer, prefix, guy);
+        }
     }
 
-    public static void printObject(final String prefix, final Object guy) {
-        for (final Field field : guy.getClass().getFields()) {
-            final String name = field.getName();
-            String value = "unknown";
-            Object obj = null;
-            try {
-                obj = field.get(guy);
-            } catch (final Exception e) {
+    public static void printObjectPrivate(final DiagnosticReportWriter writer, final String prefix, final Object guy) {
+        for (final Field field : guy.getClass().getDeclaredFields()) {
+            printField(field, writer, prefix, guy);
+        }
+    }
 
+    public static void printField(final Field field, final DiagnosticReportWriter writer, final String prefix, final Object guy) {
+        final String name = field.getName();
+        String value = "unknown";
+        Object obj = null;
+        try {
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
             }
-            boolean shouldPrintObjectsFields = false;
-            if (obj == null) {
-                value = "null";
+            obj = field.get(guy);
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+        boolean shouldPrintObjectsFields = false;
+        if (obj == null) {
+            value = "null";
+        } else {
+            value = obj.toString();
+            shouldPrintObjectsFields = shouldRecursivelyPrintType(obj.getClass());
+        }
+        if (!shouldPrintObjectsFields) {
+            if (StringUtils.isBlank(prefix)) {
+                writer.writeLine(name + " : " + value);
             } else {
-                value = obj.toString();
-                shouldPrintObjectsFields = shouldRecursivelyPrintType(obj.getClass());
+                writer.writeLine(prefix + "." + name + " : " + value);
             }
-            if (!shouldPrintObjectsFields) {
-                if (StringUtils.isBlank(prefix)) {
-                    logger.info(name + " : " + value);
-                } else {
-                    logger.info(prefix + "." + name + " : " + value);
-                }
-            } else {
-                String nestedPrefix = name;
-                if (StringUtils.isNotBlank(prefix)) {
-                    nestedPrefix = prefix + "." + nestedPrefix;
-                }
-                printObject(nestedPrefix, obj);
+        } else {
+            String nestedPrefix = name;
+            if (StringUtils.isNotBlank(prefix)) {
+                nestedPrefix = prefix + "." + nestedPrefix;
             }
+            printObject(writer, nestedPrefix, obj);
         }
     }
 

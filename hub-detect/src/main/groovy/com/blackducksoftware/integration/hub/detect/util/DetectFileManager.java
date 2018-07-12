@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 
 public class DetectFileManager {
     private final Logger logger = LoggerFactory.getLogger(DetectFileManager.class);
@@ -45,9 +46,11 @@ public class DetectFileManager {
     private final String sharedUUID = "shared";
     private File sharedDirectory = null;
     private final Map<ExtractionId, File> outputDirectories = new HashMap<>();
+    private final DiagnosticManager diagnosticManager;
 
-    public DetectFileManager(final DetectConfigWrapper detectConfigWrapper) {
+    public DetectFileManager(final DetectConfigWrapper detectConfigWrapper, final DiagnosticManager diagnosticManager) {
         this.detectConfigWrapper = detectConfigWrapper;
+        this.diagnosticManager = diagnosticManager;
     }
 
     public File getOutputDirectory(final String name, final ExtractionId extractionId) {
@@ -64,8 +67,12 @@ public class DetectFileManager {
     }
 
     private File getExtractionFile() {
-        final File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "extractions");
+        File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "extractions");
         newDirectory.mkdir();
+        if (diagnosticManager.isDiagnosticModeOn()) {
+            newDirectory = new File(newDirectory, diagnosticManager.getRunId());
+            newDirectory.mkdir();
+        }
         return newDirectory;
     }
 
@@ -73,17 +80,17 @@ public class DetectFileManager {
         return new File(outputDirectory, name);
     }
 
-    public File getSharedDirectory(String name) { //shared across this invocation of detect.
+    public File getSharedDirectory(final String name) { // shared across this invocation of detect.
         if (sharedDirectory == null) {
             sharedDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), sharedUUID);
             sharedDirectory.mkdir();
         }
-        File newSharedFile = new File(sharedDirectory, name);
+        final File newSharedFile = new File(sharedDirectory, name);
         newSharedFile.mkdir();
         return newSharedFile;
     }
 
-    public File getPermanentDirectory() { //shared across all invocations of detect
+    public File getPermanentDirectory() { // shared across all invocations of detect
         final File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "tools");
         newDirectory.mkdir();
         return newDirectory;
@@ -97,25 +104,25 @@ public class DetectFileManager {
         return new File(getSharedDirectory(directory), filename);
     }
 
-    //This file will be immediately cleaned up and is associated to a specific context. The current implementation is to actually move it to the context's output and allow cleanup at the end of the detect run (in case of diagnostics).
-    public void cleanupOutputFile(final File outputDirectory, final File file) {
-        try {
-            if (file.isFile()) {
-                final File dest = new File(outputDirectory, file.getName());
-                FileUtils.moveFile(file, dest);
-
-            } else if (file.isDirectory()) {
-                final File dest = new File(outputDirectory, file.getName());
-                FileUtils.moveDirectory(file, dest);
-            }
-        } catch (final Exception e) {
-
+    // This file will be immediately cleaned up and is associated to a specific context. The current implementation is to actually move it to the context's output and allow cleanup at the end of the detect run (in case of diagnostics).
+    public void cleanupOutputFile(final File file) {
+        if (diagnosticManager.isDiagnosticModeOn()) {
+            diagnosticManager.trackFile(file);
+        } else {
+            file.delete();
         }
+    }
 
+    public boolean shouldCleanup() {
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void cleanupDirectories() {
-        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
+        if (shouldCleanup()) {
             for (final File file : outputDirectories.values()) {
                 try {
                     FileUtils.deleteDirectory(file);

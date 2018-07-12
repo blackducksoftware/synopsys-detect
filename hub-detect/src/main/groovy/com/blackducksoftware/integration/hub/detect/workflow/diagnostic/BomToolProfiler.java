@@ -1,6 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -37,6 +38,18 @@ public class BomToolProfiler {
 
     public void extractionEnded(final BomTool bomTool) {
         extractionTimekeeper.ended(bomTool);
+    }
+
+    List<BomToolTime> getApplicableTimings() {
+        return applicableTimekeeper.getTimings();
+    }
+
+    List<BomToolTime> getExtractableTimings() {
+        return extractableTimekeeper.getTimings();
+    }
+
+    List<BomToolTime> getExtractionTimings() {
+        return extractionTimekeeper.getTimings();
     }
 
     public void writeToLogs() {

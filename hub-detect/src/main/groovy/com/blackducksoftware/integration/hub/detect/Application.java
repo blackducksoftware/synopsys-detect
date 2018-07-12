@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -56,6 +57,7 @@ import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManag
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
@@ -83,6 +85,7 @@ public class Application implements ApplicationRunner {
     private final List<ExitCodeReporter> exitCodeReporters;
     private final PhoneHomeManager phoneHomeManager;
     private final ArgumentStateParser argumentStateParser;
+    private final DiagnosticManager diagnosticManager;
 
     private enum WorkflowStep {
         EXIT_WITH_SUCCESS,
@@ -93,7 +96,7 @@ public class Application implements ApplicationRunner {
     public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final AdditionalPropertyConfig additionalPropertyConfig, final DetectConfigWrapper detectConfigWrapper,
             final ConfigurationManager configurationManager, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
             final HubServiceWrapper hubServiceWrapper, final DetectSummaryManager detectSummaryManager, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
-            final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final ArgumentStateParser argumentStateParser) {
+            final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final ArgumentStateParser argumentStateParser, final DiagnosticManager diagnosticManager) {
         this.detectOptionManager = detectOptionManager;
         this.detectInfo = detectInfo;
         this.additionalPropertyConfig = additionalPropertyConfig;
@@ -110,6 +113,7 @@ public class Application implements ApplicationRunner {
         this.exitCodeReporters = exitCodeReporters;
         this.phoneHomeManager = phoneHomeManager;
         this.argumentStateParser = argumentStateParser;
+        this.diagnosticManager = diagnosticManager;
     }
 
     public static void main(final String[] args) {
@@ -119,6 +123,7 @@ public class Application implements ApplicationRunner {
     @Override
     public void run(final ApplicationArguments applicationArguments) throws Exception {
         final long startTime = System.currentTimeMillis();
+
         ExitCodeType detectExitCode = ExitCodeType.SUCCESS;
         try {
             final WorkflowStep nextWorkflowStep = initializeDetect(applicationArguments.getSourceArgs());
@@ -129,6 +134,11 @@ public class Application implements ApplicationRunner {
         } catch (final Exception e) {
             detectExitCode = getExitCodeFromExceptionDetails(e);
         } finally {
+            try {
+                diagnosticManager.finish();
+            } catch (final Exception e) {
+                logger.info("Failed to finish diagnostic mode.");
+            }
             cleanupRun(detectExitCode);
         }
 
@@ -163,6 +173,8 @@ public class Application implements ApplicationRunner {
         detectOptionManager.postInit();
 
         logger.info("Configuration processed completely.");
+
+        diagnosticManager.init();
 
         if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT)) {
             configurationManager.printConfiguration(System.out, detectInfo, options);
@@ -206,6 +218,9 @@ public class Application implements ApplicationRunner {
 
         if (detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
             hubManager.performOfflineHubActions(detectProject);
+            for (final File bdio : detectProject.getBdioFiles()) {
+                diagnosticManager.trackFile(bdio);
+            }
         } else {
             final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject);
             hubManager.performPostHubActions(detectProject, projectVersionView);

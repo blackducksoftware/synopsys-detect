@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
 
@@ -38,18 +39,18 @@ public class BdioUploader {
     private final Logger logger = LoggerFactory.getLogger(BdioUploader.class);
 
     private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectFileManager detectFileManager;
 
-    public BdioUploader(final DetectConfigWrapper detectConfigWrapper) {
+    public BdioUploader(final DetectConfigWrapper detectConfigWrapper, final DetectFileManager detectFileManager) {
         this.detectConfigWrapper = detectConfigWrapper;
+        this.detectFileManager = detectFileManager;
     }
 
     public void uploadBdioFiles(final CodeLocationService codeLocationService, final DetectProject detectProject) throws IntegrationException {
         for (final File file : detectProject.getBdioFiles()) {
             logger.info(String.format("uploading %s to %s", file.getName(), detectConfigWrapper.getProperty(DetectProperty.BLACKDUCK_HUB_URL)));
             codeLocationService.importBomFile(file);
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
-                file.delete();
-            }
+            detectFileManager.cleanupOutputFile(file);
         }
     }
 
