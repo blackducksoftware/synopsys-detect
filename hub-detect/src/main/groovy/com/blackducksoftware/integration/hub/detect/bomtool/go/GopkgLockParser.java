@@ -49,7 +49,6 @@ public class GopkgLockParser {
         for (final Project project : gopkgLock.getProjects()) {
             if (project != null) {
                 final NameVersion projectNameVersion = createProjectNameVersion(project);
-
                 project.getPackages().stream()
                         .map(packageName -> createDependencyName(projectNameVersion.getName(), packageName))
                         .map(dependencyName -> createGoDependency(dependencyName, projectNameVersion.getVersion()))
@@ -73,10 +72,10 @@ public class GopkgLockParser {
     }
 
     private String createDependencyName(final String projectName, final String parsedPackageName) {
-        String dependencyName = "";
+        String dependencyName = projectName;
 
         if (!parsedPackageName.equals(".")) {
-            dependencyName = projectName + "/" + parsedPackageName;
+            dependencyName = dependencyName + "/" + parsedPackageName;
         }
         if (dependencyName.startsWith("golang.org/x/")) {
             dependencyName = dependencyName.replaceAll("golang.org/x/", "");
