@@ -141,10 +141,10 @@ public class DockerExtractor {
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
 
         String dockerInspectorVersion = "";
-        if (null != dockerInspectorInfo) {
-            // we want to get the resolved Docker inspector version, if Detect was able to determine a version
-            dockerInspectorVersion = dockerInspectorInfo.version;
-        }
+
+        // we want to get the resolved Docker inspector version, if Detect was able to determine a version
+        dockerInspectorVersion = dockerInspectorInfo.version;
+
         final Map<String, String> environmentVariables = createEnvironmentVariables(dockerInspectorVersion, dockerExe);
 
         final List<String> dockerArguments = new ArrayList<>();
