@@ -154,7 +154,7 @@ public class SbtPackager {
         final List<String> usedReports = new ArrayList<>();
 
         for (final File sbtFile : sbtFiles) {
-            logger.debug(String.format("Found SBT build file: ", sbtFile.getCanonicalPath()));
+            logger.debug(String.format("Found SBT build file: %s", sbtFile.getCanonicalPath()));
             final File sbtDirectory = sbtFile.getParentFile();
             final File reportPath = new File(sbtDirectory, REPORT_FILE_DIRECTORY);
 
@@ -163,7 +163,7 @@ public class SbtPackager {
         }
 
         for (final File resCache : resolutionCaches) {
-            logger.debug(String.format("Found resolution cache: ", resCache.getCanonicalPath()));
+            logger.debug(String.format("Found resolution cache: %s", resCache.getCanonicalPath()));
             final File reportPath = new File(resCache, REPORT_DIRECTORY);
             final List<SbtDependencyModule> foundModules = extractReportModules(path, reportPath, resCache.getParentFile(), included, excluded, usedReports);
             modules.addAll(foundModules);
