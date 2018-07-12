@@ -28,11 +28,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
@@ -43,8 +42,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 import com.google.gson.Gson;
 
 public class NugetInspectorPackager {
-    private final Logger logger = LoggerFactory.getLogger(NugetInspectorPackager.class);
-
     private final Gson gson;
     private final ExternalIdFactory externalIdFactory;
 
@@ -61,20 +58,25 @@ public class NugetInspectorPackager {
         String projectName = "";
         String projectVersion = "";
         for (final NugetContainer it : nugetInspection.containers) {
-            final NugetParseResult result = createDetectCodeLocationFromNugetContainer(bomToolType, it);
-            if (StringUtils.isNotBlank(result.projectName)) {
-                projectName = result.projectName;
-                projectVersion = result.projectVersion;
+            final Optional<NugetParseResult> possibleParseResult = createDetectCodeLocationFromNugetContainer(bomToolType, it);
+            if (possibleParseResult.isPresent()) {
+                final NugetParseResult result = possibleParseResult.get();
+                if (StringUtils.isNotBlank(result.projectName)) {
+                    projectName = result.projectName;
+                    projectVersion = result.projectVersion;
+                }
+                codeLocations.addAll(result.codeLocations);
             }
-            codeLocations.addAll(result.codeLocations);
         }
 
         return new NugetParseResult(projectName, projectVersion, codeLocations);
     }
 
-    private NugetParseResult createDetectCodeLocationFromNugetContainer(final BomToolType bomToolType, final NugetContainer nugetContainer) {
+    private Optional<NugetParseResult> createDetectCodeLocationFromNugetContainer(final BomToolType bomToolType, final NugetContainer nugetContainer) {
+        final NugetParseResult parseResult;
         String projectName = "";
         String projectVersionName = "";
+
         if (NugetContainerType.SOLUTION == nugetContainer.type) {
             projectName = nugetContainer.name;
             projectVersionName = nugetContainer.version;
@@ -92,7 +94,7 @@ public class NugetInspectorPackager {
                         .build();
                 codeLocations.add(codeLocation);
             }
-            return new NugetParseResult(projectName, projectVersionName, codeLocations);
+            parseResult = new NugetParseResult(projectName, projectVersionName, codeLocations);
         } else if (NugetContainerType.PROJECT == nugetContainer.type) {
             projectName = nugetContainer.name;
             projectVersionName = nugetContainer.version;
@@ -103,9 +105,11 @@ public class NugetInspectorPackager {
 
             final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.NUGET, bomToolType, sourcePath, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)
                     .build();
-            return new NugetParseResult(projectName, projectVersionName, codeLocation);
+            parseResult = new NugetParseResult(projectName, projectVersionName, codeLocation);
         } else {
-            return null;
+            parseResult = null;
         }
+
+        return Optional.ofNullable(parseResult);
     }
 }
