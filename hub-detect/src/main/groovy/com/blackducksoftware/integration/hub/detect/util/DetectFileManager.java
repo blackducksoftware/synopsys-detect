@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 
 public class DetectFileManager {
@@ -48,32 +49,41 @@ public class DetectFileManager {
     private final Map<ExtractionId, File> outputDirectories = new HashMap<>();
     private final DiagnosticManager diagnosticManager;
 
-    public DetectFileManager(final DetectConfigWrapper detectConfigWrapper, final DiagnosticManager diagnosticManager) {
+    private final DetectRunManager detectRunManager;
+
+    public DetectFileManager(final DetectConfigWrapper detectConfigWrapper, final DetectRunManager detectRunManager, final DiagnosticManager diagnosticManager) {
         this.detectConfigWrapper = detectConfigWrapper;
+        this.detectRunManager = detectRunManager;
         this.diagnosticManager = diagnosticManager;
     }
 
-    public File getOutputDirectory(final String name, final ExtractionId extractionId) {
+    // Athough you could just register files with diagnostics manager, I think it makes sense for filemanager to act as a mediator
+    // because he can first decide whether or not to pass it on as he does with cleanup, and it needs to be low footprint and passing
+    // in diagnostic manager is overkill when all you want to do is say 'hey maybe i care about this file' and most already have
+    // file manager anyway.
+    public void registerFileOfInterest(final ExtractionId extractionId, final File file) {
+        if (diagnosticManager.isDiagnosticModeOn()) {
+            diagnosticManager.registerFileOfInterest(extractionId, file);
+        }
+    }
+
+    public void registerGlobalFileOfInterest(final File file) {
+        if (diagnosticManager.isDiagnosticModeOn()) {
+            diagnosticManager.registerGlobalFileOfInterest(file);
+        }
+    }
+
+    public File getOutputDirectory(final ExtractionId extractionId) {
         if (outputDirectories.containsKey(extractionId)) {
             return outputDirectories.get(extractionId);
         } else {
-            final String directoryName = name + "-" + extractionId.toUniqueString();
+            final String directoryName = extractionId.toUniqueString();
 
             final File newDirectory = new File(getExtractionFile(), directoryName);
             newDirectory.mkdir();
             outputDirectories.put(extractionId, newDirectory);
             return newDirectory;
         }
-    }
-
-    private File getExtractionFile() {
-        File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "extractions");
-        newDirectory.mkdir();
-        if (diagnosticManager.isDiagnosticModeOn()) {
-            newDirectory = new File(newDirectory, diagnosticManager.getRunId());
-            newDirectory.mkdir();
-        }
-        return newDirectory;
     }
 
     public File getOutputFile(final File outputDirectory, final String name) {
@@ -132,6 +142,16 @@ public class DetectFileManager {
                 }
             }
         }
+    }
+
+    private File getExtractionFile() {
+        File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "extractions");
+        newDirectory.mkdir();
+        if (diagnosticManager.isDiagnosticModeOn()) {
+            newDirectory = new File(newDirectory, detectRunManager.getRunId());
+            newDirectory.mkdir();
+        }
+        return newDirectory;
     }
 
     private File writeToFile(final File file, final String contents, final boolean overwrite) throws IOException {

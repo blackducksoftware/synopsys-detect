@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.extraction;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEval
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExceptionBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 
 public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
@@ -46,11 +48,13 @@ public class ExtractionManager {
     private final PreparationSummaryReporter preparationSummaryReporter;
     private final ExtractionReporter extractionReporter;
     private final BomToolProfiler bomToolProfiler;
+    private final DiagnosticManager diagnosticManager;
 
-    public ExtractionManager(final PreparationSummaryReporter preparationSummaryReporter, final ExtractionReporter extractionReporter, final BomToolProfiler bomToolProfiler) {
+    public ExtractionManager(final PreparationSummaryReporter preparationSummaryReporter, final ExtractionReporter extractionReporter, final BomToolProfiler bomToolProfiler, final DiagnosticManager diagnosticManager) {
         this.preparationSummaryReporter = preparationSummaryReporter;
         this.extractionReporter = extractionReporter;
         this.bomToolProfiler = bomToolProfiler;
+        this.diagnosticManager = diagnosticManager;
     }
 
     private int extractions = 0;
@@ -88,7 +92,17 @@ public class ExtractionManager {
             final ExtractionId extractionId = new ExtractionId(result.getBomTool().getBomToolGroupType(), Integer.toString(extractions));
             extractionReporter.startedExtraction(result.getBomTool(), extractionId);
             bomToolProfiler.extractionStarted(result.getBomTool());
-            result.setExtraction(result.getBomTool().extract(extractionId));
+            try {
+                result.setExtraction(result.getBomTool().extract(extractionId));
+            } catch (final Exception e) {
+
+            }
+            if (diagnosticManager.isDiagnosticModeOn()) {
+                final List<File> diagnosticFiles = result.getBomTool().getRelevantDiagnosticFiles();
+                for (final File file : diagnosticFiles) {
+                    diagnosticManager.registerFileOfInterest(extractionId, file);
+                }
+            }
             bomToolProfiler.extractionEnded(result.getBomTool());
             extractionReporter.endedExtraction(result.getExtraction());
         }

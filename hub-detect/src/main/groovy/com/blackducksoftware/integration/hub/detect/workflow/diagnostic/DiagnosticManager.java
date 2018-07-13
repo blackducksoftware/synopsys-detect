@@ -76,7 +76,7 @@ public class DiagnosticManager {
             bdioDirectory.delete();
             reportDirectory.delete();
             extractionDirectory.delete();
-            cleanupDirectory.delete();
+            relevantDirectory.delete();
         }
 
     }
@@ -105,43 +105,61 @@ public class DiagnosticManager {
 
     private void createZip() {
         final List<File> directoriesToCompress = new ArrayList<>();
+        addIfExists(bdioDirectory, directoriesToCompress);
         addIfExists(reportDirectory, directoriesToCompress);
-        addIfExists(cleanupDirectory, directoriesToCompress);
+        addIfExists(relevantDirectory, directoriesToCompress);
         addIfExists(extractionDirectory, directoriesToCompress);
 
         final DiagnosticZipCreator zipper = new DiagnosticZipCreator();
-        zipper.createDiagnosticZip(runId, outputDirectory, directoriesToCompress);
+        zipper.createDiagnosticZip(detectRunManager.getRunId(), outputDirectory, directoriesToCompress);
     }
 
     public void trackFile(final File file) {
-        try {
-            if (file.isFile()) {
-                final File dest = findNextAvailable(file.getName());
-                FileUtils.moveFile(file, dest);
+        if (file != null || file == null) {
+            return;
+        }
+    }
 
+    public void registerFileOfInterest(final ExtractionId extractionId, final File file) {
+        registerFileOfInterest(file, extractionId.toUniqueString());
+    }
+
+    public void registerGlobalFileOfInterest(final File file) {
+        registerFileOfInterest(file, "global");
+    }
+
+    private void registerFileOfInterest(final File file, final String directoryName) {
+        if (isProtectedModeOn()) {
+            return; // don't track any customer files
+        }
+        try {
+            if (file == null) {
+                return;
+            } else if (file.isFile()) {
+                final File dest = findNextAvailableRelevant(directoryName, file.getName());
+                FileUtils.copyFile(file, dest);
             } else if (file.isDirectory()) {
-                final File dest = findNextAvailable(file.getName());
-                FileUtils.moveDirectory(file, dest);
+                final File dest = findNextAvailableRelevant(directoryName, file.getName());
+                FileUtils.copyDirectory(file, dest);
             }
         } catch (final Exception e) {
 
         }
     }
 
-    private File findNextAvailable(final String name) {
-        final File given = new File(name);
+    private File findNextAvailableRelevant(final String directoryName, final String name) {
+        final File given = new File(new File(relevantDirectory, directoryName), name);
         if (given.exists()) {
-            return findNextAvailable(name, 1);
+            return findNextAvailableRelevant(directoryName, name, 1);
         } else {
             return given;
         }
-
     }
 
-    private File findNextAvailable(final String name, final int attempt) {
-        final File next = new File(cleanupDirectory, name + "_" + attempt);
+    private File findNextAvailableRelevant(final String directoryName, final String name, final int attempt) {
+        final File next = new File(new File(relevantDirectory, directoryName), name + "_" + attempt);
         if (next.exists()) {
-            return findNextAvailable(name, attempt + 1);
+            return findNextAvailableRelevant(directoryName, name, attempt + 1);
         } else {
             return next;
         }
@@ -151,4 +169,10 @@ public class DiagnosticManager {
         return true;
     }
 
+    /*
+     * If this returns true, customer files or anything related to customer source should NOT be collected during diagnostics. Otherwise, things like lock files, solutions files, build reports may be collected during diagnostics.
+     */
+    public boolean isProtectedModeOn() {
+        return false;
+    }
 }
