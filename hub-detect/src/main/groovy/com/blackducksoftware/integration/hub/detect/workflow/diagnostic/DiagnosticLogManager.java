@@ -9,6 +9,8 @@ import org.apache.commons.io.output.TeeOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
@@ -26,6 +28,10 @@ public class DiagnosticLogManager {
     private File stdOutFile;
     private FileOutputStream stdOutStream;
 
+    private FileAppender<ILoggingEvent> fileAppender;
+
+    private FileAppender<ILoggingEvent> extractionAppender;
+
     public void init(final File reportDirectory, final String runId) {
         this.reportDirectory = reportDirectory;
         this.runId = runId;
@@ -42,6 +48,7 @@ public class DiagnosticLogManager {
 
     public void finish() {
         closeOut();
+        fileAppender.stop();
     }
 
     public void cleanup() {
@@ -66,10 +73,44 @@ public class DiagnosticLogManager {
 
     private void setLevel(final Level targetLevel) {
         logger.info("Attempting to set log level.");
-        final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
         logger.trace("Is it success?");
         root.setLevel(Level.ALL);
         logger.trace("how bout nough?");
+    }
+
+    public void startLoggingExtraction(final ExtractionId extractionId) {
+        final File logDir = new File(reportDirectory, "extraction-logs");
+        logDir.mkdirs();
+        final File logFile = new File(logDir, extractionId.toUniqueString() + ".txt");
+
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final PatternLayoutEncoder ple = new PatternLayoutEncoder();
+
+        ple.setPattern(extractionId.toUniqueString() + ": %date %level [%file:%line] %msg%n");
+        ple.setContext(lc);
+        ple.start();
+        extractionAppender = new FileAppender<>();
+        try {
+            extractionAppender.setFile(logFile.getCanonicalPath());
+        } catch (final IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        extractionAppender.setEncoder(ple);
+        extractionAppender.setContext(lc);
+        extractionAppender.start();
+
+        final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
+
+        logbackLogger.addAppender(extractionAppender);
+        logbackLogger.setLevel(Level.ALL);
+    }
+
+    public void stopLoggingExtraction(final ExtractionId extractionId) {
+        extractionAppender.stop();
+        final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
+        logbackLogger.detachAppender(extractionAppender);
     }
 
     private void addAppender(final String file) {
@@ -79,13 +120,13 @@ public class DiagnosticLogManager {
         ple.setPattern("%date %level [%thread] %logger{10} [%file:%line] %msg%n");
         ple.setContext(lc);
         ple.start();
-        final FileAppender<ILoggingEvent> fileAppender = new FileAppender<>();
+        fileAppender = new FileAppender<>();
         fileAppender.setFile(file);
         fileAppender.setEncoder(ple);
         fileAppender.setContext(lc);
         fileAppender.start();
 
-        final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
 
         logbackLogger.addAppender(fileAppender);
         logbackLogger.setLevel(Level.ALL);

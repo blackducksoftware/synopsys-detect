@@ -90,6 +90,7 @@ public class ExtractionManager {
         if (result.isExtractable()) {
             extractions++;
             final ExtractionId extractionId = new ExtractionId(result.getBomTool().getBomToolGroupType(), Integer.toString(extractions));
+            diagnosticManager.startLoggingExtraction(extractionId);
             extractionReporter.startedExtraction(result.getBomTool(), extractionId);
             bomToolProfiler.extractionStarted(result.getBomTool());
             try {
@@ -105,6 +106,7 @@ public class ExtractionManager {
             }
             bomToolProfiler.extractionEnded(result.getBomTool());
             extractionReporter.endedExtraction(result.getExtraction());
+            diagnosticManager.stopLoggingExtraction(extractionId);
         }
 
     }

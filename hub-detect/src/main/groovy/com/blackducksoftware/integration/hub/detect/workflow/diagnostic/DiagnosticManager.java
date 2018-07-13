@@ -1,9 +1,6 @@
 package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
 
 import java.io.File;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +22,7 @@ public class DiagnosticManager {
 
     private File outputDirectory;
     private File reportDirectory;
-    private File cleanupDirectory;
+    private File relevantDirectory;
     private File extractionDirectory;
     private File bdioDirectory;
 
@@ -81,14 +78,32 @@ public class DiagnosticManager {
 
     }
 
+    public void startLoggingExtraction(final ExtractionId extractionId) {
+        diagnosticLogManager.startLoggingExtraction(extractionId);
+    }
+
+    public void stopLoggingExtraction(final ExtractionId extractionId) {
+        diagnosticLogManager.stopLoggingExtraction(extractionId);
+    }
+
     public void writeReports() {
-        profiler.writeToLogs();
+        final DiagnosticReportWriter profileWriter = diagnosticReportManager.getReportWriter(ReportTypes.BOM_TOOL_PROFILE);
 
         final ProfilingReporter reporter = new ProfilingReporter();
-        final DiagnosticReportWriter applicableReport = diagnosticReportManager.getReportWriter(ReportTypes.APPLICABLE_PROFILE);
-        reporter.writeReport(applicableReport, profiler);
+        profileWriter.writeSeperator();
+        profileWriter.writeLine("Applicable Times");
+        profileWriter.writeSeperator();
+        reporter.writeReport(profileWriter, profiler.getApplicableTimings());
+        profileWriter.writeSeperator();
+        profileWriter.writeLine("Extractable Times");
+        profileWriter.writeSeperator();
+        reporter.writeReport(profileWriter, profiler.getExtractableTimings());
+        profileWriter.writeSeperator();
+        profileWriter.writeLine("Extraction Times");
+        profileWriter.writeSeperator();
+        reporter.writeReport(profileWriter, profiler.getExtractionTimings());
 
-        final DiagnosticReportWriter extractionReport = diagnosticReportManager.getReportWriter(ReportTypes.EXTRACTION);
+        final DiagnosticReportWriter extractionReport = diagnosticReportManager.getReportWriter(ReportTypes.EXTRACTION_STATE);
         for (final BomToolTime time : profiler.getExtractionTimings()) {
             extractionReport.writeSeperator();
             extractionReport.writeLine(time.getBomTool().getDescriptiveName());
