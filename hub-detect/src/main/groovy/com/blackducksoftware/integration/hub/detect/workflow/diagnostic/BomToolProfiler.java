@@ -1,8 +1,6 @@
 package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,40 +50,4 @@ public class BomToolProfiler {
         return extractionTimekeeper.getTimings();
     }
 
-    public void writeToLogs() {
-        logger.info("Bom Tool Applicable Times:");
-        writeToLogs(aggregateByName(applicableTimekeeper));
-        logger.info("Bom Tool Extractable Times:");
-        writeToLogs(extractableTimekeeper);
-        logger.info("Bom Tool Extraction Times:");
-        writeToLogs(extractionTimekeeper);
-    }
-
-    private void writeToLogs(final BomToolTimekeeper timekeeper) {
-        for (final BomToolTime time : timekeeper.getTimings()) {
-            logger.info("\tBom Tool: " + time.getBomTool().getDescriptiveName());
-            logger.info("\t\tTook: " + time.getMs());
-        }
-    }
-
-    private void writeToLogs(final Map<String, Long> timeMap) {
-        for (final String key : timeMap.keySet()) {
-            logger.info("\tBom Tool: " + key);
-            logger.info("\t\tTook: " + timeMap.get(key));
-        }
-    }
-
-    private Map<String, Long> aggregateByName(final BomToolTimekeeper timekeeper) {
-        final Map<String, Long> timeMap = new HashMap<>();
-        for (final BomToolTime time : timekeeper.getTimings()) {
-            final String key = time.getBomTool().getDescriptiveName();
-            Long value = (long) 0;
-            if (timeMap.containsKey(key)) {
-                value = timeMap.get(key);
-            }
-            value += time.getMs();
-            timeMap.put(key, value);
-        }
-        return timeMap;
-    }
 }

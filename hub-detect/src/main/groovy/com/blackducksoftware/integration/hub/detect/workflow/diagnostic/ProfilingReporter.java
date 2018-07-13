@@ -4,13 +4,19 @@ import java.util.List;
 
 public class ProfilingReporter {
 
-    public void writeReport(final DiagnosticReportWriter writer, final BomToolProfiler bomToolProfiler) {
-
-        final List<BomToolTime> timings = bomToolProfiler.getApplicableTimings();
+    public void writeReport(final DiagnosticReportWriter writer, final List<BomToolTime> timings) {
 
         for (final BomToolTime bomToolTime : timings) {
-            writer.writeLine(bomToolTime.getBomTool().getDescriptiveName() + "\t\t\t\t" + bomToolTime.getMs());
+            writer.writeLine("\t" + padToLength(bomToolTime.getBomTool().getDescriptiveName(), 30) + "\t" + bomToolTime.getMs());
         }
 
+    }
+
+    private String padToLength(final String text, final int length) {
+        String outText = text;
+        while (outText.length() < length) {
+            outText += " ";
+        }
+        return outText;
     }
 }
