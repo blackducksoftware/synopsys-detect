@@ -61,7 +61,7 @@ public class GradleInspectorExtractor {
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String gradleExe, final String gradleInspector, final ExtractionId extractionId) {
         try {
-            final File outputDirectory = detectFileManager.getOutputDirectory("Gradle", extractionId);
+            final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
 
             String gradleCommand = detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND);
 

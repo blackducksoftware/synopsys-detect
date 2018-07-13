@@ -18,6 +18,7 @@ import org.mockito.Mockito;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
@@ -71,10 +72,10 @@ public class CLangExtractorTest {
         final LinuxPackageManager pkgMgr = Mockito.mock(LinuxPackageManager.class);
         final File givenDir = new File("src/test/resources/clang/source/build");
         final int depth = 1;
-        final ExtractionId extractionId = new ExtractionId(EXTRACTION_ID);
+        final ExtractionId extractionId = new ExtractionId(BomToolGroupType.CLANG, EXTRACTION_ID);
         final File jsonCompilationDatabaseFile = new File("src/test/resources/clang/source/build/compile_commands.json");
 
-        Mockito.when(detectFileManager.getOutputDirectory(Mockito.anyString(), Mockito.any(ExtractionId.class))).thenReturn(outputDir);
+        Mockito.when(detectFileManager.getOutputDirectory(Mockito.any(ExtractionId.class))).thenReturn(outputDir);
         Mockito.when(compileCommandsJsonFileParser.parse(Mockito.any(File.class))).thenReturn(compileCommands);
 
         final List<PackageDetails> packages = new ArrayList<>();

@@ -61,7 +61,7 @@ public class NpmCliExtractor {
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String npmExe, final ExtractionId extractionId) {
-        final File outputDirectory = detectFileManager.getOutputDirectory("Npm", extractionId);
+        final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
         final File npmLsOutputFile = detectFileManager.getOutputFile(outputDirectory, NpmCliExtractor.OUTPUT_FILE);
         final File npmLsErrorFile = detectFileManager.getOutputFile(outputDirectory, NpmCliExtractor.ERROR_FILE);
 

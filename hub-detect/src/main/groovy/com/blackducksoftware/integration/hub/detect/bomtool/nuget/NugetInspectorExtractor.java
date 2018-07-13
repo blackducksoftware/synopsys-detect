@@ -72,7 +72,7 @@ public class NugetInspectorExtractor {
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String inspectorExe, final ExtractionId extractionId) {
         try {
-            final File outputDirectory = detectFileManager.getOutputDirectory("Nuget", extractionId);
+            final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
 
             final List<String> options = new ArrayList<>(Arrays.asList(
                     "--target_path=" + directory.toString(),

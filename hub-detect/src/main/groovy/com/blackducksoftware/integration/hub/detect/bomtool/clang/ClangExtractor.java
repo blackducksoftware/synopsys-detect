@@ -75,7 +75,7 @@ public class ClangExtractor {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final File rootDir = FileUtils.getRootDir(givenDir, depth);
-            final File outputDirectory = detectFileManager.getOutputDirectory("Clang", extractionId);
+            final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> filesForIScan = ConcurrentHashMap.newKeySet(64);
             final List<CompileCommand> compileCommands = compileCommandsJsonFileParser.parse(jsonCompilationDatabaseFile);

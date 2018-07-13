@@ -25,10 +25,14 @@ package com.blackducksoftware.integration.hub.detect.bomtool;
 
 public class ExtractionId {
     private final String id;
-    public ExtractionId(final String id) {
+    private final BomToolGroupType bomToolGroupType;
+
+    public ExtractionId(final BomToolGroupType bomToolGroupType, final String id) {
         this.id = id;
+        this.bomToolGroupType = bomToolGroupType;
     }
+
     public String toUniqueString() {
-        return id;
+        return bomToolGroupType.toString() + "-" + id;
     }
 }

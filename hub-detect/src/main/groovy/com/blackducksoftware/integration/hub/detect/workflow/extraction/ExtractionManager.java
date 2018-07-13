@@ -85,7 +85,7 @@ public class ExtractionManager {
     private void extract(final BomToolEvaluation result) {
         if (result.isExtractable()) {
             extractions++;
-            final ExtractionId extractionId = new ExtractionId(Integer.toString(extractions));
+            final ExtractionId extractionId = new ExtractionId(result.getBomTool().getBomToolGroupType(), Integer.toString(extractions));
             extractionReporter.startedExtraction(result.getBomTool(), extractionId);
             bomToolProfiler.extractionStarted(result.getBomTool());
             result.setExtraction(result.getBomTool().extract(extractionId));
