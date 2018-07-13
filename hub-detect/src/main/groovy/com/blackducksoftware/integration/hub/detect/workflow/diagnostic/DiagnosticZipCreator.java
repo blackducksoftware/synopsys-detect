@@ -54,5 +54,4 @@ public class DiagnosticZipCreator {
             e.printStackTrace();
         }
     }
-
 }

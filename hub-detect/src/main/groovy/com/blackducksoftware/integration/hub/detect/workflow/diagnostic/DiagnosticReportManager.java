@@ -13,20 +13,32 @@ public class DiagnosticReportManager {
     private final Map<ReportTypes, DiagnosticReportWriter> reportWriters = new HashMap<>();
 
     public enum ReportTypes {
-        SEARCH("search_report"),
-        EXTRACTION("extraction_report"),
-        PREPARATION("preparation_report"),
-        APPLICABLE_PROFILE("applicable_report"),
-        CODE_LOCATIONS("code_location_report");
+        SEARCH("search_report", "Search Result Report", "A breakdown of bom tool searching by directory."),
+        EXTRACTION_STATE("extraction_state_report", "Bom Tool Extraction State Report", "All fields and state of a bom tool post extraction."),
+        BOM_TOOL("bom_tool_report", "Bom Tool Report", "A breakdown of bom tool's that were applicable and their preparation and extraction results."),
+        BOM_TOOL_PROFILE("bom_tool_profile_report", "Bom Tool Profile Report", "A breakdown of timing and profiling for all bom tools."),
+        CODE_LOCATIONS("code_location_report", "Code Location Report", "A breakdown of code locations created, their dependencies and status results.");
 
-        String thing;
+        String reportFileName;
+        String reportTitle;
+        String reportDescription;
 
-        ReportTypes(final String thing) {
-            this.thing = thing;
+        ReportTypes(final String reportFileName, final String reportTitle, final String reportDescription) {
+            this.reportFileName = reportFileName;
+            this.reportTitle = reportTitle;
+            this.reportDescription = reportDescription;
         }
 
         String getReportFileName() {
-            return thing;
+            return reportFileName;
+        }
+
+        String getReportTitle() {
+            return reportTitle;
+        }
+
+        String getReportDescription() {
+            return reportDescription;
         }
     }
 
@@ -56,7 +68,7 @@ public class DiagnosticReportManager {
     private DiagnosticReportWriter createReportWriter(final ReportTypes type) {
         try {
             final File reportFile = new File(reportDirectory, type.getReportFileName() + ".txt");
-            final DiagnosticReportWriter diagnosticReportWriter = new DiagnosticReportWriter(reportFile, type.toString(), runId);
+            final DiagnosticReportWriter diagnosticReportWriter = new DiagnosticReportWriter(reportFile, type.getReportTitle(), type.getReportDescription(), runId);
             reportWriters.put(type, diagnosticReportWriter);
             return diagnosticReportWriter;
         } catch (final Exception e) {

@@ -12,7 +12,7 @@ public class DiagnosticReportWriter {
 
     private BufferedWriter writer;
 
-    public DiagnosticReportWriter(final File reportFile, final String name, final String runId) throws DetectUserFriendlyException {
+    public DiagnosticReportWriter(final File reportFile, final String name, final String description, final String runId) throws DetectUserFriendlyException {
         try {
             final FileWriter fileWriter = new FileWriter(reportFile, true);
             writer = new BufferedWriter(fileWriter);
@@ -21,6 +21,8 @@ public class DiagnosticReportWriter {
             writer.append("Report: " + name);
             writer.newLine();
             writer.append("Run id: " + runId);
+            writer.newLine();
+            writer.append(description);
             writer.newLine();
             writer.newLine();
             writeSeperator();
