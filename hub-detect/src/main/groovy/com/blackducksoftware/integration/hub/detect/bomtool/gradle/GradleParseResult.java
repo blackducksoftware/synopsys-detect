@@ -23,16 +23,46 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
 public class GradleParseResult {
-    public String projectName;
-    public String projectVersion;
-    public DetectCodeLocation codeLocation;
+    private String projectName;
+    private String projectVersion;
+    private DetectCodeLocation codeLocation;
 
     public GradleParseResult(final String projectName, final String projectVersion, final DetectCodeLocation codeLocation) {
+        this.setProjectName(projectName);
+        this.setProjectVersion(projectVersion);
+        this.setCodeLocation(codeLocation);
+    }
+
+    public boolean hasProjectNameAndVersion() {
+        return StringUtils.isNotBlank(projectName) && StringUtils.isNotBlank(projectVersion);
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(final String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getProjectVersion() {
+        return projectVersion;
+    }
+
+    public void setProjectVersion(final String projectVersion) {
         this.projectVersion = projectVersion;
+    }
+
+    public DetectCodeLocation getCodeLocation() {
+        return codeLocation;
+    }
+
+    public void setCodeLocation(final DetectCodeLocation codeLocation) {
         this.codeLocation = codeLocation;
     }
 }

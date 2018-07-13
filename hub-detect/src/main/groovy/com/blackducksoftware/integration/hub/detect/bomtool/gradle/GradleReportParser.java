@@ -24,10 +24,12 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,21 +44,10 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.util.NameVersion;
 
 public class GradleReportParser {
     private final Logger logger = LoggerFactory.getLogger(GradleReportParser.class);
-
-    private String rootProjectName = "";
-    private String rootProjectVersionName = "";
-    private String projectSourcePath = "";
-    private String projectGroup = "";
-    private String projectName = "";
-    private String projectVersionName = "";
-    private boolean processingMetaData = false;
-    private MutableDependencyGraph graph = new MutableMapDependencyGraph();
-    private Stack<Dependency> nodeStack = new Stack<>();
-    private Dependency previousNode = null;
-    private int previousTreeLevel = 0;
     private GradleReportConfigurationParser gradleReportConfigurationParser;
 
     private final ExternalIdFactory externalIdFactory;
@@ -65,10 +56,19 @@ public class GradleReportParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public GradleParseResult parseDependencies(final BomToolType bomToolType, final InputStream dependenciesInputStream) throws IOException {
-        clearState();
+    public Optional<DetectCodeLocation> parseDependencies(final BomToolType bomToolType, final File codeLocationFile) {
+        DetectCodeLocation codeLocation = null;
+        String projectSourcePath = "";
+        String projectGroup = "";
+        String projectName = "";
+        String projectVersionName = "";
+        boolean processingMetaData = false;
+        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        Stack<Dependency> nodeStack = new Stack<>();
+        Dependency previousNode = null;
+        int previousTreeLevel = 0;
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8));) {
+        try (FileInputStream dependenciesInputStream = new FileInputStream(codeLocationFile); BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8));) {
             while (reader.ready()) {
                 final String line = reader.readLine();
                 /**
@@ -83,12 +83,23 @@ public class GradleReportParser {
                     continue;
                 }
                 if (processingMetaData) {
-                    processMetaDataLine(line);
+                    if (line.startsWith("projectPath:")) {
+                        projectSourcePath = line.substring("projectPath:".length()).trim();
+                    } else if (line.startsWith("projectGroup:")) {
+                        projectGroup = line.substring("projectGroup:".length()).trim();
+                    } else if (line.startsWith("projectName:")) {
+                        projectName = line.substring("projectName:".length()).trim();
+                    } else if (line.startsWith("projectVersion:")) {
+                        projectVersionName = line.substring("projectVersion:".length()).trim();
+                    }
                     continue;
                 }
 
                 if (StringUtils.isBlank(line)) {
-                    clearConfigurationState();
+                    nodeStack = new Stack<>();
+                    previousNode = null;
+                    previousTreeLevel = 0;
+                    gradleReportConfigurationParser = new GradleReportConfigurationParser();
                     continue;
                 }
 
@@ -115,48 +126,49 @@ public class GradleReportParser {
                 previousNode = nextDependency;
                 previousTreeLevel = lineTreeLevel;
             }
+
+            final ExternalId id = externalIdFactory.createMavenExternalId(projectGroup, projectName, projectVersionName);
+            codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.GRADLE, bomToolType, projectSourcePath, id, graph).build();
+        } catch (final IOException e) {
+            codeLocation = null;
         }
 
-        final ExternalId id = externalIdFactory.createMavenExternalId(projectGroup, projectName, projectVersionName);
-        final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.GRADLE, bomToolType, projectSourcePath, id, graph).build();
-        return new GradleParseResult(rootProjectName, rootProjectVersionName, detectCodeLocation);
+        return Optional.ofNullable(codeLocation);
     }
 
-    private void clearState() {
-        rootProjectName = "";
-        rootProjectVersionName = "";
-        projectSourcePath = "";
-        projectGroup = "";
-        projectName = "";
-        projectVersionName = "";
-        processingMetaData = false;
-        graph = new MutableMapDependencyGraph();
-        nodeStack = new Stack<>();
-        previousNode = null;
-        clearConfigurationState();
-    }
+    public Optional<NameVersion> parseRootProjectNameVersion(final File rootProjectMetadataFile) {
+        NameVersion nameVersion = null;
+        String rootProjectName = null;
+        String rootProjectVersionName = null;
+        boolean processingMetaData = false;
 
-    private void clearConfigurationState() {
-        nodeStack = new Stack<>();
-        previousNode = null;
-        previousTreeLevel = 0;
-        gradleReportConfigurationParser = new GradleReportConfigurationParser();
-    }
+        try (FileInputStream dependenciesInputStream = new FileInputStream(rootProjectMetadataFile); BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8));) {
+            while (reader.ready()) {
+                final String line = reader.readLine();
 
-    private void processMetaDataLine(final String metaDataLine) {
-        if (metaDataLine.startsWith("rootProjectName:")) {
-            rootProjectName = metaDataLine.substring("rootProjectName:".length()).trim();
-        } else if (metaDataLine.startsWith("rootProjectVersion:")) {
-            rootProjectVersionName = metaDataLine.substring("rootProjectVersion:".length()).trim();
-        } else if (metaDataLine.startsWith("projectPath:")) {
-            projectSourcePath = metaDataLine.substring("projectPath:".length()).trim();
-        } else if (metaDataLine.startsWith("projectGroup:")) {
-            projectGroup = metaDataLine.substring("projectGroup:".length()).trim();
-        } else if (metaDataLine.startsWith("projectName:")) {
-            projectName = metaDataLine.substring("projectName:".length()).trim();
-        } else if (metaDataLine.startsWith("projectVersion:")) {
-            projectVersionName = metaDataLine.substring("projectVersion:".length()).trim();
+                if (line.startsWith("DETECT META DATA START")) {
+                    processingMetaData = true;
+                    continue;
+                }
+                if (line.startsWith("DETECT META DATA END")) {
+                    processingMetaData = false;
+                    continue;
+                }
+                if (processingMetaData) {
+                    if (line.startsWith("rootProjectName:")) {
+                        rootProjectName = line.substring("rootProjectName:".length()).trim();
+                    } else if (line.startsWith("rootProjectVersion:")) {
+                        rootProjectVersionName = line.substring("rootProjectVersion:".length()).trim();
+                    }
+                    continue;
+                }
+            }
+            nameVersion = new NameVersion(rootProjectName, rootProjectVersionName);
+        } catch (final IOException e) {
+            nameVersion = null;
         }
+
+        return Optional.ofNullable(nameVersion);
     }
 
 }

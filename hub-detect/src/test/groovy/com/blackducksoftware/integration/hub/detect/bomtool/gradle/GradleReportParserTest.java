@@ -16,9 +16,11 @@ import static com.blackducksoftware.integration.hub.detect.testutils.DependencyG
 import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphAssertions.assertHasRootMavenGavs;
 import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphAssertions.assertParentHasChildMavenGav;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -27,6 +29,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.util.NameVersion;
 import com.google.gson.GsonBuilder;
 
 public class GradleReportParserTest {
@@ -44,12 +47,12 @@ public class GradleReportParserTest {
 
     @Test
     public void extractCodeLocationTest() throws IOException {
-        createNewCodeLocationTest("/gradle/dependencyGraph.txt", "/gradle/dependencyGraph-expected.json", "hub-detect", "2.0.0-SNAPSHOT");
+        createNewCodeLocationTest("src/test/resources/gradle/dependencyGraph.txt", "/gradle/dependencyGraph-expected.json", "hub-detect", "2.0.0-SNAPSHOT");
     }
 
     @Test
     public void complexTest() throws IOException {
-        final DetectCodeLocation codeLocation = build("/gradle/parse-tests/complex_dependencyGraph.txt");
+        final DetectCodeLocation codeLocation = build("src/test/resources/gradle/parse-tests/complex_dependencyGraph.txt");
         final DependencyGraph graph = codeLocation.getDependencyGraph();
 
         assertHasMavenGav(graph, "non-project:with-nested:1.0.0");
@@ -71,26 +74,34 @@ public class GradleReportParserTest {
     }
 
     private DetectCodeLocation build(final String resource) throws IOException {
-        final InputStream inputStream = getClass().getResourceAsStream(resource);
+        final File file = new File(resource);
         final GradleReportParser gradleReportParser = new GradleReportParser(new ExternalIdFactory());
-        final GradleParseResult result = gradleReportParser.parseDependencies(BomToolType.GRADLE_INSPECTOR, inputStream);
-        return result.codeLocation;
+        final Optional<DetectCodeLocation> result = gradleReportParser.parseDependencies(BomToolType.GRADLE_INSPECTOR, file);
+        if (result.isPresent()) {
+            return result.get();
+        } else {
+            return null;
+        }
     }
 
     @Test
     public void testSpringFrameworkAop() throws IOException {
-        final InputStream inputStream = getClass().getResourceAsStream("/gradle/spring-framework/spring_aop_dependencyGraph.txt");
+        final File file = new File("src/test/resources/gradle/spring-framework/spring_aop_dependencyGraph.txt");
         final GradleReportParser gradleReportParser = new GradleReportParser(new ExternalIdFactory());
-        final GradleParseResult result = gradleReportParser.parseDependencies(BomToolType.GRADLE_INSPECTOR, inputStream);
-        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(result.codeLocation));
+        final Optional<DetectCodeLocation> result = gradleReportParser.parseDependencies(BomToolType.GRADLE_INSPECTOR, file);
+        assertTrue(result.isPresent());
+        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(result.get()));
     }
 
     private void createNewCodeLocationTest(final String gradleInspectorOutputResourcePath, final String expectedResourcePath, final String rootProjectName, final String rootProjectVersionName) throws IOException {
         final GradleReportParser gradleReportParser = new GradleReportParser(new ExternalIdFactory());
-        final GradleParseResult result = gradleReportParser.parseDependencies(BomToolType.GRADLE_INSPECTOR, getClass().getResourceAsStream(gradleInspectorOutputResourcePath));
+        final Optional<DetectCodeLocation> result = gradleReportParser.parseDependencies(BomToolType.GRADLE_INSPECTOR, new File(gradleInspectorOutputResourcePath));
+        final Optional<NameVersion> rootProjectNameVersion = gradleReportParser.parseRootProjectNameVersion(new File(gradleInspectorOutputResourcePath));
 
-        assertEquals(rootProjectName, result.projectName);
-        assertEquals(rootProjectVersionName, result.projectVersion);
-        testUtil.testJsonResource(expectedResourcePath, result.codeLocation);
+        assertTrue(result.isPresent());
+        assertTrue(rootProjectNameVersion.isPresent());
+        assertEquals(rootProjectName, rootProjectNameVersion.get().getName());
+        assertEquals(rootProjectVersionName, rootProjectNameVersion.get().getVersion());
+        testUtil.testJsonResource(expectedResourcePath, result.get());
     }
 }
