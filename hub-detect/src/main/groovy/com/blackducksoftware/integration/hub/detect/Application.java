@@ -57,6 +57,7 @@ import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManag
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
@@ -86,6 +87,7 @@ public class Application implements ApplicationRunner {
     private final PhoneHomeManager phoneHomeManager;
     private final ArgumentStateParser argumentStateParser;
     private final DiagnosticManager diagnosticManager;
+    private final DetectRunManager detectRunManager;
 
     private enum WorkflowStep {
         EXIT_WITH_SUCCESS,
@@ -96,7 +98,7 @@ public class Application implements ApplicationRunner {
     public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final AdditionalPropertyConfig additionalPropertyConfig, final DetectConfigWrapper detectConfigWrapper,
             final ConfigurationManager configurationManager, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
             final HubServiceWrapper hubServiceWrapper, final DetectSummaryManager detectSummaryManager, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
-            final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final ArgumentStateParser argumentStateParser, final DiagnosticManager diagnosticManager) {
+            final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final ArgumentStateParser argumentStateParser, final DetectRunManager detectRunManager, final DiagnosticManager diagnosticManager) {
         this.detectOptionManager = detectOptionManager;
         this.detectInfo = detectInfo;
         this.additionalPropertyConfig = additionalPropertyConfig;
@@ -113,6 +115,7 @@ public class Application implements ApplicationRunner {
         this.exitCodeReporters = exitCodeReporters;
         this.phoneHomeManager = phoneHomeManager;
         this.argumentStateParser = argumentStateParser;
+        this.detectRunManager = detectRunManager;
         this.diagnosticManager = diagnosticManager;
     }
 
@@ -147,6 +150,7 @@ public class Application implements ApplicationRunner {
 
     private WorkflowStep initializeDetect(final String[] sourceArgs) throws IntegrationException, DetectUserFriendlyException {
         detectInfo.init();
+        detectRunManager.init();
         additionalPropertyConfig.init();
         detectConfigWrapper.init();
         detectOptionManager.init();

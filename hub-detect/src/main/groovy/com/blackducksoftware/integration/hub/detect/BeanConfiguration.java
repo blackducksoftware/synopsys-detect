@@ -122,6 +122,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Docker
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerScanCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.ScanCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticLogManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportManager;
@@ -163,8 +164,13 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public DetectRunManager detectRunManager() {
+        return new DetectRunManager();
+    }
+
+    @Bean
     public DiagnosticManager diagnosticManager() {
-        return new DiagnosticManager(detectConfigWrapper(), bomToolProfiler(), diagnosticReportManager(), diagnosticLogManager());
+        return new DiagnosticManager(detectConfigWrapper(), bomToolProfiler(), diagnosticReportManager(), diagnosticLogManager(), detectRunManager());
     }
 
     @Bean
@@ -298,7 +304,7 @@ public class BeanConfiguration {
 
     @Bean
     public DetectFileManager detectFileManager() {
-        return new DetectFileManager(detectConfigWrapper(), diagnosticManager());
+        return new DetectFileManager(detectConfigWrapper(), detectRunManager(), diagnosticManager());
     }
 
     @Bean
@@ -382,7 +388,7 @@ public class BeanConfiguration {
 
     @Bean
     public ExtractionManager extractionManager() {
-        return new ExtractionManager(preparationSummaryReporter(), extractionReporter(), bomToolProfiler());
+        return new ExtractionManager(preparationSummaryReporter(), extractionReporter(), bomToolProfiler(), diagnosticManager());
     }
 
     @Bean

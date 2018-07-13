@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.testutils.ObjectPrinter;
@@ -30,17 +31,18 @@ public class DiagnosticManager {
 
     private final DiagnosticReportManager diagnosticReportManager;
     private final DiagnosticLogManager diagnosticLogManager;
+    private final DetectRunManager detectRunManager;
 
-    public DiagnosticManager(final DetectConfigWrapper detectConfigWrapper, final BomToolProfiler profiler, final DiagnosticReportManager diagnosticReportManager, final DiagnosticLogManager diagnosticLogManager) {
+    public DiagnosticManager(final DetectConfigWrapper detectConfigWrapper, final BomToolProfiler profiler, final DiagnosticReportManager diagnosticReportManager, final DiagnosticLogManager diagnosticLogManager,
+            final DetectRunManager detectRunManager) {
         this.detectConfigWrapper = detectConfigWrapper;
         this.profiler = profiler;
         this.diagnosticReportManager = diagnosticReportManager;
         this.diagnosticLogManager = diagnosticLogManager;
+        this.detectRunManager = detectRunManager;
     }
 
     public void init() {
-
-        runId = createRunId();
 
         System.out.println("");
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
@@ -54,8 +56,8 @@ public class DiagnosticManager {
         extractionDirectory = new File(new File(outputDirectory, "extractions"), runId);
         reportDirectory.mkdir();
 
-        diagnosticReportManager.init(reportDirectory, runId);
-        diagnosticLogManager.init(reportDirectory, runId);
+        diagnosticReportManager.init(reportDirectory, detectRunManager.getRunId());
+        diagnosticLogManager.init(reportDirectory, detectRunManager.getRunId());
     }
 
     public void finish() {
@@ -91,14 +93,6 @@ public class DiagnosticManager {
             ObjectPrinter.printObjectPrivate(extractionReport, null, time.getBomTool());
             extractionReport.writeSeperator();
         }
-    }
-
-    public String getRunId() {
-        return runId;
-    }
-
-    private String createRunId() {
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS").withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
     }
 
     private void addIfExists(final File file, final List<File> files) {
