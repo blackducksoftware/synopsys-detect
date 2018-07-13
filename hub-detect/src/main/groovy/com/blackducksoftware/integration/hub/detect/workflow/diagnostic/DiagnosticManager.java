@@ -23,11 +23,11 @@ public class DiagnosticManager {
     private final DetectConfigWrapper detectConfigWrapper;
     private final BomToolProfiler profiler;
 
-    private String runId;
     private File outputDirectory;
     private File reportDirectory;
     private File cleanupDirectory;
     private File extractionDirectory;
+    private File bdioDirectory;
 
     private final DiagnosticReportManager diagnosticReportManager;
     private final DiagnosticLogManager diagnosticLogManager;
@@ -46,14 +46,15 @@ public class DiagnosticManager {
 
         System.out.println("");
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("Diagnostic mode on. Run id " + runId);
+        System.out.println("Diagnostic mode on. Run id " + detectRunManager.getRunId());
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("");
 
         outputDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH));
-        reportDirectory = new File(new File(outputDirectory, "reports"), runId);
-        cleanupDirectory = new File(new File(outputDirectory, "cleanup"), runId);
-        extractionDirectory = new File(new File(outputDirectory, "extractions"), runId);
+        bdioDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH));
+        reportDirectory = new File(new File(outputDirectory, "reports"), detectRunManager.getRunId());
+        relevantDirectory = new File(new File(outputDirectory, "relevant"), detectRunManager.getRunId());
+        extractionDirectory = new File(new File(outputDirectory, "extractions"), detectRunManager.getRunId());
         reportDirectory.mkdir();
 
         diagnosticReportManager.init(reportDirectory, detectRunManager.getRunId());
@@ -72,6 +73,7 @@ public class DiagnosticManager {
             diagnosticReportManager.cleanup();
             diagnosticLogManager.cleanup();
 
+            bdioDirectory.delete();
             reportDirectory.delete();
             extractionDirectory.delete();
             cleanupDirectory.delete();

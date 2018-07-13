@@ -78,9 +78,9 @@ public class ConfigurationManager {
         this.detectConfigurationPrinter = detectConfigurationPrinter;
     }
 
-    public void initialize(final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
+    public void initialize(final List<DetectOption> detectOptions, final List<String> defaultBdioOutputPieces) throws DetectUserFriendlyException {
         resolveTildeInPaths();
-        resolveTargetAndOutputDirectories();
+        resolveTargetAndOutputDirectories(defaultBdioOutputPieces);
         resolvePolicyProperties();
         resolveSignatureScannerProperties(detectOptions);
         resolveBomToolSearchProperties();
@@ -104,7 +104,7 @@ public class ConfigurationManager {
         }
     }
 
-    private void resolveTargetAndOutputDirectories() throws DetectUserFriendlyException {
+    private void resolveTargetAndOutputDirectories(final List<String> defaultBdioOutputPieces) throws DetectUserFriendlyException {
         String sourcePath = detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH);
         if (StringUtils.isBlank(sourcePath)) {
             sourcePath = System.getProperty("user.dir");
@@ -120,7 +120,7 @@ public class ConfigurationManager {
         try {
             sourcePath = sourceDirectory.getCanonicalPath();
             outputDirectoryPath = createDirectoryPath(outputDirectoryPath, USER_HOME, "blackduck");
-            bdioOutputDirectoryPath = createDirectoryPath(bdioOutputDirectoryPath, outputDirectoryPath, "bdio");
+            bdioOutputDirectoryPath = createDirectoryPath(bdioOutputDirectoryPath, outputDirectoryPath, defaultBdioOutputPieces);
             scanOutputDirectoryPath = createDirectoryPath(scanOutputDirectoryPath, outputDirectoryPath, "scan");
         } catch (final IOException e) {
             throw new DetectUserFriendlyException(String.format("There was a problem creating . %s", e.getMessage()), e, ExitCodeType.FAILURE_CONFIGURATION);
@@ -169,7 +169,7 @@ public class ConfigurationManager {
                     "You have provided both a hub signature scanner url AND a local hub signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
                     ExitCodeType.FAILURE_GENERAL_ERROR);
         }
-        Boolean originalOfflineMode = detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE);
+        final Boolean originalOfflineMode = detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE);
         hubOfflineMode = originalOfflineMode;
         if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL))) {
             logger.info("A hub signature scanner url was provided, which requires hub offline mode. Setting hub offline mode to true.");
@@ -267,8 +267,15 @@ public class ConfigurationManager {
     }
 
     private String createDirectoryPath(final String providedDirectoryPath, final String defaultDirectoryPath, final String defaultDirectoryName) throws IOException {
+        return createDirectoryPath(providedDirectoryPath, defaultDirectoryPath, Arrays.asList(defaultDirectoryName));
+    }
+
+    private String createDirectoryPath(final String providedDirectoryPath, final String defaultDirectoryPath, final List<String> defaultDirectoryName) throws IOException {
         if (StringUtils.isBlank(providedDirectoryPath)) {
-            final File directory = new File(defaultDirectoryPath, defaultDirectoryName);
+            File directory = new File(defaultDirectoryPath);
+            for (final String piece : defaultDirectoryName) {
+                directory = new File(directory, piece);
+            }
             return directory.getCanonicalPath();
         }
         return providedDirectoryPath;

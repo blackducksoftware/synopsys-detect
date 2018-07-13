@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -173,7 +174,12 @@ public class Application implements ApplicationRunner {
             interactiveManager.configureInInteractiveMode();
         }
 
-        configurationManager.initialize(options);
+        final List<String> defaultBdioLocation = new ArrayList<>();
+        defaultBdioLocation.add("bdio");
+        if (diagnosticManager.isDiagnosticModeOn()) {
+            defaultBdioLocation.add(detectRunManager.getRunId());
+        }
+        configurationManager.initialize(options, defaultBdioLocation);
         detectOptionManager.postInit();
 
         logger.info("Configuration processed completely.");
