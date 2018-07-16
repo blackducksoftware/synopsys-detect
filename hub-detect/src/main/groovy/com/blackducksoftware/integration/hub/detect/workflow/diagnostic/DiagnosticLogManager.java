@@ -53,13 +53,6 @@ public class DiagnosticLogManager {
         fileAppender.stop();
     }
 
-    public void cleanup() {
-        logger.info("Cleaning sysout file: " + getStdOutFile().getPath());
-        getStdOutFile().delete();
-        logger.info("Cleaning log file: " + getLogFile().getPath());
-        getLogFile().delete();
-    }
-
     private void captureStdOut() {
         try {
             stdOutFile = new File(reportDirectory, stdOutFilePath);

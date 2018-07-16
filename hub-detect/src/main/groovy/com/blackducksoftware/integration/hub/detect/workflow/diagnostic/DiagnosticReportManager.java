@@ -55,10 +55,6 @@ public class DiagnosticReportManager {
         closeReportWriters();
     }
 
-    public void cleanup() {
-        deleteReportFiles();
-    }
-
     private void createReports() {
         for (final ReportTypes reportType : ReportTypes.values()) {
             createReportWriter(reportType);
@@ -89,18 +85,6 @@ public class DiagnosticReportManager {
     private void closeReportWriters() {
         for (final DiagnosticReportWriter writer : reportWriters.values()) {
             writer.finish();
-        }
-    }
-
-    private void deleteReportFiles() {
-        for (final File file : reportDirectory.listFiles()) {
-            try {
-                logger.info("Cleaning report file: " + file.getPath());
-                file.delete();
-            } catch (final SecurityException e) {
-                logger.error("Failed to cleanup: " + file.getPath());
-                e.printStackTrace();
-            }
         }
     }
 }

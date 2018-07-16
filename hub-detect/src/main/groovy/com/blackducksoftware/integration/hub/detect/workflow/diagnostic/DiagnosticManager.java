@@ -1,6 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +79,10 @@ public class DiagnosticManager {
     }
 
     public void finish() {
+        if (!isDiagnosticModeOn()) {
+            return;
+        }
+
         writeReports();
 
         diagnosticReportManager.finish();
@@ -88,17 +93,19 @@ public class DiagnosticManager {
 
         if (zipCreated) {
             if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
-                diagnosticReportManager.cleanup();
-                diagnosticLogManager.cleanup();
-
-                logger.info("Cleaning bdio directory: " + bdioDirectory.getPath());
-                bdioDirectory.delete();
-                logger.info("Cleaning report directory: " + reportDirectory.getPath());
-                reportDirectory.delete();
-                logger.info("Cleaning extraction directory: " + extractionDirectory.getPath());
-                extractionDirectory.delete();
-                logger.info("Cleaning relevant directory: " + relevantDirectory.getPath());
-                relevantDirectory.delete();
+                try {
+                    logger.info("Cleaning bdio directory: " + bdioDirectory.getPath());
+                    FileUtils.deleteDirectory(bdioDirectory);
+                    logger.info("Cleaning report directory: " + reportDirectory.getPath());
+                    FileUtils.deleteDirectory(reportDirectory);
+                    logger.info("Cleaning extraction directory: " + extractionDirectory.getPath());
+                    FileUtils.deleteDirectory(extractionDirectory);
+                    logger.info("Cleaning relevant directory: " + relevantDirectory.getPath());
+                    FileUtils.deleteDirectory(relevantDirectory);
+                } catch (final IOException e) {
+                    logger.error("Failed to cleanup:");
+                    e.printStackTrace();
+                }
             }
         } else {
             logger.warn("Failed to create diagnostics zip. Cleanup will not occur.");
@@ -118,18 +125,30 @@ public class DiagnosticManager {
     }
 
     public void registerFileOfInterest(final ExtractionId extractionId, final File file) {
+        if (!isDiagnosticModeOn()) {
+            return;
+        }
         registerFileOfInterest(file, extractionId.toUniqueString());
     }
 
     public void registerGlobalFileOfInterest(final File file) {
+        if (!isDiagnosticModeOn()) {
+            return;
+        }
         registerFileOfInterest(file, "global");
     }
 
     public void startLoggingExtraction(final ExtractionId extractionId) {
+        if (!isDiagnosticModeOn()) {
+            return;
+        }
         diagnosticLogManager.startLoggingExtraction(extractionId);
     }
 
     public void stopLoggingExtraction(final ExtractionId extractionId) {
+        if (!isDiagnosticModeOn()) {
+            return;
+        }
         diagnosticLogManager.stopLoggingExtraction(extractionId);
     }
 
