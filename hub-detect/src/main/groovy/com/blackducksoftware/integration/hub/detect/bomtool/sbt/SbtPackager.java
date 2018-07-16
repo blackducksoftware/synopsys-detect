@@ -62,7 +62,7 @@ public class SbtPackager {
         this.detectFileFinder = detectFileFinder;
     }
 
-    List<SbtDependencyModule> makeModuleAggregate(final List<File> reportFiles, final String include, final String exclude) throws SAXException, IOException, ParserConfigurationException {
+    public List<SbtDependencyModule> makeModuleAggregate(final List<File> reportFiles, final String include, final String exclude) throws SAXException, IOException, ParserConfigurationException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder = factory.newDocumentBuilder();
 
@@ -126,7 +126,7 @@ public class SbtPackager {
         return result;
     }
 
-    String findFirstModuleVersion(final List<SbtDependencyModule> modules, final String... names) {
+    private String findFirstModuleVersion(final List<SbtDependencyModule> modules, final String... names) {
         String version = null;
         final List<String> nameList = new ArrayList<>();
         for (final String name : names) {
@@ -141,7 +141,7 @@ public class SbtPackager {
         return version;
     }
 
-    List<SbtDependencyModule> extractModules(final String path, final int depth, final String included, final String excluded) throws IOException, SAXException, ParserConfigurationException {
+    private List<SbtDependencyModule> extractModules(final String path, final int depth, final String included, final String excluded) throws IOException, SAXException, ParserConfigurationException {
         final List<File> sbtFiles = detectFileFinder.findFilesToDepth(path, BUILD_SBT_FILENAME, depth);
         final List<File> resolutionCaches = detectFileFinder.findDirectoriesContainingDirectoriesToDepth(path, REPORT_SEARCH_PATTERN, depth);
 
@@ -181,21 +181,12 @@ public class SbtPackager {
         return modules;
     }
 
-    Boolean isNotChildOfScanned(final File folder, final List<File> scanned) throws IOException {
-        for (final File scan : scanned) {
-            if (folder.getCanonicalPath().startsWith(scan.getCanonicalPath())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    Boolean isInProject(final File file, final String sourcePath) throws IOException {
+    private Boolean isInProject(final File file, final String sourcePath) throws IOException {
         final File projectPath = new File(sourcePath, PROJECT_FOLDER);
         return file.getCanonicalPath().startsWith(projectPath.getCanonicalPath());
     }
 
-    List<SbtDependencyModule> extractReportModules(final String path, final File reportPath, final File source, final String included, final String excluded, final List<String> usedReports)
+    private List<SbtDependencyModule> extractReportModules(final String path, final File reportPath, final File source, final String included, final String excluded, final List<String> usedReports)
             throws IOException, SAXException, ParserConfigurationException {
         final List<SbtDependencyModule> modules = new ArrayList<>();
         final String canonical = reportPath.getCanonicalPath();
