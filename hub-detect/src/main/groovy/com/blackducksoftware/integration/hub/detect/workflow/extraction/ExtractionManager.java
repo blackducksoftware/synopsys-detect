@@ -36,6 +36,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
+import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExceptionBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
@@ -49,12 +50,15 @@ public class ExtractionManager {
     private final ExtractionReporter extractionReporter;
     private final BomToolProfiler bomToolProfiler;
     private final DiagnosticManager diagnosticManager;
+    private final PhoneHomeManager phoneHomeManager;
 
-    public ExtractionManager(final PreparationSummaryReporter preparationSummaryReporter, final ExtractionReporter extractionReporter, final BomToolProfiler bomToolProfiler, final DiagnosticManager diagnosticManager) {
+    public ExtractionManager(final PreparationSummaryReporter preparationSummaryReporter, final ExtractionReporter extractionReporter, final BomToolProfiler bomToolProfiler, final DiagnosticManager diagnosticManager,
+            final PhoneHomeManager phoneHomeManager) {
         this.preparationSummaryReporter = preparationSummaryReporter;
         this.extractionReporter = extractionReporter;
         this.bomToolProfiler = bomToolProfiler;
         this.diagnosticManager = diagnosticManager;
+        this.phoneHomeManager = phoneHomeManager;
     }
 
     private int extractions = 0;
@@ -135,6 +139,8 @@ public class ExtractionManager {
                 .filter(it -> it.wasExtractionSuccessful())
                 .flatMap(it -> it.getExtraction().codeLocations.stream())
                 .collect(Collectors.toList());
+
+        phoneHomeManager.startPhoneHome(bomToolProfiler.getAggregateBomToolGroupTimes());
 
         final ExtractionResult result = new ExtractionResult(codeLocations, succesfulBomToolGroups, failedBomToolGroups);
         return result;

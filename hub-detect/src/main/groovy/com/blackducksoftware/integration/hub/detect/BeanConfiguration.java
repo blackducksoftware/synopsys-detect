@@ -388,7 +388,7 @@ public class BeanConfiguration {
 
     @Bean
     public ExtractionManager extractionManager() {
-        return new ExtractionManager(preparationSummaryReporter(), extractionReporter(), bomToolProfiler(), diagnosticManager());
+        return new ExtractionManager(preparationSummaryReporter(), extractionReporter(), bomToolProfiler(), diagnosticManager(), phoneHomeManager());
     }
 
     @Bean
