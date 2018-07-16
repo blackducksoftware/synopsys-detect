@@ -63,6 +63,7 @@ public class NpmCliBomTool extends BomTool {
             return new FileNotFoundBomToolResult(PACKAGE_JSON);
         }
 
+        addRelevantDiagnosticFile(packageJson);
         return new PassedBomToolResult();
     }
 

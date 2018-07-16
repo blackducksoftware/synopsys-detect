@@ -111,6 +111,7 @@ public class NugetInspectorExtractor {
 
             final List<NugetParseResult> parseResults = new ArrayList<>();
             for (final File dependencyNodeFile : dependencyNodeFiles) {
+                detectFileManager.registerFileOfInterest(extractionId, dependencyNodeFile);
                 final NugetParseResult result = nugetInspectorPackager.createDetectCodeLocation(bomToolType, dependencyNodeFile);
                 parseResults.add(result);
             }

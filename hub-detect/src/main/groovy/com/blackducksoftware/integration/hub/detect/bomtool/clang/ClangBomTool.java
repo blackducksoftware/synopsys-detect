@@ -75,6 +75,7 @@ public class ClangBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
+        addRelevantDiagnosticFile(jsonCompilationDatabaseFile);
         return cLangExtractor.extract(pkgMgr, environment.getDirectory(), environment.getDepth(), extractionId, jsonCompilationDatabaseFile);
     }
 
