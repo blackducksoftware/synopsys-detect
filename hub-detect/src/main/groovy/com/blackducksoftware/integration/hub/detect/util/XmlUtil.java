@@ -43,6 +43,10 @@ public class XmlUtil {
             if (childNode.getNodeName().equals(key)) {
                 nodes.add(childNode);
             }
+            final NodeList grandChildNodes = childNode.getChildNodes();
+            if (null != grandChildNodes && grandChildNodes.getLength() > 0) {
+                nodes.addAll(getNodeList(key, childNode));
+            }
         }
         return nodes;
     }
