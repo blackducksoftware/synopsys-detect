@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -66,7 +66,9 @@ public class NpmCliExtractor {
         final File npmLsErrorFile = detectFileManager.getOutputFile(outputDirectory, NpmCliExtractor.ERROR_FILE);
 
         final boolean includeDevDeps = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
-        final List<String> exeArgs = Arrays.asList("ls", "-json");
+        final List<String> exeArgs = new ArrayList<>();
+        exeArgs.add("ls");
+        exeArgs.add("-json");
         if (!includeDevDeps) {
             exeArgs.add("-prod");
         }
