@@ -66,7 +66,7 @@ public class NpmCliExtractor {
         final File npmLsErrorFile = detectFileManager.getOutputFile(outputDirectory, NpmCliExtractor.ERROR_FILE);
 
         final boolean includeDevDeps = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
-        final List<String> exeArgs = Arrays.asList("ls", "-json");
+        final List<String> exeArgs = new ArrayList<>(Arrays.asList("ls", "-json"));
         if (!includeDevDeps) {
             exeArgs.add("-prod");
         }
