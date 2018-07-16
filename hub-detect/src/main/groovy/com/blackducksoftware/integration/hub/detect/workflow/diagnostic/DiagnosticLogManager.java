@@ -23,7 +23,7 @@ public class DiagnosticLogManager {
     private static String logFilePath = "log.txt";
     private static String stdOutFilePath = "out.txt";
 
-    private File reportDirectory;
+    private File logDirectory;
     private File stdOutFile;
     private FileOutputStream stdOutStream;
 
@@ -31,8 +31,8 @@ public class DiagnosticLogManager {
 
     private FileAppender<ILoggingEvent> extractionAppender;
 
-    public void init(final File reportDirectory) {
-        this.reportDirectory = reportDirectory;
+    public void init(final File logDirectory) {
+        this.logDirectory = logDirectory;
 
         logger.info("Attempting to set log level.");
         setLevel(Level.ALL);
@@ -55,7 +55,7 @@ public class DiagnosticLogManager {
 
     private void captureStdOut() {
         try {
-            stdOutFile = new File(reportDirectory, stdOutFilePath);
+            stdOutFile = new File(logDirectory, stdOutFilePath);
             stdOutStream = new FileOutputStream(stdOutFile);
             final TeeOutputStream myOut = new TeeOutputStream(System.out, stdOutStream);
             final PrintStream ps = new PrintStream(myOut, true); // true - auto-flush after println
@@ -75,7 +75,7 @@ public class DiagnosticLogManager {
 
     public void startLoggingExtraction(final ExtractionId extractionId) {
         logger.info("Diagnostics attempting to redirect extraction logs: " + extractionId.toUniqueString());
-        final File logDir = new File(reportDirectory, "extraction-logs");
+        final File logDir = new File(logDirectory, "extractions");
         logDir.mkdirs();
         final File logFile = new File(logDir, extractionId.toUniqueString() + ".txt");
         try {
@@ -120,12 +120,12 @@ public class DiagnosticLogManager {
     }
 
     private File getStdOutFile() {
-        final File dest = new File(reportDirectory, stdOutFilePath);
+        final File dest = new File(logDirectory, stdOutFilePath);
         return dest;
     }
 
     private File getLogFile() {
-        final File dest = new File(reportDirectory, logFilePath);
+        final File dest = new File(logDirectory, logFilePath);
         return dest;
     }
 

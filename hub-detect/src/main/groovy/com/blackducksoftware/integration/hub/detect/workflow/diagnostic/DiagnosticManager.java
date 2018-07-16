@@ -26,6 +26,9 @@ public class DiagnosticManager {
     private File relevantDirectory;
     private File extractionDirectory;
     private File bdioDirectory;
+    private File logDirectory;
+
+    private final List<File> trackedDirectories = new ArrayList<>();
 
     private final DiagnosticReportManager diagnosticReportManager;
     private final DiagnosticLogManager diagnosticLogManager;
@@ -63,17 +66,20 @@ public class DiagnosticManager {
         reportDirectory = new File(new File(outputDirectory, "reports"), detectRunManager.getRunId());
         relevantDirectory = new File(new File(outputDirectory, "relevant"), detectRunManager.getRunId());
         extractionDirectory = new File(new File(outputDirectory, "extractions"), detectRunManager.getRunId());
-        reportDirectory.mkdir();
-        relevantDirectory.mkdir();
-        extractionDirectory.mkdir();
+        logDirectory = new File(new File(outputDirectory, "logs"), detectRunManager.getRunId());
 
-        logger.info("Diagnostics bdio directory: " + bdioDirectory.getPath());
-        logger.info("Diagnostics report directory: " + reportDirectory.getPath());
-        logger.info("Diagnostics extraction directory: " + extractionDirectory.getPath());
-        logger.info("Diagnostics relevant directory: " + relevantDirectory.getPath());
+        trackedDirectories.add(bdioDirectory);
+        trackedDirectories.add(reportDirectory);
+        trackedDirectories.add(relevantDirectory);
+        trackedDirectories.add(extractionDirectory);
+        trackedDirectories.add(logDirectory);
+
+        for (final File file : trackedDirectories) {
+            logger.info("Diagnostics directory: " + file.getPath());
+        }
 
         diagnosticReportManager.init(reportDirectory, detectRunManager.getRunId());
-        diagnosticLogManager.init(reportDirectory);
+        diagnosticLogManager.init(logDirectory);
 
         logger.info("Diagnostic mode on. Run id " + detectRunManager.getRunId());
     }
@@ -94,14 +100,10 @@ public class DiagnosticManager {
         if (zipCreated) {
             if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
                 try {
-                    logger.info("Cleaning bdio directory: " + bdioDirectory.getPath());
-                    FileUtils.deleteDirectory(bdioDirectory);
-                    logger.info("Cleaning report directory: " + reportDirectory.getPath());
-                    FileUtils.deleteDirectory(reportDirectory);
-                    logger.info("Cleaning extraction directory: " + extractionDirectory.getPath());
-                    FileUtils.deleteDirectory(extractionDirectory);
-                    logger.info("Cleaning relevant directory: " + relevantDirectory.getPath());
-                    FileUtils.deleteDirectory(relevantDirectory);
+                    for (final File file : trackedDirectories) {
+                        logger.info("Cleaning diagnostics directory: " + file.getPath());
+                        FileUtils.deleteDirectory(file);
+                    }
                 } catch (final IOException e) {
                     logger.error("Failed to cleanup:");
                     e.printStackTrace();
@@ -186,10 +188,9 @@ public class DiagnosticManager {
 
     private boolean createZip() {
         final List<File> directoriesToCompress = new ArrayList<>();
-        addIfExists(bdioDirectory, directoriesToCompress);
-        addIfExists(reportDirectory, directoriesToCompress);
-        addIfExists(relevantDirectory, directoriesToCompress);
-        addIfExists(extractionDirectory, directoriesToCompress);
+        for (final File file : trackedDirectories) {
+            addIfExists(file, directoriesToCompress);
+        }
 
         final DiagnosticZipCreator zipper = new DiagnosticZipCreator();
         return zipper.createDiagnosticZip(detectRunManager.getRunId(), outputDirectory, directoriesToCompress);
@@ -220,14 +221,10 @@ public class DiagnosticManager {
     }
 
     private boolean isChildOfTrackedFolder(final File file) {
-        if (file.toPath().startsWith(bdioDirectory.toPath())) {
-            return true;
-        } else if (file.toPath().startsWith(reportDirectory.toPath())) {
-            return true;
-        } else if (file.toPath().startsWith(relevantDirectory.toPath())) {
-            return true;
-        } else if (file.toPath().startsWith(extractionDirectory.toPath())) {
-            return true;
+        for (final File trackedFile : trackedDirectories) {
+            if (file.toPath().startsWith(trackedFile.toPath())) {
+                return true;
+            }
         }
         return false;
     }
