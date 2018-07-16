@@ -176,7 +176,7 @@ public class Application implements ApplicationRunner {
 
         final List<String> defaultBdioLocation = new ArrayList<>();
         defaultBdioLocation.add("bdio");
-        if (diagnosticManager.isDiagnosticModeOn()) {
+        if (argumentState.isDiagnostic()) {
             defaultBdioLocation.add(detectRunManager.getRunId());
         }
         configurationManager.initialize(options, defaultBdioLocation);
@@ -184,7 +184,7 @@ public class Application implements ApplicationRunner {
 
         logger.info("Configuration processed completely.");
 
-        diagnosticManager.init();
+        diagnosticManager.init(argumentState.isDiagnostic(), argumentState.isDiagnosticProtected());
 
         if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT)) {
             configurationManager.printConfiguration(System.out, detectInfo, options);
@@ -229,7 +229,7 @@ public class Application implements ApplicationRunner {
         if (detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
             hubManager.performOfflineHubActions(detectProject);
             for (final File bdio : detectProject.getBdioFiles()) {
-                diagnosticManager.trackFile(bdio);
+                diagnosticManager.registerGlobalFileOfInterest(bdio);
             }
         } else {
             final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject);

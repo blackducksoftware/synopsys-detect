@@ -30,6 +30,9 @@ public class DiagnosticManager {
     private final DiagnosticLogManager diagnosticLogManager;
     private final DetectRunManager detectRunManager;
 
+    private boolean isDiagnosticProtected = false;
+    private boolean isDiagnostic = false;
+
     public DiagnosticManager(final DetectConfigWrapper detectConfigWrapper, final BomToolProfiler profiler, final DiagnosticReportManager diagnosticReportManager, final DiagnosticLogManager diagnosticLogManager,
             final DetectRunManager detectRunManager) {
         this.detectConfigWrapper = detectConfigWrapper;
@@ -39,7 +42,14 @@ public class DiagnosticManager {
         this.detectRunManager = detectRunManager;
     }
 
-    public void init() {
+    public void init(final boolean isDiagnostic, final boolean isDiagnosticProtected) {
+
+        this.isDiagnostic = isDiagnostic;
+        this.isDiagnosticProtected = isDiagnosticProtected;
+
+        if (!isDiagnostic) {
+            return;
+        }
 
         System.out.println("");
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
@@ -180,14 +190,4 @@ public class DiagnosticManager {
         }
     }
 
-    public boolean isDiagnosticModeOn() {
-        return true;
-    }
-
-    /*
-     * If this returns true, customer files or anything related to customer source should NOT be collected during diagnostics. Otherwise, things like lock files, solutions files, build reports may be collected during diagnostics.
-     */
-    public boolean isProtectedModeOn() {
-        return false;
-    }
 }

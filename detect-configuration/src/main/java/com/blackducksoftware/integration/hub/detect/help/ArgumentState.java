@@ -32,13 +32,19 @@ public class ArgumentState {
     private final boolean isDeprecatedHelp;
     private final String parsedValue;
 
-    public ArgumentState(final boolean isHelp, final boolean isHelpDocument, final boolean isInteractive, final boolean isVerboseHelp, final boolean isDeprecatedHelp, final String parsedValue) {
+    private final boolean isDiagnostic;
+    private final boolean isDiagnosticProtected;
+
+    public ArgumentState(final boolean isHelp, final boolean isHelpDocument, final boolean isInteractive, final boolean isVerboseHelp, final boolean isDeprecatedHelp, final String parsedValue, final boolean isDiagnostic,
+            final boolean isDiagnosticProtected) {
         this.isHelp = isHelp;
         this.isHelpDocument = isHelpDocument;
         this.isInteractive = isInteractive;
         this.isVerboseHelp = isVerboseHelp;
         this.isDeprecatedHelp = isDeprecatedHelp;
         this.parsedValue = parsedValue;
+        this.isDiagnostic = isDiagnostic;
+        this.isDiagnosticProtected = isDiagnosticProtected;
     }
 
     public boolean isHelp() {
@@ -59,6 +65,14 @@ public class ArgumentState {
 
     public boolean isDeprecatedHelp() {
         return isDeprecatedHelp;
+    }
+
+    public boolean isDiagnostic() {
+        return isDiagnostic;
+    }
+
+    public boolean isDiagnosticProtected() {
+        return isDiagnosticProtected;
     }
 
     public String getParsedValue() {
