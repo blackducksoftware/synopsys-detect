@@ -134,7 +134,7 @@ public class SbtPackager {
         }
         for (final SbtDependencyModule it : modules) {
             if (version == null && it.name != null && nameList.contains(it.name)) {
-                logger.debug("Matched ${it.name} to project version.");
+                logger.debug(String.format("Matched %s to project version.", it.name));
                 version = it.version;
             }
         }
@@ -145,8 +145,8 @@ public class SbtPackager {
         final List<File> sbtFiles = detectFileFinder.findFilesToDepth(path, BUILD_SBT_FILENAME, depth);
         final List<File> resolutionCaches = detectFileFinder.findDirectoriesContainingDirectoriesToDepth(path, REPORT_SEARCH_PATTERN, depth);
 
-        logger.info("Found ${sbtFiles.size()} build.sbt files.");
-        logger.info("Found ${resolutionCaches.size()} resolution caches.");
+        logger.info(String.format("Found %s build.sbt files.", sbtFiles.size()));
+        logger.info(String.format("Found %s resolution caches.", resolutionCaches.size()));
 
         final List<SbtDependencyModule> modules = new ArrayList<>();
         final List<String> usedReports = new ArrayList<>();
@@ -202,21 +202,21 @@ public class SbtPackager {
         if (usedReports.contains(canonical)) {
             logger.debug("Skipping already processed report folder: " + canonical);
         } else if (isInProject(reportPath, path)) {
-            logger.debug("Skipping reports in project folder: ${reportPath.getCanonicalPath()}");
+            logger.debug("Skipping reports in project folder: " + reportPath.getCanonicalPath());
         } else {
             usedReports.add(canonical);
             final List<File> reportFiles = detectFileFinder.findFiles(reportPath, REPORT_FILE_PATTERN);
             if (reportFiles == null || reportFiles.size() <= 0) {
-                logger.debug("No reports were found in: ${reportPath}");
+                logger.debug("No reports were found in: " + reportPath);
             } else {
                 final List<SbtDependencyModule> aggregatedModules = makeModuleAggregate(reportFiles, included, excluded);
 
                 if (aggregatedModules == null) {
-                    logger.debug("No dependencies were generated for report folder: ${reportPath}");
+                    logger.debug("No dependencies were generated for report folder: " + reportPath);
                 } else {
-                    logger.debug("Found ${aggregatedModules.size()} aggregate dependencies in report folder: ${reportPath}");
+                    logger.debug(String.format("Found %s aggregate dependencies in report folder: %s", aggregatedModules.size(), reportPath));
                     for (final SbtDependencyModule aggregatedModule : aggregatedModules) {
-                        logger.debug("Generated root node of ${aggregatedModule.name} ${aggregatedModule.version} ");
+                        logger.debug(String.format("Generated root node of %s %s ", aggregatedModule.name, aggregatedModule.version));
 
                         aggregatedModule.sourcePath = source.getCanonicalPath();
 

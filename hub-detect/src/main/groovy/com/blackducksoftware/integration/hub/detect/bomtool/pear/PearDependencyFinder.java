@@ -68,8 +68,9 @@ public class PearDependencyFinder {
         final DocumentBuilder builder = factory.newDocumentBuilder();
 
         final Document packageXml = builder.parse(packageFile);
-        result.name = XmlUtil.getNode("name", packageXml).getTextContent();
-        final Node versionNode = XmlUtil.getNode("version", packageXml);
+        final Node packageNode = XmlUtil.getNode("package", packageXml);
+        result.name = XmlUtil.getNode("name", packageNode).getTextContent();
+        final Node versionNode = XmlUtil.getNode("version", packageNode);
         final String version = XmlUtil.getNode("release", versionNode).getTextContent();
         result.version = version;
         result.dependencyGraph = parsePearDependencyList(pearListing, pearDependencies);
