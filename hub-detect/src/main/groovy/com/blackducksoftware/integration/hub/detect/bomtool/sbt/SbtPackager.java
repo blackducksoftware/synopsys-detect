@@ -47,15 +47,15 @@ import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 public class SbtPackager {
     private final Logger logger = LoggerFactory.getLogger(SbtPackager.class);
 
-    static final String BUILD_SBT_FILENAME = "build.sbt";
-    static final String REPORT_FILE_DIRECTORY = File.separator + "target" + File.separator + "resolution-cache" + File.separator + "reports";
-    static final String REPORT_SEARCH_PATTERN = "resolution-cache";
-    static final String REPORT_DIRECTORY = "reports";
-    static final String REPORT_FILE_PATTERN = "*.xml";
-    static final String PROJECT_FOLDER = "project";
+    private static final String BUILD_SBT_FILENAME = "build.sbt";
+    private static final String REPORT_FILE_DIRECTORY = File.separator + "target" + File.separator + "resolution-cache" + File.separator + "reports";
+    private static final String REPORT_SEARCH_PATTERN = "resolution-cache";
+    private static final String REPORT_DIRECTORY = "reports";
+    private static final String REPORT_FILE_PATTERN = "*.xml";
+    private static final String PROJECT_FOLDER = "project";
 
-    ExternalIdFactory externalIdFactory;
-    DetectFileFinder detectFileFinder;
+    private final ExternalIdFactory externalIdFactory;
+    private final DetectFileFinder detectFileFinder;
 
     public SbtPackager(final ExternalIdFactory externalIdFactory, final DetectFileFinder detectFileFinder) {
         this.externalIdFactory = externalIdFactory;
