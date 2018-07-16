@@ -47,7 +47,7 @@ public class GradleReportParserTest {
 
     @Test
     public void extractCodeLocationTest() throws IOException {
-        createNewCodeLocationTest("src/test/resources/gradle/dependencyGraph.txt", "/gradle/dependencyGraph-expected.json", "hub-detect", "2.0.0-SNAPSHOT");
+        createNewCodeLocationTest("src/test/resources/gradle/dependencyGraph.txt", "/gradle/dependencyGraph-expected.json", "src/test/resources/gradle/rootProjectMetadata.txt", "hub-detect", "2.0.0-SNAPSHOT");
     }
 
     @Test
@@ -93,10 +93,10 @@ public class GradleReportParserTest {
         System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(result.get()));
     }
 
-    private void createNewCodeLocationTest(final String gradleInspectorOutputResourcePath, final String expectedResourcePath, final String rootProjectName, final String rootProjectVersionName) throws IOException {
+    private void createNewCodeLocationTest(final String gradleInspectorOutputFilePath, final String expectedResourcePath, final String rootProjectFilePath, final String rootProjectName, final String rootProjectVersionName) throws IOException {
         final GradleReportParser gradleReportParser = new GradleReportParser(new ExternalIdFactory());
-        final Optional<DetectCodeLocation> result = gradleReportParser.parseDependencies(BomToolType.GRADLE_INSPECTOR, new File(gradleInspectorOutputResourcePath));
-        final Optional<NameVersion> rootProjectNameVersion = gradleReportParser.parseRootProjectNameVersion(new File(gradleInspectorOutputResourcePath));
+        final Optional<DetectCodeLocation> result = gradleReportParser.parseDependencies(BomToolType.GRADLE_INSPECTOR, new File(gradleInspectorOutputFilePath));
+        final Optional<NameVersion> rootProjectNameVersion = gradleReportParser.parseRootProjectNameVersion(new File(rootProjectFilePath));
 
         assertTrue(result.isPresent());
         assertTrue(rootProjectNameVersion.isPresent());

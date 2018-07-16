@@ -48,7 +48,7 @@ import com.blackducksoftware.integration.util.NameVersion;
 
 public class GradleReportParser {
     private final Logger logger = LoggerFactory.getLogger(GradleReportParser.class);
-    private GradleReportConfigurationParser gradleReportConfigurationParser;
+    private GradleReportConfigurationParser gradleReportConfigurationParser = new GradleReportConfigurationParser();
 
     private final ExternalIdFactory externalIdFactory;
 
