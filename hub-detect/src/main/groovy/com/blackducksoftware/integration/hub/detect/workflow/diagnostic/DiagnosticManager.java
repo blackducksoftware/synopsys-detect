@@ -34,8 +34,8 @@ public class DiagnosticManager {
     private final DiagnosticLogManager diagnosticLogManager;
     private final DetectRunManager detectRunManager;
 
-    private boolean isDiagnosticProtected = false;
-    private boolean isDiagnostic = false;
+    private final boolean isDiagnosticProtected = false;
+    private final boolean isDiagnostic = false;
 
     public DiagnosticManager(final DetectConfigWrapper detectConfigWrapper, final BomToolProfiler profiler, final DiagnosticReportManager diagnosticReportManager, final DiagnosticLogManager diagnosticLogManager,
             final DetectRunManager detectRunManager) {
@@ -75,11 +75,23 @@ public class DiagnosticManager {
         trackedDirectories.add(logDirectory);
 
         for (final File file : trackedDirectories) {
-            logger.info("Diagnostics directory: " + file.getPath());
+            logger.info("Creating diagnostics directory: " + file.getPath());
+            try {
+                file.mkdirs();
+            } catch (final Exception e) {
+                logger.error("Failed to create diagnostics directory.");
+                e.printStackTrace();
+            }
         }
 
-        diagnosticReportManager.init(reportDirectory, detectRunManager.getRunId());
-        diagnosticLogManager.init(logDirectory);
+        logger.info("Initializing diagnostic managers.");
+        try {
+            diagnosticReportManager.init(reportDirectory, detectRunManager.getRunId());
+            diagnosticLogManager.init(logDirectory);
+        } catch (final Exception e) {
+            logger.error("Failed to initialize.");
+            e.printStackTrace();
+        }
 
         logger.info("Diagnostic mode on. Run id " + detectRunManager.getRunId());
     }
@@ -89,13 +101,24 @@ public class DiagnosticManager {
             return;
         }
 
-        writeReports();
+        try {
+            logger.info("Finishing diagnostic mode.");
+            writeReports();
+            diagnosticReportManager.finish();
+            diagnosticLogManager.finish();
+        } catch (final Exception e) {
+            logger.error("Failed to finish.");
+            e.printStackTrace();
+        }
 
-        diagnosticReportManager.finish();
-        diagnosticLogManager.finish();
-
-        logger.info("Preparing to create diagnostics zip.");
-        final boolean zipCreated = createZip();
+        logger.info("Creating diagnostics zip.");
+        boolean zipCreated = false;
+        try {
+            zipCreated = createZip();
+        } catch (final Exception e) {
+            logger.error("Failed to create diagnostic zip. Cleanup will not occur.");
+            e.printStackTrace();
+        }
 
         if (zipCreated) {
             if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
@@ -109,10 +132,9 @@ public class DiagnosticManager {
                     e.printStackTrace();
                 }
             }
-        } else {
-            logger.warn("Failed to create diagnostics zip. Cleanup will not occur.");
         }
 
+        logger.info("Diagnostic mode has completed.");
     }
 
     public boolean isDiagnosticModeOn() {
