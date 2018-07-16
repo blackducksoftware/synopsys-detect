@@ -80,8 +80,16 @@ public class PearDependencyFinder {
     public DependencyGraph parsePearDependencyList(final ExecutableOutput pearListing, final ExecutableOutput pearDependencies) {
         DependencyGraph graph = new MutableMapDependencyGraph();
 
-        if (pearDependencies.getErrorOutputAsList().size() > 0 || pearListing.getErrorOutputAsList().size() > 0) {
+        if (StringUtils.isNotBlank(pearDependencies.getErrorOutput()) || StringUtils.isNotBlank(pearListing.getErrorOutput())) {
             logger.error("There was an error during execution.");
+            if (StringUtils.isNotBlank(pearListing.getErrorOutput())) {
+                logger.error("Pear list error: ");
+                logger.error(pearListing.getErrorOutput());
+            }
+            if (StringUtils.isNotBlank(pearDependencies.getErrorOutput())) {
+                logger.error("Pear package-dependencies error: ");
+                logger.error(pearDependencies.getErrorOutput());
+            }
         } else if (!(pearDependencies.getStandardOutputAsList().size() > 0) || !(pearListing.getStandardOutputAsList().size() > 0)) {
             logger.error("No information retrieved from running pear commands");
         } else {
