@@ -24,7 +24,6 @@ public class DiagnosticLogManager {
     private static String stdOutFilePath = "out.txt";
 
     private File reportDirectory;
-    private String runId;
     private File stdOutFile;
     private FileOutputStream stdOutStream;
 
@@ -32,17 +31,20 @@ public class DiagnosticLogManager {
 
     private FileAppender<ILoggingEvent> extractionAppender;
 
-    public void init(final File reportDirectory, final String runId) {
+    public void init(final File reportDirectory) {
         this.reportDirectory = reportDirectory;
-        this.runId = runId;
 
+        logger.info("Attempting to set log level.");
         setLevel(Level.ALL);
+
+        logger.info("Attempting to redirect log messages.");
         try {
-            addAppender(getLogFile().getCanonicalPath());
+            fileAppender = addAppender(getLogFile().getCanonicalPath());
         } catch (final IOException e1) {
             e1.printStackTrace();
         }
 
+        logger.info("Attempting to redirect sysout.");
         captureStdOut();
     }
 
@@ -52,7 +54,9 @@ public class DiagnosticLogManager {
     }
 
     public void cleanup() {
+        logger.info("Cleaning sysout file: " + getStdOutFile().getPath());
         getStdOutFile().delete();
+        logger.info("Cleaning log file: " + getLogFile().getPath());
         getLogFile().delete();
     }
 
@@ -63,8 +67,8 @@ public class DiagnosticLogManager {
             final TeeOutputStream myOut = new TeeOutputStream(System.out, stdOutStream);
             final PrintStream ps = new PrintStream(myOut, true); // true - auto-flush after println
             System.setOut(ps);
-            System.out.println("Diagnostic mode on. Run id " + runId);
-            System.out.println("Writing to log file: " + stdOutFile.getCanonicalPath());
+
+            logger.info("Writing sysout to file: " + stdOutFile.getCanonicalPath());
 
         } catch (final Exception e) {
             e.printStackTrace();
@@ -72,64 +76,54 @@ public class DiagnosticLogManager {
     }
 
     private void setLevel(final Level targetLevel) {
-        logger.info("Attempting to set log level.");
         final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
-        logger.trace("Is it success?");
         root.setLevel(Level.ALL);
-        logger.trace("how bout nough?");
     }
 
     public void startLoggingExtraction(final ExtractionId extractionId) {
+        logger.info("Diagnostics attempting to redirect extraction logs: " + extractionId.toUniqueString());
         final File logDir = new File(reportDirectory, "extraction-logs");
         logDir.mkdirs();
         final File logFile = new File(logDir, extractionId.toUniqueString() + ".txt");
-
-        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        final PatternLayoutEncoder ple = new PatternLayoutEncoder();
-
-        ple.setPattern(extractionId.toUniqueString() + ": %date %level [%file:%line] %msg%n");
-        ple.setContext(lc);
-        ple.start();
-        extractionAppender = new FileAppender<>();
         try {
-            extractionAppender.setFile(logFile.getCanonicalPath());
+            final String logFilePath = logFile.getCanonicalPath();
+            extractionAppender = addAppender(logFilePath);
+            logger.info("Redirected to file: " + logFilePath);
         } catch (final IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        extractionAppender.setEncoder(ple);
-        extractionAppender.setContext(lc);
-        extractionAppender.start();
 
-        final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
-
-        logbackLogger.addAppender(extractionAppender);
-        logbackLogger.setLevel(Level.ALL);
     }
 
     public void stopLoggingExtraction(final ExtractionId extractionId) {
-        extractionAppender.stop();
-        final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
-        logbackLogger.detachAppender(extractionAppender);
+        logger.info("Diagnostics finished redirecting for extraction: " + extractionId.toUniqueString());
+        if (extractionAppender != null) {
+            final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
+            logbackLogger.detachAppender(extractionAppender);
+            extractionAppender.stop();
+        }
     }
 
-    private void addAppender(final String file) {
+    private FileAppender<ILoggingEvent> addAppender(final String file) {
         final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
         final PatternLayoutEncoder ple = new PatternLayoutEncoder();
 
-        ple.setPattern("%date %level [%thread] %logger{10} [%file:%line] %msg%n");
+        ple.setPattern("%date %level [%file:%line] %msg%n");
         ple.setContext(lc);
         ple.start();
-        fileAppender = new FileAppender<>();
-        fileAppender.setFile(file);
-        fileAppender.setEncoder(ple);
-        fileAppender.setContext(lc);
-        fileAppender.start();
+        FileAppender<ILoggingEvent> appender;
+        appender = new FileAppender<>();
+        appender.setFile(file);
+        appender.setEncoder(ple);
+        appender.setContext(lc);
+        appender.start();
 
         final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
 
-        logbackLogger.addAppender(fileAppender);
+        logbackLogger.addAppender(appender);
         logbackLogger.setLevel(Level.ALL);
+
+        return appender;
     }
 
     private File getStdOutFile() {

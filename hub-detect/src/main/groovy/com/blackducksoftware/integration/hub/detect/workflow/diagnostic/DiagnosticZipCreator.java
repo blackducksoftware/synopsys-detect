@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 public class DiagnosticZipCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public void createDiagnosticZip(final String runId, final File outputDirectory, final List<File> compressList) {
-        logger.info("Run id: " + runId);
+    public boolean createDiagnosticZip(final String runId, final File outputDirectory, final List<File> compressList) {
+        logger.info("Creating diagnostics zip.");
         try {
             final File zip = new File(outputDirectory, "detect-run-" + runId + ".zip");
             final ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(zip));
@@ -28,30 +28,30 @@ public class DiagnosticZipCreator {
             }
             logger.info("Diagnostics file created at: " + zip.getCanonicalPath());
             outputStream.close();
+            return true;
         } catch (final Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 
-    public void compress(final ZipOutputStream outputStream, final Path sourceDir, final Path toCompress, final File out) {
-        try {
-            Files.walkFileTree(toCompress, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attributes) {
-                    try {
-                        final Path targetFile = sourceDir.relativize(file);
-                        outputStream.putNextEntry(new ZipEntry(targetFile.toString()));
-                        final byte[] bytes = Files.readAllBytes(file);
-                        outputStream.write(bytes, 0, bytes.length);
-                        outputStream.closeEntry();
-                    } catch (final IOException e) {
-                        e.printStackTrace();
-                    }
-                    return FileVisitResult.CONTINUE;
+    public void compress(final ZipOutputStream outputStream, final Path sourceDir, final Path toCompress, final File out) throws IOException {
+        Files.walkFileTree(toCompress, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attributes) {
+                try {
+                    final Path targetFile = sourceDir.relativize(file);
+                    final String target = targetFile.toString();
+                    logger.debug("Adding file to zip: " + target);
+                    outputStream.putNextEntry(new ZipEntry(target));
+                    final byte[] bytes = Files.readAllBytes(file);
+                    outputStream.write(bytes, 0, bytes.length);
+                    outputStream.closeEntry();
+                } catch (final IOException e) {
+                    e.printStackTrace();
                 }
-            });
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 }

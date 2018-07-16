@@ -63,9 +63,18 @@ public class DiagnosticManager {
         relevantDirectory = new File(new File(outputDirectory, "relevant"), detectRunManager.getRunId());
         extractionDirectory = new File(new File(outputDirectory, "extractions"), detectRunManager.getRunId());
         reportDirectory.mkdir();
+        relevantDirectory.mkdir();
+        extractionDirectory.mkdir();
+
+        logger.info("Diagnostics bdio directory: " + bdioDirectory.getPath());
+        logger.info("Diagnostics report directory: " + reportDirectory.getPath());
+        logger.info("Diagnostics extraction directory: " + extractionDirectory.getPath());
+        logger.info("Diagnostics relevant directory: " + relevantDirectory.getPath());
 
         diagnosticReportManager.init(reportDirectory, detectRunManager.getRunId());
-        diagnosticLogManager.init(reportDirectory, detectRunManager.getRunId());
+        diagnosticLogManager.init(reportDirectory);
+
+        logger.info("Diagnostic mode on. Run id " + detectRunManager.getRunId());
     }
 
     public void finish() {
@@ -74,18 +83,46 @@ public class DiagnosticManager {
         diagnosticReportManager.finish();
         diagnosticLogManager.finish();
 
-        createZip();
+        logger.info("Preparing to create diagnostics zip.");
+        final boolean zipCreated = createZip();
 
-        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
-            diagnosticReportManager.cleanup();
-            diagnosticLogManager.cleanup();
+        if (zipCreated) {
+            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
+                diagnosticReportManager.cleanup();
+                diagnosticLogManager.cleanup();
 
-            bdioDirectory.delete();
-            reportDirectory.delete();
-            extractionDirectory.delete();
-            relevantDirectory.delete();
+                logger.info("Cleaning bdio directory: " + bdioDirectory.getPath());
+                bdioDirectory.delete();
+                logger.info("Cleaning report directory: " + reportDirectory.getPath());
+                reportDirectory.delete();
+                logger.info("Cleaning extraction directory: " + extractionDirectory.getPath());
+                extractionDirectory.delete();
+                logger.info("Cleaning relevant directory: " + relevantDirectory.getPath());
+                relevantDirectory.delete();
+            }
+        } else {
+            logger.warn("Failed to create diagnostics zip. Cleanup will not occur.");
         }
 
+    }
+
+    public boolean isDiagnosticModeOn() {
+        return isDiagnostic;
+    }
+
+    /*
+     * If this returns true, customer files or anything related to customer source should NOT be collected during diagnostics. Otherwise, things like lock files, solutions files, build reports may be collected during diagnostics.
+     */
+    public boolean isProtectedModeOn() {
+        return isDiagnosticProtected;
+    }
+
+    public void registerFileOfInterest(final ExtractionId extractionId, final File file) {
+        registerFileOfInterest(file, extractionId.toUniqueString());
+    }
+
+    public void registerGlobalFileOfInterest(final File file) {
+        registerFileOfInterest(file, "global");
     }
 
     public void startLoggingExtraction(final ExtractionId extractionId) {
@@ -96,7 +133,7 @@ public class DiagnosticManager {
         diagnosticLogManager.stopLoggingExtraction(extractionId);
     }
 
-    public void writeReports() {
+    private void writeReports() {
         final DiagnosticReportWriter profileWriter = diagnosticReportManager.getReportWriter(ReportTypes.BOM_TOOL_PROFILE);
 
         final ProfilingReporter reporter = new ProfilingReporter();
@@ -128,7 +165,7 @@ public class DiagnosticManager {
         }
     }
 
-    private void createZip() {
+    private boolean createZip() {
         final List<File> directoriesToCompress = new ArrayList<>();
         addIfExists(bdioDirectory, directoriesToCompress);
         addIfExists(reportDirectory, directoriesToCompress);
@@ -136,21 +173,7 @@ public class DiagnosticManager {
         addIfExists(extractionDirectory, directoriesToCompress);
 
         final DiagnosticZipCreator zipper = new DiagnosticZipCreator();
-        zipper.createDiagnosticZip(detectRunManager.getRunId(), outputDirectory, directoriesToCompress);
-    }
-
-    public void trackFile(final File file) {
-        if (file != null || file == null) {
-            return;
-        }
-    }
-
-    public void registerFileOfInterest(final ExtractionId extractionId, final File file) {
-        registerFileOfInterest(file, extractionId.toUniqueString());
-    }
-
-    public void registerGlobalFileOfInterest(final File file) {
-        registerFileOfInterest(file, "global");
+        return zipper.createDiagnosticZip(detectRunManager.getRunId(), outputDirectory, directoriesToCompress);
     }
 
     private void registerFileOfInterest(final File file, final String directoryName) {
@@ -168,7 +191,7 @@ public class DiagnosticManager {
                 FileUtils.copyDirectory(file, dest);
             }
         } catch (final Exception e) {
-
+            logger.trace("Failed to copy file to relevant directory:" + file.toString());
         }
     }
 

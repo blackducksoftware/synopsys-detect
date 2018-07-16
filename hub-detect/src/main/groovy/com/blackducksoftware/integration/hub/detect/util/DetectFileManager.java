@@ -117,7 +117,7 @@ public class DetectFileManager {
     // This file will be immediately cleaned up and is associated to a specific context. The current implementation is to actually move it to the context's output and allow cleanup at the end of the detect run (in case of diagnostics).
     public void cleanupOutputFile(final File file) {
         if (diagnosticManager.isDiagnosticModeOn()) {
-            diagnosticManager.trackFile(file);
+            diagnosticManager.registerGlobalFileOfInterest(file);
         } else {
             file.delete();
         }

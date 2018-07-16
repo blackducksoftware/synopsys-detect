@@ -70,6 +70,7 @@ public class DiagnosticReportManager {
             final File reportFile = new File(reportDirectory, type.getReportFileName() + ".txt");
             final DiagnosticReportWriter diagnosticReportWriter = new DiagnosticReportWriter(reportFile, type.getReportTitle(), type.getReportDescription(), runId);
             reportWriters.put(type, diagnosticReportWriter);
+            logger.info("Created report file: " + reportFile.getPath());
             return diagnosticReportWriter;
         } catch (final Exception e) {
             e.printStackTrace();
@@ -94,6 +95,7 @@ public class DiagnosticReportManager {
     private void deleteReportFiles() {
         for (final File file : reportDirectory.listFiles()) {
             try {
+                logger.info("Cleaning report file: " + file.getPath());
                 file.delete();
             } catch (final SecurityException e) {
                 logger.error("Failed to cleanup: " + file.getPath());
