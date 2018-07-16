@@ -18,11 +18,9 @@ import org.junit.Test;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
 
 public class PipInspectorTreeParserTest {
     private PipInspectorTreeParser parser;
-    private final TestUtil testUtil = new TestUtil();
 
     private final String name = "pip";
     private final String version = "1.0.0";
