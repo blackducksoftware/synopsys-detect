@@ -121,7 +121,7 @@ public class DepPackager {
             gopkgTomlFile.delete();
             FileUtils.deleteDirectory(vendorDirectory);
             if (vendorDirectoryExistedBefore) {
-                logger.info("Restoring back up ${vendorDirectory.getAbsolutePath()} from ${vendorDirectoryBackup.getAbsolutePath()}");
+                logger.info(String.format("Restoring back up %s from %s", vendorDirectory.getAbsolutePath(), vendorDirectoryBackup.getAbsolutePath()));
                 FileUtils.moveDirectory(vendorDirectoryBackup, vendorDirectory);
             }
         }

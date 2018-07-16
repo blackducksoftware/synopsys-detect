@@ -52,6 +52,7 @@ public class CondaCliBomTool extends BomTool {
     public CondaCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final CondaCliExtractor condaExtractor) {
         super(environment, "Conda Cli", BomToolGroupType.CONDA, BomToolType.CONDA_CLI);
         this.fileFinder = fileFinder;
+        this.standardExecutableFinder = standardExecutableFinder;
         this.condaExtractor = condaExtractor;
     }
 
