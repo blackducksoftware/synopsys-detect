@@ -48,7 +48,7 @@ public class XmlUtil {
     }
 
     public static String getAttribute(final String key, final Node node) {
-        return node.getAttributes().getNamedItem("organisation").getTextContent();
+        return node.getAttributes().getNamedItem(key).getTextContent();
     }
 
 }
