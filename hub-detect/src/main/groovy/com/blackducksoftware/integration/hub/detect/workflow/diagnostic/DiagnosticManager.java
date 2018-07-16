@@ -202,7 +202,12 @@ public class DiagnosticManager {
         try {
             if (file == null) {
                 return;
-            } else if (file.isFile()) {
+            }
+            if (isChildOfTrackedFolder(file)) {
+                logger.info("Asked to track file '" + file.getPath() + "' but it is already being tracked.");
+                return;
+            }
+            if (file.isFile()) {
                 final File dest = findNextAvailableRelevant(directoryName, file.getName());
                 FileUtils.copyFile(file, dest);
             } else if (file.isDirectory()) {
@@ -212,6 +217,19 @@ public class DiagnosticManager {
         } catch (final Exception e) {
             logger.trace("Failed to copy file to relevant directory:" + file.toString());
         }
+    }
+
+    private boolean isChildOfTrackedFolder(final File file) {
+        if (file.toPath().startsWith(bdioDirectory.toPath())) {
+            return true;
+        } else if (file.toPath().startsWith(reportDirectory.toPath())) {
+            return true;
+        } else if (file.toPath().startsWith(relevantDirectory.toPath())) {
+            return true;
+        } else if (file.toPath().startsWith(extractionDirectory.toPath())) {
+            return true;
+        }
+        return false;
     }
 
     private File findNextAvailableRelevant(final String directoryName, final String name) {
