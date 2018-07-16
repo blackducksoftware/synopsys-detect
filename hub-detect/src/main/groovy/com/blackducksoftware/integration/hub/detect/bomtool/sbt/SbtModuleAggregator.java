@@ -27,17 +27,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
 
 public class SbtModuleAggregator {
-    private final Logger logger = LoggerFactory.getLogger(SbtModuleAggregator.class);
-
-    List<SbtDependencyModule> aggregateModules(final List<SbtDependencyModule> modules) {
+    public List<SbtDependencyModule> aggregateModules(final List<SbtDependencyModule> modules) {
         final Set<SbtAggregate> aggregates = uniqueAggregates(modules);
 
         return aggregates.stream().map(aggregate -> {
@@ -61,7 +56,7 @@ public class SbtModuleAggregator {
         }).collect(Collectors.toList());
     }
 
-    boolean moduleEqualsAggregate(final SbtDependencyModule module, final SbtAggregate aggregate) {
+    private boolean moduleEqualsAggregate(final SbtDependencyModule module, final SbtAggregate aggregate) {
         final boolean namesMatch = module.name == aggregate.name;
         final boolean versionsMatch = module.version == aggregate.version;
         final boolean groupsMatch = module.org == aggregate.org;
@@ -69,12 +64,12 @@ public class SbtModuleAggregator {
         return namesMatch && groupsMatch && versionsMatch;
     }
 
-    SbtAggregate moduleToAggregate(final SbtDependencyModule module) {
+    private SbtAggregate moduleToAggregate(final SbtDependencyModule module) {
         final SbtAggregate aggregate = new SbtAggregate(module.name, module.org, module.version);
         return aggregate;
     }
 
-    Set<SbtAggregate> uniqueAggregates(final List<SbtDependencyModule> modules) {
+    private Set<SbtAggregate> uniqueAggregates(final List<SbtDependencyModule> modules) {
         return modules.stream().map(module -> moduleToAggregate(module)).collect(Collectors.toSet());
     }
 }
