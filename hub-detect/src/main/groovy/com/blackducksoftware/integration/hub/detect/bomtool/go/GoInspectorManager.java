@@ -102,7 +102,7 @@ public class GoInspectorManager {
                 "github.com/golang/dep/cmd/dep"));
         executableRunner.execute(getGoDep);
 
-        logger.debug("Building the Go Dep tool in ${goOutputDirectory}");
+        logger.debug("Building the Go Dep tool in " + installDirectory.getAbsolutePath());
         final Executable buildGoDep = new Executable(installDirectory, goExecutable, Arrays.asList(
                 "build",
                 "github.com/golang/dep/cmd/dep"));

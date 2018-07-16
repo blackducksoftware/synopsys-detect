@@ -34,14 +34,17 @@ import com.blackducksoftware.integration.hub.detect.util.XmlUtil;
 public class SbtReportParser {
     public SbtReport parseReportFromXml(final Document xmlReport) {
         final SbtReport report = new SbtReport();
-        final Node infoNode = XmlUtil.getNode("info", xmlReport);
+
+        Node ivyReport = XmlUtil.getNode("ivy-report", xmlReport);
+
+        final Node infoNode = XmlUtil.getNode("info", ivyReport);
         report.organisation = XmlUtil.getAttribute("organisation", infoNode);
         report.module = XmlUtil.getAttribute("module", infoNode);
         report.revision = XmlUtil.getAttribute("revision", infoNode);
         report.configuration = XmlUtil.getAttribute("conf", infoNode);
         report.dependencies = new ArrayList<>();
 
-        final Node dependencies = XmlUtil.getNode("dependencies", xmlReport);
+        final Node dependencies = XmlUtil.getNode("dependencies", ivyReport);
         final List<Node> modules = XmlUtil.getNodeList("module", dependencies);
 
         modules.forEach(xmlModule -> {
