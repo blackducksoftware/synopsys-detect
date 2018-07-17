@@ -35,8 +35,11 @@ public class ArgumentStateParser {
         final boolean isVerboseHelp = checkArgumentPresent("-hv", "--helpVerbose", args);
         final boolean isDeprecatedHelp = checkArgumentPresent("-hd", "--helpDeprecated", args);
 
-        final boolean isDiagnostic = checkArgumentPresent("-d", "--diagnostic", args);
+        boolean isDiagnostic = checkArgumentPresent("-d", "--diagnostic", args);
         final boolean isDiagnosticProtected = checkArgumentPresent("-dp", "--diagnosticProtected", args);
+        if (isDiagnosticProtected) {
+            isDiagnostic = true;
+        }
 
         String parsedValue = null;
         if (isHelp) {

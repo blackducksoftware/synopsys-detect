@@ -131,11 +131,19 @@ public class DiagnosticManager {
         if (!isDiagnosticModeOn()) {
             return;
         }
+        if (isProtectedModeOn()) {
+            logger.info("Will not track file because protected mode is on: " + file.getPath());
+            return;
+        }
         diagnosticFileManager.registerFileOfInterest(extractionId, file);
     }
 
     public void registerGlobalFileOfInterest(final File file) {
         if (!isDiagnosticModeOn()) {
+            return;
+        }
+        if (isProtectedModeOn()) {
+            logger.info("Will not track file because protected mode is on: " + file.getPath());
             return;
         }
         diagnosticFileManager.registerGlobalFileOfInterest(file);
