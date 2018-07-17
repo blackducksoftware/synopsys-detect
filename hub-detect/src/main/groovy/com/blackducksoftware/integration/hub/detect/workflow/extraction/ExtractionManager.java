@@ -101,7 +101,7 @@ public class ExtractionManager {
             try {
                 result.setExtraction(result.getBomTool().extract(extractionId));
             } catch (final Exception e) {
-
+                result.setExtraction(new Extraction.Builder().exception(e).build());
             }
             if (diagnosticManager.isDiagnosticModeOn()) {
                 final List<File> diagnosticFiles = result.getBomTool().getRelevantDiagnosticFiles();

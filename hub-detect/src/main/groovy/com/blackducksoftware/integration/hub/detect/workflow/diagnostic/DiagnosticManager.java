@@ -2,6 +2,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
 public class DiagnosticManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -76,10 +78,18 @@ public class DiagnosticManager {
         if (!isDiagnosticModeOn()) {
             return;
         }
+        logger.info("Finishing diagnostic mode.");
 
         try {
-            logger.info("Finishing diagnostic mode.");
+            logger.info("Finishing reports.");
             diagnosticReportManager.finish();
+        } catch (final Exception e) {
+            logger.error("Failed to finish.");
+            e.printStackTrace();
+        }
+
+        try {
+            logger.info("Finishing logging.");
             diagnosticLogManager.finish();
         } catch (final Exception e) {
             logger.error("Failed to finish.");
@@ -150,6 +160,13 @@ public class DiagnosticManager {
             return;
         }
         diagnosticReportManager.completedBomToolEvaluations(evaluations);
+    }
+
+    public void completedCodeLocations(final List<BomToolEvaluation> evaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+        if (!isDiagnosticModeOn()) {
+            return;
+        }
+        diagnosticReportManager.completedCodeLocations(evaluations, codeLocationNameMap);
     }
 
     private boolean createZip() {

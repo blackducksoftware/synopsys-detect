@@ -9,15 +9,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.BomToolStateReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.CodeLocationReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.DiagnosticFileReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.DiagnosticReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.DiagnosticSilentReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.OverviewReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.ProfilingReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.SearchReporter;
 
 public class DiagnosticReportManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final Map<ReportTypes, DiagnosticReportWriter> reportWriters = new HashMap<>();
+    private final Map<ReportTypes, DiagnosticFileReportWriter> reportWriters = new HashMap<>();
 
     public enum ReportTypes {
         SEARCH("search_report", "Search Result Report", "A breakdown of bom tool searching by directory."),
@@ -25,7 +31,8 @@ public class DiagnosticReportManager {
         APPLICABLE_STATE("applicable_state_report", "Bom Tool Applicable State Report", "All fields and state of any applicable bom tool post extraction."),
         BOM_TOOL("bom_tool_report", "Bom Tool Report", "A breakdown of bom tool's that were applicable and their preparation and extraction results."),
         BOM_TOOL_PROFILE("bom_tool_profile_report", "Bom Tool Profile Report", "A breakdown of timing and profiling for all bom tools."),
-        CODE_LOCATIONS("code_location_report", "Code Location Report", "A breakdown of code locations created, their dependencies and status results.");
+        CODE_LOCATIONS("code_location_report", "Code Location Report", "A breakdown of code locations created, their dependencies and status results."),
+        DEPENDENCY_COUNTS("dependency_counts_report", "Dependency Count Report", "A breakdown of how many dependencies each bom tool group generated in their graphs.");
 
         String reportFileName;
         String reportTitle;
@@ -71,34 +78,78 @@ public class DiagnosticReportManager {
     }
 
     public void completedBomToolEvaluations(final List<BomToolEvaluation> bomToolEvaluations) {
-        final BomToolStateReporter stateReporter = new BomToolStateReporter();
-        stateReporter.writeExtractionStateReport(getReportWriter(ReportTypes.EXTRACTION_STATE), bomToolEvaluations);
-        stateReporter.writeApplicableStateReport(getReportWriter(ReportTypes.APPLICABLE_STATE), bomToolEvaluations);
+        try {
+            final BomToolStateReporter stateReporter = new BomToolStateReporter();
+            stateReporter.writeExtractionStateReport(getReportWriter(ReportTypes.EXTRACTION_STATE), bomToolEvaluations);
+            stateReporter.writeApplicableStateReport(getReportWriter(ReportTypes.APPLICABLE_STATE), bomToolEvaluations);
+        } catch (final Exception e) {
+            logger.error("Failed to write bom tool state report.");
+            e.printStackTrace();
+        }
+
+        try {
+            final SearchReporter searchReporter = new SearchReporter();
+            searchReporter.writeReport(getReportWriter(ReportTypes.SEARCH), bomToolEvaluations);
+        } catch (final Exception e) {
+            logger.error("Failed to write search report.");
+            e.printStackTrace();
+        }
+
+        try {
+            final OverviewReporter overviewReporter = new OverviewReporter();
+            overviewReporter.writeReport(getReportWriter(ReportTypes.BOM_TOOL), bomToolEvaluations);
+        } catch (final Exception e) {
+            logger.error("Failed to write bom tool report.");
+            e.printStackTrace();
+        }
+    }
+
+    public void completedCodeLocations(final List<BomToolEvaluation> bomToolEvaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+        try {
+            final DiagnosticReportWriter clWriter = getReportWriter(ReportTypes.CODE_LOCATIONS);
+            final DiagnosticReportWriter dcWriter = getReportWriter(ReportTypes.DEPENDENCY_COUNTS);
+            final CodeLocationReporter clReporter = new CodeLocationReporter();
+            clReporter.writeCodeLocationReport(clWriter, dcWriter, bomToolEvaluations, codeLocationNameMap);
+        } catch (final Exception e) {
+            logger.error("Failed to write code location report.");
+            e.printStackTrace();
+        }
     }
 
     private void writeReports() {
-        final DiagnosticReportWriter profileWriter = getReportWriter(ReportTypes.BOM_TOOL_PROFILE);
-        final ProfilingReporter reporter = new ProfilingReporter();
-        reporter.writeReport(profileWriter, bomToolProfiler);
+        try {
+            final DiagnosticReportWriter profileWriter = getReportWriter(ReportTypes.BOM_TOOL_PROFILE);
+            final ProfilingReporter reporter = new ProfilingReporter();
+            reporter.writeReport(profileWriter, bomToolProfiler);
+        } catch (final Exception e) {
+            logger.error("Failed to write profiling report.");
+            e.printStackTrace();
+        }
     }
 
     private void createReports() {
         for (final ReportTypes reportType : ReportTypes.values()) {
-            createReportWriter(reportType);
+            try {
+                createReportWriter(reportType);
+            } catch (final Exception e) {
+                logger.error("Failed to create report: " + reportType.toString());
+                e.printStackTrace();
+            }
         }
     }
 
-    private DiagnosticReportWriter createReportWriter(final ReportTypes type) {
+    private DiagnosticReportWriter createReportWriter(final ReportTypes reportType) {
         try {
-            final File reportFile = new File(reportDirectory, type.getReportFileName() + ".txt");
-            final DiagnosticReportWriter diagnosticReportWriter = new DiagnosticReportWriter(reportFile, type.getReportTitle(), type.getReportDescription(), runId);
-            reportWriters.put(type, diagnosticReportWriter);
+            final File reportFile = new File(reportDirectory, reportType.getReportFileName() + ".txt");
+            final DiagnosticFileReportWriter diagnosticFileReportWriter = new DiagnosticFileReportWriter(reportFile, reportType.getReportTitle(), reportType.getReportDescription(), runId);
+            reportWriters.put(reportType, diagnosticFileReportWriter);
             logger.info("Created report file: " + reportFile.getPath());
-            return diagnosticReportWriter;
+            return diagnosticFileReportWriter;
         } catch (final Exception e) {
+            logger.error("Failed to create report writer: " + reportType.toString());
             e.printStackTrace();
         }
-        return null;
+        return new DiagnosticSilentReportWriter();
     }
 
     public DiagnosticReportWriter getReportWriter(final ReportTypes type) {
@@ -110,7 +161,7 @@ public class DiagnosticReportManager {
     }
 
     private void closeReportWriters() {
-        for (final DiagnosticReportWriter writer : reportWriters.values()) {
+        for (final DiagnosticFileReportWriter writer : reportWriters.values()) {
             writer.finish();
         }
     }

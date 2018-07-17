@@ -50,6 +50,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEval
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionSummaryReporter;
@@ -77,9 +78,10 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
     private final ExtractionSummaryReporter extractionSummaryReporter;
     private final BomToolNameVersionDecider bomToolNameVersionDecider;
     private final DetectConfigWrapper detectConfigWrapper;
+    private final DiagnosticManager diagnosticManager;
 
     public DetectProjectManager(final SearchManager searchManager, final ExtractionManager extractionManager, final DetectCodeLocationManager codeLocationManager, final BdioManager bdioManager,
-            final ExtractionSummaryReporter extractionSummaryReporter, final BomToolNameVersionDecider bomToolNameVersionDecider, final DetectConfigWrapper detectConfigWrapper) {
+            final ExtractionSummaryReporter extractionSummaryReporter, final BomToolNameVersionDecider bomToolNameVersionDecider, final DetectConfigWrapper detectConfigWrapper, final DiagnosticManager diagnosticManager) {
 
         this.searchManager = searchManager;
         this.extractionManager = extractionManager;
@@ -88,6 +90,7 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
         this.extractionSummaryReporter = extractionSummaryReporter;
         this.bomToolNameVersionDecider = bomToolNameVersionDecider;
         this.detectConfigWrapper = detectConfigWrapper;
+        this.diagnosticManager = diagnosticManager;
     }
 
     public DetectProject createDetectProject() throws DetectUserFriendlyException, IntegrationException {
@@ -110,6 +113,7 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
             final List<File> createdBdioFiles = bdioManager.createBdioFiles(codeLocationResult.getBdioCodeLocations(), projectName, projectVersion);
             bdioFiles.addAll(createdBdioFiles);
 
+            diagnosticManager.completedCodeLocations(searchResult.getBomToolEvaluations(), codeLocationResult.getCodeLocationNames());
             extractionSummaryReporter.print(searchResult.getBomToolEvaluations(), codeLocationResult.getCodeLocationNames());
         } else {
             final File aggregateBdioFile = bdioManager.createAggregateBdioFile(codeLocations, projectName, projectVersion);

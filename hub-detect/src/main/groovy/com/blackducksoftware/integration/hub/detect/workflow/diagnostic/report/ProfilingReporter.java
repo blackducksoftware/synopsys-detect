@@ -1,6 +1,8 @@
 package com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolTime;
@@ -8,11 +10,10 @@ import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profilin
 public class ProfilingReporter {
 
     public void writeReport(final DiagnosticReportWriter writer, final BomToolProfiler bomToolProfiler) {
-        final ProfilingReporter reporter = new ProfilingReporter();
         writer.writeSeperator();
         writer.writeLine("Applicable Times");
         writer.writeSeperator();
-        writeReport(writer, bomToolProfiler.getApplicableTimings());
+        writeAggregateReport(writer, bomToolProfiler.getApplicableTimings());
         writer.writeSeperator();
         writer.writeLine("Extractable Times");
         writer.writeSeperator();
@@ -21,6 +22,22 @@ public class ProfilingReporter {
         writer.writeLine("Extraction Times");
         writer.writeSeperator();
         writeReport(writer, bomToolProfiler.getExtractionTimings());
+    }
+
+    private void writeAggregateReport(final DiagnosticReportWriter writer, final List<BomToolTime> timings) {
+        final Map<String, Long> aggregated = new HashMap<>();
+
+        for (final BomToolTime bomToolTime : timings) {
+            final String name = bomToolTime.getBomTool().getDescriptiveName();
+            if (!aggregated.containsKey(name)) {
+                aggregated.put(name, 0L);
+            }
+            aggregated.put(name, aggregated.get(name) + bomToolTime.getMs());
+        }
+
+        for (final String key : aggregated.keySet()) {
+            writer.writeLine("\t" + padToLength(key, 30) + "\t" + aggregated.get(key));
+        }
     }
 
     private void writeReport(final DiagnosticReportWriter writer, final List<BomToolTime> timings) {

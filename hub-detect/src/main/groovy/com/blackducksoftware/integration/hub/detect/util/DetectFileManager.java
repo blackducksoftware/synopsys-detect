@@ -57,7 +57,7 @@ public class DetectFileManager {
         this.diagnosticManager = diagnosticManager;
     }
 
-    // Athough you could just register files directly with diagnostics manager, this allows bom tools not to know about diagnostics.
+    // Although you could just register files directly with diagnostics manager, this allows bom tools not to know about diagnostics.
     public void registerFileOfInterest(final ExtractionId extractionId, final File file) {
         if (diagnosticManager.isDiagnosticModeOn()) {
             diagnosticManager.registerFileOfInterest(extractionId, file);
@@ -120,6 +120,9 @@ public class DetectFileManager {
     }
 
     public boolean shouldCleanup() {
+        if (diagnosticManager.isDiagnosticModeOn()) {
+            return false;// let diagnostics handle this.
+        }
         if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
             return true;
         } else {

@@ -45,14 +45,14 @@ public class ExtractionReporter {
         logger.info(ReportConstants.SEPERATOR);
     }
 
-    public void endedExtraction(final Extraction result) {
+    public void endedExtraction(final Extraction extraction) {
         logger.info(ReportConstants.SEPERATOR);
-        logger.info("Finished extraction: " + result.result.toString());
-        logger.info("Code locations found: " + result.codeLocations.size());
-        if (result.result == ExtractionResultType.EXCEPTION) {
-            logger.error("Exception:", result.error);
-        } else if (result.result == ExtractionResultType.FAILURE) {
-            logger.error(result.description);
+        logger.info("Finished extraction: " + extraction.result.toString());
+        logger.info("Code locations found: " + extraction.codeLocations.size());
+        if (extraction.result == ExtractionResultType.EXCEPTION) {
+            logger.error("Exception:", extraction.error);
+        } else if (extraction.result == ExtractionResultType.FAILURE) {
+            logger.error(extraction.description);
         }
         logger.info(ReportConstants.SEPERATOR);
     }

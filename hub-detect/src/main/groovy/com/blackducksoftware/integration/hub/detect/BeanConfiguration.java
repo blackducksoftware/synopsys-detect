@@ -414,7 +414,7 @@ public class BeanConfiguration {
 
     @Bean
     public DetectProjectManager detectProjectManager() throws ParserConfigurationException {
-        return new DetectProjectManager(searchManager(), extractionManager(), detectCodeLocationManager(), bdioManager(), extractionSummaryReporter(), bomToolNameVersionDecider(), detectConfigWrapper());
+        return new DetectProjectManager(searchManager(), extractionManager(), detectCodeLocationManager(), bdioManager(), extractionSummaryReporter(), bomToolNameVersionDecider(), detectConfigWrapper(), diagnosticManager());
     }
 
     @Bean
