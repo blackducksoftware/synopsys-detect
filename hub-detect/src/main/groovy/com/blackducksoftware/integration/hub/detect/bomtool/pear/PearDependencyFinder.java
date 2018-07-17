@@ -68,8 +68,9 @@ public class PearDependencyFinder {
         final DocumentBuilder builder = factory.newDocumentBuilder();
 
         final Document packageXml = builder.parse(packageFile);
-        result.name = XmlUtil.getNode("name", packageXml).getTextContent();
-        final Node versionNode = XmlUtil.getNode("version", packageXml);
+        final Node packageNode = XmlUtil.getNode("package", packageXml);
+        result.name = XmlUtil.getNode("name", packageNode).getTextContent();
+        final Node versionNode = XmlUtil.getNode("version", packageNode);
         final String version = XmlUtil.getNode("release", versionNode).getTextContent();
         result.version = version;
         result.dependencyGraph = parsePearDependencyList(pearListing, pearDependencies);
@@ -79,8 +80,16 @@ public class PearDependencyFinder {
     public DependencyGraph parsePearDependencyList(final ExecutableOutput pearListing, final ExecutableOutput pearDependencies) {
         DependencyGraph graph = new MutableMapDependencyGraph();
 
-        if (pearDependencies.getErrorOutputAsList().size() > 0 || pearListing.getErrorOutputAsList().size() > 0) {
+        if (StringUtils.isNotBlank(pearDependencies.getErrorOutput()) || StringUtils.isNotBlank(pearListing.getErrorOutput())) {
             logger.error("There was an error during execution.");
+            if (StringUtils.isNotBlank(pearListing.getErrorOutput())) {
+                logger.error("Pear list error: ");
+                logger.error(pearListing.getErrorOutput());
+            }
+            if (StringUtils.isNotBlank(pearDependencies.getErrorOutput())) {
+                logger.error("Pear package-dependencies error: ");
+                logger.error(pearDependencies.getErrorOutput());
+            }
         } else if (!(pearDependencies.getStandardOutputAsList().size() > 0) || !(pearListing.getStandardOutputAsList().size() > 0)) {
             logger.error("No information retrieved from running pear commands");
         } else {

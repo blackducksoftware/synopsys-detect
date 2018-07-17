@@ -47,50 +47,19 @@ import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 public class SbtPackager {
     private final Logger logger = LoggerFactory.getLogger(SbtPackager.class);
 
-    static final String BUILD_SBT_FILENAME = "build.sbt";
-    static final String REPORT_FILE_DIRECTORY = File.separator + "target" + File.separator + "resolution-cache" + File.separator + "reports";
-    static final String REPORT_SEARCH_PATTERN = "resolution-cache";
-    static final String REPORT_DIRECTORY = "reports";
-    static final String REPORT_FILE_PATTERN = "*.xml";
-    static final String PROJECT_FOLDER = "project";
+    private static final String BUILD_SBT_FILENAME = "build.sbt";
+    private static final String REPORT_FILE_DIRECTORY = File.separator + "target" + File.separator + "resolution-cache" + File.separator + "reports";
+    private static final String REPORT_SEARCH_PATTERN = "resolution-cache";
+    private static final String REPORT_DIRECTORY = "reports";
+    private static final String REPORT_FILE_PATTERN = "*.xml";
+    private static final String PROJECT_FOLDER = "project";
 
-    ExternalIdFactory externalIdFactory;
-    DetectFileFinder detectFileFinder;
+    private final ExternalIdFactory externalIdFactory;
+    private final DetectFileFinder detectFileFinder;
 
     public SbtPackager(final ExternalIdFactory externalIdFactory, final DetectFileFinder detectFileFinder) {
         this.externalIdFactory = externalIdFactory;
         this.detectFileFinder = detectFileFinder;
-    }
-
-    List<SbtDependencyModule> makeModuleAggregate(final List<File> reportFiles, final String include, final String exclude) throws SAXException, IOException, ParserConfigurationException {
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        final DocumentBuilder builder = factory.newDocumentBuilder();
-
-        final SbtReportParser parser = new SbtReportParser();
-        final SbtDependencyResolver resolver = new SbtDependencyResolver(externalIdFactory);
-        final ExcludedIncludedFilter filter = new ExcludedIncludedFilter(exclude, include);
-        final SbtModuleAggregator aggregator = new SbtModuleAggregator();
-
-        final List<SbtDependencyModule> modules = new ArrayList<>();
-        for (final File reportFile : reportFiles) {
-            final Document xml = builder.parse(reportFile);
-            logger.debug("Parsing SBT report file : " + reportFile.getCanonicalPath());
-            final SbtReport report = parser.parseReportFromXml(xml);
-            final SbtDependencyModule tree = resolver.resolveReport(report);
-            modules.add(tree);
-        }
-
-        final List<SbtDependencyModule> includedModules = modules.stream().filter(module -> filter.shouldInclude(module.configuration)).collect(Collectors.toList());
-
-        if (modules.size() <= 0) {
-            logger.warn("No sbt configurations were found in report folder.");
-            return null;
-        } else if (includedModules.size() <= 0) {
-            logger.warn("Although " + modules.size() + " configs were found, none were included.");
-            return null;
-        }
-
-        return aggregator.aggregateModules(includedModules);
     }
 
     public SbtProject extractProject(final String path, final int depth, final String included, final String excluded) throws IOException, SAXException, ParserConfigurationException {
@@ -126,7 +95,7 @@ public class SbtPackager {
         return result;
     }
 
-    String findFirstModuleVersion(final List<SbtDependencyModule> modules, final String... names) {
+    private String findFirstModuleVersion(final List<SbtDependencyModule> modules, final String... names) {
         String version = null;
         final List<String> nameList = new ArrayList<>();
         for (final String name : names) {
@@ -134,19 +103,19 @@ public class SbtPackager {
         }
         for (final SbtDependencyModule it : modules) {
             if (version == null && it.name != null && nameList.contains(it.name)) {
-                logger.debug("Matched ${it.name} to project version.");
+                logger.debug(String.format("Matched %s to project version.", it.name));
                 version = it.version;
             }
         }
         return version;
     }
 
-    List<SbtDependencyModule> extractModules(final String path, final int depth, final String included, final String excluded) throws IOException, SAXException, ParserConfigurationException {
+    private List<SbtDependencyModule> extractModules(final String path, final int depth, final String included, final String excluded) throws IOException, SAXException, ParserConfigurationException {
         final List<File> sbtFiles = detectFileFinder.findFilesToDepth(path, BUILD_SBT_FILENAME, depth);
         final List<File> resolutionCaches = detectFileFinder.findDirectoriesContainingDirectoriesToDepth(path, REPORT_SEARCH_PATTERN, depth);
 
-        logger.info("Found ${sbtFiles.size()} build.sbt files.");
-        logger.info("Found ${resolutionCaches.size()} resolution caches.");
+        logger.info(String.format("Found %s build.sbt files.", sbtFiles.size()));
+        logger.info(String.format("Found %s resolution caches.", resolutionCaches.size()));
 
         final List<SbtDependencyModule> modules = new ArrayList<>();
         final List<String> usedReports = new ArrayList<>();
@@ -181,42 +150,33 @@ public class SbtPackager {
         return modules;
     }
 
-    Boolean isNotChildOfScanned(final File folder, final List<File> scanned) throws IOException {
-        for (final File scan : scanned) {
-            if (folder.getCanonicalPath().startsWith(scan.getCanonicalPath())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    Boolean isInProject(final File file, final String sourcePath) throws IOException {
+    private Boolean isInProject(final File file, final String sourcePath) throws IOException {
         final File projectPath = new File(sourcePath, PROJECT_FOLDER);
         return file.getCanonicalPath().startsWith(projectPath.getCanonicalPath());
     }
 
-    List<SbtDependencyModule> extractReportModules(final String path, final File reportPath, final File source, final String included, final String excluded, final List<String> usedReports)
+    private List<SbtDependencyModule> extractReportModules(final String path, final File reportPath, final File source, final String included, final String excluded, final List<String> usedReports)
             throws IOException, SAXException, ParserConfigurationException {
         final List<SbtDependencyModule> modules = new ArrayList<>();
         final String canonical = reportPath.getCanonicalPath();
         if (usedReports.contains(canonical)) {
             logger.debug("Skipping already processed report folder: " + canonical);
         } else if (isInProject(reportPath, path)) {
-            logger.debug("Skipping reports in project folder: ${reportPath.getCanonicalPath()}");
+            logger.debug("Skipping reports in project folder: " + reportPath.getCanonicalPath());
         } else {
             usedReports.add(canonical);
             final List<File> reportFiles = detectFileFinder.findFiles(reportPath, REPORT_FILE_PATTERN);
             if (reportFiles == null || reportFiles.size() <= 0) {
-                logger.debug("No reports were found in: ${reportPath}");
+                logger.debug("No reports were found in: " + reportPath);
             } else {
                 final List<SbtDependencyModule> aggregatedModules = makeModuleAggregate(reportFiles, included, excluded);
 
                 if (aggregatedModules == null) {
-                    logger.debug("No dependencies were generated for report folder: ${reportPath}");
+                    logger.debug("No dependencies were generated for report folder: " + reportPath);
                 } else {
-                    logger.debug("Found ${aggregatedModules.size()} aggregate dependencies in report folder: ${reportPath}");
+                    logger.debug(String.format("Found %s aggregate dependencies in report folder: %s", aggregatedModules.size(), reportPath));
                     for (final SbtDependencyModule aggregatedModule : aggregatedModules) {
-                        logger.debug("Generated root node of ${aggregatedModule.name} ${aggregatedModule.version} ");
+                        logger.debug(String.format("Generated root node of %s %s ", aggregatedModule.name, aggregatedModule.version));
 
                         aggregatedModule.sourcePath = source.getCanonicalPath();
 
@@ -227,5 +187,36 @@ public class SbtPackager {
             }
         }
         return modules;
+    }
+
+    private List<SbtDependencyModule> makeModuleAggregate(final List<File> reportFiles, final String include, final String exclude) throws SAXException, IOException, ParserConfigurationException {
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        final DocumentBuilder builder = factory.newDocumentBuilder();
+
+        final SbtReportParser parser = new SbtReportParser();
+        final SbtDependencyResolver resolver = new SbtDependencyResolver(externalIdFactory);
+        final ExcludedIncludedFilter filter = new ExcludedIncludedFilter(exclude, include);
+        final SbtModuleAggregator aggregator = new SbtModuleAggregator();
+
+        final List<SbtDependencyModule> modules = new ArrayList<>();
+        for (final File reportFile : reportFiles) {
+            final Document xml = builder.parse(reportFile);
+            logger.debug("Parsing SBT report file : " + reportFile.getCanonicalPath());
+            final SbtReport report = parser.parseReportFromXml(xml);
+            final SbtDependencyModule tree = resolver.resolveReport(report);
+            modules.add(tree);
+        }
+
+        final List<SbtDependencyModule> includedModules = modules.stream().filter(module -> filter.shouldInclude(module.configuration)).collect(Collectors.toList());
+
+        if (modules.size() <= 0) {
+            logger.warn("No sbt configurations were found in report folder.");
+            return null;
+        } else if (includedModules.size() <= 0) {
+            logger.warn("Although " + modules.size() + " configs were found, none were included.");
+            return null;
+        }
+
+        return aggregator.aggregateModules(includedModules);
     }
 }

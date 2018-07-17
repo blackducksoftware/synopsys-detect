@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.npm;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -64,7 +64,9 @@ public class NpmCliExtractor {
         final File outputDirectory = detectFileManager.getOutputDirectory("Npm", extractionId);
 
         final boolean includeDevDeps = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
-        final List<String> exeArgs = Arrays.asList("ls", "-json");
+        final List<String> exeArgs = new ArrayList<>();
+        exeArgs.add("ls");
+        exeArgs.add("-json");
         if (!includeDevDeps) {
             exeArgs.add("-prod");
         }
