@@ -1,12 +1,9 @@
 package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +17,6 @@ public class DiagnosticManager {
     private final DetectConfigWrapper detectConfigWrapper;
 
     private File outputDirectory;
-
-    private final List<File> trackedDirectories = new ArrayList<>();
 
     private final DiagnosticReportManager diagnosticReportManager;
     private final DiagnosticLogManager diagnosticLogManager;
@@ -57,8 +52,8 @@ public class DiagnosticManager {
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("");
 
-        final File outputDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH));
-        final File bdioDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH));
+        final File bdioDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH));
+        this.outputDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH));
         try {
             diagnosticFileManager.init(outputDirectory, bdioDirectory, detectRunManager.getRunId());
         } catch (final Exception e) {
@@ -104,16 +99,10 @@ public class DiagnosticManager {
 
         if (zipCreated) {
             if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
-                try {
-                    for (final File file : trackedDirectories) {
-                        logger.info("Cleaning diagnostics directory: " + file.getPath());
-                        FileUtils.deleteDirectory(file);
-                    }
-                } catch (final IOException e) {
-                    logger.error("Failed to cleanup:");
-                    e.printStackTrace();
-                }
+                diagnosticFileManager.cleanup();
             }
+        } else {
+            logger.error("Diagnostic mode failed to create zip. Cleanup will not occur.");
         }
 
         logger.info("Diagnostic mode has completed.");

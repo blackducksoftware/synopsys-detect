@@ -4,11 +4,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ReportConstants;
 
 public class DiagnosticReportWriter {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private BufferedWriter writer;
 
@@ -27,7 +30,8 @@ public class DiagnosticReportWriter {
             writer.newLine();
             writeSeperator();
         } catch (final Exception e) {
-            throw new DetectUserFriendlyException("Diagnostics mode failed to create a diagnostic report.", ExitCodeType.FAILURE_DIAGNOSTIC);
+            logger.error("Diagnostics failed to create a report.");
+            e.printStackTrace();
         }
     }
 

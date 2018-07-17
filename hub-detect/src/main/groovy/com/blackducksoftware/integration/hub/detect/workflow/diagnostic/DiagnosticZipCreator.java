@@ -22,9 +22,10 @@ public class DiagnosticZipCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public boolean createDiagnosticZip(final String runId, final File outputDirectory, final List<File> compressList) {
-        logger.info("Creating diagnostics zip.");
         try {
-            final File zip = new File(outputDirectory, "detect-run-" + runId + ".zip");
+            final String zipPath = "detect-run-" + runId + ".zip";
+            final File zip = new File(outputDirectory, zipPath);
+            logger.info("Diagnostics zip location: " + zip.toPath());
             final ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(zip));
             for (final File file : compressList) {
                 compress(outputStream, outputDirectory.toPath(), file.toPath(), zip, runId);
@@ -33,9 +34,9 @@ public class DiagnosticZipCreator {
             outputStream.close();
             return true;
         } catch (final Exception e) {
+            logger.error("Failed to create zip.");
             e.printStackTrace();
         }
-
         return false;
     }
 

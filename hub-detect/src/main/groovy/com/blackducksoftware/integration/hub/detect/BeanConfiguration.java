@@ -123,8 +123,10 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Docker
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.ScanCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticFileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticLogManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticProfilingManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionReporter;
@@ -169,8 +171,18 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public DiagnosticProfilingManager diagnosticProfilingManager() {
+        return new DiagnosticProfilingManager(diagnosticReportManager(), bomToolProfiler());
+    }
+
+    @Bean
+    public DiagnosticFileManager diagnosticFileManager() {
+        return new DiagnosticFileManager();
+    }
+
+    @Bean
     public DiagnosticManager diagnosticManager() {
-        return new DiagnosticManager(detectConfigWrapper(), bomToolProfiler(), diagnosticReportManager(), diagnosticLogManager(), detectRunManager());
+        return new DiagnosticManager(detectConfigWrapper(), bomToolProfiler(), diagnosticReportManager(), diagnosticLogManager(), detectRunManager(), diagnosticFileManager(), diagnosticProfilingManager());
     }
 
     @Bean

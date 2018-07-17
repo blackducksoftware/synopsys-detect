@@ -1,6 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,18 @@ public class DiagnosticFileManager {
         for (final File file : trackedDirectories) {
             logger.info("Creating diagnostics directory: " + file.getPath());
             file.mkdirs();
+        }
+    }
+
+    public void cleanup() {
+        try {
+            for (final File file : trackedDirectories) {
+                logger.info("Cleaning diagnostics directory: " + file.getPath());
+                FileUtils.deleteDirectory(file);
+            }
+        } catch (final IOException e) {
+            logger.error("Failed to cleanup:");
+            e.printStackTrace();
         }
     }
 
