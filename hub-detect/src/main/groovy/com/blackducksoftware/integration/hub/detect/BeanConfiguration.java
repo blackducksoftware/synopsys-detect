@@ -41,13 +41,13 @@ import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CodeLocationAssembler;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CompileCommandsJsonFileParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependenciesListFileManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageManagerFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CodeLocationAssembler;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DpkgPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.LinuxPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageManagerFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.RpmPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockParser;
@@ -581,7 +581,7 @@ public class BeanConfiguration {
 
     @Bean
     public NpmCliExtractor npmCliExtractor() {
-        return new NpmCliExtractor(executableRunner(), detectFileManager(), npmCliDependencyFinder(), detectConfigWrapper());
+        return new NpmCliExtractor(executableRunner(), npmCliDependencyFinder(), detectConfigWrapper());
     }
 
     @Bean

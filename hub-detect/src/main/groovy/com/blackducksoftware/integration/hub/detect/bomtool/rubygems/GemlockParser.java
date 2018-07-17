@@ -176,7 +176,7 @@ public class GemlockParser {
         }
 
         if (name.endsWith("!")) {
-            name = name.substring(0, name.length() - 2);
+            name = name.substring(0, name.length() - 1);
         }
 
         return new NameVersion(name, version);

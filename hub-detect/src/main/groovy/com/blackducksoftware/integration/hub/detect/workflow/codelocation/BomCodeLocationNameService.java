@@ -46,7 +46,7 @@ public class BomCodeLocationNameService extends CodeLocationNameService {
     }
 
     public String createCodeLocationName(final String detectSourcePath, final String sourcePath, final ExternalId externalId, final BomToolGroupType bomToolType, final String prefix, final String suffix) {
-        //path piece
+        // path piece
         String relativePiece = sourcePath;
         try {
             final Path actualSourcePath = new File(sourcePath).toPath();
@@ -62,11 +62,11 @@ public class BomCodeLocationNameService extends CodeLocationNameService {
             logger.info("Unable to relativize path, full source path will be used: " + sourcePath);
             logger.debug("The reason relativize failed: ", e);
         }
-        //external id piece
+        // external id piece
         final List<String> pieces = Arrays.asList(externalId.getExternalIdPieces());
         final String externalIdPiece = pieces.stream().collect(Collectors.joining("/"));
 
-        //misc pieces
+        // misc pieces
         final String codeLocationTypeString = CodeLocationType.BOM.toString().toLowerCase();
         final String bomToolTypeString = bomToolType.toString().toLowerCase();
 
@@ -80,16 +80,21 @@ public class BomCodeLocationNameService extends CodeLocationNameService {
     }
 
     private String createCommonName(final String pathPiece, final String externalIdPiece, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
-        String name = String.format("%s/%s", pathPiece, externalIdPiece);
+        final ArrayList<String> nameParts = new ArrayList<>();
+        nameParts.add(pathPiece);
+        nameParts.add(externalIdPiece);
+
         if (StringUtils.isNotBlank(prefix)) {
-            name = String.format("%s/%s", prefix, name);
-        }
-        if (StringUtils.isNotBlank(suffix)) {
-            name = String.format("%s/%s", name, suffix);
+            nameParts.add(0, prefix);
         }
 
-        String endPiece = codeLocationType;
-        endPiece = String.format("%s/%s", bomToolType, endPiece);
+        if (StringUtils.isNotBlank(suffix)) {
+            nameParts.add(suffix);
+        }
+
+        String name = StringUtils.join(nameParts, "/");
+
+        final String endPiece = String.format("%s/%s", bomToolType, codeLocationType);
 
         name = String.format("%s %s", name, endPiece);
         return name;

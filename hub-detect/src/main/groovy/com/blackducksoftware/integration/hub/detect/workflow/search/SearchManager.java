@@ -84,7 +84,8 @@ public class SearchManager {
         final List<String> excludedDirectories = Arrays.asList(detectConfigWrapper.getStringArrayProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION));
         final Boolean forceNestedSearch = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_CONTINUE);
         final int maxDepth = detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_DEPTH);
-        final ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(detectConfigWrapper.getProperty(DetectProperty.DETECT_EXCLUDED_BOM_TOOL_TYPES), detectConfigWrapper.getProperty(DetectProperty.DETECT_INCLUDED_BOM_TOOL_TYPES));
+        final ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(detectConfigWrapper.getProperty(DetectProperty.DETECT_EXCLUDED_BOM_TOOL_TYPES).toUpperCase(),
+                detectConfigWrapper.getProperty(DetectProperty.DETECT_INCLUDED_BOM_TOOL_TYPES).toUpperCase());
 
         final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth, bomToolFilter);
 

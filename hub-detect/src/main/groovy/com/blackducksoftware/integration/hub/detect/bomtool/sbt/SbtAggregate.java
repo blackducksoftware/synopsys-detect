@@ -23,7 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
-public class SbtAggregate {
+import com.blackducksoftware.integration.util.Stringable;
+
+public class SbtAggregate extends Stringable {
     public String name;
     public String org;
     public String version;
@@ -32,25 +34,5 @@ public class SbtAggregate {
         this.name = name;
         this.org = org;
         this.version = version;
-    }
-
-    @Override
-    public boolean equals(final Object object) {
-        if (object != null && object instanceof SbtAggregate) {
-            final SbtAggregate thing = (SbtAggregate) object;
-            return thing.name == this.name && thing.org == this.org && thing.version == this.version;
-        }
-
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((org == null) ? 0 : org.hashCode());
-        result = prime * result + ((version == null) ? 0 : version.hashCode());
-        return result;
     }
 }

@@ -65,7 +65,7 @@ public class SbtResolutionCacheExtractor {
             final int depth = detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_SEARCH_DEPTH);
 
             final SbtPackager packager = new SbtPackager(externalIdFactory, detectFileFinder);
-            final SbtProject project = packager.extractProject(directory.toString(), depth, included, excluded);
+            final SbtProject project = packager.extractProject(directory.getAbsolutePath(), depth, included, excluded);
 
             final List<DetectCodeLocation> codeLocations = new ArrayList<>();
 

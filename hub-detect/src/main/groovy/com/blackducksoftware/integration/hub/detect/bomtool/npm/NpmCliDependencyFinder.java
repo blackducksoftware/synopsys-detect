@@ -23,13 +23,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.npm;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,15 +57,15 @@ public class NpmCliDependencyFinder {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public NpmParseResult generateCodeLocation(final BomToolType bomToolType, final String sourcePath, final File npmLsOutputFile) throws IOException {
-        if (npmLsOutputFile == null || npmLsOutputFile.length() <= 0) {
+    public NpmParseResult generateCodeLocation(final BomToolType bomToolType, final String sourcePath, final String npmLsOutput) {
+        if (StringUtils.isBlank(npmLsOutput)) {
             logger.error("Ran into an issue creating and writing to file");
             return null;
         }
 
         logger.info("Generating results from npm ls -json");
 
-        return convertNpmJsonFileToCodeLocation(bomToolType, sourcePath, FileUtils.readFileToString(npmLsOutputFile, StandardCharsets.UTF_8));
+        return convertNpmJsonFileToCodeLocation(bomToolType, sourcePath, npmLsOutput);
     }
 
     NpmParseResult convertNpmJsonFileToCodeLocation(final BomToolType bomToolType, final String sourcePath, final String npmLsOutput) {

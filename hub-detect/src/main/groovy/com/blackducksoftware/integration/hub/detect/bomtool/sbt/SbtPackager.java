@@ -97,37 +97,6 @@ public class SbtPackager {
         return result;
     }
 
-    private List<SbtDependencyModule> makeModuleAggregate(final List<File> reportFiles, final String include, final String exclude) throws SAXException, IOException, ParserConfigurationException {
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        final DocumentBuilder builder = factory.newDocumentBuilder();
-
-        final SbtReportParser parser = new SbtReportParser();
-        final SbtDependencyResolver resolver = new SbtDependencyResolver(externalIdFactory);
-        final ExcludedIncludedFilter filter = new ExcludedIncludedFilter(exclude, include);
-        final SbtModuleAggregator aggregator = new SbtModuleAggregator();
-
-        final List<SbtDependencyModule> modules = new ArrayList<>();
-        for (final File reportFile : reportFiles) {
-            final Document xml = builder.parse(reportFile);
-            logger.debug(String.format("Parsing SBT report file: %s", reportFile.getCanonicalPath()));
-            final SbtReport report = parser.parseReportFromXml(xml);
-            final SbtDependencyModule tree = resolver.resolveReport(report);
-            modules.add(tree);
-        }
-
-        final List<SbtDependencyModule> includedModules = modules.stream().filter(module -> filter.shouldInclude(module.configuration)).collect(Collectors.toList());
-
-        if (modules.size() <= 0) {
-            logger.warn("No sbt configurations were found in report folder.");
-            return null;
-        } else if (includedModules.size() <= 0) {
-            logger.warn(String.format("Although %s configs were found, none were included.", modules.size()));
-            return null;
-        }
-
-        return aggregator.aggregateModules(includedModules);
-    }
-
     private String findFirstModuleVersion(final List<SbtDependencyModule> modules, final String... names) {
         String version = null;
         final List<String> nameList = new ArrayList<>();
@@ -221,4 +190,36 @@ public class SbtPackager {
         }
         return modules;
     }
+
+    private List<SbtDependencyModule> makeModuleAggregate(final List<File> reportFiles, final String include, final String exclude) throws SAXException, IOException, ParserConfigurationException {
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        final DocumentBuilder builder = factory.newDocumentBuilder();
+
+        final SbtReportParser parser = new SbtReportParser();
+        final SbtDependencyResolver resolver = new SbtDependencyResolver(externalIdFactory);
+        final ExcludedIncludedFilter filter = new ExcludedIncludedFilter(exclude, include);
+        final SbtModuleAggregator aggregator = new SbtModuleAggregator();
+
+        final List<SbtDependencyModule> modules = new ArrayList<>();
+        for (final File reportFile : reportFiles) {
+            final Document xml = builder.parse(reportFile);
+            logger.debug(String.format("Parsing SBT report file: %s", reportFile.getCanonicalPath()));
+            final SbtReport report = parser.parseReportFromXml(xml);
+            final SbtDependencyModule tree = resolver.resolveReport(report);
+            modules.add(tree);
+        }
+
+        final List<SbtDependencyModule> includedModules = modules.stream().filter(module -> filter.shouldInclude(module.configuration)).collect(Collectors.toList());
+
+        if (modules.size() <= 0) {
+            logger.warn("No sbt configurations were found in report folder.");
+            return null;
+        } else if (includedModules.size() <= 0) {
+            logger.warn(String.format("Although %s configs were found, none were included.", modules.size()));
+            return null;
+        }
+
+        return aggregator.aggregateModules(includedModules);
+    }
+
 }

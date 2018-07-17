@@ -342,7 +342,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_NPM)
     @HelpDescription("Set this value to false if you would like to exclude your dev dependencies when ran")
-    DETECT_NPM_INCLUDE_DEV_DEPENDENCIES("detect.npm.include.dev.dependencies", DetectPropertyType.STRING, "true"),
+    DETECT_NPM_INCLUDE_DEV_DEPENDENCIES("detect.npm.include.dev.dependencies", DetectPropertyType.BOOLEAN, "true"),
 
     @HelpGroup(primary = GROUP_NPM)
     @HelpDescription("The path of the node executable that is used by Npm")
