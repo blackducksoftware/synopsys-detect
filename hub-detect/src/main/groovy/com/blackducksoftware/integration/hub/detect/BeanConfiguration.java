@@ -186,7 +186,7 @@ public class BeanConfiguration {
 
     @Bean
     public DiagnosticReportManager diagnosticReportManager() {
-        return new DiagnosticReportManager();
+        return new DiagnosticReportManager(bomToolProfiler());
     }
 
     @Bean
