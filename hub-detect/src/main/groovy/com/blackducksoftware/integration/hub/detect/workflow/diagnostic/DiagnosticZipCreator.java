@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class DiagnosticZipCreator {
     // This is because the path to a file is /container/runId/file.txt but the zip will already be named runId
     // So the file should be added to the zip as /container/file.txt
     // Sorry - jordan 7/16/2018 - plz make better
-    private Path removeFromPath(final Path path, final String toRemove) {
+    private String toZipEntryName(final Path path, final String toRemove) {
         try {
             final List<String> pieces = new ArrayList<>();
             for (int i = 0; i < path.getNameCount(); i++) {
@@ -53,16 +52,11 @@ public class DiagnosticZipCreator {
                     pieces.add(next);
                 }
             }
-            final String first = pieces.stream().findFirst().get();
-            final List<String> rest = pieces.stream().skip(1).collect(Collectors.toList());
 
-            String[] restArray = new String[rest.size()];
-            restArray = rest.toArray(restArray);
-
-            return Paths.get(first, restArray);
+            return pieces.stream().collect(Collectors.joining("/"));
         } catch (final Exception e) {
             logger.info("Failed to clean zip entry.");
-            return path;
+            return path.toString();
         }
     }
 
@@ -72,8 +66,7 @@ public class DiagnosticZipCreator {
             public FileVisitResult visitFile(final Path file, final BasicFileAttributes attributes) {
                 try {
                     final Path targetFile = sourceDir.relativize(file);
-                    final Path cleanedTargetFile = removeFromPath(targetFile, removePiece);
-                    final String target = cleanedTargetFile.toString();
+                    final String target = toZipEntryName(targetFile, removePiece);
                     logger.debug("Adding file to zip: " + target);
                     outputStream.putNextEntry(new ZipEntry(target));
                     final byte[] bytes = Files.readAllBytes(file);
