@@ -617,7 +617,7 @@ public class BeanConfiguration {
 
     @Bean
     public NpmCliExtractor npmCliExtractor() {
-        return new NpmCliExtractor(executableRunner(), detectFileManager(), npmCliDependencyFinder(), detectConfigWrapper());
+        return new NpmCliExtractor(executableRunner(), npmCliDependencyFinder(), detectConfigWrapper());
     }
 
     @Bean
