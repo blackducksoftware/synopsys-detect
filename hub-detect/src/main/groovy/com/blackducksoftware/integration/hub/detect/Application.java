@@ -138,11 +138,6 @@ public class Application implements ApplicationRunner {
         } catch (final Exception e) {
             detectExitCode = getExitCodeFromExceptionDetails(e);
         } finally {
-            try {
-                diagnosticManager.finish();
-            } catch (final Exception e) {
-                logger.info("Failed to finish diagnostic mode.");
-            }
             cleanupRun(detectExitCode);
         }
 
@@ -289,6 +284,12 @@ public class Application implements ApplicationRunner {
         final int finalExitCode = finalExitCodeType.getExitCode();
 
         logger.info(String.format("Hub-Detect run duration: %s", DurationFormatUtils.formatPeriod(startTime, endTime, "HH'h' mm'm' ss's' SSS'ms'")));
+
+        try { // diagnostics manager must finish as close to the true end as possible.
+            diagnosticManager.finish();
+        } catch (final Exception e) {
+            logger.error("Failed to finish diagnostic mode.");
+        }
 
         if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS) && finalExitCode != 0) {
             logger.warn(String.format("Forcing success: Exiting with exit code 0. Ignored exit code was %s.", finalExitCode));
