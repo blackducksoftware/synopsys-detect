@@ -97,6 +97,7 @@ public class ExtractionManager {
             diagnosticManager.startLoggingExtraction(extractionId);
             extractionReporter.startedExtraction(result.getBomTool(), extractionId);
             bomToolProfiler.extractionStarted(result.getBomTool());
+            result.setExtractionId(extractionId);
             try {
                 result.setExtraction(result.getBomTool().extract(extractionId));
             } catch (final Exception e) {
@@ -141,6 +142,7 @@ public class ExtractionManager {
                 .collect(Collectors.toList());
 
         phoneHomeManager.startPhoneHome(bomToolProfiler.getAggregateBomToolGroupTimes());
+        diagnosticManager.completedBomToolEvaluations(bomToolEvaluations);
 
         final ExtractionResult result = new ExtractionResult(codeLocations, succesfulBomToolGroups, failedBomToolGroups);
         return result;

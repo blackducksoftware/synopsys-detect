@@ -41,15 +41,15 @@ public class BomToolProfiler {
         extractionTimekeeper.ended(bomTool);
     }
 
-    List<BomToolTime> getApplicableTimings() {
+    public List<BomToolTime> getApplicableTimings() {
         return applicableTimekeeper.getTimings();
     }
 
-    List<BomToolTime> getExtractableTimings() {
+    public List<BomToolTime> getExtractableTimings() {
         return extractableTimekeeper.getTimings();
     }
 
-    List<BomToolTime> getExtractionTimings() {
+    public List<BomToolTime> getExtractionTimings() {
         return extractionTimekeeper.getTimings();
     }
 

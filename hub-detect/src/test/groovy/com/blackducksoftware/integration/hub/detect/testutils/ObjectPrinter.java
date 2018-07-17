@@ -24,6 +24,9 @@ public class ObjectPrinter {
     }
 
     public static void printField(final Field field, final DiagnosticReportWriter writer, final String prefix, final Object guy) {
+        if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+            return; // don't print static fields.
+        }
         final String name = field.getName();
         String value = "unknown";
         Object obj = null;

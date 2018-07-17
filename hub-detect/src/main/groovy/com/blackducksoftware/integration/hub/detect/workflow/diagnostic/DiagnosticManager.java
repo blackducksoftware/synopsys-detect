@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 
 public class DiagnosticManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -22,15 +23,13 @@ public class DiagnosticManager {
     private final DiagnosticLogManager diagnosticLogManager;
     private final DetectRunManager detectRunManager;
     private final DiagnosticFileManager diagnosticFileManager;
-    private final DiagnosticProfilingManager diagnosticProfilingManager;
 
     private boolean isDiagnosticProtected = false;
     private boolean isDiagnostic = false;
 
-    public DiagnosticManager(final DetectConfigWrapper detectConfigWrapper, final BomToolProfiler profiler, final DiagnosticReportManager diagnosticReportManager, final DiagnosticLogManager diagnosticLogManager,
-            final DetectRunManager detectRunManager, final DiagnosticFileManager diagnosticFileManager, final DiagnosticProfilingManager diagnosticProfilingManager) {
+    public DiagnosticManager(final DetectConfigWrapper detectConfigWrapper, final DiagnosticReportManager diagnosticReportManager, final DiagnosticLogManager diagnosticLogManager,
+            final DetectRunManager detectRunManager, final DiagnosticFileManager diagnosticFileManager) {
         this.detectConfigWrapper = detectConfigWrapper;
-        this.diagnosticProfilingManager = diagnosticProfilingManager;
         this.diagnosticReportManager = diagnosticReportManager;
         this.diagnosticLogManager = diagnosticLogManager;
         this.detectRunManager = detectRunManager;
@@ -80,7 +79,6 @@ public class DiagnosticManager {
 
         try {
             logger.info("Finishing diagnostic mode.");
-            diagnosticProfilingManager.finish();
             diagnosticReportManager.finish();
             diagnosticLogManager.finish();
         } catch (final Exception e) {
@@ -145,6 +143,13 @@ public class DiagnosticManager {
             return;
         }
         diagnosticLogManager.stopLoggingExtraction(extractionId);
+    }
+
+    public void completedBomToolEvaluations(final List<BomToolEvaluation> evaluations) {
+        if (!isDiagnosticModeOn()) {
+            return;
+        }
+        diagnosticReportManager.completedBomToolEvaluations(evaluations);
     }
 
     private boolean createZip() {

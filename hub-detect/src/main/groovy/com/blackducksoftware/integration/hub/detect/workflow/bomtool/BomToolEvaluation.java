@@ -27,6 +27,7 @@ import java.util.Optional;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction.ExtractionResultType;
 
@@ -40,6 +41,7 @@ public class BomToolEvaluation {
     private BomToolResult applicable;
     private BomToolResult extractable;
 
+    private ExtractionId extractionId;
     private Extraction extraction;
 
     public BomToolEvaluation(final BomTool bomTool, final BomToolEnvironment environment) {
@@ -53,6 +55,14 @@ public class BomToolEvaluation {
 
     public Extraction getExtraction() {
         return extraction;
+    }
+
+    public void setExtractionId(final ExtractionId extractionId) {
+        this.extractionId = extractionId;
+    }
+
+    public ExtractionId getExtractionId() {
+        return extractionId;
     }
 
     public boolean wasExtractionSuccessful() {

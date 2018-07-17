@@ -2,10 +2,14 @@ package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.ExtractionStateReporter;
 
 public class DiagnosticReportManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -52,7 +56,19 @@ public class DiagnosticReportManager {
     }
 
     public void finish() {
+        writeReports();
+
         closeReportWriters();
+    }
+
+    public void completedBomToolEvaluations(final List<BomToolEvaluation> bomToolEvaluations) {
+        final ExtractionStateReporter stateReporter = new ExtractionStateReporter();
+        stateReporter.writeReport(getReportWriter(ReportTypes.EXTRACTION_STATE), bomToolEvaluations);
+    }
+
+    private void writeReports() {
+        final DiagnosticReportWriter profileWriter = getReportWriter(ReportTypes.BOM_TOOL_PROFILE);
+
     }
 
     private void createReports() {
