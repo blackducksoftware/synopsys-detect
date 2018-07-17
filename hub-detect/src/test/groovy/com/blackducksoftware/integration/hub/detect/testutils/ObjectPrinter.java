@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.DiagnosticReportWriter;
 
 public class ObjectPrinter {
 

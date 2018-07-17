@@ -121,12 +121,12 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerScanCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.ScanCodeLocationNameService;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticFileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticLogManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionSummaryReporter;

@@ -41,7 +41,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.NotNestable
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.NotSelfNestableBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.YieldedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 
 public class BomToolSearchRuleSet {
 

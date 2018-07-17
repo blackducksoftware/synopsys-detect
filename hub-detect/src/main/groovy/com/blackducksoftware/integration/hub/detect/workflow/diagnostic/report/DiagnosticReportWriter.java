@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
+package com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report;
 
 import java.io.BufferedWriter;
 import java.io.File;

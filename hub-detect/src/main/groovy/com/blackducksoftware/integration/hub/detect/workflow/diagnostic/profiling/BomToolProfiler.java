@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
+package com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling;
 
 import java.util.HashMap;
 import java.util.List;

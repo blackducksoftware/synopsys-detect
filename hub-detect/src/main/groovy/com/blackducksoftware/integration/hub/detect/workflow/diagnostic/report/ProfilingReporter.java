@@ -2,9 +2,8 @@ package com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report;
 
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.BomToolProfiler;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.BomToolTime;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolTime;
 
 public class ProfilingReporter {
 

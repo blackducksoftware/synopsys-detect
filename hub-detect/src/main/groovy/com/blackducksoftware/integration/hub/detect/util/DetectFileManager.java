@@ -57,10 +57,7 @@ public class DetectFileManager {
         this.diagnosticManager = diagnosticManager;
     }
 
-    // Athough you could just register files with diagnostics manager, I think it makes sense for filemanager to act as a mediator
-    // because he can first decide whether or not to pass it on as he does with cleanup, and it needs to be low footprint and passing
-    // in diagnostic manager is overkill when all you want to do is say 'hey maybe i care about this file' and most already have
-    // file manager anyway.
+    // Athough you could just register files directly with diagnostics manager, this allows bom tools not to know about diagnostics.
     public void registerFileOfInterest(final ExtractionId extractionId, final File file) {
         if (diagnosticManager.isDiagnosticModeOn()) {
             diagnosticManager.registerFileOfInterest(extractionId, file);
@@ -90,7 +87,7 @@ public class DetectFileManager {
         return new File(outputDirectory, name);
     }
 
-    public File getSharedDirectory(final String name) { // shared across this invocation of detect.
+    public File getSharedDirectory(final String name) { // shared across this invocation of detect (inspectors)
         if (sharedDirectory == null) {
             sharedDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), sharedUUID);
             sharedDirectory.mkdir();
@@ -100,7 +97,7 @@ public class DetectFileManager {
         return newSharedFile;
     }
 
-    public File getPermanentDirectory() { // shared across all invocations of detect
+    public File getPermanentDirectory() { // shared across all invocations of detect (scan cli)
         final File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "tools");
         newDirectory.mkdir();
         return newDirectory;
@@ -114,7 +111,6 @@ public class DetectFileManager {
         return new File(getSharedDirectory(directory), filename);
     }
 
-    // This file will be immediately cleaned up and is associated to a specific context. The current implementation is to actually move it to the context's output and allow cleanup at the end of the detect run (in case of diagnostics).
     public void cleanupOutputFile(final File file) {
         if (diagnosticManager.isDiagnosticModeOn()) {
             diagnosticManager.registerGlobalFileOfInterest(file);

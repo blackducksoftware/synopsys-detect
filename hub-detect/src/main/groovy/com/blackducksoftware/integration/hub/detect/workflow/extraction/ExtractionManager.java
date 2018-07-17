@@ -40,8 +40,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExceptionBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 
 public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);

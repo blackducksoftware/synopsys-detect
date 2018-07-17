@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.BomToolStateReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.DiagnosticReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.ProfilingReporter;
 
 public class DiagnosticReportManager {

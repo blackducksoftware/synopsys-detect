@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.blackducksoftware.integration.hub.detect.testutils.ObjectPrinter;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportWriter;
 
 public class BomToolStateReporter {
 

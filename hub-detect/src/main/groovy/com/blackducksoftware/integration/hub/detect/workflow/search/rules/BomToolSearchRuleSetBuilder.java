@@ -31,7 +31,7 @@ import java.util.Map;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 
 public class BomToolSearchRuleSetBuilder {
     private final List<BomTool> desiredBomToolOrder = new ArrayList<>();
