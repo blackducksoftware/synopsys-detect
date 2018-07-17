@@ -36,7 +36,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -49,19 +48,16 @@ public class NpmCliExtractor {
     public static final String ERROR_FILE = "detect_npm_error.json";
 
     private final ExecutableRunner executableRunner;
-    private final DetectFileManager detectFileManager;
     private final NpmCliDependencyFinder npmCliDependencyFinder;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    public NpmCliExtractor(final ExecutableRunner executableRunner, final DetectFileManager detectFileManager, final NpmCliDependencyFinder npmCliDependencyFinder, final DetectConfigWrapper detectConfigWrapper) {
+    public NpmCliExtractor(final ExecutableRunner executableRunner, final NpmCliDependencyFinder npmCliDependencyFinder, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner;
-        this.detectFileManager = detectFileManager;
         this.npmCliDependencyFinder = npmCliDependencyFinder;
         this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String npmExe, final ExtractionId extractionId) {
-        final File outputDirectory = detectFileManager.getOutputDirectory("Npm", extractionId);
 
         final boolean includeDevDeps = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
         final List<String> exeArgs = new ArrayList<>();
@@ -78,8 +74,8 @@ public class NpmCliExtractor {
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
-        String standardOutput = executableOutput.getStandardOutput();
-        String errorOutput = executableOutput.getErrorOutput();
+        final String standardOutput = executableOutput.getStandardOutput();
+        final String errorOutput = executableOutput.getErrorOutput();
         if (StringUtils.isNotBlank(standardOutput)) {
             if (StringUtils.isNotBlank(errorOutput)) {
                 logger.debug("Error when running npm ls -json command");
