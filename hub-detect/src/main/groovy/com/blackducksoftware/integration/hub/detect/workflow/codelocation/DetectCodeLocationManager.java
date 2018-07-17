@@ -158,7 +158,7 @@ public class DetectCodeLocationManager {
         final List<BdioCodeLocation> bdioCodeLocations;
         final IntegrationEscapeUtil integrationEscapeUtil = new IntegrationEscapeUtil();
 
-        if (codeLocations.size() > 1 && combineCodeLocations) {
+        if (codeLocations.size() > 1) {
             // we must either combine or create a unique name.
             if (combineCodeLocations) {
                 final DependencyGraphCombiner combiner = new DependencyGraphCombiner();
