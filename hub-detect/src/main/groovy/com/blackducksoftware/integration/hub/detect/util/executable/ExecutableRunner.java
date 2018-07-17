@@ -81,23 +81,7 @@ public class ExecutableRunner {
     public ExecutableOutput executeQuietly(final Executable executable) throws ExecutableRunnerException {
         return runExecutable(executable, logger::debug, logger::trace);
     }
-
-    public void executeToFile(final String executablePath, final File standardOutputFile, final File errorOutputFile, final String... args) throws ExecutableRunnerException {
-        final Executable executable = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), executablePath, Arrays.asList(args));
-        executeToFile(executable, standardOutputFile, errorOutputFile);
-    }
-
-    public void executeToFile(final Executable executable, final File standardOutputFile, final File errorOutputFile) throws ExecutableRunnerException {
-        logger.debug(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
-        try {
-            final ProcessBuilder processBuilder = executable.createProcessBuilder().redirectOutput(standardOutputFile).redirectError(errorOutputFile);
-            final Process process = processBuilder.start();
-            process.waitFor();
-        } catch (final Exception e) {
-            throw new ExecutableRunnerException(e);
-        }
-    }
-
+    
     private ExecutableOutput runExecutable(final Executable executable, final Consumer<String> standardLoggingMethod, final Consumer<String> traceLoggingMethod) throws ExecutableRunnerException {
         standardLoggingMethod.accept(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
         try {

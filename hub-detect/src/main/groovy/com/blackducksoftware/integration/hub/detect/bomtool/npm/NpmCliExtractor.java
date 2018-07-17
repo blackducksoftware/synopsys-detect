@@ -25,11 +25,10 @@ package com.blackducksoftware.integration.hub.detect.bomtool.npm;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +38,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWr
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
@@ -61,9 +61,7 @@ public class NpmCliExtractor {
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String npmExe, final ExtractionId extractionId) {
-        final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
-        final File npmLsOutputFile = detectFileManager.getOutputFile(outputDirectory, NpmCliExtractor.OUTPUT_FILE);
-        final File npmLsErrorFile = detectFileManager.getOutputFile(outputDirectory, NpmCliExtractor.ERROR_FILE);
+        final File outputDirectory = detectFileManager.getOutputDirectory("Npm", extractionId);
 
         final boolean includeDevDeps = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
         final List<String> exeArgs = new ArrayList<>();
@@ -74,48 +72,38 @@ public class NpmCliExtractor {
         }
 
         final Executable npmLsExe = new Executable(directory, npmExe, exeArgs);
+        ExecutableOutput executableOutput;
         try {
-            executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile);
+            executableOutput = executableRunner.execute(npmLsExe);
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
-
-        if (npmLsOutputFile.length() > 0) {
-            if (npmLsErrorFile.length() > 0) {
+        String standardOutput = executableOutput.getStandardOutput();
+        String errorOutput = executableOutput.getErrorOutput();
+        if (StringUtils.isNotBlank(standardOutput)) {
+            if (StringUtils.isNotBlank(errorOutput)) {
                 logger.debug("Error when running npm ls -json command");
-                printFileToDebug(npmLsErrorFile);
+                logger.debug(errorOutput);
                 return new Extraction.Builder().failure("Npm returned no output after runnin npm ls.").build();
             }
             logger.debug("Parsing npm ls file.");
-            printFileToDebug(npmLsOutputFile);
+            logger.debug(standardOutput);
             try {
-                final NpmParseResult result = npmCliDependencyFinder.generateCodeLocation(bomToolType, directory.getCanonicalPath(), npmLsOutputFile);
+                final NpmParseResult result = npmCliDependencyFinder.generateCodeLocation(bomToolType, directory.getCanonicalPath(), standardOutput);
                 return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
             } catch (final IOException e) {
                 return new Extraction.Builder().exception(e).build();
             }
 
         } else {
-            if (npmLsErrorFile.length() > 0) {
+            if (StringUtils.isNotBlank(errorOutput)) {
                 logger.error("Error when running npm ls -json command");
-                printFileToDebug(npmLsErrorFile);
+                logger.debug(errorOutput);
             } else {
                 logger.warn("Nothing returned from npm ls -json command");
             }
             return new Extraction.Builder().failure("Npm returned error after running npm ls.").build();
         }
-    }
-
-    void printFileToDebug(final File errorFile) {
-        String text = "";
-        try {
-            for (final String line : Files.readAllLines(errorFile.toPath(), StandardCharsets.UTF_8)) {
-                text += line + System.lineSeparator();
-            }
-        } catch (final IOException e) {
-            logger.debug("Failed to read NPM error file.");
-        }
-        logger.debug(text);
     }
 
 }
