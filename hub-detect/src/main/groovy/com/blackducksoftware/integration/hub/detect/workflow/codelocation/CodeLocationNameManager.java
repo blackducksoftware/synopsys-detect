@@ -34,22 +34,14 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 
 public class CodeLocationNameManager {
     private final DetectConfigWrapper detectConfigWrapper;
-    private final BomCodeLocationNameService bomCodeLocationNameService;
-    private final DockerCodeLocationNameService dockerCodeLocationNameService;
-    private final ScanCodeLocationNameService scanCodeLocationNameService;
-    private final DockerScanCodeLocationNameService dockerScanCodeLocationNameService;
+    private final CodeLocationNameService codeLocationNameFactory;
 
     private final Set<String> codeLocationNames = new HashSet<>();
     private int givenCodeLocationOverrideCount = 0;
 
-    public CodeLocationNameManager(final DetectConfigWrapper detectConfigWrapper, final BomCodeLocationNameService bomCodeLocationNameService,
-            final DockerCodeLocationNameService dockerCodeLocationNameService, final ScanCodeLocationNameService scanCodeLocationNameService,
-            final DockerScanCodeLocationNameService dockerScanCodeLocationNameService) {
+    public CodeLocationNameManager(final DetectConfigWrapper detectConfigWrapper, final CodeLocationNameService codeLocationNameFactory) {
         this.detectConfigWrapper = detectConfigWrapper;
-        this.bomCodeLocationNameService = bomCodeLocationNameService;
-        this.dockerCodeLocationNameService = dockerCodeLocationNameService;
-        this.scanCodeLocationNameService = scanCodeLocationNameService;
-        this.dockerScanCodeLocationNameService = dockerScanCodeLocationNameService;
+        this.codeLocationNameFactory = codeLocationNameFactory;
     }
 
     public String createAggregateCodeLocationName(final String projectName, final String projectVersionName) {
@@ -71,10 +63,9 @@ public class CodeLocationNameManager {
         } else if (useCodeLocationOverride()) {
             codeLocationName = getNextCodeLocationOverrideName(CodeLocationType.BOM);
         } else if (BomToolGroupType.DOCKER.equals(detectCodeLocation.getBomToolGroupType())) {
-            codeLocationName = dockerCodeLocationNameService
-                    .createCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
+            codeLocationName = codeLocationNameFactory.createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
         } else {
-            codeLocationName = bomCodeLocationNameService.createCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
+            codeLocationName = codeLocationNameFactory.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
         }
         codeLocationNames.add(codeLocationName);
         return codeLocationName;
@@ -86,9 +77,9 @@ public class CodeLocationNameManager {
         if (useCodeLocationOverride()) {
             scanCodeLocationName = getNextCodeLocationOverrideName(CodeLocationType.SCAN);
         } else if (StringUtils.isNotBlank(dockerTarFilename)) {
-            scanCodeLocationName = dockerScanCodeLocationNameService.createCodeLocationName(dockerTarFilename, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameFactory.createDockerScanCodeLocationName(dockerTarFilename, projectName, projectVersionName, prefix, suffix);
         } else {
-            scanCodeLocationName = scanCodeLocationNameService.createCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameFactory.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
         }
         codeLocationNames.add(scanCodeLocationName);
         return scanCodeLocationName;
