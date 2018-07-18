@@ -62,7 +62,6 @@ public class CodeLocationNameServiceTest {
 
     @Test
     public void testBomCodeLocationName() {
-
         final String expected = "hub-common-rest/child/group/name/version npm/bom";
         // = path/externalId tool/type
 

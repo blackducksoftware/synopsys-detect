@@ -61,7 +61,7 @@ public class CodeLocationNameService {
             }
             pathPiece = StringUtils.join(relativePieces, "/");
         } catch (final Exception e) {
-            logger.info("Unable to relativize path, full source path will be used: " + sourcePath);
+            logger.info(String.format("Unable to relativize path, full source path will be used: %s", sourcePath));
             logger.debug("The reason relativize failed: ", e);
         }
         final List<String> pieces = Arrays.asList(externalId.getExternalIdPieces());
