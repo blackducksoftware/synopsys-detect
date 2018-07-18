@@ -41,6 +41,7 @@ public class DetailedSearchSummarizer extends BomToolEvaluationSummarizer {
                     data.notSearchable.add(detail);
                 }
             }
+            datas.add(data);
         }
         return datas;
     }

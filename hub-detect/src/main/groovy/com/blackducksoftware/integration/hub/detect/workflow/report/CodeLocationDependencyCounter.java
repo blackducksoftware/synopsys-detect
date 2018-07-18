@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report;
+package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +29,9 @@ public class CodeLocationDependencyCounter {
     public Map<DetectCodeLocation, Integer> countCodeLocations(final List<DetectCodeLocation> codeLocations) {
         final Map<DetectCodeLocation, Integer> dependencyCounts = new HashMap<>();
         for (final DetectCodeLocation codeLocation : codeLocations) {
+            if (!dependencyCounts.containsKey(codeLocation)) {
+                dependencyCounts.put(codeLocation, 0);
+            }
             dependencyCounts.put(codeLocation, dependencyCounts.get(codeLocation) + countCodeLocationDependencies(codeLocation));
         }
         return dependencyCounts;

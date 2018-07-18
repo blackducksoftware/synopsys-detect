@@ -37,7 +37,6 @@ public class FileReportWriter implements ReportWriter {
 
     @Override
     public void writeLine(final String line) {
-        logger.info(line);
         try {
             writer.append(line);
             writer.newLine();

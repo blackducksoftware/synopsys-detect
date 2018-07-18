@@ -11,14 +11,14 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.BomToolStateReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.CodeLocationReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.OverviewReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.ProfilingReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.SearchReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.CodeLocationReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.DetailedSearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.FileReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.LogReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.OverviewReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ProfilingReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.SearchSummaryReporter;
 
 public class DiagnosticReportManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -27,8 +27,7 @@ public class DiagnosticReportManager {
 
     public enum ReportTypes {
         SEARCH("search_report", "Search Result Report", "A breakdown of bom tool searching by directory."),
-        EXTRACTION_STATE("extraction_state_report", "Bom Tool Extraction State Report", "All fields and state of any extractabe bom tool post extraction."),
-        APPLICABLE_STATE("applicable_state_report", "Bom Tool Applicable State Report", "All fields and state of any applicable bom tool post extraction."),
+        SEARCH_DETAILED("search_detailed_report", "Search Result Report", "A breakdown of bom tool searching by directory."),
         BOM_TOOL("bom_tool_report", "Bom Tool Report", "A breakdown of bom tool's that were applicable and their preparation and extraction results."),
         BOM_TOOL_PROFILE("bom_tool_profile_report", "Bom Tool Profile Report", "A breakdown of timing and profiling for all bom tools."),
         CODE_LOCATIONS("code_location_report", "Code Location Report", "A breakdown of code locations created, their dependencies and status results."),
@@ -79,19 +78,18 @@ public class DiagnosticReportManager {
 
     public void completedBomToolEvaluations(final List<BomToolEvaluation> bomToolEvaluations) {
         try {
-            final BomToolStateReporter stateReporter = new BomToolStateReporter();
-            stateReporter.writeExtractionStateReport(getReportWriter(ReportTypes.EXTRACTION_STATE), bomToolEvaluations);
-            stateReporter.writeApplicableStateReport(getReportWriter(ReportTypes.APPLICABLE_STATE), bomToolEvaluations);
+            final SearchSummaryReporter searchReporter = new SearchSummaryReporter();
+            searchReporter.print(getReportWriter(ReportTypes.SEARCH), bomToolEvaluations);
         } catch (final Exception e) {
-            logger.error("Failed to write bom tool state report.");
+            logger.error("Failed to write search report.");
             e.printStackTrace();
         }
 
         try {
-            final SearchReporter searchReporter = new SearchReporter();
-            searchReporter.writeReport(getReportWriter(ReportTypes.SEARCH), bomToolEvaluations);
+            final DetailedSearchSummaryReporter searchReporter = new DetailedSearchSummaryReporter();
+            searchReporter.print(getReportWriter(ReportTypes.SEARCH_DETAILED), bomToolEvaluations);
         } catch (final Exception e) {
-            logger.error("Failed to write search report.");
+            logger.error("Failed to write detailed search report.");
             e.printStackTrace();
         }
 

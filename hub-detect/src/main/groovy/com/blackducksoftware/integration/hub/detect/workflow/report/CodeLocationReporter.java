@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report;
+package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.util.List;
 import java.util.Map;
@@ -8,13 +8,15 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 
 public class CodeLocationReporter {
 
     public void writeCodeLocationReport(final ReportWriter writer, final ReportWriter writer2, final List<BomToolEvaluation> bomToolEvaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        final List<DetectCodeLocation> codeLocationsToCount = bomToolEvaluations.stream()
-                .filter(it -> it.isExtractable())
+        final List<BomToolEvaluation> succesfullBomToolEvaluations = bomToolEvaluations.stream()
+                .filter(it -> it.wasExtractionSuccessful())
+                .collect(Collectors.toList());
+
+        final List<DetectCodeLocation> codeLocationsToCount = succesfullBomToolEvaluations.stream()
                 .flatMap(it -> it.getExtraction().codeLocations.stream())
                 .collect(Collectors.toList());
 
@@ -22,7 +24,7 @@ public class CodeLocationReporter {
         final Map<DetectCodeLocation, Integer> dependencyCounts = counter.countCodeLocations(codeLocationsToCount);
         final Map<BomToolGroupType, Integer> dependencyAggregates = counter.aggregateCountsByGroup(dependencyCounts);
 
-        bomToolEvaluations.forEach(it -> writeBomToolEvaluationDetails(writer, it, dependencyCounts, codeLocationNameMap));
+        succesfullBomToolEvaluations.forEach(it -> writeBomToolEvaluationDetails(writer, it, dependencyCounts, codeLocationNameMap));
         writeBomToolCounts(writer2, dependencyAggregates);
 
     }

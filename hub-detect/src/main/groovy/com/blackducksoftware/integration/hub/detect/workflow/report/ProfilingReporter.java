@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report;
+package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.Map;
 
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolTime;
-import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 
 public class ProfilingReporter {
 

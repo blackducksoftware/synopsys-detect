@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionReporter;
 
 public class ReportManager {
     // all entry points to reporting
@@ -20,8 +18,6 @@ public class ReportManager {
     private final PhoneHomeManager phoneHomeManager;
     private final DiagnosticManager diagnosticManager;
 
-    private final ExtractionReporter extractionReporter;
-
     // Summary, print collections or final groups or information.
     private final SearchSummaryReporter searchSummaryReporter;
     private final PreparationSummaryReporter preparationSummaryReporter;
@@ -29,12 +25,11 @@ public class ReportManager {
 
     private final LogReportWriter logWriter = new LogReportWriter();
 
-    public ReportManager(final BomToolProfiler bomToolProfiler, final PhoneHomeManager phoneHomeManager, final DiagnosticManager diagnosticManager, final ExtractionReporter extractionReporter,
+    public ReportManager(final BomToolProfiler bomToolProfiler, final PhoneHomeManager phoneHomeManager, final DiagnosticManager diagnosticManager,
             final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter) {
         this.bomToolProfiler = bomToolProfiler;
         this.phoneHomeManager = phoneHomeManager;
         this.diagnosticManager = diagnosticManager;
-        this.extractionReporter = extractionReporter;
         this.preparationSummaryReporter = preparationSummaryReporter;
         this.extractionSummaryReporter = extractionSummaryReporter;
         this.searchSummaryReporter = searchSummaryReporter;
@@ -43,6 +38,8 @@ public class ReportManager {
     // Reports
     public void searchCompleted(final List<BomToolEvaluation> bomToolEvaluations) {
         searchSummaryReporter.print(logWriter, bomToolEvaluations);
+        final DetailedSearchSummaryReporter detailedSearchSummaryReporter = new DetailedSearchSummaryReporter();
+        detailedSearchSummaryReporter.print(logWriter, bomToolEvaluations);
     }
 
     public void preparationCompleted(final List<BomToolEvaluation> bomToolEvaluations) {
@@ -76,22 +73,19 @@ public class ReportManager {
         bomToolProfiler.extractableEnded(bomTool);
     }
 
-    public void extractionStarted(final BomToolEvaluation bomToolEvaluation, final ExtractionId extractionId) {
-        diagnosticManager.startLoggingExtraction(extractionId);
-        extractionReporter.startedExtraction(logWriter, bomToolEvaluation.getBomTool(), extractionId);
+    public void extractionStarted(final BomToolEvaluation bomToolEvaluation) {
+        diagnosticManager.startLoggingExtraction(bomToolEvaluation.getExtractionId());
         bomToolProfiler.extractionStarted(bomToolEvaluation.getBomTool());
     }
 
-    public void extractionEnded(final BomToolEvaluation bomToolEvaluation, final ExtractionId extractionId) {
+    public void extractionEnded(final BomToolEvaluation bomToolEvaluation) {
         bomToolProfiler.extractionEnded(bomToolEvaluation.getBomTool());
-
         if (diagnosticManager.isDiagnosticModeOn()) {
             final List<File> diagnosticFiles = bomToolEvaluation.getBomTool().getRelevantDiagnosticFiles();
             for (final File file : diagnosticFiles) {
-                diagnosticManager.registerFileOfInterest(extractionId, file);
+                diagnosticManager.registerFileOfInterest(bomToolEvaluation.getExtractionId(), file);
             }
         }
-        extractionReporter.endedExtraction(logWriter, bomToolEvaluation.getExtraction());
-        diagnosticManager.stopLoggingExtraction(extractionId);
+        diagnosticManager.stopLoggingExtraction(bomToolEvaluation.getExtractionId());
     }
 }

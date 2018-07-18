@@ -128,7 +128,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.Diagnost
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BdioUploader;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
@@ -389,13 +388,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public ExtractionReporter extractionReporter() {
-        return new ExtractionReporter();
-    }
-
-    @Bean
     public ReportManager reportManager() {
-        return new ReportManager(bomToolProfiler(), phoneHomeManager(), diagnosticManager(), extractionReporter(), preparationSummaryReporter(), extractionSummaryReporter(), searchSummaryReporter());
+        return new ReportManager(bomToolProfiler(), phoneHomeManager(), diagnosticManager(), preparationSummaryReporter(), extractionSummaryReporter(), searchSummaryReporter());
     }
 
     public ExtractionManager extractionManager() {

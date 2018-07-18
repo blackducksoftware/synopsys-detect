@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report;
+package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ReportConstants;
-import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 
 public class OverviewReporter {
 
