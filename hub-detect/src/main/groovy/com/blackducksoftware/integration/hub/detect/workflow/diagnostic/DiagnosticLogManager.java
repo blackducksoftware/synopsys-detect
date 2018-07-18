@@ -112,7 +112,6 @@ public class DiagnosticLogManager {
         appender.start();
 
         final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
-
         logbackLogger.addAppender(appender);
         logbackLogger.setLevel(Level.ALL);
 

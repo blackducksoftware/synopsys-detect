@@ -35,10 +35,17 @@ public class ArgumentStateParser {
         final boolean isVerboseHelp = checkArgumentPresent("-hv", "--helpVerbose", args);
         final boolean isDeprecatedHelp = checkArgumentPresent("-hd", "--helpDeprecated", args);
 
-        boolean isDiagnostic = checkArgumentPresent("-d", "--diagnostic", args);
-        final boolean isDiagnosticProtected = checkArgumentPresent("-dp", "--diagnosticProtected", args);
-        if (isDiagnosticProtected) {
+        final boolean isDiagnosticProvided = checkArgumentPresent("-d", "--diagnostic", args);
+        final boolean isDiagnosticExtendedProvided = checkArgumentPresent("-de", "--diagnosticExtended", args);
+
+        boolean isDiagnostic = false;
+        boolean isDiagnosticProtected = true;
+
+        if (isDiagnosticProvided || isDiagnosticExtendedProvided) {
             isDiagnostic = true;
+        }
+        if (isDiagnosticExtendedProvided) {
+            isDiagnosticProtected = false;
         }
 
         String parsedValue = null;

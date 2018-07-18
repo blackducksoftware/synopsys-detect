@@ -4,10 +4,11 @@ import java.util.List;
 
 import com.blackducksoftware.integration.hub.detect.testutils.ObjectPrinter;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 
 public class BomToolStateReporter {
 
-    public void writeExtractionStateReport(final DiagnosticReportWriter writer, final List<BomToolEvaluation> bomToolEvaluations) {
+    public void writeExtractionStateReport(final ReportWriter writer, final List<BomToolEvaluation> bomToolEvaluations) {
         for (final BomToolEvaluation evaluation : bomToolEvaluations) {
             if (evaluation.isExtractable()) {
                 writeBomToolState(writer, evaluation);
@@ -15,7 +16,7 @@ public class BomToolStateReporter {
         }
     }
 
-    public void writeApplicableStateReport(final DiagnosticReportWriter writer, final List<BomToolEvaluation> bomToolEvaluations) {
+    public void writeApplicableStateReport(final ReportWriter writer, final List<BomToolEvaluation> bomToolEvaluations) {
         for (final BomToolEvaluation evaluation : bomToolEvaluations) {
             if (evaluation.isExtractable()) {
                 writeBomToolState(writer, evaluation);
@@ -23,7 +24,7 @@ public class BomToolStateReporter {
         }
     }
 
-    private void writeBomToolState(final DiagnosticReportWriter writer, final BomToolEvaluation evaluation) {
+    public void writeBomToolState(final ReportWriter writer, final BomToolEvaluation evaluation) {
         writer.writeSeperator();
         writer.writeLine("Bom Tool Name : " + evaluation.getBomTool().getDescriptiveName());
         if (evaluation.getExtractionId() != null) {

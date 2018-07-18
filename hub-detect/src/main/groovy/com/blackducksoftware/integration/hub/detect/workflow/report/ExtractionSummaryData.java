@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.extraction;
+package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.util.ArrayList;
 import java.util.List;

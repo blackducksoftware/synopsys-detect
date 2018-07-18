@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report;
+package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ReportConstants;
 
-public class DiagnosticFileReportWriter implements DiagnosticReportWriter {
+public class FileReportWriter implements ReportWriter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private BufferedWriter writer;
 
-    public DiagnosticFileReportWriter(final File reportFile, final String name, final String description, final String runId) throws DetectUserFriendlyException {
+    public FileReportWriter(final File reportFile, final String name, final String description, final String runId) throws DetectUserFriendlyException {
         try {
             final FileWriter fileWriter = new FileWriter(reportFile, true);
             writer = new BufferedWriter(fileWriter);
@@ -37,6 +37,7 @@ public class DiagnosticFileReportWriter implements DiagnosticReportWriter {
 
     @Override
     public void writeLine(final String line) {
+        logger.info(line);
         try {
             writer.append(line);
             writer.newLine();
@@ -46,8 +47,18 @@ public class DiagnosticFileReportWriter implements DiagnosticReportWriter {
     }
 
     @Override
+    public void writeLine() {
+        writeLine("");
+    }
+
+    @Override
     public void writeSeperator() {
         writeLine(ReportConstants.SEPERATOR);
+    }
+
+    @Override
+    public void writeHeader() {
+        writeLine(ReportConstants.HEADING);
     }
 
     @Override

@@ -7,23 +7,27 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.DiagnosticReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 
 public class ObjectPrinter {
 
-    public static void printObject(final DiagnosticReportWriter writer, final String prefix, final Object guy) {
+    public static void printObject(final ReportWriter writer, final String prefix, final Object guy) {
         for (final Field field : guy.getClass().getFields()) {
             printField(field, writer, prefix, guy);
         }
     }
 
-    public static void printObjectPrivate(final DiagnosticReportWriter writer, final String prefix, final Object guy) {
+    public static void printObjectPrivate(final ReportWriter writer, final Object guy) {
+        printObjectPrivate(writer, null, guy);
+    }
+
+    public static void printObjectPrivate(final ReportWriter writer, final String prefix, final Object guy) {
         for (final Field field : guy.getClass().getDeclaredFields()) {
             printField(field, writer, prefix, guy);
         }
     }
 
-    public static void printField(final Field field, final DiagnosticReportWriter writer, final String prefix, final Object guy) {
+    public static void printField(final Field field, final ReportWriter writer, final String prefix, final Object guy) {
         if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
             return; // don't print static fields.
         }

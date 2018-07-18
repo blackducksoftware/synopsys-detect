@@ -6,10 +6,11 @@ import java.util.Map;
 
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolTime;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 
 public class ProfilingReporter {
 
-    public void writeReport(final DiagnosticReportWriter writer, final BomToolProfiler bomToolProfiler) {
+    public void writeReport(final ReportWriter writer, final BomToolProfiler bomToolProfiler) {
         writer.writeSeperator();
         writer.writeLine("Applicable Times");
         writer.writeSeperator();
@@ -24,7 +25,7 @@ public class ProfilingReporter {
         writeReport(writer, bomToolProfiler.getExtractionTimings());
     }
 
-    private void writeAggregateReport(final DiagnosticReportWriter writer, final List<BomToolTime> timings) {
+    private void writeAggregateReport(final ReportWriter writer, final List<BomToolTime> timings) {
         final Map<String, Long> aggregated = new HashMap<>();
 
         for (final BomToolTime bomToolTime : timings) {
@@ -40,7 +41,7 @@ public class ProfilingReporter {
         }
     }
 
-    private void writeReport(final DiagnosticReportWriter writer, final List<BomToolTime> timings) {
+    private void writeReport(final ReportWriter writer, final List<BomToolTime> timings) {
 
         for (final BomToolTime bomToolTime : timings) {
             writer.writeLine("\t" + padToLength(bomToolTime.getBomTool().getDescriptiveName(), 30) + "\t" + bomToolTime.getMs());

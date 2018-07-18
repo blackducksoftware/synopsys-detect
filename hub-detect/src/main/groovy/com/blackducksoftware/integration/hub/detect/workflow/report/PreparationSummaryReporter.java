@@ -21,12 +21,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.extraction;
+package com.blackducksoftware.integration.hub.detect.workflow.report;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -35,51 +32,32 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 
 public class PreparationSummaryReporter {
-    private final Logger logger = LoggerFactory.getLogger(PreparationSummaryReporter.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public void print(final List<BomToolEvaluation> results) {
-        final Map<File, List<BomToolEvaluation>> byDirectory = results.stream()
-                .collect(Collectors.groupingBy(item -> item.getEnvironment().getDirectory()));
-
-        printDirectories(byDirectory);
-
+    public void write(final ReportWriter writer, final List<BomToolEvaluation> results) {
+        final PreparationSummarizer summarizer = new PreparationSummarizer();
+        final List<PreparationSummaryData> result = summarizer.summarize(results);
+        writeSummary(writer, result);
     }
 
-    private void printDirectories(final Map<File, List<BomToolEvaluation>> byDirectory) {
-        logger.info("");
-        logger.info("");
-        logger.info(ReportConstants.HEADING);
-        logger.info("Preparation for extraction");
-        logger.info(ReportConstants.HEADING);
-        for (final File file : byDirectory.keySet()) {
-            final List<BomToolEvaluation> results = byDirectory.get(file);
-
-            final List<String> ready = new ArrayList<>();
-            final List<String> failed = new ArrayList<>();
-
-            for (final BomToolEvaluation result : results) {
-                if (result.isApplicable()) {
-                    if (result.isExtractable()) {
-                        ready.add(result.getBomTool().getDescriptiveName());
-                    } else {
-                        failed.add("FAILED: " + result.getBomTool().getDescriptiveName() + " - " + result.getExtractabilityMessage());
-                    }
-                }
+    private void writeSummary(final ReportWriter writer, final List<PreparationSummaryData> datas) {
+        writer.writeLine();
+        writer.writeLine();
+        writer.writeHeader();
+        writer.writeLine("Preparation for extraction");
+        writer.writeHeader();
+        for (final PreparationSummaryData data : datas) {
+            writer.writeLine(data.directory);
+            if (data.ready.size() > 0) {
+                writer.writeLine("\t READY: " + data.ready.stream().map(it -> it.getBomTool().getDescriptiveName()).sorted().collect(Collectors.joining(", ")));
             }
-            if (ready.size() > 0 || failed.size() > 0) {
-                logger.info(file.getAbsolutePath());
-                if (ready.size() > 0) {
-                    logger.info("\t READY: " + ready.stream().sorted().collect(Collectors.joining(", ")));
-                }
-                if (failed.size() > 0) {
-                    failed.stream().sorted().forEach(it -> logger.error("\t" + it));
-                }
-
+            if (data.failed.size() > 0) {
+                data.failed.stream().sorted().forEach(it -> writer.writeLine("\tFAILED:" + it.getBomTool().getDescriptiveName() + " - " + it.getExtractabilityMessage()));
             }
         }
-        logger.info(ReportConstants.HEADING);
-        logger.info("");
-        logger.info("");
+        writer.writeHeader();
+        writer.writeLine();
+        writer.writeLine();
     }
 
 }

@@ -50,14 +50,13 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEval
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionResult;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolProjectInfo;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.BomToolGroupStatusSummary;
@@ -75,22 +74,20 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
     private final ExtractionManager extractionManager;
     private final DetectCodeLocationManager codeLocationManager;
     private final BdioManager bdioManager;
-    private final ExtractionSummaryReporter extractionSummaryReporter;
     private final BomToolNameVersionDecider bomToolNameVersionDecider;
     private final DetectConfigWrapper detectConfigWrapper;
-    private final DiagnosticManager diagnosticManager;
+    private final ReportManager reportManager;
 
     public DetectProjectManager(final SearchManager searchManager, final ExtractionManager extractionManager, final DetectCodeLocationManager codeLocationManager, final BdioManager bdioManager,
-            final ExtractionSummaryReporter extractionSummaryReporter, final BomToolNameVersionDecider bomToolNameVersionDecider, final DetectConfigWrapper detectConfigWrapper, final DiagnosticManager diagnosticManager) {
+            final BomToolNameVersionDecider bomToolNameVersionDecider, final DetectConfigWrapper detectConfigWrapper, final ReportManager reportManager) {
 
         this.searchManager = searchManager;
         this.extractionManager = extractionManager;
         this.codeLocationManager = codeLocationManager;
         this.bdioManager = bdioManager;
-        this.extractionSummaryReporter = extractionSummaryReporter;
         this.bomToolNameVersionDecider = bomToolNameVersionDecider;
         this.detectConfigWrapper = detectConfigWrapper;
-        this.diagnosticManager = diagnosticManager;
+        this.reportManager = reportManager;
     }
 
     public DetectProject createDetectProject() throws DetectUserFriendlyException, IntegrationException {
@@ -113,8 +110,7 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
             final List<File> createdBdioFiles = bdioManager.createBdioFiles(codeLocationResult.getBdioCodeLocations(), projectName, projectVersion);
             bdioFiles.addAll(createdBdioFiles);
 
-            diagnosticManager.completedCodeLocations(searchResult.getBomToolEvaluations(), codeLocationResult.getCodeLocationNames());
-            extractionSummaryReporter.print(searchResult.getBomToolEvaluations(), codeLocationResult.getCodeLocationNames());
+            reportManager.codeLocationsCompleted(searchResult.getBomToolEvaluations(), codeLocationResult.getCodeLocationNames());
         } else {
             final File aggregateBdioFile = bdioManager.createAggregateBdioFile(codeLocations, projectName, projectVersion);
             bdioFiles.add(aggregateBdioFile);

@@ -1,66 +1,60 @@
 package com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 
 public class CodeLocationReporter {
 
-    public void writeCodeLocationReport(final DiagnosticReportWriter writer, final DiagnosticReportWriter writer2, final List<BomToolEvaluation> bomToolEvaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        for (final BomToolEvaluation evaluation : bomToolEvaluations) {
-            if (evaluation.isExtractable()) {
-                writeCodeLocationDetails(writer, writer2, evaluation, codeLocationNameMap);
-            }
+    public void writeCodeLocationReport(final ReportWriter writer, final ReportWriter writer2, final List<BomToolEvaluation> bomToolEvaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+        final List<DetectCodeLocation> codeLocationsToCount = bomToolEvaluations.stream()
+                .filter(it -> it.isExtractable())
+                .flatMap(it -> it.getExtraction().codeLocations.stream())
+                .collect(Collectors.toList());
+
+        final CodeLocationDependencyCounter counter = new CodeLocationDependencyCounter();
+        final Map<DetectCodeLocation, Integer> dependencyCounts = counter.countCodeLocations(codeLocationsToCount);
+        final Map<BomToolGroupType, Integer> dependencyAggregates = counter.aggregateCountsByGroup(dependencyCounts);
+
+        bomToolEvaluations.forEach(it -> writeBomToolEvaluationDetails(writer, it, dependencyCounts, codeLocationNameMap));
+        writeBomToolCounts(writer2, dependencyAggregates);
+
+    }
+
+    private void writeBomToolEvaluationDetails(final ReportWriter writer, final BomToolEvaluation evaluation, final Map<DetectCodeLocation, Integer> dependencyCounts, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+        for (final DetectCodeLocation codeLocation : evaluation.getExtraction().codeLocations) {
+            writeCodeLocationDetails(writer, codeLocation, dependencyCounts.get(codeLocation), codeLocationNameMap.get(codeLocation), evaluation.getExtractionId().toUniqueString());
         }
     }
 
-    private void writeCodeLocationDetails(final DiagnosticReportWriter writer, final DiagnosticReportWriter writer2, final BomToolEvaluation evaluation, final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        final Map<BomToolGroupType, Integer> dependencyCounts = new HashMap<>();
-        for (final DetectCodeLocation codeLocation : evaluation.getExtraction().codeLocations) {
-            writer.writeSeperator();
-            writer.writeLine("Name : " + codeLocationNameMap.get(codeLocation));
-            writer.writeLine("Directory : " + codeLocation.getSourcePath());
-            writer.writeLine("Extraction : " + evaluation.getExtractionId().toUniqueString());
-            writer.writeLine("Bom Tool : " + codeLocation.getBomToolType());
-            writer.writeLine("Bom Tool Group : " + codeLocation.getBomToolGroupType());
+    private void writeCodeLocationDetails(final ReportWriter writer, final DetectCodeLocation codeLocation, final Integer dependencyCount, final String codeLocationName, final String extractionId) {
 
-            final DependencyGraph graph = codeLocation.getDependencyGraph();
-            final Integer dependencyCount = countDependencies(new ArrayList<ExternalId>(), graph.getRootDependencyExternalIds(), graph);
-            writer.writeLine("Root Dependencies : " + graph.getRootDependencies().size());
-            writer.writeLine("Total Dependencies : " + dependencyCount);
+        writer.writeSeperator();
+        writer.writeLine("Name : " + codeLocationName);
+        writer.writeLine("Directory : " + codeLocation.getSourcePath());
+        writer.writeLine("Extraction : " + extractionId);
+        writer.writeLine("Bom Tool : " + codeLocation.getBomToolType());
+        writer.writeLine("Bom Tool Group : " + codeLocation.getBomToolGroupType());
 
-            final BomToolGroupType group = codeLocation.getBomToolGroupType();
-            if (!dependencyCounts.containsKey(group)) {
-                dependencyCounts.put(group, 0);
-            }
-            dependencyCounts.put(group, dependencyCounts.get(group) + dependencyCount);
-        }
+        final DependencyGraph graph = codeLocation.getDependencyGraph();
 
+        writer.writeLine("Root Dependencies : " + graph.getRootDependencies().size());
+        writer.writeLine("Total Dependencies : " + dependencyCount);
+
+    }
+
+    private void writeBomToolCounts(final ReportWriter writer, final Map<BomToolGroupType, Integer> dependencyCounts) {
         for (final BomToolGroupType group : dependencyCounts.keySet()) {
             final Integer count = dependencyCounts.get(group);
 
-            writer2.writeLine(group.toString() + " : " + count);
+            writer.writeLine(group.toString() + " : " + count);
         }
-    }
-
-    private int countDependencies(final List<ExternalId> processed, final Set<ExternalId> remaining, final DependencyGraph graph) {
-        int sum = 0;
-        for (final ExternalId dependency : remaining) {
-            if (processed.contains(dependency)) {
-                continue;
-            }
-            processed.add(dependency);
-            sum += 1 + countDependencies(processed, graph.getChildrenExternalIdsForParent(dependency), graph);
-        }
-        return sum;
     }
 
 }

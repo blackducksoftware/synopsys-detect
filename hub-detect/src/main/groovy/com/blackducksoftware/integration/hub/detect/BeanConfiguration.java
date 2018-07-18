@@ -129,8 +129,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.Diagnost
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BdioUploader;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
@@ -139,8 +137,11 @@ import com.blackducksoftware.integration.hub.detect.workflow.hub.OfflineScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ExtractionSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.PreparationSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
+import com.blackducksoftware.integration.hub.detect.workflow.report.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
-import com.blackducksoftware.integration.hub.detect.workflow.search.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
@@ -374,7 +375,7 @@ public class BeanConfiguration {
 
     @Bean
     public SearchManager searchManager() throws ParserConfigurationException {
-        return new SearchManager(searchSummaryReporter(), bomToolSearchProvider(), phoneHomeManager(), detectConfigWrapper());
+        return new SearchManager(reportManager(), bomToolSearchProvider(), phoneHomeManager(), detectConfigWrapper());
     }
 
     @Bean
@@ -393,8 +394,12 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public ReportManager reportManager() {
+        return new ReportManager(bomToolProfiler(), phoneHomeManager(), diagnosticManager(), extractionReporter(), preparationSummaryReporter(), extractionSummaryReporter(), searchSummaryReporter());
+    }
+
     public ExtractionManager extractionManager() {
-        return new ExtractionManager(preparationSummaryReporter(), extractionReporter(), bomToolProfiler(), diagnosticManager(), phoneHomeManager());
+        return new ExtractionManager(reportManager());
     }
 
     @Bean
@@ -414,7 +419,7 @@ public class BeanConfiguration {
 
     @Bean
     public DetectProjectManager detectProjectManager() throws ParserConfigurationException {
-        return new DetectProjectManager(searchManager(), extractionManager(), detectCodeLocationManager(), bdioManager(), extractionSummaryReporter(), bomToolNameVersionDecider(), detectConfigWrapper(), diagnosticManager());
+        return new DetectProjectManager(searchManager(), extractionManager(), detectCodeLocationManager(), bdioManager(), bomToolNameVersionDecider(), detectConfigWrapper(), reportManager());
     }
 
     @Bean

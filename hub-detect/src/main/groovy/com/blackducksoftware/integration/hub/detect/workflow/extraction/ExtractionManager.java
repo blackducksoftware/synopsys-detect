@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.extraction;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,29 +35,18 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
-import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExceptionBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 
 public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
-    private final PreparationSummaryReporter preparationSummaryReporter;
-    private final ExtractionReporter extractionReporter;
-    private final BomToolProfiler bomToolProfiler;
-    private final DiagnosticManager diagnosticManager;
-    private final PhoneHomeManager phoneHomeManager;
+    private final ReportManager reportManager;
 
-    public ExtractionManager(final PreparationSummaryReporter preparationSummaryReporter, final ExtractionReporter extractionReporter, final BomToolProfiler bomToolProfiler, final DiagnosticManager diagnosticManager,
-            final PhoneHomeManager phoneHomeManager) {
-        this.preparationSummaryReporter = preparationSummaryReporter;
-        this.extractionReporter = extractionReporter;
-        this.bomToolProfiler = bomToolProfiler;
-        this.diagnosticManager = diagnosticManager;
-        this.phoneHomeManager = phoneHomeManager;
+    public ExtractionManager(final ReportManager reportManager) {
+        this.reportManager = reportManager;
     }
 
     private int extractions = 0;
@@ -80,13 +68,13 @@ public class ExtractionManager {
 
     private void prepare(final BomToolEvaluation result) {
         if (result.isApplicable()) {
-            bomToolProfiler.extractableStarted(result.getBomTool());
+            reportManager.extractableStarted(result.getBomTool());
             try {
                 result.setExtractable(result.getBomTool().extractable());
             } catch (final Exception e) {
                 result.setExtractable(new ExceptionBomToolResult(e));
             }
-            bomToolProfiler.extractableEnded(result.getBomTool());
+            reportManager.extractableEnded(result.getBomTool());
         }
     }
 
@@ -94,32 +82,21 @@ public class ExtractionManager {
         if (result.isExtractable()) {
             extractions++;
             final ExtractionId extractionId = new ExtractionId(result.getBomTool().getBomToolGroupType(), Integer.toString(extractions));
-            diagnosticManager.startLoggingExtraction(extractionId);
-            extractionReporter.startedExtraction(result.getBomTool(), extractionId);
-            bomToolProfiler.extractionStarted(result.getBomTool());
             result.setExtractionId(extractionId);
+            reportManager.extractionStarted(result, extractionId);
             try {
                 result.setExtraction(result.getBomTool().extract(extractionId));
             } catch (final Exception e) {
                 result.setExtraction(new Extraction.Builder().exception(e).build());
             }
-            if (diagnosticManager.isDiagnosticModeOn()) {
-                final List<File> diagnosticFiles = result.getBomTool().getRelevantDiagnosticFiles();
-                for (final File file : diagnosticFiles) {
-                    diagnosticManager.registerFileOfInterest(extractionId, file);
-                }
-            }
-            bomToolProfiler.extractionEnded(result.getBomTool());
-            extractionReporter.endedExtraction(result.getExtraction());
-            diagnosticManager.stopLoggingExtraction(extractionId);
+            reportManager.extractionEnded(result, extractionId);
         }
-
     }
 
     public ExtractionResult performExtractions(final List<BomToolEvaluation> bomToolEvaluations) throws IntegrationException, DetectUserFriendlyException {
         prepare(bomToolEvaluations);
 
-        preparationSummaryReporter.print(bomToolEvaluations);
+        reportManager.preparationCompleted(bomToolEvaluations);
 
         extract(bomToolEvaluations);
 
@@ -141,8 +118,7 @@ public class ExtractionManager {
                 .flatMap(it -> it.getExtraction().codeLocations.stream())
                 .collect(Collectors.toList());
 
-        phoneHomeManager.startPhoneHome(bomToolProfiler.getAggregateBomToolGroupTimes());
-        diagnosticManager.completedBomToolEvaluations(bomToolEvaluations);
+        reportManager.extractionsCompleted(bomToolEvaluations);
 
         final ExtractionResult result = new ExtractionResult(codeLocations, succesfulBomToolGroups, failedBomToolGroups);
         return result;

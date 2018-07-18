@@ -28,33 +28,33 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.testutils.ObjectPrinter;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction.ExtractionResultType;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 
 public class ExtractionReporter {
     private final Logger logger = LoggerFactory.getLogger(ExtractionReporter.class);
 
-    public void startedExtraction(final BomTool bomTool, final ExtractionId extractionId) {
-        logger.info(ReportConstants.SEPERATOR);
+    public void startedExtraction(final ReportWriter writer, final BomTool bomTool, final ExtractionId extractionId) {
+        writer.writeHeader();
         final String bomToolName = bomTool.getBomToolGroupType() + " - " + bomTool.getName();
-        logger.info("Starting extraction: " + bomToolName);
-        logger.info("Identifier: " + extractionId.toUniqueString());
-        // TODO: Replicate SUPER AWESOME printing from before... probably can't as nicely.
-        // logger.info("Extractor: " + bomTool.getExtractorClass().getSimpleName());
-        // logger.info("Context: " + bomTool.getExtractionContextClass().getSimpleName());
-        // ObjectPrinter.printObject(bomTool);
-        logger.info(ReportConstants.SEPERATOR);
+        writer.writeLine("Starting extraction: " + bomToolName);
+        writer.writeLine("Identifier: " + extractionId.toUniqueString());
+        ObjectPrinter.printObjectPrivate(writer, bomTool);
+        writer.writeLine(ReportConstants.SEPERATOR);
     }
 
-    public void endedExtraction(final Extraction extraction) {
-        logger.info(ReportConstants.SEPERATOR);
-        logger.info("Finished extraction: " + extraction.result.toString());
-        logger.info("Code locations found: " + extraction.codeLocations.size());
+    public void endedExtraction(final ReportWriter writer, final Extraction extraction) {
+        writer.writeHeader();
+        writer.writeLine("Finished extraction: " + extraction.result.toString());
+        writer.writeLine("Code locations found: " + extraction.codeLocations.size());
         if (extraction.result == ExtractionResultType.EXCEPTION) {
-            logger.error("Exception:", extraction.error);
+            writer.writeLine("Exception:" + extraction.error.getMessage());
+            logger.error("Exception:" + extraction.error);
         } else if (extraction.result == ExtractionResultType.FAILURE) {
-            logger.error(extraction.description);
+            writer.writeLine(extraction.description);
         }
-        logger.info(ReportConstants.SEPERATOR);
+        writer.writeHeader();
     }
 
 }

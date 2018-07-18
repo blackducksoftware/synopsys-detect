@@ -21,12 +21,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.search;
+package com.blackducksoftware.integration.hub.detect.workflow.report;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -38,72 +35,26 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.ReportCo
 public class SearchSummaryReporter {
     private final Logger logger = LoggerFactory.getLogger(SearchSummaryReporter.class);
 
-    public void print(final List<BomToolEvaluation> results) {
-        final Map<File, List<BomToolEvaluation>> byDirectory = results.stream()
-                .collect(Collectors.groupingBy(item -> item.getEnvironment().getDirectory()));
+    public void print(final ReportWriter writer, final List<BomToolEvaluation> results) {
+        final SearchSummarizer searchSummarizer = new SearchSummarizer();
+        final List<SearchSummaryData> summaryData = searchSummarizer.summarize(results);
 
-        printDirectoriesInfo(byDirectory);
-        printDirectoriesDebug(byDirectory);
-
+        printDirectoriesInfo(writer, summaryData);
     }
 
-    private void printDirectoriesInfo(final Map<File, List<BomToolEvaluation>> byDirectory) {
-        logger.info("");
-        logger.info("");
-        logger.info(ReportConstants.HEADING);
-        logger.info("Search results");
-        logger.info(ReportConstants.HEADING);
-        for (final File file : byDirectory.keySet()) {
-            final List<BomToolEvaluation> results = byDirectory.get(file);
-
-            final List<String> applied = results.stream()
-                    .filter(result -> result.isApplicable())
-                    .map(result -> result.getBomTool().getDescriptiveName())
-                    .collect(Collectors.toList());
-
-            if (applied.size() > 0) {
-                logger.info(file.getAbsolutePath());
-                logger.info("\tAPPLIES: " + applied.stream().sorted().collect(Collectors.joining(", ")));
-            }
+    private void printDirectoriesInfo(final ReportWriter writer, final List<SearchSummaryData> summaryData) {
+        writer.writeLine();
+        writer.writeLine();
+        writer.writeHeader();
+        writer.writeLine("Search results");
+        writer.writeHeader();
+        for (final SearchSummaryData data : summaryData) {
+            writer.writeLine(data.directory);
+            writer.writeLine("\tAPPLIES: " + data.applicable.stream().map(it -> it.getDescriptiveName()).sorted().collect(Collectors.joining(", ")));
         }
-        logger.info(ReportConstants.HEADING);
-        logger.info("");
-        logger.info("");
-    }
-
-    private void printDirectoriesDebug(final Map<File, List<BomToolEvaluation>> byDirectory) {
-        for (final File file : byDirectory.keySet()) {
-            final List<BomToolEvaluation> results = byDirectory.get(file);
-            final List<String> toPrint = new ArrayList<>();
-
-            for (final BomToolEvaluation result : results) {
-                final String bomToolName = result.getBomTool().getDescriptiveName();
-                if (result.isApplicable()) {
-                    toPrint.add("      APPLIED: " + bomToolName + " - Search: " + result.getSearchabilityMessage() + " Applicable: " + result.getApplicabilityMessage());
-                } else {
-
-                    final String didNotApplyPrefix = "DID NOT APPLY: " + bomToolName + " - ";
-                    if (BomToolEvaluation.NO_MESSAGE.equals(result.getApplicabilityMessage())) {
-                        toPrint.add(didNotApplyPrefix + result.getSearchabilityMessage());
-                    } else {
-                        toPrint.add(didNotApplyPrefix + result.getApplicabilityMessage());
-                    }
-                }
-            }
-            if (toPrint.size() > 0) {
-
-                debug(ReportConstants.HEADING);
-                debug("Detailed search results for directory");
-                debug(file.getAbsolutePath());
-                debug(ReportConstants.HEADING);
-                toPrint.stream().sorted().forEach(it -> debug(it));
-                debug(ReportConstants.HEADING);
-            }
-        }
-    }
-
-    private void debug(final String line) {
-        logger.debug(line);
+        writer.writeLine(ReportConstants.HEADING);
+        writer.writeLine();
+        writer.writeLine();
     }
 
 }

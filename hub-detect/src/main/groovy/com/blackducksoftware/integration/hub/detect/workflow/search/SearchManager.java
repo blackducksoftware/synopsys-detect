@@ -40,20 +40,21 @@ import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 
 public class SearchManager {
     private final Logger logger = LoggerFactory.getLogger(SearchManager.class);
 
-    private final SearchSummaryReporter searchSummaryReporter;
+    private final ReportManager reportManager;
     private final BomToolSearchProvider bomToolSearchProvider;
     private final PhoneHomeManager phoneHomeManager;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    public SearchManager(final SearchSummaryReporter searchSummaryReporter, final BomToolSearchProvider bomToolSearchProvider, final PhoneHomeManager phoneHomeManager,
+    public SearchManager(final ReportManager reportManager, final BomToolSearchProvider bomToolSearchProvider, final PhoneHomeManager phoneHomeManager,
             final DetectConfigWrapper detectConfigWrapper) {
-        this.searchSummaryReporter = searchSummaryReporter;
+        this.reportManager = reportManager;
         this.bomToolSearchProvider = bomToolSearchProvider;
         this.phoneHomeManager = phoneHomeManager;
         this.detectConfigWrapper = detectConfigWrapper;
@@ -67,7 +68,7 @@ public class SearchManager {
             return new SearchResultBomToolFailed(e);
         }
 
-        searchSummaryReporter.print(sourcePathResults);
+        reportManager.searchCompleted(sourcePathResults);
 
         final Set<BomToolGroupType> applicableBomTools = sourcePathResults.stream()
                 .filter(it -> it.isApplicable())

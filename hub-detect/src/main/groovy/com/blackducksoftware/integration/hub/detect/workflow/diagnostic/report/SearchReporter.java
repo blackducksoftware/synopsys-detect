@@ -7,16 +7,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 
 public class SearchReporter {
-    public void writeReport(final DiagnosticReportWriter writer, final List<BomToolEvaluation> results) {
+    public void writeReport(final ReportWriter writer, final List<BomToolEvaluation> results) {
         final Map<File, List<BomToolEvaluation>> byDirectory = results.stream()
                 .collect(Collectors.groupingBy(item -> item.getEnvironment().getDirectory()));
 
         printDirectories(writer, byDirectory);
     }
 
-    private void printDirectories(final DiagnosticReportWriter writer, final Map<File, List<BomToolEvaluation>> byDirectory) {
+    private void printDirectories(final ReportWriter writer, final Map<File, List<BomToolEvaluation>> byDirectory) {
         for (final File file : byDirectory.keySet()) {
             final List<BomToolEvaluation> results = byDirectory.get(file);
             final List<String> toPrint = new ArrayList<>();

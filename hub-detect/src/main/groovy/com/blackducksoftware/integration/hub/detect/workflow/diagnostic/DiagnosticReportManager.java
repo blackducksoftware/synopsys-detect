@@ -13,17 +13,17 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.BomToolStateReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.CodeLocationReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.DiagnosticFileReportWriter;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.DiagnosticReportWriter;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.DiagnosticSilentReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.OverviewReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.ProfilingReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.report.SearchReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.FileReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.LogReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 
 public class DiagnosticReportManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final Map<ReportTypes, DiagnosticFileReportWriter> reportWriters = new HashMap<>();
+    private final Map<ReportTypes, FileReportWriter> reportWriters = new HashMap<>();
 
     public enum ReportTypes {
         SEARCH("search_report", "Search Result Report", "A breakdown of bom tool searching by directory."),
@@ -106,8 +106,8 @@ public class DiagnosticReportManager {
 
     public void completedCodeLocations(final List<BomToolEvaluation> bomToolEvaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         try {
-            final DiagnosticReportWriter clWriter = getReportWriter(ReportTypes.CODE_LOCATIONS);
-            final DiagnosticReportWriter dcWriter = getReportWriter(ReportTypes.DEPENDENCY_COUNTS);
+            final ReportWriter clWriter = getReportWriter(ReportTypes.CODE_LOCATIONS);
+            final ReportWriter dcWriter = getReportWriter(ReportTypes.DEPENDENCY_COUNTS);
             final CodeLocationReporter clReporter = new CodeLocationReporter();
             clReporter.writeCodeLocationReport(clWriter, dcWriter, bomToolEvaluations, codeLocationNameMap);
         } catch (final Exception e) {
@@ -118,7 +118,7 @@ public class DiagnosticReportManager {
 
     private void writeReports() {
         try {
-            final DiagnosticReportWriter profileWriter = getReportWriter(ReportTypes.BOM_TOOL_PROFILE);
+            final ReportWriter profileWriter = getReportWriter(ReportTypes.BOM_TOOL_PROFILE);
             final ProfilingReporter reporter = new ProfilingReporter();
             reporter.writeReport(profileWriter, bomToolProfiler);
         } catch (final Exception e) {
@@ -138,21 +138,21 @@ public class DiagnosticReportManager {
         }
     }
 
-    private DiagnosticReportWriter createReportWriter(final ReportTypes reportType) {
+    private ReportWriter createReportWriter(final ReportTypes reportType) {
         try {
             final File reportFile = new File(reportDirectory, reportType.getReportFileName() + ".txt");
-            final DiagnosticFileReportWriter diagnosticFileReportWriter = new DiagnosticFileReportWriter(reportFile, reportType.getReportTitle(), reportType.getReportDescription(), runId);
-            reportWriters.put(reportType, diagnosticFileReportWriter);
+            final FileReportWriter fileReportWriter = new FileReportWriter(reportFile, reportType.getReportTitle(), reportType.getReportDescription(), runId);
+            reportWriters.put(reportType, fileReportWriter);
             logger.info("Created report file: " + reportFile.getPath());
-            return diagnosticFileReportWriter;
+            return fileReportWriter;
         } catch (final Exception e) {
             logger.error("Failed to create report writer: " + reportType.toString());
             e.printStackTrace();
         }
-        return new DiagnosticSilentReportWriter();
+        return new LogReportWriter();
     }
 
-    public DiagnosticReportWriter getReportWriter(final ReportTypes type) {
+    public ReportWriter getReportWriter(final ReportTypes type) {
         if (reportWriters.containsKey(type)) {
             return reportWriters.get(type);
         } else {
@@ -161,7 +161,7 @@ public class DiagnosticReportManager {
     }
 
     private void closeReportWriters() {
-        for (final DiagnosticFileReportWriter writer : reportWriters.values()) {
+        for (final FileReportWriter writer : reportWriters.values()) {
             writer.finish();
         }
     }
