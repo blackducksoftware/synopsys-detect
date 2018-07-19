@@ -33,8 +33,7 @@ public class DiagnosticZipCreator {
             outputStream.close();
             return true;
         } catch (final Exception e) {
-            logger.error("Failed to create zip.");
-            e.printStackTrace();
+            logger.error("Failed to create zip.", e);
         }
         return false;
     }
@@ -73,7 +72,7 @@ public class DiagnosticZipCreator {
                     outputStream.write(bytes, 0, bytes.length);
                     outputStream.closeEntry();
                 } catch (final IOException e) {
-                    e.printStackTrace();
+                    logger.error("Failed to write to zip.", e);
                 }
                 return FileVisitResult.CONTINUE;
             }

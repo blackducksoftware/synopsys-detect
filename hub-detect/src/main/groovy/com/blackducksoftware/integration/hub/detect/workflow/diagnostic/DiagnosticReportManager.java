@@ -81,24 +81,21 @@ public class DiagnosticReportManager {
             final SearchSummaryReporter searchReporter = new SearchSummaryReporter();
             searchReporter.print(getReportWriter(ReportTypes.SEARCH), bomToolEvaluations);
         } catch (final Exception e) {
-            logger.error("Failed to write search report.");
-            e.printStackTrace();
+            logger.error("Failed to write search report.", e);
         }
 
         try {
             final DetailedSearchSummaryReporter searchReporter = new DetailedSearchSummaryReporter();
             searchReporter.print(getReportWriter(ReportTypes.SEARCH_DETAILED), bomToolEvaluations);
         } catch (final Exception e) {
-            logger.error("Failed to write detailed search report.");
-            e.printStackTrace();
+            logger.error("Failed to write detailed search report.", e);
         }
 
         try {
             final OverviewReporter overviewReporter = new OverviewReporter();
             overviewReporter.writeReport(getReportWriter(ReportTypes.BOM_TOOL), bomToolEvaluations);
         } catch (final Exception e) {
-            logger.error("Failed to write bom tool report.");
-            e.printStackTrace();
+            logger.error("Failed to write bom tool report.", e);
         }
     }
 
@@ -109,8 +106,7 @@ public class DiagnosticReportManager {
             final CodeLocationReporter clReporter = new CodeLocationReporter();
             clReporter.writeCodeLocationReport(clWriter, dcWriter, bomToolEvaluations, codeLocationNameMap);
         } catch (final Exception e) {
-            logger.error("Failed to write code location report.");
-            e.printStackTrace();
+            logger.error("Failed to write code location report.", e);
         }
     }
 
@@ -120,8 +116,7 @@ public class DiagnosticReportManager {
             final ProfilingReporter reporter = new ProfilingReporter();
             reporter.writeReport(profileWriter, bomToolProfiler);
         } catch (final Exception e) {
-            logger.error("Failed to write profiling report.");
-            e.printStackTrace();
+            logger.error("Failed to write profiling report.", e);
         }
     }
 
@@ -130,8 +125,7 @@ public class DiagnosticReportManager {
             try {
                 createReportWriter(reportType);
             } catch (final Exception e) {
-                logger.error("Failed to create report: " + reportType.toString());
-                e.printStackTrace();
+                logger.error("Failed to create report: " + reportType.toString(), e);
             }
         }
     }
@@ -144,8 +138,7 @@ public class DiagnosticReportManager {
             logger.info("Created report file: " + reportFile.getPath());
             return fileReportWriter;
         } catch (final Exception e) {
-            logger.error("Failed to create report writer: " + reportType.toString());
-            e.printStackTrace();
+            logger.error("Failed to create report writer: " + reportType.toString(), e);
         }
         return new LogReportWriter();
     }

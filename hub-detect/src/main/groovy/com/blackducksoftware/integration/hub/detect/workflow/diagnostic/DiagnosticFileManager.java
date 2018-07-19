@@ -62,8 +62,7 @@ public class DiagnosticFileManager {
                 FileUtils.deleteDirectory(file);
             }
         } catch (final IOException e) {
-            logger.error("Failed to cleanup:");
-            e.printStackTrace();
+            logger.error("Failed to cleanup.", e);
         }
     }
 
@@ -101,12 +100,8 @@ public class DiagnosticFileManager {
     }
 
     private boolean isChildOfTrackedFolder(final File file) {
-        for (final File trackedFile : trackedDirectories) {
-            if (file.toPath().startsWith(trackedFile.toPath())) {
-                return true;
-            }
-        }
-        return false;
+        Path filePath = file.toPath();
+        return trackedDirectories.stream().anyMatch(trackedFile -> filePath.startsWith(trackedFile.toPath()));
     }
 
     private File findNextAvailableRelevant(final String directoryName, final String name) {

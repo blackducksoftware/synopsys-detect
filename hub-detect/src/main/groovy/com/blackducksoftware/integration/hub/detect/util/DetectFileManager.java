@@ -129,8 +129,7 @@ public class DetectFileManager {
                 try {
                     FileUtils.deleteDirectory(file);
                 } catch (final IOException e) {
-                    logger.error("Failed to cleanup: " + file.getPath());
-                    e.printStackTrace();
+                    logger.error("Failed to cleanup: " + file.getPath(), e);
                 }
             }
         }

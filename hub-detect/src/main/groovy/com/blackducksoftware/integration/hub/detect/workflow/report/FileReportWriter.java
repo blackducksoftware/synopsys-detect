@@ -30,8 +30,7 @@ public class FileReportWriter implements ReportWriter {
             writer.newLine();
             writeSeperator();
         } catch (final Exception e) {
-            logger.error("Diagnostics failed to create a report.");
-            e.printStackTrace();
+            logger.error("Diagnostics failed to create a report.", e);
         }
     }
 
@@ -41,7 +40,7 @@ public class FileReportWriter implements ReportWriter {
             writer.append(line);
             writer.newLine();
         } catch (final Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to write line.", e);
         }
     }
 
@@ -66,7 +65,7 @@ public class FileReportWriter implements ReportWriter {
             writer.flush();
             writer.close();
         } catch (final Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to finish report.", e);
         }
     }
 }

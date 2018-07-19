@@ -64,7 +64,7 @@ public class DiagnosticLogManager {
             logger.info("Writing sysout to file: " + stdOutFile.getCanonicalPath());
 
         } catch (final Exception e) {
-            e.printStackTrace();
+            logger.info("Failed to capture sysout.", e);
         }
     }
 
@@ -78,7 +78,7 @@ public class DiagnosticLogManager {
             extractionAppender = addAppender(logFilePath);
             logger.info("Redirected to file: " + logFilePath);
         } catch (final IOException e) {
-            e.printStackTrace();
+            logger.info("Failed to redirect.", e);
         }
 
     }

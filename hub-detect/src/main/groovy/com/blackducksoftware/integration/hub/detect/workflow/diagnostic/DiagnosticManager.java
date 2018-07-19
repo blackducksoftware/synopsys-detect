@@ -58,8 +58,7 @@ public class DiagnosticManager {
         try {
             diagnosticFileManager.init(outputDirectory, bdioDirectory, detectRunManager.getRunId());
         } catch (final Exception e) {
-            logger.error("Failed to create diagnostics directory.");
-            e.printStackTrace();
+            logger.error("Failed to create diagnostics directory.", e);
         }
 
         logger.info("Initializing diagnostic managers.");
@@ -67,8 +66,7 @@ public class DiagnosticManager {
             diagnosticReportManager.init(diagnosticFileManager.getReportDirectory(), detectRunManager.getRunId());
             diagnosticLogManager.init(diagnosticFileManager.getLogDirectory());
         } catch (final Exception e) {
-            logger.error("Failed to initialize.");
-            e.printStackTrace();
+            logger.error("Failed to initialize.", e);
         }
 
         logger.info("Diagnostic mode on. Run id " + detectRunManager.getRunId());
@@ -84,16 +82,14 @@ public class DiagnosticManager {
             logger.info("Finishing reports.");
             diagnosticReportManager.finish();
         } catch (final Exception e) {
-            logger.error("Failed to finish.");
-            e.printStackTrace();
+            logger.error("Failed to finish.", e);
         }
 
         try {
             logger.info("Finishing logging.");
             diagnosticLogManager.finish();
         } catch (final Exception e) {
-            logger.error("Failed to finish.");
-            e.printStackTrace();
+            logger.error("Failed to finish.", e);
         }
 
         logger.info("Creating diagnostics zip.");
@@ -101,8 +97,7 @@ public class DiagnosticManager {
         try {
             zipCreated = createZip();
         } catch (final Exception e) {
-            logger.error("Failed to create diagnostic zip. Cleanup will not occur.");
-            e.printStackTrace();
+            logger.error("Failed to create diagnostic zip. Cleanup will not occur.", e);
         }
 
         if (zipCreated) {
