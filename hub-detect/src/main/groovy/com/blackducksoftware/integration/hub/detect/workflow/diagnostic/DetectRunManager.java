@@ -7,10 +7,6 @@ import java.time.format.DateTimeFormatter;
 public class DetectRunManager {
     private String runId;
 
-    public DetectRunManager() {
-
-    }
-
     public void init() {
         runId = createRunId();
     }

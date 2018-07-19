@@ -68,11 +68,6 @@ public class DiagnosticLogManager {
         }
     }
 
-    private void setLevel(final Level targetLevel) {
-        final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
-        root.setLevel(Level.ALL);
-    }
-
     public void startLoggingExtraction(final ExtractionId extractionId) {
         logger.info("Diagnostics attempting to redirect extraction logs: " + extractionId.toUniqueString());
         final File logDir = new File(logDirectory, "extractions");
@@ -91,10 +86,20 @@ public class DiagnosticLogManager {
     public void stopLoggingExtraction(final ExtractionId extractionId) {
         logger.info("Diagnostics finished redirecting for extraction: " + extractionId.toUniqueString());
         if (extractionAppender != null) {
-            final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
-            logbackLogger.detachAppender(extractionAppender);
+            removeAppender(extractionAppender);
             extractionAppender.stop();
         }
+    }
+
+    private void setLevel(final Level targetLevel) {
+        final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
+        root.setLevel(Level.ALL);
+    }
+
+    private void removeAppender(final FileAppender<ILoggingEvent> appender) {
+        final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
+        logbackLogger.detachAppender(extractionAppender);
+
     }
 
     private FileAppender<ILoggingEvent> addAppender(final String file) {

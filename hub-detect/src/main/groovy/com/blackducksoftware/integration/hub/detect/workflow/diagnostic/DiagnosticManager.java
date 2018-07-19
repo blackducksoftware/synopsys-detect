@@ -127,6 +127,14 @@ public class DiagnosticManager {
         return isDiagnosticProtected;
     }
 
+    public boolean shouldFileManagerCleanup() {
+        if (isDiagnosticModeOn()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public void registerFileOfInterest(final ExtractionId extractionId, final File file) {
         if (!isDiagnosticModeOn()) {
             return;

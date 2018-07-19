@@ -120,14 +120,7 @@ public class DetectFileManager {
     }
 
     public boolean shouldCleanup() {
-        if (diagnosticManager.isDiagnosticModeOn()) {
-            return false;// let diagnostics handle this.
-        }
-        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
-            return true;
-        } else {
-            return false;
-        }
+        return diagnosticManager.shouldFileManagerCleanup() && detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP);
     }
 
     public void cleanupDirectories() {
