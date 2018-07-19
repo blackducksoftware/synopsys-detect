@@ -29,16 +29,24 @@ import java.util.List;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 
 public class ExtractionSummaryData {
-    public String directory;
+    private final String directory;
 
     public List<BomToolEvaluation> success = new ArrayList<>();
     public List<BomToolEvaluation> failed = new ArrayList<>();
     public List<BomToolEvaluation> exception = new ArrayList<>();
 
-    public int searchable;
-    public int applicable;
-    public int extractable;
+    public int searchable = 0;
+    public int applicable = 0;
+    public int extractable = 0;
 
-    public int codeLocationsExtracted;
+    public int codeLocationsExtracted = 0;
     public List<String> codeLocationNames = new ArrayList<>();
+
+    public ExtractionSummaryData(final String directory) {
+        this.directory = directory;
+    }
+
+    public String getDirectory() {
+        return directory;
+    }
 }

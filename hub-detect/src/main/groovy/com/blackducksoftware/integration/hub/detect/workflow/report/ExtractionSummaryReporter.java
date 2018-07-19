@@ -48,7 +48,7 @@ public class ExtractionSummaryReporter {
         writer.writeHeader();
         data.stream().forEach(it -> {
             if (it.applicable > 0) {
-                writer.writeLine(it.directory);
+                writer.writeLine(it.getDirectory());
                 writer.writeLine("\tCode locations: " + it.codeLocationsExtracted);
                 it.codeLocationNames.stream().forEach(name -> writer.writeLine("\t\t" + name));
                 if (it.success.size() > 0) {
