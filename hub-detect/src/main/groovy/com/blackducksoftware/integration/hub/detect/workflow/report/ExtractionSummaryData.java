@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.report;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
@@ -31,22 +30,36 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEval
 public class ExtractionSummaryData {
     private final String directory;
 
-    public List<BomToolEvaluation> success = new ArrayList<>();
-    public List<BomToolEvaluation> failed = new ArrayList<>();
-    public List<BomToolEvaluation> exception = new ArrayList<>();
+    private final List<BomToolEvaluation> success;
+    private final List<BomToolEvaluation> failed;
+    private final List<BomToolEvaluation> exception;
+    private final List<String> codeLocationNames;
 
-    public int searchable = 0;
-    public int applicable = 0;
-    public int extractable = 0;
-
-    public int codeLocationsExtracted = 0;
-    public List<String> codeLocationNames = new ArrayList<>();
-
-    public ExtractionSummaryData(final String directory) {
+    public ExtractionSummaryData(final String directory, final List<BomToolEvaluation> success, final List<BomToolEvaluation> failed, final List<BomToolEvaluation> exception, final List<String> codeLocationNames) {
         this.directory = directory;
+        this.success = success;
+        this.failed = failed;
+        this.exception = exception;
+        this.codeLocationNames = codeLocationNames;
     }
 
     public String getDirectory() {
         return directory;
+    }
+
+    public List<BomToolEvaluation> getSuccess() {
+        return success;
+    }
+
+    public List<BomToolEvaluation> getFailed() {
+        return failed;
+    }
+
+    public List<BomToolEvaluation> getException() {
+        return exception;
+    }
+
+    public List<String> getCodeLocationNames() {
+        return codeLocationNames;
     }
 }

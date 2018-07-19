@@ -49,8 +49,8 @@ public class SearchSummaryReporter {
         writer.writeLine("Search results");
         writer.writeHeader();
         for (final SearchSummaryData data : summaryData) {
-            writer.writeLine(data.directory);
-            writer.writeLine("\tAPPLIES: " + data.applicable.stream().map(it -> it.getDescriptiveName()).sorted().collect(Collectors.joining(", ")));
+            writer.writeLine(data.getDirectory());
+            writer.writeLine("\tAPPLIES: " + data.getApplicable().stream().map(it -> it.getDescriptiveName()).sorted().collect(Collectors.joining(", ")));
         }
         writer.writeLine(ReportConstants.HEADING);
         writer.writeLine();

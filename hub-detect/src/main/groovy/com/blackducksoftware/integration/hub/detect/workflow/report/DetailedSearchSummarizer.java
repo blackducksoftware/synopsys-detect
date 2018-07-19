@@ -22,26 +22,30 @@ public class DetailedSearchSummarizer extends BomToolEvaluationSummarizer {
     private List<DetailedSearchSummaryData> createSummaries(final Map<File, List<BomToolEvaluation>> byDirectory) {
         final List<DetailedSearchSummaryData> datas = new ArrayList<>();
         for (final Entry<File, List<BomToolEvaluation>> entry : byDirectory.entrySet()) {
-            final DetailedSearchSummaryData data = new DetailedSearchSummaryData(entry.getKey().toString());
-            entry.getValue().stream().forEach(it -> addDetails(data, it));
+            final DetailedSearchSummaryData data = createData(entry.getKey().toString(), entry.getValue());
             datas.add(data);
         }
         return datas;
     }
 
-    private void addDetails(final DetailedSearchSummaryData data, final BomToolEvaluation evaluation) {
-        if (evaluation.isSearchable()) {
+    private DetailedSearchSummaryData createData(final String directory, final List<BomToolEvaluation> evaluations) {
+        final List<DetailedSearchSummaryBomToolData> applicable = new ArrayList<>();
+        final List<DetailedSearchSummaryBomToolData> notApplicable = new ArrayList<>();
+        final List<DetailedSearchSummaryBomToolData> notSearchable = new ArrayList<>();
+
+        for (final BomToolEvaluation evaluation : evaluations) {
             if (evaluation.isApplicable()) {
                 final String reason = "Search: " + evaluation.getSearchabilityMessage() + " Applicable: " + evaluation.getApplicabilityMessage();
-                data.addApplicable(evaluation.getBomTool(), reason);
-            } else {
+                applicable.add(new DetailedSearchSummaryBomToolData(evaluation.getBomTool(), reason));
+            } else if (evaluation.isSearchable()) {
                 final String reason = evaluation.getApplicabilityMessage();
-                data.addNotApplicable(evaluation.getBomTool(), reason);
+                notApplicable.add(new DetailedSearchSummaryBomToolData(evaluation.getBomTool(), reason));
+            } else {
+                final String reason = evaluation.getSearchabilityMessage();
+                notSearchable.add(new DetailedSearchSummaryBomToolData(evaluation.getBomTool(), reason));
             }
-        } else {
-            final String reason = evaluation.getSearchabilityMessage();
-            data.addNotSearchable(evaluation.getBomTool(), reason);
         }
 
+        return new DetailedSearchSummaryData(directory, applicable, notApplicable, notSearchable);
     }
 }

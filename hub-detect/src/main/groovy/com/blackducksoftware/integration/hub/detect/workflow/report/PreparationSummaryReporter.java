@@ -47,12 +47,12 @@ public class PreparationSummaryReporter {
         writer.writeLine("Preparation for extraction");
         writer.writeHeader();
         for (final PreparationSummaryData data : datas) {
-            writer.writeLine(data.directory);
-            if (data.ready.size() > 0) {
-                writer.writeLine("\t READY: " + data.ready.stream().map(it -> it.getBomTool().getDescriptiveName()).sorted().collect(Collectors.joining(", ")));
+            writer.writeLine(data.getDirectory());
+            if (data.getReady().size() > 0) {
+                writer.writeLine("\t READY: " + data.getReady().stream().map(it -> it.getBomTool().getDescriptiveName()).sorted().collect(Collectors.joining(", ")));
             }
-            if (data.failed.size() > 0) {
-                data.failed.stream().sorted().forEach(it -> writer.writeLine("\tFAILED:" + it.getBomTool().getDescriptiveName() + " - " + it.getExtractabilityMessage()));
+            if (data.getFailed().size() > 0) {
+                data.getFailed().stream().sorted().forEach(it -> writer.writeLine("\tFAILED:" + it.getBomTool().getDescriptiveName() + " - " + it.getExtractabilityMessage()));
             }
         }
         writer.writeHeader();

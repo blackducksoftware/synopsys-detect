@@ -47,24 +47,24 @@ public class ExtractionSummaryReporter {
         writer.writeLine("Extraction results:");
         writer.writeHeader();
         data.stream().forEach(it -> {
-            if (it.applicable > 0) {
+            if (it.getSuccess().size() > 0 || it.getException().size() > 0 || it.getFailed().size() > 0) {
                 writer.writeLine(it.getDirectory());
-                writer.writeLine("\tCode locations: " + it.codeLocationsExtracted);
-                it.codeLocationNames.stream().forEach(name -> writer.writeLine("\t\t" + name));
-                if (it.success.size() > 0) {
-                    writer.writeLine("\tSuccess: " + it.success.stream().map(success -> success.getBomTool().getDescriptiveName()).collect(Collectors.joining(", ")));
-                }
-                if (it.failed.size() > 0) {
-                    writer.writeLine("\tFailure: " + it.failed.stream().map(failed -> failed.getBomTool().getDescriptiveName()).collect(Collectors.joining(", ")));
-                }
-                if (it.exception.size() > 0) {
-                    writer.writeLine("\tException: " + it.exception.stream().map(exception -> exception.getBomTool().getDescriptiveName()).collect(Collectors.joining(", ")));
-                }
+                writer.writeLine("\tCode locations: " + it.getCodeLocationNames().size());
+                it.getCodeLocationNames().stream().forEach(name -> writer.writeLine("\t\t" + name));
+                writeEvaluationsIfNotEmpty(writer, "\tSuccess: ", it.getSuccess());
+                writeEvaluationsIfNotEmpty(writer, "\tFailure: ", it.getFailed());
+                writeEvaluationsIfNotEmpty(writer, "\tException: ", it.getException());
             }
         });
         writer.writeHeader();
         writer.writeLine();
         writer.writeLine();
+    }
+
+    private void writeEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final List<BomToolEvaluation> evaluations) {
+        if (evaluations.size() > 0) {
+            writer.writeLine(prefix + evaluations.stream().map(evaluation -> evaluation.getBomTool().getDescriptiveName()).collect(Collectors.joining(", ")));
+        }
     }
 
 }

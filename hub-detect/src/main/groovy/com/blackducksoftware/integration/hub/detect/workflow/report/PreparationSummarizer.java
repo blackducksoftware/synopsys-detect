@@ -1,9 +1,9 @@
 package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
@@ -16,36 +16,39 @@ public class PreparationSummarizer extends BomToolEvaluationSummarizer {
         final List<PreparationSummaryData> data = summarizeDirectory(byDirectory);
 
         final List<PreparationSummaryData> sorted = data.stream()
-                .sorted((o1, o2) -> filesystemCompare(o1.directory, o2.directory))
+                .sorted((o1, o2) -> filesystemCompare(o1.getDirectory(), o2.getDirectory()))
                 .collect(Collectors.toList());
 
         return sorted;
     }
 
     private List<PreparationSummaryData> summarizeDirectory(final Map<File, List<BomToolEvaluation>> byDirectory) {
-        final List<PreparationSummaryData> datas = new ArrayList<>();
-        for (final File file : byDirectory.keySet()) {
-            final List<BomToolEvaluation> results = byDirectory.get(file);
+        return byDirectory.entrySet().stream()
+                .map(it -> createData(it.getKey().toString(), it.getValue()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+    }
 
-            final PreparationSummaryData data = new PreparationSummaryData();
-            data.directory = file.toString();
-            data.ready = new ArrayList<>();
-            data.failed = new ArrayList<>();
+    private Optional<PreparationSummaryData> createData(final String directory, final List<BomToolEvaluation> evaluations) {
+        final List<BomToolEvaluation> applicable = evaluations.stream()
+                .filter(it -> it.isApplicable())
+                .collect(Collectors.toList());
 
-            for (final BomToolEvaluation result : results) {
-                if (result.isApplicable()) {
-                    if (result.isExtractable()) {
-                        data.ready.add(result);
-                    } else {
-                        data.failed.add(result);
-                    }
-                }
-            }
-            if (data.ready.size() > 0 || data.failed.size() > 0) {
-                datas.add(data);
-            }
+        final List<BomToolEvaluation> ready = applicable.stream()
+                .filter(it -> it.isExtractable())
+                .collect(Collectors.toList());
+
+        final List<BomToolEvaluation> failed = applicable.stream()
+                .filter(it -> !it.isExtractable())
+                .collect(Collectors.toList());
+
+        if (ready.size() > 0 || failed.size() > 0) {
+            final PreparationSummaryData data = new PreparationSummaryData(directory, ready, failed);
+            return Optional.of(data);
+        } else {
+            return Optional.empty();
         }
-        return datas;
     }
 
 }

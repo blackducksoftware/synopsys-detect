@@ -15,7 +15,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.report.CodeLocation
 import com.blackducksoftware.integration.hub.detect.workflow.report.DetailedSearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.FileReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.LogReportWriter;
-import com.blackducksoftware.integration.hub.detect.workflow.report.OverviewReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.OverviewSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ProfilingReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.SearchSummaryReporter;
@@ -92,8 +92,8 @@ public class DiagnosticReportManager {
         }
 
         try {
-            final OverviewReporter overviewReporter = new OverviewReporter();
-            overviewReporter.writeReport(getReportWriter(ReportTypes.BOM_TOOL), bomToolEvaluations);
+            final OverviewSummaryReporter overviewSummaryReporter = new OverviewSummaryReporter();
+            overviewSummaryReporter.writeReport(getReportWriter(ReportTypes.BOM_TOOL), bomToolEvaluations);
         } catch (final Exception e) {
             logger.error("Failed to write bom tool report.", e);
         }
