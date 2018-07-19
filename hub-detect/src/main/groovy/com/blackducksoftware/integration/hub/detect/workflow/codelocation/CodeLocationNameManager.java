@@ -34,14 +34,14 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 
 public class CodeLocationNameManager {
     private final DetectConfigWrapper detectConfigWrapper;
-    private final CodeLocationNameService codeLocationNameFactory;
+    private final CodeLocationNameService codeLocationNameService;
 
     private final Set<String> codeLocationNames = new HashSet<>();
     private int givenCodeLocationOverrideCount = 0;
 
-    public CodeLocationNameManager(final DetectConfigWrapper detectConfigWrapper, final CodeLocationNameService codeLocationNameFactory) {
+    public CodeLocationNameManager(final DetectConfigWrapper detectConfigWrapper, final CodeLocationNameService codeLocationNameService) {
         this.detectConfigWrapper = detectConfigWrapper;
-        this.codeLocationNameFactory = codeLocationNameFactory;
+        this.codeLocationNameService = codeLocationNameService;
     }
 
     public String createAggregateCodeLocationName(final String projectName, final String projectVersionName) {
@@ -63,9 +63,9 @@ public class CodeLocationNameManager {
         } else if (useCodeLocationOverride()) {
             codeLocationName = getNextCodeLocationOverrideName(CodeLocationType.BOM);
         } else if (BomToolGroupType.DOCKER.equals(detectCodeLocation.getBomToolGroupType())) {
-            codeLocationName = codeLocationNameFactory.createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
+            codeLocationName = codeLocationNameService.createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
         } else {
-            codeLocationName = codeLocationNameFactory.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
+            codeLocationName = codeLocationNameService.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
         }
         codeLocationNames.add(codeLocationName);
         return codeLocationName;
@@ -77,9 +77,9 @@ public class CodeLocationNameManager {
         if (useCodeLocationOverride()) {
             scanCodeLocationName = getNextCodeLocationOverrideName(CodeLocationType.SCAN);
         } else if (StringUtils.isNotBlank(dockerTarFilename)) {
-            scanCodeLocationName = codeLocationNameFactory.createDockerScanCodeLocationName(dockerTarFilename, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameService.createDockerScanCodeLocationName(dockerTarFilename, projectName, projectVersionName, prefix, suffix);
         } else {
-            scanCodeLocationName = codeLocationNameFactory.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameService.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
         }
         codeLocationNames.add(scanCodeLocationName);
         return scanCodeLocationName;

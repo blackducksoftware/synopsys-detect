@@ -69,7 +69,7 @@ public class DetectFileFinder {
             return false;
         }
 
-        return Arrays.stream(filenamePatterns).allMatch(pattern -> !findFilesToDepth(sourceDirectory, pattern, maxDepth).isEmpty());
+        return Arrays.stream(filenamePatterns).map(pattern -> findFilesToDepth(sourceDirectory, pattern, maxDepth)).allMatch(foundFiles -> !foundFiles.isEmpty());
     }
 
     public File findFile(final String sourceDirectory, final String filenamePattern) {

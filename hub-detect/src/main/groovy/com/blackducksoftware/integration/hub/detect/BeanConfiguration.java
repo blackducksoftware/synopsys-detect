@@ -115,8 +115,8 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableMa
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionReporter;
@@ -285,13 +285,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public CodeLocationNameService codeLocationNameFactory() {
+    public CodeLocationNameService codeLocationNameService() {
         return new CodeLocationNameService(detectFileFinder());
     }
 
     @Bean
     public CodeLocationNameManager codeLocationNameManager() {
-        return new CodeLocationNameManager(detectConfigWrapper(), codeLocationNameFactory());
+        return new CodeLocationNameManager(detectConfigWrapper(), codeLocationNameService());
     }
 
     @Bean
