@@ -89,7 +89,7 @@ public class PhoneHomeManager {
         final Map<String, String> metadata = new HashMap<>();
         if (applicableBomToolTypes != null) {
             final String applicableBomToolsString = applicableBomToolTypes.stream()
-                    .map(it -> it.toString())
+                    .map(BomToolGroupType::toString)
                     .collect(Collectors.joining(","));
             metadata.put("bomToolTypes", applicableBomToolsString);
         }
@@ -100,7 +100,7 @@ public class PhoneHomeManager {
         final Map<String, String> metadata = new HashMap<>();
         if (applicableBomToolTimes != null) {
             final String applicableBomToolsString = applicableBomToolTimes.keySet().stream()
-                    .map(it -> it.toString() + ":" + applicableBomToolTimes.get(it))
+                    .map(it -> String.format("%s:%s", it.toString(), applicableBomToolTimes.get(it)))
                     .collect(Collectors.joining(","));
             metadata.put("bomToolTypes", applicableBomToolsString);
         }
