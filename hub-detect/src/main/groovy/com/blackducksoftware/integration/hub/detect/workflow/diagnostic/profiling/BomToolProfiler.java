@@ -60,7 +60,7 @@ public class BomToolProfiler {
         return aggregate;
     }
 
-    void addAggregateByBomToolGroupType(final Map<BomToolGroupType, Long> aggregate, final List<BomToolTime> bomToolTimes) {
+    private void addAggregateByBomToolGroupType(final Map<BomToolGroupType, Long> aggregate, final List<BomToolTime> bomToolTimes) {
         for (final BomToolTime bomToolTime : bomToolTimes) {
             final BomToolGroupType type = bomToolTime.getBomTool().getBomToolGroupType();
             if (!aggregate.containsKey(type)) {

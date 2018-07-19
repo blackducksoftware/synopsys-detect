@@ -58,7 +58,7 @@ public class ExtractionManager {
         for (int i = 0; i < extractable.size(); i++) {
             final BomToolEvaluation bomToolEvaluation = extractable.get(i);
             final String progress = Integer.toString((int) Math.floor((i * 100.0f) / extractable.size()));
-            logger.info("Extracting " + Integer.toString(i + 1) + " of " + Integer.toString(extractable.size()) + " (" + progress + "%)");
+            logger.info(String.format("Extracting %i of %i (%s%%)", i + 1, extractable.size(), progress));
             logger.info(ReportConstants.SEPERATOR);
 
             final ExtractionId extractionId = new ExtractionId(bomToolEvaluation.getBomTool().getBomToolGroupType(), Integer.toString(i));

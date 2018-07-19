@@ -2,6 +2,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,7 +101,7 @@ public class DiagnosticFileManager {
     }
 
     private boolean isChildOfTrackedFolder(final File file) {
-        Path filePath = file.toPath();
+        final Path filePath = file.toPath();
         return trackedDirectories.stream().anyMatch(trackedFile -> filePath.startsWith(trackedFile.toPath()));
     }
 
