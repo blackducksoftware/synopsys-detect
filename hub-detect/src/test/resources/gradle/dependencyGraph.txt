@@ -730,10 +730,6 @@ Total time: 6.75 secs
 This build could be faster, please consider using the Gradle Daemon: https://docs.gradle.org/2.13/userguide/gradle_daemon.html
 
 DETECT META DATA START
-rootProjectPath:/Users/ekerwin/Documents/source/integration/hub-detect
-rootProjectGroup:com.blackducksoftware.integration
-rootProjectName:hub-detect
-rootProjectVersion:2.0.0-SNAPSHOT
 projectPath:/Users/ekerwin/Documents/source/integration/hub-detect
 projectGroup:com.blackducksoftware.integration
 projectName:hub-detect

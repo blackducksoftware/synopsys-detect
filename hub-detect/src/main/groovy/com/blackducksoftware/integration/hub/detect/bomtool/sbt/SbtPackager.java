@@ -26,6 +26,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -47,12 +49,12 @@ import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 public class SbtPackager {
     private final Logger logger = LoggerFactory.getLogger(SbtPackager.class);
 
-    private static final String BUILD_SBT_FILENAME = "build.sbt";
-    private static final String REPORT_FILE_DIRECTORY = File.separator + "target" + File.separator + "resolution-cache" + File.separator + "reports";
-    private static final String REPORT_SEARCH_PATTERN = "resolution-cache";
-    private static final String REPORT_DIRECTORY = "reports";
-    private static final String REPORT_FILE_PATTERN = "*.xml";
-    private static final String PROJECT_FOLDER = "project";
+    public static final String BUILD_SBT_FILENAME = "build.sbt";
+    public static final String RESOLUTION_CACHE_DIRECTORY = "resolution-cache";
+    public static final String REPORT_DIRECTORY = "reports";
+    public static final String REPORT_FILE_DIRECTORY = StringUtils.join(Arrays.asList("", "target", RESOLUTION_CACHE_DIRECTORY, REPORT_DIRECTORY), File.separator);
+    public static final String REPORT_FILE_PATTERN = "*.xml";
+    public static final String PROJECT_FOLDER = "project";
 
     private final ExternalIdFactory externalIdFactory;
     private final DetectFileFinder detectFileFinder;
@@ -67,7 +69,7 @@ public class SbtPackager {
         final List<SbtDependencyModule> modules = rawModules.stream().filter(it -> it.graph != null).collect(Collectors.toList());
         final int skipped = rawModules.size() - modules.size();
         if (skipped > 0) {
-            logger.error("Skipped " + skipped);
+            logger.error(String.format("Skipped %s", skipped));
         }
         final SbtProject result = new SbtProject();
         result.bomToolType = BomToolGroupType.SBT;
@@ -87,7 +89,7 @@ public class SbtPackager {
             result.projectExternalId = externalIdFactory.createPathExternalId(Forge.MAVEN, path);
 
             if (result.projectVersion == null && modules.size() > 1) {
-                logger.warn("Getting version from first project: " + modules.get(0).name);
+                logger.warn(String.format("Getting version from first project: %s", modules.get(0).name));
                 result.projectVersion = modules.get(0).version;
             }
         }
@@ -112,7 +114,7 @@ public class SbtPackager {
 
     private List<SbtDependencyModule> extractModules(final String path, final int depth, final String included, final String excluded) throws IOException, SAXException, ParserConfigurationException {
         final List<File> sbtFiles = detectFileFinder.findFilesToDepth(path, BUILD_SBT_FILENAME, depth);
-        final List<File> resolutionCaches = detectFileFinder.findDirectoriesContainingDirectoriesToDepth(path, REPORT_SEARCH_PATTERN, depth);
+        final List<File> resolutionCaches = detectFileFinder.findDirectoriesContainingDirectoriesToDepth(path, RESOLUTION_CACHE_DIRECTORY, depth);
 
         logger.info(String.format("Found %s build.sbt files.", sbtFiles.size()));
         logger.info(String.format("Found %s resolution caches.", resolutionCaches.size()));
@@ -121,7 +123,7 @@ public class SbtPackager {
         final List<String> usedReports = new ArrayList<>();
 
         for (final File sbtFile : sbtFiles) {
-            logger.debug("Found SBT build file : " + sbtFile.getCanonicalPath());
+            logger.debug(String.format("Found SBT build file: %s", sbtFile.getCanonicalPath()));
             final File sbtDirectory = sbtFile.getParentFile();
             final File reportPath = new File(sbtDirectory, REPORT_FILE_DIRECTORY);
 
@@ -130,7 +132,7 @@ public class SbtPackager {
         }
 
         for (final File resCache : resolutionCaches) {
-            logger.debug("Found resolution cache : " + resCache.getCanonicalPath());
+            logger.debug(String.format("Found resolution cache: %s", resCache.getCanonicalPath()));
             final File reportPath = new File(resCache, REPORT_DIRECTORY);
             final List<SbtDependencyModule> foundModules = extractReportModules(path, reportPath, resCache.getParentFile(), included, excluded, usedReports);
             modules.addAll(foundModules);
@@ -160,23 +162,23 @@ public class SbtPackager {
         final List<SbtDependencyModule> modules = new ArrayList<>();
         final String canonical = reportPath.getCanonicalPath();
         if (usedReports.contains(canonical)) {
-            logger.debug("Skipping already processed report folder: " + canonical);
+            logger.debug(String.format("Skipping already processed report folder: %s", canonical));
         } else if (isInProject(reportPath, path)) {
-            logger.debug("Skipping reports in project folder: " + reportPath.getCanonicalPath());
+            logger.debug(String.format("Skipping reports in project folder: %s", reportPath.getCanonicalPath()));
         } else {
             usedReports.add(canonical);
             final List<File> reportFiles = detectFileFinder.findFiles(reportPath, REPORT_FILE_PATTERN);
             if (reportFiles == null || reportFiles.size() <= 0) {
-                logger.debug("No reports were found in: " + reportPath);
+                logger.debug(String.format("No reports were found in: %s", reportPath));
             } else {
                 final List<SbtDependencyModule> aggregatedModules = makeModuleAggregate(reportFiles, included, excluded);
 
                 if (aggregatedModules == null) {
-                    logger.debug("No dependencies were generated for report folder: " + reportPath);
+                    logger.debug(String.format("No dependencies were generated for report folder: %s", reportPath));
                 } else {
                     logger.debug(String.format("Found %s aggregate dependencies in report folder: %s", aggregatedModules.size(), reportPath));
                     for (final SbtDependencyModule aggregatedModule : aggregatedModules) {
-                        logger.debug(String.format("Generated root node of %s %s ", aggregatedModule.name, aggregatedModule.version));
+                        logger.debug(String.format("Generated root node of %s %s", aggregatedModule.name, aggregatedModule.version));
 
                         aggregatedModule.sourcePath = source.getCanonicalPath();
 
@@ -201,7 +203,7 @@ public class SbtPackager {
         final List<SbtDependencyModule> modules = new ArrayList<>();
         for (final File reportFile : reportFiles) {
             final Document xml = builder.parse(reportFile);
-            logger.debug("Parsing SBT report file : " + reportFile.getCanonicalPath());
+            logger.debug(String.format("Parsing SBT report file: %s", reportFile.getCanonicalPath()));
             final SbtReport report = parser.parseReportFromXml(xml);
             final SbtDependencyModule tree = resolver.resolveReport(report);
             modules.add(tree);
@@ -213,10 +215,11 @@ public class SbtPackager {
             logger.warn("No sbt configurations were found in report folder.");
             return null;
         } else if (includedModules.size() <= 0) {
-            logger.warn("Although " + modules.size() + " configs were found, none were included.");
+            logger.warn(String.format("Although %s configs were found, none were included.", modules.size()));
             return null;
         }
 
         return aggregator.aggregateModules(includedModules);
     }
+
 }

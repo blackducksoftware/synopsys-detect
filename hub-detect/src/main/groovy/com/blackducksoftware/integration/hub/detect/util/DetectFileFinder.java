@@ -47,26 +47,12 @@ public class DetectFileFinder {
         return normalizedPath.substring(normalizedPath.lastIndexOf("/") + 1, normalizedPath.length());
     }
 
-    public boolean directoryExists(final String sourcePath, final String relativePath) {
-        final File sourceDirectory = new File(sourcePath);
-        final File relativeDirectory = new File(sourceDirectory, relativePath);
-        return relativeDirectory.isDirectory();
-    }
-
     public List<File> findFilesToDepth(final String sourceDirectory, final String filenamePattern, final int maxDepth) {
         return findFilesToDepth(new File(sourceDirectory), filenamePattern, maxDepth);
     }
 
-    public List<File> findDirectoriesContainingDirectoriesToDepth(final String sourceDirectory, final String filenamePattern, final int maxDepth) {
-        return findDirectoriesContainingDirectoriesToDepth(new File(sourceDirectory), filenamePattern, maxDepth);
-    }
-
-    public boolean containsAllFiles(final String sourcePath, final String... filenamePatterns) {
-        if (StringUtils.isBlank(sourcePath)) {
-            return false;
-        }
-        final File sourceDirectory = new File(sourcePath);
-        return containsAllFiles(sourceDirectory, filenamePatterns);
+    public boolean containsAllFiles(final String sourceDirectory, final String... filenamePatterns) {
+        return containsAllFiles(new File(sourceDirectory), filenamePatterns);
     }
 
     public boolean containsAllFiles(final File sourceDirectory, final String... filenamePatterns) {
@@ -74,16 +60,7 @@ public class DetectFileFinder {
             return false;
         }
 
-        boolean containsFiles = true;
-        for (final String filenamePattern : filenamePatterns) {
-            final File foundFile = findFile(sourceDirectory, filenamePattern);
-            if (foundFile == null) {
-                containsFiles = false;
-                logger.debug(String.format("No file detected: %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
-                break;
-            }
-        }
-        return containsFiles;
+        return Arrays.stream(filenamePatterns).allMatch(pattern -> findFile(sourceDirectory, pattern) != null);
     }
 
     public boolean containsAllFilesToDepth(final String sourcePath, final int maxDepth, final String... filenamePatterns) {
@@ -92,33 +69,27 @@ public class DetectFileFinder {
             return false;
         }
 
-        boolean containsFiles = true;
-        for (final String filenamePattern : filenamePatterns) {
-            final List<File> foundFiles = findFilesToDepth(sourceDirectory, filenamePattern, maxDepth);
-            if (null == foundFiles || foundFiles.isEmpty()) {
-                containsFiles = false;
-                logger.debug(String.format("No file detected: %s in %s", filenamePattern, sourcePath));
-                break;
-            }
-        }
-        return containsFiles;
+        return Arrays.stream(filenamePatterns).map(pattern -> findFilesToDepth(sourceDirectory, pattern, maxDepth)).allMatch(foundFiles -> !foundFiles.isEmpty());
     }
 
-    public File findFile(final String sourcePath, final String filenamePattern) {
-        final File sourceDirectory = new File(sourcePath);
-        return findFile(sourceDirectory, filenamePattern);
+    public File findFile(final String sourceDirectory, final String filenamePattern) {
+        return findFile(new File(sourceDirectory), filenamePattern);
     }
 
     public File findFile(final File sourceDirectory, final String filenamePattern) {
+        final File foundFile;
         final List<File> foundFiles = findFiles(sourceDirectory, filenamePattern);
         if (foundFiles == null || foundFiles.isEmpty()) {
             logger.debug(String.format("Could not find any matches for %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
-            return null;
-        } else if (foundFiles.size() > 1) {
-            logger.debug(String.format("Found multiple matches for %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
-            logger.debug(String.format("Using %s", foundFiles.get(0)));
+            foundFile = null;
+        } else {
+            foundFile = foundFiles.get(0);
+            if (foundFiles.size() > 1) {
+                logger.debug(String.format("Found multiple matches for %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
+                logger.debug(String.format("Using %s", foundFile));
+            }
         }
-        return foundFiles.get(0);
+        return foundFile;
     }
 
     public List<File> findFiles(final File sourceDirectory, final String filenamePattern) {
@@ -143,34 +114,32 @@ public class DetectFileFinder {
         return findFilesRecursive(sourceDirectory, 0, Integer.MAX_VALUE, false, filenamePatterns);
     }
 
-    private List<File> findFilesRecursive(final File sourceDirectory, final int currentDepth, final int maxDepth, final Boolean recurseIntoDirectoryMatch, final String... filenamePatterns) {
-        final List<File> files = new ArrayList<>();
-        if (currentDepth > maxDepth || !sourceDirectory.isDirectory() || null == filenamePatterns || filenamePatterns.length < 1) {
-            return files;
-        }
-        final File[] children = sourceDirectory.listFiles();
-        if (null != children && children.length > 0) {
-            for (final File file : children) {
-                boolean matchFound = false;
-                for (final String filenamePattern : filenamePatterns) {
-                    if (FilenameUtils.wildcardMatchOnSystem(file.getName(), filenamePattern)) {
-                        files.add(file);
-                        matchFound = true;
-                    }
-                }
-                if (file.isDirectory()) {
-                    if (!matchFound || matchFound && recurseIntoDirectoryMatch) {
-                        // only go into the directory if it is not a match OR it is a match and the flag is set to go into matching directories
-                        files.addAll(findFilesRecursive(file, currentDepth + 1, maxDepth, recurseIntoDirectoryMatch, filenamePatterns));
-                    }
-                }
-            }
-        }
-        return files;
+    public List<File> findDirectoriesContainingDirectoriesToDepth(final String sourcePath, final String filenamePattern, final int maxDepth) {
+        return findDirectoriesContainingDirectoriesToDepth(new File(sourcePath), filenamePattern, maxDepth);
     }
 
     public List<File> findDirectoriesContainingDirectoriesToDepth(final File sourceDirectory, final String directoryPattern, final int maxDepth) {
         return findDirectoriesContainingDirectoriesToDepthRecursive(sourceDirectory, directoryPattern, 0, maxDepth);
+    }
+
+    private List<File> findFilesRecursive(final File sourceDirectory, final int currentDepth, final int maxDepth, final Boolean recurseIntoDirectoryMatch, final String... filenamePatterns) {
+        final List<File> files = new ArrayList<>();
+        if (currentDepth < maxDepth && sourceDirectory.isDirectory() && sourceDirectory.listFiles().length > 0 && null != filenamePatterns && filenamePatterns.length > 1) {
+            for (final File file : sourceDirectory.listFiles()) {
+                final boolean fileMatchesPatterns = Arrays.stream(filenamePatterns).anyMatch(pattern -> FilenameUtils.wildcardMatchOnSystem(file.getName(), pattern));
+
+                if (fileMatchesPatterns) {
+                    files.add(file);
+                }
+
+                if (file.isDirectory() && (!fileMatchesPatterns || recurseIntoDirectoryMatch)) {
+                    // only go into the directory if it is not a match OR it is a match and the flag is set to go into matching directories
+                    files.addAll(findFilesRecursive(file, currentDepth + 1, maxDepth, recurseIntoDirectoryMatch, filenamePatterns));
+                }
+            }
+
+        }
+        return files;
     }
 
     private List<File> findDirectoriesContainingDirectoriesToDepthRecursive(final File sourceDirectory, final String directoryPattern, final int currentDepth, final int maxDepth) {
