@@ -26,14 +26,9 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 
 public class DetailedSearchSummaryReporter {
-    private final Logger logger = LoggerFactory.getLogger(DetailedSearchSummaryReporter.class);
-
     public void print(final ReportWriter writer, final List<BomToolEvaluation> results) {
         final DetailedSearchSummarizer detailedSearchSummarizer = new DetailedSearchSummarizer();
         final List<DetailedSearchSummaryData> detailedSearchData = detailedSearchSummarizer.summarize(results);
@@ -44,14 +39,14 @@ public class DetailedSearchSummaryReporter {
     private void printDirectoriesDebug(final ReportWriter writer, final List<DetailedSearchSummaryData> detailedSearchData) {
         for (final DetailedSearchSummaryData data : detailedSearchData) {
             final List<String> toPrint = new ArrayList<>();
-            toPrint.addAll(printDetails(writer, "      APPLIED: ", data.applicable));
-            toPrint.addAll(printDetails(writer, "DID NOT APPLY: ", data.notApplicable));
-            toPrint.addAll(printDetails(writer, "DID NOT APPLY: ", data.notSearchable));
+            toPrint.addAll(printDetails(writer, "      APPLIED: ", data.getApplicable()));
+            toPrint.addAll(printDetails(writer, "DID NOT APPLY: ", data.getNotApplicable()));
+            toPrint.addAll(printDetails(writer, "DID NOT APPLY: ", data.getNotSearchable()));
 
             if (toPrint.size() > 0) {
                 writer.writeSeperator();
                 writer.writeLine("Detailed search results for directory");
-                writer.writeLine(data.directory);
+                writer.writeLine(data.getDirectory());
                 writer.writeSeperator();
                 toPrint.stream().sorted().forEach(it -> writer.writeLine(it));
                 writer.writeSeperator();
@@ -62,7 +57,7 @@ public class DetailedSearchSummaryReporter {
     private List<String> printDetails(final ReportWriter writer, final String prefix, final List<DetailedSearchSummaryData.BomToolSearchDetails> details) {
         final List<String> toPrint = new ArrayList<>();
         for (final DetailedSearchSummaryData.BomToolSearchDetails detail : details) {
-            toPrint.add(prefix + detail.bomTool.getDescriptiveName() + ": " + detail.reason);
+            toPrint.add(prefix + detail.getBomTool().getDescriptiveName() + ": " + detail.getReason());
         }
         return toPrint;
     }
