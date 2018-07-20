@@ -36,6 +36,8 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 
 public class DetectFileManager {
     private final Logger logger = LoggerFactory.getLogger(DetectFileManager.class);
@@ -45,16 +47,34 @@ public class DetectFileManager {
     private final String sharedUUID = "shared";
     private File sharedDirectory = null;
     private final Map<ExtractionId, File> outputDirectories = new HashMap<>();
+    private final DiagnosticManager diagnosticManager;
 
-    public DetectFileManager(final DetectConfigWrapper detectConfigWrapper) {
+    private final DetectRunManager detectRunManager;
+
+    public DetectFileManager(final DetectConfigWrapper detectConfigWrapper, final DetectRunManager detectRunManager, final DiagnosticManager diagnosticManager) {
         this.detectConfigWrapper = detectConfigWrapper;
+        this.detectRunManager = detectRunManager;
+        this.diagnosticManager = diagnosticManager;
     }
 
-    public File getOutputDirectory(final String name, final ExtractionId extractionId) {
+    // Although you could just register files directly with diagnostics manager, this allows bom tools not to know about diagnostics.
+    public void registerFileOfInterest(final ExtractionId extractionId, final File file) {
+        if (diagnosticManager.isDiagnosticModeOn()) {
+            diagnosticManager.registerFileOfInterest(extractionId, file);
+        }
+    }
+
+    public void registerGlobalFileOfInterest(final File file) {
+        if (diagnosticManager.isDiagnosticModeOn()) {
+            diagnosticManager.registerGlobalFileOfInterest(file);
+        }
+    }
+
+    public File getOutputDirectory(final ExtractionId extractionId) {
         if (outputDirectories.containsKey(extractionId)) {
             return outputDirectories.get(extractionId);
         } else {
-            final String directoryName = name + "-" + extractionId.toUniqueString();
+            final String directoryName = extractionId.toUniqueString();
 
             final File newDirectory = new File(getExtractionFile(), directoryName);
             newDirectory.mkdir();
@@ -63,27 +83,21 @@ public class DetectFileManager {
         }
     }
 
-    private File getExtractionFile() {
-        final File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "extractions");
-        newDirectory.mkdir();
-        return newDirectory;
-    }
-
     public File getOutputFile(final File outputDirectory, final String name) {
         return new File(outputDirectory, name);
     }
 
-    public File getSharedDirectory(String name) { //shared across this invocation of detect.
+    public File getSharedDirectory(final String name) { // shared across this invocation of detect (inspectors)
         if (sharedDirectory == null) {
             sharedDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), sharedUUID);
             sharedDirectory.mkdir();
         }
-        File newSharedFile = new File(sharedDirectory, name);
+        final File newSharedFile = new File(sharedDirectory, name);
         newSharedFile.mkdir();
         return newSharedFile;
     }
 
-    public File getPermanentDirectory() { //shared across all invocations of detect
+    public File getPermanentDirectory() { // shared across all invocations of detect (scan cli)
         final File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "tools");
         newDirectory.mkdir();
         return newDirectory;
@@ -97,34 +111,38 @@ public class DetectFileManager {
         return new File(getSharedDirectory(directory), filename);
     }
 
-    //This file will be immediately cleaned up and is associated to a specific context. The current implementation is to actually move it to the context's output and allow cleanup at the end of the detect run (in case of diagnostics).
-    public void cleanupOutputFile(final File outputDirectory, final File file) {
-        try {
-            if (file.isFile()) {
-                final File dest = new File(outputDirectory, file.getName());
-                FileUtils.moveFile(file, dest);
-
-            } else if (file.isDirectory()) {
-                final File dest = new File(outputDirectory, file.getName());
-                FileUtils.moveDirectory(file, dest);
-            }
-        } catch (final Exception e) {
-
+    public void cleanupOutputFile(final File file) {
+        if (diagnosticManager.isDiagnosticModeOn()) {
+            diagnosticManager.registerGlobalFileOfInterest(file);
+        } else {
+            file.delete();
         }
+    }
 
+    public boolean shouldCleanup() {
+        return diagnosticManager.shouldFileManagerCleanup() && detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP);
     }
 
     public void cleanupDirectories() {
-        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
+        if (shouldCleanup()) {
             for (final File file : outputDirectories.values()) {
                 try {
                     FileUtils.deleteDirectory(file);
                 } catch (final IOException e) {
-                    logger.error("Failed to cleanup: " + file.getPath());
-                    e.printStackTrace();
+                    logger.error("Failed to cleanup: " + file.getPath(), e);
                 }
             }
         }
+    }
+
+    private File getExtractionFile() {
+        File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "extractions");
+        newDirectory.mkdir();
+        if (diagnosticManager.isDiagnosticModeOn()) {
+            newDirectory = new File(newDirectory, detectRunManager.getRunId());
+            newDirectory.mkdir();
+        }
+        return newDirectory;
     }
 
     private File writeToFile(final File file, final String contents, final boolean overwrite) throws IOException {

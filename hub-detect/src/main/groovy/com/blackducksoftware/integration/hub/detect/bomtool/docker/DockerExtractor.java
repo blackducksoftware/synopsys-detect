@@ -86,7 +86,8 @@ public class DockerExtractor {
         this.hubSignatureScanner = hubSignatureScanner;
     }
 
-    public Extraction extract(final BomToolType bomToolType, final File directory, final ExtractionId extractionId, final File bashExe, final File dockerExe, final String image, final String tar, final DockerInspectorInfo dockerInspectorInfo) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final ExtractionId extractionId, final File bashExe, final File dockerExe, final String image, final String tar,
+            final DockerInspectorInfo dockerInspectorInfo) {
         try {
             String imageArgument = null;
             String imagePiece = null;
@@ -132,11 +133,12 @@ public class DockerExtractor {
         }
     }
 
-    private Extraction executeDocker(final BomToolType bomToolType, final ExtractionId extractionId, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File dockerExe, final File bashExe,
+    private Extraction executeDocker(final BomToolType bomToolType, final ExtractionId extractionId, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File dockerExe,
+            final File bashExe,
             final DockerInspectorInfo dockerInspectorInfo)
             throws FileNotFoundException, IOException, ExecutableRunnerException {
 
-        final File outputDirectory = detectFileManager.getOutputDirectory("Docker", extractionId);
+        final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
         final File dockerPropertiesFile = detectFileManager.getOutputFile(outputDirectory, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
 

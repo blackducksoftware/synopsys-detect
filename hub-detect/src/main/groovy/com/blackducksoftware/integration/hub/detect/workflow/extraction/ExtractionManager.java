@@ -38,25 +38,32 @@ import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManage
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExceptionBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction.ExtractionResultType;
+import com.blackducksoftware.integration.hub.detect.workflow.report.LogReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ObjectPrinter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 
 public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
-    private final PreparationSummaryReporter preparationSummaryReporter;
-    private final ExtractionReporter extractionReporter;
+    private final ReportManager reportManager;
 
-    public ExtractionManager(final PreparationSummaryReporter preparationSummaryReporter, final ExtractionReporter extractionReporter) {
-        this.preparationSummaryReporter = preparationSummaryReporter;
-        this.extractionReporter = extractionReporter;
+    public ExtractionManager(final ReportManager reportManager) {
+        this.reportManager = reportManager;
     }
-
-    private int extractions = 0;
 
     private void extract(final List<BomToolEvaluation> results) {
         final List<BomToolEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
 
         for (int i = 0; i < extractable.size(); i++) {
-            logger.info("Extracting " + Integer.toString(i + 1) + " of " + Integer.toString(extractable.size()) + " (" + Integer.toString((int) Math.floor((i * 100.0f) / extractable.size())) + "%)");
+            final BomToolEvaluation bomToolEvaluation = extractable.get(i);
+            final String progress = Integer.toString((int) Math.floor((i * 100.0f) / extractable.size()));
+            logger.info(String.format("Extracting %d of %d (%s%%)", i + 1, extractable.size(), progress));
+            logger.info(ReportConstants.SEPERATOR);
+
+            final ExtractionId extractionId = new ExtractionId(bomToolEvaluation.getBomTool().getBomToolGroupType(), Integer.toString(i));
+            bomToolEvaluation.setExtractionId(extractionId);
+
             extract(extractable.get(i));
         }
     }
@@ -69,29 +76,47 @@ public class ExtractionManager {
 
     private void prepare(final BomToolEvaluation result) {
         if (result.isApplicable()) {
+            reportManager.extractableStarted(result.getBomTool());
             try {
                 result.setExtractable(result.getBomTool().extractable());
             } catch (final Exception e) {
                 result.setExtractable(new ExceptionBomToolResult(e));
             }
+            reportManager.extractableEnded(result.getBomTool());
         }
     }
 
     private void extract(final BomToolEvaluation result) {
-        if (result.isExtractable()) {
-            extractions++;
-            final ExtractionId extractionId = new ExtractionId(Integer.toString(extractions));
-            extractionReporter.startedExtraction(result.getBomTool(), extractionId);
-            result.setExtraction(result.getBomTool().extract(extractionId));
-            extractionReporter.endedExtraction(result.getExtraction());
+        reportManager.extractionStarted(result);
+
+        logger.info("Starting extraction: " + result.getBomTool().getBomToolGroupType() + " - " + result.getBomTool().getName());
+        logger.info("Identifier: " + result.getExtractionId().toUniqueString());
+        ObjectPrinter.printObjectPrivate(new LogReportWriter(), result.getBomTool());
+        logger.info(ReportConstants.SEPERATOR);
+
+        try {
+            result.setExtraction(result.getBomTool().extract(result.getExtractionId()));
+        } catch (final Exception e) {
+            result.setExtraction(new Extraction.Builder().exception(e).build());
         }
 
+        logger.info(ReportConstants.SEPERATOR);
+        logger.info("Finished extraction: " + result.getExtraction().result.toString());
+        logger.info("Code locations found: " + result.getExtraction().codeLocations.size());
+        if (result.getExtraction().result == ExtractionResultType.EXCEPTION) {
+            logger.error("Exception:", result.getExtraction().error);
+        } else if (result.getExtraction().result == ExtractionResultType.FAILURE) {
+            logger.info(result.getExtraction().description);
+        }
+        logger.info(ReportConstants.SEPERATOR);
+
+        reportManager.extractionEnded(result);
     }
 
     public ExtractionResult performExtractions(final List<BomToolEvaluation> bomToolEvaluations) throws IntegrationException, DetectUserFriendlyException {
         prepare(bomToolEvaluations);
 
-        preparationSummaryReporter.print(bomToolEvaluations);
+        reportManager.preparationCompleted(bomToolEvaluations);
 
         extract(bomToolEvaluations);
 
@@ -112,6 +137,8 @@ public class ExtractionManager {
                 .filter(it -> it.wasExtractionSuccessful())
                 .flatMap(it -> it.getExtraction().codeLocations.stream())
                 .collect(Collectors.toList());
+
+        reportManager.extractionsCompleted(bomToolEvaluations);
 
         final ExtractionResult result = new ExtractionResult(codeLocations, succesfulBomToolGroups, failedBomToolGroups);
         return result;

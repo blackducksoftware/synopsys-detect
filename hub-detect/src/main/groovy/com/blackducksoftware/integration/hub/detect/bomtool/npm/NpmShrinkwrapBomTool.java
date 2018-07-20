@@ -67,6 +67,7 @@ public class NpmShrinkwrapBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
+        addRelevantDiagnosticFile(lockfile);
         return npmLockfileExtractor.extract(this.getBomToolType(), environment.getDirectory(), lockfile);
     }
 

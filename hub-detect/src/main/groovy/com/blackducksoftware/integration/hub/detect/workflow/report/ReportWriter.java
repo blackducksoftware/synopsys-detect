@@ -21,24 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.extraction;
+package com.blackducksoftware.integration.hub.detect.workflow.report;
 
-import java.util.ArrayList;
-import java.util.List;
+public interface ReportWriter {
+    public void writeLine();
 
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+    public void writeLine(final String line);
 
-public class ExtractionSummaryData {
-    public String directory;
+    public void writeSeperator();
 
-    public List<BomToolEvaluation> success = new ArrayList<>();
-    public List<BomToolEvaluation> failed = new ArrayList<>();
-    public List<BomToolEvaluation> exception = new ArrayList<>();
+    public void writeHeader();
 
-    public int searchable;
-    public int applicable;
-    public int extractable;
-
-    public int codeLocationsExtracted;
-    public List<String> codeLocationNames = new ArrayList<>();
+    public void finish();
 }

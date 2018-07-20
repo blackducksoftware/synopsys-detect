@@ -23,9 +23,11 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,22 +86,38 @@ public class PhoneHomeManager {
     }
 
     public void startPhoneHome(final Set<BomToolGroupType> applicableBomToolTypes) {
-        performPhoneHome(applicableBomToolTypes);
+        final Map<String, String> metadata = new HashMap<>();
+        if (applicableBomToolTypes != null) {
+            final String applicableBomToolsString = applicableBomToolTypes.stream()
+                    .map(BomToolGroupType::toString)
+                    .collect(Collectors.joining(","));
+            metadata.put("bomToolTypes", applicableBomToolsString);
+        }
+        performPhoneHome(metadata);
     }
 
-    private void performPhoneHome(final Set<BomToolGroupType> applicableBomToolTypes) {
+    public void startPhoneHome(final Map<BomToolGroupType, Long> applicableBomToolTimes) {
+        final Map<String, String> metadata = new HashMap<>();
+        if (applicableBomToolTimes != null) {
+            final String applicableBomToolsString = applicableBomToolTimes.keySet().stream()
+                    .map(it -> String.format("%s:%s", it.toString(), applicableBomToolTimes.get(it)))
+                    .collect(Collectors.joining(","));
+            metadata.put("bomToolTypes", applicableBomToolsString);
+        }
+        performPhoneHome(metadata);
+    }
+
+    private void performPhoneHome(final Map<String, String> metadata) {
         endPhoneHome();
         if (null != phoneHomeService) {
             try {
                 final PhoneHomeRequestBody.Builder phoneHomeRequestBodyBuilder = createBuilder();
-
-                if (applicableBomToolTypes != null) {
-                    final String applicableBomToolsString = StringUtils.join(applicableBomToolTypes, ", ");
-                    phoneHomeRequestBodyBuilder.addToMetaData("bomToolTypes", applicableBomToolsString);
-                }
-
                 final PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build();
-
+                if (metadata != null) {
+                    for (final String metaKey : metadata.keySet()) {
+                        phoneHomeRequestBodyBuilder.addToMetaData(metaKey, metadata.get(metaKey));
+                    }
+                }
                 phoneHomeResponse = phoneHomeService.startPhoneHome(phoneHomeRequestBody);
             } catch (final IllegalStateException e) {
                 logger.debug(e.getMessage(), e);

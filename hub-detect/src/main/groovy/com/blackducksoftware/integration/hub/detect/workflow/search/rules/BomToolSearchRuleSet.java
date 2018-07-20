@@ -41,28 +41,34 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.NotNestable
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.NotSelfNestableBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.YieldedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 
 public class BomToolSearchRuleSet {
 
     private final List<BomToolSearchRule> orderedBomToolRules;
     private final BomToolEnvironment environment;
+    private final BomToolProfiler bomToolProfiler;
 
-    public BomToolSearchRuleSet(final List<BomToolSearchRule> orderedBomToolRules, final BomToolEnvironment environment) {
+    public BomToolSearchRuleSet(final List<BomToolSearchRule> orderedBomToolRules, final BomToolEnvironment environment, final BomToolProfiler bomToolProfiler) {
         this.orderedBomToolRules = orderedBomToolRules;
         this.environment = environment;
+        this.bomToolProfiler = bomToolProfiler;
     }
 
     public List<BomToolEvaluation> evaluate() {
         final List<BomToolEvaluation> evaluations = new ArrayList<>();
         final List<BomTool> appliedSoFar = new ArrayList<>();
-        for (final BomToolSearchRule searchRules : orderedBomToolRules) {
-            final BomToolEvaluation evaluation = new BomToolEvaluation(searchRules.getBomTool(), environment);
+        for (final BomToolSearchRule searchRule : orderedBomToolRules) {
+            final BomTool bomTool = searchRule.getBomTool();
+            final BomToolEvaluation evaluation = new BomToolEvaluation(bomTool, environment);
             evaluations.add(evaluation);
-            evaluation.setSearchable(searchable(searchRules, appliedSoFar));
+            evaluation.setSearchable(searchable(searchRule, appliedSoFar));
             if (evaluation.isSearchable()) {
-                evaluation.setApplicable(evaluation.getBomTool().applicable());
+                bomToolProfiler.applicableStarted(bomTool);
+                evaluation.setApplicable(bomTool.applicable());
+                bomToolProfiler.applicableEnded(bomTool);
                 if (evaluation.isApplicable()) {
-                    appliedSoFar.add(searchRules.getBomTool());
+                    appliedSoFar.add(bomTool);
                 }
             }
         }

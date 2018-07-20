@@ -72,7 +72,7 @@ public class NugetInspectorExtractor {
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String inspectorExe, final ExtractionId extractionId) {
         try {
-            final File outputDirectory = detectFileManager.getOutputDirectory("Nuget", extractionId);
+            final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
 
             final List<String> options = new ArrayList<>(Arrays.asList(
                     "--target_path=" + directory.toString(),
@@ -87,8 +87,8 @@ public class NugetInspectorExtractor {
             if (StringUtils.isNotBlank(nugetIncludedModules)) {
                 options.add("--included_modules=" + nugetIncludedModules);
             }
-            final String nugetPackagesRepo = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL);
-            if (StringUtils.isNotBlank(nugetPackagesRepo)) {
+            final String[] nugetPackagesRepo = detectConfigWrapper.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL);
+            if (nugetPackagesRepo.length > 0) {
                 final String packagesRepos = Arrays.asList(nugetPackagesRepo).stream().collect(Collectors.joining(","));
                 options.add("--packages_repo_url=" + packagesRepos);
             }
@@ -111,6 +111,7 @@ public class NugetInspectorExtractor {
 
             final List<NugetParseResult> parseResults = new ArrayList<>();
             for (final File dependencyNodeFile : dependencyNodeFiles) {
+                detectFileManager.registerFileOfInterest(extractionId, dependencyNodeFile);
                 final NugetParseResult result = nugetInspectorPackager.createDetectCodeLocation(bomToolType, dependencyNodeFile);
                 parseResults.add(result);
             }

@@ -67,6 +67,7 @@ public class GoVndrBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
+        addRelevantDiagnosticFile(vndrConfig);
         return goVndrExtractor.extract(this.getBomToolType(), environment.getDirectory(), vndrConfig);
     }
 

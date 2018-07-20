@@ -118,10 +118,16 @@ import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerCodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerScanCodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.ScanCodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticFileManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticLogManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BdioUploader;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
@@ -130,8 +136,11 @@ import com.blackducksoftware.integration.hub.detect.workflow.hub.OfflineScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ExtractionSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.PreparationSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
+import com.blackducksoftware.integration.hub.detect.workflow.report.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
-import com.blackducksoftware.integration.hub.detect.workflow.search.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
@@ -156,11 +165,41 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public DetectRunManager detectRunManager() {
+        return new DetectRunManager();
+    }
+
+    @Bean
+    public DiagnosticFileManager diagnosticFileManager() {
+        return new DiagnosticFileManager();
+    }
+
+    @Bean
+    public DiagnosticManager diagnosticManager() {
+        return new DiagnosticManager(detectConfigWrapper(), diagnosticReportManager(), diagnosticLogManager(), detectRunManager(), diagnosticFileManager());
+    }
+
+    @Bean
+    public DiagnosticLogManager diagnosticLogManager() {
+        return new DiagnosticLogManager();
+    }
+
+    @Bean
+    public DiagnosticReportManager diagnosticReportManager() {
+        return new DiagnosticReportManager(bomToolProfiler());
+    }
+
+    @Bean
     public SimpleBdioFactory simpleBdioFactory() {
         final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
         final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
         final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
         return new SimpleBdioFactory(bdioPropertyHelper, bdioNodeFactory, dependencyGraphTransformer, externalIdFactory(), gson());
+    }
+
+    @Bean
+    public BomToolProfiler bomToolProfiler() {
+        return new BomToolProfiler();
     }
 
     @Bean
@@ -271,7 +310,7 @@ public class BeanConfiguration {
 
     @Bean
     public DetectFileManager detectFileManager() {
-        return new DetectFileManager(detectConfigWrapper());
+        return new DetectFileManager(detectConfigWrapper(), detectRunManager(), diagnosticManager());
     }
 
     @Bean
@@ -315,12 +354,12 @@ public class BeanConfiguration {
 
     @Bean
     public BomToolSearchProvider bomToolSearchProvider() throws ParserConfigurationException {
-        return new BomToolSearchProvider(bomToolFactory());
+        return new BomToolSearchProvider(bomToolFactory(), bomToolProfiler());
     }
 
     @Bean
     public SearchManager searchManager() throws ParserConfigurationException {
-        return new SearchManager(searchSummaryReporter(), bomToolSearchProvider(), phoneHomeManager(), detectConfigWrapper());
+        return new SearchManager(reportManager(), bomToolSearchProvider(), phoneHomeManager(), detectConfigWrapper());
     }
 
     @Bean
@@ -334,13 +373,12 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public ExtractionReporter extractionReporter() {
-        return new ExtractionReporter();
+    public ReportManager reportManager() {
+        return new ReportManager(bomToolProfiler(), phoneHomeManager(), diagnosticManager(), preparationSummaryReporter(), extractionSummaryReporter(), searchSummaryReporter());
     }
 
-    @Bean
     public ExtractionManager extractionManager() {
-        return new ExtractionManager(preparationSummaryReporter(), extractionReporter());
+        return new ExtractionManager(reportManager());
     }
 
     @Bean
@@ -360,7 +398,7 @@ public class BeanConfiguration {
 
     @Bean
     public DetectProjectManager detectProjectManager() throws ParserConfigurationException {
-        return new DetectProjectManager(searchManager(), extractionManager(), detectCodeLocationManager(), bdioManager(), extractionSummaryReporter(), bomToolNameVersionDecider(), detectConfigWrapper());
+        return new DetectProjectManager(searchManager(), extractionManager(), detectCodeLocationManager(), bdioManager(), bomToolNameVersionDecider(), detectConfigWrapper(), reportManager());
     }
 
     @Bean
@@ -389,7 +427,7 @@ public class BeanConfiguration {
 
     @Bean
     public BdioUploader bdioUploader() {
-        return new BdioUploader(detectConfigWrapper());
+        return new BdioUploader(detectConfigWrapper(), detectFileManager());
     }
 
     @Bean
