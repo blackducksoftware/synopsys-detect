@@ -18,15 +18,12 @@ import org.junit.Test;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
 
 public class PipEnvTreeParserTest {
     private PipenvGraphParser parser;
-    private final TestUtil testUtil = new TestUtil();
 
     private final String name = "urllib3";
     private final String version = "1.22";
-    private final String fullName = name + PipenvGraphParser.TOP_LEVEL_SEPARATOR + version;
     private final String dependencyName = "- urllib3 [required: <1.23,==1.21.1, installed: 1.22]";
     private final String line1 = PipenvGraphParser.DEPENDENCY_INDENTATION + dependencyName;
     private final String line2 = PipenvGraphParser.DEPENDENCY_INDENTATION + PipenvGraphParser.DEPENDENCY_INDENTATION + line1;

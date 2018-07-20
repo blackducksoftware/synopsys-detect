@@ -115,8 +115,8 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableMa
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BomCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerScanCodeLocationNameService;
@@ -324,28 +324,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public BomCodeLocationNameService bomCodeLocationNameService() {
-        return new BomCodeLocationNameService(detectFileFinder());
-    }
-
-    @Bean
-    public DockerCodeLocationNameService dockerCodeLocationNameService() {
-        return new DockerCodeLocationNameService(detectFileFinder());
-    }
-
-    @Bean
-    public DockerScanCodeLocationNameService dockerScanCodeLocationNameService() {
-        return new DockerScanCodeLocationNameService(detectFileFinder());
-    }
-
-    @Bean
-    public ScanCodeLocationNameService scanCodeLocationNameService() {
-        return new ScanCodeLocationNameService(detectFileFinder());
+    public CodeLocationNameService codeLocationNameService() {
+        return new CodeLocationNameService(detectFileFinder());
     }
 
     @Bean
     public CodeLocationNameManager codeLocationNameManager() {
-        return new CodeLocationNameManager(detectConfigWrapper(), bomCodeLocationNameService(), dockerCodeLocationNameService(), scanCodeLocationNameService(), dockerScanCodeLocationNameService());
+        return new CodeLocationNameManager(detectConfigWrapper(), codeLocationNameService());
     }
 
     @Bean

@@ -33,7 +33,6 @@ public class RubygemsNodePackagerTest {
 
     @Test
     public void packagerTest() throws JSONException, IOException, URISyntaxException {
-        final String expected = testUtils.getResourceAsUTF8String("/rubygems/expectedPackager.json");
         final List<String> actualText = Arrays.asList(testUtils.getResourceAsUTF8String("/rubygems/Gemfile.lock").split("\n"));
         final GemlockParser rubygemsNodePackager = new GemlockParser(new ExternalIdFactory());
         final DependencyGraph projects = rubygemsNodePackager.parseProjectDependencies(actualText);

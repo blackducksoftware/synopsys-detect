@@ -24,10 +24,10 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,6 +42,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.blackducksoftware.integration.util.NameVersion;
 
 public class GradleInspectorExtractor {
     private final ExecutableRunner executableRunner;
@@ -68,11 +69,7 @@ public class GradleInspectorExtractor {
             final List<String> arguments = new ArrayList<>();
             if (StringUtils.isNotBlank(gradleCommand)) {
                 gradleCommand = gradleCommand.replaceAll("dependencies", "").trim();
-                for (final String arg : gradleCommand.split(" ")) {
-                    if (StringUtils.isNotBlank(arg)) {
-                        arguments.add(arg);
-                    }
-                }
+                Arrays.stream(gradleCommand.split(" ")).filter(StringUtils::isNotBlank).forEach(arguments::add);
             }
             arguments.add("dependencies");
             arguments.add(String.format("--init-script=%s", gradleInspector));
@@ -84,29 +81,30 @@ public class GradleInspectorExtractor {
             final ExecutableOutput output = executableRunner.execute(executable);
 
             if (output.getReturnCode() == 0) {
+                final File rootProjectMetadataFile = detectFileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
                 final List<File> codeLocationFiles = detectFileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
 
                 final List<DetectCodeLocation> codeLocations = new ArrayList<>();
                 String projectName = null;
                 String projectVersion = null;
                 if (codeLocationFiles != null) {
-                    for (final File file : codeLocationFiles) {
-                        final InputStream stream = new FileInputStream(file);
-                        final GradleParseResult result = gradleReportParser.parseDependencies(bomToolType, stream);
-                        stream.close();
-                        final DetectCodeLocation codeLocation = result.codeLocation;
-                        codeLocations.add(codeLocation);
-                        if (projectName == null) {
-                            projectName = result.projectName;
-                            projectVersion = result.projectVersion;
-                        }
+                    codeLocationFiles.stream()
+                            .map(codeLocationFile -> gradleReportParser.parseDependencies(bomToolType, codeLocationFile))
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .forEach(codeLocations::add);
+
+                    final Optional<NameVersion> projectNameVersion = gradleReportParser.parseRootProjectNameVersion(rootProjectMetadataFile);
+                    if (projectNameVersion.isPresent()) {
+                        projectName = projectNameVersion.get().getName();
+                        projectVersion = projectNameVersion.get().getVersion();
                     }
+
                 }
                 return new Extraction.Builder().success(codeLocations).projectName(projectName).projectVersion(projectVersion).build();
             } else {
                 return new Extraction.Builder().failure("The gradle inspector returned a non-zero exit code: " + output.getReturnCode()).build();
             }
-
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
