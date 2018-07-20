@@ -33,7 +33,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEval
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
 public class CodeLocationReporter {
-
     public void writeCodeLocationReport(final ReportWriter writer, final ReportWriter writer2, final List<BomToolEvaluation> bomToolEvaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final List<BomToolEvaluation> succesfullBomToolEvaluations = bomToolEvaluations.stream()
                 .filter(it -> it.wasExtractionSuccessful())

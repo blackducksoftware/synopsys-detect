@@ -31,7 +31,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 public class ObjectPrinter {
-
     public static void printObject(final ReportWriter writer, final String prefix, final Object guy) {
         for (final Field field : guy.getClass().getFields()) {
             printField(field, writer, prefix, guy);

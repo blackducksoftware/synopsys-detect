@@ -26,15 +26,10 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ReportConstants;
 
 public class SearchSummaryReporter {
-    private final Logger logger = LoggerFactory.getLogger(SearchSummaryReporter.class);
-
     public void print(final ReportWriter writer, final List<BomToolEvaluation> results) {
         final SearchSummarizer searchSummarizer = new SearchSummarizer();
         final List<SearchSummaryData> summaryData = searchSummarizer.summarize(results);

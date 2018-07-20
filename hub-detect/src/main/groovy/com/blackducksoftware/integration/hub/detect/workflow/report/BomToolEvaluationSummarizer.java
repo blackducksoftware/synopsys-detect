@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 
 public abstract class BomToolEvaluationSummarizer {
-
     protected Map<File, List<BomToolEvaluation>> groupByDirectory(final List<BomToolEvaluation> results) {
         return results.stream()
                 .collect(Collectors.groupingBy(item -> item.getEnvironment().getDirectory()));

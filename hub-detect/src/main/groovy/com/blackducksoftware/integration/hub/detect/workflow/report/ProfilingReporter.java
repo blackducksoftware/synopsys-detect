@@ -31,7 +31,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolPr
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolTime;
 
 public class ProfilingReporter {
-
     public void writeReport(final ReportWriter writer, final BomToolProfiler bomToolProfiler) {
         writer.writeSeperator();
         writer.writeLine("Applicable Times");

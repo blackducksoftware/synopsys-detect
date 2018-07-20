@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 
 public class OverviewSummarizer extends BomToolEvaluationSummarizer {
-
     public List<OverviewSummaryData> summarize(final List<BomToolEvaluation> evaluations) {
         final Map<File, List<BomToolEvaluation>> byDirectory = groupByDirectory(evaluations);
 

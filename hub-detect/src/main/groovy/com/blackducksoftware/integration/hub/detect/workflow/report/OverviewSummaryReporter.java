@@ -30,14 +30,12 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEval
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ReportConstants;
 
 public class OverviewSummaryReporter {
-
     public void writeReport(final ReportWriter writer, final List<BomToolEvaluation> results) {
         final OverviewSummarizer summarizer = new OverviewSummarizer();
 
         final List<OverviewSummaryData> summaries = summarizer.summarize(results);
 
         writeSummaries(writer, summaries);
-
     }
 
     private void writeSummaries(final ReportWriter writer, final List<OverviewSummaryData> summaries) {

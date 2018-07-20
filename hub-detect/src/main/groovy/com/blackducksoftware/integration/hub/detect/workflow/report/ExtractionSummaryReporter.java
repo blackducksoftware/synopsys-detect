@@ -31,7 +31,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEval
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
 public class ExtractionSummaryReporter {
-
     public void writeSummary(final ReportWriter writer, final List<BomToolEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final ExtractionSummarizer summarizer = new ExtractionSummarizer();
 

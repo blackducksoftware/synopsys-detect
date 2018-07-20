@@ -36,7 +36,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolPr
 
 public class ReportManager {
     // all entry points to reporting
-
     private final BomToolProfiler bomToolProfiler;
     private final PhoneHomeManager phoneHomeManager;
     private final DiagnosticManager diagnosticManager;

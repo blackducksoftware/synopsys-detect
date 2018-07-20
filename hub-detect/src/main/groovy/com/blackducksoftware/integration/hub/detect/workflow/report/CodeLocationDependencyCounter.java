@@ -36,7 +36,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
 public class CodeLocationDependencyCounter {
-
     public Map<BomToolGroupType, Integer> aggregateCountsByGroup(final Map<DetectCodeLocation, Integer> codeLocations) {
         final Map<BomToolGroupType, Integer> dependencyCounts = new HashMap<>();
         for (final Entry<DetectCodeLocation, Integer> countEntry : codeLocations.entrySet()) {

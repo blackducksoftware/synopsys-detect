@@ -27,15 +27,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 
 public class BomToolProfiler {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     public BomToolTimekeeper applicableTimekeeper = new BomToolTimekeeper();
     public BomToolTimekeeper extractableTimekeeper = new BomToolTimekeeper();
     public BomToolTimekeeper extractionTimekeeper = new BomToolTimekeeper();

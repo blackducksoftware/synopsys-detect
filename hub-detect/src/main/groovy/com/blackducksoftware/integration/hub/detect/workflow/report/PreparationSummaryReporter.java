@@ -26,14 +26,9 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 
 public class PreparationSummaryReporter {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     public void write(final ReportWriter writer, final List<BomToolEvaluation> results) {
         final PreparationSummarizer summarizer = new PreparationSummarizer();
         final List<PreparationSummaryData> result = summarizer.summarize(results);
