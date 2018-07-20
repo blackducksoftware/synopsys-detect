@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.testutils;
+package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-
-import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 
 public class ObjectPrinter {
 
