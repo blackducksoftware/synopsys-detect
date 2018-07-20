@@ -48,12 +48,14 @@ public class DiagnosticZipCreator {
             final String zipPath = "detect-run-" + runId + ".zip";
             final File zip = new File(outputDirectory, zipPath);
             logger.info("Diagnostics zip location: " + zip.toPath());
-            final ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(zip));
-            for (final File file : compressList) {
-                compress(outputStream, outputDirectory.toPath(), file.toPath(), zip, runId);
+            try (FileOutputStream fileStream = new FileOutputStream(zip)) {
+                try (ZipOutputStream outputStream = new ZipOutputStream(fileStream)) {
+                    for (final File file : compressList) {
+                        compress(outputStream, outputDirectory.toPath(), file.toPath(), zip, runId);
+                    }
+                    logger.info("Diagnostics file created at: " + zip.getCanonicalPath());
+                }
             }
-            logger.info("Diagnostics file created at: " + zip.getCanonicalPath());
-            outputStream.close();
             return true;
         } catch (final Exception e) {
             logger.error("Failed to create zip.", e);

@@ -37,10 +37,11 @@ public class FileReportWriter implements ReportWriter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private BufferedWriter writer;
+    private FileWriter fileWriter;
 
     public FileReportWriter(final File reportFile, final String name, final String description, final String runId) throws DetectUserFriendlyException {
         try {
-            final FileWriter fileWriter = new FileWriter(reportFile, true);
+            fileWriter = new FileWriter(reportFile, true);
             writer = new BufferedWriter(fileWriter);
             writeSeperator();
             writer.newLine();
@@ -86,9 +87,18 @@ public class FileReportWriter implements ReportWriter {
     public void finish() {
         try {
             writer.flush();
+        } catch (final Exception e) {
+            logger.error("Failed to flush report.", e);
+        }
+        try {
             writer.close();
         } catch (final Exception e) {
-            logger.error("Failed to finish report.", e);
+            logger.error("Failed to close report.", e);
+        }
+        try {
+            fileWriter.close();
+        } catch (final Exception e) {
+            logger.error("Failed to close report writer.", e);
         }
     }
 }
