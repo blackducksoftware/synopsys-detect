@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolTime;
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolTime;
 
 public class ProfilingReporter {
 

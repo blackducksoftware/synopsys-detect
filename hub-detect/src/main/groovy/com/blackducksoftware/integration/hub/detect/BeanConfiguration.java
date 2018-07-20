@@ -123,7 +123,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.Diagnost
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticLogManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportManager;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BdioUploader;
@@ -131,6 +130,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.OfflineScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ExtractionSummaryReporter;

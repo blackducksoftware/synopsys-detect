@@ -32,7 +32,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 
 public class ReportManager {
     // all entry points to reporting

@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.diagnostic.profiling;
+package com.blackducksoftware.integration.hub.detect.workflow.profiling;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 
