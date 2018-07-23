@@ -26,7 +26,9 @@ import os
 import sys
 import getopt
 import pip
-if pip.__version__[:2] == '10':
+
+pip_major_version = int(pip.__version__[:2])
+if pip_major_version >= 10:
     from pip._internal.req import parse_requirements
     from pip._internal.download import PipSession
 else:
