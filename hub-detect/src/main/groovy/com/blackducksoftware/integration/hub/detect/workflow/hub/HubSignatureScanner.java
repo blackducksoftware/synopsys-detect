@@ -93,8 +93,9 @@ public class HubSignatureScanner implements StatusSummaryProvider<ScanStatusSumm
 
         final ScanServiceOutput scanServiceOutput = signatureScannerService.executeScans(hubServerConfig, hubScanConfig, projectRequest);
         if (null != scanServiceOutput) {
-            projectVersionView = scanServiceOutput.getProjectVersionWrapper().getProjectVersionView();
-
+            if (null != scanServiceOutput.getProjectVersionWrapper()) {
+                projectVersionView = scanServiceOutput.getProjectVersionWrapper().getProjectVersionView();
+            }
             if (null != scanServiceOutput.getScanTargetOutputs() && !scanServiceOutput.getScanTargetOutputs().isEmpty()) {
                 for (final ScanTargetOutput scanTargetOutput : scanServiceOutput.getScanTargetOutputs()) {
                     handleScanTargetOutput(scanTargetOutput);
