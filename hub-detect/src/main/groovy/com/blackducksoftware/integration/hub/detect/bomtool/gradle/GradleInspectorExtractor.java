@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -45,6 +47,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 import com.blackducksoftware.integration.util.NameVersion;
 
 public class GradleInspectorExtractor {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final ExecutableRunner executableRunner;
     private final DetectFileFinder detectFileFinder;
     private final DetectFileManager detectFileManager;
@@ -94,12 +98,15 @@ public class GradleInspectorExtractor {
                             .map(Optional::get)
                             .forEach(codeLocations::add);
 
-                    final Optional<NameVersion> projectNameVersion = gradleReportParser.parseRootProjectNameVersion(rootProjectMetadataFile);
-                    if (projectNameVersion.isPresent()) {
-                        projectName = projectNameVersion.get().getName();
-                        projectVersion = projectNameVersion.get().getVersion();
+                    if (rootProjectMetadataFile != null) {
+                        final Optional<NameVersion> projectNameVersion = gradleReportParser.parseRootProjectNameVersion(rootProjectMetadataFile);
+                        if (projectNameVersion.isPresent()) {
+                            projectName = projectNameVersion.get().getName();
+                            projectVersion = projectNameVersion.get().getVersion();
+                        }
+                    } else {
+                        logger.warn("Gradle inspector did not create a meta data report so no project version information was found.");
                     }
-
                 }
                 return new Extraction.Builder().success(codeLocations).projectName(projectName).projectVersion(projectVersion).build();
             } else {
