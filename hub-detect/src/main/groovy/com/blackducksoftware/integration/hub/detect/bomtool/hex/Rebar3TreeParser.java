@@ -24,8 +24,9 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.hex;
 
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,60 +60,52 @@ public class Rebar3TreeParser {
 
     public RebarParseResult parseRebarTreeOutput(final BomToolType bomToolType, final List<String> dependencyTreeOutput, final String sourcePath) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        final Deque<Dependency> dependencyStack = new LinkedList<>();
         String projectName = "";
         String projectVersionName = "";
-        final Stack<Dependency> dependencyStack = new Stack<>();
         int previousTreeLevel = 0;
         Dependency previousDependency = null;
 
-        try {
-            for (final String line : dependencyTreeOutput) {
-                if (line.contains(HORIZONTAL_SEPARATOR_CHARACTER)) {
-                    final Dependency currentDependency = createDependencyFromLine(line);
-
-                    final int currentTreeLevel = getDependencyLevelFromLine(line);
-
-                    if (currentTreeLevel == previousTreeLevel + 1 && previousDependency != null) {
-                        dependencyStack.push(previousDependency);
-                    } else if (currentTreeLevel < previousTreeLevel) {
-                        final int levelDelta = (previousTreeLevel - currentTreeLevel);
-                        for (int levels = 0; levels < levelDelta; levels++) {
-                            dependencyStack.pop();
-                        }
-                    } else if (currentTreeLevel != previousTreeLevel) {
-                        logger.error(String.format("The tree level (%s) and this line (%s) with count %s can\'t be reconciled.", previousTreeLevel, line, currentTreeLevel));
-                    }
-
-                    if (dependencyStack.size() == 0) {
-                        if (isProject(line)) {
-                            projectName = currentDependency.name;
-                            projectVersionName = currentDependency.version;
-                        } else {
-                            graph.addChildToRoot(currentDependency);
-                        }
-                    } else if (dependencyStack.size() == 1 && dependencyStack.peek().name.equals(projectName) && dependencyStack.peek().version.equals(projectVersionName)) {
-                        graph.addChildToRoot(currentDependency);
-                    } else {
-                        graph.addChildWithParents(currentDependency, dependencyStack.peek());
-                    }
-
-                    previousDependency = currentDependency;
-                    previousTreeLevel = currentTreeLevel;
-                }
+        for (final String line : dependencyTreeOutput) {
+            if (!line.contains(HORIZONTAL_SEPARATOR_CHARACTER)) {
+                continue;
             }
-        } catch (final Exception e) {
-            logger.error("Exception parsing rebar output: " + e.getMessage());
+
+            final Dependency currentDependency = createDependencyFromLine(line);
+            final int currentTreeLevel = getDependencyLevelFromLine(line);
+
+            if (currentTreeLevel == previousTreeLevel + 1 && previousDependency != null) {
+                dependencyStack.push(previousDependency);
+            } else if (currentTreeLevel < previousTreeLevel) {
+                final int levelDelta = (previousTreeLevel - currentTreeLevel);
+                for (int levels = 0; levels < levelDelta; levels++) {
+                    dependencyStack.pop();
+                }
+            } else if (currentTreeLevel != previousTreeLevel) {
+                logger.error(String.format("The tree level (%s) and this line (%s) with count %s can\'t be reconciled.", previousTreeLevel, line, currentTreeLevel));
+            }
+
+            if (dependencyStack.isEmpty() && isProject(line)) {
+                projectName = currentDependency.name;
+                projectVersionName = currentDependency.version;
+            } else if (dependencyStack.size() == 1 && dependencyStack.peek().name.equals(projectName) && dependencyStack.peek().version.equals(projectVersionName)) {
+                graph.addChildToRoot(currentDependency);
+            } else if (!dependencyStack.isEmpty()) {
+                graph.addChildWithParents(currentDependency, dependencyStack.peek());
+            } else {
+                graph.addChildToRoot(currentDependency);
+            }
+
+            previousDependency = currentDependency;
+            previousTreeLevel = currentTreeLevel;
         }
 
-        final ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.HEX, projectName, projectVersionName);
-
-        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.HEX, bomToolType, sourcePath, id, graph).build();
-        final RebarParseResult result = new RebarParseResult(projectName, projectVersionName, codeLocation);
-        return result;
+        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.HEX, projectName, projectVersionName);
+        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.HEX, bomToolType, sourcePath, externalId, graph).build();
+        return new RebarParseResult(projectName, projectVersionName, codeLocation);
     }
 
-    Dependency createDependencyFromLine(final String line) {
-
+    protected Dependency createDependencyFromLine(final String line) {
         final String nameVersionLine = reduceLineToNameVersion(line);
         final String name = nameVersionLine.substring(0, nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER));
         final String version = nameVersionLine.substring(nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER) + 1);
@@ -121,8 +114,7 @@ public class Rebar3TreeParser {
         return new Dependency(name, version, externalId);
     }
 
-    String reduceLineToNameVersion(String line) {
-
+    protected String reduceLineToNameVersion(String line) {
         final List<String> ignoredSpecialCharacters = Arrays.asList(LAST_DEPENDENCY_CHARACTER, NTH_DEPENDENCY_CHARACTER, INNER_LEVEL_CHARACTER);
         for (final String specialCharacter : ignoredSpecialCharacters) {
             line = line.replaceAll(specialCharacter, "");
@@ -137,7 +129,7 @@ public class Rebar3TreeParser {
         return line.trim();
     }
 
-    int getDependencyLevelFromLine(String line) {
+    protected int getDependencyLevelFromLine(String line) {
         int level = 0;
         while (line.startsWith(INNER_LEVEL_PREFIX) || line.startsWith(OUTER_LEVEL_PREFIX)) {
             line = line.substring(3);
@@ -147,7 +139,7 @@ public class Rebar3TreeParser {
         return level;
     }
 
-    boolean isProject(final String line) {
+    protected boolean isProject(final String line) {
         String forgeString = "";
         if (line.endsWith(")")) {
             forgeString = line.substring(line.lastIndexOf("("));
