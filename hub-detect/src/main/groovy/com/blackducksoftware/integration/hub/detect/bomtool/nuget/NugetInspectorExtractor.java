@@ -87,7 +87,7 @@ public class NugetInspectorExtractor {
             if (StringUtils.isNotBlank(nugetIncludedModules)) {
                 options.add("--included_modules=" + nugetIncludedModules);
             }
-            final String nugetPackagesRepo = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL);
+            final String[] nugetPackagesRepo = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL);
             if (StringUtils.isNotBlank(nugetPackagesRepo)) {
                 final String packagesRepos = Arrays.asList(nugetPackagesRepo).stream().collect(Collectors.joining(","));
                 options.add("--packages_repo_url=" + packagesRepos);
