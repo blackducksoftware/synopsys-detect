@@ -165,6 +165,8 @@ public class Application implements ApplicationRunner {
             return WorkflowStep.EXIT_WITH_SUCCESS;
         }
 
+        configurationManager.printInfo(System.out, detectInfo);
+
         if (argumentState.isInteractive()) {
             interactiveManager.configureInInteractiveMode();
         }
@@ -182,7 +184,7 @@ public class Application implements ApplicationRunner {
         diagnosticManager.init(argumentState.isDiagnostic(), argumentState.isDiagnosticProtected());
 
         if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT)) {
-            configurationManager.printConfiguration(System.out, detectInfo, options);
+            configurationManager.printConfiguration(System.out, options);
         }
 
         if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_FAIL_CONFIG_WARNING) && options.stream().anyMatch(DetectOption::hasWarnings)) {

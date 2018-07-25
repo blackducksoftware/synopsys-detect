@@ -89,8 +89,11 @@ public class ConfigurationManager {
         updateDetectProperties(detectOptions);
     }
 
-    public void printConfiguration(final PrintStream printstream, final DetectInfo detectInfo, final List<DetectOption> detectOptions) {
+    public void printInfo(final PrintStream printstream, final DetectInfo detectInfo) {
         detectInfoPrinter.printInfo(printstream, detectInfo);
+    }
+
+    public void printConfiguration(final PrintStream printstream, final List<DetectOption> detectOptions) {
         detectConfigurationPrinter.print(printstream, detectOptions);
     }
 

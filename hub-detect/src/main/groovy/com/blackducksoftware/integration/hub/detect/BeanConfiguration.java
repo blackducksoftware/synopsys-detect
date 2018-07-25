@@ -297,7 +297,7 @@ public class BeanConfiguration {
 
     @Bean
     public HubServiceWrapper hubServiceWrapper() {
-        return new HubServiceWrapper(detectConfigWrapper(), additionalPropertyConfig());
+        return new HubServiceWrapper(detectConfigWrapper());
     }
 
     @Bean

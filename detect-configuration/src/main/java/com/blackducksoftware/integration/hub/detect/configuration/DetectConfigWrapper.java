@@ -26,6 +26,7 @@ package com.blackducksoftware.integration.hub.detect.configuration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -89,7 +90,7 @@ public class DetectConfigWrapper {
     }
 
     public boolean getBooleanProperty(final DetectProperty detectProperty) {
-        Object value = propertyMap.get(detectProperty);
+        final Object value = propertyMap.get(detectProperty);
         if (null == value) {
             return false;
         }
@@ -97,7 +98,7 @@ public class DetectConfigWrapper {
     }
 
     public Long getLongProperty(final DetectProperty detectProperty) {
-        Object value = propertyMap.get(detectProperty);
+        final Object value = propertyMap.get(detectProperty);
         if (null == value) {
             return null;
         }
@@ -105,7 +106,7 @@ public class DetectConfigWrapper {
     }
 
     public Integer getIntegerProperty(final DetectProperty detectProperty) {
-        Object value = propertyMap.get(detectProperty);
+        final Object value = propertyMap.get(detectProperty);
         if (null == value) {
             return null;
         }
@@ -121,7 +122,7 @@ public class DetectConfigWrapper {
     }
 
     public String getPropertyValueAsString(final DetectProperty detectProperty) {
-        Object objectValue = propertyMap.get(detectProperty);
+        final Object objectValue = propertyMap.get(detectProperty);
         String displayValue = "";
         if (DetectPropertyType.STRING == detectProperty.getPropertyType()) {
             displayValue = (String) objectValue;
@@ -145,6 +146,16 @@ public class DetectConfigWrapper {
      */
     public Map<DetectProperty, Object> getPropertyMap() {
         return propertyMap;
+    }
+
+    public Map<String, String> getPropertyKeyMap() {
+        final Map<String, String> keyMap = new HashMap<>();
+        for (final Entry<DetectProperty, Object> entry : propertyMap.entrySet()) {
+            if (entry.getKey().getPropertyType() == DetectPropertyType.STRING) {
+                keyMap.put(entry.getKey().getPropertyName(), (String) entry.getValue());
+            }
+        }
+        return keyMap;
     }
 
     private void updatePropertyMap(final Map<DetectProperty, Object> propertyMap, final DetectProperty detectProperty, final String stringValue) {
