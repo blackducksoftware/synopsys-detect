@@ -23,9 +23,11 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
 
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,100 +39,93 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGrap
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.util.NameVersion;
 
 public class YarnListParser extends BaseYarnParser {
     private final Logger logger = LoggerFactory.getLogger(YarnListParser.class);
+    private final ExternalIdFactory externalIdFactory;
+
+    public static final String LAST_DEPENDENCY_PREFIX = "\u2514\u2500";
+    public static final String NTH_DEPENDENCY_PREFIX = "\u251C\u2500";
+    public static final String INNER_LEVEL_CHARACTER = "\u2502";
+
+    public YarnListParser(final ExternalIdFactory externalIdFactory) {
+        this.externalIdFactory = externalIdFactory;
+    }
 
     public DependencyGraph parseYarnList(final List<String> yarnLockText, final List<String> yarnListAsList) {
-        final YarnDependencyMapper yarnDependencyMapper = new YarnDependencyMapper();
-        yarnDependencyMapper.getYarnDataAsMap(yarnLockText);
-
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        final ExternalId extId = new ExternalId(Forge.NPM);
-        final UUID randomUUID = UUID.randomUUID();
-        final String rootName = String.format("detectRootNode - %s", randomUUID);
-        extId.name = rootName;
+        final Deque<Dependency> dependencyStack = new LinkedList<>();
+        final YarnLockParser yarnLockParser = new YarnLockParser();
+        int previousDepth = 0;
+        Dependency previousDependency = null;
 
-        int depth;
-        Dependency parentDep = null;
+        final Map<String, String> yarnLockVersionMap = yarnLockParser.getYarnLockResolvedVersionMap(yarnLockText);
+
         for (final String line : yarnListAsList) {
-
-            if (line.toLowerCase().startsWith("yarn list") || line.toLowerCase().startsWith("done in") || line.toLowerCase().startsWith("warning")) {
+            final String lowerCaseLine = line.toLowerCase().trim();
+            if (StringUtils.isBlank(line) || lowerCaseLine.startsWith("yarn list") || lowerCaseLine.startsWith("done in") || lowerCaseLine.startsWith("warning")) {
                 continue;
             }
 
-            final String cleanedLine = line.replaceAll("├─", "").replaceAll("│", "").replaceAll("└─", "");
-            depth = getLineLevel(cleanedLine);
+            final String cleanedLine = line.replaceAll(NTH_DEPENDENCY_PREFIX, "").replaceAll(INNER_LEVEL_CHARACTER, "").replaceAll(LAST_DEPENDENCY_PREFIX, "");
+            final Dependency currentDependency = parseDependencyFromLine(cleanedLine, yarnLockVersionMap);
+            final int currentDepth = getLineLevel(cleanedLine);
 
-            if (depth == 0) {
-                final Optional<Dependency> optionalDependency = getDependencyFromLine(cleanedLine, yarnDependencyMapper);
-                if (optionalDependency.isPresent()) {
-                    final Dependency currentDep = optionalDependency.get();
-                    graph.addChildToRoot(currentDep);
-                    parentDep = currentDep;
-                } else {
-                    continue;
+            if (currentDepth == previousDepth + 1 && previousDependency != null) {
+                dependencyStack.push(previousDependency);
+            } else if (currentDepth < previousDepth) {
+                final int depthDelta = (previousDepth - currentDepth);
+                for (int levels = 0; levels < depthDelta; levels++) {
+                    dependencyStack.pop();
                 }
+            } else if (currentDepth != previousDepth) {
+                logger.error(String.format("The tree level (%s) and this line (%s) with depth %s can\'t be reconciled.", previousDepth, line, currentDepth));
             }
 
-            if (depth >= 1) {
-                final Optional<Dependency> optionalDependency = getDependencyFromLine(cleanedLine, yarnDependencyMapper);
-                if (optionalDependency.isPresent()) {
-                    final Dependency currentDep = optionalDependency.get();
-                    if (parentDep != null) {
-                        logger.debug(currentDep.name + "@" + currentDep.version + " is being added as a child of " + parentDep.name + "@" + parentDep.version);
-                        graph.addChildWithParent(currentDep, parentDep);
-                    } else {
-                        logger.debug(
-                                String.format("Problem parsing dependency %s@%s: Depth is %s, but no parent could be found. Treating dependency as root level to avoid missing dependencies.", currentDep.name, currentDep.version, depth));
-                        graph.addChildToRoot(currentDep);
-                    }
-                } else {
-                    continue;
-                }
+            if (dependencyStack.isEmpty()) {
+                graph.addChildToRoot(currentDependency);
+            } else {
+                graph.addChildWithParents(currentDependency, dependencyStack.peek());
             }
+
+            previousDependency = currentDependency;
+            previousDepth = currentDepth;
         }
 
         return graph;
     }
 
-    private Optional<Dependency> getDependencyFromLine(final String cleanedLine, final YarnDependencyMapper yarnDependencyMapper) {
-        final String fuzzyName = cleanedLine.trim();
-        final Optional<String> optionalName = parseNameFromFuzzy(fuzzyName);
-        final Optional<String> optionalVersion = yarnDependencyMapper.getVersion(fuzzyName);
-
-        if (optionalName.isPresent() && optionalVersion.isPresent()) {
-            final String name = optionalName.get();
-            final String version = optionalVersion.get();
-            logger.debug("Found version " + version + " for " + fuzzyName);
-
-            final ExternalId extId = new ExternalId(Forge.NPM);
-            extId.name = name;
-            extId.version = version;
-
-            return Optional.of(new Dependency(name, version, extId));
-        } else {
-            if (!optionalName.isPresent()) {
-                logger.error(String.format("Could not determine a name for yarn dependency %s", fuzzyName));
-            }
-            if (!optionalVersion.isPresent()) {
-                logger.error(String.format("Could not determine a version for yarn dependency %s", fuzzyName));
-            }
-            return Optional.empty();
+    private Dependency parseDependencyFromLine(final String cleanedLine, final Map<String, String> yarnLockVersionMap) {
+        final String fuzzyNameVersionString = cleanedLine.trim();
+        String cleanedFuzzyNameVersionString = fuzzyNameVersionString;
+        if (fuzzyNameVersionString.startsWith("@")) {
+            cleanedFuzzyNameVersionString = fuzzyNameVersionString.substring(1);
         }
+
+        final String[] nameVersionArray = cleanedFuzzyNameVersionString.split("@");
+        final NameVersion nameVersion = new NameVersion(nameVersionArray[0], nameVersionArray[1]);
+        final String resolvedVersion = yarnLockVersionMap.get(fuzzyNameVersionString);
+
+        if (resolvedVersion != null) {
+            nameVersion.setVersion(resolvedVersion);
+        }
+
+        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, nameVersion.getName(), nameVersion.getVersion());
+        return new Dependency(nameVersion.getName(), nameVersion.getVersion(), externalId);
     }
 
     Optional<String> parseNameFromFuzzy(final String fuzzyName) {
-        if (StringUtils.isBlank(fuzzyName)) {
-            return Optional.empty();
-        }
         String name = null;
-        if (fuzzyName.startsWith("@")) {
-            final String fuzzyNameWithoutFirstAt = fuzzyName.substring(1);
-            name = fuzzyName.substring(0, fuzzyNameWithoutFirstAt.indexOf("@") + 1);
-        } else {
-            name = fuzzyName.substring(0, fuzzyName.indexOf("@"));
+        if (StringUtils.isNotBlank(fuzzyName)) {
+            if (fuzzyName.startsWith("@")) {
+                final String fuzzyNameWithoutFirstAt = fuzzyName.substring(1);
+                name = fuzzyName.substring(0, fuzzyNameWithoutFirstAt.indexOf("@") + 1);
+            } else {
+                name = fuzzyName.substring(0, fuzzyName.indexOf("@"));
+            }
         }
-        return Optional.of(name);
+        return Optional.ofNullable(name);
     }
 }

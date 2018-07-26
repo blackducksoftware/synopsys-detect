@@ -68,7 +68,7 @@ public class PipenvExtractor {
             result = pipenvTreeParser.parse(bomToolType, projectName, projectVersionName, pipFreezeOutput.getStandardOutputAsList(), graphOutput.getStandardOutputAsList(), directory.toString());
 
             if (result != null) {
-                extraction = new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
+                extraction = new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
             } else {
                 extraction = new Extraction.Builder().failure("Pipenv graph could not successfully be parsed").build();
             }

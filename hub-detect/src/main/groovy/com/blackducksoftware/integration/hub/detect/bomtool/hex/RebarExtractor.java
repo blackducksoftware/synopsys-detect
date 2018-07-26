@@ -58,9 +58,9 @@ public class RebarExtractor {
             final List<String> output = executableRunner.execute(rebar3TreeExe).getStandardOutputAsList();
             final RebarParseResult parseResult = rebarTreeParser.parseRebarTreeOutput(bomToolType, output, directory.toString());
 
-            codeLocations.add(parseResult.codeLocation);
+            codeLocations.add(parseResult.getCodeLocation());
 
-            return new Extraction.Builder().success(codeLocations).projectName(parseResult.projectName).projectVersion(parseResult.projectVersion).build();
+            return new Extraction.Builder().success(codeLocations).projectName(parseResult.getProjectName()).projectVersion(parseResult.getProjectVersion()).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

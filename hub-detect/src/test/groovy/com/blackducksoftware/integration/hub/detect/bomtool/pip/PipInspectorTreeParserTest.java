@@ -11,6 +11,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,8 +62,8 @@ public class PipInspectorTreeParserTest {
     @Test
     public void invalidParseTest() {
         String invalidText = "i am not a valid file" + System.lineSeparator();
-        invalidText += "the result should be null";
-        final PipParseResult root = parser.parse(BomToolType.PIP_INSPECTOR, invalidText, "");
-        Assert.assertNull(root);
+        invalidText += "the result should be optional.empty()";
+        final Optional<PipParseResult> invalidParse = parser.parse(BomToolType.PIP_INSPECTOR, invalidText, "");
+        Assert.assertFalse(invalidParse.isPresent());
     }
 }

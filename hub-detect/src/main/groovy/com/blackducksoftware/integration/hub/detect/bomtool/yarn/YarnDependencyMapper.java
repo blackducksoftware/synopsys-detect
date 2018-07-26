@@ -33,25 +33,19 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 public class YarnDependencyMapper extends BaseYarnParser {
-
     private final Map<String, String> resolvedVersions = new HashMap<>();
 
-    public void getYarnDataAsMap(List<String> inputLines) {
+    public void getYarnDataAsMap(final List<String> inputLines) {
         List<String> thisDependency = new ArrayList<>();
         String thisVersion;
 
-        for (String line : inputLines) {
-            if (StringUtils.isBlank(line)) {
+        for (final String line : inputLines) {
+            if (StringUtils.isBlank(line) || line.trim().startsWith("#")) {
                 continue;
             }
 
-            String trimmedLine = line.trim();
-
-            if (trimmedLine.startsWith("#")) {
-                continue;
-            }
-
-            int level = getLineLevel(line);
+            final String trimmedLine = line.trim();
+            final int level = getLineLevel(line);
             if (level == 0) {
                 thisDependency = cleanAndSplit(line);
                 continue;
@@ -59,7 +53,7 @@ public class YarnDependencyMapper extends BaseYarnParser {
 
             if (level == 1 && trimmedLine.startsWith("version")) {
                 thisVersion = trimmedLine.split(" ")[1].replaceAll("\"", "");
-                for (String dep : thisDependency) {
+                for (final String dep : thisDependency) {
                     resolvedVersions.put(dep, thisVersion);
                 }
                 resolvedVersions.put(thisDependency.get(0).split("@")[0] + "@" + thisVersion, thisVersion);
@@ -67,41 +61,33 @@ public class YarnDependencyMapper extends BaseYarnParser {
         }
     }
 
-    public Optional<String> getVersion(String key) {
+    public Optional<String> getVersion(final String key) {
+        String version = null;
         if (resolvedVersions.containsKey(key)) {
-            String value = resolvedVersions.get(key);
-            if (StringUtils.isNotBlank(value)) {
-                return Optional.of(value);
-            } else {
-                return Optional.empty();
-            }
+            version = resolvedVersions.get(key);
         } else {
-            String name = key.split("@")[0];
-            for (String fuzzy : resolvedVersions.keySet()) {
-                String fullResolvedName = name + "@" + resolvedVersions.get(fuzzy);
-                boolean versionHasAlreadyBeenResolvedByYarnList = fuzzy.equals(fullResolvedName);
+            final String name = key.split("@")[0];
+            for (final String fuzzy : resolvedVersions.keySet()) {
+                final String fullResolvedName = name + "@" + resolvedVersions.get(fuzzy);
+                final boolean versionHasAlreadyBeenResolvedByYarnList = fuzzy.equals(fullResolvedName);
                 if (versionHasAlreadyBeenResolvedByYarnList) {
-                    String value = resolvedVersions.get(fuzzy);
-                    if (StringUtils.isNotBlank(value)) {
-                        return Optional.of(value);
-                    } else {
-                        return Optional.empty();
-                    }
+                    version = resolvedVersions.get(fuzzy);
+                    break;
                 }
             }
         }
-        return Optional.empty();
+        return Optional.ofNullable(version);
     }
 
     public Map<String, String> getResolvedVersions() {
         return resolvedVersions;
     }
 
-    private List<String> cleanAndSplit(String s) {
-        List<String> lines = Arrays.asList(s.split(","));
-        List<String> result = new ArrayList<>();
+    private List<String> cleanAndSplit(final String s) {
+        final List<String> lines = Arrays.asList(s.split(","));
+        final List<String> result = new ArrayList<>();
 
-        for (String l : lines) {
+        for (final String l : lines) {
             result.add(l.trim().replaceAll("\"", "").replaceAll(":", ""));
         }
 

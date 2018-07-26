@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -53,15 +54,15 @@ public class PipInspectorExtractor {
         Extraction extractionResult;
         try {
             final String projectName = getProjectName(directory, pythonExe, setupFile);
-            final PipParseResult result;
+            final Optional<PipParseResult> result;
 
             final String inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
             result = pipInspectorTreeParser.parse(bomToolType, inspectorOutput, directory.toString());
 
-            if (result == null) {
-                extractionResult = new Extraction.Builder().failure("The Pip Inspector tree parser returned null").build();
+            if (result.isPresent()) {
+                extractionResult = new Extraction.Builder().failure("The Pip Inspector tree parser ").build();
             } else {
-                extractionResult = new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
+                extractionResult = new Extraction.Builder().success(result.get().getCodeLocation()).projectName(result.get().getProjectName()).projectVersion(result.get().getProjectVersion()).build();
             }
         } catch (final Exception e) {
             extractionResult = new Extraction.Builder().exception(e).build();

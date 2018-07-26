@@ -688,7 +688,7 @@ public class BeanConfiguration {
 
     @Bean
     public YarnListParser yarnListParser() {
-        return new YarnListParser();
+        return new YarnListParser(externalIdFactory());
     }
 
     @Bean

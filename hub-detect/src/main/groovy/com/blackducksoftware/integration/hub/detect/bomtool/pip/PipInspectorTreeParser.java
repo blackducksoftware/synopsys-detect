@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
@@ -57,7 +58,8 @@ public class PipInspectorTreeParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public PipParseResult parse(final BomToolType bomToolType, final String treeText, final String sourcePath) {
+    public Optional<PipParseResult> parse(final BomToolType bomToolType, final String treeText, final String sourcePath) {
+        final PipParseResult parseResult;
         final List<String> lines = Arrays.asList(treeText.trim().split(System.lineSeparator()));
 
         MutableMapDependencyGraph dependencyGraph = null;
@@ -121,10 +123,12 @@ public class PipInspectorTreeParser {
 
         if (project != null && !(project.name.equals("") && project.version.equals("") && dependencyGraph != null && dependencyGraph.getRootDependencyExternalIds().isEmpty())) {
             final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.PIP, bomToolType, sourcePath, project.externalId, dependencyGraph).build();
-            return new PipParseResult(project.name, project.version, codeLocation);
+            parseResult = new PipParseResult(project.name, project.version, codeLocation);
         } else {
-            return null;
+            parseResult = null;
         }
+
+        return Optional.ofNullable(parseResult);
     }
 
     private Dependency projectLineToDependency(final String line, final String sourcePath) {
