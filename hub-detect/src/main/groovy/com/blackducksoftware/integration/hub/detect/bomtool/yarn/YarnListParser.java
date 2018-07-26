@@ -27,9 +27,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,19 +43,20 @@ import com.blackducksoftware.integration.util.NameVersion;
 public class YarnListParser extends BaseYarnParser {
     private final Logger logger = LoggerFactory.getLogger(YarnListParser.class);
     private final ExternalIdFactory externalIdFactory;
+    private final YarnLockParser yarnLockParser;
 
     public static final String LAST_DEPENDENCY_PREFIX = "\u2514\u2500";
     public static final String NTH_DEPENDENCY_PREFIX = "\u251C\u2500";
     public static final String INNER_LEVEL_CHARACTER = "\u2502";
 
-    public YarnListParser(final ExternalIdFactory externalIdFactory) {
+    public YarnListParser(final ExternalIdFactory externalIdFactory, final YarnLockParser yarnLockParser) {
         this.externalIdFactory = externalIdFactory;
+        this.yarnLockParser = yarnLockParser;
     }
 
     public DependencyGraph parseYarnList(final List<String> yarnLockText, final List<String> yarnListAsList) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
         final Deque<Dependency> dependencyStack = new LinkedList<>();
-        final YarnLockParser yarnLockParser = new YarnLockParser();
         int previousDepth = 0;
         Dependency previousDependency = null;
 
@@ -65,11 +64,11 @@ public class YarnListParser extends BaseYarnParser {
 
         for (final String line : yarnListAsList) {
             final String lowerCaseLine = line.toLowerCase().trim();
-            if (StringUtils.isBlank(line) || lowerCaseLine.startsWith("yarn list") || lowerCaseLine.startsWith("done in") || lowerCaseLine.startsWith("warning")) {
+            final String cleanedLine = line.replaceAll(NTH_DEPENDENCY_PREFIX, "").replaceAll(INNER_LEVEL_CHARACTER, "").replaceAll(LAST_DEPENDENCY_PREFIX, "");
+            if (!cleanedLine.contains("@") || lowerCaseLine.startsWith("yarn list") || lowerCaseLine.startsWith("done in") || lowerCaseLine.startsWith("warning")) {
                 continue;
             }
 
-            final String cleanedLine = line.replaceAll(NTH_DEPENDENCY_PREFIX, "").replaceAll(INNER_LEVEL_CHARACTER, "").replaceAll(LAST_DEPENDENCY_PREFIX, "");
             final Dependency currentDependency = parseDependencyFromLine(cleanedLine, yarnLockVersionMap);
             final int currentDepth = getLineLevel(cleanedLine);
 
@@ -97,7 +96,7 @@ public class YarnListParser extends BaseYarnParser {
         return graph;
     }
 
-    private Dependency parseDependencyFromLine(final String cleanedLine, final Map<String, String> yarnLockVersionMap) {
+    public Dependency parseDependencyFromLine(final String cleanedLine, final Map<String, String> yarnLockVersionMap) {
         final String fuzzyNameVersionString = cleanedLine.trim();
         String cleanedFuzzyNameVersionString = fuzzyNameVersionString;
         if (fuzzyNameVersionString.startsWith("@")) {
@@ -116,16 +115,4 @@ public class YarnListParser extends BaseYarnParser {
         return new Dependency(nameVersion.getName(), nameVersion.getVersion(), externalId);
     }
 
-    Optional<String> parseNameFromFuzzy(final String fuzzyName) {
-        String name = null;
-        if (StringUtils.isNotBlank(fuzzyName)) {
-            if (fuzzyName.startsWith("@")) {
-                final String fuzzyNameWithoutFirstAt = fuzzyName.substring(1);
-                name = fuzzyName.substring(0, fuzzyNameWithoutFirstAt.indexOf("@") + 1);
-            } else {
-                name = fuzzyName.substring(0, fuzzyName.indexOf("@"));
-            }
-        }
-        return Optional.ofNullable(name);
-    }
 }

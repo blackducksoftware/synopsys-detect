@@ -95,6 +95,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.GemlockExtr
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCacheExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnListParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockParser;
 import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
@@ -688,7 +689,12 @@ public class BeanConfiguration {
 
     @Bean
     public YarnListParser yarnListParser() {
-        return new YarnListParser(externalIdFactory());
+        return new YarnListParser(externalIdFactory(), yarnLockParser());
+    }
+
+    @Bean
+    public YarnLockParser yarnLockParser() {
+        return new YarnLockParser();
     }
 
     @Bean

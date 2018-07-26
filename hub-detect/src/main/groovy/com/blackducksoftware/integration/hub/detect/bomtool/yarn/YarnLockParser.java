@@ -32,14 +32,14 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class YarnLockParser {
+public class YarnLockParser extends BaseYarnParser {
     public static String COMMENT_PREFIX = "#";
     public static String VERSION_PREFIX = "version \"";
     public static String VERSION_SUFFIX = "\"";
 
     public Map<String, String> getYarnLockResolvedVersionMap(final List<String> yarnLockFileAsList) {
         final Map<String, String> yarnLockResolvedVersions = new HashMap<>();
-        List<String> fuzzyIds = new ArrayList<>();
+        final List<String> fuzzyIds = new ArrayList<>();
 
         for (final String line : yarnLockFileAsList) {
             if (StringUtils.isBlank(line) || line.trim().startsWith(COMMENT_PREFIX)) {
@@ -49,7 +49,7 @@ public class YarnLockParser {
             final String trimmedLine = line.trim();
             final int level = getLineLevel(line);
             if (level == 0) {
-                fuzzyIds = getFuzzyIdsFromLine(line);
+                fuzzyIds.addAll(getFuzzyIdsFromLine(line));
             } else if (level == 1 && trimmedLine.startsWith(VERSION_PREFIX)) {
                 final String resolvedVersion = trimmedLine.substring(VERSION_PREFIX.length(), trimmedLine.lastIndexOf(VERSION_SUFFIX));
                 fuzzyIds.stream().forEach(fuzzyId -> yarnLockResolvedVersions.put(fuzzyId, resolvedVersion));
@@ -65,17 +65,6 @@ public class YarnLockParser {
         return Arrays.stream(lines)
                 .map(line -> line.trim().replaceAll("\"", "").replaceAll(":", ""))
                 .collect(Collectors.toList());
-    }
-
-    private int getLineLevel(final String line) {
-        int level = 0;
-        String tmpLine = line;
-        while (tmpLine.startsWith("  ")) {
-            tmpLine = tmpLine.replaceFirst("  ", "");
-            level++;
-        }
-
-        return level;
     }
 
 }
