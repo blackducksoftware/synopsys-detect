@@ -9,7 +9,7 @@ final String configAirGapPath = "${buildArtifactFolder}/config"
 final String dockerAirGapPath = "${airGapFolder}/docker"
 final String artifactoryIntegrationPath = "com/blackducksoftware/integration"
 
-final String airGapZipName = "${rootProject.name}-${version}-air-gap.zip"
+final String airGapZipName = "${project.name}-${version}-air-gap.zip"
 
 configurations {
     airGap
@@ -125,7 +125,7 @@ task downloadDockerInspector() {
 task createAirGapZip(type: Zip) {
     dependsOn build, copyApplicationProperties, downloadNugetInspector, copyGradleInspectorAndDependencies, downloadDockerInspector
     from buildArtifactFolder
-    include "${rootProject.name}*.jar"
+    include "${project.name}*.jar"
     include 'packaged-inspectors/**'
     include 'config/**'
     archiveName airGapZipName
@@ -136,7 +136,7 @@ task publishAirGapZip() {
     dependsOn createAirGapZip
     doLast {
         exec {
-            commandLine 'curl', '--insecure','-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${project.ext.artifactoryUrl}/${project.ext.artifactoryRepo}/${artifactoryIntegrationPath}/${rootProject.name}/${version}/${airGapZipName}", '-T', "${distributionsFolder}/${airGapZipName}", '-f'
+            commandLine 'curl', '--insecure','-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${project.ext.artifactoryUrl}/${project.ext.artifactoryRepo}/${artifactoryIntegrationPath}/${project.name}/${version}/${airGapZipName}", '-T', "${distributionsFolder}/${airGapZipName}", '-f'
         }
     }
 }
