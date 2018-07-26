@@ -33,9 +33,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 public class YarnLockParser extends BaseYarnParser {
-    public static String COMMENT_PREFIX = "#";
-    public static String VERSION_PREFIX = "version \"";
-    public static String VERSION_SUFFIX = "\"";
+    public static final String COMMENT_PREFIX = "#";
+    public static final String VERSION_PREFIX = "version \"";
+    public static final String VERSION_SUFFIX = "\"";
 
     public Map<String, String> getYarnLockResolvedVersionMap(final List<String> yarnLockFileAsList) {
         final Map<String, String> yarnLockResolvedVersions = new HashMap<>();
