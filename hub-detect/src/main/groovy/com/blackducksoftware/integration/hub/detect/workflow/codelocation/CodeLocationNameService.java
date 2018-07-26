@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.codelocation;
 
-import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,21 +47,8 @@ public class CodeLocationNameService {
     }
 
     public String createBomCodeLocationName(final String detectSourcePath, final String sourcePath, final ExternalId externalId, final BomToolGroupType bomToolType, final String prefix, final String suffix) {
-        String pathPiece = sourcePath;
-        try {
-            final Path actualSourcePath = new File(sourcePath).toPath();
-            final Path detectPath = new File(detectSourcePath).toPath();
-            final Path detectParentPath = detectPath.getParent();
-            final Path relativePath = detectParentPath.relativize(actualSourcePath);
-            final List<String> relativePieces = new ArrayList<>();
-            for (int i = 0; i < relativePath.getNameCount(); i++) {
-                relativePieces.add(relativePath.getName(i).toFile().getName());
-            }
-            pathPiece = StringUtils.join(relativePieces, "/");
-        } catch (final Exception e) {
-            logger.info(String.format("Unable to relativize path, full source path will be used: %s", sourcePath));
-            logger.debug("The reason relativize failed: ", e);
-        }
+        final String pathPiece = FileNameUtils.relativize(detectSourcePath, sourcePath);
+
         final List<String> pieces = Arrays.asList(externalId.getExternalIdPieces());
         final String externalIdPiece = StringUtils.join(pieces, "/");
 

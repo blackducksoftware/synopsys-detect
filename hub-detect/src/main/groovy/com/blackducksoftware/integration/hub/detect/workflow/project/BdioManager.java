@@ -26,6 +26,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.project;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -37,7 +38,9 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.bdio.model.ToolSpdxCreator;
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
@@ -46,6 +49,7 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.FileNameUtils;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
 public class BdioManager {
@@ -83,15 +87,45 @@ public class BdioManager {
         return bdioFiles;
     }
 
-    public File createAggregateBdioFile(final List<DetectCodeLocation> codeLocations, final String projectName, final String projectVersion) throws DetectUserFriendlyException {
+    private DependencyGraph createAggregateDependencyGraph(final List<DetectCodeLocation> codeLocations) {
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
-            aggregateDependencyGraph.addGraphAsChildrenToRoot(detectCodeLocation.getDependencyGraph());
+            final Dependency codeLocationDependency = createAggregateDependency(detectCodeLocation);
+            aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
+            aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
         }
+
+        return aggregateDependencyGraph;
+    }
+
+    private Dependency createAggregateDependency(final DetectCodeLocation codeLocation) {
+        String name = null;
+        String version = null;
+        try {
+            name = codeLocation.getExternalId().name;
+            version = codeLocation.getExternalId().version;
+        } catch (final Exception e) {
+            logger.warn("Failed to get name or version to use in the wrapper for a code location.", e);
+        }
+        final ExternalId original = codeLocation.getExternalId();
+        final String sourcePath = codeLocation.getSourcePath();
+        final String bomToolType = codeLocation.getBomToolGroupType().toString();
+        final String relativePath = FileNameUtils.relativize(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH), sourcePath);
+        final List<String> externalIdPieces = new ArrayList<>();
+        externalIdPieces.addAll(Arrays.asList(original.getExternalIdPieces()));
+        externalIdPieces.add(relativePath);
+        externalIdPieces.add(bomToolType);
+        final String[] pieces = externalIdPieces.toArray(new String[externalIdPieces.size()]);
+        return new Dependency(name, version, new ExternalIdFactory().createModuleNamesExternalId(original.forge, pieces));
+    }
+
+    public File createAggregateBdioFile(final List<DetectCodeLocation> codeLocations, final String projectName, final String projectVersion) throws DetectUserFriendlyException {
+        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(codeLocations);
+
         final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(projectName, projectVersion, aggregateDependencyGraph);
         final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfigWrapper.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME)));
-        final File aggregateBdioFile = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), filename);
+        final File aggregateBdioFile = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH), filename);
         if (aggregateBdioFile.exists()) {
             final boolean deleteSuccess = aggregateBdioFile.delete();
             logger.debug(String.format("%s deleted: %b", aggregateBdioFile.getAbsolutePath(), deleteSuccess));
