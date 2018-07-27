@@ -60,19 +60,17 @@ public class PipInspectorTreeParser {
     }
 
     public Optional<PipParseResult> parse(final BomToolType bomToolType, final List<String> pipInspectorOutputAsList, final String sourcePath) {
-        final PipParseResult parseResult;
+        PipParseResult parseResult = null;
 
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
         final Deque<Dependency> dependencyStack = new LinkedList<>();
         int previousDepth = 0;
         Dependency previousDependency = null;
-
-        boolean projectIsNotSet = true;
         Dependency project = null;
 
         for (final String line : pipInspectorOutputAsList) {
-            final String trimmedLine = StringUtils.trimToNull(line);
-            if (trimmedLine == null || !trimmedLine.contains(SEPARATOR) || trimmedLine.startsWith(UNKNOWN_REQUIREMENTS_PREFIX) || trimmedLine.startsWith(UNPARSEABLE_REQUIREMENTS_PREFIX) || trimmedLine.startsWith(UNKNOWN_PACKAGE_PREFIX)) {
+            final String trimmedLine = StringUtils.trimToEmpty(line);
+            if (StringUtils.isEmpty(trimmedLine) || !trimmedLine.contains(SEPARATOR) || trimmedLine.startsWith(UNKNOWN_REQUIREMENTS_PREFIX) || trimmedLine.startsWith(UNPARSEABLE_REQUIREMENTS_PREFIX) || trimmedLine.startsWith(UNKNOWN_PACKAGE_PREFIX)) {
                 parseErrorsFromLine(trimmedLine);
                 continue;
             }
@@ -91,19 +89,8 @@ public class PipInspectorTreeParser {
                 logger.error(String.format("The tree level (%s) and this line (%s) with count %s can\'t be reconciled.", previousDepth, line, currentDepth));
             }
 
-            if (dependencyStack.isEmpty() && projectIsNotSet) {
-                String projectName = currentDependency.name;
-                String projectVersionName = currentDependency.version;
-                ExternalId externalId = currentDependency.externalId;
-
-                if (projectName.equals(UNKNOWN_PROJECT_NAME) || projectVersionName.equals(UNKNOWN_PROJECT_VERSION)) {
-                    externalId = externalIdFactory.createPathExternalId(Forge.PYPI, sourcePath);
-                    projectName = projectName.equals(UNKNOWN_PROJECT_NAME) ? "" : projectName;
-                    projectVersionName = projectVersionName.equals(UNKNOWN_PROJECT_VERSION) ? "" : projectVersionName;
-                }
-
-                project = new Dependency(projectName, projectVersionName, externalId);
-                projectIsNotSet = false;
+            if (project == null) {
+                project = currentDependency;
             } else if (dependencyStack.size() == 1 && dependencyStack.peek().equals(project)) {
                 graph.addChildToRoot(currentDependency);
             } else if (!dependencyStack.isEmpty()) {
@@ -116,11 +103,9 @@ public class PipInspectorTreeParser {
             previousDepth = currentDepth;
         }
 
-        if (project != null && StringUtils.isNotBlank(project.name) && StringUtils.isNotBlank(project.version) && !graph.getRootDependencyExternalIds().isEmpty()) {
+        if (project != null) {
             final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.PIP, bomToolType, sourcePath, project.externalId, graph).build();
             parseResult = new PipParseResult(project.name, project.version, codeLocation);
-        } else {
-            parseResult = null;
         }
 
         return Optional.ofNullable(parseResult);
