@@ -23,15 +23,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 
-import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
@@ -58,88 +59,95 @@ public class PipInspectorTreeParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Optional<PipParseResult> parse(final BomToolType bomToolType, final String treeText, final String sourcePath) {
+    public Optional<PipParseResult> parse(final BomToolType bomToolType, final List<String> pipInspectorOutputAsList, final String sourcePath) {
         final PipParseResult parseResult;
-        final List<String> lines = Arrays.asList(treeText.trim().split(System.lineSeparator()));
 
-        MutableMapDependencyGraph dependencyGraph = null;
-        final Stack<Dependency> tree = new Stack<>();
+        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        final Deque<Dependency> dependencyStack = new LinkedList<>();
+        int previousDepth = 0;
+        Dependency previousDependency = null;
 
+        boolean projectIsNotSet = true;
         Dependency project = null;
 
-        int indentation = 0;
-        for (final String line : lines) {
-            if (StringUtils.trimToNull(line) == null) {
+        for (final String line : pipInspectorOutputAsList) {
+            final String trimmedLine = StringUtils.trimToNull(line);
+            if (trimmedLine == null || !trimmedLine.contains(SEPARATOR) || trimmedLine.startsWith(UNKNOWN_REQUIREMENTS_PREFIX) || trimmedLine.startsWith(UNPARSEABLE_REQUIREMENTS_PREFIX) || trimmedLine.startsWith(UNKNOWN_PACKAGE_PREFIX)) {
+                parseErrorsFromLine(trimmedLine);
                 continue;
             }
 
-            if (line.trim().startsWith(UNKNOWN_REQUIREMENTS_PREFIX)) {
-                final String path = line.replace(UNKNOWN_REQUIREMENTS_PREFIX, "").trim();
-                logger.info("Pip inspector could not find requirements file @ " + path);
-                continue;
-            }
+            final Dependency currentDependency = parseDependencyFromLine(trimmedLine, sourcePath);
+            final int currentDepth = getLineLevel(trimmedLine);
 
-            if (line.trim().startsWith(UNPARSEABLE_REQUIREMENTS_PREFIX)) {
-                final String path = line.replace(UNPARSEABLE_REQUIREMENTS_PREFIX, "").trim();
-                logger.info("Pip inspector could not parse requirements file @ " + path);
-                continue;
-            }
-
-            if (line.trim().startsWith(UNKNOWN_PACKAGE_PREFIX)) {
-                final String packageName = line.replace(UNKNOWN_PACKAGE_PREFIX, "").trim();
-                logger.info("Pip inspector could not resolve the package: " + packageName);
-                continue;
-            }
-
-            if (line.contains(SEPARATOR) && dependencyGraph == null) {
-                dependencyGraph = new MutableMapDependencyGraph();
-                project = projectLineToDependency(line, sourcePath);
-                continue;
-            }
-
-            if (dependencyGraph == null) {
-                continue;
-            }
-
-            final int currentIndentation = getCurrentIndentation(line);
-            final Dependency next = lineToDependency(line);
-            if (currentIndentation == indentation) {
-                tree.pop();
-            } else {
-                for (; indentation >= currentIndentation; indentation--) {
-                    tree.pop();
+            if (currentDepth == previousDepth + 1 && previousDependency != null) {
+                dependencyStack.push(previousDependency);
+            } else if (currentDepth < previousDepth) {
+                final int levelDelta = (previousDepth - currentDepth);
+                for (int levels = 0; levels < levelDelta; levels++) {
+                    dependencyStack.pop();
                 }
+            } else if (currentDepth != previousDepth) {
+                logger.error(String.format("The tree level (%s) and this line (%s) with count %s can\'t be reconciled.", previousDepth, line, currentDepth));
             }
 
-            if (tree.size() > 0) {
-                dependencyGraph.addChildWithParent(next, tree.peek());
+            if (dependencyStack.isEmpty() && projectIsNotSet) {
+                String projectName = currentDependency.name;
+                String projectVersionName = currentDependency.version;
+                ExternalId externalId = currentDependency.externalId;
+
+                if (projectName.equals(UNKNOWN_PROJECT_NAME) || projectVersionName.equals(UNKNOWN_PROJECT_VERSION)) {
+                    externalId = externalIdFactory.createPathExternalId(Forge.PYPI, sourcePath);
+                    projectName = projectName.equals(UNKNOWN_PROJECT_NAME) ? "" : projectName;
+                    projectVersionName = projectVersionName.equals(UNKNOWN_PROJECT_VERSION) ? "" : projectVersionName;
+                }
+
+                project = new Dependency(projectName, projectVersionName, externalId);
+                projectIsNotSet = false;
+            } else if (dependencyStack.size() == 1 && dependencyStack.peek().equals(project)) {
+                graph.addChildToRoot(currentDependency);
+            } else if (!dependencyStack.isEmpty()) {
+                graph.addChildWithParents(currentDependency, dependencyStack.peek());
             } else {
-                dependencyGraph.addChildrenToRoot(next);
+                graph.addChildToRoot(currentDependency);
             }
 
-            indentation = currentIndentation;
-            tree.push(next);
+            previousDependency = currentDependency;
+            previousDepth = currentDepth;
         }
 
-        if (project != null && !(project.name.equals("") && project.version.equals("") && dependencyGraph != null && dependencyGraph.getRootDependencyExternalIds().isEmpty())) {
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.PIP, bomToolType, sourcePath, project.externalId, dependencyGraph).build();
+        if (project != null && StringUtils.isNotBlank(project.name) && StringUtils.isNotBlank(project.version) && !graph.getRootDependencyExternalIds().isEmpty()) {
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.PIP, bomToolType, sourcePath, project.externalId, graph).build();
             parseResult = new PipParseResult(project.name, project.version, codeLocation);
         } else {
             parseResult = null;
         }
 
         return Optional.ofNullable(parseResult);
+
     }
 
-    private Dependency projectLineToDependency(final String line, final String sourcePath) {
-        if (!line.contains(SEPARATOR)) {
-            return null;
+    private void parseErrorsFromLine(final String trimmedLine) {
+        if (trimmedLine.startsWith(UNKNOWN_REQUIREMENTS_PREFIX)) {
+            logger.error("Pip inspector could not find requirements file @ " + trimmedLine.substring(UNKNOWN_REQUIREMENTS_PREFIX.length()));
         }
+
+        if (trimmedLine.startsWith(UNPARSEABLE_REQUIREMENTS_PREFIX)) {
+            logger.error("Pip inspector could not parse requirements file @ " + trimmedLine.substring(UNPARSEABLE_REQUIREMENTS_PREFIX.length()));
+        }
+
+        if (trimmedLine.startsWith(UNKNOWN_PACKAGE_PREFIX)) {
+            logger.error("Pip inspector could not resolve the package: " + trimmedLine.substring(UNKNOWN_PACKAGE_PREFIX.length()));
+        }
+    }
+
+    private Dependency parseDependencyFromLine(final String line, final String sourcePath) {
         final String[] segments = line.split(SEPARATOR);
+
         String name = segments[0].trim();
         String version = segments[1].trim();
-
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version);
+
         if (name.equals(UNKNOWN_PROJECT_NAME) || version.equals(UNKNOWN_PROJECT_VERSION)) {
             externalId = externalIdFactory.createPathExternalId(Forge.PYPI, sourcePath);
         }
@@ -147,32 +155,17 @@ public class PipInspectorTreeParser {
         name = name.equals(UNKNOWN_PROJECT_NAME) ? "" : name;
         version = version.equals(UNKNOWN_PROJECT_VERSION) ? "" : version;
 
-        final Dependency node = new Dependency(name, version, externalId);
-
-        return node;
+        return new Dependency(name, version, externalId);
     }
 
-    Dependency lineToDependency(final String line) {
-        if (!line.contains(SEPARATOR)) {
-            return null;
-        }
-        final String[] segments = line.split(SEPARATOR);
-        final String name = segments[0].trim();
-        final String version = segments[1].trim();
-
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version);
-        final Dependency node = new Dependency(name, version, externalId);
-
-        return node;
-    }
-
-    int getCurrentIndentation(String line) {
-        int currentIndentation = 0;
-        while (line.startsWith(INDENTATION)) {
-            currentIndentation++;
-            line = line.replaceFirst(INDENTATION, "");
+    private int getLineLevel(final String line) {
+        int level = 0;
+        String tmpLine = line;
+        while (tmpLine.startsWith(INDENTATION)) {
+            tmpLine = tmpLine.replaceFirst(INDENTATION, "");
+            level++;
         }
 
-        return currentIndentation;
+        return level;
     }
 }
