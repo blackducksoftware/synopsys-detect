@@ -76,12 +76,11 @@ public class NpmCliExtractor {
         }
         final String standardOutput = executableOutput.getStandardOutput();
         final String errorOutput = executableOutput.getErrorOutput();
-        if (StringUtils.isNotBlank(standardOutput)) {
-            if (StringUtils.isNotBlank(errorOutput)) {
-                logger.debug("Error when running npm ls -json command");
-                logger.debug(errorOutput);
-                return new Extraction.Builder().failure("Npm returned no output after runnin npm ls.").build();
-            }
+        if (StringUtils.isNotBlank(errorOutput)) {
+            logger.error("Error when running npm ls -json command");
+            logger.error(errorOutput);
+            return new Extraction.Builder().failure("Npm wrote to stderr while running npm ls.").build();            
+        } else if (StringUtils.isNotBlank(standardOutput)) {            
             logger.debug("Parsing npm ls file.");
             logger.debug(standardOutput);
             try {
@@ -90,16 +89,9 @@ public class NpmCliExtractor {
             } catch (final IOException e) {
                 return new Extraction.Builder().exception(e).build();
             }
-
         } else {
-            if (StringUtils.isNotBlank(errorOutput)) {
-                logger.error("Error when running npm ls -json command");
-                logger.debug(errorOutput);
-            } else {
-                logger.warn("Nothing returned from npm ls -json command");
-            }
-            return new Extraction.Builder().failure("Npm returned error after running npm ls.").build();
+            logger.error("Nothing returned from npm ls -json command");
+            return new Extraction.Builder().failure("Npm returned error after running npm ls.").build();            
         }
     }
-
 }
