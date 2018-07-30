@@ -89,7 +89,7 @@ public class Rebar3TreeParser {
         }
 
         if (project == null) {
-            final ExternalId projectExternalId = externalIdFactory.createPathExternalId(Forge.PYPI, sourcePath);
+            final ExternalId projectExternalId = externalIdFactory.createPathExternalId(Forge.HEX, sourcePath);
             project = new Dependency("", "", projectExternalId);
         }
 
