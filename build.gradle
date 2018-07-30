@@ -14,7 +14,6 @@ buildscript {
     }
 }
 
-
 String sharedVersion = '4.2.0-SNAPSHOT'
 version = sharedVersion
 
@@ -37,6 +36,6 @@ configure(subprojects) { project ->
     }
 
     dependencies {
-        compile 'com.blackducksoftware.integration:hub-common:35.0.0'
+        compile 'com.blackducksoftware.integration:hub-common:36.0.0'
     }
 }

@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
-import com.blackducksoftware.integration.hub.api.generated.enumeration.PolicyStatusApprovalStatusType;
+import com.blackducksoftware.integration.hub.api.generated.enumeration.PolicyStatusSummaryStatusType;
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
 import com.blackducksoftware.integration.hub.api.generated.view.VersionBomPolicyStatusView;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
@@ -49,17 +49,18 @@ public class PolicyChecker {
 
     /**
      * For the given DetectProject, find the matching Hub project/version, then all of its code locations, then all of their scan summaries, wait until they are all complete, then get the policy status.
+     * 
      * @throws IntegrationException
      */
     public PolicyStatusDescription getPolicyStatus(final ProjectService projectService, final ProjectVersionView version) throws IntegrationException {
         final VersionBomPolicyStatusView versionBomPolicyStatusView = projectService.getPolicyStatusForVersion(version);
         final PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView);
 
-        PolicyStatusApprovalStatusType statusEnum = PolicyStatusApprovalStatusType.NOT_IN_VIOLATION;
+        PolicyStatusSummaryStatusType statusEnum = PolicyStatusSummaryStatusType.NOT_IN_VIOLATION;
         if (policyStatusDescription.getCountInViolation() != null && policyStatusDescription.getCountInViolation().value > 0) {
-            statusEnum = PolicyStatusApprovalStatusType.IN_VIOLATION;
+            statusEnum = PolicyStatusSummaryStatusType.IN_VIOLATION;
         } else if (policyStatusDescription.getCountInViolationOverridden() != null && policyStatusDescription.getCountInViolationOverridden().value > 0) {
-            statusEnum = PolicyStatusApprovalStatusType.IN_VIOLATION_OVERRIDDEN;
+            statusEnum = PolicyStatusSummaryStatusType.IN_VIOLATION_OVERRIDDEN;
         }
         logger.info(String.format("Policy Status: %s", statusEnum.name()));
         return policyStatusDescription;
@@ -76,7 +77,7 @@ public class PolicyChecker {
     }
 
     private boolean isAnyPolicyViolated(final PolicyStatusDescription policyStatusDescription) {
-        final int inViolationCount = policyStatusDescription.getCountOfStatus(PolicyStatusApprovalStatusType.IN_VIOLATION);
+        final int inViolationCount = policyStatusDescription.getCountOfStatus(PolicyStatusSummaryStatusType.IN_VIOLATION);
         return inViolationCount != 0;
     }
 
