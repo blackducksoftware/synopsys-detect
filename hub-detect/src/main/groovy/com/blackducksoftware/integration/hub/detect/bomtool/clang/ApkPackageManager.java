@@ -45,7 +45,7 @@ public class ApkPackageManager extends LinuxPackageManager {
     private static final String INFO_SUBCOMMAND = "info";
     private static final String WHO_OWNS_OPTION = "--who-owns";
     private static final String GET_ARCHITECTURE_OPTION = "--print-arch";
-    private final static Logger logger = LoggerFactory.getLogger(ApkPackageManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApkPackageManager.class);
     private String architecture = null;
 
     public ApkPackageManager() {
