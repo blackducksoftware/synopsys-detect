@@ -77,7 +77,7 @@ public class ClangExtractor {
             final File rootDir = FileUtils.getRootDir(givenDir, depth);
             final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
-            final Set<File> filesForIScan = ConcurrentHashMap.newKeySet(64);
+            final Set<File> unManagedDependencyFiles = ConcurrentHashMap.newKeySet(64);
             final List<CompileCommand> compileCommands = compileCommandsJsonFileParser.parse(jsonCompilationDatabaseFile);
             final List<Dependency> bdioComponents = compileCommands.parallelStream()
                     .flatMap(compileCommandToDependencyFilePathsConverter(outputDirectory))
@@ -85,13 +85,13 @@ public class ClangExtractor {
                     .filter(StringUtils::isNotBlank)
                     .map(File::new)
                     .filter(fileIsNewPredicate())
-                    .flatMap(fileToPackagesConverter(rootDir, filesForIScan, pkgMgr))
+                    .flatMap(fileToPackagesConverter(rootDir, unManagedDependencyFiles, pkgMgr))
                     .collect(Collectors.toSet()).parallelStream()
                     .flatMap(packageToDependenciesConverter(pkgMgr))
                     .collect(Collectors.toList());
 
             final DetectCodeLocation detectCodeLocation = codeLocationAssembler.generateCodeLocation(pkgMgr.getDefaultForge(), rootDir, bdioComponents);
-            logSummary(bdioComponents, filesForIScan);
+            logSummary(bdioComponents, unManagedDependencyFiles);
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
@@ -112,11 +112,11 @@ public class ClangExtractor {
         };
     }
 
-    private Function<File, Stream<PackageDetails>> fileToPackagesConverter(final File sourceDir, final Set<File> filesForIScan, final LinuxPackageManager pkgMgr) {
+    private Function<File, Stream<PackageDetails>> fileToPackagesConverter(final File sourceDir, final Set<File> unManagedDependencyFiles, final LinuxPackageManager pkgMgr) {
         return (final File f) -> {
             logger.trace(String.format("Querying package manager for %s", f.getAbsolutePath()));
             final DependencyFileDetails dependencyFileWithMetaData = new DependencyFileDetails(FileUtils.isUnder(sourceDir, f), f);
-            final Set<PackageDetails> packages = new HashSet<>(pkgMgr.getPackages(executableRunner, filesForIScan, dependencyFileWithMetaData));
+            final Set<PackageDetails> packages = new HashSet<>(pkgMgr.getPackages(executableRunner, unManagedDependencyFiles, dependencyFileWithMetaData));
             logger.debug(String.format("Found %d packages for %s", packages.size(), f.getAbsolutePath()));
             return packages.stream();
         };
@@ -174,16 +174,16 @@ public class ClangExtractor {
         return false;
     }
 
-    private void logSummary(final List<Dependency> bdioComponents, final Set<File> filesForIScan) {
+    private void logSummary(final List<Dependency> bdioComponents, final Set<File> unManagedDependencyFiles) {
         logger.info(String.format("Number of unique component external IDs generated: %d", bdioComponents.size()));
         if (logger.isDebugEnabled()) {
             for (final Dependency bdioComponent : bdioComponents) {
                 logger.info(String.format("\tComponent: %s", bdioComponent.externalId));
             }
         }
-        logger.info(String.format("Number of dependency files not recognized by the package manager: %d", filesForIScan.size()));
+        logger.info(String.format("Number of dependency files not recognized by the package manager: %d", unManagedDependencyFiles.size()));
         if (logger.isDebugEnabled()) {
-            for (final File unMatchedDependencyFile : filesForIScan) {
+            for (final File unMatchedDependencyFile : unManagedDependencyFiles) {
                 logger.info(String.format("\tDependency file not recognized by the package manager: %s", unMatchedDependencyFile.getAbsolutePath()));
             }
         }

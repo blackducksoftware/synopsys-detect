@@ -51,7 +51,7 @@ public class RpmPackageManager extends LinuxPackageManager {
     }
 
     @Override
-    public List<PackageDetails> getPackages(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final DependencyFileDetails dependencyFile) {
+    public List<PackageDetails> getPackages(final ExecutableRunner executableRunner, final Set<File> unManagedDependencyFiles, final DependencyFileDetails dependencyFile) {
         final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
         try {
             final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(PKG_MGR_NAME, GET_PKG_INFO_OPTION, dependencyFile.getFile().getAbsolutePath());
@@ -61,10 +61,10 @@ public class RpmPackageManager extends LinuxPackageManager {
         } catch (final ExecutableRunnerException e) {
             logger.error(String.format("Error executing %s to get package details: %s", PKG_MGR_NAME, e.getMessage()));
             if (!dependencyFile.isInBuildDir()) {
-                logger.info(String.format("%s should be scanned by iScan", dependencyFile.getFile().getAbsolutePath()));
-                filesForIScan.add(dependencyFile.getFile());
+                logger.debug(String.format("%s is not managed by %s", dependencyFile.getFile().getAbsolutePath(), PKG_MGR_NAME));
+                unManagedDependencyFiles.add(dependencyFile.getFile());
             } else {
-                logger.trace(String.format("No point in scanning %s with iScan since it's in the source.dir", dependencyFile.getFile().getAbsolutePath()));
+                logger.debug(String.format("%s is not managed by %s, but it's in the source.dir", dependencyFile.getFile().getAbsolutePath(), PKG_MGR_NAME));
             }
             return dependencyDetailsList;
         }

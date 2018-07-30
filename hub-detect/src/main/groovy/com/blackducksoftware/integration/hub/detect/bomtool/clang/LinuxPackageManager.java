@@ -49,7 +49,7 @@ public abstract class LinuxPackageManager {
         this.checkPresenceCommandOutputExpectedText = checkPresenceCommandOutputExpectedText;
     }
 
-    public abstract List<PackageDetails> getPackages(ExecutableRunner executableRunner, Set<File> filesForIScan, DependencyFileDetails dependencyFile);
+    public abstract List<PackageDetails> getPackages(ExecutableRunner executableRunner, Set<File> unManagedDependencyFiles, DependencyFileDetails dependencyFile);
 
     public boolean applies(final ExecutableRunner executor) {
         try {
