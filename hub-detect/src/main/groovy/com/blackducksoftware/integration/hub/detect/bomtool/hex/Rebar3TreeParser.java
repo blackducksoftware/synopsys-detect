@@ -88,6 +88,11 @@ public class Rebar3TreeParser {
             history.add(currentDependency);
         }
 
+        if (project == null) {
+            final ExternalId projectExternalId = externalIdFactory.createPathExternalId(Forge.PYPI, sourcePath);
+            project = new Dependency("", "", projectExternalId);
+        }
+
         final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.HEX, project.name, project.version);
         final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.HEX, bomToolType, sourcePath, externalId, graph).build();
         return new RebarParseResult(project.name, project.version, codeLocation);
