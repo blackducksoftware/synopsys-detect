@@ -15,14 +15,22 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 public class ApkPackageManagerTest {
 
-    private static final String PKG_MGR_OUTPUT = "garbage\nnonsense\nthis line has the is owned by substring\n/usr/include/stdlib.h is owned by musl-dev-1.1.18-r3\n";
-
     @Test
     public void test() throws ExecutableRunnerException {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("garbage\n");
+        sb.append("nonsense\n");
+        sb.append("this line has the is owned by substring\n");
+        sb.append(" is owned by \n");
+        // This is the one valid line; rest should be discarded
+        sb.append("/usr/include/stdlib.h is owned by musl-dev-1.1.18-r3\n");
+        sb.append("/usr/include/stdlib.h is owned by .musl-dev-1.1.18-r99\n");
+        final String pkgMgrOwnedByOutput = sb.toString();
+
         final ApkPackageManager pkgMgr = new ApkPackageManager();
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         Mockito.when(executableRunner.executeQuietly("apk", "info", "--print-arch")).thenReturn(new ExecutableOutput(0, "x86_64\n", ""));
-        Mockito.when(executableRunner.executeQuietly("apk", "info", "--who-owns", "/usr/include/stdlib.h")).thenReturn(new ExecutableOutput(0, PKG_MGR_OUTPUT, ""));
+        Mockito.when(executableRunner.executeQuietly("apk", "info", "--who-owns", "/usr/include/stdlib.h")).thenReturn(new ExecutableOutput(0, pkgMgrOwnedByOutput, ""));
 
         final DependencyFileDetails dependencyFile = new DependencyFileDetails(false, new File("/usr/include/stdlib.h"));
         final List<PackageDetails> pkgs = pkgMgr.getPackages(executableRunner, new HashSet<>(), dependencyFile);

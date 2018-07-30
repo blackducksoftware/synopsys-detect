@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -80,46 +81,60 @@ public class ApkPackageManager extends LinuxPackageManager {
     private void addToPackageList(final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
-            if (!valid(packageLine)) {
-                logger.debug(String.format("Skipping line: %s", packageLine));
-                continue;
-            }
-            final String[] packageLineParts = packageLine.split("\\s+");
-            final String packageNameAndVersion = packageLineParts[4];
-            logger.trace(String.format("packageNameAndVersion: %s", packageNameAndVersion));
-            final String[] parts = packageNameAndVersion.split("-");
-            if (parts.length < 3) {
-                logger.error(String.format("apk info output contains an invalid package: %s", packageNameAndVersion));
-                continue;
-            }
-            final String version = String.format("%s-%s", parts[parts.length - 2], parts[parts.length - 1]);
-            logger.trace(String.format("version: %s", version));
-            final String component = deriveComponent(parts);
-            logger.trace(String.format("component: %s", component));
-            // if a package starts with a period, we should ignore it because it is a virtual meta package and the version information is missing
-            if (!component.startsWith(".")) {
-                final String externalId = String.format("%s/%s/%s", component, version, architecture);
-                logger.debug(String.format("Constructed externalId: %s", externalId));
-                final PackageDetails dependencyDetails = new PackageDetails(component, version, architecture);
-                dependencyDetailsList.add(dependencyDetails);
+            final Optional<List<String>> pkgNameVersionParts = parseIsOwnedByOutputLine(packageLine);
+            if (pkgNameVersionParts.isPresent()) {
+                final String version = deriveVersion(pkgNameVersionParts.get());
+                logger.trace(String.format("version: %s", version));
+                final Optional<String> component = deriveComponent(pkgNameVersionParts.get());
+                logger.trace(String.format("component: %s", component));
+                if (component.isPresent()) {
+                    final String externalId = String.format("%s/%s/%s", component, version, architecture);
+                    logger.debug(String.format("Constructed externalId: %s", externalId));
+                    final PackageDetails dependencyDetails = new PackageDetails(component.get(), version, architecture);
+                    dependencyDetailsList.add(dependencyDetails);
+                }
             }
         }
     }
 
-    private String deriveComponent(final String[] parts) {
+    private String deriveVersion(final List<String> pkgParts) {
+        return String.format("%s-%s", pkgParts.get(pkgParts.size() - 2), pkgParts.get(pkgParts.size() - 1));
+    }
+
+    private Optional<String> deriveComponent(final List<String> componentVersionParts) {
+        // if a package starts with a period, we should ignore it because it is a virtual meta package and the version information is missing
+        if (componentVersionParts == null || componentVersionParts.isEmpty() || componentVersionParts.get(0).startsWith(".")) {
+            return Optional.empty();
+        }
         String component = "";
-        for (int i = 0; i < parts.length - 2; i++) {
-            final String part = parts[i];
+        for (int i = 0; i < componentVersionParts.size() - 2; i++) {
+            final String part = componentVersionParts.get(i);
             if (StringUtils.isNotBlank(component)) {
                 component += String.format("-%s", part);
             } else {
                 component = part;
             }
         }
-        return component;
+        return Optional.of(component);
     }
 
-    private boolean valid(final String packageLine) {
-        return packageLine.contains(" is owned by ");
+    // parse output of "apk info --who-owns pkg" --> package name+version details
+    private Optional<List<String>> parseIsOwnedByOutputLine(final String packageLine) {
+        // expecting a line like: /usr/include/stdlib.h is owned by musl-dev-1.1.18-r3
+        if (!packageLine.contains(" is owned by ")) {
+            return Optional.empty();
+        }
+        final String[] packageLineParts = packageLine.split("\\s+");
+        if (packageLineParts.length < 5) {
+            return Optional.empty();
+        }
+        final String packageNameVersion = packageLineParts[4];
+        logger.trace(String.format("packageNameAndVersion: %s", packageNameVersion));
+        final String[] packageNameVersionParts = packageNameVersion.split("-");
+        if (packageNameVersionParts.length < 3) {
+            logger.error(String.format("apk info output contains an invalid package: %s", packageNameVersion));
+            return Optional.empty();
+        }
+        return Optional.of(Arrays.asList(packageNameVersionParts));
     }
 }
