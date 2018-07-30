@@ -36,7 +36,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
-import com.blackducksoftware.integration.hub.bdio.model.ToolSpdxCreator;
+import com.blackducksoftware.integration.hub.bdio.model.SpdxCreator;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
@@ -128,8 +128,8 @@ public class BdioManager {
         final SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);
 
         final String hubDetectVersion = detectInfo.getDetectVersion();
-        final ToolSpdxCreator hubDetectCreator = new ToolSpdxCreator("HubDetect", hubDetectVersion);
-        simpleBdioDocument.billOfMaterials.creationInfo.addSpdxCreator(hubDetectCreator);
+        final SpdxCreator hubDetectCreator = SpdxCreator.createToolSpdxCreator("HubDetect", hubDetectVersion);
+        simpleBdioDocument.billOfMaterials.creationInfo.setPrimarySpdxCreator(hubDetectCreator);
 
         return simpleBdioDocument;
     }
