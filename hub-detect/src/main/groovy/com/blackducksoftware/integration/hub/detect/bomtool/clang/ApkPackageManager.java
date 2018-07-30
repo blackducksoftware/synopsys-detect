@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,16 +105,12 @@ public class ApkPackageManager extends LinuxPackageManager {
         if (componentVersionParts == null || componentVersionParts.isEmpty() || componentVersionParts.get(0).startsWith(".")) {
             return Optional.empty();
         }
-        String component = "";
-        for (int i = 0; i < componentVersionParts.size() - 2; i++) {
-            final String part = componentVersionParts.get(i);
-            if (StringUtils.isNotBlank(component)) {
-                component += String.format("-%s", part);
-            } else {
-                component = part;
-            }
+        final StringBuilder component = new StringBuilder(componentVersionParts.get(0));
+        for (int i = 1; i < componentVersionParts.size() - 2; i++) {
+            component.append("-");
+            component.append(componentVersionParts.get(i));
         }
-        return Optional.of(component);
+        return Optional.of(component.toString());
     }
 
     // parse output of "apk info --who-owns pkg" --> package name+version details
