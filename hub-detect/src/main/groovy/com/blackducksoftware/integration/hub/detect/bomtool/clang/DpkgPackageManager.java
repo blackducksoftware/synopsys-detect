@@ -44,7 +44,7 @@ public class DpkgPackageManager extends LinuxPackageManager {
     private static final String VERSION_OUTPUT_EXPECTED_TEXT = "package management program version";
     private static final String WHO_OWNS_OPTION = "-S";
     private static final String GET_PKG_INFO_OPTION = "-s";
-    private final static Logger logger = LoggerFactory.getLogger(DpkgPackageManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(DpkgPackageManager.class);
 
     public DpkgPackageManager() {
         super(logger, PKG_MGR_NAME, Arrays.asList(Forge.UBUNTU, Forge.DEBIAN), VERSION_COMMAND_ARGS,
@@ -89,22 +89,17 @@ public class DpkgPackageManager extends LinuxPackageManager {
     }
 
     private boolean valid(final String packageLine) {
-        if (packageLine.matches(".+:.+: .+")) {
-            return true;
-        }
-        return false;
+        return packageLine.matches(".+:.+: .+");
     }
 
     private Optional<String> getPackageVersion(final ExecutableRunner executableRunner, final String packageName) {
         try {
             final ExecutableOutput packageStatusOutput = executableRunner.executeQuietly(PKG_MGR_NAME, GET_PKG_INFO_OPTION, packageName);
             logger.debug(String.format("packageStatusOutput: %s", packageStatusOutput));
-            final Optional<String> packageVersion = getPackageVersionFromStatusOutput(packageName, packageStatusOutput.getStandardOutput());
-            return packageVersion;
+            return getPackageVersionFromStatusOutput(packageName, packageStatusOutput.getStandardOutput());
         } catch (final ExecutableRunnerException e) {
             logger.error(String.format("Error executing %s to get package info: %s", PKG_MGR_NAME, e.getMessage()));
         }
-
         return Optional.empty();
     }
 

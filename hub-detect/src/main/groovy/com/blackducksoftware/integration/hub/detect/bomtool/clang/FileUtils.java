@@ -32,6 +32,9 @@ import org.slf4j.LoggerFactory;
 public class FileUtils {
     private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
+    private FileUtils() {
+    }
+
     public static File getRootDir(final File givenDir, int depth) {
         logger.debug(String.format("givenDir: %s; depth: %d", givenDir, depth));
         File rootDir = givenDir;

@@ -43,7 +43,7 @@ public class RpmPackageManager extends LinuxPackageManager {
     private static final String VERSION_OUTPUT_EXPECTED_TEXT = "RPM version";
     private static final String GET_PKG_INFO_OPTION = "-qf";
 
-    private final static Logger logger = LoggerFactory.getLogger(RpmPackageManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(RpmPackageManager.class);
 
     public RpmPackageManager() {
         super(logger, PKG_MGR_NAME, Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT), VERSION_COMMAND_ARGS,

@@ -26,7 +26,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 import java.util.List;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
@@ -43,10 +42,10 @@ public class PackageManagerFinder {
         this.pkgMgrs = pkgMgrs;
     }
 
-    public LinuxPackageManager findPkgMgr(final BomToolEnvironment environment) throws BomToolException {
+    public LinuxPackageManager findPkgMgr() throws BomToolException {
         try {
             if (!hasLookedForPkgMgr) {
-                foundPkgMgr = findPkgMgr();
+                foundPkgMgr = findApplicablePkgMgr();
                 hasLookedForPkgMgr = true;
             }
             return foundPkgMgr;
@@ -55,7 +54,7 @@ public class PackageManagerFinder {
         }
     }
 
-    private LinuxPackageManager findPkgMgr() throws IntegrationException {
+    private LinuxPackageManager findApplicablePkgMgr() throws IntegrationException {
         LinuxPackageManager pkgMgr = null;
         for (final LinuxPackageManager pkgMgrCandidate : pkgMgrs) {
             if (pkgMgrCandidate.applies(executableRunner)) {

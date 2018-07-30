@@ -46,8 +46,7 @@ public class CodeLocationAssembler {
     public DetectCodeLocation generateCodeLocation(final Forge defaultForge, final File rootDir, final List<Dependency> bdioComponents) {
         final MutableDependencyGraph dependencyGraph = populateGraph(bdioComponents);
         final ExternalId externalId = externalIdFactory.createPathExternalId(defaultForge, rootDir.toString());
-        final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CLANG, BomToolType.CLANG, rootDir.toString(), externalId, dependencyGraph).build();
-        return detectCodeLocation;
+        return new DetectCodeLocation.Builder(BomToolGroupType.CLANG, BomToolType.CLANG, rootDir.toString(), externalId, dependencyGraph).build();
     }
 
     private MutableDependencyGraph populateGraph(final List<Dependency> bdioComponents) {

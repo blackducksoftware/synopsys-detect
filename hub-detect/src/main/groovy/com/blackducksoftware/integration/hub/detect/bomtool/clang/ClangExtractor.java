@@ -82,8 +82,8 @@ public class ClangExtractor {
             final List<Dependency> bdioComponents = compileCommands.parallelStream()
                     .flatMap(compileCommandToDependencyFilePathsConverter(outputDirectory))
                     .collect(Collectors.toSet()).parallelStream()
-                    .filter((final String path) -> StringUtils.isNotBlank(path))
-                    .map((final String path) -> new File(path))
+                    .filter(StringUtils::isNotBlank)
+                    .map(File::new)
                     .filter(fileIsNewPredicate())
                     .flatMap(fileToPackagesConverter(rootDir, filesForIScan, pkgMgr))
                     .collect(Collectors.toSet()).parallelStream()
@@ -99,7 +99,7 @@ public class ClangExtractor {
     }
 
     private Function<PackageDetails, Stream<Dependency>> packageToDependenciesConverter(final LinuxPackageManager pkgMgr) {
-        final Function<PackageDetails, Stream<Dependency>> convertPackageToDependencies = (final PackageDetails pkg) -> {
+        return (final PackageDetails pkg) -> {
             final List<Dependency> dependencies = new ArrayList<>();
             logger.debug(String.format("Package name//arch//version: %s//%s//%s", pkg.getPackageName(), pkg.getPackageArch(),
                     pkg.getPackageVersion()));
@@ -110,22 +110,20 @@ public class ClangExtractor {
             }
             return dependencies.stream();
         };
-        return convertPackageToDependencies;
     }
 
     private Function<File, Stream<PackageDetails>> fileToPackagesConverter(final File sourceDir, final Set<File> filesForIScan, final LinuxPackageManager pkgMgr) {
-        final Function<File, Stream<PackageDetails>> convertFileToPackages = (final File f) -> {
+        return (final File f) -> {
             logger.trace(String.format("Querying package manager for %s", f.getAbsolutePath()));
-            final DependencyFileDetails dependencyFileWithMetaData = new DependencyFileDetails(FileUtils.isUnder(sourceDir, f) ? true : false, f);
+            final DependencyFileDetails dependencyFileWithMetaData = new DependencyFileDetails(FileUtils.isUnder(sourceDir, f), f);
             final Set<PackageDetails> packages = new HashSet<>(pkgMgr.getPackages(executableRunner, filesForIScan, dependencyFileWithMetaData));
             logger.debug(String.format("Found %d packages for %s", packages.size(), f.getAbsolutePath()));
             return packages.stream();
         };
-        return convertFileToPackages;
     }
 
     private Predicate<File> fileIsNewPredicate() {
-        final Predicate<File> fileIsNew = (final File dependencyFile) -> {
+        return (final File dependencyFile) -> {
             if (dependencyFileAlreadyProcessed(dependencyFile)) {
                 logger.trace(String.format("Dependency file %s has already been processed; excluding it", dependencyFile.getAbsolutePath()));
                 return false;
@@ -137,16 +135,14 @@ public class ClangExtractor {
             logger.trace(String.format("Dependency file %s does exist; including it", dependencyFile.getAbsolutePath()));
             return true;
         };
-        return fileIsNew;
     }
 
     private Function<CompileCommand, Stream<String>> compileCommandToDependencyFilePathsConverter(final File workingDir) {
-        final Function<CompileCommand, Stream<String>> convertCompileCommandToDependencyFilePaths = (final CompileCommand compileCommand) -> {
+        return (final CompileCommand compileCommand) -> {
             logger.info(String.format("Analyzing source file: %s", compileCommand.file));
             final Set<String> dependencyFilePaths = dependenciesListFileManager.generateDependencyFilePaths(workingDir, compileCommand);
             return dependencyFilePaths.stream();
         };
-        return convertCompileCommandToDependencyFilePaths;
     }
 
     private List<Dependency> getDependencies(final LinuxPackageManager pkgMgr, final String name, final String version, final String arch) {

@@ -56,17 +56,16 @@ public class ClangBomTool extends BomTool {
 
     @Override
     public BomToolResult applicable() {
-        final File jsonCompilationDatabaseFile = fileFinder.findFile(environment.getDirectory(), JSON_COMPILATION_DATABASE_FILENAME);
+        jsonCompilationDatabaseFile = fileFinder.findFile(environment.getDirectory(), JSON_COMPILATION_DATABASE_FILENAME);
         if (jsonCompilationDatabaseFile == null) {
             return new FileNotFoundBomToolResult(JSON_COMPILATION_DATABASE_FILENAME);
         }
-        this.jsonCompilationDatabaseFile = jsonCompilationDatabaseFile;
         return new PassedBomToolResult();
     }
 
     @Override
     public BomToolResult extractable() throws BomToolException {
-        pkgMgr = pkgMgrFinder.findPkgMgr(environment);
+        pkgMgr = pkgMgrFinder.findPkgMgr();
         if (pkgMgr == null) {
             return new ExecutableNotFoundBomToolResult("supported Linux package manager");
         }
