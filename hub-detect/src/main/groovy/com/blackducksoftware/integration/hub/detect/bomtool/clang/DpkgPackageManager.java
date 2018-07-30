@@ -23,12 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,30 +44,12 @@ public class DpkgPackageManager extends LinuxPackageManager {
     private static final Logger logger = LoggerFactory.getLogger(DpkgPackageManager.class);
 
     public DpkgPackageManager() {
-        super(logger, PKG_MGR_NAME, Arrays.asList(Forge.UBUNTU, Forge.DEBIAN), VERSION_COMMAND_ARGS,
-                VERSION_OUTPUT_EXPECTED_TEXT);
+        super(logger, PKG_MGR_NAME, PKG_MGR_NAME, Arrays.asList(Forge.UBUNTU, Forge.DEBIAN), VERSION_COMMAND_ARGS,
+                VERSION_OUTPUT_EXPECTED_TEXT, Arrays.asList(WHO_OWNS_OPTION));
     }
 
     @Override
-    public List<PackageDetails> getPackages(final ExecutableRunner executableRunner, final Set<File> unManagedDependencyFiles, final DependencyFileDetails dependencyFile) {
-        final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
-        try {
-            final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(PKG_MGR_NAME, WHO_OWNS_OPTION, dependencyFile.getFile().getAbsolutePath());
-            logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput.getStandardOutput()));
-            addToPackageList(executableRunner, dependencyDetailsList, queryPackageOutput.getStandardOutput());
-        } catch (final ExecutableRunnerException e) {
-            logger.debug(String.format("Error executing %s to get package list: %s", PKG_MGR_NAME, e.getMessage()));
-            if (!dependencyFile.isInBuildDir()) {
-                logger.debug(String.format("%s is not managed by %s", dependencyFile.getFile().getAbsolutePath(), PKG_MGR_NAME));
-                unManagedDependencyFiles.add(dependencyFile.getFile());
-            } else {
-                logger.debug(String.format("%s is not managed by %s, but it's in the source.dir", dependencyFile.getFile().getAbsolutePath(), PKG_MGR_NAME));
-            }
-        }
-        return dependencyDetailsList;
-    }
-
-    private void addToPackageList(final ExecutableRunner executableRunner, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
+    protected void addToPackageList(final ExecutableRunner executableRunner, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
             if (!valid(packageLine)) {

@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -36,20 +37,23 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 public abstract class LinuxPackageManager {
     private final String pkgMgrName;
+    private final String pkgMgrCmdString;
     private final List<Forge> forges;
     private final Logger logger;
     private final List<String> checkPresenceCommandArgs;
     private final String checkPresenceCommandOutputExpectedText;
+    private final List<String> pkgMgrGetOwnerCmdArgs;
 
-    public LinuxPackageManager(final Logger logger, final String pkgMgrName, final List<Forge> forges, final List<String> checkPresenceCommandArgs, final String checkPresenceCommandOutputExpectedText) {
+    public LinuxPackageManager(final Logger logger, final String pkgMgrName, final String pkgMgrCmdString, final List<Forge> forges, final List<String> checkPresenceCommandArgs, final String checkPresenceCommandOutputExpectedText,
+            final List<String> pkgMgrGetOwnerCmdArgs) {
         this.logger = logger;
         this.pkgMgrName = pkgMgrName;
+        this.pkgMgrCmdString = pkgMgrCmdString;
         this.forges = forges;
         this.checkPresenceCommandArgs = checkPresenceCommandArgs;
         this.checkPresenceCommandOutputExpectedText = checkPresenceCommandOutputExpectedText;
+        this.pkgMgrGetOwnerCmdArgs = pkgMgrGetOwnerCmdArgs;
     }
-
-    public abstract List<PackageDetails> getPackages(ExecutableRunner executableRunner, Set<File> unManagedDependencyFiles, DependencyFileDetails dependencyFile);
 
     public boolean applies(final ExecutableRunner executor) {
         try {
@@ -66,6 +70,29 @@ public abstract class LinuxPackageManager {
         }
         return false;
     }
+
+    public List<PackageDetails> getPackages(final ExecutableRunner executableRunner, final Set<File> unManagedDependencyFiles, final DependencyFileDetails dependencyFile) {
+        final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
+        try {
+            final List<String> fileSpecificGetOwnerArgs = new ArrayList<>(pkgMgrGetOwnerCmdArgs);
+            fileSpecificGetOwnerArgs.add(dependencyFile.getFile().getAbsolutePath());
+            final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(pkgMgrCmdString, fileSpecificGetOwnerArgs);
+            logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput));
+            this.addToPackageList(executableRunner, dependencyDetailsList, queryPackageOutput.getStandardOutput());
+            return dependencyDetailsList;
+        } catch (final ExecutableRunnerException e) {
+            logger.error(String.format("Error executing %s: %s", pkgMgrCmdString, e.getMessage()));
+            if (!dependencyFile.isInBuildDir()) {
+                logger.debug(String.format("%s is not managed by %s", dependencyFile.getFile().getAbsolutePath(), pkgMgrCmdString));
+                unManagedDependencyFiles.add(dependencyFile.getFile());
+            } else {
+                logger.debug(String.format("%s is not managed by %s, but it's in the source.dir", dependencyFile.getFile().getAbsolutePath(), pkgMgrCmdString));
+            }
+            return dependencyDetailsList;
+        }
+    }
+
+    protected abstract void addToPackageList(final ExecutableRunner executableRunner, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) throws ExecutableRunnerException;
 
     public String getPkgMgrName() {
         return pkgMgrName;

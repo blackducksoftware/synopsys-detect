@@ -3,6 +3,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class ApkPackageManagerTest {
         final ApkPackageManager pkgMgr = new ApkPackageManager();
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         Mockito.when(executableRunner.executeQuietly("apk", "info", "--print-arch")).thenReturn(new ExecutableOutput(0, "x86_64\n", ""));
-        Mockito.when(executableRunner.executeQuietly("apk", "info", "--who-owns", "/usr/include/stdlib.h")).thenReturn(new ExecutableOutput(0, pkgMgrOwnedByOutput, ""));
+        Mockito.when(executableRunner.executeQuietly("apk", Arrays.asList("info", "--who-owns", "/usr/include/stdlib.h"))).thenReturn(new ExecutableOutput(0, pkgMgrOwnedByOutput, ""));
 
         final DependencyFileDetails dependencyFile = new DependencyFileDetails(false, new File("/usr/include/stdlib.h"));
         final List<PackageDetails> pkgs = pkgMgr.getPackages(executableRunner, new HashSet<>(), dependencyFile);

@@ -3,6 +3,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class DpkgPackageManagerTest {
 
         final DpkgPackageManager pkgMgr = new DpkgPackageManager();
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        Mockito.when(executableRunner.executeQuietly("dpkg", "-S", "/usr/include/stdlib.h")).thenReturn(new ExecutableOutput(0, pkgMgrOwnedByOutput, ""));
+        Mockito.when(executableRunner.executeQuietly("dpkg", Arrays.asList("-S", "/usr/include/stdlib.h"))).thenReturn(new ExecutableOutput(0, pkgMgrOwnedByOutput, ""));
         Mockito.when(executableRunner.executeQuietly("dpkg", "-s", "libc6-dev")).thenReturn(new ExecutableOutput(0, pkgMgrPkgInfoOutput, ""));
 
         final DependencyFileDetails dependencyFile = new DependencyFileDetails(false, new File("/usr/include/stdlib.h"));
