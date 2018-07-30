@@ -70,12 +70,19 @@ public class DetectFileManager {
         }
     }
 
+    public void registerOutputFileForCleanup(final File file) {
+        if (diagnosticManager.isDiagnosticModeOn()) {
+            diagnosticManager.registerGlobalFileOfInterest(file);
+        } else if (shouldCleanup()) {
+            file.delete();
+        }
+    }
+
     public File getOutputDirectory(final ExtractionId extractionId) {
         if (outputDirectories.containsKey(extractionId)) {
             return outputDirectories.get(extractionId);
         } else {
             final String directoryName = extractionId.toUniqueString();
-
             final File newDirectory = new File(getExtractionFile(), directoryName);
             newDirectory.mkdir();
             outputDirectories.put(extractionId, newDirectory);
@@ -111,19 +118,11 @@ public class DetectFileManager {
         return new File(getSharedDirectory(directory), filename);
     }
 
-    public void cleanupOutputFile(final File file) {
-        if (diagnosticManager.isDiagnosticModeOn()) {
-            diagnosticManager.registerGlobalFileOfInterest(file);
-        } else {
-            file.delete();
-        }
-    }
-
-    public boolean shouldCleanup() {
+    private boolean shouldCleanup() {
         return diagnosticManager.shouldFileManagerCleanup() && detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP);
     }
 
-    public void cleanupDirectories() {
+    public void cleanup() {
         if (shouldCleanup()) {
             for (final File file : outputDirectories.values()) {
                 try {
