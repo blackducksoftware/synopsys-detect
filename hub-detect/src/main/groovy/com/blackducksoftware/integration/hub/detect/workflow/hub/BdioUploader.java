@@ -50,7 +50,7 @@ public class BdioUploader {
         for (final File file : detectProject.getBdioFiles()) {
             logger.info(String.format("uploading %s to %s", file.getName(), detectConfigWrapper.getProperty(DetectProperty.BLACKDUCK_HUB_URL)));
             codeLocationService.importBomFile(file);
-            detectFileManager.cleanupOutputFile(file);
+            detectFileManager.registerOutputFileForCleanup(file);
         }
     }
 
