@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -59,6 +60,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
+import com.blackducksoftware.integration.hub.detect.workflow.swip.SwipCliManager;
 import com.blackducksoftware.integration.log.SilentLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 
@@ -76,6 +78,7 @@ public class Application implements ApplicationRunner {
     private final HelpPrinter helpPrinter;
     private final HelpHtmlWriter helpHtmlWriter;
     private final HubManager hubManager;
+    private final SwipCliManager swipCliManager;
     private final HubServiceWrapper hubServiceWrapper;
     private final DetectSummaryManager detectSummaryManager;
     private final InteractiveManager interactiveManager;
@@ -92,7 +95,7 @@ public class Application implements ApplicationRunner {
     @Autowired
     public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final AdditionalPropertyConfig additionalPropertyConfig, final DetectConfigWrapper detectConfigWrapper,
             final ConfigurationManager configurationManager, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
-            final HubServiceWrapper hubServiceWrapper, final DetectSummaryManager detectSummaryManager, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
+            final SwipCliManager swipCliManager, final HubServiceWrapper hubServiceWrapper, final DetectSummaryManager detectSummaryManager, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
             final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final ArgumentStateParser argumentStateParser) {
         this.detectOptionManager = detectOptionManager;
         this.detectInfo = detectInfo;
@@ -103,6 +106,7 @@ public class Application implements ApplicationRunner {
         this.helpPrinter = helpPrinter;
         this.helpHtmlWriter = helpHtmlWriter;
         this.hubManager = hubManager;
+        this.swipCliManager = swipCliManager;
         this.hubServiceWrapper = hubServiceWrapper;
         this.detectSummaryManager = detectSummaryManager;
         this.interactiveManager = interactiveManager;
@@ -210,6 +214,9 @@ public class Application implements ApplicationRunner {
             final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject);
             hubManager.performPostHubActions(detectProject, projectVersionView);
         }
+
+        logger.info("about to try swip: " + detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH));
+        swipCliManager.runSwip(new Slf4jIntLogger(logger), new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)));
     }
 
     private ExitCodeType getExitCodeFromCompletedRun(final ExitCodeType initialExitCodeType) {
