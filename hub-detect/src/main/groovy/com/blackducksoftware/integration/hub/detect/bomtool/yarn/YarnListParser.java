@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
 
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +36,7 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.util.DependencyHistory;
 import com.blackducksoftware.integration.util.NameVersion;
 
 public class YarnListParser extends BaseYarnParser {
@@ -56,9 +55,7 @@ public class YarnListParser extends BaseYarnParser {
 
     public DependencyGraph parseYarnList(final List<String> yarnLockText, final List<String> yarnListAsList) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        final Deque<Dependency> dependencyStack = new LinkedList<>();
-        int previousDepth = 0;
-        Dependency previousDependency = null;
+        final DependencyHistory history = new DependencyHistory();
 
         final Map<String, String> yarnLockVersionMap = yarnLockParser.getYarnLockResolvedVersionMap(yarnLockText);
 
@@ -69,28 +66,21 @@ public class YarnListParser extends BaseYarnParser {
                 continue;
             }
 
-            final Dependency currentDependency = parseDependencyFromLine(cleanedLine, yarnLockVersionMap);
-            final int currentDepth = getLineLevel(cleanedLine);
-
-            if (currentDepth == previousDepth + 1 && previousDependency != null) {
-                dependencyStack.push(previousDependency);
-            } else if (currentDepth < previousDepth) {
-                final int depthDelta = (previousDepth - currentDepth);
-                for (int levels = 0; levels < depthDelta; levels++) {
-                    dependencyStack.pop();
-                }
-            } else if (currentDepth != previousDepth) {
-                logger.error(String.format("The tree level (%s) and this line (%s) with depth %s can\'t be reconciled.", previousDepth, line, currentDepth));
+            final Dependency dependency = parseDependencyFromLine(cleanedLine, yarnLockVersionMap);
+            final int lineLevel = getLineLevel(cleanedLine);
+            try {
+                history.clearHistoryPast(lineLevel);
+            } catch (final IllegalStateException e) {
+                logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
             }
 
-            if (dependencyStack.isEmpty()) {
-                graph.addChildToRoot(currentDependency);
+            if (history.isEmpty()) {
+                graph.addChildToRoot(dependency);
             } else {
-                graph.addChildWithParents(currentDependency, dependencyStack.peek());
+                graph.addChildWithParents(dependency, history.getLastDependency());
             }
 
-            previousDependency = currentDependency;
-            previousDepth = currentDepth;
+            history.add(dependency);
         }
 
         return graph;

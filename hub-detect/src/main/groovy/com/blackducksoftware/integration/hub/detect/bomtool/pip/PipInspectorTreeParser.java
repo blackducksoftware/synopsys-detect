@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +38,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.util.DependencyHistory;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
 public class PipInspectorTreeParser {
@@ -63,9 +62,7 @@ public class PipInspectorTreeParser {
         PipParseResult parseResult = null;
 
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        final Deque<Dependency> dependencyStack = new LinkedList<>();
-        int previousDepth = 0;
-        Dependency previousDependency = null;
+        final DependencyHistory history = new DependencyHistory();
         Dependency project = null;
 
         for (final String line : pipInspectorOutputAsList) {
@@ -76,31 +73,24 @@ public class PipInspectorTreeParser {
             }
 
             final Dependency currentDependency = parseDependencyFromLine(trimmedLine, sourcePath);
-            final int currentDepth = getLineLevel(trimmedLine);
-
-            if (currentDepth == previousDepth + 1 && previousDependency != null) {
-                dependencyStack.push(previousDependency);
-            } else if (currentDepth < previousDepth) {
-                final int levelDelta = (previousDepth - currentDepth);
-                for (int levels = 0; levels < levelDelta; levels++) {
-                    dependencyStack.pop();
-                }
-            } else if (currentDepth != previousDepth) {
-                logger.error(String.format("The tree level (%s) and this line (%s) with count %s can\'t be reconciled.", previousDepth, line, currentDepth));
+            final int lineLevel = getLineLevel(trimmedLine);
+            try {
+                history.clearHistoryPast(lineLevel);
+            } catch (final IllegalStateException e) {
+                logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
             }
 
             if (project == null) {
                 project = currentDependency;
-            } else if (dependencyStack.size() == 1 && dependencyStack.peek().equals(project)) {
+            } else if (project.equals(history.getLastDependency())) {
                 graph.addChildToRoot(currentDependency);
-            } else if (!dependencyStack.isEmpty()) {
-                graph.addChildWithParents(currentDependency, dependencyStack.peek());
+            } else if (history.isEmpty()) {
+                graph.addChildToRoot(currentDependency);
             } else {
-                graph.addChildToRoot(currentDependency);
+                graph.addChildWithParents(currentDependency, history.getLastDependency());
             }
 
-            previousDependency = currentDependency;
-            previousDepth = currentDepth;
+            history.add(currentDependency);
         }
 
         if (project != null) {
@@ -109,7 +99,6 @@ public class PipInspectorTreeParser {
         }
 
         return Optional.ofNullable(parseResult);
-
     }
 
     private void parseErrorsFromLine(final String trimmedLine) {

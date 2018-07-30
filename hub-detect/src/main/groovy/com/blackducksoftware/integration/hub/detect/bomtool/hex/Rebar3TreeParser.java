@@ -24,8 +24,6 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.hex;
 
 import java.util.Arrays;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -39,6 +37,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.util.DependencyHistory;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
 public class Rebar3TreeParser {
@@ -60,11 +59,8 @@ public class Rebar3TreeParser {
 
     public RebarParseResult parseRebarTreeOutput(final BomToolType bomToolType, final List<String> dependencyTreeOutput, final String sourcePath) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        final Deque<Dependency> dependencyStack = new LinkedList<>();
-        String projectName = "";
-        String projectVersionName = "";
-        int previousTreeLevel = 0;
-        Dependency previousDependency = null;
+        final DependencyHistory history = new DependencyHistory();
+        Dependency project = null;
 
         for (final String line : dependencyTreeOutput) {
             if (!line.contains(HORIZONTAL_SEPARATOR_CHARACTER)) {
@@ -72,37 +68,29 @@ public class Rebar3TreeParser {
             }
 
             final Dependency currentDependency = createDependencyFromLine(line);
-            final int currentTreeLevel = getDependencyLevelFromLine(line);
-
-            if (currentTreeLevel == previousTreeLevel + 1 && previousDependency != null) {
-                dependencyStack.push(previousDependency);
-            } else if (currentTreeLevel < previousTreeLevel) {
-                final int levelDelta = (previousTreeLevel - currentTreeLevel);
-                for (int levels = 0; levels < levelDelta; levels++) {
-                    dependencyStack.pop();
-                }
-            } else if (currentTreeLevel != previousTreeLevel) {
-                logger.error(String.format("The tree level (%s) and this line (%s) with count %s can\'t be reconciled.", previousTreeLevel, line, currentTreeLevel));
+            final int lineLevel = getDependencyLevelFromLine(line);
+            try {
+                history.clearHistoryPast(lineLevel);
+            } catch (final IllegalStateException e) {
+                logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
             }
 
-            if (dependencyStack.isEmpty() && isProject(line)) {
-                projectName = currentDependency.name;
-                projectVersionName = currentDependency.version;
-            } else if (dependencyStack.size() == 1 && dependencyStack.peek().name.equals(projectName) && dependencyStack.peek().version.equals(projectVersionName)) {
+            if (history.isEmpty() && isProject(line)) {
+                project = currentDependency;
+            } else if (history.getLastDependency().equals(project)) {
                 graph.addChildToRoot(currentDependency);
-            } else if (!dependencyStack.isEmpty()) {
-                graph.addChildWithParents(currentDependency, dependencyStack.peek());
+            } else if (history.isEmpty()) {
+                graph.addChildToRoot(currentDependency);
             } else {
-                graph.addChildToRoot(currentDependency);
+                graph.addChildWithParents(currentDependency, history.getLastDependency());
             }
 
-            previousDependency = currentDependency;
-            previousTreeLevel = currentTreeLevel;
+            history.add(currentDependency);
         }
 
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.HEX, projectName, projectVersionName);
+        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.HEX, project.name, project.version);
         final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.HEX, bomToolType, sourcePath, externalId, graph).build();
-        return new RebarParseResult(projectName, projectVersionName, codeLocation);
+        return new RebarParseResult(project.name, project.version, codeLocation);
     }
 
     protected Dependency createDependencyFromLine(final String line) {
