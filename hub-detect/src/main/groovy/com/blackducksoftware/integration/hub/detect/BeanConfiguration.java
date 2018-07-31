@@ -142,9 +142,10 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManage
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
+import com.blackducksoftware.integration.hub.service.HubServicesFactory;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 
 import freemarker.template.Configuration;
 
@@ -159,7 +160,12 @@ public class BeanConfiguration {
 
     @Bean
     public Gson gson() {
-        return new GsonBuilder().setPrettyPrinting().create();
+        return HubServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create();
+    }
+
+    @Bean
+    public JsonParser jsonParser() {
+        return new JsonParser();
     }
 
     @Bean
@@ -298,7 +304,7 @@ public class BeanConfiguration {
 
     @Bean
     public HubServiceWrapper hubServiceWrapper() {
-        return new HubServiceWrapper(detectConfigWrapper(), additionalPropertyConfig());
+        return new HubServiceWrapper(detectConfigWrapper(), additionalPropertyConfig(), gson(), jsonParser());
     }
 
     @Bean

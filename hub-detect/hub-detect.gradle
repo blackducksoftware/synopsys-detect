@@ -57,7 +57,6 @@ dependencies {
     compile 'org.freemarker:freemarker:2.3.26-incubating'
     compile 'org.springframework.boot:spring-boot-starter'
 
-
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.5'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
