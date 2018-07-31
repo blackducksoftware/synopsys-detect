@@ -51,20 +51,22 @@ public class NpmLockfilePackager {
         final LazyExternalIdDependencyGraphBuilder lazyBuilder = new LazyExternalIdDependencyGraphBuilder();
 
         final NpmProject npmProject = gson.fromJson(lockFileText, NpmProject.class);
-        npmProject.dependencies.forEach((name, npmDependency) -> {
-            if (shouldInclude(npmDependency, includeDevDependencies)) {
-                final DependencyId dependency = createDependencyId(name, npmDependency.version);
-                setDependencyInfo(dependency, name, npmDependency.version, lazyBuilder);
-                lazyBuilder.addChildToRoot(dependency);
-                if (npmDependency.requires != null) {
-                    npmDependency.requires.forEach((childName, childVersion) -> {
-                        final DependencyId childId = createDependencyId(childName, childVersion);
-                        setDependencyInfo(childId, childName, childVersion, lazyBuilder);
-                        lazyBuilder.addChildWithParent(childId, dependency);
-                    });
+        if (npmProject.dependencies != null) {
+            npmProject.dependencies.forEach((name, npmDependency) -> {
+                if (shouldInclude(npmDependency, includeDevDependencies)) {
+                    final DependencyId dependency = createDependencyId(name, npmDependency.version);
+                    setDependencyInfo(dependency, name, npmDependency.version, lazyBuilder);
+                    lazyBuilder.addChildToRoot(dependency);
+                    if (npmDependency.requires != null) {
+                        npmDependency.requires.forEach((childName, childVersion) -> {
+                            final DependencyId childId = createDependencyId(childName, childVersion);
+                            setDependencyInfo(childId, childName, childVersion, lazyBuilder);
+                            lazyBuilder.addChildWithParent(childId, dependency);
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
 
         final DependencyGraph graph = lazyBuilder.build();
         final ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPM, npmProject.name, npmProject.version);
