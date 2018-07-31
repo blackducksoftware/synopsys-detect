@@ -31,7 +31,7 @@ import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 public class DependencyHistory {
     private final Deque<Dependency> dependencyStack = new LinkedList<>();
 
-    public void clearHistoryPast(final int dependencyLevel) throws IllegalStateException {
+    public void clearDependenciesDeeperThan(final int dependencyLevel) throws IllegalStateException {
         if (dependencyLevel > dependencyStack.size()) {
             throw new IllegalStateException(String.format("Level of dependency should be less than or equal to %s but was %s. Treating the dependency as though level was %s.", dependencyStack.size(), dependencyLevel, dependencyStack.size()));
         }
@@ -40,6 +40,10 @@ public class DependencyHistory {
         for (int levels = 0; levels < levelDelta; levels++) {
             dependencyStack.pop();
         }
+    }
+
+    public void clear() {
+        dependencyStack.clear();
     }
 
     public void add(final Dependency dependency) {

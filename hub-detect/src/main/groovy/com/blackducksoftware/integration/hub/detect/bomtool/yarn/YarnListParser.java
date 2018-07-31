@@ -69,7 +69,7 @@ public class YarnListParser extends BaseYarnParser {
             final Dependency dependency = parseDependencyFromLine(cleanedLine, yarnLockVersionMap);
             final int lineLevel = getLineLevel(cleanedLine);
             try {
-                history.clearHistoryPast(lineLevel);
+                history.clearDependenciesDeeperThan(lineLevel);
             } catch (final IllegalStateException e) {
                 logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
             }

@@ -75,7 +75,7 @@ public class PipInspectorTreeParser {
             final Dependency currentDependency = parseDependencyFromLine(trimmedLine, sourcePath);
             final int lineLevel = getLineLevel(trimmedLine);
             try {
-                history.clearHistoryPast(lineLevel);
+                history.clearDependenciesDeeperThan(lineLevel);
             } catch (final IllegalStateException e) {
                 logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
             }

@@ -70,7 +70,7 @@ public class Rebar3TreeParser {
             final Dependency currentDependency = createDependencyFromLine(line);
             final int lineLevel = getDependencyLevelFromLine(line);
             try {
-                history.clearHistoryPast(lineLevel);
+                history.clearDependenciesDeeperThan(lineLevel);
             } catch (final IllegalStateException e) {
                 logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
             }
