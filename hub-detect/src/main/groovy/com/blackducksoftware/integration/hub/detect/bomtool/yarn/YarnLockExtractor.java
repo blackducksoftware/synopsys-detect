@@ -54,8 +54,7 @@ public class YarnLockExtractor {
     private final ExecutableRunner executableRunner;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    public YarnLockExtractor(final ExternalIdFactory externalIdFactory, final YarnListParser yarnListParser, final ExecutableRunner executableRunner,
-            final DetectConfigWrapper detectConfigWrapper) {
+    public YarnLockExtractor(final ExternalIdFactory externalIdFactory, final YarnListParser yarnListParser, final ExecutableRunner executableRunner, final DetectConfigWrapper detectConfigWrapper) {
         this.externalIdFactory = externalIdFactory;
         this.yarnListParser = yarnListParser;
         this.executableRunner = executableRunner;
