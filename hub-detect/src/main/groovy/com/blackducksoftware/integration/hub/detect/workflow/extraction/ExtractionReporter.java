@@ -38,10 +38,7 @@ public class ExtractionReporter {
         final String bomToolName = bomTool.getBomToolGroupType() + " - " + bomTool.getName();
         logger.info("Starting extraction: " + bomToolName);
         logger.info("Identifier: " + extractionId.toUniqueString());
-        // TODO: Replicate SUPER AWESOME printing from before... probably can't as nicely.
-        // logger.info("Extractor: " + bomTool.getExtractorClass().getSimpleName());
-        // logger.info("Context: " + bomTool.getExtractionContextClass().getSimpleName());
-        // ObjectPrinter.printObject(null, context);
+        ObjectPrinter.printObjectPrivate(null, bomTool);
         logger.info(ReportConstants.SEPERATOR);
     }
 

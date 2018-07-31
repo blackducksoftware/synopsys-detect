@@ -82,7 +82,11 @@ public class ExtractionManager {
             extractions++;
             final ExtractionId extractionId = new ExtractionId(Integer.toString(extractions));
             extractionReporter.startedExtraction(result.getBomTool(), extractionId);
-            result.setExtraction(result.getBomTool().extract(extractionId));
+            try {
+                result.setExtraction(result.getBomTool().extract(extractionId));
+            } catch (final Exception e) {
+                result.setExtraction(new Extraction.Builder().exception(e).build());
+            }
             extractionReporter.endedExtraction(result.getExtraction());
         }
 
