@@ -276,7 +276,7 @@ public class Application implements ApplicationRunner {
             detectSummaryManager.logDetectResults(new Slf4jIntLogger(logger), currentExitCodeType);
         }
 
-        detectFileManager.cleanupDirectories();
+        detectFileManager.cleanup();
     }
 
     private void endRun(final long startTime, final ExitCodeType finalExitCodeType) {
