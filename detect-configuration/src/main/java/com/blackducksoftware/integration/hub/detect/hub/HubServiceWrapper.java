@@ -35,10 +35,12 @@ import com.blackducksoftware.integration.hub.api.generated.discovery.ApiDiscover
 import com.blackducksoftware.integration.hub.api.generated.response.CurrentVersionView;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder;
+import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.rest.BlackduckRestConnection;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
 import com.blackducksoftware.integration.hub.service.HubService;
 import com.blackducksoftware.integration.hub.service.HubServicesFactory;
@@ -51,18 +53,26 @@ import com.blackducksoftware.integration.log.IntLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.rest.connection.RestConnection;
 import com.blackducksoftware.integration.util.ResourceUtil;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 
 public class HubServiceWrapper {
     private final Logger logger = LoggerFactory.getLogger(HubServiceWrapper.class);
 
     private final DetectConfigWrapper detectConfigWrapper;
+    private final AdditionalPropertyConfig additionalPropertyConfig;
+    private final Gson gson;
+    private final JsonParser jsonParser;
 
     private Slf4jIntLogger slf4jIntLogger;
     private HubServerConfig hubServerConfig;
     private HubServicesFactory hubServicesFactory;
 
-    public HubServiceWrapper(final DetectConfigWrapper detectConfigWrapper) {
+    public HubServiceWrapper(final DetectConfigWrapper detectConfigWrapper, final AdditionalPropertyConfig additionalPropertyConfig, final Gson gson, final JsonParser jsonParser) {
         this.detectConfigWrapper = detectConfigWrapper;
+        this.additionalPropertyConfig = additionalPropertyConfig;
+        this.gson = gson;
+        this.jsonParser = jsonParser;
     }
 
     public void init() throws IntegrationException, DetectUserFriendlyException {
@@ -133,16 +143,16 @@ public class HubServiceWrapper {
     }
 
     private HubServicesFactory createHubServicesFactory(final IntLogger slf4jIntLogger, final HubServerConfig hubServerConfig) throws IntegrationException {
-        final RestConnection restConnection = hubServerConfig.createRestConnection(slf4jIntLogger);
+        final BlackduckRestConnection restConnection = hubServerConfig.createRestConnection(slf4jIntLogger);
 
-        return new HubServicesFactory(restConnection);
+        return new HubServicesFactory(gson, jsonParser, restConnection, slf4jIntLogger);
     }
 
     private HubServerConfig createHubServerConfig(final IntLogger slf4jIntLogger) {
         final HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder();
         hubServerConfigBuilder.setLogger(slf4jIntLogger);
 
-        final Map<String, String> blackduckHubProperties = detectConfigWrapper.getPropertyKeyMap();
+        final Map<String, String> blackduckHubProperties = additionalPropertyConfig.getBlackduckHubProperties();
         hubServerConfigBuilder.setFromProperties(blackduckHubProperties);
 
         return hubServerConfigBuilder.build();

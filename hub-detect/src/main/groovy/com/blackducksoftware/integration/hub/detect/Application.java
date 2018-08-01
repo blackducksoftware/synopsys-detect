@@ -187,10 +187,6 @@ public class Application implements ApplicationRunner {
             configurationManager.printConfiguration(System.out, options);
         }
 
-        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_FAIL_CONFIG_WARNING) && options.stream().anyMatch(DetectOption::hasWarnings)) {
-            throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
-        }
-
         final List<OptionValidationResult> invalidDetectOptionResults = detectOptionManager.getAllInvalidOptionResults();
         if (!invalidDetectOptionResults.isEmpty()) {
             throw new DetectUserFriendlyException(invalidDetectOptionResults.get(0).getValidationMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
@@ -278,7 +274,7 @@ public class Application implements ApplicationRunner {
             detectSummaryManager.logDetectResults(new Slf4jIntLogger(logger), currentExitCodeType);
         }
 
-        detectFileManager.cleanupDirectories();
+        detectFileManager.cleanup();
     }
 
     private void endRun(final long startTime, final ExitCodeType finalExitCodeType) {

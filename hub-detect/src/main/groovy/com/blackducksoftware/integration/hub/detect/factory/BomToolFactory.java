@@ -270,8 +270,7 @@ public class BomToolFactory {
     }
 
     public YarnLockBomTool createYarnLockBomTool(final BomToolEnvironment environment) {
-        final boolean productionDependenciesOnly = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_YARN_PROD_ONLY);
-        return new YarnLockBomTool(environment, productionDependenciesOnly, detectFileFinder, standardExecutableFinder, yarnLockExtractor);
+        return new YarnLockBomTool(environment, detectFileFinder, standardExecutableFinder, yarnLockExtractor);
     }
 
 }
