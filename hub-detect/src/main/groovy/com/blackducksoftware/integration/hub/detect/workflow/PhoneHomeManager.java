@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.OfflinePhoneHomeService;
 import com.blackducksoftware.integration.hub.service.PhoneHomeService;
@@ -51,15 +51,15 @@ public class PhoneHomeManager {
 
     private final DetectInfo detectInfo;
     private final Gson gson;
-    private final DetectPropertySource detectPropertySource;
+    private final DetectConfiguration detectConfiguration;
 
     private PhoneHomeService phoneHomeService;
     private PhoneHomeResponse phoneHomeResponse;
 
-    public PhoneHomeManager(final DetectInfo detectInfo, final Gson gson, final DetectPropertySource detectPropertySource) {
+    public PhoneHomeManager(final DetectInfo detectInfo, final Gson gson, final DetectConfiguration detectConfiguration) {
         this.detectInfo = detectInfo;
         this.gson = gson;
-        this.detectPropertySource = detectPropertySource;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public void init(final PhoneHomeService phoneHomeService) {
@@ -137,18 +137,9 @@ public class PhoneHomeManager {
 
     private PhoneHomeRequestBody.Builder createBuilder() {
         final PhoneHomeRequestBody.Builder phoneHomeRequestBodyBuilder = phoneHomeService.createInitialPhoneHomeRequestBodyBuilder("hub-detect", detectInfo.getDetectVersion());
-        detectPropertySource.getAdditionalPhoneHomePropertyNames().stream().forEach(propertyName -> {
-            final String actualKey = getKeyWithoutPrefix(propertyName, DetectPropertySource.PHONE_HOME_PROPERTY_PREFIX);
-            final String value = detectPropertySource.getDetectProperty(propertyName);
-            phoneHomeRequestBodyBuilder.addToMetaData(actualKey, value);
-        });
+        detectConfiguration.getPhoneHomeProperties().forEach((key, value) -> phoneHomeRequestBodyBuilder.addToMetaData(key, value));
 
         return phoneHomeRequestBodyBuilder;
-    }
-
-    private String getKeyWithoutPrefix(final String key, final String prefix) {
-        final int prefixIndex = key.indexOf(prefix) + prefix.length();
-        return key.substring(prefixIndex);
     }
 
 }

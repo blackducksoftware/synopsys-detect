@@ -35,7 +35,6 @@ import com.blackducksoftware.integration.hub.api.generated.discovery.ApiDiscover
 import com.blackducksoftware.integration.hub.api.generated.response.CurrentVersionView;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -60,7 +59,6 @@ public class HubServiceWrapper {
     private final Logger logger = LoggerFactory.getLogger(HubServiceWrapper.class);
 
     private final DetectConfiguration detectConfiguration;
-    private final DetectPropertySource detectPropertySource;
     private final Gson gson;
     private final JsonParser jsonParser;
 
@@ -68,9 +66,8 @@ public class HubServiceWrapper {
     private HubServerConfig hubServerConfig;
     private HubServicesFactory hubServicesFactory;
 
-    public HubServiceWrapper(final DetectConfiguration detectConfiguration, final DetectPropertySource detectPropertySource, final Gson gson, final JsonParser jsonParser) {
+    public HubServiceWrapper(final DetectConfiguration detectConfiguration, final Gson gson, final JsonParser jsonParser) {
         this.detectConfiguration = detectConfiguration;
-        this.detectPropertySource = detectPropertySource;
         this.gson = gson;
         this.jsonParser = jsonParser;
     }
@@ -152,7 +149,7 @@ public class HubServiceWrapper {
         final HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder();
         hubServerConfigBuilder.setLogger(slf4jIntLogger);
 
-        final Map<String, String> blackduckHubProperties = detectPropertySource.getBlackduckHubProperties();
+        final Map<String, String> blackduckHubProperties = detectConfiguration.getBlackduckProperties();
         hubServerConfigBuilder.setFromProperties(blackduckHubProperties);
 
         return hubServerConfigBuilder.build();

@@ -31,9 +31,9 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 
 public class DockerProperties {
     private final DetectConfiguration detectConfiguration;
@@ -53,10 +53,8 @@ public class DockerProperties {
         dockerProperties.setProperty("output.include.containerfilesystem", "true");
         dockerProperties.setProperty("phone.home", "false");
 
-        for (final String additionalProperty : detectPropertySource.getAdditionalDockerPropertyNames()) {
-            final String dockerKey = getKeyWithoutPrefix(additionalProperty, DetectPropertySource.DOCKER_PROPERTY_PREFIX);
-            addDockerProperty(dockerProperties, additionalProperty, dockerKey);
-        }
+        final Map<String, String> additionalDockerProperties = detectConfiguration.getDockerProperties();
+        additionalDockerProperties.forEach((key, value) -> dockerProperties.setProperty(key, value));
 
         dockerProperties.store(new FileOutputStream(dockerPropertiesFile), "");
     }
@@ -85,21 +83,9 @@ public class DockerProperties {
         environmentVariables.put("BLACKDUCK_HUB_PROXY_NTLM_DOMAIN", detectConfiguration.getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_NTLM_DOMAIN));
         environmentVariables.put("BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION", detectConfiguration.getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION));
 
-        for (final Map.Entry<String, String> environmentProperty : System.getenv().entrySet()) {
-            final String key = environmentProperty.getKey();
-            if (key != null && key.startsWith(DetectPropertySource.DOCKER_ENVIRONMENT_PREFIX)) {
-                environmentVariables.put(getKeyWithoutPrefix(key, DetectPropertySource.DOCKER_ENVIRONMENT_PREFIX), environmentProperty.getValue());
-            }
-        }
-    }
+        final Map<String, String> additionalDockerProperties = detectConfiguration.getDockerEnvironmentProperties();
+        additionalDockerProperties.forEach((key, value) -> environmentVariables.put(key, value));
 
-    private String getKeyWithoutPrefix(final String key, final String prefix) {
-        return key.substring(prefix.length());
-    }
-
-    private void addDockerProperty(final Properties dockerProperties, final String key, final String dockerKey) {
-        final String value = detectPropertySource.getDetectProperty(key);
-        dockerProperties.setProperty(dockerKey, value);
     }
 
 }

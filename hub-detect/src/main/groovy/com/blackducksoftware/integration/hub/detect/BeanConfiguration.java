@@ -95,9 +95,9 @@ import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.GemlockExtr
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCacheExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnListParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockExtractor;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
@@ -263,7 +263,7 @@ public class BeanConfiguration {
 
     @Bean
     public DetectConfiguration detectConfiguration() {
-        return new DetectConfiguration(configurableEnvironment);
+        return new DetectConfiguration(detectPropertySource());
     }
 
     @Bean
@@ -303,7 +303,7 @@ public class BeanConfiguration {
 
     @Bean
     public HubServiceWrapper hubServiceWrapper() {
-        return new HubServiceWrapper(detectConfiguration(), detectPropertySource(), gson(), jsonParser());
+        return new HubServiceWrapper(detectConfiguration(), gson(), jsonParser());
     }
 
     @Bean
@@ -343,7 +343,7 @@ public class BeanConfiguration {
 
     @Bean
     public PhoneHomeManager phoneHomeManager() {
-        return new PhoneHomeManager(detectInfo(), gson(), detectPropertySource());
+        return new PhoneHomeManager(detectInfo(), gson(), detectConfiguration());
     }
 
     @Bean
