@@ -26,7 +26,6 @@ package com.blackducksoftware.integration.hub.detect.configuration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
@@ -196,16 +195,6 @@ public class DetectConfiguration {
      */
     public Map<DetectProperty, Object> getPropertyMap() {
         return propertyMap;
-    }
-
-    public Map<String, String> getPropertyKeyMap() {
-        final Map<String, String> keyMap = new HashMap<>();
-        for (final Entry<DetectProperty, Object> entry : propertyMap.entrySet()) {
-            if (entry.getKey().getPropertyType() == DetectPropertyType.STRING) {
-                keyMap.put(entry.getKey().getPropertyName(), (String) entry.getValue());
-            }
-        }
-        return keyMap;
     }
 
     private void updatePropertyMap(final Map<DetectProperty, Object> propertyMap, final DetectProperty detectProperty, final String stringValue) {
