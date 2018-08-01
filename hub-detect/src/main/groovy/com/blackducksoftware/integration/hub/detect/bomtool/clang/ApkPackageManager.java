@@ -34,7 +34,7 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public class ApkPackageManager extends LinuxPackageManager {
+public class ApkPackageManager extends ClangLinuxPackageManager {
     private static final String PKG_MGR_NAME = "apk";
     private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
     private static final String VERSION_OUTPUT_EXPECTED_TEXT = "apk-tools ";
@@ -71,6 +71,11 @@ public class ApkPackageManager extends LinuxPackageManager {
                 }
             }
         }
+    }
+
+    @Override
+    public Forge getDefaultForge() {
+        return Forge.ALPINE;
     }
 
     private String deriveVersion(final List<String> pkgParts) {

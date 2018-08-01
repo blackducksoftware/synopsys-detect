@@ -35,7 +35,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public class DpkgPackageManager extends LinuxPackageManager {
+public class DpkgPackageManager extends ClangLinuxPackageManager {
     private static final String PKG_MGR_NAME = "dpkg";
     private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
     private static final String VERSION_OUTPUT_EXPECTED_TEXT = "package management program version";
@@ -65,6 +65,11 @@ public class DpkgPackageManager extends LinuxPackageManager {
             final PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion.orElse(null), packageArch);
             dependencyDetailsList.add(dependencyDetails);
         }
+    }
+
+    @Override
+    public Forge getDefaultForge() {
+        return Forge.UBUNTU;
     }
 
     private boolean valid(final String packageLine) {

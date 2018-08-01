@@ -23,12 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.RecursiveToStringStyle;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import com.blackducksoftware.integration.util.Stringable;
 
-public class PackageDetails {
+public class PackageDetails extends Stringable {
     private final String packageName;
     private final String packageVersion;
     private final String packageArch;
@@ -50,20 +47,4 @@ public class PackageDetails {
     public String getPackageArch() {
         return packageArch;
     }
-
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
-    }
-
 }

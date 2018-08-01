@@ -25,6 +25,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.google.gson.Gson;
 
 public class CLangExtractorTest {
 
@@ -62,21 +63,20 @@ public class CLangExtractorTest {
         Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommand)).thenReturn(dependencyFilePaths);
         Mockito.when(executableRunner.executeFromDirQuietly(Mockito.any(File.class), Mockito.anyString(), Mockito.anyList())).thenReturn(new ExecutableOutput(0, "", ""));
 
-        final CompileCommandsJsonFileParser compileCommandsJsonFileParser = Mockito.mock(CompileCommandsJsonFileParser.class);
+        final Gson gson = new Gson();
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
-        final ClangExtractor extractor = new ClangExtractor(executableRunner,
+        final ClangExtractor extractor = new ClangExtractor(executableRunner, gson,
                 detectFileManager, dependenciesListFileManager,
-                compileCommandsJsonFileParser, codeLocationAssembler);
+                codeLocationAssembler);
 
-        final LinuxPackageManager pkgMgr = Mockito.mock(LinuxPackageManager.class);
+        final ClangLinuxPackageManager pkgMgr = Mockito.mock(ClangLinuxPackageManager.class);
         final File givenDir = new File("src/test/resources/clang/source/build");
         final int depth = 1;
         final ExtractionId extractionId = new ExtractionId(BomToolGroupType.CLANG, EXTRACTION_ID);
         final File jsonCompilationDatabaseFile = new File("src/test/resources/clang/source/build/compile_commands.json");
 
         Mockito.when(detectFileManager.getOutputDirectory(Mockito.any(ExtractionId.class))).thenReturn(outputDir);
-        Mockito.when(compileCommandsJsonFileParser.parse(Mockito.any(File.class))).thenReturn(compileCommands);
 
         final List<PackageDetails> packages = new ArrayList<>();
         packages.add(new PackageDetails("testPackageName", "testPackageVersion", "testPackageArch"));

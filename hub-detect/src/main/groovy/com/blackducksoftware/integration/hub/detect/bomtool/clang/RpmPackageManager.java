@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
-public class RpmPackageManager extends LinuxPackageManager {
+public class RpmPackageManager extends ClangLinuxPackageManager {
     private static final String PKG_MGR_NAME = "rpm";
     private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
     private static final String VERSION_OUTPUT_EXPECTED_TEXT = "RPM version";
@@ -63,6 +63,11 @@ public class RpmPackageManager extends LinuxPackageManager {
             final PackageDetails dependencyDetails = new PackageDetails(artifact, versionRelease, arch);
             dependencyDetailsList.add(dependencyDetails);
         }
+    }
+
+    @Override
+    public Forge getDefaultForge() {
+        return Forge.CENTOS;
     }
 
     private boolean valid(final String packageLine) {

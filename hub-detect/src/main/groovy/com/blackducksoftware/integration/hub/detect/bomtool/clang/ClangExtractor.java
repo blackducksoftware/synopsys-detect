@@ -24,7 +24,10 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +37,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +51,7 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.google.gson.Gson;
 
 public class ClangExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -54,31 +59,31 @@ public class ClangExtractor {
     private final Set<PackageDetails> processedDependencies = new HashSet<>(40);
 
     private final ExecutableRunner executableRunner;
+    private final Gson gson;
     private final DependenciesListFileManager dependenciesListFileManager;
     private final DetectFileManager detectFileManager;
-    private final CompileCommandsJsonFileParser compileCommandsJsonFileParser;
     private final CodeLocationAssembler codeLocationAssembler;
     private final SimpleBdioFactory bdioFactory;
 
-    public ClangExtractor(final ExecutableRunner executableRunner,
+    public ClangExtractor(final ExecutableRunner executableRunner, final Gson gson,
             final DetectFileManager detectFileManager, final DependenciesListFileManager dependenciesListFileManager,
-            final CompileCommandsJsonFileParser compileCommandsJsonFileParser, final CodeLocationAssembler codeLocationAssembler) {
+            final CodeLocationAssembler codeLocationAssembler) {
         this.executableRunner = executableRunner;
+        this.gson = gson;
         this.detectFileManager = detectFileManager;
         this.dependenciesListFileManager = dependenciesListFileManager;
-        this.compileCommandsJsonFileParser = compileCommandsJsonFileParser;
         this.codeLocationAssembler = codeLocationAssembler;
         this.bdioFactory = new SimpleBdioFactory();
     }
 
-    public Extraction extract(final LinuxPackageManager pkgMgr, final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
+    public Extraction extract(final ClangLinuxPackageManager pkgMgr, final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
-            final File rootDir = FileUtils.getRootDir(givenDir, depth);
+            final File rootDir = ClangFileUtils.getRootDir(givenDir, depth);
             final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> unManagedDependencyFiles = ConcurrentHashMap.newKeySet(64);
-            final List<CompileCommand> compileCommands = compileCommandsJsonFileParser.parse(jsonCompilationDatabaseFile);
+            final List<CompileCommand> compileCommands = parseJsonCompilationDatabaseFile(jsonCompilationDatabaseFile);
             final List<Dependency> bdioComponents = compileCommands.parallelStream()
                     .flatMap(compileCommandToDependencyFilePathsConverter(outputDirectory))
                     .collect(Collectors.toSet()).parallelStream()
@@ -121,17 +126,17 @@ public class ClangExtractor {
         };
     }
 
-    private Function<File, Stream<PackageDetails>> dependencyFileToLinuxPackagesConverter(final File sourceDir, final Set<File> unManagedDependencyFiles, final LinuxPackageManager pkgMgr) {
+    private Function<File, Stream<PackageDetails>> dependencyFileToLinuxPackagesConverter(final File sourceDir, final Set<File> unManagedDependencyFiles, final ClangLinuxPackageManager pkgMgr) {
         return (final File f) -> {
             logger.trace(String.format("Querying package manager for %s", f.getAbsolutePath()));
-            final DependencyFileDetails dependencyFileWithMetaData = new DependencyFileDetails(FileUtils.isUnder(sourceDir, f), f);
+            final DependencyFileDetails dependencyFileWithMetaData = new DependencyFileDetails(ClangFileUtils.isUnder(sourceDir, f), f);
             final Set<PackageDetails> linuxPackages = new HashSet<>(pkgMgr.getPackages(executableRunner, unManagedDependencyFiles, dependencyFileWithMetaData));
             logger.debug(String.format("Found %d packages for %s", linuxPackages.size(), f.getAbsolutePath()));
             return linuxPackages.stream();
         };
     }
 
-    private Function<PackageDetails, Stream<Dependency>> linuxPackageToBdioComponentsConverter(final LinuxPackageManager pkgMgr) {
+    private Function<PackageDetails, Stream<Dependency>> linuxPackageToBdioComponentsConverter(final ClangLinuxPackageManager pkgMgr) {
         return (final PackageDetails pkg) -> {
             final List<Dependency> bdioComponents = new ArrayList<>();
             logger.debug(String.format("Package name//arch//version: %s//%s//%s", pkg.getPackageName(), pkg.getPackageArch(),
@@ -145,7 +150,7 @@ public class ClangExtractor {
         };
     }
 
-    private List<Dependency> getBdioComponents(final LinuxPackageManager pkgMgr, final String name, final String version, final String arch) {
+    private List<Dependency> getBdioComponents(final ClangLinuxPackageManager pkgMgr, final String name, final String version, final String arch) {
         final List<Dependency> dependencies = new ArrayList<>();
         final String externalId = String.format("%s/%s/%s", name, version, arch);
         logger.trace(String.format("Constructed externalId: %s", externalId));
@@ -172,6 +177,12 @@ public class ClangExtractor {
         }
         processedDependencies.add(dependency);
         return false;
+    }
+
+    public List<CompileCommand> parseJsonCompilationDatabaseFile(final File compileCommandsJsonFile) throws IOException {
+        final String compileCommandsJson = FileUtils.readFileToString(compileCommandsJsonFile, StandardCharsets.UTF_8);
+        final CompileCommand[] compileCommands = gson.fromJson(compileCommandsJson, CompileCommand[].class);
+        return Arrays.asList(compileCommands);
     }
 
     private void logSummary(final List<Dependency> bdioComponents, final Set<File> unManagedDependencyFiles) {

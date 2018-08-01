@@ -29,10 +29,10 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FileUtils {
-    private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
+public class ClangFileUtils {
+    private static final Logger logger = LoggerFactory.getLogger(ClangFileUtils.class);
 
-    private FileUtils() {
+    private ClangFileUtils() {
     }
 
     public static File getRootDir(final File givenDir, int depth) {
