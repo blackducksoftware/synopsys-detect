@@ -20,6 +20,7 @@ import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -27,7 +28,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.google.gson.Gson;
 
-public class CLangExtractorTest {
+public class ClangExtractorTest {
 
     private static final String EXTRACTION_ID = "testExtractionId";
 
@@ -66,7 +67,7 @@ public class CLangExtractorTest {
         final Gson gson = new Gson();
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
-        final ClangExtractor extractor = new ClangExtractor(executableRunner, gson,
+        final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(),
                 detectFileManager, dependenciesListFileManager,
                 codeLocationAssembler);
 

@@ -24,7 +24,6 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -86,6 +85,10 @@ public class DependenciesListFileManager {
         try {
             final String depsDecl = FileUtils.readFileToString(depsMkFile, StandardCharsets.UTF_8);
             final String[] depsDeclParts = depsDecl.split(": ");
+            if (depsDeclParts.length != 2) {
+                logger.warn(String.format("Unable to parse %s contents: %s", depsMkFile.getAbsolutePath(), depsDecl));
+                return new ArrayList<>(0);
+            }
             String depsListString = depsDeclParts[1];
             logger.trace(String.format("dependencies: %s", depsListString));
 
@@ -100,7 +103,7 @@ public class DependenciesListFileManager {
                 logger.trace(String.format("\t%s", includeFile));
             }
             dependencyFilePaths = Arrays.asList(deps);
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             logger.warn(String.format("Error getting dependency file paths from '%s': %s", depsMkFile.getAbsolutePath(), e.getMessage()));
             return new ArrayList<>(0);
         }

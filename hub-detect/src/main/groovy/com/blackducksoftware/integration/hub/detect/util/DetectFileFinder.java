@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.util;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -178,4 +179,25 @@ public class DetectFileFinder {
         return new ArrayList<>(files);
     }
 
+    public File findContainingDir(final File givenDir, int numberOfLevelsToWalkBack) {
+        File containingDir = givenDir;
+        for (; numberOfLevelsToWalkBack > 0; numberOfLevelsToWalkBack--) {
+            containingDir = containingDir.getParentFile();
+        }
+        return containingDir;
+    }
+
+    public boolean isFileUnderDir(final File dir, final File file) {
+        try {
+            final String dirPath = dir.getCanonicalPath();
+            final String filePath = file.getCanonicalPath();
+            if (filePath.startsWith(dirPath)) {
+                return true;
+            }
+            return false;
+        } catch (final IOException e) {
+            logger.warn(String.format("Error getting canonical path for either %s or %s", dir.getAbsolutePath(), file.getAbsolutePath()));
+            return false;
+        }
+    }
 }

@@ -47,6 +47,7 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
@@ -60,16 +61,18 @@ public class ClangExtractor {
 
     private final ExecutableRunner executableRunner;
     private final Gson gson;
+    private final DetectFileFinder fileFinder;
     private final DependenciesListFileManager dependenciesListFileManager;
     private final DetectFileManager detectFileManager;
     private final CodeLocationAssembler codeLocationAssembler;
     private final SimpleBdioFactory bdioFactory;
 
-    public ClangExtractor(final ExecutableRunner executableRunner, final Gson gson,
+    public ClangExtractor(final ExecutableRunner executableRunner, final Gson gson, final DetectFileFinder fileFinder,
             final DetectFileManager detectFileManager, final DependenciesListFileManager dependenciesListFileManager,
             final CodeLocationAssembler codeLocationAssembler) {
         this.executableRunner = executableRunner;
         this.gson = gson;
+        this.fileFinder = fileFinder;
         this.detectFileManager = detectFileManager;
         this.dependenciesListFileManager = dependenciesListFileManager;
         this.codeLocationAssembler = codeLocationAssembler;
@@ -79,7 +82,7 @@ public class ClangExtractor {
     public Extraction extract(final ClangLinuxPackageManager pkgMgr, final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
-            final File rootDir = ClangFileUtils.getRootDir(givenDir, depth);
+            final File rootDir = fileFinder.findContainingDir(givenDir, depth);
             final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> unManagedDependencyFiles = ConcurrentHashMap.newKeySet(64);
@@ -129,7 +132,7 @@ public class ClangExtractor {
     private Function<File, Stream<PackageDetails>> dependencyFileToLinuxPackagesConverter(final File sourceDir, final Set<File> unManagedDependencyFiles, final ClangLinuxPackageManager pkgMgr) {
         return (final File f) -> {
             logger.trace(String.format("Querying package manager for %s", f.getAbsolutePath()));
-            final DependencyFileDetails dependencyFileWithMetaData = new DependencyFileDetails(ClangFileUtils.isUnder(sourceDir, f), f);
+            final DependencyFileDetails dependencyFileWithMetaData = new DependencyFileDetails(fileFinder.isFileUnderDir(sourceDir, f), f);
             final Set<PackageDetails> linuxPackages = new HashSet<>(pkgMgr.getPackages(executableRunner, unManagedDependencyFiles, dependencyFileWithMetaData));
             logger.debug(String.format("Found %d packages for %s", linuxPackages.size(), f.getAbsolutePath()));
             return linuxPackages.stream();

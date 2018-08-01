@@ -42,10 +42,10 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransform
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangLinuxPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CodeLocationAssembler;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependenciesListFileManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DpkgPackageManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangLinuxPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.RpmPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockParser;
@@ -455,7 +455,7 @@ public class BeanConfiguration {
 
     @Bean
     public ClangExtractor clangExtractor() {
-        return new ClangExtractor(executableRunner(), gson(), detectFileManager(), clangDependenciesListFileParser(), codeLocationAssembler());
+        return new ClangExtractor(executableRunner(), gson(), detectFileFinder(), detectFileManager(), clangDependenciesListFileParser(), codeLocationAssembler());
     }
 
     public List<ClangLinuxPackageManager> clangLinuxPackageManagers() {
