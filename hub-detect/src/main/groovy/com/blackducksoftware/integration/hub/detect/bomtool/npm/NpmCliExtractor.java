@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
@@ -49,17 +49,17 @@ public class NpmCliExtractor {
 
     private final ExecutableRunner executableRunner;
     private final NpmCliDependencyFinder npmCliDependencyFinder;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
-    public NpmCliExtractor(final ExecutableRunner executableRunner, final NpmCliDependencyFinder npmCliDependencyFinder, final DetectConfigWrapper detectConfigWrapper) {
+    public NpmCliExtractor(final ExecutableRunner executableRunner, final NpmCliDependencyFinder npmCliDependencyFinder, final DetectConfiguration detectConfiguration) {
         this.executableRunner = executableRunner;
         this.npmCliDependencyFinder = npmCliDependencyFinder;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String npmExe, final ExtractionId extractionId) {
 
-        final boolean includeDevDeps = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
+        final boolean includeDevDeps = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
         final List<String> exeArgs = new ArrayList<>();
         exeArgs.add("ls");
         exeArgs.add("-json");

@@ -26,26 +26,26 @@ package com.blackducksoftware.integration.hub.detect.bomtool.maven;
 import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 
 public class MavenExecutableFinder {
     private final ExecutableManager executableManager;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
     private String systemMaven = null;
     private boolean hasLookedForSystemMaven = false;
 
-    public MavenExecutableFinder(final ExecutableManager executableManager, final DetectConfigWrapper detectConfigWrapper) {
+    public MavenExecutableFinder(final ExecutableManager executableManager, final DetectConfiguration detectConfiguration) {
         this.executableManager = executableManager;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public String findMaven(final BomToolEnvironment environment) {
         String resolvedMaven = null;
-        final String providedMavenPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_PATH);
+        final String providedMavenPath = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_PATH);
         final String mavenPath = executableManager.getExecutablePathOrOverride(ExecutableType.MVNW, false, environment.getDirectory(), providedMavenPath);
         if (StringUtils.isNotBlank(mavenPath)) {
             resolvedMaven = mavenPath;

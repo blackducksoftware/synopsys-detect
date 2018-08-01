@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -50,20 +50,20 @@ public class SearchManager {
     private final ReportManager reportManager;
     private final BomToolSearchProvider bomToolSearchProvider;
     private final PhoneHomeManager phoneHomeManager;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
     public SearchManager(final ReportManager reportManager, final BomToolSearchProvider bomToolSearchProvider, final PhoneHomeManager phoneHomeManager,
-            final DetectConfigWrapper detectConfigWrapper) {
+            final DetectConfiguration detectConfiguration) {
         this.reportManager = reportManager;
         this.bomToolSearchProvider = bomToolSearchProvider;
         this.phoneHomeManager = phoneHomeManager;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public SearchResult performSearch() throws DetectUserFriendlyException {
         List<BomToolEvaluation> sourcePathResults = new ArrayList<>();
         try {
-            sourcePathResults = findApplicableBomTools(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)));
+            sourcePathResults = findApplicableBomTools(new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)));
         } catch (final BomToolException e) {
             return new SearchResultBomToolFailed(e);
         }
@@ -82,11 +82,11 @@ public class SearchManager {
     }
 
     private List<BomToolEvaluation> findApplicableBomTools(final File directory) throws BomToolException, DetectUserFriendlyException {
-        final List<String> excludedDirectories = Arrays.asList(detectConfigWrapper.getStringArrayProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION));
-        final Boolean forceNestedSearch = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_CONTINUE);
-        final int maxDepth = detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_DEPTH);
-        final ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(detectConfigWrapper.getProperty(DetectProperty.DETECT_EXCLUDED_BOM_TOOL_TYPES).toUpperCase(),
-                detectConfigWrapper.getProperty(DetectProperty.DETECT_INCLUDED_BOM_TOOL_TYPES).toUpperCase());
+        final List<String> excludedDirectories = Arrays.asList(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION));
+        final Boolean forceNestedSearch = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_CONTINUE);
+        final int maxDepth = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_DEPTH);
+        final ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(detectConfiguration.getProperty(DetectProperty.DETECT_EXCLUDED_BOM_TOOL_TYPES).toUpperCase(),
+                detectConfiguration.getProperty(DetectProperty.DETECT_INCLUDED_BOM_TOOL_TYPES).toUpperCase());
 
         final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth, bomToolFilter);
 

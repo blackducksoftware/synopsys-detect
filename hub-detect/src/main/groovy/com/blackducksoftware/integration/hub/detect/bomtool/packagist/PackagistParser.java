@@ -37,7 +37,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.util.NameVersion;
@@ -49,11 +49,11 @@ public class PackagistParser {
     private final Logger logger = LoggerFactory.getLogger(PackagistParser.class);
 
     private final ExternalIdFactory externalIdFactory;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
-    public PackagistParser(final ExternalIdFactory externalIdFactory, final DetectConfigWrapper detectConfigWrapper) {
+    public PackagistParser(final ExternalIdFactory externalIdFactory, final DetectConfiguration detectConfiguration) {
         this.externalIdFactory = externalIdFactory;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public PackagistParseResult getDependencyGraphFromProject(final BomToolType bomToolType, final String sourcePath, final String composerJsonText, final String composerLockText) {
@@ -63,8 +63,8 @@ public class PackagistParser {
         final NameVersion projectNameVersion = parseNameVersionFromJson(composerJsonObject);
 
         final JsonObject composerLockObject = new JsonParser().parse(composerLockText).getAsJsonObject();
-        final List<PackagistPackage> models = convertJsonToModel(composerLockObject, detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES));
-        final List<NameVersion> rootPackages = parseDependencies(composerJsonObject, detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES));
+        final List<PackagistPackage> models = convertJsonToModel(composerLockObject, detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES));
+        final List<NameVersion> rootPackages = parseDependencies(composerJsonObject, detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES));
 
         models.forEach(it -> {
             final ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, it.getNameVersion().getName(), it.getNameVersion().getVersion());

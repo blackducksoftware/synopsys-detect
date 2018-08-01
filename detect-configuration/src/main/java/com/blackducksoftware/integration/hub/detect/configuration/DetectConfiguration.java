@@ -43,13 +43,13 @@ import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConn
 import com.blackducksoftware.integration.rest.proxy.ProxyInfo;
 import com.blackducksoftware.integration.rest.proxy.ProxyInfoBuilder;
 
-public class DetectConfigWrapper {
-    private final Logger logger = LoggerFactory.getLogger(DetectConfigWrapper.class);
+public class DetectConfiguration {
+    private final Logger logger = LoggerFactory.getLogger(DetectConfiguration.class);
     private final ConfigurableEnvironment configurableEnvironment;
 
     private final Map<DetectProperty, Object> propertyMap = new HashMap<>();
 
-    public DetectConfigWrapper(final ConfigurableEnvironment configurableEnvironment) {
+    public DetectConfiguration(final ConfigurableEnvironment configurableEnvironment) {
         this.configurableEnvironment = configurableEnvironment;
     }
 

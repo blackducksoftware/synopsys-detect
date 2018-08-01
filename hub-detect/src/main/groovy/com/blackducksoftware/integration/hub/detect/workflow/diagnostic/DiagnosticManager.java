@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
@@ -40,7 +40,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 public class DiagnosticManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
     private File outputDirectory;
 
@@ -52,9 +52,9 @@ public class DiagnosticManager {
     private boolean isDiagnosticProtected = false;
     private boolean isDiagnostic = false;
 
-    public DiagnosticManager(final DetectConfigWrapper detectConfigWrapper, final DiagnosticReportManager diagnosticReportManager, final DiagnosticLogManager diagnosticLogManager,
+    public DiagnosticManager(final DetectConfiguration detectConfiguration, final DiagnosticReportManager diagnosticReportManager, final DiagnosticLogManager diagnosticLogManager,
             final DetectRunManager detectRunManager, final DiagnosticFileManager diagnosticFileManager) {
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
         this.diagnosticReportManager = diagnosticReportManager;
         this.diagnosticLogManager = diagnosticLogManager;
         this.detectRunManager = detectRunManager;
@@ -76,8 +76,8 @@ public class DiagnosticManager {
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("");
 
-        final File bdioDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH));
-        this.outputDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH));
+        final File bdioDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH));
+        this.outputDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH));
         try {
             diagnosticFileManager.init(outputDirectory, bdioDirectory, detectRunManager.getRunId());
         } catch (final Exception e) {
@@ -124,7 +124,7 @@ public class DiagnosticManager {
         }
 
         if (zipCreated) {
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
                 diagnosticFileManager.cleanup();
             }
         } else {

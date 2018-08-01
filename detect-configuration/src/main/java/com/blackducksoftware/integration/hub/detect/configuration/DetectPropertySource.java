@@ -36,7 +36,7 @@ import org.springframework.core.env.PropertySource;
 
 import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder;
 
-public class AdditionalPropertyConfig {
+public class DetectPropertySource {
     public static final String DETECT_PROPERTY_PREFIX = "detect.";
     public static final String DOCKER_PROPERTY_PREFIX = "detect.docker.passthrough.";
     public static final String PHONE_HOME_PROPERTY_PREFIX = "detect.phone.home.passthrough.";
@@ -49,7 +49,7 @@ public class AdditionalPropertyConfig {
     private final Set<String> additionalDockerPropertyNames = new HashSet<>();
     private final Set<String> additionalPhoneHomePropertyNames = new HashSet<>();
 
-    public AdditionalPropertyConfig(final ConfigurableEnvironment configurableEnvironment) {
+    public DetectPropertySource(final ConfigurableEnvironment configurableEnvironment) {
         this.configurableEnvironment = configurableEnvironment;
     }
 
