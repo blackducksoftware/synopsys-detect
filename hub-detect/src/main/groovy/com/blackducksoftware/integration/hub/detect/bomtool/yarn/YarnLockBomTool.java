@@ -48,18 +48,15 @@ public class YarnLockBomTool extends BomTool {
     private final DetectFileFinder fileFinder;
     private final StandardExecutableFinder standardExecutableFinder;
     private final YarnLockExtractor yarnLockExtractor;
-    private final boolean productionDependenciesOnly;
 
     private File yarnlock;
-    private String yarnExe;
+    private String yarnExe = "";
 
-    public YarnLockBomTool(final BomToolEnvironment environment, final boolean productionDependenciesOnly, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder,
-            final YarnLockExtractor yarnLockExtractor) {
+    public YarnLockBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final YarnLockExtractor yarnLockExtractor) {
         super(environment, "Yarn Lock", BomToolGroupType.YARN, BomToolType.YARN_LOCK);
         this.fileFinder = fileFinder;
         this.yarnLockExtractor = yarnLockExtractor;
         this.standardExecutableFinder = standardExecutableFinder;
-        this.productionDependenciesOnly = productionDependenciesOnly;
     }
 
     @Override
@@ -79,9 +76,8 @@ public class YarnLockBomTool extends BomTool {
             yarnExe = yarn.toString();
         }
 
-        // TODO: (Jordan) I think we removed the non-yarn exe mode so shouldn't we force a Yarn Exe now?
-        if (productionDependenciesOnly && StringUtils.isBlank(yarnExe)) {
-            return new ExecutableNotFoundBomToolResult("Could not find the Yarn executable, can not get the production only dependencies.");
+        if (StringUtils.isBlank(yarnExe)) {
+            return new ExecutableNotFoundBomToolResult("yarn");
         }
 
         return new PassedBomToolResult();
