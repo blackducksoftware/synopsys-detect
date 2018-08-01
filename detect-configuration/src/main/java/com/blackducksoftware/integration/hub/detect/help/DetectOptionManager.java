@@ -38,10 +38,12 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption.OptionValidationResult;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
 
-public class DetectOptionManager {
+public class DetectOptionManager implements ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class);
 
     public final DetectConfigWrapper detectConfigWrapper;
@@ -218,6 +220,15 @@ public class DetectOptionManager {
         }
 
         return help;
+    }
+
+    @Override
+    public ExitCodeType getExitCodeType() {
+        if (detectOptions.stream().anyMatch(DetectOption::hasWarnings)) {
+            logger.error("Configuration is using deprecated properties. Please fix deprecation issues. To ignore these messages and force detect to succeed supply --" + DetectProperty.DETECT_FORCE_SUCCESS.getPropertyName() + "=true");
+            return ExitCodeType.FAILURE_CONFIGURATION;
+        }
+        return ExitCodeType.SUCCESS;
     }
 
 }
