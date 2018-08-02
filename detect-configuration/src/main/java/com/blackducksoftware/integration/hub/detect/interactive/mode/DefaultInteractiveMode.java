@@ -48,7 +48,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
             while (!connected && !skipConnectionTest) {
                 setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_URL, "What is the hub instance url?");
 
-                print("You can now configure the hub with either an API token -OR- a username and password. The API token must already exist on the hub, but it is the preferred approach to configure your connection.");
+                println("You can now configure the hub with either an API token -OR- a username and password. The API token must already exist on the hub, but it is the preferred approach to configure your connection.");
                 final Boolean useApiToken = askYesOrNo("Would you like to use an existing API token?");
                 if (useApiToken) {
                     setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_API_TOKEN, "What is the hub API token?");

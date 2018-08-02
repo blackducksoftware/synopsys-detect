@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyType;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
@@ -57,10 +57,10 @@ public class TildeInPathResolver {
         this.detectInfo = detectInfo;
     }
 
-    public void resolveTildeInAllPathFields(final String systemUserHome, final DetectConfigWrapper detectConfigWrapper) throws IllegalArgumentException, IllegalAccessException {
+    public void resolveTildeInAllPathFields(final String systemUserHome, final DetectConfiguration detectConfiguration) throws IllegalArgumentException, IllegalAccessException {
         final OperatingSystemType currentOs = detectInfo.getCurrentOs();
 
-        Map<DetectProperty, Object> propertyMap = detectConfigWrapper.getPropertyMap();
+        Map<DetectProperty, Object> propertyMap = detectConfiguration.getPropertyMap();
         if (null != propertyMap && !propertyMap.isEmpty()) {
             for (Map.Entry<DetectProperty, Object> propertyEntry : propertyMap.entrySet()) {
                 if (DetectPropertyType.STRING == propertyEntry.getKey().getPropertyType()) {
@@ -68,7 +68,7 @@ public class TildeInPathResolver {
                     if (StringUtils.isNotBlank(originalString)) {
                         String resolvedPath = resolveTildeInPath(currentOs, systemUserHome, originalString);
                         if (!resolvedPath.equals(originalString)) {
-                            detectConfigWrapper.setDetectProperty(propertyEntry.getKey(), resolvedPath);
+                            detectConfiguration.setDetectProperty(propertyEntry.getKey(), resolvedPath);
                             logger.warn(String.format("We have resolved %s to %s. If this is not expected, please revise the path provided, or specify --detect.resolve.tilde.in.paths=false.", originalString, resolvedPath));
                         }
                     }

@@ -17,31 +17,32 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil;
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 
 public class PearDependencyTest {
-    private DetectConfigWrapper detectConfigWrapper;
+    private DetectConfiguration detectConfiguration;
     private PearDependencyFinder pearDependencyFinder;
 
     private TestUtil testUtil;
 
     @Before
     public void init() {
-        detectConfigWrapper = new DetectConfigWrapper(null);
-        pearDependencyFinder = new PearDependencyFinder(new ExternalIdFactory(), detectConfigWrapper);
+        detectConfiguration = Mockito.mock(DetectConfiguration.class);
+        pearDependencyFinder = new PearDependencyFinder(new ExternalIdFactory(), detectConfiguration);
         testUtil = new TestUtil();
     }
 
     @Test
     public void findDependencyNamesTest() {
-        detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_PEAR_ONLY_REQUIRED_DEPS, "true");
+        Mockito.when(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES)).thenReturn(true);
 
         final String dependenciesList = testUtil.getResourceAsUTF8String("/pear/dependencies-list.txt");
         final ExecutableOutput exeOutput = new ExecutableOutput(dependenciesList, "");

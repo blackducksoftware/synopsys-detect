@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
@@ -42,7 +42,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.Diagnost
 public class DetectFileManager {
     private final Logger logger = LoggerFactory.getLogger(DetectFileManager.class);
 
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
     private final String sharedUUID = "shared";
     private File sharedDirectory = null;
@@ -51,8 +51,8 @@ public class DetectFileManager {
 
     private final DetectRunManager detectRunManager;
 
-    public DetectFileManager(final DetectConfigWrapper detectConfigWrapper, final DetectRunManager detectRunManager, final DiagnosticManager diagnosticManager) {
-        this.detectConfigWrapper = detectConfigWrapper;
+    public DetectFileManager(final DetectConfiguration detectConfiguration, final DetectRunManager detectRunManager, final DiagnosticManager diagnosticManager) {
+        this.detectConfiguration = detectConfiguration;
         this.detectRunManager = detectRunManager;
         this.diagnosticManager = diagnosticManager;
     }
@@ -96,7 +96,7 @@ public class DetectFileManager {
 
     public File getSharedDirectory(final String name) { // shared across this invocation of detect (inspectors)
         if (sharedDirectory == null) {
-            sharedDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), sharedUUID);
+            sharedDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH), sharedUUID);
             sharedDirectory.mkdir();
         }
         final File newSharedFile = new File(sharedDirectory, name);
@@ -105,7 +105,7 @@ public class DetectFileManager {
     }
 
     public File getPermanentDirectory() { // shared across all invocations of detect (scan cli)
-        final File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "tools");
+        final File newDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "tools");
         newDirectory.mkdir();
         return newDirectory;
     }
@@ -119,7 +119,7 @@ public class DetectFileManager {
     }
 
     private boolean shouldCleanup() {
-        return diagnosticManager.shouldFileManagerCleanup() && detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP);
+        return diagnosticManager.shouldFileManagerCleanup() && detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP);
     }
 
     public void cleanup() {
@@ -135,7 +135,7 @@ public class DetectFileManager {
     }
 
     private File getExtractionFile() {
-        File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "extractions");
+        File newDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "extractions");
         newDirectory.mkdir();
         if (diagnosticManager.isDiagnosticModeOn()) {
             newDirectory = new File(newDirectory, detectRunManager.getRunId());

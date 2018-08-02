@@ -39,10 +39,10 @@ import org.springframework.context.annotation.Import;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
-import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -73,8 +73,8 @@ public class Application implements ApplicationRunner {
 
     private final DetectOptionManager detectOptionManager;
     private final DetectInfo detectInfo;
-    private final AdditionalPropertyConfig additionalPropertyConfig;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectPropertySource detectPropertySource;
+    private final DetectConfiguration detectConfiguration;
     private final ConfigurationManager configurationManager;
     private final DetectProjectManager detectProjectManager;
     private final HelpPrinter helpPrinter;
@@ -96,14 +96,14 @@ public class Application implements ApplicationRunner {
     }
 
     @Autowired
-    public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final AdditionalPropertyConfig additionalPropertyConfig, final DetectConfigWrapper detectConfigWrapper,
+    public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final DetectPropertySource detectPropertySource, final DetectConfiguration detectConfiguration,
             final ConfigurationManager configurationManager, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
             final HubServiceWrapper hubServiceWrapper, final DetectSummaryManager detectSummaryManager, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
             final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final ArgumentStateParser argumentStateParser, final DetectRunManager detectRunManager, final DiagnosticManager diagnosticManager) {
         this.detectOptionManager = detectOptionManager;
         this.detectInfo = detectInfo;
-        this.additionalPropertyConfig = additionalPropertyConfig;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectPropertySource = detectPropertySource;
+        this.detectConfiguration = detectConfiguration;
         this.configurationManager = configurationManager;
         this.detectProjectManager = detectProjectManager;
         this.helpPrinter = helpPrinter;
@@ -147,8 +147,8 @@ public class Application implements ApplicationRunner {
     private WorkflowStep initializeDetect(final String[] sourceArgs) throws IntegrationException, DetectUserFriendlyException {
         detectInfo.init();
         detectRunManager.init();
-        additionalPropertyConfig.init();
-        detectConfigWrapper.init();
+        detectPropertySource.init();
+        detectConfiguration.init();
         detectOptionManager.init();
 
         final List<DetectOption> options = detectOptionManager.getDetectOptions();
@@ -164,6 +164,8 @@ public class Application implements ApplicationRunner {
             helpHtmlWriter.writeHelpMessage(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()));
             return WorkflowStep.EXIT_WITH_SUCCESS;
         }
+
+        configurationManager.printInfo(System.out, detectInfo);
 
         if (argumentState.isInteractive()) {
             interactiveManager.configureInInteractiveMode();
@@ -181,8 +183,8 @@ public class Application implements ApplicationRunner {
 
         diagnosticManager.init(argumentState.isDiagnostic(), argumentState.isDiagnosticProtected());
 
-        if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT)) {
-            configurationManager.printConfiguration(System.out, detectInfo, options);
+        if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT)) {
+            configurationManager.printConfiguration(System.out, options);
         }
 
         final List<OptionValidationResult> invalidDetectOptionResults = detectOptionManager.getAllInvalidOptionResults();
@@ -190,17 +192,17 @@ public class Application implements ApplicationRunner {
             throw new DetectUserFriendlyException(invalidDetectOptionResults.get(0).getValidationMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
-        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION)) {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION)) {
             hubServiceWrapper.assertHubConnection(new SilentLogger());
             return WorkflowStep.EXIT_WITH_SUCCESS;
         }
 
-        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_HUB) && !hubServiceWrapper.testHubConnection(new SilentLogger())) {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_HUB) && !hubServiceWrapper.testHubConnection(new SilentLogger())) {
             logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_DISABLE_WITHOUT_HUB.getPropertyName()));
             return WorkflowStep.EXIT_WITH_SUCCESS;
         }
 
-        if (detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
             phoneHomeManager.initOffline();
         } else {
             hubServiceWrapper.init();
@@ -217,7 +219,7 @@ public class Application implements ApplicationRunner {
         logger.info(String.format("Project Name: %s", detectProject.getProjectName()));
         logger.info(String.format("Project Version Name: %s", detectProject.getProjectVersion()));
 
-        if (detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
             hubManager.performOfflineHubActions(detectProject);
             for (final File bdio : detectProject.getBdioFiles()) {
                 diagnosticManager.registerGlobalFileOfInterest(bdio);
@@ -268,7 +270,7 @@ public class Application implements ApplicationRunner {
             logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
         }
 
-        if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT)) {
+        if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT)) {
             detectSummaryManager.logDetectResults(new Slf4jIntLogger(logger), currentExitCodeType);
         }
 
@@ -287,7 +289,7 @@ public class Application implements ApplicationRunner {
             logger.error("Failed to finish diagnostic mode.");
         }
 
-        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS) && finalExitCode != 0) {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS) && finalExitCode != 0) {
             logger.warn(String.format("Forcing success: Exiting with exit code 0. Ignored exit code was %s.", finalExitCode));
             System.exit(0);
         } else if (finalExitCode != 0) {

@@ -35,7 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
@@ -46,13 +46,13 @@ import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOptio
 public class DetectOptionManager implements ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class);
 
-    public final DetectConfigWrapper detectConfigWrapper;
+    public final DetectConfiguration detectConfiguration;
 
     private List<DetectOption> detectOptions;
     private List<String> detectGroups;
 
-    public DetectOptionManager(final DetectConfigWrapper detectConfigWrapper) {
-        this.detectConfigWrapper = detectConfigWrapper;
+    public DetectOptionManager(final DetectConfiguration detectConfiguration) {
+        this.detectConfiguration = detectConfiguration;
     }
 
     public List<DetectOption> getDetectOptions() {
@@ -66,10 +66,10 @@ public class DetectOptionManager implements ExitCodeReporter {
     public void init() {
         final Map<DetectProperty, DetectOption> detectOptionsMap = new HashMap<>();
 
-        final Map<DetectProperty, Object> propertyMap = detectConfigWrapper.getPropertyMap();
+        final Map<DetectProperty, Object> propertyMap = detectConfiguration.getPropertyMap();
         if (null != propertyMap && !propertyMap.isEmpty()) {
             for (final Map.Entry<DetectProperty, Object> propertyEntry : propertyMap.entrySet()) {
-                final DetectOption option = processField(propertyEntry.getKey(), detectConfigWrapper.getPropertyValueAsString(propertyEntry.getKey()));
+                final DetectOption option = processField(propertyEntry.getKey(), detectConfiguration.getPropertyValueAsString(propertyEntry.getKey()));
                 if (option != null) {
                     if (!detectOptionsMap.containsKey(propertyEntry.getKey())) {
                         detectOptionsMap.put(propertyEntry.getKey(), option);
@@ -93,7 +93,7 @@ public class DetectOptionManager implements ExitCodeReporter {
         for (final DetectOption option : detectOptions) {
             String fieldValue = option.getPostInitValue();
             if (StringUtils.isBlank(fieldValue)) {
-                fieldValue = detectConfigWrapper.getPropertyValueAsString(option.getDetectProperty());
+                fieldValue = detectConfiguration.getPropertyValueAsString(option.getDetectProperty());
             }
             if (!option.getResolvedValue().equals(fieldValue)) {
                 if (option.getInteractiveValue() != null) {
@@ -127,7 +127,7 @@ public class DetectOptionManager implements ExitCodeReporter {
             for (final DetectOption detectOption : detectOptions) {
                 if (detectOption.getDetectProperty().equals(interactiveOption.getDetectProperty())) {
                     detectOption.setInteractiveValue(interactiveOption.getInteractiveValue());
-                    detectConfigWrapper.setDetectProperty(detectOption.getDetectProperty(), interactiveOption.getInteractiveValue());
+                    detectConfiguration.setDetectProperty(detectOption.getDetectProperty(), interactiveOption.getInteractiveValue());
                     break;
                 }
             }
@@ -169,7 +169,7 @@ public class DetectOptionManager implements ExitCodeReporter {
             final boolean hasValue = null != currentValue;
             if (defaultValue != null && !defaultValue.trim().isEmpty() && !hasValue) {
                 resolvedValue = defaultValue;
-                detectConfigWrapper.setDetectProperty(detectProperty, resolvedValue);
+                detectConfiguration.setDetectProperty(detectProperty, resolvedValue);
             } else if (hasValue) {
                 resolvedValue = currentValue;
             }

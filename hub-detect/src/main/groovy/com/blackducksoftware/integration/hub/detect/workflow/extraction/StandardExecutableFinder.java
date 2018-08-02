@@ -27,7 +27,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
@@ -47,13 +47,13 @@ public class StandardExecutableFinder {
     }
 
     private final ExecutableManager executableManager;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
     private final Map<StandardExecutableType, File> alreadyFound = new HashMap<>();
 
-    public StandardExecutableFinder(final ExecutableManager executableManager, final DetectConfigWrapper detectConfigWrapper) {
+    public StandardExecutableFinder(final ExecutableManager executableManager, final DetectConfiguration detectConfiguration) {
         this.executableManager = executableManager;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public File getExecutable(final StandardExecutableType executableType) throws BomToolException {
@@ -65,7 +65,7 @@ public class StandardExecutableFinder {
             throw new BomToolException("Unknown executable type: " + executableType.toString());
         }
 
-        final String exe = executableManager.getExecutablePathOrOverride(info.detectExecutableType, true, new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), info.override);
+        final String exe = executableManager.getExecutablePathOrOverride(info.detectExecutableType, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), info.override);
         File exeFile = null;
         if (exe != null) {
             exeFile = new File(exe);
@@ -77,23 +77,23 @@ public class StandardExecutableFinder {
     public StandardExecutableInfo createInfo(final StandardExecutableType type) {
         switch (type) {
         case CONDA:
-            return new StandardExecutableInfo(ExecutableType.CONDA, detectConfigWrapper.getProperty(DetectProperty.DETECT_CONDA_PATH));
+            return new StandardExecutableInfo(ExecutableType.CONDA, detectConfiguration.getProperty(DetectProperty.DETECT_CONDA_PATH));
         case CPAN:
-            return new StandardExecutableInfo(ExecutableType.CPAN, detectConfigWrapper.getProperty(DetectProperty.DETECT_CPAN_PATH));
+            return new StandardExecutableInfo(ExecutableType.CPAN, detectConfiguration.getProperty(DetectProperty.DETECT_CPAN_PATH));
         case CPANM:
-            return new StandardExecutableInfo(ExecutableType.CPANM, detectConfigWrapper.getProperty(DetectProperty.DETECT_CPANM_PATH));
+            return new StandardExecutableInfo(ExecutableType.CPANM, detectConfiguration.getProperty(DetectProperty.DETECT_CPANM_PATH));
         case DOCKER:
-            return new StandardExecutableInfo(ExecutableType.DOCKER, detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_PATH));
+            return new StandardExecutableInfo(ExecutableType.DOCKER, detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_PATH));
         case BASH:
-            return new StandardExecutableInfo(ExecutableType.BASH, detectConfigWrapper.getProperty(DetectProperty.DETECT_BASH_PATH));
+            return new StandardExecutableInfo(ExecutableType.BASH, detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH));
         case GO:
             return new StandardExecutableInfo(ExecutableType.GO, null);
         case REBAR3:
-            return new StandardExecutableInfo(ExecutableType.REBAR3, detectConfigWrapper.getProperty(DetectProperty.DETECT_HEX_REBAR3_PATH));
+            return new StandardExecutableInfo(ExecutableType.REBAR3, detectConfiguration.getProperty(DetectProperty.DETECT_HEX_REBAR3_PATH));
         case PEAR:
-            return new StandardExecutableInfo(ExecutableType.PEAR, detectConfigWrapper.getProperty(DetectProperty.DETECT_PEAR_PATH));
+            return new StandardExecutableInfo(ExecutableType.PEAR, detectConfiguration.getProperty(DetectProperty.DETECT_PEAR_PATH));
         case YARN:
-            return new StandardExecutableInfo(ExecutableType.YARN, detectConfigWrapper.getProperty(DetectProperty.DETECT_YARN_PATH));
+            return new StandardExecutableInfo(ExecutableType.YARN, detectConfiguration.getProperty(DetectProperty.DETECT_YARN_PATH));
         }
         return null;
     }
