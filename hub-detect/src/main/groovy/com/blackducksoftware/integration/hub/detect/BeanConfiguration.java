@@ -273,7 +273,7 @@ public class BeanConfiguration {
 
     @Bean
     public DetectOptionManager detectOptionManager() {
-        return new DetectOptionManager(detectConfiguration());
+        return new DetectOptionManager(detectConfiguration(), detectInfo());
     }
 
     @Bean
