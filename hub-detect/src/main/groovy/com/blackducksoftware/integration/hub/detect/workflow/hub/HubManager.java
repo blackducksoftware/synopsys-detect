@@ -39,7 +39,7 @@ import com.blackducksoftware.integration.hub.api.generated.view.CodeLocationView
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
 import com.blackducksoftware.integration.hub.api.view.ScanSummaryView;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
@@ -64,18 +64,18 @@ public class HubManager implements ExitCodeReporter {
 
     private final BdioUploader bdioUploader;
     private final CodeLocationNameManager codeLocationNameManager;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
     private final HubServiceWrapper hubServiceWrapper;
     private final HubSignatureScanner hubSignatureScanner;
     private final PolicyChecker policyChecker;
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
-    public HubManager(final BdioUploader bdioUploader, final CodeLocationNameManager codeLocationNameManager, final DetectConfigWrapper detectConfigWrapper, final HubServiceWrapper hubServiceWrapper,
+    public HubManager(final BdioUploader bdioUploader, final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final HubServiceWrapper hubServiceWrapper,
             final HubSignatureScanner hubSignatureScanner, final PolicyChecker policyChecker) {
         this.bdioUploader = bdioUploader;
         this.codeLocationNameManager = codeLocationNameManager;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
         this.hubServiceWrapper = hubServiceWrapper;
         this.hubSignatureScanner = hubSignatureScanner;
         this.policyChecker = policyChecker;
@@ -86,7 +86,7 @@ public class HubManager implements ExitCodeReporter {
         ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectService);
         if (null != detectProject.getBdioFiles() && !detectProject.getBdioFiles().isEmpty()) {
             final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP)) {
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP)) {
                 try {
                     final HubService hubService = hubServiceWrapper.createHubService();
                     final List<CodeLocationView> codeLocationViews = hubService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
@@ -103,9 +103,9 @@ public class HubManager implements ExitCodeReporter {
             logger.debug("Did not create any bdio files.");
         }
 
-        if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
+        if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
             final HubServerConfig hubServerConfig = hubServiceWrapper.getHubServerConfig();
-            final ExecutorService executorService = Executors.newFixedThreadPool(detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS));
+            final ExecutorService executorService = Executors.newFixedThreadPool(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS));
             try {
                 final SignatureScannerService signatureScannerService = hubServiceWrapper.createSignatureScannerService(executorService);
                 final ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, signatureScannerService, detectProject);
@@ -120,7 +120,7 @@ public class HubManager implements ExitCodeReporter {
     }
 
     public void performOfflineHubActions(final DetectProject detectProject) throws IntegrationException {
-        if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
+        if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
             hubSignatureScanner.scanPathsOffline(detectProject);
         }
     }
@@ -133,33 +133,34 @@ public class HubManager implements ExitCodeReporter {
             final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
             final ScanStatusService scanStatusService = hubServiceWrapper.createScanStatusService();
 
-            if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)) || detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF) || detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {
+            if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)) || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF) || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {
                 waitForBomUpdate(codeLocationService, hubService, scanStatusService);
             }
 
-            if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES))) {
+            if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES))) {
                 final PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView);
                 logger.info(policyStatusDescription.getPolicyStatusMessage());
                 if (policyChecker.policyViolated(policyStatusDescription)) {
                     exitCodeType = ExitCodeType.FAILURE_POLICY_VIOLATION;
+
                 }
             }
 
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF)) {
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF)) {
                 logger.info("Creating risk report pdf");
-                final File pdfFile = reportService.createReportPdfFile(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_RISK_REPORT_PDF_PATH)), detectProject.getProjectName(), detectProject.getProjectVersion());
+                final File pdfFile = reportService.createReportPdfFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_RISK_REPORT_PDF_PATH)), detectProject.getProjectName(), detectProject.getProjectVersion());
                 logger.info(String.format("Created risk report pdf: %s", pdfFile.getCanonicalPath()));
             }
 
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {
                 logger.info("Creating notices report");
-                final File noticesFile = reportService.createNoticesReportFile(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_NOTICES_REPORT_PATH)), detectProject.getProjectName(), detectProject.getProjectVersion());
+                final File noticesFile = reportService.createNoticesReportFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_NOTICES_REPORT_PATH)), detectProject.getProjectName(), detectProject.getProjectVersion());
                 if (noticesFile != null) {
                     logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
                 }
             }
 
-            if (!detectProject.getBdioFiles().isEmpty() || !detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
+            if (!detectProject.getBdioFiles().isEmpty() || !detectConfiguration.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
                 // only log BOM URL if we have updated it in some way
                 final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(detectProject.getProjectName(), detectProject.getProjectVersion());
                 final String componentsLink = hubService.getFirstLinkSafely(projectVersionWrapper.getProjectVersionView(), ProjectVersionView.COMPONENTS_LINK);
@@ -200,12 +201,12 @@ public class HubManager implements ExitCodeReporter {
         logger.info("The BOM has been updated");
     }
 
-    private ProjectVersionView ensureProjectVersionExists(final DetectProject detectProject, final ProjectService projectService) throws IntegrationException {
-        final ProjectRequestBuilder projectRequestBuilder = new DetectProjectRequestBuilder(detectConfigWrapper, detectProject);
+    public ProjectVersionView ensureProjectVersionExists(final DetectProject detectProject, final ProjectService projectService) throws IntegrationException {
+        final ProjectRequestBuilder projectRequestBuilder = new DetectProjectRequestBuilder(detectConfiguration, detectProject);
         final ProjectRequest projectRequest = projectRequestBuilder.build();
 
         final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersionAndCreateIfNeeded(projectRequest);
-        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_PROJECT_VERSION_UPDATE)) {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_VERSION_UPDATE)) {
             logger.debug("Updating Project and Version information to " + projectRequest.toString());
             projectService.updateProjectAndVersion(projectVersionWrapper.getProjectView(), projectRequest);
         }

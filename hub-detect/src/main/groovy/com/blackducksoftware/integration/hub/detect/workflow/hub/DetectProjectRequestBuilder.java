@@ -23,23 +23,23 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.hub;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
 
 public class DetectProjectRequestBuilder extends ProjectRequestBuilder {
 
-    public DetectProjectRequestBuilder(final DetectConfigWrapper detectConfigWrapper, final DetectProject detectProject) {
+    public DetectProjectRequestBuilder(final DetectConfiguration detectConfiguration, final DetectProject detectProject) {
         setProjectName(detectProject.getProjectName());
         setVersionName(detectProject.getProjectVersion());
 
-        setProjectLevelAdjustments(detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_PROJECT_LEVEL_ADJUSTMENTS));
-        setPhase(detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_VERSION_PHASE));
-        setDistribution(detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_VERSION_DISTRIBUTION));
-        setProjectTier(detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_PROJECT_TIER));
-        setDescription(detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_DESCRIPTION));
-        setReleaseComments(detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_VERSION_NOTES));
+        setProjectLevelAdjustments(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_LEVEL_ADJUSTMENTS));
+        setPhase(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_PHASE));
+        setDistribution(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_DISTRIBUTION));
+        setProjectTier(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_PROJECT_TIER));
+        setDescription(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DESCRIPTION));
+        setReleaseComments(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_NOTES));
 
     }
 }

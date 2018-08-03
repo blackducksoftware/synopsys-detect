@@ -33,7 +33,7 @@ import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
 import com.blackducksoftware.integration.hub.api.generated.enumeration.PolicyStatusSummaryStatusType;
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
 import com.blackducksoftware.integration.hub.api.generated.view.VersionBomPolicyStatusView;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.service.ProjectService;
 import com.blackducksoftware.integration.hub.service.model.PolicyStatusDescription;
@@ -41,10 +41,10 @@ import com.blackducksoftware.integration.hub.service.model.PolicyStatusDescripti
 public class PolicyChecker {
     private final Logger logger = LoggerFactory.getLogger(PolicyChecker.class);
 
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
-    public PolicyChecker(final DetectConfigWrapper detectConfigWrapper) {
-        this.detectConfigWrapper = detectConfigWrapper;
+    public PolicyChecker(final DetectConfiguration detectConfiguration) {
+        this.detectConfiguration = detectConfiguration;
     }
 
     /**
@@ -67,7 +67,7 @@ public class PolicyChecker {
     }
 
     public boolean policyViolated(final PolicyStatusDescription policyStatusDescription) {
-        final String policyFailOnSeverity = detectConfigWrapper.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES);
+        final String policyFailOnSeverity = detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES);
         if (StringUtils.isEmpty(policyFailOnSeverity)) {
             return isAnyPolicyViolated(policyStatusDescription);
         }

@@ -35,8 +35,7 @@ import com.blackducksoftware.integration.hub.api.generated.discovery.ApiDiscover
 import com.blackducksoftware.integration.hub.api.generated.response.CurrentVersionView;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder;
-import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -59,8 +58,7 @@ import com.google.gson.JsonParser;
 public class HubServiceWrapper {
     private final Logger logger = LoggerFactory.getLogger(HubServiceWrapper.class);
 
-    private final DetectConfigWrapper detectConfigWrapper;
-    private final AdditionalPropertyConfig additionalPropertyConfig;
+    private final DetectConfiguration detectConfiguration;
     private final Gson gson;
     private final JsonParser jsonParser;
 
@@ -68,9 +66,8 @@ public class HubServiceWrapper {
     private HubServerConfig hubServerConfig;
     private HubServicesFactory hubServicesFactory;
 
-    public HubServiceWrapper(final DetectConfigWrapper detectConfigWrapper, final AdditionalPropertyConfig additionalPropertyConfig, final Gson gson, final JsonParser jsonParser) {
-        this.detectConfigWrapper = detectConfigWrapper;
-        this.additionalPropertyConfig = additionalPropertyConfig;
+    public HubServiceWrapper(final DetectConfiguration detectConfiguration, final Gson gson, final JsonParser jsonParser) {
+        this.detectConfiguration = detectConfiguration;
         this.gson = gson;
         this.jsonParser = jsonParser;
     }
@@ -131,11 +128,11 @@ public class HubServiceWrapper {
     }
 
     public ScanStatusService createScanStatusService() {
-        return hubServicesFactory.createScanStatusService(detectConfigWrapper.getLongProperty(DetectProperty.DETECT_API_TIMEOUT));
+        return hubServicesFactory.createScanStatusService(detectConfiguration.getLongProperty(DetectProperty.DETECT_API_TIMEOUT));
     }
 
     public ReportService createReportService() throws IntegrationException {
-        return hubServicesFactory.createReportService(detectConfigWrapper.getLongProperty(DetectProperty.DETECT_API_TIMEOUT));
+        return hubServicesFactory.createReportService(detectConfiguration.getLongProperty(DetectProperty.DETECT_API_TIMEOUT));
     }
 
     public SignatureScannerService createSignatureScannerService(final ExecutorService executorService) {
@@ -152,7 +149,7 @@ public class HubServiceWrapper {
         final HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder();
         hubServerConfigBuilder.setLogger(slf4jIntLogger);
 
-        final Map<String, String> blackduckHubProperties = additionalPropertyConfig.getBlackduckHubProperties();
+        final Map<String, String> blackduckHubProperties = detectConfiguration.getBlackduckProperties();
         hubServerConfigBuilder.setFromProperties(blackduckHubProperties);
 
         return hubServerConfigBuilder.build();

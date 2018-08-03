@@ -38,7 +38,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomTo
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class MavenPomBomTool extends BomTool {
-    public static final String POM_WRAPPER_FILENAME = "pom.groovy";
+    public static final String POM_FILENAME = "pom.xml";
 
     private final DetectFileFinder fileFinder;
     private final MavenExecutableFinder mavenExecutableFinder;
@@ -55,9 +55,9 @@ public class MavenPomBomTool extends BomTool {
 
     @Override
     public BomToolResult applicable() {
-        final File pom = fileFinder.findFile(environment.getDirectory(), POM_WRAPPER_FILENAME);
+        final File pom = fileFinder.findFile(environment.getDirectory(), POM_FILENAME);
         if (pom == null) {
-            return new FileNotFoundBomToolResult(POM_WRAPPER_FILENAME);
+            return new FileNotFoundBomToolResult(POM_FILENAME);
         }
 
         return new PassedBomToolResult();

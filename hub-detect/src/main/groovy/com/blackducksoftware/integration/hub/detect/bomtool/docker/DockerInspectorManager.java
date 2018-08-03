@@ -32,7 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -56,14 +56,14 @@ public class DockerInspectorManager {
     private final DetectFileManager detectFileManager;
     private final ExecutableManager executableManager;
     private final ExecutableRunner executableRunner;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
     public DockerInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
-            final DetectConfigWrapper detectConfigWrapper) {
+            final DetectConfiguration detectConfiguration) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     private boolean hasResolvedInspector;
@@ -85,11 +85,11 @@ public class DockerInspectorManager {
 
         final DockerInspectorInfo info = resolveShellScript();
         final String bashExecutablePath = executableManager
-                .getExecutablePathOrOverride(ExecutableType.BASH, true, new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), detectConfigWrapper.getProperty(DetectProperty.DETECT_BASH_PATH));
+                .getExecutablePathOrOverride(ExecutableType.BASH, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH));
         info.version = resolveInspectorVersion(bashExecutablePath, info.dockerInspectorScript);
 
         if (info.isOffline) {
-            final String dockerInspectorAirGapPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
+            final String dockerInspectorAirGapPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
             info.offlineDockerInspectorJar = new File(dockerInspectorAirGapPath, "hub-docker-inspector-" + info.version + ".jar");
             for (final String os : Arrays.asList("ubuntu", "alpine", "centos")) {
                 final File osImage = new File(dockerInspectorAirGapPath, "hub-docker-inspector-" + os + ".tar");
@@ -102,7 +102,7 @@ public class DockerInspectorManager {
 
     private String resolveInspectorVersion(final String bashExecutablePath, final File dockerInspectorShellScript) throws DetectUserFriendlyException {
         try {
-            final String dockerInspectorVersion = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
+            final String dockerInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
             if ("latest".equalsIgnoreCase(dockerInspectorVersion)) {
                 final File inspectorDirectory = detectFileManager.getSharedDirectory(dockerSharedDirectoryName);
                 final List<String> bashArguments = new ArrayList<>();
@@ -123,20 +123,20 @@ public class DockerInspectorManager {
 
     private DockerInspectorInfo resolveShellScript() throws DetectUserFriendlyException {
         try {
-            final String suppliedDockerVersion = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
+            final String suppliedDockerVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
             final File shellScriptFile;
-            final File airGapHubDockerInspectorShellScript = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH), "hub-docker-inspector.sh");
+            final File airGapHubDockerInspectorShellScript = new File(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH), "hub-docker-inspector.sh");
             boolean isOffline = false;
             logger.debug(String.format("Verifying air gap shell script present at %s", airGapHubDockerInspectorShellScript.getCanonicalPath()));
 
-            final String dockerInspectorPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH);
+            final String dockerInspectorPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH);
             if (StringUtils.isNotBlank(dockerInspectorPath)) {
                 shellScriptFile = new File(dockerInspectorPath);
             } else if (airGapHubDockerInspectorShellScript.exists()) {
                 shellScriptFile = airGapHubDockerInspectorShellScript;
                 isOffline = true;
             } else {
-                final String dockerInspectorVersion = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
+                final String dockerInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
                 String hubDockerInspectorShellScriptUrl = LATEST_URL;
                 if (!"latest".equals(dockerInspectorVersion)) {
                     hubDockerInspectorShellScriptUrl = String.format("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-%s.sh", dockerInspectorVersion);
@@ -147,7 +147,7 @@ public class DockerInspectorManager {
                 String shellScriptContents;
                 Response response = null;
 
-                try (UnauthenticatedRestConnection restConnection = detectConfigWrapper.createUnauthenticatedRestConnection(hubDockerInspectorShellScriptUrl)) {
+                try (UnauthenticatedRestConnection restConnection = detectConfiguration.createUnauthenticatedRestConnection(hubDockerInspectorShellScriptUrl)) {
                     response = restConnection.executeRequest(request);
                     shellScriptContents = response.getContentString();
                 } finally {

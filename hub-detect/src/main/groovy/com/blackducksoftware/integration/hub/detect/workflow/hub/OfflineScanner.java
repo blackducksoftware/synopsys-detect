@@ -42,7 +42,7 @@ import com.blackducksoftware.integration.hub.cli.parallel.ParallelSimpleScanner;
 import com.blackducksoftware.integration.hub.cli.summary.ScanTargetOutput;
 import com.blackducksoftware.integration.hub.configuration.HubScanConfig;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -60,11 +60,11 @@ public class OfflineScanner {
     private final Logger logger = LoggerFactory.getLogger(OfflineScanner.class);
 
     private final Gson gson;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
-    public OfflineScanner(final Gson gson, final DetectConfigWrapper detectConfigWrapper) {
+    public OfflineScanner(final Gson gson, final DetectConfiguration detectConfiguration) {
         this.gson = gson;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public List<ScanTargetOutput> offlineScan(final DetectProject detectProject, final HubScanConfig hubScanConfig, final String hubSignatureScannerOfflineLocalPath)
@@ -81,7 +81,7 @@ public class OfflineScanner {
         projectRequestBuilder.setProjectName(detectProject.getProjectName());
         projectRequestBuilder.setVersionName(detectProject.getProjectVersion());
 
-        final ExecutorService executorService = Executors.newFixedThreadPool(detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS));
+        final ExecutorService executorService = Executors.newFixedThreadPool(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS));
         try {
             final ParallelSimpleScanner parallelSimpleScanner = new ParallelSimpleScanner(intLogger, intEnvironmentVariables, gson, executorService);
             final CLILocation cliLocation;
@@ -97,7 +97,7 @@ public class OfflineScanner {
 
             boolean cliInstalledOkay = checkCliInstall(cliLocation, new SilentLogger());
 
-            if (!cliInstalledOkay && StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL))) {
+            if (!cliInstalledOkay && StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL))) {
                 installSignatureScannerFromUrl(intLogger, hubScanConfig);
                 cliInstalledOkay = checkCliInstall(cliLocation, intLogger);
             }
@@ -123,18 +123,18 @@ public class OfflineScanner {
 
     private void installSignatureScannerFromUrl(final IntLogger intLogger, final HubScanConfig hubScanConfig) throws DetectUserFriendlyException {
         try {
-            logger.info(String.format("Attempting to download the signature scanner from %s", detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL)));
+            logger.info(String.format("Attempting to download the signature scanner from %s", detectConfiguration.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL)));
             final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
-            restConnectionBuilder.setBaseUrl(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL));
-            restConnectionBuilder.setTimeout(detectConfigWrapper.getIntegerProperty(DetectProperty.BLACKDUCK_HUB_TIMEOUT));
-            restConnectionBuilder.applyProxyInfo(detectConfigWrapper.getHubProxyInfo());
+            restConnectionBuilder.setBaseUrl(detectConfiguration.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL));
+            restConnectionBuilder.setTimeout(detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_HUB_TIMEOUT));
+            restConnectionBuilder.applyProxyInfo(detectConfiguration.getHubProxyInfo());
             restConnectionBuilder.setLogger(intLogger);
             final RestConnection restConnection = restConnectionBuilder.build();
             final CLIDownloadUtility cliDownloadUtility = new CLIDownloadUtility(intLogger, restConnection);
-            cliDownloadUtility.performInstallation(hubScanConfig.getCommonScanConfig().getToolsDir(), detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL), "unknown");
+            cliDownloadUtility.performInstallation(hubScanConfig.getCommonScanConfig().getToolsDir(), detectConfiguration.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL), "unknown");
 
         } catch (final Exception e) {
-            throw new DetectUserFriendlyException(String.format("There was a problem downloading the signature scanner from %s: %s", detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL), e.getMessage()), e,
+            throw new DetectUserFriendlyException(String.format("There was a problem downloading the signature scanner from %s: %s", detectConfiguration.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL), e.getMessage()), e,
                     ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }

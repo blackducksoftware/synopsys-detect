@@ -67,10 +67,6 @@ public enum DetectProperty {
     // insert here
 
     @HelpGroup(primary = GROUP_GENERAL)
-    @HelpDescription("If true, Detect will fail if there are any issues found in the configuration.")
-    DETECT_FAIL_CONFIG_WARNING("detect.fail.config.warning", DetectPropertyType.BOOLEAN, "true"),
-
-    @HelpGroup(primary = GROUP_GENERAL)
     @HelpDescription("If true, detect will always exit with code 0.")
     DETECT_FORCE_SUCCESS("detect.force.success", DetectPropertyType.BOOLEAN, "false"),
 
@@ -241,6 +237,7 @@ public enum DetectProperty {
     @HelpDescription("A suffix to the name of the codelocations created by Detect.")
     DETECT_PROJECT_CODELOCATION_SUFFIX("detect.project.codelocation.suffix", DetectPropertyType.STRING, ""),
 
+    @Deprecated
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("If set to true, unmaps all other code locations mapped to the project version produced by the current run of Detect.")
     DETECT_PROJECT_CODELOCATION_UNMAP("detect.project.codelocation.unmap", DetectPropertyType.BOOLEAN, "false"),
@@ -462,8 +459,12 @@ public enum DetectProperty {
     DETECT_HUB_SIGNATURE_SCANNER_DISABLED("detect.hub.signature.scanner.disabled", DetectPropertyType.BOOLEAN, "false"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_OFFLINE, SEARCH_GROUP_HUB })
-    @HelpDescription("To use a local signature scanner, set its location with this property. This will be the path where the signature scanner was unzipped. This will likely look similar to /some/path/scan.cli-x.y.z")
+    @HelpDescription("To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
     DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH("detect.hub.signature.scanner.offline.local.path", DetectPropertyType.STRING),
+
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_OFFLINE, SEARCH_GROUP_HUB })
+    @HelpDescription("To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
+    DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH("detect.hub.signature.scanner.local.path", DetectPropertyType.STRING),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB })
     @HelpDescription("If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.")

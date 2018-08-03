@@ -40,7 +40,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -59,15 +59,15 @@ public class NugetInspectorExtractor {
     private final NugetInspectorPackager nugetInspectorPackager;
     private final ExecutableRunner executableRunner;
     private final DetectFileFinder detectFileFinder;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
     public NugetInspectorExtractor(final DetectFileManager detectFileManager, final NugetInspectorPackager nugetInspectorPackager, final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder,
-            final DetectConfigWrapper detectConfigWrapper) {
+            final DetectConfiguration detectConfiguration) {
         this.detectFileManager = detectFileManager;
         this.nugetInspectorPackager = nugetInspectorPackager;
         this.executableRunner = executableRunner;
         this.detectFileFinder = detectFileFinder;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String inspectorExe, final ExtractionId extractionId) {
@@ -77,22 +77,22 @@ public class NugetInspectorExtractor {
             final List<String> options = new ArrayList<>(Arrays.asList(
                     "--target_path=" + directory.toString(),
                     "--output_directory=" + outputDirectory.getCanonicalPath(),
-                    "--ignore_failure=" + detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NUGET_IGNORE_FAILURE)));
+                    "--ignore_failure=" + detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NUGET_IGNORE_FAILURE)));
 
-            final String nugetExcludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_EXCLUDED_MODULES);
+            final String nugetExcludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_EXCLUDED_MODULES);
             if (StringUtils.isNotBlank(nugetExcludedModules)) {
                 options.add("--excluded_modules=" + nugetExcludedModules);
             }
-            final String nugetIncludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INCLUDED_MODULES);
+            final String nugetIncludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INCLUDED_MODULES);
             if (StringUtils.isNotBlank(nugetIncludedModules)) {
                 options.add("--included_modules=" + nugetIncludedModules);
             }
-            final String[] nugetPackagesRepo = detectConfigWrapper.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL);
+            final String[] nugetPackagesRepo = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL);
             if (nugetPackagesRepo.length > 0) {
                 final String packagesRepos = Arrays.asList(nugetPackagesRepo).stream().collect(Collectors.joining(","));
                 options.add("--packages_repo_url=" + packagesRepos);
             }
-            final String nugetConfigPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
+            final String nugetConfigPath = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
             if (StringUtils.isNotBlank(nugetConfigPath)) {
                 options.add("--nuget_config_path=" + nugetConfigPath);
             }

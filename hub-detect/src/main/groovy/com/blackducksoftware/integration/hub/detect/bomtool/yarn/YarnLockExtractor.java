@@ -37,7 +37,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
@@ -52,13 +52,13 @@ public class YarnLockExtractor {
     private final ExternalIdFactory externalIdFactory;
     private final YarnListParser yarnListParser;
     private final ExecutableRunner executableRunner;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
-    public YarnLockExtractor(final ExternalIdFactory externalIdFactory, final YarnListParser yarnListParser, final ExecutableRunner executableRunner, final DetectConfigWrapper detectConfigWrapper) {
+    public YarnLockExtractor(final ExternalIdFactory externalIdFactory, final YarnListParser yarnListParser, final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration) {
         this.externalIdFactory = externalIdFactory;
         this.yarnListParser = yarnListParser;
         this.executableRunner = executableRunner;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File yarnlock, final String yarnExe) {
@@ -66,7 +66,7 @@ public class YarnLockExtractor {
             final List<String> yarnLockText = Files.readAllLines(yarnlock.toPath(), StandardCharsets.UTF_8);
             final List<String> exeArgs = Stream.of("list", "--emoji", "false").collect(Collectors.toCollection(ArrayList::new));
 
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_YARN_PROD_ONLY)) {
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_YARN_PROD_ONLY)) {
                 exeArgs.add("--prod");
             }
 
