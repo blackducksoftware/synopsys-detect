@@ -241,6 +241,14 @@ public class ConfigurationManager {
         });
     }
 
+    private void addFieldWarning(final List<DetectOption> detectOptions, final DetectProperty detectProperty, final String warning) {
+        detectOptions.stream().forEach(option -> {
+            if (option.getDetectProperty() == detectProperty) {
+                option.addWarning(warning);
+            }
+        });
+    }
+
     @SuppressWarnings("unused")
     private void requestDeprecation(final List<DetectOption> detectOptions, final DetectProperty detectProperty) {
         detectOptions.stream().forEach(option -> {
