@@ -42,7 +42,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
@@ -50,25 +50,25 @@ public class DetectCodeLocationManager {
     private final Logger logger = LoggerFactory.getLogger(DetectCodeLocationManager.class);
 
     private final CodeLocationNameManager codeLocationNameManager;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
-    public DetectCodeLocationManager(final CodeLocationNameManager codeLocationNameManager, final DetectConfigWrapper detectConfigWrapper) {
+    public DetectCodeLocationManager(final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration) {
         this.codeLocationNameManager = codeLocationNameManager;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public DetectCodeLocationResult process(final List<DetectCodeLocation> detectCodeLocations, final String projectName, final String projectVersion) {
         final Set<BomToolGroupType> failedBomToolGroups = new HashSet<>();
 
-        final String prefix = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX);
-        final String suffix = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX);
+        final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX);
+        final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX);
 
         final List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
-        final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH), projectName, projectVersion, prefix, suffix);
+        final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH), projectName, projectVersion, prefix, suffix);
         final Map<String, List<DetectCodeLocation>> codeLocationsByName = seperateCodeLocationsByName(codeLocationsAndNames);
 
         // We can create a DetectProperty to combine duplicate code location names in the future if users want that
-        final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName, new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), false);
+        final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), false);
 
         // Sanity check that code location names are unique (they should be)
         final Map<String, List<BdioCodeLocation>> bdioByCodeLocationName = groupByCodeLocationNames(bdioCodeLocations);

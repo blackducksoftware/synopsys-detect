@@ -29,18 +29,18 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
 public class CodeLocationNameManager {
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
     private final CodeLocationNameService codeLocationNameService;
 
     private final Set<String> codeLocationNames = new HashSet<>();
     private int givenCodeLocationOverrideCount = 0;
 
-    public CodeLocationNameManager(final DetectConfigWrapper detectConfigWrapper, final CodeLocationNameService codeLocationNameService) {
-        this.detectConfigWrapper = detectConfigWrapper;
+    public CodeLocationNameManager(final DetectConfiguration detectConfiguration, final CodeLocationNameService codeLocationNameService) {
+        this.detectConfiguration = detectConfiguration;
         this.codeLocationNameService = codeLocationNameService;
     }
 
@@ -86,12 +86,12 @@ public class CodeLocationNameManager {
     }
 
     private boolean useCodeLocationOverride() {
-        return StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME));
+        return StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME));
     }
 
     private String getNextCodeLocationOverrideName(final CodeLocationType codeLocationType) { // returns "override", then "override 2", then "override 3", etc
         givenCodeLocationOverrideCount++;
-        final String base = detectConfigWrapper.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME) + " " + codeLocationType.name();
+        final String base = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME) + " " + codeLocationType.name();
         if (givenCodeLocationOverrideCount == 1) {
             return base;
         } else {

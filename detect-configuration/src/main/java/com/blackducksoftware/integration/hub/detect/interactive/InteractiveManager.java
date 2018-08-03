@@ -49,32 +49,31 @@ public class InteractiveManager {
     }
 
     public void configureInInteractiveMode() {
-        try (final PrintStream interactivePrintStream = new PrintStream(System.out)) {
-            final InteractiveReader interactiveReader;
-            final Console console = System.console();
+        // TODO: Find a way to close the PrintStream without closing System.out
+        // DO NOT CLOSE THIS STREAM, IT WILL CLOSE SYSOUT!
+        final PrintStream interactivePrintStream = new PrintStream(System.out);
+        final InteractiveReader interactiveReader;
+        final Console console = System.console();
 
-            if (console != null) {
-                interactiveReader = new ConsoleInteractiveReader(console);
-            } else {
-                logger.warn("It may be insecure to enter passwords because you are running in a virtual console.");
-                interactiveReader = new ScannerInteractiveReader(System.in);
-            }
-
-            final InteractiveMode interactiveMode = defaultInteractiveMode;
-            interactiveMode.init(interactivePrintStream, interactiveReader);
-
-            interactiveMode.println("");
-            interactiveMode.println("Interactive flag found.");
-            interactiveMode.println("Starting default interactive mode.");
-            interactiveMode.println("");
-
-            interactiveMode.configure();
-            final List<InteractiveOption> interactiveOptions = interactiveMode.getInteractiveOptions();
-            detectOptionManager.applyInteractiveOptions(interactiveOptions);
-        } catch (final Exception e) {
-            logger.error("Interactive mode failed. Please retry interactive mode or remove '-i' and '--interactive' from your options.");
-            throw e;
+        if (console != null) {
+            interactiveReader = new ConsoleInteractiveReader(console);
+        } else {
+            logger.warn("It may be insecure to enter passwords because you are running in a virtual console.");
+            interactiveReader = new ScannerInteractiveReader(System.in);
         }
+
+        final InteractiveMode interactiveMode = defaultInteractiveMode;
+        interactiveMode.init(interactivePrintStream, interactiveReader);
+
+        interactiveMode.println("");
+        interactiveMode.println("Interactive flag found.");
+        interactiveMode.println("Starting default interactive mode.");
+        interactiveMode.println("");
+
+        interactiveMode.configure();
+        final List<InteractiveOption> interactiveOptions = interactiveMode.getInteractiveOptions();
+        detectOptionManager.applyInteractiveOptions(interactiveOptions);
+
     }
 
 }

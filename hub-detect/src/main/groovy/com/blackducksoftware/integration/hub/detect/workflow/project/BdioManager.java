@@ -42,7 +42,7 @@ import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -59,15 +59,15 @@ public class BdioManager {
     private final SimpleBdioFactory simpleBdioFactory;
     private final IntegrationEscapeUtil integrationEscapeUtil;
     private final CodeLocationNameManager codeLocationNameManager;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
     public BdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil, final CodeLocationNameManager codeLocationNameManager,
-            final DetectConfigWrapper detectConfigWrapper) {
+            final DetectConfiguration detectConfiguration) {
         this.detectInfo = detectInfo;
         this.simpleBdioFactory = simpleBdioFactory;
         this.integrationEscapeUtil = integrationEscapeUtil;
         this.codeLocationNameManager = codeLocationNameManager;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public List<File> createBdioFiles(final List<BdioCodeLocation> bdioCodeLocations, final String projectName, final String projectVersion) throws DetectUserFriendlyException {
@@ -75,7 +75,7 @@ public class BdioManager {
         for (final BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
             final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(bdioCodeLocation.codeLocationName, projectName, projectVersion, bdioCodeLocation.codeLocation);
 
-            final File outputFile = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH), bdioCodeLocation.bdioName);
+            final File outputFile = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH), bdioCodeLocation.bdioName);
             if (outputFile.exists()) {
                 final boolean deleteSuccess = outputFile.delete();
                 logger.debug(String.format("%s deleted: %b", outputFile.getAbsolutePath(), deleteSuccess));
@@ -111,7 +111,7 @@ public class BdioManager {
         final ExternalId original = codeLocation.getExternalId();
         final String sourcePath = codeLocation.getSourcePath();
         final String bomToolType = codeLocation.getBomToolGroupType().toString();
-        final String relativePath = FileNameUtils.relativize(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH), sourcePath);
+        final String relativePath = FileNameUtils.relativize(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH), sourcePath);
         final List<String> externalIdPieces = new ArrayList<>();
         externalIdPieces.addAll(Arrays.asList(original.getExternalIdPieces()));
         externalIdPieces.add(relativePath);
@@ -124,8 +124,8 @@ public class BdioManager {
         final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(codeLocations);
 
         final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(projectName, projectVersion, aggregateDependencyGraph);
-        final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfigWrapper.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME)));
-        final File aggregateBdioFile = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH), filename);
+        final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME)));
+        final File aggregateBdioFile = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH), filename);
         if (aggregateBdioFile.exists()) {
             final boolean deleteSuccess = aggregateBdioFile.delete();
             logger.debug(String.format("%s deleted: %b", aggregateBdioFile.getAbsolutePath(), deleteSuccess));

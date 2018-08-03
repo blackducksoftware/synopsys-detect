@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
@@ -44,17 +44,17 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 public class MavenCliExtractor {
     private final ExecutableRunner executableRunner;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
-    public MavenCliExtractor(final ExecutableRunner executableRunner, final MavenCodeLocationPackager mavenCodeLocationPackager, final DetectConfigWrapper detectConfigWrapper) {
+    public MavenCliExtractor(final ExecutableRunner executableRunner, final MavenCodeLocationPackager mavenCodeLocationPackager, final DetectConfiguration detectConfiguration) {
         this.executableRunner = executableRunner;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String mavenExe) {
         try {
-            String mavenCommand = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_BUILD_COMMAND);
+            String mavenCommand = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_BUILD_COMMAND);
             if (StringUtils.isNotBlank(mavenCommand)) {
                 mavenCommand = mavenCommand.replace("dependency:tree", "");
                 if (StringUtils.isNotBlank(mavenCommand)) {
@@ -66,7 +66,7 @@ public class MavenCliExtractor {
             if (StringUtils.isNotBlank(mavenCommand)) {
                 arguments.addAll(Arrays.asList(mavenCommand.split(" ")));
             }
-            final String mavenScope = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_SCOPE);
+            final String mavenScope = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_SCOPE);
             if (StringUtils.isNotBlank(mavenScope)) {
                 arguments.add(String.format("-Dscope=%s", mavenScope));
             }
@@ -77,8 +77,8 @@ public class MavenCliExtractor {
 
             if (mvnOutput.getReturnCode() == 0) {
 
-                final String excludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_MODULES);
-                final String includedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_MODULES);
+                final String excludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_MODULES);
+                final String includedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_MODULES);
                 final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(bomToolType, directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
 
                 final List<DetectCodeLocation> codeLocations = mavenResults.stream()

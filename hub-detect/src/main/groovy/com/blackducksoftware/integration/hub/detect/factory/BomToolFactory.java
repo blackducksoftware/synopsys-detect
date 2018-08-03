@@ -82,14 +82,14 @@ import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCac
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCacheExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockExtractor;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 
 public class BomToolFactory {
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
     private final DetectFileFinder detectFileFinder;
     private final StandardExecutableFinder standardExecutableFinder;
     private final ExecutableRunner executableRunner;
@@ -126,7 +126,7 @@ public class BomToolFactory {
     private final SbtResolutionCacheExtractor sbtResolutionCacheExtractor;
     private final YarnLockExtractor yarnLockExtractor;
 
-    public BomToolFactory(final DetectConfigWrapper detectConfigWrapper, final DetectFileFinder detectFileFinder, final StandardExecutableFinder standardExecutableFinder, final ExecutableRunner executableRunner,
+    public BomToolFactory(final DetectConfiguration detectConfiguration, final DetectFileFinder detectFileFinder, final StandardExecutableFinder standardExecutableFinder, final ExecutableRunner executableRunner,
             final ClangExtractor clangExtractor,
             final List<ClangLinuxPackageManager> clangLinuxPackageManagers,
             final ComposerLockExtractor composerLockExtractor, final CondaCliExtractor condaCliExtractor, final CpanCliExtractor cpanCliExtractor, final DockerExtractor dockerExtractor,
@@ -137,7 +137,7 @@ public class BomToolFactory {
             final PackratLockExtractor packratLockExtractor, final PearCliExtractor pearCliExtractor, final PipInspectorExtractor pipInspectorExtractor, final PipInspectorManager pipInspectorManager,
             final PipenvExtractor pipenvExtractor, final PodlockExtractor podlockExtractor, final PythonExecutableFinder pythonExecutableFinder, final RebarExtractor rebarExtractor,
             final SbtResolutionCacheExtractor sbtResolutionCacheExtractor, final YarnLockExtractor yarnLockExtractor) {
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
         this.detectFileFinder = detectFileFinder;
         this.standardExecutableFinder = standardExecutableFinder;
         this.executableRunner = executableRunner;
@@ -191,9 +191,9 @@ public class BomToolFactory {
     }
 
     public DockerBomTool createDockerBomTool(final BomToolEnvironment environment) {
-        final String tar = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_TAR);
-        final String image = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_IMAGE);
-        final boolean dockerRequired = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED);
+        final String tar = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_TAR);
+        final String image = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE);
+        final boolean dockerRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED);
 
         return new DockerBomTool(environment, dockerInspectorManager, standardExecutableFinder, dockerRequired, image, tar, dockerExtractor);
     }
@@ -259,7 +259,7 @@ public class BomToolFactory {
     }
 
     public PipInspectorBomTool createPipInspectorBomTool(final BomToolEnvironment environment) {
-        final String requirementsFile = detectConfigWrapper.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH);
+        final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH);
         return new PipInspectorBomTool(environment, requirementsFile, detectFileFinder, pythonExecutableFinder, pipInspectorManager, pipInspectorExtractor);
     }
 

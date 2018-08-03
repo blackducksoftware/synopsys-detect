@@ -35,7 +35,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
@@ -47,20 +47,20 @@ public class CondaCliExtractor {
     private final CondaListParser condaListParser;
     private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
-    public CondaCliExtractor(final CondaListParser condaListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final DetectConfigWrapper detectConfigWrapper) {
+    public CondaCliExtractor(final CondaListParser condaListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration) {
         this.condaListParser = condaListParser;
         this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File condaExe) {
         try {
             final List<String> condaListOptions = new ArrayList<>();
             condaListOptions.add("list");
-            final String condaEnvironmentName = detectConfigWrapper.getProperty(DetectProperty.DETECT_CONDA_ENVIRONMENT_NAME);
+            final String condaEnvironmentName = detectConfiguration.getProperty(DetectProperty.DETECT_CONDA_ENVIRONMENT_NAME);
             if (StringUtils.isNotBlank(condaEnvironmentName)) {
                 condaListOptions.add("-n");
                 condaListOptions.add(condaEnvironmentName);

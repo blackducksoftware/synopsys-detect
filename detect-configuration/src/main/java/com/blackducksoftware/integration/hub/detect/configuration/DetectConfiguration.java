@@ -26,13 +26,14 @@ package com.blackducksoftware.integration.hub.detect.configuration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -42,20 +43,18 @@ import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConn
 import com.blackducksoftware.integration.rest.proxy.ProxyInfo;
 import com.blackducksoftware.integration.rest.proxy.ProxyInfoBuilder;
 
-public class DetectConfigWrapper {
-    private final Logger logger = LoggerFactory.getLogger(DetectConfigWrapper.class);
-    private final ConfigurableEnvironment configurableEnvironment;
-
+public class DetectConfiguration {
+    private final Logger logger = LoggerFactory.getLogger(DetectConfiguration.class);
     private final Map<DetectProperty, Object> propertyMap = new HashMap<>();
+    private final DetectPropertySource detectPropertySource;
 
-    public DetectConfigWrapper(final ConfigurableEnvironment configurableEnvironment) {
-        this.configurableEnvironment = configurableEnvironment;
+    public DetectConfiguration(final DetectPropertySource detectPropertySource) {
+        this.detectPropertySource = detectPropertySource;
     }
 
     public void init() {
         Arrays.stream(DetectProperty.values()).forEach(detectProperty -> {
-            final String stringValue = configurableEnvironment.getProperty(detectProperty.getPropertyName(), detectProperty.getDefaultValue());
-            updatePropertyMap(propertyMap, detectProperty, stringValue);
+            updatePropertyMap(propertyMap, detectProperty, detectPropertySource.getDetectProperty(detectProperty.getPropertyName(), detectProperty.getDefaultValue()));
         });
     }
 
@@ -88,8 +87,59 @@ public class DetectConfigWrapper {
         return restConnectionBuilder.build();
     }
 
+    public Map<String, String> getPhoneHomeProperties() {
+        return getKeys(detectPropertySource.getPhoneHomePropertyKeys());
+    }
+
+    public Map<String, String> getBlackduckProperties() {
+        return getKeys(detectPropertySource.getBlackduckPropertyKeys());
+    }
+
+    public Map<String, String> getDockerProperties() {
+        return getKeysWithoutPrefix(detectPropertySource.getDockerPropertyKeys(), DetectPropertySource.DOCKER_PROPERTY_PREFIX);
+    }
+
+    public Map<String, String> getDockerEnvironmentProperties() {
+        return getKeysWithoutPrefix(detectPropertySource.getDockerEnvironmentKeys(), DetectPropertySource.DOCKER_ENVIRONMENT_PREFIX);
+    }
+
+    private Map<String, String> getKeys(final Set<String> keys) {
+        return getKeysWithoutPrefix(keys, "");
+    }
+
+    private Map<String, String> getKeysWithoutPrefix(final Set<String> keys, final String prefix) {
+        final Map<String, String> properties = new HashMap<>();
+        for (final String detectKey : keys) {
+            final Optional<DetectProperty> propertyValue = getPropertyFromString(detectKey);
+            String value = null;
+            if (propertyValue.isPresent()) {
+                value = getPropertyValueAsString(propertyValue.get());
+            }
+            if (StringUtils.isBlank(value)) {
+                value = detectPropertySource.getProperty(detectKey);
+            }
+            if (StringUtils.isNotBlank(value)) {
+                final String dockerKey = getKeyWithoutPrefix(detectKey, prefix);
+                properties.put(dockerKey, value);
+            }
+        }
+        return properties;
+    }
+
+    private Optional<DetectProperty> getPropertyFromString(final String detectKey) {
+        try {
+            return Optional.of(DetectProperty.valueOf(detectKey));
+        } catch (final Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    private String getKeyWithoutPrefix(final String key, final String prefix) {
+        return key.substring(prefix.length());
+    }
+
     public boolean getBooleanProperty(final DetectProperty detectProperty) {
-        Object value = propertyMap.get(detectProperty);
+        final Object value = propertyMap.get(detectProperty);
         if (null == value) {
             return false;
         }
@@ -97,7 +147,7 @@ public class DetectConfigWrapper {
     }
 
     public Long getLongProperty(final DetectProperty detectProperty) {
-        Object value = propertyMap.get(detectProperty);
+        final Object value = propertyMap.get(detectProperty);
         if (null == value) {
             return null;
         }
@@ -105,7 +155,7 @@ public class DetectConfigWrapper {
     }
 
     public Integer getIntegerProperty(final DetectProperty detectProperty) {
-        Object value = propertyMap.get(detectProperty);
+        final Object value = propertyMap.get(detectProperty);
         if (null == value) {
             return null;
         }
@@ -121,7 +171,7 @@ public class DetectConfigWrapper {
     }
 
     public String getPropertyValueAsString(final DetectProperty detectProperty) {
-        Object objectValue = propertyMap.get(detectProperty);
+        final Object objectValue = propertyMap.get(detectProperty);
         String displayValue = "";
         if (DetectPropertyType.STRING == detectProperty.getPropertyType()) {
             displayValue = (String) objectValue;
