@@ -173,18 +173,10 @@ public class ConfigurationManager {
         hubOfflineMode = originalOfflineMode;
         if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL))) {
             logger.info("A hub signature scanner url was provided, which requires hub offline mode. Setting hub offline mode to true.");
-            if (originalOfflineMode == false) {
-                addFieldWarning(detectOptions, DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL, "A hub signature scanner host url was provided but hub offline mode was false. In the future set hub offline mode to true.");
-                addFieldWarning(detectOptions, DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE, "A signature scanner url was provided, so hub offline mode was forced to true.");
-            }
             hubOfflineMode = true;
         }
         if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH))) {
             logger.info("A local hub signature scanner path was provided, which requires hub offline mode. Setting hub offline mode to true.");
-            if (originalOfflineMode == false) {
-                addFieldWarning(detectOptions, DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, "A local hub signature scanner was provided but hub offline mode was false. In the future set hub offline mode to true.");
-                addFieldWarning(detectOptions, DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE, "A signature scanner path was provided, so hub offline mode was forced to true.");
-            }
             hubOfflineMode = true;
         }
     }
@@ -245,14 +237,6 @@ public class ConfigurationManager {
         detectOptions.stream().forEach(option -> {
             if (option.getDetectProperty() == detectProperty) {
                 option.setPostInitValue(value);
-            }
-        });
-    }
-
-    private void addFieldWarning(final List<DetectOption> detectOptions, final DetectProperty detectProperty, final String warning) {
-        detectOptions.stream().forEach(option -> {
-            if (option.getDetectProperty() == detectProperty) {
-                option.addWarning(warning);
             }
         });
     }
