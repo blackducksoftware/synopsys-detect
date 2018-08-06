@@ -71,6 +71,9 @@ public class RpmPackageManager extends ClangLinuxPackageManager {
     }
 
     private boolean valid(final String packageLine) {
+        if (packageLine.contains(" is not owned by ")) {
+            return false;
+        }
         return packageLine.matches(".+-.+-.+\\..*");
     }
 
