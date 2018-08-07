@@ -42,7 +42,7 @@ public class PearDependencyTest {
 
     @Test
     public void findDependencyNamesTest() {
-        Mockito.when(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES)).thenReturn(true);
+        Mockito.when(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PEAR_ONLY_REQUIRED_DEPS)).thenReturn(true);
 
         final String dependenciesList = testUtil.getResourceAsUTF8String("/pear/dependencies-list.txt");
         final ExecutableOutput exeOutput = new ExecutableOutput(dependenciesList, "");
