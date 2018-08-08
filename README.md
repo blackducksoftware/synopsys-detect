@@ -19,6 +19,7 @@ Hub Detect
 ## Where can I get the latest release? ##
 Available from GitHub for Linux by running:  
 bash <(curl -s https://blackducksoftware.github.io/hub-detect/hub-detect.sh)
+
 And for Windows by running: 
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://blackducksoftware.github.io/hub-detect/hub-detect.ps1?$(Get-Random) | iex; detect"
 
