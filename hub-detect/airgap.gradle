@@ -68,56 +68,24 @@ task downloadDockerInspectorScript() {
         def dockerInspectorScript = new File(dockerAirGapPath, 'hub-docker-inspector.sh')
         final def dockerInspectorScriptUrl = 'https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh'
         fetchFile(dockerInspectorScript, dockerInspectorScriptUrl)              
-        dockerInspectorScript.setExecutable(true)
-    }
-}
-
-task downloadDockerImages() {
-    dependsOn downloadDockerInspectorScript
-    doLast {
-        def versionOutputStream = new ByteArrayOutputStream()
-        exec {
-            commandLine 'bash', "${dockerAirGapPath}/hub-docker-inspector.sh", '--version'
-            standardOutput = versionOutputStream
-        }
-        def versionString = versionOutputStream.toString().trim().split(" ")[1]
-        exec {
-            commandLine 'docker', 'pull', "blackducksoftware/hub-docker-inspector-ubuntu:${versionString}"
-        }
-        exec {
-            commandLine 'docker', 'save', '-o', "${dockerAirGapPath}/hub-docker-inspector-ubuntu.tar", "blackducksoftware/hub-docker-inspector-ubuntu:${versionString}"
-        }
-        
-        exec {
-            commandLine 'docker', 'pull', "blackducksoftware/hub-docker-inspector-centos:${versionString}"
-        }
-        exec {
-            commandLine 'docker', 'save', '-o', "${dockerAirGapPath}/hub-docker-inspector-centos.tar", "blackducksoftware/hub-docker-inspector-centos:${versionString}"
-        }
-        
-        exec {
-            commandLine 'docker', 'pull', "blackducksoftware/hub-docker-inspector-alpine:${versionString}"
-        }
-        exec {
-            commandLine 'docker', 'save', '-o', "${dockerAirGapPath}/hub-docker-inspector-alpine.tar", "blackducksoftware/hub-docker-inspector-alpine:${versionString}"
-        }
+        dockerInspectorScript.setExecutable(true)          
     }
 }
 
 task downloadDockerInspector() {
-    dependsOn downloadDockerImages
+    dependsOn downloadDockerInspectorScript
     doLast {
         exec {
+        	workingDir "${dockerAirGapPath}"
             environment 'DOCKER_INSPECTOR_CURL_OPTS', '--insecure'
-            commandLine 'bash', "${dockerAirGapPath}/hub-docker-inspector.sh", '--pulljar'
+            commandLine 'bash', "${dockerAirGapPath}/hub-docker-inspector.sh", '--pullairgapzip'
         }
-        copy {
-            from '.'
-            include 'hub-docker-inspector-*.jar'
-            into dockerAirGapPath
+        exec {
+        	workingDir "${dockerAirGapPath}"
+        	commandLine 'unzip', '-n', 'hub-docker-inspector-*-air-gap.zip'
         }
-        delete fileTree('.') {
-            include 'hub-docker-inspector-*.jar'
+        delete fileTree("${dockerAirGapPath}") {
+            include 'hub-docker-inspector-*-air-gap.zip'
         }
     }
 }

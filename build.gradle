@@ -9,7 +9,12 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.blackducksoftware.integration:common-gradle-plugin:0.0.+'
+        configurations.all {
+            resolutionStrategy {
+                force 'com.blackducksoftware.integration:integration-test-common:3.1.3'
+            }
+        }
+        classpath 'com.blackducksoftware.integration:common-gradle-plugin:0.0.38'
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
 }
@@ -38,5 +43,11 @@ configure(subprojects) { project ->
 
     dependencies {
         compile 'com.blackducksoftware.integration:hub-common:36.0.1'
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            force 'com.blackducksoftware.integration:integration-test-common:3.1.3'
+        }
     }
 }
