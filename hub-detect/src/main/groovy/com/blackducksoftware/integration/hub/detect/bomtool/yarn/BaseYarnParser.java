@@ -24,8 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
 
 public abstract class BaseYarnParser {
-
-    protected int getLineLevel(String line) {
+    protected int getLineLevel(final String line) {
         int level = 0;
         String tmpLine = line;
         while (tmpLine.startsWith("  ")) {

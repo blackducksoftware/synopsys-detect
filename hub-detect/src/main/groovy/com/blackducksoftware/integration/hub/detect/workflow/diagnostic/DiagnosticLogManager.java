@@ -45,13 +45,12 @@ public class DiagnosticLogManager {
 
     private static String logFilePath = "log.txt";
     private static String stdOutFilePath = "out.txt";
+    private static final String LOGBACK_LOGGER_NAME = "com.blackducksoftware.integration";
 
     private File logDirectory;
     private File stdOutFile;
     private FileOutputStream stdOutStream;
-
     private FileAppender<ILoggingEvent> fileAppender;
-
     private FileAppender<ILoggingEvent> extractionAppender;
 
     public void init(final File logDirectory) {
@@ -63,8 +62,8 @@ public class DiagnosticLogManager {
         logger.info("Attempting to redirect log messages.");
         try {
             fileAppender = addAppender(getLogFile().getCanonicalPath());
-        } catch (final IOException e1) {
-            e1.printStackTrace();
+        } catch (final IOException e) {
+            logger.info("Failed to redirect.", e);
         }
 
         logger.info("Attempting to redirect sysout.");
@@ -115,14 +114,13 @@ public class DiagnosticLogManager {
     }
 
     private void setLevel(final Level targetLevel) {
-        final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
+        final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(LOGBACK_LOGGER_NAME);
         root.setLevel(Level.ALL);
     }
 
     private void removeAppender(final FileAppender<ILoggingEvent> appender) {
-        final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
+        final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(LOGBACK_LOGGER_NAME);
         logbackLogger.detachAppender(extractionAppender);
-
     }
 
     private FileAppender<ILoggingEvent> addAppender(final String file) {
@@ -139,7 +137,7 @@ public class DiagnosticLogManager {
         appender.setContext(lc);
         appender.start();
 
-        final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.blackducksoftware.integration");
+        final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(LOGBACK_LOGGER_NAME);
         logbackLogger.addAppender(appender);
         logbackLogger.setLevel(Level.ALL);
 

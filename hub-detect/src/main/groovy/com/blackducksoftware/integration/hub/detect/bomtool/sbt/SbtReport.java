@@ -26,13 +26,37 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 import java.util.List;
 
 public class SbtReport {
-    public String organisation;
+    private final String organisation;
+    private final String module;
+    private final String revision;
+    private final String configuration;
+    private final List<SbtModule> dependencies;
 
-    public String module;
+    public SbtReport(final String organisation, final String module, final String revision, final String configuration, final List<SbtModule> dependencies) {
+        this.organisation = organisation;
+        this.module = module;
+        this.revision = revision;
+        this.configuration = configuration;
+        this.dependencies = dependencies;
+    }
 
-    public String revision;
+    public String getOrganisation() {
+        return organisation;
+    }
 
-    public String configuration;
+    public String getModule() {
+        return module;
+    }
 
-    public List<SbtModule> dependencies;
+    public String getRevision() {
+        return revision;
+    }
+
+    public String getConfiguration() {
+        return configuration;
+    }
+
+    public List<SbtModule> getDependencies() {
+        return dependencies;
+    }
 }

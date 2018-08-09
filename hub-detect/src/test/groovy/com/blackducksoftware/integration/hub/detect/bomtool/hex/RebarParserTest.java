@@ -70,7 +70,7 @@ public class RebarParserTest {
         final Rebar3TreeParser rebarTreeParser = new Rebar3TreeParser(externalIdFactory);
         final RebarParseResult result = rebarTreeParser.parseRebarTreeOutput(BomToolType.REBAR, dependencyTreeOutput, "");
 
-        return result.codeLocation;
+        return result.getCodeLocation();
     }
 
     @Test

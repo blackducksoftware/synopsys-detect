@@ -24,9 +24,25 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
 public class SbtCaller {
-    public String callerOrganisation;
+    private final String organisation;
+    private final String name;
+    private final String revision;
 
-    public String callerName;
+    public SbtCaller(final String organisation, final String name, final String revision) {
+        this.organisation = organisation;
+        this.name = name;
+        this.revision = revision;
+    }
 
-    public String callerRevision;
+    public String getOrganisation() {
+        return organisation;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getRevision() {
+        return revision;
+    }
 }
