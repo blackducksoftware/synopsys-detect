@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -43,14 +42,25 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.util.DependencyHistory;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.util.NameVersion;
 
 public class GradleReportParser {
     private final Logger logger = LoggerFactory.getLogger(GradleReportParser.class);
-    private GradleReportConfigurationParser gradleReportConfigurationParser = new GradleReportConfigurationParser();
+
+    public static final String PROJECT_PATH_PREFIX = "projectPath:";
+    public static final String PROJECT_GROUP_PREFIX = "projectGroup:";
+    public static final String PROJECT_NAME_PREFIX = "projectName:";
+    public static final String PROJECT_VERSION_PREFIX = "projectVersion:";
+    public static final String ROOT_PROJECT_NAME_PREFIX = "rootProjectName:";
+    public static final String ROOT_PROJECT_VERSION_PREFIX = "rootProjectVersion:";
+    public static final String DETECT_META_DATA_HEADER = "DETECT META DATA START";
+    public static final String DETECT_META_DATA_FOOTER = "DETECT META DATA END";
 
     private final ExternalIdFactory externalIdFactory;
+
+    private GradleReportConfigurationParser gradleReportConfigurationParser = new GradleReportConfigurationParser();
 
     public GradleReportParser(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
@@ -64,9 +74,7 @@ public class GradleReportParser {
         String projectVersionName = "";
         boolean processingMetaData = false;
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        Stack<Dependency> nodeStack = new Stack<>();
-        Dependency previousNode = null;
-        int previousTreeLevel = 0;
+        final DependencyHistory history = new DependencyHistory();
 
         try (FileInputStream dependenciesInputStream = new FileInputStream(codeLocationFile); BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8));) {
             while (reader.ready()) {
@@ -74,57 +82,53 @@ public class GradleReportParser {
                 /**
                  * The meta data section will be at the end of the file after all of the "gradle dependencies" output
                  */
-                if (line.startsWith("DETECT META DATA START")) {
+                if (line.startsWith(DETECT_META_DATA_HEADER)) {
                     processingMetaData = true;
                     continue;
                 }
-                if (line.startsWith("DETECT META DATA END")) {
+                if (line.startsWith(DETECT_META_DATA_FOOTER)) {
                     processingMetaData = false;
                     continue;
                 }
                 if (processingMetaData) {
-                    if (line.startsWith("projectPath:")) {
-                        projectSourcePath = line.substring("projectPath:".length()).trim();
-                    } else if (line.startsWith("projectGroup:")) {
-                        projectGroup = line.substring("projectGroup:".length()).trim();
-                    } else if (line.startsWith("projectName:")) {
-                        projectName = line.substring("projectName:".length()).trim();
-                    } else if (line.startsWith("projectVersion:")) {
-                        projectVersionName = line.substring("projectVersion:".length()).trim();
+                    if (line.startsWith(PROJECT_PATH_PREFIX)) {
+                        projectSourcePath = line.substring(PROJECT_PATH_PREFIX.length()).trim();
+                    } else if (line.startsWith(PROJECT_GROUP_PREFIX)) {
+                        projectGroup = line.substring(PROJECT_GROUP_PREFIX.length()).trim();
+                    } else if (line.startsWith(PROJECT_NAME_PREFIX)) {
+                        projectName = line.substring(PROJECT_NAME_PREFIX.length()).trim();
+                    } else if (line.startsWith(PROJECT_VERSION_PREFIX)) {
+                        projectVersionName = line.substring(PROJECT_VERSION_PREFIX.length()).trim();
                     }
                     continue;
                 }
 
                 if (StringUtils.isBlank(line)) {
-                    nodeStack = new Stack<>();
-                    previousNode = null;
-                    previousTreeLevel = 0;
+                    history.clear();
                     gradleReportConfigurationParser = new GradleReportConfigurationParser();
                     continue;
                 }
 
-                final Dependency nextDependency = gradleReportConfigurationParser.parseDependency(externalIdFactory, line);
-                if (nextDependency == null) {
+                final Dependency dependency = gradleReportConfigurationParser.parseDependency(externalIdFactory, line);
+                if (dependency == null) {
                     continue;
                 }
 
                 final int lineTreeLevel = gradleReportConfigurationParser.getTreeLevel();
-                if (lineTreeLevel == previousTreeLevel + 1) {
-                    nodeStack.push(previousNode);
-                } else if (lineTreeLevel < previousTreeLevel) {
-                    for (int times = 0; times < (previousTreeLevel - lineTreeLevel); times++) {
-                        nodeStack.pop();
-                    }
-                } else if (lineTreeLevel != previousTreeLevel) {
-                    logger.error(String.format("The tree level (%s) and this line (%s) with count %s can't be reconciled.", previousTreeLevel, line, lineTreeLevel));
+
+                try {
+                    history.clearDependenciesDeeperThan(lineTreeLevel);
+                } catch (final IllegalStateException e) {
+                    logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
                 }
-                if (nodeStack.size() == 0) {
-                    graph.addChildToRoot(nextDependency);
+
+                if (history.isEmpty()) {
+                    graph.addChildToRoot(dependency);
                 } else {
-                    graph.addChildWithParents(nextDependency, nodeStack.peek());
+                    graph.addChildWithParents(dependency, history.getLastDependency());
                 }
-                previousNode = nextDependency;
-                previousTreeLevel = lineTreeLevel;
+
+                history.add(dependency);
             }
 
             final ExternalId id = externalIdFactory.createMavenExternalId(projectGroup, projectName, projectVersionName);
@@ -146,19 +150,19 @@ public class GradleReportParser {
             while (reader.ready()) {
                 final String line = reader.readLine();
 
-                if (line.startsWith("DETECT META DATA START")) {
+                if (line.startsWith(DETECT_META_DATA_HEADER)) {
                     processingMetaData = true;
                     continue;
                 }
-                if (line.startsWith("DETECT META DATA END")) {
+                if (line.startsWith(DETECT_META_DATA_FOOTER)) {
                     processingMetaData = false;
                     continue;
                 }
                 if (processingMetaData) {
-                    if (line.startsWith("rootProjectName:")) {
-                        rootProjectName = line.substring("rootProjectName:".length()).trim();
-                    } else if (line.startsWith("rootProjectVersion:")) {
-                        rootProjectVersionName = line.substring("rootProjectVersion:".length()).trim();
+                    if (line.startsWith(ROOT_PROJECT_NAME_PREFIX)) {
+                        rootProjectName = line.substring(ROOT_PROJECT_NAME_PREFIX.length()).trim();
+                    } else if (line.startsWith(ROOT_PROJECT_VERSION_PREFIX)) {
+                        rootProjectVersionName = line.substring(ROOT_PROJECT_VERSION_PREFIX.length()).trim();
                     }
                     continue;
                 }

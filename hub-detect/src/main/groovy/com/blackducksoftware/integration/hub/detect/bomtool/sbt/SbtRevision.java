@@ -26,7 +26,20 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 import java.util.List;
 
 public class SbtRevision {
-    public String name;
+    private final String name;
+    private final List<SbtCaller> callers;
 
-    public List<SbtCaller> callers;
+    public SbtRevision(final String name, final List<SbtCaller> callers) {
+        this.name = name;
+        this.callers = callers;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<SbtCaller> getCallers() {
+        return callers;
+    }
+
 }

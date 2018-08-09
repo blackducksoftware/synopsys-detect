@@ -53,6 +53,7 @@ public class LogReportWriter implements ReportWriter {
 
     @Override
     public void finish() {
+        // Nothing to clean up
     }
 
 }

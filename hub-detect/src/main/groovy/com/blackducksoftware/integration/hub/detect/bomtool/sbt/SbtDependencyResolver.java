@@ -37,17 +37,17 @@ public class SbtDependencyResolver {
     }
 
     public SbtDependencyModule resolveReport(final SbtReport report) {
-        final ExternalId rootId = externalIdFactory.createMavenExternalId(report.organisation, report.module, report.revision);
+        final ExternalId rootId = externalIdFactory.createMavenExternalId(report.getOrganisation(), report.getModule(), report.getRevision());
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        report.dependencies.forEach(module -> {
-            module.revisions.forEach(revision -> {
-                final ExternalId id = externalIdFactory.createMavenExternalId(module.organisation, module.name, revision.name);
-                final Dependency child = new Dependency(module.name, revision.name, id);
+        report.getDependencies().forEach(module -> {
+            module.getRevisions().forEach(revision -> {
+                final ExternalId id = externalIdFactory.createMavenExternalId(module.getOrganisation(), module.getName(), revision.getName());
+                final Dependency child = new Dependency(module.getName(), revision.getName(), id);
 
-                revision.callers.forEach(caller -> {
-                    final ExternalId parentId = externalIdFactory.createMavenExternalId(caller.callerOrganisation, caller.callerName, caller.callerRevision);
-                    final Dependency parent = new Dependency(caller.callerName, caller.callerRevision, parentId);
+                revision.getCallers().forEach(caller -> {
+                    final ExternalId parentId = externalIdFactory.createMavenExternalId(caller.getOrganisation(), caller.getName(), caller.getRevision());
+                    final Dependency parent = new Dependency(caller.getName(), caller.getRevision(), parentId);
 
                     if (rootId.equals(parentId)) {
                         graph.addChildToRoot(child);
@@ -59,12 +59,12 @@ public class SbtDependencyResolver {
         });
 
         final SbtDependencyModule module = new SbtDependencyModule();
-        module.name = report.module;
-        module.version = report.revision;
-        module.org = report.organisation;
+        module.name = report.getModule();
+        module.version = report.getRevision();
+        module.org = report.getOrganisation();
 
         module.graph = graph;
-        module.configuration = report.configuration;
+        module.configuration = report.getConfiguration();
 
         return module;
     }

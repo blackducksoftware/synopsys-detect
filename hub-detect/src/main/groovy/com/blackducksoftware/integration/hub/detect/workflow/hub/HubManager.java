@@ -127,42 +127,41 @@ public class HubManager implements ExitCodeReporter {
 
     public void performPostHubActions(final DetectProject detectProject, final ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
         try {
-            if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)) || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF) || detectConfiguration
-                    .getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {
-                final ProjectService projectService = hubServiceWrapper.createProjectService();
-                final ScanStatusService scanStatusService = hubServiceWrapper.createScanStatusService();
+            final ProjectService projectService = hubServiceWrapper.createProjectService();
+            final ReportService reportService = hubServiceWrapper.createReportService();
+            final HubService hubService = hubServiceWrapper.createHubService();
+            final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
+            final ScanStatusService scanStatusService = hubServiceWrapper.createScanStatusService();
 
-                waitForBomUpdate(hubServiceWrapper.createCodeLocationService(), hubServiceWrapper.createHubService(), scanStatusService);
+            if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)) || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF) || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {
+                waitForBomUpdate(codeLocationService, hubService, scanStatusService);
+            }
 
-                if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES))) {
-                    final PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView);
-                    logger.info(policyStatusDescription.getPolicyStatusMessage());
-                    if (policyChecker.policyViolated(policyStatusDescription)) {
-                        exitCodeType = ExitCodeType.FAILURE_POLICY_VIOLATION;
-                    }
-                }
+            if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES))) {
+                final PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView);
+                logger.info(policyStatusDescription.getPolicyStatusMessage());
+                if (policyChecker.policyViolated(policyStatusDescription)) {
+                    exitCodeType = ExitCodeType.FAILURE_POLICY_VIOLATION;
 
-                if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF)) {
-                    final ReportService reportService = hubServiceWrapper.createReportService();
-                    logger.info("Creating risk report pdf");
-                    final File pdfFile = reportService.createReportPdfFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_RISK_REPORT_PDF_PATH)), detectProject.getProjectName(), detectProject.getProjectVersion());
-                    logger.info(String.format("Created risk report pdf: %s", pdfFile.getCanonicalPath()));
-                }
-
-                if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {
-                    final ReportService reportService = hubServiceWrapper.createReportService();
-                    logger.info("Creating notices report");
-                    final File noticesFile = reportService.createNoticesReportFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_NOTICES_REPORT_PATH)), detectProject.getProjectName(), detectProject.getProjectVersion());
-                    if (noticesFile != null) {
-                        logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
-                    }
                 }
             }
 
-            if ((null != detectProject.getBdioFiles() && !detectProject.getBdioFiles().isEmpty()) || !detectConfiguration.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF)) {
+                logger.info("Creating risk report pdf");
+                final File pdfFile = reportService.createReportPdfFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_RISK_REPORT_PDF_PATH)), detectProject.getProjectName(), detectProject.getProjectVersion());
+                logger.info(String.format("Created risk report pdf: %s", pdfFile.getCanonicalPath()));
+            }
+
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {
+                logger.info("Creating notices report");
+                final File noticesFile = reportService.createNoticesReportFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_NOTICES_REPORT_PATH)), detectProject.getProjectName(), detectProject.getProjectVersion());
+                if (noticesFile != null) {
+                    logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
+                }
+            }
+
+            if (!detectProject.getBdioFiles().isEmpty() || !detectConfiguration.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
                 // only log BOM URL if we have updated it in some way
-                final ProjectService projectService = hubServiceWrapper.createProjectService();
-                final HubService hubService = hubServiceWrapper.createHubService();
                 final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(detectProject.getProjectName(), detectProject.getProjectVersion());
                 final String componentsLink = hubService.getFirstLinkSafely(projectVersionWrapper.getProjectVersionView(), ProjectVersionView.COMPONENTS_LINK);
                 logger.info(String.format("To see your results, follow the URL: %s", componentsLink));
@@ -178,7 +177,12 @@ public class HubManager implements ExitCodeReporter {
         }
     }
 
-    public void waitForBomUpdate(final CodeLocationService codeLocationService, final HubService hubService, final ScanStatusService scanStatusService) throws IntegrationException, InterruptedException {
+    @Override
+    public ExitCodeType getExitCodeType() {
+        return exitCodeType;
+    }
+
+    private void waitForBomUpdate(final CodeLocationService codeLocationService, final HubService hubService, final ScanStatusService scanStatusService) throws IntegrationException, InterruptedException {
         final List<CodeLocationView> allCodeLocations = new ArrayList<>();
         for (final String codeLocationName : codeLocationNameManager.getCodeLocationNames()) {
             final CodeLocationView codeLocationView = codeLocationService.getCodeLocationByName(codeLocationName);
@@ -209,8 +213,4 @@ public class HubManager implements ExitCodeReporter {
         return projectVersionWrapper.getProjectVersionView();
     }
 
-    @Override
-    public ExitCodeType getExitCodeType() {
-        return exitCodeType;
-    }
 }

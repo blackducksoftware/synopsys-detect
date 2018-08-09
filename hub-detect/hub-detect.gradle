@@ -41,6 +41,12 @@ artifactory {
     }
 }
 
+test {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
 dependencies {
     compile project(":detect-configuration")
 

@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -53,15 +54,15 @@ public class PipInspectorExtractor {
         Extraction extractionResult;
         try {
             final String projectName = getProjectName(directory, pythonExe, setupFile);
-            final PipParseResult result;
+            final Optional<PipParseResult> result;
 
-            final String inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
+            final List<String> inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
             result = pipInspectorTreeParser.parse(bomToolType, inspectorOutput, directory.toString());
 
-            if (result == null) {
-                extractionResult = new Extraction.Builder().failure("The Pip Inspector tree parser returned null").build();
+            if (!result.isPresent()) {
+                extractionResult = new Extraction.Builder().failure("The Pip Inspector tree parser failed to produce output").build();
             } else {
-                extractionResult = new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
+                extractionResult = new Extraction.Builder().success(result.get().getCodeLocation()).projectName(result.get().getProjectName()).projectVersion(result.get().getProjectVersion()).build();
             }
         } catch (final Exception e) {
             extractionResult = new Extraction.Builder().exception(e).build();
@@ -70,7 +71,7 @@ public class PipInspectorExtractor {
         return extractionResult;
     }
 
-    private String runInspector(final File sourceDirectory, final String pythonPath, final File inspectorScript, final String projectName, final String requirementsFilePath) throws ExecutableRunnerException {
+    private List<String> runInspector(final File sourceDirectory, final String pythonPath, final File inspectorScript, final String projectName, final String requirementsFilePath) throws ExecutableRunnerException {
         final List<String> inspectorArguments = new ArrayList<>();
         inspectorArguments.add(inspectorScript.getAbsolutePath());
 
@@ -84,7 +85,7 @@ public class PipInspectorExtractor {
         }
 
         final Executable pipInspector = new Executable(sourceDirectory, pythonPath, inspectorArguments);
-        return executableRunner.execute(pipInspector).getStandardOutput();
+        return executableRunner.execute(pipInspector).getStandardOutputAsList();
     }
 
     private String getProjectName(final File directory, final String pythonExe, final File setupFile) throws ExecutableRunnerException {
