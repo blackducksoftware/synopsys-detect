@@ -61,7 +61,7 @@ public class ExecutableRunner {
 
     public ExecutableOutput executeQuietly(final String exePath, final List<String> args) throws ExecutableRunnerException {
         final Executable exe = new Executable(new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, args);
-        return execute(exe);
+        return executeQuietly(exe);
     }
 
     public ExecutableOutput executeFromDirQuietly(final File workingDir, final String exePath, final List<String> args) throws ExecutableRunnerException {
@@ -81,7 +81,7 @@ public class ExecutableRunner {
     public ExecutableOutput executeQuietly(final Executable executable) throws ExecutableRunnerException {
         return runExecutable(executable, logger::debug, logger::trace);
     }
-    
+
     private ExecutableOutput runExecutable(final Executable executable, final Consumer<String> standardLoggingMethod, final Consumer<String> traceLoggingMethod) throws ExecutableRunnerException {
         standardLoggingMethod.accept(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
         try {

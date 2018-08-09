@@ -24,14 +24,15 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -47,6 +48,7 @@ public class DependenciesListFileManager {
     private static final String COMPILER_OUTPUT_FILE_OPTION = "-o";
     public static final String DEPS_MK_FILENAME_PATTERN = "deps_%s_%d.mk";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Random random = new Random(new Date().getTime());
     private final ExecutableRunner executableRunner;
 
     public DependenciesListFileManager(final ExecutableRunner executableRunner) {
@@ -57,7 +59,7 @@ public class DependenciesListFileManager {
         final Set<String> dependencyFilePaths = new HashSet<>();
         final Optional<File> depsMkFile = generate(workingDir, compileCommand);
         dependencyFilePaths.addAll(parse(depsMkFile.orElse(null)));
-        depsMkFile.ifPresent(f -> f.delete());
+        depsMkFile.ifPresent(File::delete);
         return dependencyFilePaths;
     }
 
@@ -83,6 +85,10 @@ public class DependenciesListFileManager {
         try {
             final String depsDecl = FileUtils.readFileToString(depsMkFile, StandardCharsets.UTF_8);
             final String[] depsDeclParts = depsDecl.split(": ");
+            if (depsDeclParts.length != 2) {
+                logger.warn(String.format("Unable to parse %s contents: %s", depsMkFile.getAbsolutePath(), depsDecl));
+                return new ArrayList<>(0);
+            }
             String depsListString = depsDeclParts[1];
             logger.trace(String.format("dependencies: %s", depsListString));
 
@@ -97,7 +103,7 @@ public class DependenciesListFileManager {
                 logger.trace(String.format("\t%s", includeFile));
             }
             dependencyFilePaths = Arrays.asList(deps);
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             logger.warn(String.format("Error getting dependency file paths from '%s': %s", depsMkFile.getAbsolutePath(), e.getMessage()));
             return new ArrayList<>(0);
         }
@@ -105,10 +111,9 @@ public class DependenciesListFileManager {
     }
 
     private String deriveDependenciesListFilename(final CompileCommand compileCommand) {
-        final int randomInt = (int) (Math.random() * 1000);
+        final int randomInt = random.nextInt(1) * 1000;
         final String sourceFilenameBase = getFilenameBase(compileCommand.file);
-        final String depsMkFilename = String.format(DEPS_MK_FILENAME_PATTERN, sourceFilenameBase, randomInt);
-        return depsMkFilename;
+        return String.format(DEPS_MK_FILENAME_PATTERN, sourceFilenameBase, randomInt);
     }
 
     private String getCompilerCommand(final String origCompileCommand) {

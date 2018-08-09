@@ -1,0 +1,8 @@
+[
+{
+  "directory": "src/test/resources/clang/source",
+  "command": "gcc hello_world.cpp",
+  "file": "src/test/resources/clang/source/hello_world.cpp"
+}
+]
+
