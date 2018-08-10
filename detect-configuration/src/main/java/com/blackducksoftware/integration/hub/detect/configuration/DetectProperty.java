@@ -197,6 +197,10 @@ public enum DetectProperty {
     DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS("detect.bom.tool.search.exclusion.defaults", DetectPropertyType.BOOLEAN, "true"),
 
     @HelpGroup(primary = GROUP_BOMTOOL, additional = { SEARCH_GROUP_SEARCH })
+    @HelpDescription("Set to true to disable all bom tools.")
+    DETECT_BOM_TOOLS_DISABLED("detect.bom.tools.disabled", DetectPropertyType.BOOLEAN, "false"),
+
+    @HelpGroup(primary = GROUP_BOMTOOL, additional = { SEARCH_GROUP_SEARCH })
     @HelpDescription("By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.")
     DETECT_EXCLUDED_BOM_TOOL_TYPES("detect.excluded.bom.tool.types", DetectPropertyType.STRING),
 
@@ -478,6 +482,10 @@ public enum DetectProperty {
     @HelpDescription("Additional arguments to use when running the Hub signature scanner.")
     DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS("detect.hub.signature.scanner.arguments", DetectPropertyType.STRING),
 
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB })
+    @HelpDescription("The path of a binary file to scan.")
+    DETECT_BINARY_SCAN_FILE("detect.binary.scan.file.path", DetectPropertyType.STRING),
+
     @HelpGroup(primary = GROUP_PACKAGIST)
     @HelpDescription("Set this value to false if you would like to exclude your dev requires dependencies when ran")
     DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES("detect.packagist.include.dev.dependencies", DetectPropertyType.BOOLEAN, "true"),
@@ -637,6 +645,7 @@ public enum DetectProperty {
         public static final String GROUP_PYTHON = "python";
         public static final String GROUP_SBT = "sbt";
         public static final String GROUP_SIGNATURE_SCANNER = "signature scanner";
+        public static final String GROUP_BINARY_SCANNER = "binary scanner";
         public static final String GROUP_YARN = "yarn";
 
         public static final String SEARCH_GROUP_SIGNATURE_SCANNER = "scanner";

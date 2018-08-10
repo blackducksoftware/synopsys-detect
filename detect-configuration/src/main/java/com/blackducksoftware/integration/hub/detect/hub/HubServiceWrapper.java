@@ -40,6 +40,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.rest.BlackduckRestConnection;
+import com.blackducksoftware.integration.hub.service.BinaryScannerService;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
 import com.blackducksoftware.integration.hub.service.HubService;
 import com.blackducksoftware.integration.hub.service.HubServicesFactory;
@@ -125,6 +126,10 @@ public class HubServiceWrapper {
 
     public CodeLocationService createCodeLocationService() {
         return hubServicesFactory.createCodeLocationService();
+    }
+
+    public BinaryScannerService createBinaryScannerService() {
+        return hubServicesFactory.createBinaryScannerService();
     }
 
     public ScanStatusService createScanStatusService() {

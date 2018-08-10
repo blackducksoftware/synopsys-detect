@@ -90,13 +90,22 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
         this.reportManager = reportManager;
     }
 
-    public DetectProject createDetectProject() throws DetectUserFriendlyException, IntegrationException {
-        final SearchResult searchResult = searchManager.performSearch();
+    private boolean areBomToolsEnabled() {
+        final boolean disabled = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOLS_DISABLED);
+        return !disabled;
+    }
 
-        final ExtractionResult extractionResult = extractionManager.performExtractions(searchResult.getBomToolEvaluations());
+    public DetectProject createDetectProject() throws DetectUserFriendlyException, IntegrationException {
+        final List<BomToolEvaluation> bomToolResults = new ArrayList<>();
+        if (areBomToolsEnabled()) {
+            final SearchResult searchResult = searchManager.performSearch();
+            bomToolResults.addAll(searchResult.getBomToolEvaluations());
+        }
+
+        final ExtractionResult extractionResult = extractionManager.performExtractions(bomToolResults);
         applyBomToolGroupStatus(extractionResult.getSuccessfulBomToolTypes(), extractionResult.getFailedBomToolTypes());
 
-        final NameVersion nameVersion = getProjectNameVersion(searchResult.getBomToolEvaluations());
+        final NameVersion nameVersion = getProjectNameVersion(bomToolResults);
         final String projectName = nameVersion.getName();
         final String projectVersion = nameVersion.getVersion();
 
@@ -110,7 +119,7 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
             final List<File> createdBdioFiles = bdioManager.createBdioFiles(codeLocationResult.getBdioCodeLocations(), projectName, projectVersion);
             bdioFiles.addAll(createdBdioFiles);
 
-            reportManager.codeLocationsCompleted(searchResult.getBomToolEvaluations(), codeLocationResult.getCodeLocationNames());
+            reportManager.codeLocationsCompleted(bomToolResults, codeLocationResult.getCodeLocationNames());
         } else {
             final File aggregateBdioFile = bdioManager.createAggregateBdioFile(codeLocations, projectName, projectVersion);
             bdioFiles.add(aggregateBdioFile);

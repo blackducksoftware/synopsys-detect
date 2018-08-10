@@ -24,6 +24,8 @@
 package com.blackducksoftware.integration.hub.detect.workflow.hub;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -48,6 +50,7 @@ import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.blackducksoftware.integration.hub.exception.HubTimeoutExceededException;
+import com.blackducksoftware.integration.hub.service.BinaryScannerService;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
 import com.blackducksoftware.integration.hub.service.HubService;
 import com.blackducksoftware.integration.hub.service.ProjectService;
@@ -116,6 +119,22 @@ public class HubManager implements ExitCodeReporter {
                 executorService.shutdownNow();
             }
         }
+
+        final String binFilePath = detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE);
+        if (StringUtils.isNotBlank(binFilePath)) {
+            final File file = new File(binFilePath);
+            if (file.exists()) {
+                final BinaryScannerService binaryScannerService = hubServiceWrapper.createBinaryScannerService();
+                try {
+                    binaryScannerService.scanBinary(new File(binFilePath), detectProject.getProjectName(), detectProject.getProjectVersion(), file.getName());
+                } catch (final MalformedURLException e) {
+                    throw new DetectUserFriendlyException("An error occured uploading binary scan file.", ExitCodeType.FAILURE_CONFIGURATION);
+                } catch (final URISyntaxException e) {
+                    throw new DetectUserFriendlyException("An error occured uploading binary scan file.", ExitCodeType.FAILURE_CONFIGURATION);
+                }
+            }
+        }
+
         return projectVersionView;
     }
 
