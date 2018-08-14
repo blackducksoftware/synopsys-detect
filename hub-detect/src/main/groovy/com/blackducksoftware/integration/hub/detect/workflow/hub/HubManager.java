@@ -26,6 +26,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.hub;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -81,9 +82,9 @@ public class HubManager implements ExitCodeReporter {
         this.policyChecker = policyChecker;
     }
 
-    public ProjectVersionView updateHubProjectVersion(final DetectProject detectProject) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
+    public Optional<ProjectVersionView> updateHubProjectVersion(final DetectProject detectProject) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         final ProjectService projectService = hubServiceWrapper.createProjectService();
-        ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectService);
+        final ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectService);
         if (null != detectProject.getBdioFiles() && !detectProject.getBdioFiles().isEmpty()) {
             final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
             if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP)) {
@@ -103,20 +104,22 @@ public class HubManager implements ExitCodeReporter {
             logger.debug("Did not create any bdio files.");
         }
 
+        return Optional.ofNullable(projectVersionView);
+    }
+
+    public Optional<ProjectVersionView> performScanActions(final DetectProject detectProject) throws IntegrationException, InterruptedException {
         if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
             final HubServerConfig hubServerConfig = hubServiceWrapper.getHubServerConfig();
             final ExecutorService executorService = Executors.newFixedThreadPool(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS));
             try {
                 final SignatureScannerService signatureScannerService = hubServiceWrapper.createSignatureScannerService(executorService);
                 final ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, signatureScannerService, detectProject);
-                if (null == projectVersionView) {
-                    projectVersionView = scanProject;
-                }
+                return Optional.ofNullable(scanProject);
             } finally {
                 executorService.shutdownNow();
             }
         }
-        return projectVersionView;
+        return Optional.empty();
     }
 
     public void performOfflineHubActions(final DetectProject detectProject) throws IntegrationException {
@@ -133,7 +136,8 @@ public class HubManager implements ExitCodeReporter {
             final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
             final ScanStatusService scanStatusService = hubServiceWrapper.createScanStatusService();
 
-            if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)) || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF) || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {
+            if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)) || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF)
+                    || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {
                 waitForBomUpdate(codeLocationService, hubService, scanStatusService);
             }
 

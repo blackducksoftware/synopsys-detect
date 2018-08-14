@@ -26,6 +26,7 @@ package com.blackducksoftware.integration.hub.detect;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
@@ -225,7 +226,15 @@ public class Application implements ApplicationRunner {
                 diagnosticManager.registerGlobalFileOfInterest(bdio);
             }
         } else {
-            final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject);
+            final Optional<ProjectVersionView> originalProjectVersionView = hubManager.updateHubProjectVersion(detectProject);
+            final Optional<ProjectVersionView> scanProjectVersionView = hubManager.performScanActions(detectProject);
+            ProjectVersionView projectVersionView = null;
+            if (originalProjectVersionView.isPresent()) {
+                projectVersionView = originalProjectVersionView.get();
+            } else if (scanProjectVersionView.isPresent()) {
+                projectVersionView = scanProjectVersionView.get();
+            }
+            // final ProjectVersionView projectVersionView = originalProjectVersionView.orElse(scanProjectVersionView.orElse(null));
             hubManager.performPostHubActions(detectProject, projectVersionView);
         }
     }
