@@ -237,7 +237,6 @@ public enum DetectProperty {
     @HelpDescription("A suffix to the name of the codelocations created by Detect.")
     DETECT_PROJECT_CODELOCATION_SUFFIX("detect.project.codelocation.suffix", DetectPropertyType.STRING, ""),
 
-    @Deprecated
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("If set to true, unmaps all other code locations mapped to the project version produced by the current run of Detect.")
     DETECT_PROJECT_CODELOCATION_UNMAP("detect.project.codelocation.unmap", DetectPropertyType.BOOLEAN, "false"),
