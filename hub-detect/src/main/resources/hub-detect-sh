@@ -106,7 +106,7 @@ run_detect() {
   # files) any existing shell script, then create
   # the one we will run
   rm -f $DETECT_JAR_PATH/hub-detect-java.sh
-  echo "#!/bin/sh" >> $DETECT_JAR_PATH/hub-detect-java.sh
+  echo "#!/bin/sh" > $DETECT_JAR_PATH/hub-detect-java.sh
   echo "" >> $DETECT_JAR_PATH/hub-detect-java.sh
   echo $JAVACMD $SCRIPT_ARGS >> $DETECT_JAR_PATH/hub-detect-java.sh
   source $DETECT_JAR_PATH/hub-detect-java.sh

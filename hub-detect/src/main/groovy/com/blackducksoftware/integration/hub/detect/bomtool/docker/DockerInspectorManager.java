@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.docker;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +43,7 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
 import com.blackducksoftware.integration.rest.request.Request;
 import com.blackducksoftware.integration.rest.request.Response;
@@ -90,9 +92,10 @@ public class DockerInspectorManager {
 
         if (info.isOffline) {
             final String dockerInspectorAirGapPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
+            final String inspectorImageFamily = resolveInspectorImageFamily(bashExecutablePath, info.dockerInspectorScript);
             info.offlineDockerInspectorJar = new File(dockerInspectorAirGapPath, "hub-docker-inspector-" + info.version + ".jar");
             for (final String os : Arrays.asList("ubuntu", "alpine", "centos")) {
-                final File osImage = new File(dockerInspectorAirGapPath, "hub-docker-inspector-" + os + ".tar");
+                final File osImage = new File(dockerInspectorAirGapPath, inspectorImageFamily + "-" + os + ".tar");
                 info.offlineTars.add(osImage);
             }
         }
@@ -100,17 +103,24 @@ public class DockerInspectorManager {
         resolvedInfo = info;
     }
 
+    private String resolveInspectorImageFamily(final String bashExecutablePath, final File dockerInspectorShellScript) throws DetectUserFriendlyException {
+        try {
+            final String dockerInspectorArg = "--inspectorimagefamily";
+            final String inspectorImageFamily = getResponseFromDockerInspector(bashExecutablePath, dockerInspectorShellScript, dockerInspectorArg);
+            logger.info(String.format("Resolved docker inspector image family to: %s", inspectorImageFamily));
+            return inspectorImageFamily;
+        } catch (final Exception e) {
+            throw new DetectUserFriendlyException("Unable to find docker inspector version.", e, ExitCodeType.FAILURE_CONFIGURATION);
+        }
+    }
+
     private String resolveInspectorVersion(final String bashExecutablePath, final File dockerInspectorShellScript) throws DetectUserFriendlyException {
         try {
             final String dockerInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
             if ("latest".equalsIgnoreCase(dockerInspectorVersion)) {
-                final File inspectorDirectory = detectFileManager.getSharedDirectory(dockerSharedDirectoryName);
-                final List<String> bashArguments = new ArrayList<>();
-                bashArguments.add("-c");
-                bashArguments.add("\"" + dockerInspectorShellScript.getCanonicalPath() + "\" --version");
-                final Executable getDockerInspectorVersion = new Executable(inspectorDirectory, bashExecutablePath, bashArguments);
-
-                final String inspectorVersion = executableRunner.execute(getDockerInspectorVersion).getStandardOutput().split(" ")[1];
+                final String dockerInspectorArg = "--version";
+                final String responseFromDockerInspector = getResponseFromDockerInspector(bashExecutablePath, dockerInspectorShellScript, dockerInspectorArg);
+                final String inspectorVersion = responseFromDockerInspector.split(" ")[1];
                 logger.info(String.format("Resolved docker inspector version from latest to: %s", inspectorVersion));
                 return inspectorVersion;
             } else {
@@ -119,6 +129,16 @@ public class DockerInspectorManager {
         } catch (final Exception e) {
             throw new DetectUserFriendlyException("Unable to find docker inspector version.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }
+    }
+
+    private String getResponseFromDockerInspector(final String bashExecutablePath, final File dockerInspectorShellScript, final String dockerInspectorArg) throws IOException, ExecutableRunnerException {
+        final File inspectorDirectory = detectFileManager.getSharedDirectory(dockerSharedDirectoryName);
+        final List<String> bashArguments = new ArrayList<>();
+        bashArguments.add("-c");
+        bashArguments.add("\"" + dockerInspectorShellScript.getCanonicalPath() + "\" " + dockerInspectorArg);
+        final Executable dockerInspectorExecutable = new Executable(inspectorDirectory, bashExecutablePath, bashArguments);
+        final String responseFromDockerInspector = executableRunner.execute(dockerInspectorExecutable).getStandardOutput();
+        return responseFromDockerInspector;
     }
 
     private DockerInspectorInfo resolveShellScript() throws DetectUserFriendlyException {
