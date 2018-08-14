@@ -35,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -46,13 +47,15 @@ import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOptio
 public class DetectOptionManager implements ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class);
 
-    public final DetectConfiguration detectConfiguration;
+    private final DetectConfiguration detectConfiguration;
+    private final DetectInfo detectInfo;
 
     private List<DetectOption> detectOptions;
     private List<String> detectGroups;
 
-    public DetectOptionManager(final DetectConfiguration detectConfiguration) {
+    public DetectOptionManager(final DetectConfiguration detectConfiguration, final DetectInfo detectInfo) {
         this.detectConfiguration = detectConfiguration;
+        this.detectInfo = detectInfo;
     }
 
     public List<DetectOption> getDetectOptions() {
@@ -87,6 +90,8 @@ public class DetectOptionManager implements ExitCodeReporter {
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
+
+        checkForRemovedProperties();
     }
 
     public void postInit() throws IllegalArgumentException, SecurityException {
@@ -117,7 +122,9 @@ public class DetectOptionManager implements ExitCodeReporter {
             }
 
             if (option.isRequestedDeprecation()) {
-                option.addWarning("As of version " + option.getDetectOptionHelp().deprecationVersion + " this property will be removed: " + option.getDetectOptionHelp().deprecation);
+                String removeVersion = option.getDetectOptionHelp().deprecationRemoveInVersion.getDisplayValue();
+                String failVersion = option.getDetectOptionHelp().deprecationFailInVersion.getDisplayValue();
+                option.addWarning("As of version " + removeVersion + " this property will be removed, in " + failVersion + " detect will fail. " + option.getDetectOptionHelp().deprecation);
             }
         }
     }
@@ -212,19 +219,41 @@ public class DetectOptionManager implements ExitCodeReporter {
             help.detailedHelp = issuesAnnotation.value();
         }
 
-        final ValueDeprecation deprecationAnnotation = field.getAnnotation(ValueDeprecation.class);
+        final DetectDeprecation deprecationAnnotation = field.getAnnotation(DetectDeprecation.class);
         if (deprecationAnnotation != null) {
             help.isDeprecated = true;
             help.deprecation = deprecationAnnotation.description();
-            help.deprecationVersion = deprecationAnnotation.willRemoveInVersion();
+            help.deprecationFailInVersion = deprecationAnnotation.failInVersion();
+            help.deprecationRemoveInVersion = deprecationAnnotation.removeInVersion();
         }
 
         return help;
     }
 
+    private void checkForRemovedProperties() {
+        final int detectMajorVersion = detectInfo.getDetectMajorVersion();
+        for (final DetectOption detectOption : detectOptions) {
+            if (detectOption.getDetectOptionHelp().isDeprecated) {
+                if (detectMajorVersion >= detectOption.getDetectOptionHelp().deprecationRemoveInVersion.getIntValue()) {
+                    throw new RuntimeException("A property should have been removed in this Detect Major Version: " + detectOption.getDetectProperty().getPropertyName());
+                }
+            }
+        }
+    }
+
     @Override
     public ExitCodeType getExitCodeType() {
-        if (detectOptions.stream().anyMatch(DetectOption::hasWarnings)) {
+        final int detectMajorVersion = detectInfo.getDetectMajorVersion();
+        boolean atLeastOneDeprecatedFailure = false;
+        for (final DetectOption detectOption : detectOptions) {
+            if (detectOption.hasWarnings() && detectOption.isRequestedDeprecation()) {
+                if (detectMajorVersion >= detectOption.getDetectOptionHelp().deprecationFailInVersion.getIntValue()) {
+                    atLeastOneDeprecatedFailure = true;
+                    logger.error(detectOption.getDetectProperty().getPropertyName() + " is deprecated and should not be used.");
+                }
+            }
+        }
+        if (atLeastOneDeprecatedFailure) {
             logger.error("Configuration is using deprecated properties. Please fix deprecation issues. To ignore these messages and force detect to succeed supply --" + DetectProperty.DETECT_FORCE_SUCCESS.getPropertyName() + "=true");
             return ExitCodeType.FAILURE_CONFIGURATION;
         }

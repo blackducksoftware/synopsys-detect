@@ -56,11 +56,12 @@ import static com.blackducksoftware.integration.hub.detect.configuration.DetectP
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_SEARCH;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_SIGNATURE_SCANNER;
 
+import com.blackducksoftware.integration.hub.detect.DetectMajorVersion;
 import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
+import com.blackducksoftware.integration.hub.detect.help.DetectDeprecation;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
 import com.blackducksoftware.integration.hub.detect.help.HelpDetailed;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
-import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
 
 public enum DetectProperty {
 
@@ -342,12 +343,12 @@ public enum DetectProperty {
     DETECT_NUGET_PATH("detect.nuget.path", DetectPropertyType.STRING),
 
     @HelpGroup(primary = GROUP_PIP)
-    @ValueDeprecation(description = "detect.project.name will be used for this in the future", willRemoveInVersion = "5.0.0")
+    @DetectDeprecation(description = "detect.project.name should be used instead", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
     @HelpDescription("The name of your pip project, to be used if your project's name cannot be correctly inferred from its setup.py file")
     DETECT_PIP_PROJECT_NAME("detect.pip.project.name", DetectPropertyType.STRING),
 
     @HelpGroup(primary = GROUP_PIP)
-    @ValueDeprecation(description = "detect.project.version.name will be used for this in the future", willRemoveInVersion = "5.0.0")
+    @DetectDeprecation(description = "detect.project.version.name should be used instead", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
     @HelpDescription("The version of your pip project, to be used if your project's version name cannot be correctly inferred from its setup.py file")
     DETECT_PIP_PROJECT_VERSION_NAME("detect.pip.project.version.name", DetectPropertyType.STRING),
 

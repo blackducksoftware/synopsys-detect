@@ -28,10 +28,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.blackducksoftware.integration.hub.detect.DetectMajorVersion;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface ValueDeprecation {
+public @interface DetectDeprecation {
     String description() default "";
 
-    String willRemoveInVersion() default "";
+    DetectMajorVersion failInVersion() default DetectMajorVersion.ONE;
+
+    DetectMajorVersion removeInVersion() default DetectMajorVersion.ONE;
 }

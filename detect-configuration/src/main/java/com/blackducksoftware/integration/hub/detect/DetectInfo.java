@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
@@ -46,6 +47,10 @@ public class DetectInfo {
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public int getDetectMajorVersion() {
+        return Integer.parseInt(getDetectVersion().split(Pattern.quote("."))[0]);
     }
 
     public String getDetectVersion() {
