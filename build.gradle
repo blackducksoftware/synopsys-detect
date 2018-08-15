@@ -21,7 +21,7 @@ buildscript {
 }
 
 
-String sharedVersion = '4.1.2-SNAPSHOT'
+String sharedVersion = '4.1.2'
 version = sharedVersion
 
 configure(subprojects) { project ->
