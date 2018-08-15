@@ -50,6 +50,7 @@ public class DetectPropertySource {
         this.configurableEnvironment = configurableEnvironment;
     }
 
+    // TODO: Remove redirection from "blackduck.hub." to "blackduck." in version 6.
     public void init() {
         final MutablePropertySources mutablePropertySources = configurableEnvironment.getPropertySources();
         for (final PropertySource<?> propertySource : mutablePropertySources) {
@@ -65,11 +66,19 @@ public class DetectPropertySource {
                             phoneHomePropertyKeys.add(propertyName);
                         } else if (propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
                             blackduckPropertyKeys.add(propertyName);
+                        } else if (propertyName.startsWith("BLACKDUCK_") && !propertyName.startsWith("BLACKDUCK_HUB")) {
+                            blackduckPropertyKeys.add(propertyName.replaceFirst("BLACKDUCK_", "BLACKDUCK_HUB_"));
+                        } else if (propertyName.startsWith("blackduck.") && !propertyName.startsWith("blackduck.hub.")) {
+                            blackduckPropertyKeys.add(propertyName.replaceFirst("blackduck.", "blackduck.hub."));
                         }
                     }
                 }
             }
         }
+    }
+
+    public boolean containsDetectProperty(final String key) {
+        return configurableEnvironment.containsProperty(key);
     }
 
     public String getDetectProperty(final String key, final String defaultValue) {

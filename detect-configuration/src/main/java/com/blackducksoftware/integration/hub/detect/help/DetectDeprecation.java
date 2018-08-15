@@ -38,4 +38,5 @@ public @interface DetectDeprecation {
     DetectMajorVersion failInVersion() default DetectMajorVersion.ONE;
 
     DetectMajorVersion removeInVersion() default DetectMajorVersion.ONE;
+
 }

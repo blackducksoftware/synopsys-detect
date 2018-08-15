@@ -52,21 +52,46 @@ public class DetectConfiguration {
         this.detectPropertySource = detectPropertySource;
     }
 
+    // TODO: Remove override code in version 6.
     public void init() {
-        Arrays.stream(DetectProperty.values()).forEach(detectProperty -> {
-            updatePropertyMap(propertyMap, detectProperty, detectPropertySource.getDetectProperty(detectProperty.getPropertyName(), detectProperty.getDefaultValue()));
+        Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
+            if (!propertyMap.containsKey(currentProperty)) {
+                final DetectProperty override = deprecationOverride(currentProperty);
+                if (override != null) {
+                    final boolean currentExists = detectPropertySource.containsDetectProperty(currentProperty.getPropertyName());
+                    final boolean overrideExists = detectPropertySource.containsDetectProperty(override.getPropertyName());
+                    DetectProperty chosenProperty = override;
+                    if (currentExists && !overrideExists) {
+                        chosenProperty = currentProperty;
+                    }
+                    final String value = detectPropertySource.getDetectProperty(chosenProperty.getPropertyName(), chosenProperty.getDefaultValue());
+                    updatePropertyMap(propertyMap, currentProperty, value);
+                    updatePropertyMap(propertyMap, override, value);
+                } else {
+                    updatePropertyMap(propertyMap, currentProperty, detectPropertySource.getDetectProperty(currentProperty.getPropertyName(), currentProperty.getDefaultValue()));
+                }
+            }
         });
+    }
+
+    // TODO: Remove in version 6.
+    private DetectProperty deprecationOverride(final DetectProperty detectProperty) {
+        if (DetectPropertyDeprecationOverrides.PROPERTY_OVERRIDES.containsKey(detectProperty)) {
+            return DetectPropertyDeprecationOverrides.PROPERTY_OVERRIDES.get(detectProperty);
+        } else {
+            return null;
+        }
     }
 
     public ProxyInfo getHubProxyInfo() throws DetectUserFriendlyException {
         final ProxyInfoBuilder proxyInfoBuilder = new ProxyInfoBuilder();
-        proxyInfoBuilder.setHost(getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_HOST));
-        proxyInfoBuilder.setPort(getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_PORT));
-        proxyInfoBuilder.setUsername(getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_USERNAME));
-        proxyInfoBuilder.setPassword(getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_PASSWORD));
-        proxyInfoBuilder.setIgnoredProxyHosts(getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_IGNORED_HOSTS));
-        proxyInfoBuilder.setNtlmDomain(getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_NTLM_DOMAIN));
-        proxyInfoBuilder.setNtlmWorkstation(getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION));
+        proxyInfoBuilder.setHost(getProperty(DetectProperty.BLACKDUCK_PROXY_HOST));
+        proxyInfoBuilder.setPort(getProperty(DetectProperty.BLACKDUCK_PROXY_PORT));
+        proxyInfoBuilder.setUsername(getProperty(DetectProperty.BLACKDUCK_PROXY_USERNAME));
+        proxyInfoBuilder.setPassword(getProperty(DetectProperty.BLACKDUCK_PROXY_PASSWORD));
+        proxyInfoBuilder.setIgnoredProxyHosts(getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS));
+        proxyInfoBuilder.setNtlmDomain(getProperty(DetectProperty.BLACKDUCK_PROXY_NTLM_DOMAIN));
+        proxyInfoBuilder.setNtlmWorkstation(getProperty(DetectProperty.BLACKDUCK_PROXY_NTLM_WORKSTATION));
         ProxyInfo proxyInfo = ProxyInfo.NO_PROXY_INFO;
         try {
             proxyInfo = proxyInfoBuilder.build();
@@ -79,10 +104,10 @@ public class DetectConfiguration {
     public UnauthenticatedRestConnection createUnauthenticatedRestConnection(final String url) throws DetectUserFriendlyException {
         final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
         restConnectionBuilder.setBaseUrl(url);
-        restConnectionBuilder.setTimeout(getIntegerProperty(DetectProperty.BLACKDUCK_HUB_TIMEOUT));
+        restConnectionBuilder.setTimeout(getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT));
         restConnectionBuilder.applyProxyInfo(getHubProxyInfo());
         restConnectionBuilder.setLogger(new Slf4jIntLogger(logger));
-        restConnectionBuilder.setAlwaysTrustServerCertificate(getBooleanProperty(DetectProperty.BLACKDUCK_HUB_TRUST_CERT));
+        restConnectionBuilder.setAlwaysTrustServerCertificate(getBooleanProperty(DetectProperty.BLACKDUCK_TRUST_CERT));
 
         return restConnectionBuilder.build();
     }

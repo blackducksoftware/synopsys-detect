@@ -198,12 +198,12 @@ public class Application implements ApplicationRunner {
             return WorkflowStep.EXIT_WITH_SUCCESS;
         }
 
-        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_HUB) && !hubServiceWrapper.testHubConnection(new SilentLogger())) {
-            logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_DISABLE_WITHOUT_HUB.getPropertyName()));
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK) && !hubServiceWrapper.testHubConnection(new SilentLogger())) {
+            logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
             return WorkflowStep.EXIT_WITH_SUCCESS;
         }
 
-        if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE)) {
             phoneHomeManager.initOffline();
         } else {
             hubServiceWrapper.init();
@@ -220,7 +220,7 @@ public class Application implements ApplicationRunner {
         logger.info(String.format("Project Name: %s", detectProject.getProjectName()));
         logger.info(String.format("Project Version Name: %s", detectProject.getProjectVersion()));
 
-        if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE)) {
             hubManager.performOfflineHubActions(detectProject);
             for (final File bdio : detectProject.getBdioFiles()) {
                 diagnosticManager.registerGlobalFileOfInterest(bdio);
