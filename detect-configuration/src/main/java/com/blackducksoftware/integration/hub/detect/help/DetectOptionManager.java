@@ -122,9 +122,9 @@ public class DetectOptionManager implements ExitCodeReporter {
             }
 
             if (option.isRequestedDeprecation()) {
-                String removeVersion = option.getDetectOptionHelp().deprecationRemoveInVersion.getDisplayValue();
-                String failVersion = option.getDetectOptionHelp().deprecationFailInVersion.getDisplayValue();
-                option.addWarning("As of version " + removeVersion + " this property will be removed, in " + failVersion + " detect will fail. " + option.getDetectOptionHelp().deprecation);
+                final String removeVersion = option.getDetectOptionHelp().deprecationRemoveInVersion.getDisplayValue();
+                final String failVersion = option.getDetectOptionHelp().deprecationFailInVersion.getDisplayValue();
+                option.addWarning(option.getDetectOptionHelp().deprecation + " It will cause failure in " + failVersion + " and be removed in " + removeVersion + ".");
             }
         }
     }

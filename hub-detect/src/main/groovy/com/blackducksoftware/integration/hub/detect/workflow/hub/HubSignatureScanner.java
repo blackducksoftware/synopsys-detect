@@ -112,7 +112,7 @@ public class HubSignatureScanner implements StatusSummaryProvider<ScanStatusSumm
             final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, scanPaths, dockerTarFilename);
             hubScanConfigBuilder.setDryRun(true);
 
-            final String offlineLocalPath = detectConfiguration.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH);
+            final String offlineLocalPath = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH);
             if (StringUtils.isNotBlank(offlineLocalPath)) {
                 final File toolsDirectory = new File(offlineLocalPath);
                 hubScanConfigBuilder.setToolsDir(toolsDirectory);
@@ -176,10 +176,10 @@ public class HubSignatureScanner implements StatusSummaryProvider<ScanStatusSumm
     }
 
     private void determinePathsAndExclusions(final DetectProject detectProject) throws IntegrationException {
-        final String[] signatureScanPaths = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PATHS);
+        final String[] signatureScanPaths = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS);
         final boolean userProvidedScanTargets = null != signatureScanPaths && signatureScanPaths.length > 0;
-        final String[] providedExclusionPatterns = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS);
-        final String[] hubSignatureScannerExclusionNamePatterns = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS);
+        final String[] providedExclusionPatterns = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS);
+        final String[] hubSignatureScannerExclusionNamePatterns = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS);
         if (null != detectProject.getProjectName() && null != detectProject.getProjectVersion() && userProvidedScanTargets) {
             for (final String path : signatureScanPaths) {
                 logger.info(String.format("Registering explicit scan path %s", path));
@@ -229,14 +229,14 @@ public class HubSignatureScanner implements StatusSummaryProvider<ScanStatusSumm
         final File toolsDirectory = detectFileManager.getPermanentDirectory();
 
         final HubScanConfigBuilder hubScanConfigBuilder = new HubScanConfigBuilder();
-        hubScanConfigBuilder.setScanMemory(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_MEMORY));
+        hubScanConfigBuilder.setScanMemory(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY));
         hubScanConfigBuilder.setToolsDir(toolsDirectory);
         hubScanConfigBuilder.setWorkingDirectory(scannerDirectory);
 
         hubScanConfigBuilder.setCleanupLogsOnSuccess(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP));
-        hubScanConfigBuilder.setDryRun(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN));
-        hubScanConfigBuilder.setSnippetModeEnabled(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_SNIPPET_MODE));
-        hubScanConfigBuilder.setAdditionalScanArguments(detectConfiguration.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS));
+        hubScanConfigBuilder.setDryRun(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN));
+        hubScanConfigBuilder.setSnippetModeEnabled(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE));
+        hubScanConfigBuilder.setAdditionalScanArguments(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS));
 
         final String projectName = detectProject.getProjectName();
         final String projectVersionName = detectProject.getProjectVersion();

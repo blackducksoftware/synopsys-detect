@@ -48,7 +48,7 @@ public class BdioUploader {
 
     public void uploadBdioFiles(final CodeLocationService codeLocationService, final DetectProject detectProject) throws IntegrationException {
         for (final File file : detectProject.getBdioFiles()) {
-            logger.info(String.format("uploading %s to %s", file.getName(), detectConfiguration.getProperty(DetectProperty.BLACKDUCK_HUB_URL)));
+            logger.info(String.format("uploading %s to %s", file.getName(), detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL)));
             codeLocationService.importBomFile(file);
             detectFileManager.registerOutputFileForCleanup(file);
         }

@@ -160,25 +160,25 @@ public class ConfigurationManager {
     }
 
     private void resolveSignatureScannerProperties(final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
-        int hubSignatureScannerParallelProcessors = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS);
+        int hubSignatureScannerParallelProcessors = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS);
         if (hubSignatureScannerParallelProcessors == -1) {
             hubSignatureScannerParallelProcessors = Runtime.getRuntime().availableProcessors();
         }
         this.hubSignatureScannerParallelProcessors = hubSignatureScannerParallelProcessors;
 
-        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL)) &&
-                StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH))) {
+        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL)) &&
+                StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH))) {
             throw new DetectUserFriendlyException(
                     "You have provided both a hub signature scanner url AND a local hub signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
                     ExitCodeType.FAILURE_GENERAL_ERROR);
         }
-        final Boolean originalOfflineMode = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE);
+        final Boolean originalOfflineMode = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE);
         hubOfflineMode = originalOfflineMode;
-        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL))) {
+        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL))) {
             logger.info("A hub signature scanner url was provided, which requires hub offline mode. Setting hub offline mode to true.");
             hubOfflineMode = true;
         }
-        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH))) {
+        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH))) {
             logger.info("A local hub signature scanner path was provided, which requires hub offline mode. Setting hub offline mode to true.");
             hubOfflineMode = true;
         }
@@ -217,11 +217,11 @@ public class ConfigurationManager {
         updateOptionValue(detectOptions, DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, policyCheckFailOnSeverities);
         detectConfiguration.setDetectProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, policyCheckFailOnSeverities);
 
-        updateOptionValue(detectOptions, DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, String.valueOf(hubSignatureScannerParallelProcessors));
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, String.valueOf(hubSignatureScannerParallelProcessors));
+        updateOptionValue(detectOptions, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, String.valueOf(hubSignatureScannerParallelProcessors));
+        detectConfiguration.setDetectProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, String.valueOf(hubSignatureScannerParallelProcessors));
 
-        updateOptionValue(detectOptions, DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE, String.valueOf(hubOfflineMode));
-        detectConfiguration.setDetectProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE, String.valueOf(hubOfflineMode));
+        updateOptionValue(detectOptions, DetectProperty.BLACKDUCK_OFFLINE_MODE, String.valueOf(hubOfflineMode));
+        detectConfiguration.setDetectProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, String.valueOf(hubOfflineMode));
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, StringUtils.join(bomToolSearchDirectoryExclusions, ","));
         detectConfiguration.setDetectProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, StringUtils.join(bomToolSearchDirectoryExclusions, ","));
@@ -240,14 +240,6 @@ public class ConfigurationManager {
         detectOptions.stream().forEach(option -> {
             if (option.getDetectProperty() == detectProperty) {
                 option.setPostInitValue(value);
-            }
-        });
-    }
-
-    private void addFieldWarning(final List<DetectOption> detectOptions, final DetectProperty detectProperty, final String warning) {
-        detectOptions.stream().forEach(option -> {
-            if (option.getDetectProperty() == detectProperty) {
-                option.addWarning(warning);
             }
         });
     }
