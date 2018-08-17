@@ -38,6 +38,8 @@ public class DetectPropertySource {
     public static final String PHONE_HOME_PROPERTY_PREFIX = "detect.phone.home.passthrough.";
     public static final String DOCKER_PROPERTY_PREFIX = "detect.docker.passthrough.";
     public static final String DOCKER_ENVIRONMENT_PREFIX = "DETECT_DOCKER_PASSTHROUGH_";
+    public static final String BLACKDUCK_PROPERTY_PREFIX = "blackduck."; // TODO: Remove these in major version 6 and when hub common supports them.
+    public static final String BLACKDUCK_ENVIRONMENT_PREFIX = "BLACKDUCK_"; // TODO: Remove these in major version 6 and when hub common supports them.
 
     private final ConfigurableEnvironment configurableEnvironment;
 
@@ -66,10 +68,8 @@ public class DetectPropertySource {
                             phoneHomePropertyKeys.add(propertyName);
                         } else if (propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
                             blackduckPropertyKeys.add(propertyName);
-                        } else if (propertyName.startsWith("BLACKDUCK_") && !propertyName.startsWith("BLACKDUCK_HUB")) {
-                            blackduckPropertyKeys.add(propertyName.replaceFirst("BLACKDUCK_", "BLACKDUCK_HUB_"));
-                        } else if (propertyName.startsWith("blackduck.") && !propertyName.startsWith("blackduck.hub.")) {
-                            blackduckPropertyKeys.add(propertyName.replaceFirst("blackduck.", "blackduck.hub."));
+                        } else if (propertyName.startsWith(BLACKDUCK_PROPERTY_PREFIX) || propertyName.startsWith(BLACKDUCK_ENVIRONMENT_PREFIX)) {
+                            blackduckPropertyKeys.add(propertyName);
                         }
                     }
                 }

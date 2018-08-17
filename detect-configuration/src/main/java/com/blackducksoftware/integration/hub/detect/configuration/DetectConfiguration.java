@@ -25,38 +25,32 @@ package com.blackducksoftware.integration.hub.detect.configuration;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.log.Slf4jIntLogger;
-import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
-import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnectionBuilder;
-import com.blackducksoftware.integration.rest.proxy.ProxyInfo;
-import com.blackducksoftware.integration.rest.proxy.ProxyInfoBuilder;
+import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder;
 
 public class DetectConfiguration {
     private final Logger logger = LoggerFactory.getLogger(DetectConfiguration.class);
-    private final Map<DetectProperty, Object> propertyMap = new HashMap<>();
     private final DetectPropertySource detectPropertySource;
+    private final DetectPropertyMap detectPropertyMap;
 
-    public DetectConfiguration(final DetectPropertySource detectPropertySource) {
+    public DetectConfiguration(final DetectPropertySource detectPropertySource, final DetectPropertyMap detectPropertyMap) {
         this.detectPropertySource = detectPropertySource;
+        this.detectPropertyMap = detectPropertyMap;
     }
 
     // TODO: Remove override code in version 6.
     public void init() {
         Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
-            if (!propertyMap.containsKey(currentProperty)) {
-                final DetectProperty override = deprecationOverride(currentProperty);
+            if (!detectPropertyMap.containsDetectProperty(currentProperty)) {
+                final DetectProperty override = fromDeprecatedToOverride(currentProperty);
                 if (override != null) {
                     final boolean currentExists = detectPropertySource.containsDetectProperty(currentProperty.getPropertyName());
                     final boolean overrideExists = detectPropertySource.containsDetectProperty(override.getPropertyName());
@@ -65,51 +59,46 @@ public class DetectConfiguration {
                         chosenProperty = currentProperty;
                     }
                     final String value = detectPropertySource.getDetectProperty(chosenProperty.getPropertyName(), chosenProperty.getDefaultValue());
-                    updatePropertyMap(propertyMap, currentProperty, value);
-                    updatePropertyMap(propertyMap, override, value);
+                    detectPropertyMap.setDetectProperty(currentProperty, value);
+                    detectPropertyMap.setDetectProperty(override, value);
                 } else {
-                    updatePropertyMap(propertyMap, currentProperty, detectPropertySource.getDetectProperty(currentProperty.getPropertyName(), currentProperty.getDefaultValue()));
+                    detectPropertyMap.setDetectProperty(currentProperty, detectPropertySource.getDetectProperty(currentProperty.getPropertyName(), currentProperty.getDefaultValue()));
                 }
             }
         });
     }
 
     // TODO: Remove in version 6.
-    private DetectProperty deprecationOverride(final DetectProperty detectProperty) {
-        if (DetectPropertyDeprecationOverrides.PROPERTY_OVERRIDES.containsKey(detectProperty)) {
-            return DetectPropertyDeprecationOverrides.PROPERTY_OVERRIDES.get(detectProperty);
+    private DetectProperty fromDeprecatedToOverride(final DetectProperty detectProperty) {
+        if (DetectPropertyDeprecations.PROPERTY_OVERRIDES.containsKey(detectProperty)) {
+            return DetectPropertyDeprecations.PROPERTY_OVERRIDES.get(detectProperty);
         } else {
             return null;
         }
     }
 
-    public ProxyInfo getHubProxyInfo() throws DetectUserFriendlyException {
-        final ProxyInfoBuilder proxyInfoBuilder = new ProxyInfoBuilder();
-        proxyInfoBuilder.setHost(getProperty(DetectProperty.BLACKDUCK_PROXY_HOST));
-        proxyInfoBuilder.setPort(getProperty(DetectProperty.BLACKDUCK_PROXY_PORT));
-        proxyInfoBuilder.setUsername(getProperty(DetectProperty.BLACKDUCK_PROXY_USERNAME));
-        proxyInfoBuilder.setPassword(getProperty(DetectProperty.BLACKDUCK_PROXY_PASSWORD));
-        proxyInfoBuilder.setIgnoredProxyHosts(getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS));
-        proxyInfoBuilder.setNtlmDomain(getProperty(DetectProperty.BLACKDUCK_PROXY_NTLM_DOMAIN));
-        proxyInfoBuilder.setNtlmWorkstation(getProperty(DetectProperty.BLACKDUCK_PROXY_NTLM_WORKSTATION));
-        ProxyInfo proxyInfo = ProxyInfo.NO_PROXY_INFO;
-        try {
-            proxyInfo = proxyInfoBuilder.build();
-        } catch (final IllegalStateException e) {
-            throw new DetectUserFriendlyException(String.format("Your proxy configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_PROXY_CONNECTIVITY);
-        }
-        return proxyInfo;
+    // TODO: Remove in version 6.
+    private DetectProperty fromOverrideToDeprecated(final DetectProperty detectProperty) {
+        final Optional<DetectProperty> found = DetectPropertyDeprecations.PROPERTY_OVERRIDES.entrySet().stream()
+                .filter(it -> it.getValue().equals(detectProperty))
+                .map(it -> it.getKey())
+                .findFirst();
+
+        return found.orElse(null);
     }
 
-    public UnauthenticatedRestConnection createUnauthenticatedRestConnection(final String url) throws DetectUserFriendlyException {
-        final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
-        restConnectionBuilder.setBaseUrl(url);
-        restConnectionBuilder.setTimeout(getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT));
-        restConnectionBuilder.applyProxyInfo(getHubProxyInfo());
-        restConnectionBuilder.setLogger(new Slf4jIntLogger(logger));
-        restConnectionBuilder.setAlwaysTrustServerCertificate(getBooleanProperty(DetectProperty.BLACKDUCK_TRUST_CERT));
-
-        return restConnectionBuilder.build();
+    public Set<String> getBlackduckPropertyKeys() {
+        final Set<String> providedKeys = detectPropertySource.getBlackduckPropertyKeys();
+        final Set<String> allKeys = new HashSet<>(providedKeys);
+        Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
+            final String propertyName = currentProperty.getPropertyName();
+            if (propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
+                allKeys.add(propertyName);
+            } else if (propertyName.startsWith(DetectPropertySource.BLACKDUCK_PROPERTY_PREFIX) || propertyName.startsWith(DetectPropertySource.BLACKDUCK_ENVIRONMENT_PREFIX)) {
+                allKeys.add(propertyName);
+            }
+        });
+        return allKeys;
     }
 
     public Map<String, String> getPhoneHomeProperties() {
@@ -117,7 +106,7 @@ public class DetectConfiguration {
     }
 
     public Map<String, String> getBlackduckProperties() {
-        return getKeys(detectPropertySource.getBlackduckPropertyKeys());
+        return getKeys(getBlackduckPropertyKeys());
     }
 
     public Map<String, String> getDockerProperties() {
@@ -126,6 +115,51 @@ public class DetectConfiguration {
 
     public Map<String, String> getDockerEnvironmentProperties() {
         return getKeysWithoutPrefix(detectPropertySource.getDockerEnvironmentKeys(), DetectPropertySource.DOCKER_ENVIRONMENT_PREFIX);
+    }
+
+    // Redirect to the underlying map
+    public boolean getBooleanProperty(final DetectProperty detectProperty) {
+        return detectPropertyMap.getBooleanProperty(detectProperty);
+    }
+
+    public Long getLongProperty(final DetectProperty detectProperty) {
+        return detectPropertyMap.getLongProperty(detectProperty);
+    }
+
+    public Integer getIntegerProperty(final DetectProperty detectProperty) {
+        return detectPropertyMap.getIntegerProperty(detectProperty);
+    }
+
+    public String[] getStringArrayProperty(final DetectProperty detectProperty) {
+        return detectPropertyMap.getStringArrayProperty(detectProperty);
+    }
+
+    public String getProperty(final DetectProperty detectProperty) {
+        return detectPropertyMap.getProperty(detectProperty);
+    }
+
+    public String getPropertyValueAsString(final DetectProperty detectProperty) {
+        return detectPropertyMap.getPropertyValueAsString(detectProperty);
+    }
+
+    /**
+     * DetectOptionManager and ConfigurationManager
+     */
+    public void setDetectProperty(final DetectProperty detectProperty, final String stringValue) {
+        // TODO: Remove overrides in a future version of detect.
+        final DetectProperty override = fromDeprecatedToOverride(detectProperty);
+        final DetectProperty deprecated = fromOverrideToDeprecated(detectProperty);
+
+        detectPropertyMap.setDetectProperty(detectProperty, stringValue);
+        if (override != null) {
+            detectPropertyMap.setDetectProperty(override, stringValue);
+        } else if (deprecated != null) {
+            detectPropertyMap.setDetectProperty(deprecated, stringValue);
+        }
+    }
+
+    public Map<DetectProperty, Object> getCurrentProperties() {
+        return new HashMap<>(detectPropertyMap.getUnderlyingPropertyMap());// return an immutable copy
     }
 
     private Map<String, String> getKeys(final Set<String> keys) {
@@ -153,8 +187,10 @@ public class DetectConfiguration {
 
     private Optional<DetectProperty> getPropertyFromString(final String detectKey) {
         try {
-            return Optional.of(DetectProperty.valueOf(detectKey));
+            final String casedKey = detectKey.toUpperCase().replaceAll("\\.", "_");
+            return Optional.of(DetectProperty.valueOf(casedKey));
         } catch (final Exception e) {
+            logger.trace("Could not convert key to detect key: " + detectKey);
             return Optional.empty();
         }
     }
@@ -163,115 +199,4 @@ public class DetectConfiguration {
         return key.substring(prefix.length());
     }
 
-    public boolean getBooleanProperty(final DetectProperty detectProperty) {
-        final Object value = propertyMap.get(detectProperty);
-        if (null == value) {
-            return false;
-        }
-        return (boolean) value;
-    }
-
-    public Long getLongProperty(final DetectProperty detectProperty) {
-        final Object value = propertyMap.get(detectProperty);
-        if (null == value) {
-            return null;
-        }
-        return (long) value;
-    }
-
-    public Integer getIntegerProperty(final DetectProperty detectProperty) {
-        final Object value = propertyMap.get(detectProperty);
-        if (null == value) {
-            return null;
-        }
-        return (int) value;
-    }
-
-    public String[] getStringArrayProperty(final DetectProperty detectProperty) {
-        return (String[]) propertyMap.get(detectProperty);
-    }
-
-    public String getProperty(final DetectProperty detectProperty) {
-        return (String) propertyMap.get(detectProperty);
-    }
-
-    public String getPropertyValueAsString(final DetectProperty detectProperty) {
-        final Object objectValue = propertyMap.get(detectProperty);
-        String displayValue = "";
-        if (DetectPropertyType.STRING == detectProperty.getPropertyType()) {
-            displayValue = (String) objectValue;
-        } else if (DetectPropertyType.STRING_ARRAY == detectProperty.getPropertyType()) {
-            displayValue = StringUtils.join((String[]) objectValue, ",");
-        } else if (null != objectValue) {
-            displayValue = objectValue.toString();
-        }
-        return displayValue;
-    }
-
-    /**
-     * DetectOptionManager, ConfigurationManager, and TildeInPathResolver should be the only classes using this method
-     */
-    public void setDetectProperty(final DetectProperty detectProperty, final String stringValue) {
-        updatePropertyMap(propertyMap, detectProperty, stringValue);
-    }
-
-    /**
-     * DetectOptionManager, ConfigurationManager, and TildeInPathResolver should be the only classes using this method
-     */
-    public Map<DetectProperty, Object> getPropertyMap() {
-        return propertyMap;
-    }
-
-    private void updatePropertyMap(final Map<DetectProperty, Object> propertyMap, final DetectProperty detectProperty, final String stringValue) {
-        final Object value;
-        if (DetectPropertyType.BOOLEAN == detectProperty.getPropertyType()) {
-            value = convertBoolean(stringValue);
-        } else if (DetectPropertyType.LONG == detectProperty.getPropertyType()) {
-            value = convertLong(stringValue);
-        } else if (DetectPropertyType.INTEGER == detectProperty.getPropertyType()) {
-            value = convertInt(stringValue);
-        } else if (DetectPropertyType.STRING_ARRAY == detectProperty.getPropertyType()) {
-            value = convertStringArray(stringValue);
-        } else {
-            if (null == stringValue) {
-                value = "";
-            } else {
-                value = stringValue;
-            }
-        }
-        propertyMap.put(detectProperty, value);
-    }
-
-    private String[] convertStringArray(final String string) {
-        if (null == string) {
-            return new String[0];
-        } else {
-            return string.split(",");
-        }
-    }
-
-    private Integer convertInt(final String integerString) {
-        if (null == integerString) {
-            return null;
-        }
-        return NumberUtils.toInt(integerString);
-    }
-
-    private Long convertLong(final String longString) {
-        if (null == longString) {
-            return null;
-        }
-        try {
-            return Long.valueOf(longString);
-        } catch (final NumberFormatException e) {
-            return 0L;
-        }
-    }
-
-    private Boolean convertBoolean(final String booleanString) {
-        if (null == booleanString) {
-            return null;
-        }
-        return BooleanUtils.toBoolean(booleanString);
-    }
 }

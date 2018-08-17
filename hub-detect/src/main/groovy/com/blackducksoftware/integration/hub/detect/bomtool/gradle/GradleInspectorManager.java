@@ -44,6 +44,7 @@ import org.w3c.dom.NodeList;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -66,17 +67,19 @@ public class GradleInspectorManager {
     private final Configuration configuration;
     private final DocumentBuilder xmlDocumentBuilder;
     private final DetectConfiguration detectConfiguration;
+    private final DetectConfigurationUtility detectConfigurationUtility;
 
     private String resolvedInitScript = null;
     private String resolvedVersion = null;
     private boolean hasResolvedInspector = false;
 
     public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DocumentBuilder xmlDocumentBuilder,
-            final DetectConfiguration detectConfiguration) {
+            final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility) {
         this.detectFileManager = detectFileManager;
         this.configuration = configuration;
         this.xmlDocumentBuilder = xmlDocumentBuilder;
         this.detectConfiguration = detectConfiguration;
+        this.detectConfigurationUtility = detectConfigurationUtility;
     }
 
     public String getGradleInspector(final BomToolEnvironment environment) throws BomToolException {
@@ -105,7 +108,7 @@ public class GradleInspectorManager {
                     final String mavenMetadataUrl = "http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
                     final Request request = new Request.Builder().uri(mavenMetadataUrl).build();
                     Response response = null;
-                    try (UnauthenticatedRestConnection restConnection = detectConfiguration.createUnauthenticatedRestConnection(mavenMetadataUrl)) {
+                    try (UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(mavenMetadataUrl)) {
                         response = restConnection.executeRequest(request);
                         final InputStream inputStream = response.getContent();
                         xmlDocument = xmlDocumentBuilder.parse(inputStream);

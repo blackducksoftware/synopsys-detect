@@ -29,6 +29,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -48,8 +49,8 @@ public class ConfigurationManager {
     public static final String NUGET = "nuget";
     public static final String GRADLE = "gradle";
     public static final String DOCKER = "docker";
+    public final static String USER_HOME = System.getProperty("user.home");
     private final Logger logger = LoggerFactory.getLogger(ConfigurationManager.class);
-    private final String USER_HOME = System.getProperty("user.home");
 
     private final TildeInPathResolver tildeInPathResolver;
     private final DetectConfiguration detectConfiguration;
@@ -99,10 +100,16 @@ public class ConfigurationManager {
 
     private void resolveTildeInPaths() throws DetectUserFriendlyException {
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RESOLVE_TILDE_IN_PATHS)) {
-            try {
-                tildeInPathResolver.resolveTildeInAllPathFields(USER_HOME, detectConfiguration);
-            } catch (final IllegalAccessException e) {
-                throw new DetectUserFriendlyException(String.format("There was a problem resolving the tilde's in the paths. %s", e.getMessage()), e, ExitCodeType.FAILURE_CONFIGURATION);
+            detectConfiguration.getCurrentProperties().keySet().stream()
+                    .forEach(it -> resolveTildeInDetectProperty(it));
+        }
+    }
+
+    private void resolveTildeInDetectProperty(final DetectProperty detectProperty) {
+        if (DetectPropertyType.STRING == detectProperty.getPropertyType()) {
+            final Optional<String> resolved = tildeInPathResolver.resolveTildeInValue(detectConfiguration.getProperty(detectProperty));
+            if (resolved.isPresent()) {
+                detectConfiguration.setDetectProperty(detectProperty, resolved.get());
             }
         }
     }

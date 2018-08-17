@@ -96,6 +96,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockExtract
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockParser;
 import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyMap;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
@@ -257,12 +259,17 @@ public class BeanConfiguration {
 
     @Bean
     public TildeInPathResolver tildeInPathResolver() {
-        return new TildeInPathResolver(detectInfo());
+        return new TildeInPathResolver(ConfigurationManager.USER_HOME, detectInfo().getCurrentOs());
     }
 
     @Bean
     public DetectConfiguration detectConfiguration() {
-        return new DetectConfiguration(detectPropertySource());
+        return new DetectConfiguration(detectPropertySource(), detectPropertyMap());
+    }
+
+    @Bean
+    public DetectPropertyMap detectPropertyMap() {
+        return new DetectPropertyMap();
     }
 
     @Bean
@@ -406,7 +413,7 @@ public class BeanConfiguration {
 
     @Bean
     public OfflineScanner offlineScanner() {
-        return new OfflineScanner(gson(), detectConfiguration());
+        return new OfflineScanner(gson(), detectConfiguration(), detectConfigurationUtility());
     }
 
     @Bean
@@ -512,8 +519,13 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public DetectConfigurationUtility detectConfigurationUtility() {
+        return new DetectConfigurationUtility(detectConfiguration());
+    }
+
+    @Bean
     public DockerInspectorManager dockerInspectorManager() {
-        return new DockerInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration());
+        return new DockerInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility());
     }
 
     @Bean
@@ -558,7 +570,7 @@ public class BeanConfiguration {
 
     @Bean
     public GradleInspectorManager gradleInspectorManager() throws ParserConfigurationException {
-        return new GradleInspectorManager(detectFileManager(), configuration(), xmlDocumentBuilder(), detectConfiguration());
+        return new GradleInspectorManager(detectFileManager(), configuration(), xmlDocumentBuilder(), detectConfiguration(), detectConfigurationUtility());
     }
 
     @Bean

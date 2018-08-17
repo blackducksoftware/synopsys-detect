@@ -43,6 +43,7 @@ import com.blackducksoftware.integration.hub.cli.summary.ScanTargetOutput;
 import com.blackducksoftware.integration.hub.configuration.HubScanConfig;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -61,10 +62,12 @@ public class OfflineScanner {
 
     private final Gson gson;
     private final DetectConfiguration detectConfiguration;
+    private final DetectConfigurationUtility detectConfigurationUtility;
 
-    public OfflineScanner(final Gson gson, final DetectConfiguration detectConfiguration) {
+    public OfflineScanner(final Gson gson, final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility) {
         this.gson = gson;
         this.detectConfiguration = detectConfiguration;
+        this.detectConfigurationUtility = detectConfigurationUtility;
     }
 
     public List<ScanTargetOutput> offlineScan(final DetectProject detectProject, final HubScanConfig hubScanConfig, final String hubSignatureScannerOfflineLocalPath)
@@ -127,7 +130,7 @@ public class OfflineScanner {
             final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
             restConnectionBuilder.setBaseUrl(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL));
             restConnectionBuilder.setTimeout(detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT));
-            restConnectionBuilder.applyProxyInfo(detectConfiguration.getHubProxyInfo());
+            restConnectionBuilder.applyProxyInfo(detectConfigurationUtility.getHubProxyInfo());
             restConnectionBuilder.setLogger(intLogger);
             final RestConnection restConnection = restConnectionBuilder.build();
             final CLIDownloadUtility cliDownloadUtility = new CLIDownloadUtility(intLogger, restConnection);

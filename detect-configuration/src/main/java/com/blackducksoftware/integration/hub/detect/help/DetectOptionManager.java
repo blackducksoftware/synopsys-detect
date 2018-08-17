@@ -69,13 +69,13 @@ public class DetectOptionManager implements ExitCodeReporter {
     public void init() {
         final Map<DetectProperty, DetectOption> detectOptionsMap = new HashMap<>();
 
-        final Map<DetectProperty, Object> propertyMap = detectConfiguration.getPropertyMap();
+        final Map<DetectProperty, Object> propertyMap = detectConfiguration.getCurrentProperties();
         if (null != propertyMap && !propertyMap.isEmpty()) {
-            for (final Map.Entry<DetectProperty, Object> propertyEntry : propertyMap.entrySet()) {
-                final DetectOption option = processField(propertyEntry.getKey(), detectConfiguration.getPropertyValueAsString(propertyEntry.getKey()));
+            for (final DetectProperty detectProperty : propertyMap.keySet()) {
+                final DetectOption option = processField(detectProperty, detectConfiguration.getPropertyValueAsString(detectProperty));
                 if (option != null) {
-                    if (!detectOptionsMap.containsKey(propertyEntry.getKey())) {
-                        detectOptionsMap.put(propertyEntry.getKey(), option);
+                    if (!detectOptionsMap.containsKey(detectProperty)) {
+                        detectOptionsMap.put(detectProperty, option);
                     }
                 }
             }
