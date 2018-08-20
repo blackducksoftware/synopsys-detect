@@ -138,6 +138,15 @@ public class SbtPackager {
             modules.addAll(foundModules);
         }
 
+        modules.removeIf(it -> {
+            if (it.name.contains("temp-module")) {
+                logger.info("Excluding temp module: " + it.name);
+                return true;
+            } else {
+                return false;
+            }
+        });
+
         if (modules.size() == 0) {
             if (sbtFiles.size() == 0) {
                 logger.error("Sbt found no build.sbt files even though it applied.");
