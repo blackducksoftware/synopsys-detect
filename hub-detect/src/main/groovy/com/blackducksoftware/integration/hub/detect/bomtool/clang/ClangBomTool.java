@@ -26,7 +26,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 import java.io.File;
 import java.util.List;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
@@ -40,6 +39,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExecutableN
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class ClangBomTool extends BomTool {
     private static final String JSON_COMPILATION_DATABASE_FILENAME = "compile_commands.json";

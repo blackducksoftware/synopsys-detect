@@ -23,7 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import com.blackducksoftware.integration.util.Stringable;
+import com.synopsys.integration.util.Stringable;
 
 public class PackageDetails extends Stringable {
     private final String packageName;

@@ -11,21 +11,21 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory;
-import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper;
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
-import com.blackducksoftware.integration.hub.bdio.model.BdioComponent;
-import com.blackducksoftware.integration.hub.bdio.model.BdioExternalIdentifier;
-import com.blackducksoftware.integration.hub.bdio.model.BdioNode;
-import com.blackducksoftware.integration.hub.bdio.model.BdioProject;
-import com.blackducksoftware.integration.hub.bdio.model.Forge;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.synopsys.integration.hub.bdio.BdioNodeFactory;
+import com.synopsys.integration.hub.bdio.BdioPropertyHelper;
+import com.synopsys.integration.hub.bdio.graph.DependencyGraphTransformer;
+import com.synopsys.integration.hub.bdio.model.BdioComponent;
+import com.synopsys.integration.hub.bdio.model.BdioExternalIdentifier;
+import com.synopsys.integration.hub.bdio.model.BdioNode;
+import com.synopsys.integration.hub.bdio.model.BdioProject;
+import com.synopsys.integration.hub.bdio.model.Forge;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class NugetInspectorPackagerTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create();

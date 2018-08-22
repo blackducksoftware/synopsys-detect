@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.packagist;
 
 import java.util.List;
 
-import com.blackducksoftware.integration.util.NameVersion;
+import com.synopsys.integration.util.NameVersion;
 
 public class PackagistPackage {
     private final NameVersion nameVersion;

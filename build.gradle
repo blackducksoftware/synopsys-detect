@@ -42,7 +42,7 @@ configure(subprojects) { project ->
     }
 
     dependencies {
-        compile 'com.blackducksoftware.integration:hub-common:36.0.1'
+        compile 'com.blackducksoftware.integration:hub-common:37.0.0'
     }
 
     configurations.all {

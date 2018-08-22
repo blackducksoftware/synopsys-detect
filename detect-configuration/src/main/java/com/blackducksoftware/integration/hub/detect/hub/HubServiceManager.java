@@ -25,38 +25,43 @@ package com.blackducksoftware.integration.hub.detect.hub;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.exception.EncryptionException;
-import com.blackducksoftware.integration.exception.IntegrationException;
-import com.blackducksoftware.integration.hub.api.generated.discovery.ApiDiscovery;
-import com.blackducksoftware.integration.hub.api.generated.response.CurrentVersionView;
-import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
-import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.rest.BlackduckRestConnection;
-import com.blackducksoftware.integration.hub.service.CodeLocationService;
-import com.blackducksoftware.integration.hub.service.HubService;
-import com.blackducksoftware.integration.hub.service.HubServicesFactory;
-import com.blackducksoftware.integration.hub.service.PhoneHomeService;
-import com.blackducksoftware.integration.hub.service.ProjectService;
-import com.blackducksoftware.integration.hub.service.ReportService;
-import com.blackducksoftware.integration.hub.service.ScanStatusService;
-import com.blackducksoftware.integration.hub.service.SignatureScannerService;
-import com.blackducksoftware.integration.log.IntLogger;
-import com.blackducksoftware.integration.log.Slf4jIntLogger;
-import com.blackducksoftware.integration.rest.connection.RestConnection;
-import com.blackducksoftware.integration.util.ResourceUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
+import com.synopsys.integration.blackduck.api.generated.response.CurrentVersionView;
+import com.synopsys.integration.blackduck.configuration.HubServerConfig;
+import com.synopsys.integration.blackduck.configuration.HubServerConfigBuilder;
+import com.synopsys.integration.blackduck.rest.BlackduckRestConnection;
+import com.synopsys.integration.blackduck.service.BinaryScannerService;
+import com.synopsys.integration.blackduck.service.CodeLocationService;
+import com.synopsys.integration.blackduck.service.HubRegistrationService;
+import com.synopsys.integration.blackduck.service.HubService;
+import com.synopsys.integration.blackduck.service.HubServicesFactory;
+import com.synopsys.integration.blackduck.service.ProjectService;
+import com.synopsys.integration.blackduck.service.ReportService;
+import com.synopsys.integration.blackduck.service.ScanStatusService;
+import com.synopsys.integration.blackduck.service.SignatureScannerService;
+import com.synopsys.integration.exception.EncryptionException;
+import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.log.IntLogger;
+import com.synopsys.integration.log.Slf4jIntLogger;
+import com.synopsys.integration.phonehome.PhoneHomeClient;
+import com.synopsys.integration.phonehome.PhoneHomeService;
+import com.synopsys.integration.rest.connection.RestConnection;
+import com.synopsys.integration.util.IntEnvironmentVariables;
+import com.synopsys.integration.util.ResourceUtil;
 
-public class HubServiceWrapper {
-    private final Logger logger = LoggerFactory.getLogger(HubServiceWrapper.class);
+public class HubServiceManager {
+    private final Logger logger = LoggerFactory.getLogger(HubServiceManager.class);
 
     private final DetectConfiguration detectConfiguration;
     private final Gson gson;
@@ -66,7 +71,7 @@ public class HubServiceWrapper {
     private HubServerConfig hubServerConfig;
     private HubServicesFactory hubServicesFactory;
 
-    public HubServiceWrapper(final DetectConfiguration detectConfiguration, final Gson gson, final JsonParser jsonParser) {
+    public HubServiceManager(final DetectConfiguration detectConfiguration, final Gson gson, final JsonParser jsonParser) {
         this.detectConfiguration = detectConfiguration;
         this.gson = gson;
         this.jsonParser = jsonParser;
@@ -111,8 +116,16 @@ public class HubServiceWrapper {
         }
     }
 
+    public BinaryScannerService createBinaryScannerService() {
+        return hubServicesFactory.createBinaryScannerService();
+    }
+
     public HubService createHubService() {
         return hubServicesFactory.createHubService();
+    }
+
+    public HubRegistrationService createHubRegistrationService() {
+        return hubServicesFactory.createHubRegistrationService();
     }
 
     public ProjectService createProjectService() {
@@ -120,7 +133,7 @@ public class HubServiceWrapper {
     }
 
     public PhoneHomeService createPhoneHomeService() {
-        return hubServicesFactory.createPhoneHomeService();
+        return hubServicesFactory.createPhoneHomeService(Executors.newSingleThreadExecutor());
     }
 
     public CodeLocationService createCodeLocationService() {
@@ -163,4 +176,15 @@ public class HubServiceWrapper {
         return hubServicesFactory;
     }
 
+    public PhoneHomeClient createPhoneHomeClient() {
+        return hubServicesFactory.createPhoneHomeClient();
+    }
+
+    public IntEnvironmentVariables getEnvironmentVariables() {
+        try {
+            return (IntEnvironmentVariables) hubServicesFactory.getClass().getField("intEnvironmentVariables").get(hubServicesFactory);
+        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+            return null;
+        }
+    }
 }

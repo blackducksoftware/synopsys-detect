@@ -32,7 +32,7 @@ import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 
-import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder;
+import com.synopsys.integration.blackduck.configuration.HubServerConfigBuilder;
 
 public class DetectPropertySource {
     public static final String PHONE_HOME_PROPERTY_PREFIX = "detect.phone.home.passthrough.";

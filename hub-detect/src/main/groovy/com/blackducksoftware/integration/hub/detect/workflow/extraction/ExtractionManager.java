@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -42,6 +41,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 import com.blackducksoftware.integration.hub.detect.workflow.report.LogReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ObjectPrinter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);

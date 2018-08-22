@@ -23,7 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.exception;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class BomToolException extends IntegrationException {
     private static final long serialVersionUID = 1L;

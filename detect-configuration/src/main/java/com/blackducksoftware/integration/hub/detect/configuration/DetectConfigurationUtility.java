@@ -5,11 +5,11 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.log.Slf4jIntLogger;
-import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
-import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnectionBuilder;
-import com.blackducksoftware.integration.rest.proxy.ProxyInfo;
-import com.blackducksoftware.integration.rest.proxy.ProxyInfoBuilder;
+import com.synopsys.integration.log.Slf4jIntLogger;
+import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
+import com.synopsys.integration.rest.connection.UnauthenticatedRestConnectionBuilder;
+import com.synopsys.integration.rest.proxy.ProxyInfo;
+import com.synopsys.integration.rest.proxy.ProxyInfoBuilder;
 
 public class DetectConfigurationUtility {
     private final DetectConfiguration detectConfiguration;

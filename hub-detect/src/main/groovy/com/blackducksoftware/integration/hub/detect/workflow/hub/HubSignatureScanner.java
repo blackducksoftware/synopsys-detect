@@ -36,14 +36,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
-import com.blackducksoftware.integration.hub.api.generated.component.ProjectRequest;
-import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
-import com.blackducksoftware.integration.hub.cli.summary.ScanServiceOutput;
-import com.blackducksoftware.integration.hub.cli.summary.ScanTargetOutput;
-import com.blackducksoftware.integration.hub.configuration.HubScanConfig;
-import com.blackducksoftware.integration.hub.configuration.HubScanConfigBuilder;
-import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
@@ -54,9 +46,17 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLo
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.ScanStatusSummary;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
-import com.blackducksoftware.integration.hub.service.SignatureScannerService;
-import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
-import com.blackducksoftware.integration.hub.summary.Result;
+import com.synopsys.integration.blackduck.api.generated.component.ProjectRequest;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.cli.summary.ScanServiceOutput;
+import com.synopsys.integration.blackduck.cli.summary.ScanTargetOutput;
+import com.synopsys.integration.blackduck.configuration.HubScanConfig;
+import com.synopsys.integration.blackduck.configuration.HubScanConfigBuilder;
+import com.synopsys.integration.blackduck.configuration.HubServerConfig;
+import com.synopsys.integration.blackduck.service.SignatureScannerService;
+import com.synopsys.integration.blackduck.service.model.ProjectRequestBuilder;
+import com.synopsys.integration.blackduck.summary.Result;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class HubSignatureScanner implements StatusSummaryProvider<ScanStatusSummary>, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class);

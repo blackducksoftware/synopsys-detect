@@ -22,10 +22,10 @@ import java.util.Map;
 import org.junit.Test;
 import org.springframework.util.StringUtils;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil;
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
+import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class CpanListParserTest {
     private final TestUtil testUtil = new TestUtil();

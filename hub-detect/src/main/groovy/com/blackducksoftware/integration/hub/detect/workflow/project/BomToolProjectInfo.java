@@ -24,7 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.workflow.project;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.util.NameVersion;
+import com.synopsys.integration.util.NameVersion;
 
 public class BomToolProjectInfo {
     private final BomToolGroupType bomToolType;

@@ -26,7 +26,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool;
 import java.io.File;
 import java.util.Set;
 
-import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
+import com.synopsys.integration.util.ExcludedIncludedFilter;
 
 public class BomToolEnvironment {
 

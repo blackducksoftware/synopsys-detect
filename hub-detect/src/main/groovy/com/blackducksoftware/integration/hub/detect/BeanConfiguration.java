@@ -34,12 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory;
-import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper;
-import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
-import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangLinuxPackageManager;
@@ -106,7 +100,7 @@ import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
+import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -127,6 +121,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.Diagnost
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BdioUploader;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckBinaryScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.OfflineScanner;
@@ -142,10 +137,16 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManage
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
-import com.blackducksoftware.integration.hub.service.HubServicesFactory;
-import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+import com.synopsys.integration.blackduck.service.HubServicesFactory;
+import com.synopsys.integration.hub.bdio.BdioNodeFactory;
+import com.synopsys.integration.hub.bdio.BdioPropertyHelper;
+import com.synopsys.integration.hub.bdio.BdioTransformer;
+import com.synopsys.integration.hub.bdio.SimpleBdioFactory;
+import com.synopsys.integration.hub.bdio.graph.DependencyGraphTransformer;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 import freemarker.template.Configuration;
 
@@ -294,7 +295,7 @@ public class BeanConfiguration {
 
     @Bean
     public DefaultInteractiveMode defaultInteractiveMode() {
-        return new DefaultInteractiveMode(hubServiceWrapper(), detectOptionManager());
+        return new DefaultInteractiveMode(hubServiceManager(), detectOptionManager());
     }
 
     @Bean
@@ -308,8 +309,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public HubServiceWrapper hubServiceWrapper() {
-        return new HubServiceWrapper(detectConfiguration(), gson(), jsonParser());
+    public HubServiceManager hubServiceManager() {
+        return new HubServiceManager(detectConfiguration(), gson(), jsonParser());
     }
 
     @Bean
@@ -349,7 +350,7 @@ public class BeanConfiguration {
 
     @Bean
     public PhoneHomeManager phoneHomeManager() {
-        return new PhoneHomeManager(detectInfo(), gson(), detectConfiguration());
+        return new PhoneHomeManager(detectInfo(), detectConfiguration(), gson());
     }
 
     @Bean
@@ -441,8 +442,13 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public BlackDuckBinaryScanner blackDuckBinaryScanner() {
+        return new BlackDuckBinaryScanner(codeLocationNameService());
+    }
+
+    @Bean
     public HubManager hubManager() {
-        return new HubManager(bdioUploader(), codeLocationNameManager(), detectConfiguration(), hubServiceWrapper(), hubSignatureScanner(), policyChecker());
+        return new HubManager(bdioUploader(), codeLocationNameManager(), detectConfiguration(), hubServiceManager(), hubSignatureScanner(), policyChecker(), blackDuckBinaryScanner());
     }
 
     @Bean

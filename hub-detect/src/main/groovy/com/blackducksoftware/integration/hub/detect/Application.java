@@ -38,8 +38,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Import;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
-import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
 import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
@@ -54,7 +52,7 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOption.OptionVali
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
+import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
@@ -64,8 +62,10 @@ import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.Diagnost
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
-import com.blackducksoftware.integration.log.SilentLogger;
-import com.blackducksoftware.integration.log.Slf4jIntLogger;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.log.SilentLogger;
+import com.synopsys.integration.log.Slf4jIntLogger;
 
 @SpringBootApplication
 @Import({ BeanConfiguration.class })
@@ -81,7 +81,7 @@ public class Application implements ApplicationRunner {
     private final HelpPrinter helpPrinter;
     private final HelpHtmlWriter helpHtmlWriter;
     private final HubManager hubManager;
-    private final HubServiceWrapper hubServiceWrapper;
+    private final HubServiceManager hubServiceManager;
     private final DetectSummaryManager detectSummaryManager;
     private final InteractiveManager interactiveManager;
     private final DetectFileManager detectFileManager;
@@ -99,7 +99,7 @@ public class Application implements ApplicationRunner {
     @Autowired
     public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final DetectPropertySource detectPropertySource, final DetectConfiguration detectConfiguration,
             final ConfigurationManager configurationManager, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
-            final HubServiceWrapper hubServiceWrapper, final DetectSummaryManager detectSummaryManager, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
+            final HubServiceManager hubServiceManager, final DetectSummaryManager detectSummaryManager, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
             final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final ArgumentStateParser argumentStateParser, final DetectRunManager detectRunManager, final DiagnosticManager diagnosticManager) {
         this.detectOptionManager = detectOptionManager;
         this.detectInfo = detectInfo;
@@ -110,7 +110,7 @@ public class Application implements ApplicationRunner {
         this.helpPrinter = helpPrinter;
         this.helpHtmlWriter = helpHtmlWriter;
         this.hubManager = hubManager;
-        this.hubServiceWrapper = hubServiceWrapper;
+        this.hubServiceManager = hubServiceManager;
         this.detectSummaryManager = detectSummaryManager;
         this.interactiveManager = interactiveManager;
         this.detectFileManager = detectFileManager;
@@ -194,11 +194,11 @@ public class Application implements ApplicationRunner {
         }
 
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION)) {
-            hubServiceWrapper.assertHubConnection(new SilentLogger());
+            hubServiceManager.assertHubConnection(new SilentLogger());
             return WorkflowStep.EXIT_WITH_SUCCESS;
         }
 
-        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK) && !hubServiceWrapper.testHubConnection(new SilentLogger())) {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK) && !hubServiceManager.testHubConnection(new SilentLogger())) {
             logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
             return WorkflowStep.EXIT_WITH_SUCCESS;
         }
@@ -206,8 +206,10 @@ public class Application implements ApplicationRunner {
         if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE)) {
             phoneHomeManager.initOffline();
         } else {
-            hubServiceWrapper.init();
-            phoneHomeManager.init(hubServiceWrapper.createPhoneHomeService());
+            hubServiceManager.init();
+            phoneHomeManager.init(hubServiceManager.createPhoneHomeService(), hubServiceManager.createPhoneHomeClient(), hubServiceManager.getEnvironmentVariables(), hubServiceManager.createHubService(),
+                    hubServiceManager.createHubRegistrationService(), hubServiceManager.getHubServicesFactory().getRestConnection().getBaseUrl());
+
             phoneHomeManager.startPhoneHome();
         }
 
@@ -234,6 +236,7 @@ public class Application implements ApplicationRunner {
             } else if (scanProjectVersionView.isPresent()) {
                 projectVersionView = scanProjectVersionView.get();
             }
+            hubManager.performBinaryScanActions(detectProject);
             // final ProjectVersionView projectVersionView = originalProjectVersionView.orElse(scanProjectVersionView.orElse(null));
             hubManager.performPostHubActions(detectProject, projectVersionView);
         }

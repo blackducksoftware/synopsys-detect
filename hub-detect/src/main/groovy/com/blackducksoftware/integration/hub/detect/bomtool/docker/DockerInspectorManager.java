@@ -45,10 +45,10 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
-import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
-import com.blackducksoftware.integration.rest.request.Request;
-import com.blackducksoftware.integration.rest.request.Response;
-import com.blackducksoftware.integration.util.ResourceUtil;
+import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
+import com.synopsys.integration.rest.request.Request;
+import com.synopsys.integration.rest.request.Response;
+import com.synopsys.integration.util.ResourceUtil;
 
 public class DockerInspectorManager {
     private static final String LATEST_URL = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh";

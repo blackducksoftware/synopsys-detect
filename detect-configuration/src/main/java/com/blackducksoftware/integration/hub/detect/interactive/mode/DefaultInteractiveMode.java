@@ -25,15 +25,15 @@ package com.blackducksoftware.integration.hub.detect.interactive.mode;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
-import com.blackducksoftware.integration.log.SilentLogger;
+import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
+import com.synopsys.integration.log.SilentLogger;
 
 public class DefaultInteractiveMode extends InteractiveMode {
-    private final HubServiceWrapper hubServiceWrapper;
+    private final HubServiceManager hubServiceManager;
     private final DetectOptionManager detectOptionManager;
 
-    public DefaultInteractiveMode(final HubServiceWrapper hubServiceWrapper, final DetectOptionManager detectOptionManager) {
-        this.hubServiceWrapper = hubServiceWrapper;
+    public DefaultInteractiveMode(final HubServiceManager hubServiceManager, final DetectOptionManager detectOptionManager) {
+        this.hubServiceManager = hubServiceManager;
         this.detectOptionManager = detectOptionManager;
     }
 
@@ -88,7 +88,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
                 if (testHub) {
                     try {
                         detectOptionManager.applyInteractiveOptions(getInteractiveOptions());
-                        connected = hubServiceWrapper.testHubConnection(new SilentLogger());
+                        connected = hubServiceManager.testHubConnection(new SilentLogger());
                     } catch (final Exception e) {
                         println("Failed to test connection.");
                         println(e.toString());

@@ -63,7 +63,8 @@ public class CodeLocationNameManager {
         } else if (useCodeLocationOverride()) {
             codeLocationName = getNextCodeLocationOverrideName(CodeLocationType.BOM);
         } else if (BomToolGroupType.DOCKER.equals(detectCodeLocation.getBomToolGroupType())) {
-            codeLocationName = codeLocationNameService.createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
+            codeLocationName = codeLocationNameService.createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix,
+                    suffix);
         } else {
             codeLocationName = codeLocationNameService.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
         }
@@ -80,6 +81,18 @@ public class CodeLocationNameManager {
             scanCodeLocationName = codeLocationNameService.createDockerScanCodeLocationName(dockerTarFilename, projectName, projectVersionName, prefix, suffix);
         } else {
             scanCodeLocationName = codeLocationNameService.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
+        }
+        codeLocationNames.add(scanCodeLocationName);
+        return scanCodeLocationName;
+    }
+
+    public String createBinaryScanCodeLocationName(final String filename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+        final String scanCodeLocationName;
+
+        if (useCodeLocationOverride()) {
+            scanCodeLocationName = getNextCodeLocationOverrideName(CodeLocationType.SCAN);
+        } else {
+            scanCodeLocationName = codeLocationNameService.createBinaryScanCodeLocationName(filename, projectName, projectVersionName, prefix, suffix);
         }
         codeLocationNames.add(scanCodeLocationName);
         return scanCodeLocationName;

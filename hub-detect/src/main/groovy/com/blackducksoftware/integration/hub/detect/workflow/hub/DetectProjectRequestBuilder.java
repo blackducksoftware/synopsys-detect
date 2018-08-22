@@ -23,12 +23,18 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.hub;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
-import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
+import com.synopsys.integration.blackduck.api.generated.component.ProjectRequest;
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
+import com.synopsys.integration.blackduck.service.model.ProjectRequestBuilder;
 
 public class DetectProjectRequestBuilder extends ProjectRequestBuilder {
+    // private final Logger logger = LoggerFactory.getLogger(HubManager.class);
 
     public DetectProjectRequestBuilder(final DetectConfiguration detectConfiguration, final DetectProject detectProject) {
         setProjectName(detectProject.getProjectName());
@@ -41,5 +47,23 @@ public class DetectProjectRequestBuilder extends ProjectRequestBuilder {
         setDescription(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DESCRIPTION));
         setReleaseComments(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_NOTES));
 
+        setCloneFromReleaseUrl(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_CLONE_URL));
+        setCloneCategories(convertClonePropertyToEnum(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PROJECT_CLONE_CATEGORIES)));
+
+    }
+
+    private List<ProjectCloneCategoriesType> convertClonePropertyToEnum(final String[] cloneCategories) {
+        final List<ProjectCloneCategoriesType> categories = new ArrayList<>();
+        for (final String category : cloneCategories) {
+            categories.add(ProjectCloneCategoriesType.valueOf(category));
+        }
+        return categories;
+    }
+
+    @Override
+    public ProjectRequest buildObject() {
+        final ProjectRequest request = super.buildObject();
+
+        return request;
     }
 }

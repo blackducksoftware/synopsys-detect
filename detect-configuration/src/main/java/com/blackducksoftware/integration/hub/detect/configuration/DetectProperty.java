@@ -342,6 +342,15 @@ public enum DetectProperty {
     DETECT_PROJECT_VERSION_PHASE("detect.project.version.phase", DetectPropertyType.STRING, "Development"),
 
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
+    @HelpDescription("The set of data to clone when cloning this project version.")
+    @AcceptableValues(value = { "COMPONENT_DATA", "VULN_DATA" }, caseSensitive = false, strict = false)
+    DETECT_PROJECT_CLONE_CATEGORIES("detect.project.clone.categories", DetectPropertyType.STRING_ARRAY),
+
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
+    @HelpDescription("The url of the project release to clone this project version from.")
+    DETECT_PROJECT_VERSION_CLONE_URL("detect.project.version.clone.url", DetectPropertyType.STRING),
+
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("An override for the Project Version distribution")
     @AcceptableValues(value = { "EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE" }, caseSensitive = false, strict = false)
     DETECT_PROJECT_VERSION_DISTRIBUTION("detect.project.version.distribution", DetectPropertyType.STRING, "External"),
@@ -641,6 +650,10 @@ public enum DetectProperty {
     @HelpDescription("Additional arguments to use when running the Black Duck signature scanner.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS("detect.blackduck.signature.scanner.arguments", DetectPropertyType.STRING),
 
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_BLACKDUCK })
+    @HelpDescription("The path of a binary file to scan.")
+    DETECT_BINARY_SCAN_FILE("detect.binary.scan.file.path", DetectPropertyType.STRING),
+
     @HelpGroup(primary = GROUP_PACKAGIST)
     @HelpDescription("Set this value to false if you would like to exclude your dev requires dependencies when ran")
     DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES("detect.packagist.include.dev.dependencies", DetectPropertyType.BOOLEAN, "true"),
@@ -774,8 +787,9 @@ public enum DetectProperty {
     }
 
     public final class PropertyConstants {
-        public static final String GROUP_BLACKDUCK_CONFIGURATION = "blackduck configuration";
+        @Deprecated
         public static final String GROUP_HUB_CONFIGURATION = "hub configuration";
+        public static final String GROUP_BLACKDUCK_CONFIGURATION = "blackduck configuration";
         public static final String GROUP_GENERAL = "general";
         public static final String GROUP_LOGGING = "logging";
         public static final String GROUP_CLEANUP = "cleanup";
@@ -801,8 +815,9 @@ public enum DetectProperty {
         public static final String GROUP_SIGNATURE_SCANNER = "signature scanner";
         public static final String GROUP_YARN = "yarn";
 
-        public static final String SEARCH_GROUP_BLACKDUCK = "blackduck";
+        @Deprecated
         public static final String SEARCH_GROUP_HUB = "hub";
+        public static final String SEARCH_GROUP_BLACKDUCK = "blackduck";
         public static final String SEARCH_GROUP_SIGNATURE_SCANNER = "scanner";
         public static final String SEARCH_GROUP_POLICY = "policy";
         public static final String SEARCH_GROUP_PROXY = "proxy";

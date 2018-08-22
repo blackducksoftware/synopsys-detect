@@ -24,7 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.workflow.summary;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.summary.Result;
+import com.synopsys.integration.blackduck.summary.Result;
 
 public class BomToolGroupStatusSummary extends StatusSummary {
     public BomToolGroupStatusSummary(final BomToolGroupType bomToolGroupType, final Result result) {

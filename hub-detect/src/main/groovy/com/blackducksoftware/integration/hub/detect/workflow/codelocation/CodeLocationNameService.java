@@ -32,9 +32,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 
 public class CodeLocationNameService {
     private final Logger logger = LoggerFactory.getLogger(CodeLocationNameService.class);
@@ -87,6 +87,15 @@ public class CodeLocationNameService {
         final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
 
         final List<String> fileCodeLocationNamePieces = Arrays.asList(pathPiece, projectName, projectVersionName);
+        final List<String> fileCodeLocationEndPieces = Arrays.asList(codeLocationTypeString);
+
+        return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
+    }
+
+    public String createBinaryScanCodeLocationName(final String filename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+        final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
+
+        final List<String> fileCodeLocationNamePieces = Arrays.asList(filename, projectName, projectVersionName);
         final List<String> fileCodeLocationEndPieces = Arrays.asList(codeLocationTypeString);
 
         return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);

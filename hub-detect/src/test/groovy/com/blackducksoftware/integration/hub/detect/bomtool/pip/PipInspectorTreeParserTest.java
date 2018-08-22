@@ -19,8 +19,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class PipInspectorTreeParserTest {
     private PipInspectorTreeParser parser;

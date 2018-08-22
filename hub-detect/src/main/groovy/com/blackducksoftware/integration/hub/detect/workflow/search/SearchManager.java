@@ -42,7 +42,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
-import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
+import com.synopsys.integration.util.ExcludedIncludedFilter;
 
 public class SearchManager {
     private final Logger logger = LoggerFactory.getLogger(SearchManager.class);

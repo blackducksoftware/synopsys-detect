@@ -30,10 +30,10 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 
-import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.synopsys.integration.hub.bdio.model.Forge;
 
 public abstract class ClangLinuxPackageManager {
     private final String pkgMgrName;

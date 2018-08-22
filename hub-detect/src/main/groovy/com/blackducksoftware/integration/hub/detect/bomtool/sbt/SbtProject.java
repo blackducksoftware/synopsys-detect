@@ -25,8 +25,8 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 
 public class SbtProject {
     public String projectName;

@@ -27,7 +27,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 
-import com.blackducksoftware.integration.util.NameVersion;
+import com.synopsys.integration.util.NameVersion;
 
 public abstract class NameVersionDecision {
     public abstract void printDescription(final Logger logger);

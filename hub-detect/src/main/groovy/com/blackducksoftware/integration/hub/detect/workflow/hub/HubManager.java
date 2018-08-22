@@ -34,62 +34,64 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
-import com.blackducksoftware.integration.hub.api.generated.component.ProjectRequest;
-import com.blackducksoftware.integration.hub.api.generated.view.CodeLocationView;
-import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
-import com.blackducksoftware.integration.hub.api.view.ScanSummaryView;
-import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
+import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
-import com.blackducksoftware.integration.hub.exception.HubTimeoutExceededException;
-import com.blackducksoftware.integration.hub.service.CodeLocationService;
-import com.blackducksoftware.integration.hub.service.HubService;
-import com.blackducksoftware.integration.hub.service.ProjectService;
-import com.blackducksoftware.integration.hub.service.ReportService;
-import com.blackducksoftware.integration.hub.service.ScanStatusService;
-import com.blackducksoftware.integration.hub.service.SignatureScannerService;
-import com.blackducksoftware.integration.hub.service.model.PolicyStatusDescription;
-import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
-import com.blackducksoftware.integration.hub.service.model.ProjectVersionWrapper;
-import com.blackducksoftware.integration.rest.exception.IntegrationRestException;
+import com.synopsys.integration.blackduck.api.generated.component.ProjectRequest;
+import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.api.view.ScanSummaryView;
+import com.synopsys.integration.blackduck.configuration.HubServerConfig;
+import com.synopsys.integration.blackduck.exception.HubTimeoutExceededException;
+import com.synopsys.integration.blackduck.service.CodeLocationService;
+import com.synopsys.integration.blackduck.service.HubService;
+import com.synopsys.integration.blackduck.service.ProjectService;
+import com.synopsys.integration.blackduck.service.ReportService;
+import com.synopsys.integration.blackduck.service.ScanStatusService;
+import com.synopsys.integration.blackduck.service.SignatureScannerService;
+import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
+import com.synopsys.integration.blackduck.service.model.ProjectRequestBuilder;
+import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class HubManager implements ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(HubManager.class);
 
+    private final BlackDuckBinaryScanner blackDuckBinaryScanner;
     private final BdioUploader bdioUploader;
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfiguration detectConfiguration;
-    private final HubServiceWrapper hubServiceWrapper;
+    private final HubServiceManager hubServiceManager;
     private final HubSignatureScanner hubSignatureScanner;
     private final PolicyChecker policyChecker;
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
-    public HubManager(final BdioUploader bdioUploader, final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final HubServiceWrapper hubServiceWrapper,
-            final HubSignatureScanner hubSignatureScanner, final PolicyChecker policyChecker) {
+    public HubManager(final BdioUploader bdioUploader, final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final HubServiceManager hubServiceManager,
+            final HubSignatureScanner hubSignatureScanner, final PolicyChecker policyChecker, final BlackDuckBinaryScanner blackDuckBinaryScanner) {
         this.bdioUploader = bdioUploader;
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
-        this.hubServiceWrapper = hubServiceWrapper;
+        this.hubServiceManager = hubServiceManager;
         this.hubSignatureScanner = hubSignatureScanner;
         this.policyChecker = policyChecker;
+        this.blackDuckBinaryScanner = blackDuckBinaryScanner;
     }
 
     public Optional<ProjectVersionView> updateHubProjectVersion(final DetectProject detectProject) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
-        final ProjectService projectService = hubServiceWrapper.createProjectService();
+        final ProjectService projectService = hubServiceManager.createProjectService();
         final ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectService);
         if (null != detectProject.getBdioFiles() && !detectProject.getBdioFiles().isEmpty()) {
-            final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
+            final CodeLocationService codeLocationService = hubServiceManager.createCodeLocationService();
             if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP)) {
                 try {
-                    final HubService hubService = hubServiceWrapper.createHubService();
+                    final HubService hubService = hubServiceManager.createHubService();
                     final List<CodeLocationView> codeLocationViews = hubService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
 
                     for (final CodeLocationView codeLocationView : codeLocationViews) {
@@ -109,10 +111,10 @@ public class HubManager implements ExitCodeReporter {
 
     public Optional<ProjectVersionView> performScanActions(final DetectProject detectProject) throws IntegrationException, InterruptedException {
         if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED)) {
-            final HubServerConfig hubServerConfig = hubServiceWrapper.getHubServerConfig();
+            final HubServerConfig hubServerConfig = hubServiceManager.getHubServerConfig();
             final ExecutorService executorService = Executors.newFixedThreadPool(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS));
             try {
-                final SignatureScannerService signatureScannerService = hubServiceWrapper.createSignatureScannerService(executorService);
+                final SignatureScannerService signatureScannerService = hubServiceManager.createSignatureScannerService(executorService);
                 final ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, signatureScannerService, detectProject);
                 return Optional.ofNullable(scanProject);
             } finally {
@@ -120,6 +122,18 @@ public class HubManager implements ExitCodeReporter {
             }
         }
         return Optional.empty();
+    }
+
+    public void performBinaryScanActions(final DetectProject detectProject) throws DetectUserFriendlyException {
+        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE))) {
+            final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX);
+            final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX);
+
+            final File file = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE));
+            blackDuckBinaryScanner.uploadBinaryScanFile(hubServiceManager.createBinaryScannerService(), file, detectProject.getProjectName(), detectProject.getProjectVersion(), prefix, suffix);
+        } else {
+            logger.debug("No binary scan path was provided, so binary scan will not occur.");
+        }
     }
 
     public void performOfflineHubActions(final DetectProject detectProject) throws IntegrationException {
@@ -130,11 +144,11 @@ public class HubManager implements ExitCodeReporter {
 
     public void performPostHubActions(final DetectProject detectProject, final ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
         try {
-            final ProjectService projectService = hubServiceWrapper.createProjectService();
-            final ReportService reportService = hubServiceWrapper.createReportService();
-            final HubService hubService = hubServiceWrapper.createHubService();
-            final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
-            final ScanStatusService scanStatusService = hubServiceWrapper.createScanStatusService();
+            final ProjectService projectService = hubServiceManager.createProjectService();
+            final ReportService reportService = hubServiceManager.createReportService();
+            final HubService hubService = hubServiceManager.createHubService();
+            final CodeLocationService codeLocationService = hubServiceManager.createCodeLocationService();
+            final ScanStatusService scanStatusService = hubServiceManager.createScanStatusService();
 
             if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)) || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF)
                     || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {

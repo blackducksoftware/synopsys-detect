@@ -4,11 +4,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil;
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
 import com.google.gson.GsonBuilder;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class NpmLockfilePackagerTest {
     NpmLockfilePackager npmLockfilePackager;

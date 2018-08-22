@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
-import com.blackducksoftware.integration.util.ResourceUtil;
+import com.synopsys.integration.util.ResourceUtil;
 
 public class DetectInfo {
     private final Logger logger = LoggerFactory.getLogger(DetectInfo.class);

@@ -48,10 +48,10 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
-import com.blackducksoftware.integration.rest.request.Request;
-import com.blackducksoftware.integration.rest.request.Response;
-import com.blackducksoftware.integration.util.ResourceUtil;
+import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
+import com.synopsys.integration.rest.request.Request;
+import com.synopsys.integration.rest.request.Response;
+import com.synopsys.integration.util.ResourceUtil;
 
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
