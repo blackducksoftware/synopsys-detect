@@ -207,7 +207,7 @@ public class Application implements ApplicationRunner {
             phoneHomeManager.initOffline();
         } else {
             hubServiceManager.init();
-            phoneHomeManager.init(hubServiceManager.createPhoneHomeService(), hubServiceManager.createPhoneHomeClient(), hubServiceManager.getEnvironmentVariables(), hubServiceManager.createHubService(),
+            phoneHomeManager.init(hubServiceManager.createPhoneHomeService(), hubServiceManager.createPhoneHomeClient(), hubServiceManager.getHubServicesFactory(), hubServiceManager.createHubService(),
                     hubServiceManager.createHubRegistrationService(), hubServiceManager.getHubServicesFactory().getRestConnection().getBaseUrl());
 
             phoneHomeManager.startPhoneHome();
