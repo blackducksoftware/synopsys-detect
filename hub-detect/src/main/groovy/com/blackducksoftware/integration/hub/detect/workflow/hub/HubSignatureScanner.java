@@ -87,7 +87,7 @@ public class HubSignatureScanner implements StatusSummaryProvider<ScanStatusSumm
         ProjectVersionView projectVersionView = null;
         final ProjectRequestBuilder projectRequestBuilder = new ProjectRequestBuilder();
         projectRequestBuilder.setProjectName(detectProject.getProjectName());
-        projectRequestBuilder.setProjectName(detectProject.getProjectName());
+        projectRequestBuilder.setVersionName(detectProject.getProjectVersion());
 
         final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, scanPaths, dockerTarFilename);
         final HubScanConfig hubScanConfig = hubScanConfigBuilder.build();
