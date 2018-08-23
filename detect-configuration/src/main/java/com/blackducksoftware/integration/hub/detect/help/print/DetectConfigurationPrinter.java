@@ -85,6 +85,9 @@ public class DetectConfigurationPrinter {
                 printStream.println(text);
             }
         }
+        printStream.println(StringUtils.repeat("-", 60));
+        printStream.println("");
+
         final List<DetectOption> allWarnings = sortedOptions.stream().filter(it -> it.getWarnings().size() > 0).collect(Collectors.toList());
         if (allWarnings.size() > 0) {
             printStream.println("");
@@ -101,10 +104,6 @@ public class DetectConfigurationPrinter {
             }
             printStream.println(StringUtils.repeat("*", 60));
             printStream.println("");
-        } else {
-            printStream.println(StringUtils.repeat("-", 60));
-            printStream.println("");
         }
     }
-
 }
