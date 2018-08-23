@@ -43,6 +43,7 @@ import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.synopsys.integration.blackduck.api.generated.component.ProjectRequest;
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.view.ScanSummaryView;
@@ -86,12 +87,12 @@ public class HubManager implements ExitCodeReporter {
 
     public Optional<ProjectVersionView> updateHubProjectVersion(final DetectProject detectProject) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         final ProjectService projectService = hubServiceManager.createProjectService();
-        final ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectService);
+        final HubService hubService = hubServiceManager.createHubService();
+        final ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectService, hubService);
         if (null != detectProject.getBdioFiles() && !detectProject.getBdioFiles().isEmpty()) {
             final CodeLocationService codeLocationService = hubServiceManager.createCodeLocationService();
             if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP)) {
                 try {
-                    final HubService hubService = hubServiceManager.createHubService();
                     final List<CodeLocationView> codeLocationViews = hubService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
 
                     for (final CodeLocationView codeLocationView : codeLocationViews) {
@@ -219,9 +220,8 @@ public class HubManager implements ExitCodeReporter {
         logger.info("The BOM has been updated");
     }
 
-    public ProjectVersionView ensureProjectVersionExists(final DetectProject detectProject, final ProjectService projectService) throws IntegrationException {
-        final ProjectRequestBuilder projectRequestBuilder = new DetectProjectRequestBuilder(detectConfiguration, detectProject);
-        final ProjectRequest projectRequest = projectRequestBuilder.build();
+    public ProjectVersionView ensureProjectVersionExists(final DetectProject detectProject, final ProjectService projectService, final HubService hubService) throws IntegrationException, DetectUserFriendlyException {
+        final ProjectRequest projectRequest = createProjectRequest(detectProject, projectService, hubService);
 
         final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersionAndCreateIfNeeded(projectRequest);
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_VERSION_UPDATE)) {
@@ -229,6 +229,53 @@ public class HubManager implements ExitCodeReporter {
             projectService.updateProjectAndVersion(projectVersionWrapper.getProjectView(), projectRequest);
         }
         return projectVersionWrapper.getProjectVersionView();
+    }
+
+    public ProjectRequest createProjectRequest(final DetectProject detectProject, final ProjectService projectService, final HubService hubService) throws DetectUserFriendlyException {
+        final ProjectRequestBuilder projectRequestBuilder = new ProjectRequestBuilder();
+
+        projectRequestBuilder.setProjectName(detectProject.getProjectName());
+        projectRequestBuilder.setVersionName(detectProject.getProjectVersion());
+
+        projectRequestBuilder.setProjectLevelAdjustments(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_LEVEL_ADJUSTMENTS));
+        projectRequestBuilder.setPhase(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_PHASE));
+        projectRequestBuilder.setDistribution(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_DISTRIBUTION));
+        projectRequestBuilder.setProjectTier(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_PROJECT_TIER));
+        projectRequestBuilder.setDescription(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DESCRIPTION));
+        projectRequestBuilder.setReleaseComments(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_NOTES));
+
+        final Optional<String> cloneUrl = findCloneUrl(projectService, hubService);
+        if (cloneUrl.isPresent()) {
+            projectRequestBuilder.setCloneFromReleaseUrl(cloneUrl.get());
+            projectRequestBuilder.setCloneCategories(convertClonePropertyToEnum(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PROJECT_CLONE_CATEGORIES)));
+        }
+
+        return projectRequestBuilder.build();
+    }
+
+    private List<ProjectCloneCategoriesType> convertClonePropertyToEnum(final String[] cloneCategories) {
+        final List<ProjectCloneCategoriesType> categories = new ArrayList<>();
+        for (final String category : cloneCategories) {
+            categories.add(ProjectCloneCategoriesType.valueOf(category));
+        }
+        return categories;
+    }
+
+    public Optional<String> findCloneUrl(final ProjectService projectService, final HubService hubService) throws DetectUserFriendlyException {
+        final String cloneProjectName = detectConfiguration.getProperty(DetectProperty.DETECT_CLONE_PROJECT_NAME);
+        final String cloneProjectVersionName = detectConfiguration.getProperty(DetectProperty.DETECT_CLONE_PROJECT_VERSION_NAME);
+        if (StringUtils.isBlank(cloneProjectName) || StringUtils.isBlank(cloneProjectVersionName)) {
+            logger.debug("No clone project or version name supplied. Will not clone.");
+            return Optional.empty();
+        }
+        try {
+            final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(cloneProjectName, cloneProjectVersionName);
+            final String url = hubService.getHref(projectVersionWrapper.getProjectVersionView());
+            return Optional.of(url);
+        } catch (final IntegrationException e) {
+            throw new DetectUserFriendlyException("Unable to find clone release url for supplied clone project name or project version name.", e, ExitCodeType.FAILURE_CONFIGURATION);
+        }
+
     }
 
 }

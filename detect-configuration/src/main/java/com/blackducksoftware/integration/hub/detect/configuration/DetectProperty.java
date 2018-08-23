@@ -347,8 +347,12 @@ public enum DetectProperty {
     DETECT_PROJECT_CLONE_CATEGORIES("detect.project.clone.categories", DetectPropertyType.STRING_ARRAY),
 
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
-    @HelpDescription("The url of the project release to clone this project version from.")
-    DETECT_PROJECT_VERSION_CLONE_URL("detect.project.version.clone.url", DetectPropertyType.STRING),
+    @HelpDescription("The name of the project that contains the release to clone this project version from.")
+    DETECT_CLONE_PROJECT_NAME("detect.clone.project.name", DetectPropertyType.STRING),
+
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
+    @HelpDescription("The name of the project version clone this project version from.")
+    DETECT_CLONE_PROJECT_VERSION_NAME("detect.clone.project.version.name", DetectPropertyType.STRING),
 
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("An override for the Project Version distribution")

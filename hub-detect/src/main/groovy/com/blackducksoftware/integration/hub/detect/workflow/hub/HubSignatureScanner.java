@@ -46,7 +46,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLo
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.ScanStatusSummary;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
-import com.synopsys.integration.blackduck.api.generated.component.ProjectRequest;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.cli.summary.ScanServiceOutput;
 import com.synopsys.integration.blackduck.cli.summary.ScanTargetOutput;
@@ -86,12 +85,14 @@ public class HubSignatureScanner implements StatusSummaryProvider<ScanStatusSumm
         determinePathsAndExclusions(detectProject);
 
         ProjectVersionView projectVersionView = null;
-        final ProjectRequest projectRequest = createProjectRequest(detectProject);
+        final ProjectRequestBuilder projectRequestBuilder = new ProjectRequestBuilder();
+        projectRequestBuilder.setProjectName(detectProject.getProjectName());
+        projectRequestBuilder.setProjectName(detectProject.getProjectName());
 
         final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, scanPaths, dockerTarFilename);
         final HubScanConfig hubScanConfig = hubScanConfigBuilder.build();
 
-        final ScanServiceOutput scanServiceOutput = signatureScannerService.executeScans(hubServerConfig, hubScanConfig, projectRequest);
+        final ScanServiceOutput scanServiceOutput = signatureScannerService.executeScans(hubServerConfig, hubScanConfig, projectRequestBuilder.build());
         if (null != scanServiceOutput) {
             if (null != scanServiceOutput.getProjectVersionWrapper()) {
                 projectVersionView = scanServiceOutput.getProjectVersionWrapper().getProjectVersionView();
@@ -216,11 +217,6 @@ public class HubSignatureScanner implements StatusSummaryProvider<ScanStatusSumm
         } catch (final IOException e) {
             throw new IntegrationException(e.getMessage(), e);
         }
-    }
-
-    private ProjectRequest createProjectRequest(final DetectProject detectProject) {
-        final ProjectRequestBuilder builder = new DetectProjectRequestBuilder(detectConfiguration, detectProject);
-        return builder.build();
     }
 
     private HubScanConfigBuilder createScanConfigBuilder(final DetectProject detectProject, final Set<String> scanPaths, final String dockerTarFilename) {

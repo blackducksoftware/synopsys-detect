@@ -182,9 +182,9 @@ public class HubServiceManager {
 
     public IntEnvironmentVariables getEnvironmentVariables() {
         try {
-            return (IntEnvironmentVariables) hubServicesFactory.getClass().getField("intEnvironmentVariables").get(hubServicesFactory);
+            return (IntEnvironmentVariables) hubServicesFactory.getClass().getDeclaredField("intEnvironmentVariables").get(hubServicesFactory);
         } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-            return null;
+            return new IntEnvironmentVariables();
         }
     }
 }
