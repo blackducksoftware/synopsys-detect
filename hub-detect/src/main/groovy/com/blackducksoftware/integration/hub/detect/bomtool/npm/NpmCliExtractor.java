@@ -26,6 +26,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.npm;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,11 +43,9 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class NpmCliExtractor {
-    private final Logger logger = LoggerFactory.getLogger(NpmCliExtractor.class);
-
     public static final String OUTPUT_FILE = "detect_npm_proj_dependencies.json";
     public static final String ERROR_FILE = "detect_npm_error.json";
-
+    private final Logger logger = LoggerFactory.getLogger(NpmCliExtractor.class);
     private final ExecutableRunner executableRunner;
     private final NpmCliDependencyFinder npmCliDependencyFinder;
     private final DetectConfiguration detectConfiguration;
@@ -67,6 +66,11 @@ public class NpmCliExtractor {
             exeArgs.add("-prod");
         }
 
+        final String additionalArguments = detectConfiguration.getProperty(DetectProperty.DETECT_NPM_ARGUMENTS);
+        if (StringUtils.isNotBlank(additionalArguments)) {
+            exeArgs.addAll(Arrays.asList(additionalArguments.split(" ")));
+        }
+
         final Executable npmLsExe = new Executable(directory, npmExe, exeArgs);
         ExecutableOutput executableOutput;
         try {
@@ -79,8 +83,8 @@ public class NpmCliExtractor {
         if (StringUtils.isNotBlank(errorOutput)) {
             logger.error("Error when running npm ls -json command");
             logger.error(errorOutput);
-            return new Extraction.Builder().failure("Npm wrote to stderr while running npm ls.").build();            
-        } else if (StringUtils.isNotBlank(standardOutput)) {            
+            return new Extraction.Builder().failure("Npm wrote to stderr while running npm ls.").build();
+        } else if (StringUtils.isNotBlank(standardOutput)) {
             logger.debug("Parsing npm ls file.");
             logger.debug(standardOutput);
             try {
@@ -91,7 +95,7 @@ public class NpmCliExtractor {
             }
         } else {
             logger.error("Nothing returned from npm ls -json command");
-            return new Extraction.Builder().failure("Npm returned error after running npm ls.").build();            
+            return new Extraction.Builder().failure("Npm returned error after running npm ls.").build();
         }
     }
 }

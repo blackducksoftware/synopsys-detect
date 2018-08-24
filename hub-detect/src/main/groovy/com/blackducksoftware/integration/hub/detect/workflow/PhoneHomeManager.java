@@ -40,6 +40,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.HubRegistrationService;
 import com.synopsys.integration.blackduck.service.HubService;
+import com.synopsys.integration.blackduck.service.HubServicesFactory;
 import com.synopsys.integration.blackduck.service.model.BlackDuckPhoneHomeCallable;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.phonehome.PhoneHomeCallable;
@@ -61,7 +62,7 @@ public class PhoneHomeManager {
     private HubService hubService;
     private HubRegistrationService hubRegistrationService;
     private boolean isBlackDuckOffline;
-    private IntEnvironmentVariables environmentVariables;
+    private HubServicesFactory hubServicesFactory;
     private final DetectConfiguration detectConfiguration;
     private final Gson gson;
 
@@ -77,14 +78,13 @@ public class PhoneHomeManager {
         this.phoneHomeClient = new PhoneHomeClient(GoogleAnalyticsConstants.PRODUCTION_INTEGRATIONS_TRACKING_ID, new Slf4jIntLogger(logger), gson);
 
         this.isBlackDuckOffline = true;
-        this.environmentVariables = new IntEnvironmentVariables();
     }
 
-    public void init(final PhoneHomeService phoneHomeService, final PhoneHomeClient phoneHomeClient, final IntEnvironmentVariables environmentVariables, final HubService hubService,
+    public void init(final PhoneHomeService phoneHomeService, final PhoneHomeClient phoneHomeClient, final HubServicesFactory hubServicesFactory, final HubService hubService,
             final HubRegistrationService hubRegistrationService, final URL hubUrl) {
         this.phoneHomeService = phoneHomeService;
         this.isBlackDuckOffline = false;
-        this.environmentVariables = environmentVariables;
+        this.hubServicesFactory = hubServicesFactory;
         this.hubService = hubService;
         this.hubRegistrationService = hubRegistrationService;
         this.hubUrl = hubUrl;
@@ -156,7 +156,7 @@ public class PhoneHomeManager {
     // TODO: Don't supply a product url to offine phone home!
     private PhoneHomeCallable createOfflineCallable(final Map<String, String> metadata) {
         OfflineBlackDuckPhoneHomeCallable offlineCallable;
-        offlineCallable = new OfflineBlackDuckPhoneHomeCallable(new Slf4jIntLogger(logger), phoneHomeClient, "hub-detect", detectInfo.getDetectVersion(), environmentVariables);
+        offlineCallable = new OfflineBlackDuckPhoneHomeCallable(new Slf4jIntLogger(logger), phoneHomeClient, "hub-detect", detectInfo.getDetectVersion(), new IntEnvironmentVariables());
         metadata.entrySet().forEach(it -> offlineCallable.addMetaData(it.getKey(), it.getValue()));
 
         return offlineCallable;
@@ -164,8 +164,7 @@ public class PhoneHomeManager {
     }
 
     private PhoneHomeCallable createOnlineCallable(final Map<String, String> metadata) {
-        final BlackDuckPhoneHomeCallable onlineCallable = new BlackDuckPhoneHomeCallable(new Slf4jIntLogger(logger), phoneHomeClient, hubUrl, "hub-detect", detectInfo.getDetectVersion(), environmentVariables, hubService,
-                hubRegistrationService);
+        final BlackDuckPhoneHomeCallable onlineCallable = (BlackDuckPhoneHomeCallable) hubServicesFactory.createBlackDuckPhoneHomeCallable(hubUrl, "hub-detect", detectInfo.getDetectVersion());
         metadata.entrySet().forEach(it -> onlineCallable.addMetaData(it.getKey(), it.getValue()));
 
         return onlineCallable;
