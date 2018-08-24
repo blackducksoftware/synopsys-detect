@@ -99,6 +99,7 @@ public class OfflineScanner {
             }
 
             boolean cliInstalledOkay = checkCliInstall(cliLocation, new SilentLogger());
+            final String offlineLocalPath = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH);
 
             if (!cliInstalledOkay && StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL))) {
                 installSignatureScannerFromUrl(intLogger, hubScanConfig);

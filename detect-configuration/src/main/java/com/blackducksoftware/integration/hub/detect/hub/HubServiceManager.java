@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,6 +155,11 @@ public class HubServiceManager {
     }
 
     public ScanJobManager createScanManager(final ExecutorService executorService) {
+        final String locallScannerInstallPath = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH);
+        final String userProvidedScannerInstallUrl = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL);
+
+        if (!cliInstalledOkay && StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL))) {
+
         IntEnvironmentVariables environmentVariables = hubServicesFactory.getEnvironmentVariables();
         BlackduckRestConnection blackduckRestConnection = hubServicesFactory.getRestConnection();
         OperatingSystemType operatingSystemType = OperatingSystemType.determineFromSystem();
