@@ -49,7 +49,10 @@ import com.synopsys.integration.blackduck.service.HubServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.ReportService;
 import com.synopsys.integration.blackduck.service.ScanStatusService;
-import com.synopsys.integration.blackduck.service.SignatureScannerService;
+import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
+import com.synopsys.integration.blackduck.signaturescanner.command.ScanCommandRunner;
+import com.synopsys.integration.blackduck.signaturescanner.command.ScanPathsUtility;
+import com.synopsys.integration.blackduck.signaturescanner.command.ScannerZipInstaller;
 import com.synopsys.integration.exception.EncryptionException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
@@ -57,7 +60,9 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.phonehome.PhoneHomeClient;
 import com.synopsys.integration.phonehome.PhoneHomeService;
 import com.synopsys.integration.rest.connection.RestConnection;
+import com.synopsys.integration.util.CleanupZipExpander;
 import com.synopsys.integration.util.IntEnvironmentVariables;
+import com.synopsys.integration.util.OperatingSystemType;
 import com.synopsys.integration.util.ResourceUtil;
 
 public class HubServiceManager {
@@ -148,8 +153,18 @@ public class HubServiceManager {
         return hubServicesFactory.createReportService(detectConfiguration.getLongProperty(DetectProperty.DETECT_API_TIMEOUT));
     }
 
-    public SignatureScannerService createSignatureScannerService(final ExecutorService executorService) {
-        return hubServicesFactory.createSignatureScannerService(executorService);
+    public ScanJobManager createScanManager(final ExecutorService executorService) {
+        IntEnvironmentVariables environmentVariables = hubServicesFactory.getEnvironmentVariables();
+        BlackduckRestConnection blackduckRestConnection = hubServicesFactory.getRestConnection();
+        OperatingSystemType operatingSystemType = OperatingSystemType.determineFromSystem();
+        ScanPathsUtility scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, operatingSystemType);
+        ScanCommandRunner scanCommandRunner = new ScanCommandRunner(slf4jIntLogger, environmentVariables, scanPathsUtility, executorService);
+        final CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
+
+        String urlToUseToGetScanner = "http://www.google.com";
+        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, blackduckRestConnection, cleanupZipExpander, scanPathsUtility, urlToUseToGetScanner, operatingSystemType);
+        ScanJobManager scanJobManager = new ScanJobManager(slf4jIntLogger, environmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
+        return scanJobManager;
     }
 
     private HubServicesFactory createHubServicesFactory(final IntLogger slf4jIntLogger, final HubServerConfig hubServerConfig) throws IntegrationException {
