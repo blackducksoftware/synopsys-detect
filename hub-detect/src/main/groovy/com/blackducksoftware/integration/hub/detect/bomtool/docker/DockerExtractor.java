@@ -49,7 +49,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.HubSignatureScanner;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckSignatureScanner;
 import com.google.gson.Gson;
 import com.synopsys.integration.hub.bdio.BdioReader;
 import com.synopsys.integration.hub.bdio.BdioTransformer;
@@ -72,10 +72,10 @@ public class DockerExtractor {
     private final BdioTransformer bdioTransformer;
     private final ExternalIdFactory externalIdFactory;
     private final Gson gson;
-    private final HubSignatureScanner hubSignatureScanner;
+    private final BlackDuckSignatureScanner blackDuckSignatureScanner;
 
     public DockerExtractor(final DetectFileFinder detectFileFinder, final DetectFileManager detectFileManager, final DockerProperties dockerProperties,
-            final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson, final HubSignatureScanner hubSignatureScanner) {
+            final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson, final BlackDuckSignatureScanner blackDuckSignatureScanner) {
         this.detectFileFinder = detectFileFinder;
         this.detectFileManager = detectFileManager;
         this.dockerProperties = dockerProperties;
@@ -83,7 +83,7 @@ public class DockerExtractor {
         this.bdioTransformer = bdioTransformer;
         this.externalIdFactory = externalIdFactory;
         this.gson = gson;
-        this.hubSignatureScanner = hubSignatureScanner;
+        this.blackDuckSignatureScanner = blackDuckSignatureScanner;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final ExtractionId extractionId, final File bashExe, final File dockerExe, final String image, final String tar,
@@ -171,14 +171,14 @@ public class DockerExtractor {
 
         final File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
         if (null != producedTarFile && producedTarFile.isFile()) {
-            hubSignatureScanner.setDockerTarFile(producedTarFile);
+            blackDuckSignatureScanner.setDockerTarFile(producedTarFile);
         } else {
             logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", TAR_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
             if (StringUtils.isNotBlank(dockerTarFilePath)) {
                 final File dockerTarFile = new File(dockerTarFilePath);
                 if (dockerTarFile.isFile()) {
                     logger.debug(String.format("Will scan the provided Docker tar file %s", dockerTarFile.getCanonicalPath()));
-                    hubSignatureScanner.setDockerTarFile(dockerTarFile);
+                    blackDuckSignatureScanner.setDockerTarFile(dockerTarFile);
                 }
             }
         }

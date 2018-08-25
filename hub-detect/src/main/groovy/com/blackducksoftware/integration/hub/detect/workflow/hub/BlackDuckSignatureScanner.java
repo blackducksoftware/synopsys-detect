@@ -59,7 +59,7 @@ import com.synopsys.integration.blackduck.summary.Result;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStatusSummary>, ExitCodeReporter {
-    private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class);
+    private final Logger logger = LoggerFactory.getLogger(BlackDuckSignatureScanner.class);
     private final Set<String> scanPaths = new HashSet<>();
     private final Map<String, Set<String>> scanPathExclusionPatterns = new HashMap<>();
     private final Map<String, Result> scanSummaryResults = new HashMap<>();
@@ -68,15 +68,13 @@ public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStat
 
     private final DetectFileManager detectFileManager;
     private final DetectFileFinder detectFileFinder;
-    private final OfflineScanner offlineScanner;
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfiguration detectConfiguration;
 
-    public BlackDuckSignatureScanner(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder, final OfflineScanner offlineScanner, final CodeLocationNameManager codeLocationNameManager,
+    public BlackDuckSignatureScanner(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder, final CodeLocationNameManager codeLocationNameManager,
             final DetectConfiguration detectConfiguration) {
         this.detectFileManager = detectFileManager;
         this.detectFileFinder = detectFileFinder;
-        this.offlineScanner = offlineScanner;
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
     }
@@ -97,7 +95,7 @@ public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStat
                 }
             }
         } catch (IOException e) {
-            // error running scans
+            throw new IntegrationException("Could not execute the scans: " + e.getMessage());
         }
     }
 

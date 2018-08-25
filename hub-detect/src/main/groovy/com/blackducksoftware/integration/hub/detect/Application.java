@@ -223,19 +223,16 @@ public class Application implements ApplicationRunner {
         logger.info(String.format("Project Version Name: %s", detectProject.getProjectVersion()));
 
         if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE)) {
-            hubManager.performOfflineHubActions(detectProject);
             for (final File bdio : detectProject.getBdioFiles()) {
                 diagnosticManager.registerGlobalFileOfInterest(bdio);
             }
         } else {
             final Optional<ProjectVersionView> originalProjectVersionView = hubManager.updateHubProjectVersion(detectProject);
-            final Optional<ProjectVersionView> scanProjectVersionView = hubManager.performScanActions(detectProject);
             ProjectVersionView projectVersionView = null;
             if (originalProjectVersionView.isPresent()) {
                 projectVersionView = originalProjectVersionView.get();
-            } else if (scanProjectVersionView.isPresent()) {
-                projectVersionView = scanProjectVersionView.get();
             }
+            hubManager.performScanActions(detectProject);
             hubManager.performBinaryScanActions(detectProject);
             // final ProjectVersionView projectVersionView = originalProjectVersionView.orElse(scanProjectVersionView.orElse(null));
             hubManager.performPostHubActions(detectProject, projectVersionView);

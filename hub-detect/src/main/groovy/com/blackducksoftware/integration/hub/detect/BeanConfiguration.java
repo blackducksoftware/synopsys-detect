@@ -122,9 +122,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BdioUploader;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckBinaryScanner;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.HubSignatureScanner;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.OfflineScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BdioManager;
@@ -310,7 +309,7 @@ public class BeanConfiguration {
 
     @Bean
     public HubServiceManager hubServiceManager() {
-        return new HubServiceManager(detectConfiguration(), gson(), jsonParser());
+        return new HubServiceManager(detectConfiguration(), detectConfigurationUtility(), gson(), jsonParser());
     }
 
     @Bean
@@ -413,20 +412,15 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public OfflineScanner offlineScanner() {
-        return new OfflineScanner(gson(), detectConfiguration(), detectConfigurationUtility());
-    }
-
-    @Bean
-    public HubSignatureScanner hubSignatureScanner() {
-        return new HubSignatureScanner(detectFileManager(), detectFileFinder(), offlineScanner(), codeLocationNameManager(), detectConfiguration());
+    public BlackDuckSignatureScanner blackDuckSignatureScanner() {
+        return new BlackDuckSignatureScanner(detectFileManager(), detectFileFinder(), codeLocationNameManager(), detectConfiguration());
     }
 
     @Bean
     public DetectSummaryManager statusSummary() throws ParserConfigurationException {
         final List<StatusSummaryProvider<?>> statusSummaryProviders = new ArrayList<>();
         statusSummaryProviders.add(detectProjectManager());
-        statusSummaryProviders.add(hubSignatureScanner());
+        statusSummaryProviders.add(blackDuckSignatureScanner());
 
         return new DetectSummaryManager(statusSummaryProviders);
     }
@@ -448,7 +442,7 @@ public class BeanConfiguration {
 
     @Bean
     public HubManager hubManager() {
-        return new HubManager(bdioUploader(), codeLocationNameManager(), detectConfiguration(), hubServiceManager(), hubSignatureScanner(), policyChecker(), blackDuckBinaryScanner());
+        return new HubManager(bdioUploader(), codeLocationNameManager(), detectConfiguration(), hubServiceManager(), blackDuckSignatureScanner(), policyChecker(), blackDuckBinaryScanner());
     }
 
     @Bean
@@ -521,7 +515,7 @@ public class BeanConfiguration {
 
     @Bean
     public DockerExtractor dockerExtractor() {
-        return new DockerExtractor(detectFileFinder(), detectFileManager(), dockerProperties(), executableRunner(), bdioTransformer(), externalIdFactory(), gson(), hubSignatureScanner());
+        return new DockerExtractor(detectFileFinder(), detectFileManager(), dockerProperties(), executableRunner(), bdioTransformer(), externalIdFactory(), gson(), blackDuckSignatureScanner());
     }
 
     @Bean
