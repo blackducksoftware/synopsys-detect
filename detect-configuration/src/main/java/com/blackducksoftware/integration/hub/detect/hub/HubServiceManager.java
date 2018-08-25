@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -61,6 +62,7 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.phonehome.PhoneHomeClient;
 import com.synopsys.integration.phonehome.PhoneHomeService;
 import com.synopsys.integration.rest.connection.RestConnection;
+import com.synopsys.integration.rest.connection.UnauthenticatedRestConnectionBuilder;
 import com.synopsys.integration.util.CleanupZipExpander;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.OperatingSystemType;
@@ -70,6 +72,7 @@ public class HubServiceManager {
     private final Logger logger = LoggerFactory.getLogger(HubServiceManager.class);
 
     private final DetectConfiguration detectConfiguration;
+    private final DetectConfigurationUtility detectConfigurationUtility;
     private final Gson gson;
     private final JsonParser jsonParser;
 
@@ -77,8 +80,9 @@ public class HubServiceManager {
     private HubServerConfig hubServerConfig;
     private HubServicesFactory hubServicesFactory;
 
-    public HubServiceManager(final DetectConfiguration detectConfiguration, final Gson gson, final JsonParser jsonParser) {
+    public HubServiceManager(final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final Gson gson, final JsonParser jsonParser) {
         this.detectConfiguration = detectConfiguration;
+        this.detectConfigurationUtility = detectConfigurationUtility;
         this.gson = gson;
         this.jsonParser = jsonParser;
     }
@@ -154,23 +158,37 @@ public class HubServiceManager {
         return hubServicesFactory.createReportService(detectConfiguration.getLongProperty(DetectProperty.DETECT_API_TIMEOUT));
     }
 
-    public ScanJobManager createScanManager(final ExecutorService executorService) {
+    public ScanJobManager createScanJobManager(final ExecutorService executorService) throws IntegrationException, DetectUserFriendlyException {
         final String locallScannerInstallPath = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH);
         final String userProvidedScannerInstallUrl = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL);
 
-        if (!cliInstalledOkay && StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL))) {
+        if (StringUtils.isBlank(locallScannerInstallPath) && StringUtils.isBlank(userProvidedScannerInstallUrl)) {
+            // will will use the hub server to download/update the scanner - this is the most likely situation
+            return ScanJobManager.createDefaultScanManager(slf4jIntLogger, hubServerConfig);
+        } else {
+            OperatingSystemType operatingSystemType = OperatingSystemType.determineFromSystem();
+            ScanPathsUtility scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, operatingSystemType);
+            ScanCommandRunner scanCommandRunner = new ScanCommandRunner(slf4jIntLogger, getEnvironmentVariables(), scanPathsUtility);
 
-        IntEnvironmentVariables environmentVariables = hubServicesFactory.getEnvironmentVariables();
-        BlackduckRestConnection blackduckRestConnection = hubServicesFactory.getRestConnection();
-        OperatingSystemType operatingSystemType = OperatingSystemType.determineFromSystem();
-        ScanPathsUtility scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, operatingSystemType);
-        ScanCommandRunner scanCommandRunner = new ScanCommandRunner(slf4jIntLogger, environmentVariables, scanPathsUtility, executorService);
-        final CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
+            if (StringUtils.isNotBlank(locallScannerInstallPath)) {
+                // we were given an existing path for the scanner so we won't attempt to download/update it
+                return new ScanJobManager(slf4jIntLogger, getEnvironmentVariables(), null, scanPathsUtility, scanCommandRunner);
+            } else {
+                // we will use the provided url to download/update the scanner
+                final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
+                restConnectionBuilder.setBaseUrl(userProvidedScannerInstallUrl);
+                restConnectionBuilder.setTimeout(detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT));
+                restConnectionBuilder.applyProxyInfo(detectConfigurationUtility.getHubProxyInfo());
+                restConnectionBuilder.setAlwaysTrustServerCertificate(detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_TRUST_CERT));
+                restConnectionBuilder.setLogger(slf4jIntLogger);
 
-        String urlToUseToGetScanner = "http://www.google.com";
-        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, blackduckRestConnection, cleanupZipExpander, scanPathsUtility, urlToUseToGetScanner, operatingSystemType);
-        ScanJobManager scanJobManager = new ScanJobManager(slf4jIntLogger, environmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
-        return scanJobManager;
+                final RestConnection restConnection = restConnectionBuilder.build();
+                final CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
+                final ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, restConnection, cleanupZipExpander, scanPathsUtility, userProvidedScannerInstallUrl, operatingSystemType);
+
+                return new ScanJobManager(slf4jIntLogger, getEnvironmentVariables(), scannerZipInstaller, scanPathsUtility, scanCommandRunner);
+            }
+        }
     }
 
     private HubServicesFactory createHubServicesFactory(final IntLogger slf4jIntLogger, final HubServerConfig hubServerConfig) throws IntegrationException {
