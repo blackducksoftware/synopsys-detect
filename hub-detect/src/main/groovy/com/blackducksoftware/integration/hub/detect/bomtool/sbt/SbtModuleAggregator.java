@@ -64,9 +64,9 @@ public class SbtModuleAggregator {
     }
 
     private boolean moduleEqualsAggregate(final SbtDependencyModule module, final SbtAggregate aggregate) {
-        final boolean namesMatch = module.name == aggregate.name;
-        final boolean versionsMatch = module.version == aggregate.version;
-        final boolean groupsMatch = module.org == aggregate.org;
+        final boolean namesMatch = module.name.equals(aggregate.name);
+        final boolean versionsMatch = module.version.equals(aggregate.version);
+        final boolean groupsMatch = module.org.equals(aggregate.org);
 
         return namesMatch && groupsMatch && versionsMatch;
     }
