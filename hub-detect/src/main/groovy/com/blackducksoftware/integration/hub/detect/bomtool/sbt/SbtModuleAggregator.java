@@ -27,13 +27,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.hub.bdio.graph.MutableMapDependencyGraph;
 
 public class SbtModuleAggregator {
+    private final Logger logger = LoggerFactory.getLogger(SbtModuleAggregator.class);
+
     public List<SbtDependencyModule> aggregateModules(final List<SbtDependencyModule> modules) {
         final Set<SbtAggregate> aggregates = uniqueAggregates(modules);
+        logger.debug("Found unique aggregates: " + aggregates.size());
 
         return aggregates.stream().map(aggregate -> {
             final SbtDependencyModule aggregated = new SbtDependencyModule();
@@ -48,6 +54,7 @@ public class SbtModuleAggregator {
 
             modules.forEach(module -> {
                 if (moduleEqualsAggregate(module, aggregate)) {
+                    logger.debug("Combining '" + module.name + "' with '" + aggregate.name + "'");
                     combiner.addGraphAsChildrenToRoot(graph, module.graph);
                 }
             });
