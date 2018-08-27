@@ -65,7 +65,7 @@ public class SbtReportParser {
         final String organisation = XmlUtil.getAttribute(ORGANISATION_NODE_KEY, xmlModule);
         final List<SbtRevision> revisions = xmlRevisions.stream().map(this::createRevision).collect(Collectors.toList());
 
-        return new SbtModule(name, organisation, revisions);
+        return new SbtModule(organisation, name, revisions);
     }
 
     private SbtRevision createRevision(final Node xmlRevision) {
