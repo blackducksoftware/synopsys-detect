@@ -468,7 +468,7 @@ public enum DetectProperty {
     DETECT_PIPENV_PATH("detect.pipenv.path", DetectPropertyType.STRING),
 
     @HelpGroup(primary = GROUP_NPM)
-    @HelpDescription("Additional arguments to use when running Detect against an NPM project")
+    @HelpDescription("A space-separated list of additional arguments to use when running Detect against an NPM project")
     DETECT_NPM_ARGUMENTS("detect.npm.arguments", DetectPropertyType.STRING),
 
     @HelpGroup(primary = GROUP_NPM)
