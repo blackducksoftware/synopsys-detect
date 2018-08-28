@@ -247,7 +247,7 @@ public class HubManager implements ExitCodeReporter {
         final Optional<String> cloneUrl = findCloneUrl(projectService, hubService);
         if (cloneUrl.isPresent()) {
             projectRequestBuilder.setCloneFromReleaseUrl(cloneUrl.get());
-            projectRequestBuilder.setCloneCategories(convertClonePropertyToEnum(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PROJECT_CLONE_CATEGORIES)));
+            projectRequestBuilder.setCloneCategories(convertClonePropertyToEnum(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_CLONE_CATEGORIES)));
         }
 
         return projectRequestBuilder.build();

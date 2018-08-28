@@ -343,8 +343,8 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("The set of data to clone when cloning this project version.")
-    @AcceptableValues(value = { "COMPONENT_DATA", "VULN_DATA" }, caseSensitive = false, strict = false)
-    DETECT_PROJECT_CLONE_CATEGORIES("detect.project.clone.categories", DetectPropertyType.STRING_ARRAY),
+    @AcceptableValues(value = { "COMPONENT_DATA", "VULN_DATA" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
+    DETECT_CLONE_CATEGORIES("detect.clone.categories", DetectPropertyType.STRING_ARRAY),
 
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("The name of the project that contains the release to clone this project version from.")
