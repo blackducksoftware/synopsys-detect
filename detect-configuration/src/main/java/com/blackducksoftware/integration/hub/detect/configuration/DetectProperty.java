@@ -273,6 +273,10 @@ public enum DetectProperty {
     @HelpDescription("Depth from source paths to search for files to determine if a bom tool applies.")
     DETECT_BOM_TOOL_SEARCH_DEPTH("detect.bom.tool.search.depth", DetectPropertyType.INTEGER, "0"),
 
+    @HelpGroup(primary = GROUP_BOMTOOL, additional = { GROUP_BOMTOOL })
+    @HelpDescription("If set, detect will fail if it does not find the bom tool types supplied here.")
+    DETECT_REQUIRED_BOM_TOOL_TYPES("detect.required.bom.tool.types", DetectPropertyType.STRING),
+
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.")
     @HelpDetailed("If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc.\r\nIf false, Detect will only find bom tools in subdirectories of a project if they are of a different type such as an Npm project in a subdirectory of a Gradle project.")
