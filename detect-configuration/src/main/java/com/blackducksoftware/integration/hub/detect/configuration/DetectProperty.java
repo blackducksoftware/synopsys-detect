@@ -342,7 +342,7 @@ public enum DetectProperty {
     DETECT_PROJECT_VERSION_PHASE("detect.project.version.phase", DetectPropertyType.STRING, "Development"),
 
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
-    @HelpDescription("An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use detect.project.version.update to make sure these are set.")
+    @HelpDescription("An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set.")
     @AcceptableValues(value = { "COMPONENT_DATA", "VULN_DATA" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
     DETECT_PROJECT_CLONE_CATEGORIES("detect.project.clone.categories", DetectPropertyType.STRING_ARRAY, "COMPONENT_DATA,VULN_DATA"),
 

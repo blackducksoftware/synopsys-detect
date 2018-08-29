@@ -46,6 +46,12 @@ public class DetectConfiguration {
         this.detectPropertyMap = detectPropertyMap;
     }
 
+    private final Set<DetectProperty> actuallySetValues = new HashSet<>();
+
+    public boolean getShouldIgnoreSetValue(final DetectProperty property) {
+        return !actuallySetValues.contains(property);
+    }
+
     // TODO: Remove override code in version 6.
     public void init() {
         Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
@@ -151,6 +157,7 @@ public class DetectConfiguration {
         final DetectProperty deprecated = fromOverrideToDeprecated(detectProperty);
 
         detectPropertyMap.setDetectProperty(detectProperty, stringValue);
+        actuallySetValues.add(detectProperty);
         if (override != null) {
             detectPropertyMap.setDetectProperty(override, stringValue);
         } else if (deprecated != null) {

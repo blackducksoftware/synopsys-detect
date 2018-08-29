@@ -100,7 +100,9 @@ public class DetectOptionManager implements ExitCodeReporter {
             if (StringUtils.isBlank(fieldValue)) {
                 fieldValue = detectConfiguration.getPropertyValueAsString(option.getDetectProperty());
             }
-            if (!option.getResolvedValue().equals(fieldValue)) {
+            final boolean valuesMatch = option.getResolvedValue().equals(fieldValue);
+            final boolean shouldIgnoreValue = detectConfiguration.getShouldIgnoreSetValue(option.getDetectProperty());
+            if (!valuesMatch && !shouldIgnoreValue) {
                 if (option.getInteractiveValue() != null) {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.INTERACTIVE);
                 } else if (option.getResolvedValue().equals("latest")) {
@@ -111,7 +113,7 @@ public class DetectOptionManager implements ExitCodeReporter {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.OVERRIDE);
                 }
             } else {
-                if (option.getDetectProperty().isEqualToDefault(fieldValue)) {
+                if (option.getDetectProperty().isEqualToDefault(fieldValue) || shouldIgnoreValue) {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.DEFAULT);
                 } else {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.SUPPLIED);
