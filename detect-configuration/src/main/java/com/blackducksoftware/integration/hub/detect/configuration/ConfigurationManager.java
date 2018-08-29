@@ -98,6 +98,10 @@ public class ConfigurationManager {
         detectConfigurationPrinter.print(printstream, detectOptions);
     }
 
+    public void printWarnings(final PrintStream printstream, final List<DetectOption> detectOptions) {
+        detectConfigurationPrinter.printWarnings(printstream, detectOptions);
+    }
+
     private void resolveTildeInPaths() throws DetectUserFriendlyException {
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RESOLVE_TILDE_IN_PATHS)) {
             detectConfiguration.getCurrentProperties().keySet().stream()

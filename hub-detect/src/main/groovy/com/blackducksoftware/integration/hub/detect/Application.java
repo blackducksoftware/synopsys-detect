@@ -188,6 +188,8 @@ public class Application implements ApplicationRunner {
             configurationManager.printConfiguration(System.out, options);
         }
 
+        configurationManager.printWarnings(System.out, options);
+
         final List<OptionValidationResult> invalidDetectOptionResults = detectOptionManager.getAllInvalidOptionResults();
         if (!invalidDetectOptionResults.isEmpty()) {
             throw new DetectUserFriendlyException(invalidDetectOptionResults.get(0).getValidationMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
