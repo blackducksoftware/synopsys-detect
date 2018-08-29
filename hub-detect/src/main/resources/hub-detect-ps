@@ -29,7 +29,7 @@ $EnvDetectExitCodePassthru = Get-EnvironmentVariable -Key "DETECT_EXIT_CODE_PASS
 # Otherwise, a temporary folder will be created in your home directory
 $EnvDetectFolder = Get-EnvironmentVariable -Key "DETECT_JAR_PATH" -DefaultValue "";
 $EnvTempFolder = Get-EnvironmentVariable -Key "TMP" -DefaultValue "";
-$EnvHomeTempFolder = "$HOME\tmp"
+$EnvHomeTempFolder = "$HOME/tmp"
 
 # If you want to pass proxy information, use detect environment variables such as 'blackduck.hub.proxy.host'
 # If you do pass the proxy information in this way, you do not need to supply it to detect as arguments. 
@@ -196,8 +196,8 @@ function Get-DetectSnapshotJar ($DetectFolder, $DetectVersion, $ProxyInfo) {
     
     Write-Host "Using detect version $DetectVersion"
 
-    $DetectJarFile = "$DetectFolder\hub-detect-$DetectVersion.jar"
-    $DetectCurrentCommitFile = "$DetectFolder\hub-detect-latest-commit.txt"
+    $DetectJarFile = "$DetectFolder/hub-detect-$DetectVersion.jar"
+    $DetectCurrentCommitFile = "$DetectFolder/hub-detect-latest-commit.txt"
 
     $DetectJarExists = Test-Path $DetectJarFile
     $DetectCurrentCommitFileExists = Test-Path $DetectCurrentCommitFile
@@ -233,7 +233,7 @@ function Get-DetectJar ($DetectFolder, $DetectVersion, $ProxyInfo) {
 
 	Write-Host "Using detect version $DetectVersion"
 
-    $DetectJarFile = "$DetectFolder\hub-detect-$DetectVersion.jar"
+    $DetectJarFile = "$DetectFolder/hub-detect-$DetectVersion.jar"
 
     $DetectJarExists = Test-Path $DetectJarFile
     Write-Host "Detect jar exists '$DetectJarExists'"
