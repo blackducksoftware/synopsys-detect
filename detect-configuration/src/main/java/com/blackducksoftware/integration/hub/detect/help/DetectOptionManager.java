@@ -122,7 +122,7 @@ public class DetectOptionManager implements ExitCodeReporter {
                             option.requestDeprecation();
                         }
                     } else {
-                        option.setFinalValue(fieldValue, DetectOption.FinalValueType.DEPRECATED_COPY);
+                        option.setFinalValue(fieldValue, DetectOption.FinalValueType.COPIED);
                     }
                 }
             }

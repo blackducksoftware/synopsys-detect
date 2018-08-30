@@ -49,7 +49,6 @@ public class DetectConfiguration {
     private final Set<DetectProperty> actuallySetValues = new HashSet<>();
 
     public boolean wasPropertyActuallySet(final DetectProperty property) {
-        // did something actually set this value or did this property change because of deprecation duplication.
         return actuallySetValues.contains(property);
     }
 
