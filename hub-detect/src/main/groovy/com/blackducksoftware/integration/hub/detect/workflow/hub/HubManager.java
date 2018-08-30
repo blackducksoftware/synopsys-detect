@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -243,11 +244,12 @@ public class HubManager implements ExitCodeReporter {
         projectRequestBuilder.setProjectTier(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_PROJECT_TIER));
         projectRequestBuilder.setDescription(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DESCRIPTION));
         projectRequestBuilder.setReleaseComments(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_NOTES));
+        projectRequestBuilder.setCloneCategories(convertClonePropertyToEnum(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PROJECT_CLONE_CATEGORIES)));
 
-        final Optional<String> cloneUrl = findCloneUrl(projectService, hubService);
+        final Optional<String> cloneUrl = findCloneUrl(detectProject, projectService, hubService);
         if (cloneUrl.isPresent()) {
+            logger.info("Cloning project version from release url: " + cloneUrl.get());
             projectRequestBuilder.setCloneFromReleaseUrl(cloneUrl.get());
-            projectRequestBuilder.setCloneCategories(convertClonePropertyToEnum(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_CLONE_CATEGORIES)));
         }
 
         return projectRequestBuilder.build();
@@ -258,11 +260,12 @@ public class HubManager implements ExitCodeReporter {
         for (final String category : cloneCategories) {
             categories.add(ProjectCloneCategoriesType.valueOf(category));
         }
+        logger.debug("Found clone categories:" + categories.stream().map(it -> it.toString()).collect(Collectors.joining(",")));
         return categories;
     }
 
-    public Optional<String> findCloneUrl(final ProjectService projectService, final HubService hubService) throws DetectUserFriendlyException {
-        final String cloneProjectName = detectConfiguration.getProperty(DetectProperty.DETECT_CLONE_PROJECT_NAME);
+    public Optional<String> findCloneUrl(final DetectProject detectProject, final ProjectService projectService, final HubService hubService) throws DetectUserFriendlyException {
+        final String cloneProjectName = detectProject.getProjectName();
         final String cloneProjectVersionName = detectConfiguration.getProperty(DetectProperty.DETECT_CLONE_PROJECT_VERSION_NAME);
         if (StringUtils.isBlank(cloneProjectName) || StringUtils.isBlank(cloneProjectVersionName)) {
             logger.debug("No clone project or version name supplied. Will not clone.");
@@ -273,7 +276,7 @@ public class HubManager implements ExitCodeReporter {
             final String url = hubService.getHref(projectVersionWrapper.getProjectVersionView());
             return Optional.of(url);
         } catch (final IntegrationException e) {
-            throw new DetectUserFriendlyException("Unable to find clone release url for supplied clone project name or project version name.", e, ExitCodeType.FAILURE_CONFIGURATION);
+            throw new DetectUserFriendlyException("Unable to find clone release url for supplied clone version name.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }
 
     }

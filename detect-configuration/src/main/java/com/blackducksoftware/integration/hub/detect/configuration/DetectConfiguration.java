@@ -46,26 +46,63 @@ public class DetectConfiguration {
         this.detectPropertyMap = detectPropertyMap;
     }
 
+    private final Set<DetectProperty> actuallySetValues = new HashSet<>();
+
+    public boolean wasPropertyActuallySet(final DetectProperty property) {
+        return actuallySetValues.contains(property);
+    }
+
     // TODO: Remove override code in version 6.
     public void init() {
         Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
-            if (!detectPropertyMap.containsDetectProperty(currentProperty)) {
-                final DetectProperty override = fromDeprecatedToOverride(currentProperty);
-                if (override != null) {
-                    final boolean currentExists = detectPropertySource.containsDetectProperty(currentProperty.getPropertyName());
-                    final boolean overrideExists = detectPropertySource.containsDetectProperty(override.getPropertyName());
-                    DetectProperty chosenProperty = override;
-                    if (currentExists && !overrideExists) {
-                        chosenProperty = currentProperty;
-                    }
-                    final String value = detectPropertySource.getDetectProperty(chosenProperty.getPropertyName(), chosenProperty.getDefaultValue());
-                    detectPropertyMap.setDetectProperty(currentProperty, value);
-                    detectPropertyMap.setDetectProperty(override, value);
-                } else {
-                    detectPropertyMap.setDetectProperty(currentProperty, detectPropertySource.getDetectProperty(currentProperty.getPropertyName(), currentProperty.getDefaultValue()));
-                }
+            final DetectProperty override = fromDeprecatedToOverride(currentProperty);
+            final DetectProperty deprecated = fromOverrideToDeprecated(currentProperty);
+            if (override == null && deprecated == null) {
+                handleStandardProperty(currentProperty);
+            } else if (override != null) {
+                handleDeprecatedProperty(currentProperty, override);// a deprecated property has an override
+            } else if (deprecated != null) {
+                handleOverrideProperty(currentProperty, deprecated);// an override property has a deprecated property
             }
         });
+    }
+
+    private void handleStandardProperty(final DetectProperty currentProperty) {
+        actuallySetValues.add(currentProperty);
+        detectPropertyMap.setDetectProperty(currentProperty, detectPropertySource.getDetectProperty(currentProperty.getPropertyName(), currentProperty.getDefaultValue()));
+    }
+
+    private void handleDeprecatedProperty(final DetectProperty currentProperty, final DetectProperty overrideProperty) {
+        final boolean currentExists = detectPropertySource.containsDetectProperty(currentProperty.getPropertyName());
+        if (currentExists) {
+            final boolean overrideExists = detectPropertySource.containsDetectProperty(overrideProperty.getPropertyName());
+            if (!overrideExists) {
+                // current exists but override does not, so we choose to use the current and set the override. Otherwise, ignore this property, it should be set by the override property.
+                setChosenProperty(currentProperty, overrideProperty, true);
+            }
+        }
+    }
+
+    private void handleOverrideProperty(final DetectProperty currentProperty, final DetectProperty deprecatedProperty) {
+        final boolean currentExists = detectPropertySource.containsDetectProperty(currentProperty.getPropertyName());
+        final boolean deprecatedExists = detectPropertySource.containsDetectProperty(deprecatedProperty.getPropertyName());
+        if (currentExists) {
+            setChosenProperty(currentProperty, deprecatedProperty, true);
+            if (deprecatedExists) { // even though it wasn't chosen, if deprecated was set we want to mark it as set.
+                actuallySetValues.add(deprecatedProperty);
+            }
+        } else if (!currentExists && !deprecatedExists) {
+            setChosenProperty(currentProperty, deprecatedProperty, false);
+        }
+    }
+
+    private void setChosenProperty(final DetectProperty chosenProperty, final DetectProperty unchosenProperty, final boolean actuallySetChosen) {
+        final String value = detectPropertySource.getDetectProperty(chosenProperty.getPropertyName(), chosenProperty.getDefaultValue());
+        detectPropertyMap.setDetectProperty(chosenProperty, value);
+        detectPropertyMap.setDetectProperty(unchosenProperty, value);
+        if (actuallySetChosen) {
+            actuallySetValues.add(chosenProperty);
+        }
     }
 
     // TODO: Remove in version 6.
@@ -151,6 +188,7 @@ public class DetectConfiguration {
         final DetectProperty deprecated = fromOverrideToDeprecated(detectProperty);
 
         detectPropertyMap.setDetectProperty(detectProperty, stringValue);
+        actuallySetValues.add(detectProperty);
         if (override != null) {
             detectPropertyMap.setDetectProperty(override, stringValue);
         } else if (deprecated != null) {

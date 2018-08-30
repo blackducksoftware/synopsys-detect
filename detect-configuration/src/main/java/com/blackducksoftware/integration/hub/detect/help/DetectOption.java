@@ -221,7 +221,8 @@ public abstract class DetectOption {
         LATEST, // the final value was resolved from latest
         CALCULATED, // the resolved value was not set and final value was set during init
         SUPPLIED, // the final value most likely came from spring
-        OVERRIDE // the resolved value was set but during init a new value was set
+        OVERRIDE, // the resolved value was set but during init a new value was set
+        COPIED // the resolved value was copied due to the setting of some other property, such as a deprecated property having an overide.
     }
 
     public static class OptionValidationResult {
