@@ -101,8 +101,8 @@ public class DetectOptionManager implements ExitCodeReporter {
                 fieldValue = detectConfiguration.getPropertyValueAsString(option.getDetectProperty());
             }
             final boolean valuesMatch = option.getResolvedValue().equals(fieldValue);
-            final boolean shouldIgnoreValue = detectConfiguration.getShouldIgnoreSetValue(option.getDetectProperty());
-            if (!valuesMatch && !shouldIgnoreValue) {
+            final boolean propertyWasSet = detectConfiguration.wasPropertyActuallySet(option.getDetectProperty());
+            if (!valuesMatch && propertyWasSet) {
                 if (option.getInteractiveValue() != null) {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.INTERACTIVE);
                 } else if (option.getResolvedValue().equals("latest")) {
@@ -113,12 +113,16 @@ public class DetectOptionManager implements ExitCodeReporter {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.OVERRIDE);
                 }
             } else {
-                if (option.getDetectProperty().isEqualToDefault(fieldValue) || shouldIgnoreValue) {
+                if (option.getDetectProperty().isEqualToDefault(fieldValue)) {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.DEFAULT);
                 } else {
-                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.SUPPLIED);
-                    if (option.getDetectOptionHelp().isDeprecated) {
-                        option.requestDeprecation();
+                    if (propertyWasSet) {
+                        option.setFinalValue(fieldValue, DetectOption.FinalValueType.SUPPLIED);
+                        if (option.getDetectOptionHelp().isDeprecated) {
+                            option.requestDeprecation();
+                        }
+                    } else {
+                        option.setFinalValue(fieldValue, DetectOption.FinalValueType.DEPRECATED_COPY);
                     }
                 }
             }

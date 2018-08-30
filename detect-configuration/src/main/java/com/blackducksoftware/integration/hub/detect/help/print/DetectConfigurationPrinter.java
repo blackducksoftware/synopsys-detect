@@ -71,6 +71,8 @@ public class DetectConfigurationPrinter {
                     text = displayName + " = " + fieldValue + " [calculated]";
                 } else if (fieldType == DetectOption.FinalValueType.OVERRIDE) {
                     text = displayName + " = " + fieldValue + " [" + option.getResolvedValue() + "]";
+                } else if (fieldType == DetectOption.FinalValueType.DEPRECATED_COPY) {
+                    text = displayName + " = " + fieldValue + " [copied]";
                 }
 
                 if (option.getValidValues().size() > 0) {
