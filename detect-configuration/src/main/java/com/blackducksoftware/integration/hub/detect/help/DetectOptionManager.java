@@ -113,7 +113,7 @@ public class DetectOptionManager implements ExitCodeReporter {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.OVERRIDE);
                 }
             } else {
-                if (option.getDetectProperty().isEqualToDefault(fieldValue)) {
+                if (isEqualToDefault(option.getDetectProperty(), fieldValue)) {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.DEFAULT);
                 } else {
                     if (propertyWasSet) {
@@ -133,6 +133,14 @@ public class DetectOptionManager implements ExitCodeReporter {
                 option.addWarning(option.getDetectOptionHelp().deprecation + " It will cause failure in " + failVersion + " and be removed in " + removeVersion + ".");
             }
         }
+    }
+
+    public Boolean isEqualToDefault(final DetectProperty property, final String value) {
+        String defaultValue = "";
+        if (null != property.getDefaultValue()) {
+            defaultValue = property.getDefaultValue();
+        }
+        return value.equals(defaultValue);
     }
 
     public void applyInteractiveOptions(final List<InteractiveOption> interactiveOptions) {

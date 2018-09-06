@@ -45,8 +45,8 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
-import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
+import com.blackducksoftware.integration.hub.detect.help.DetectArgumentState;
+import com.blackducksoftware.integration.hub.detect.help.ArgumentParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption.OptionValidationResult;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
@@ -87,7 +87,7 @@ public class Application implements ApplicationRunner {
     private final DetectFileManager detectFileManager;
     private final List<ExitCodeReporter> exitCodeReporters;
     private final PhoneHomeManager phoneHomeManager;
-    private final ArgumentStateParser argumentStateParser;
+    private final ArgumentParser argumentParser;
     private final DiagnosticManager diagnosticManager;
     private final DetectRunManager detectRunManager;
 
@@ -100,7 +100,7 @@ public class Application implements ApplicationRunner {
     public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final DetectPropertySource detectPropertySource, final DetectConfiguration detectConfiguration,
             final ConfigurationManager configurationManager, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
             final HubServiceManager hubServiceManager, final DetectSummaryManager detectSummaryManager, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
-            final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final ArgumentStateParser argumentStateParser, final DetectRunManager detectRunManager, final DiagnosticManager diagnosticManager) {
+            final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final ArgumentParser argumentParser, final DetectRunManager detectRunManager, final DiagnosticManager diagnosticManager) {
         this.detectOptionManager = detectOptionManager;
         this.detectInfo = detectInfo;
         this.detectPropertySource = detectPropertySource;
@@ -116,7 +116,7 @@ public class Application implements ApplicationRunner {
         this.detectFileManager = detectFileManager;
         this.exitCodeReporters = exitCodeReporters;
         this.phoneHomeManager = phoneHomeManager;
-        this.argumentStateParser = argumentStateParser;
+        this.argumentParser = argumentParser;
         this.detectRunManager = detectRunManager;
         this.diagnosticManager = diagnosticManager;
     }
@@ -154,27 +154,27 @@ public class Application implements ApplicationRunner {
 
         final List<DetectOption> options = detectOptionManager.getDetectOptions();
 
-        final ArgumentState argumentState = argumentStateParser.parseArgs(sourceArgs);
+        final DetectArgumentState detectArgumentState = argumentParser.parseArgs(sourceArgs);
 
-        if (argumentState.isHelp() || argumentState.isDeprecatedHelp() || argumentState.isVerboseHelp()) {
-            helpPrinter.printAppropriateHelpMessage(System.out, options, argumentState);
+        if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
+            helpPrinter.printAppropriateHelpMessage(System.out, options, detectArgumentState);
             return WorkflowStep.EXIT_WITH_SUCCESS;
         }
 
-        if (argumentState.isHelpDocument()) {
+        if (detectArgumentState.isHelpDocument()) {
             helpHtmlWriter.writeHelpMessage(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()));
             return WorkflowStep.EXIT_WITH_SUCCESS;
         }
 
         configurationManager.printInfo(System.out, detectInfo);
 
-        if (argumentState.isInteractive()) {
+        if (detectArgumentState.isInteractive()) {
             interactiveManager.configureInInteractiveMode();
         }
 
         final List<String> defaultBdioLocation = new ArrayList<>();
         defaultBdioLocation.add("bdio");
-        if (argumentState.isDiagnostic()) {
+        if (detectArgumentState.isDiagnostic()) {
             defaultBdioLocation.add(detectRunManager.getRunId());
         }
         configurationManager.initialize(options, defaultBdioLocation);
@@ -182,7 +182,7 @@ public class Application implements ApplicationRunner {
 
         logger.info("Configuration processed completely.");
 
-        diagnosticManager.init(argumentState.isDiagnostic(), argumentState.isDiagnosticProtected());
+        diagnosticManager.init(detectArgumentState.isDiagnostic(), detectArgumentState.isDiagnosticProtected());
 
         if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT)) {
             configurationManager.printConfiguration(System.out, options);

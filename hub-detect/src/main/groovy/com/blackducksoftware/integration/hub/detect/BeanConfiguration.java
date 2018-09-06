@@ -94,7 +94,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyMap;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
-import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
+import com.blackducksoftware.integration.hub.detect.help.ArgumentParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
@@ -289,8 +289,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public ArgumentStateParser argumentStateParser() {
-        return new ArgumentStateParser();
+    public ArgumentParser argumentParser() {
+        return new ArgumentParser();
     }
 
     @Bean

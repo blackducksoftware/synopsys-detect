@@ -23,7 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.help;
 
-public class ArgumentState {
+public class DetectArgumentState {
     private final boolean isHelp;
     private final boolean isHelpDocument;
     private final boolean isInteractive;
@@ -35,7 +35,7 @@ public class ArgumentState {
     private final boolean isDiagnostic;
     private final boolean isDiagnosticProtected;
 
-    public ArgumentState(final boolean isHelp, final boolean isHelpDocument, final boolean isInteractive, final boolean isVerboseHelp, final boolean isDeprecatedHelp, final String parsedValue, final boolean isDiagnostic,
+    public DetectArgumentState(final boolean isHelp, final boolean isHelpDocument, final boolean isInteractive, final boolean isVerboseHelp, final boolean isDeprecatedHelp, final String parsedValue, final boolean isDiagnostic,
             final boolean isDiagnosticProtected) {
         this.isHelp = isHelp;
         this.isHelpDocument = isHelpDocument;

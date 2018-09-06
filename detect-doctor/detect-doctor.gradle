@@ -1,0 +1,14 @@
+apply plugin: 'org.springframework.boot'
+
+test {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
+dependencies {
+    compile project(":detect-configuration")
+    compile project(":hub-detect")
+}
+
+springBoot { mainClassName = 'com.blackducksoftware.integration.hub.detect.BomToolApplication' }

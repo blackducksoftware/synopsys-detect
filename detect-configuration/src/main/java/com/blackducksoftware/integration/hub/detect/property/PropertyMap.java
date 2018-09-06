@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.configuration;
+package com.blackducksoftware.integration.hub.detect.property;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ import java.util.Map;
  * DetectConfiguration should be the only class that uses this.
  */
 
-public class DetectPropertyMap {
+public class PropertyMap {
     private final Map<DetectProperty, Object> propertyMap = new HashMap<>();
     private final DetectPropertyConverter detectPropertyConverter = new DetectPropertyConverter();
 

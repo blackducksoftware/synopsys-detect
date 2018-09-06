@@ -28,12 +28,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
+import com.blackducksoftware.integration.hub.detect.help.DetectArgumentState;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 
 public class HelpPrinter {
 
-    public void printAppropriateHelpMessage(final PrintStream printStream, final List<DetectOption> allOptions, final ArgumentState state) {
+    public void printAppropriateHelpMessage(final PrintStream printStream, final List<DetectOption> allOptions, final DetectArgumentState state) {
         final HelpTextWriter writer = new HelpTextWriter();
 
         final List<DetectOption> currentOptions = allOptions.stream().filter(it -> !it.getDetectOptionHelp().isDeprecated).collect(Collectors.toList());
