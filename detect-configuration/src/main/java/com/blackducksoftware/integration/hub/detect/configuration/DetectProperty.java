@@ -261,8 +261,14 @@ public enum DetectProperty {
     @HelpDescription("The output directory for all scan files. If not set, the scan files will be in a 'scan' subdirectory of the output path.")
     DETECT_SCAN_OUTPUT_PATH("detect.scan.output.path", DetectPropertyType.STRING),
 
+    @HelpGroup(primary = GROUP_SBT, additional = { GROUP_PATHS })
+    @HelpDescription("Depth from sbt bom tool paths to search for report files.")
+    DETECT_SBT_REPORT_DEPTH("detect.sbt.report.search.depth", DetectPropertyType.INTEGER, "3"),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.sbt.report.depth in the future.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
     @HelpGroup(primary = GROUP_PATHS)
-    @HelpDescription("Depth from source paths to search for files.")
+    @HelpDescription("Depth from source paths to search for sbt report files.")
     DETECT_SEARCH_DEPTH("detect.search.depth", DetectPropertyType.INTEGER, "3"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })

@@ -62,7 +62,7 @@ public class SbtResolutionCacheExtractor {
             final String included = detectConfiguration.getProperty(DetectProperty.DETECT_SBT_INCLUDED_CONFIGURATIONS);
             final String excluded = detectConfiguration.getProperty(DetectProperty.DETECT_SBT_EXCLUDED_CONFIGURATIONS);
 
-            final int depth = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_SEARCH_DEPTH);
+            final int depth = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_SBT_REPORT_DEPTH);
 
             final SbtPackager packager = new SbtPackager(externalIdFactory, detectFileFinder);
             final SbtProject project = packager.extractProject(directory.getAbsolutePath(), depth, included, excluded);
