@@ -51,7 +51,7 @@ import com.synopsys.integration.rest.request.Response;
 import com.synopsys.integration.util.ResourceUtil;
 
 public class DockerInspectorManager {
-    private static final String LATEST_URL = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh";
+    private static final String LATEST_URL = "https://blackducksoftware.github.io/blackduck-docker-inspector/blackduck-docker-inspector.sh";
     private final Logger logger = LoggerFactory.getLogger(DockerInspectorManager.class);
 
     private final String dockerSharedDirectoryName = "docker";
@@ -96,7 +96,7 @@ public class DockerInspectorManager {
         if (info.isOffline) {
             final String dockerInspectorAirGapPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
             final String inspectorImageFamily = resolveInspectorImageFamily(bashExecutablePath, info.dockerInspectorScript);
-            info.offlineDockerInspectorJar = new File(dockerInspectorAirGapPath, "hub-docker-inspector-" + info.version + ".jar");
+            info.offlineDockerInspectorJar = new File(dockerInspectorAirGapPath, "blackduck-docker-inspector-" + info.version + ".jar");
             for (final String os : Arrays.asList("ubuntu", "alpine", "centos")) {
                 final File osImage = new File(dockerInspectorAirGapPath, inspectorImageFamily + "-" + os + ".tar");
                 info.offlineTars.add(osImage);
@@ -148,7 +148,7 @@ public class DockerInspectorManager {
         try {
             final String suppliedDockerVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
             final File shellScriptFile;
-            final File airGapHubDockerInspectorShellScript = new File(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH), "hub-docker-inspector.sh");
+            final File airGapHubDockerInspectorShellScript = new File(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH), "blackduck-docker-inspector.sh");
             boolean isOffline = false;
             logger.debug(String.format("Verifying air gap shell script present at %s", airGapHubDockerInspectorShellScript.getCanonicalPath()));
 
@@ -162,7 +162,7 @@ public class DockerInspectorManager {
                 final String dockerInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
                 String hubDockerInspectorShellScriptUrl = LATEST_URL;
                 if (!"latest".equals(dockerInspectorVersion)) {
-                    hubDockerInspectorShellScriptUrl = String.format("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-%s.sh", dockerInspectorVersion);
+                    hubDockerInspectorShellScriptUrl = String.format("https://blackducksoftware.github.io/blackduck-docker-inspector/blackduck-docker-inspector-%s.sh", dockerInspectorVersion);
                 }
                 logger.info(String.format("Getting the Docker inspector shell script from %s", hubDockerInspectorShellScriptUrl));
 
@@ -178,7 +178,7 @@ public class DockerInspectorManager {
                 }
 
                 final File inspectorDirectory = detectFileManager.getSharedDirectory(dockerSharedDirectoryName);
-                shellScriptFile = new File(inspectorDirectory, String.format("hub-docker-inspector-%s.sh", suppliedDockerVersion));
+                shellScriptFile = new File(inspectorDirectory, String.format("blackduck-docker-inspector-%s.sh", suppliedDockerVersion));
                 detectFileManager.writeToFile(shellScriptFile, shellScriptContents);
                 if (!shellScriptFile.setExecutable(true)) {
                     throw new DetectUserFriendlyException(String.format("The User does not have permission to execute the docker inspector shell script: %s", shellScriptFile.getAbsolutePath()), ExitCodeType.FAILURE_GENERAL_ERROR);
