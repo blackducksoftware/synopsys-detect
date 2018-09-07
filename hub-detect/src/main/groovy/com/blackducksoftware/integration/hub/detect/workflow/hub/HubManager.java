@@ -58,10 +58,10 @@ import com.synopsys.integration.blackduck.service.HubService;
 import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.ReportService;
 import com.synopsys.integration.blackduck.service.ScanStatusService;
-import com.synopsys.integration.blackduck.service.SignatureScannerService;
 import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
 import com.synopsys.integration.blackduck.service.model.ProjectRequestBuilder;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
@@ -73,18 +73,18 @@ public class HubManager implements ExitCodeReporter {
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfiguration detectConfiguration;
     private final HubServiceManager hubServiceManager;
-    private final HubSignatureScanner hubSignatureScanner;
+    private final BlackDuckSignatureScanner blackDuckSignatureScanner;
     private final PolicyChecker policyChecker;
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
     public HubManager(final BdioUploader bdioUploader, final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final HubServiceManager hubServiceManager,
-            final HubSignatureScanner hubSignatureScanner, final PolicyChecker policyChecker, final BlackDuckBinaryScanner blackDuckBinaryScanner) {
+            final BlackDuckSignatureScanner blackDuckSignatureScanner, final PolicyChecker policyChecker, final BlackDuckBinaryScanner blackDuckBinaryScanner) {
         this.bdioUploader = bdioUploader;
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
         this.hubServiceManager = hubServiceManager;
-        this.hubSignatureScanner = hubSignatureScanner;
+        this.blackDuckSignatureScanner = blackDuckSignatureScanner;
         this.policyChecker = policyChecker;
         this.blackDuckBinaryScanner = blackDuckBinaryScanner;
     }
@@ -114,19 +114,17 @@ public class HubManager implements ExitCodeReporter {
         return Optional.ofNullable(projectVersionView);
     }
 
-    public Optional<ProjectVersionView> performScanActions(final DetectProject detectProject) throws IntegrationException, InterruptedException {
+    public void performScanActions(final DetectProject detectProject) throws IntegrationException, InterruptedException, DetectUserFriendlyException {
         if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED)) {
             final HubServerConfig hubServerConfig = hubServiceManager.getHubServerConfig();
             final ExecutorService executorService = Executors.newFixedThreadPool(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS));
             try {
-                final SignatureScannerService signatureScannerService = hubServiceManager.createSignatureScannerService(executorService);
-                final ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, signatureScannerService, detectProject);
-                return Optional.ofNullable(scanProject);
+                final ScanJobManager scanJobManager = hubServiceManager.createScanJobManager(executorService);
+                blackDuckSignatureScanner.scanPaths(hubServerConfig, scanJobManager, detectProject);
             } finally {
                 executorService.shutdownNow();
             }
         }
-        return Optional.empty();
     }
 
     public void performBinaryScanActions(final DetectProject detectProject) throws DetectUserFriendlyException {
@@ -138,12 +136,6 @@ public class HubManager implements ExitCodeReporter {
             blackDuckBinaryScanner.uploadBinaryScanFile(hubServiceManager.createBinaryScannerService(), file, detectProject.getProjectName(), detectProject.getProjectVersion(), prefix, suffix);
         } else {
             logger.debug("No binary scan path was provided, so binary scan will not occur.");
-        }
-    }
-
-    public void performOfflineHubActions(final DetectProject detectProject) throws IntegrationException {
-        if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED)) {
-            hubSignatureScanner.scanPathsOffline(detectProject);
         }
     }
 
@@ -229,23 +221,25 @@ public class HubManager implements ExitCodeReporter {
 
         final boolean forceUpdate = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_VERSION_UPDATE);
 
+        return getProjectVersionAndUpdateOrCreateIfNeeded(projectRequest, projectService, hubService, forceUpdate);
+    }
+
+    private ProjectVersionView getProjectVersionAndUpdateOrCreateIfNeeded(final ProjectRequest projectRequest, final ProjectService projectService, final HubService hubService, final boolean forceUpdate) throws IntegrationException {
         ProjectView project = null;
         ProjectVersionView projectVersion = null;
         boolean shouldUpdateProject = true;
         try {
-            logger.info("Getting project from blackduck.");
+            logger.debug("Checking for project.");
             project = projectService.getProjectByName(projectRequest.name);
-            logger.info("Retrieved project from blackduck.");
         } catch (final DoesNotExistException e) {
-            logger.info("Project not found, creating project on blackduck.");
+            logger.debug("Creating project.");
             final String projectURL = projectService.createHubProject(projectRequest);
             project = hubService.getResponse(projectURL, ProjectView.class);
-            logger.info("Created project on blackduck.");
             shouldUpdateProject = false;
         }
 
         if (forceUpdate && shouldUpdateProject) {
-            logger.info("Project update requested. Updating project on blackduck.");
+            logger.debug("Updating project.");
             final ProjectVersionRequest cachedRequest = projectRequest.versionRequest;
             projectRequest.versionRequest = null;
             projectService.updateProjectAndVersion(project, projectRequest);
@@ -254,19 +248,17 @@ public class HubManager implements ExitCodeReporter {
 
         boolean shouldUpdateVersion = true;
         try {
-            logger.info("Getting project version from black duck.");
+            logger.debug("Checking for version.");
             projectVersion = projectService.getProjectVersion(project, projectRequest.versionRequest.versionName);
-            logger.info("Retrieved version from blackduck.");
         } catch (final DoesNotExistException e) {
-            logger.info("Version not found, creating version on blackduck.");
+            logger.debug("Creating version.");
             final String versionURL = projectService.createHubVersion(project, projectRequest.versionRequest);
             projectVersion = hubService.getResponse(versionURL, ProjectVersionView.class);
-            logger.info("Created version on blackduck.");
             shouldUpdateVersion = false;
         }
 
         if (forceUpdate && shouldUpdateVersion) {
-            logger.info("Version update requested. Updating version blackduck.");
+            logger.debug("Updating version.");
             projectService.updateProjectAndVersion(project, projectRequest);
         }
 
