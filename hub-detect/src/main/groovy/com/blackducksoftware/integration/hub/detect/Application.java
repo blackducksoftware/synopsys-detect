@@ -47,14 +47,18 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.DetectArgumentState;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentParser;
+import com.blackducksoftware.integration.hub.detect.help.DetectArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption.OptionValidationResult;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
+import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
+import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
@@ -87,7 +91,7 @@ public class Application implements ApplicationRunner {
     private final DetectFileManager detectFileManager;
     private final List<ExitCodeReporter> exitCodeReporters;
     private final PhoneHomeManager phoneHomeManager;
-    private final ArgumentParser argumentParser;
+    private final DetectArgumentStateParser detectArgumentStateParser;
     private final DiagnosticManager diagnosticManager;
     private final DetectRunManager detectRunManager;
 
@@ -100,7 +104,8 @@ public class Application implements ApplicationRunner {
     public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final DetectPropertySource detectPropertySource, final DetectConfiguration detectConfiguration,
             final ConfigurationManager configurationManager, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
             final HubServiceManager hubServiceManager, final DetectSummaryManager detectSummaryManager, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
-            final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final ArgumentParser argumentParser, final DetectRunManager detectRunManager, final DiagnosticManager diagnosticManager) {
+            final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final DetectArgumentStateParser detectArgumentStateParser, final DetectRunManager detectRunManager,
+            final DiagnosticManager diagnosticManager) {
         this.detectOptionManager = detectOptionManager;
         this.detectInfo = detectInfo;
         this.detectPropertySource = detectPropertySource;
@@ -116,7 +121,7 @@ public class Application implements ApplicationRunner {
         this.detectFileManager = detectFileManager;
         this.exitCodeReporters = exitCodeReporters;
         this.phoneHomeManager = phoneHomeManager;
-        this.argumentParser = argumentParser;
+        this.detectArgumentStateParser = detectArgumentStateParser;
         this.detectRunManager = detectRunManager;
         this.diagnosticManager = diagnosticManager;
     }
@@ -154,7 +159,7 @@ public class Application implements ApplicationRunner {
 
         final List<DetectOption> options = detectOptionManager.getDetectOptions();
 
-        final DetectArgumentState detectArgumentState = argumentParser.parseArgs(sourceArgs);
+        final DetectArgumentState detectArgumentState = detectArgumentStateParser.parseArgs(sourceArgs);
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             helpPrinter.printAppropriateHelpMessage(System.out, options, detectArgumentState);
@@ -166,7 +171,9 @@ public class Application implements ApplicationRunner {
             return WorkflowStep.EXIT_WITH_SUCCESS;
         }
 
-        configurationManager.printInfo(System.out, detectInfo);
+        DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter();
+        DetectInfoPrinter detectInfoPrinter = new DetectInfoPrinter();
+        detectInfoPrinter.printInfo(System.out, detectInfo);
 
         if (detectArgumentState.isInteractive()) {
             interactiveManager.configureInInteractiveMode();
@@ -185,10 +192,10 @@ public class Application implements ApplicationRunner {
         diagnosticManager.init(detectArgumentState.isDiagnostic(), detectArgumentState.isDiagnosticProtected());
 
         if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT)) {
-            configurationManager.printConfiguration(System.out, options);
+            detectConfigurationPrinter.print(System.out, options);
         }
 
-        configurationManager.printWarnings(System.out, options);
+        detectConfigurationPrinter.printWarnings(System.out, options);
 
         final List<OptionValidationResult> invalidDetectOptionResults = detectOptionManager.getAllInvalidOptionResults();
         if (!invalidDetectOptionResults.isEmpty()) {

@@ -28,13 +28,14 @@ public class ApkPackageManagerTest {
         sb.append("/usr/include/stdlib.h is owned by .musl-dev-1.1.18-r99\n");
         final String pkgMgrOwnedByOutput = sb.toString();
 
+        File depFile = new File("/usr/include/stdlib.h");
         final ApkPackageManager pkgMgr = new ApkPackageManager();
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        Mockito.when(executableRunner.executeQuietly("apk", "info", "--print-arch")).thenReturn(new ExecutableOutput(0, "x86_64\n", ""));
-        Mockito.when(executableRunner.executeQuietly("apk", Arrays.asList("info", "--who-owns", "/usr/include/stdlib.h"))).thenReturn(new ExecutableOutput(0, pkgMgrOwnedByOutput, ""));
+        Mockito.when(executableRunner.executeQuietly(null, "apk", "info", "--print-arch")).thenReturn(new ExecutableOutput(0, "x86_64\n", ""));
+        Mockito.when(executableRunner.executeQuietly(null,"apk", Arrays.asList("info", "--who-owns", depFile.getAbsolutePath()))).thenReturn(new ExecutableOutput(0, pkgMgrOwnedByOutput, ""));
 
-        final DependencyFileDetails dependencyFile = new DependencyFileDetails(false, new File("/usr/include/stdlib.h"));
-        final List<PackageDetails> pkgs = pkgMgr.getPackages(executableRunner, new HashSet<>(), dependencyFile);
+        final DependencyFileDetails dependencyFile = new DependencyFileDetails(false, depFile );
+        final List<PackageDetails> pkgs = pkgMgr.getPackages(null, executableRunner, new HashSet<>(), dependencyFile);
         assertEquals(1, pkgs.size());
         assertEquals("musl-dev", pkgs.get(0).getPackageName());
         assertEquals("1.1.18-r3", pkgs.get(0).getPackageVersion());

@@ -41,11 +41,11 @@ public class InteractiveManager {
     private final Logger logger = LoggerFactory.getLogger(InteractiveManager.class);
 
     private final DetectOptionManager detectOptionManager;
-    private final DefaultInteractiveMode defaultInteractiveMode;
+    private final InteractiveMode interactiveMode;
 
-    public InteractiveManager(final DetectOptionManager detectOptionManager, final DefaultInteractiveMode defaultInteractiveMode) {
+    public InteractiveManager(final DetectOptionManager detectOptionManager, final InteractiveMode interactiveMode) {
         this.detectOptionManager = detectOptionManager;
-        this.defaultInteractiveMode = defaultInteractiveMode;
+        this.interactiveMode = interactiveMode;
     }
 
     public void configureInInteractiveMode() {
@@ -62,7 +62,6 @@ public class InteractiveManager {
             interactiveReader = new ScannerInteractiveReader(System.in);
         }
 
-        final InteractiveMode interactiveMode = defaultInteractiveMode;
         interactiveMode.init(interactivePrintStream, interactiveReader);
 
         interactiveMode.println("");

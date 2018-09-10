@@ -29,7 +29,7 @@ import java.util.Map;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;

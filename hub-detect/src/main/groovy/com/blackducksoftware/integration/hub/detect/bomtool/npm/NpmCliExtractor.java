@@ -47,12 +47,12 @@ public class NpmCliExtractor {
     public static final String ERROR_FILE = "detect_npm_error.json";
     private final Logger logger = LoggerFactory.getLogger(NpmCliExtractor.class);
     private final ExecutableRunner executableRunner;
-    private final NpmCliDependencyFinder npmCliDependencyFinder;
+    private final NpmCliParser npmCliParser;
     private final DetectConfiguration detectConfiguration;
 
-    public NpmCliExtractor(final ExecutableRunner executableRunner, final NpmCliDependencyFinder npmCliDependencyFinder, final DetectConfiguration detectConfiguration) {
+    public NpmCliExtractor(final ExecutableRunner executableRunner, final NpmCliParser npmCliParser, final DetectConfiguration detectConfiguration) {
         this.executableRunner = executableRunner;
-        this.npmCliDependencyFinder = npmCliDependencyFinder;
+        this.npmCliParser = npmCliParser;
         this.detectConfiguration = detectConfiguration;
     }
 
@@ -88,7 +88,7 @@ public class NpmCliExtractor {
             logger.debug("Parsing npm ls file.");
             logger.debug(standardOutput);
             try {
-                final NpmParseResult result = npmCliDependencyFinder.generateCodeLocation(bomToolType, directory.getCanonicalPath(), standardOutput);
+                final NpmParseResult result = npmCliParser.generateCodeLocation(bomToolType, directory.getCanonicalPath(), standardOutput);
                 return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
             } catch (final IOException e) {
                 return new Extraction.Builder().exception(e).build();

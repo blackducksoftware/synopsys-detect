@@ -31,8 +31,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -48,16 +50,20 @@ public class CondaCliExtractor {
     private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
+    private final DetectFileManager detectFileManager;
 
-    public CondaCliExtractor(final CondaListParser condaListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration) {
+    public CondaCliExtractor(final CondaListParser condaListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration, DetectFileManager detectFileManager) {
         this.condaListParser = condaListParser;
         this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
+        this.detectFileManager = detectFileManager;
     }
 
-    public Extraction extract(final BomToolType bomToolType, final File directory, final File condaExe) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File condaExe, ExtractionId extractionId) {
         try {
+            File workingDirectory = detectFileManager.getOutputDirectory(extractionId);
+
             final List<String> condaListOptions = new ArrayList<>();
             condaListOptions.add("list");
             final String condaEnvironmentName = detectConfiguration.getProperty(DetectProperty.DETECT_CONDA_ENVIRONMENT_NAME);
@@ -71,7 +77,7 @@ public class CondaCliExtractor {
 
             final String listJsonText = condaListOutput.getStandardOutput();
 
-            final ExecutableOutput condaInfoOutput = executableRunner.execute(condaExe, "info", "--json");
+            final ExecutableOutput condaInfoOutput = executableRunner.execute(workingDirectory, condaExe, "info", "--json");
             final String infoJsonText = condaInfoOutput.getStandardOutput();
 
             final DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText);

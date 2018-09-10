@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class PreparationSummaryData {
     private final String directory;

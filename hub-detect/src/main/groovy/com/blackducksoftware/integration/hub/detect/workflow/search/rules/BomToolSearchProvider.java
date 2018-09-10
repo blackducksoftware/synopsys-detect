@@ -30,15 +30,13 @@ import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolPr
 
 public class BomToolSearchProvider {
     private final BomToolFactory bomToolFactory;
-    private final BomToolProfiler bomToolProfiler;
 
-    public BomToolSearchProvider(final BomToolFactory bomToolFactory, final BomToolProfiler bomToolProfiler) {
+    public BomToolSearchProvider(final BomToolFactory bomToolFactory) {
         this.bomToolFactory = bomToolFactory;
-        this.bomToolProfiler = bomToolProfiler;
     }
 
     public BomToolSearchRuleSet createBomToolSearchRuleSet(final BomToolEnvironment environment) {
-        final BomToolSearchRuleSetBuilder searchRuleSet = new BomToolSearchRuleSetBuilder(environment, bomToolProfiler);
+        final BomToolSearchRuleSetBuilder searchRuleSet = new BomToolSearchRuleSetBuilder(environment);
 
         searchRuleSet.addBomTool(bomToolFactory.createPodLockBomTool(environment)).defaultNotNested();
         searchRuleSet.addBomTool(bomToolFactory.createCondaBomTool(environment)).defaultNotNested();

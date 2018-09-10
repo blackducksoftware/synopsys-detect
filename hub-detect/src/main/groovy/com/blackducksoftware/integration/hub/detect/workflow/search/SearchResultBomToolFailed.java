@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class SearchResultBomToolFailed extends SearchResult {
     private final BomToolException exception;

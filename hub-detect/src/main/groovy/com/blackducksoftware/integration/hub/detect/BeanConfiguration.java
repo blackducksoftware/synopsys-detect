@@ -65,7 +65,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.hex.RebarExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenCliExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenCodeLocationPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder;
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfileExtractor;
@@ -76,7 +76,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspector
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.ComposerLockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearCliExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearDependencyFinder;
+import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorTreeParser;
@@ -91,10 +91,12 @@ import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockParser;
 import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyMap;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
-import com.blackducksoftware.integration.hub.detect.help.ArgumentParser;
+import com.blackducksoftware.integration.hub.detect.factory.ExecutableFinderFactory;
+import com.blackducksoftware.integration.hub.detect.factory.ExtractorFactory;
+import com.blackducksoftware.integration.hub.detect.factory.InspectorManagerFactory;
+import com.blackducksoftware.integration.hub.detect.help.DetectArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
@@ -103,6 +105,7 @@ import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
+import com.blackducksoftware.integration.hub.detect.property.PropertyMap;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
@@ -133,6 +136,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.report.PreparationS
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.report.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
+import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchEvaluator;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
@@ -264,17 +268,17 @@ public class BeanConfiguration {
 
     @Bean
     public DetectConfiguration detectConfiguration() {
-        return new DetectConfiguration(detectPropertySource(), detectPropertyMap());
+        return new DetectConfiguration(detectPropertySource(), propertyMap());
     }
 
     @Bean
-    public DetectPropertyMap detectPropertyMap() {
-        return new DetectPropertyMap();
+    public PropertyMap propertyMap() {
+        return new PropertyMap();
     }
 
     @Bean
     public ConfigurationManager configurationManager() {
-        return new ConfigurationManager(tildeInPathResolver(), detectConfiguration(), detectInfoPrinter(), detectConfigurationPrinter());
+        return new ConfigurationManager(tildeInPathResolver(), detectConfiguration());
     }
 
     @Bean
@@ -288,8 +292,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public ArgumentParser argumentParser() {
-        return new ArgumentParser();
+    public DetectArgumentStateParser detectArgumentStateParser() {
+        return new DetectArgumentStateParser();
     }
 
     @Bean
@@ -324,7 +328,7 @@ public class BeanConfiguration {
 
     @Bean
     public ExecutableRunner executableRunner() {
-        return new ExecutableRunner(detectConfiguration());
+        return new ExecutableRunner();
     }
 
     @Bean
@@ -354,22 +358,37 @@ public class BeanConfiguration {
 
     @Bean
     public BomToolFactory bomToolFactory() throws ParserConfigurationException {
-        return new BomToolFactory(detectConfiguration(), detectFileFinder(), standardExecutableFinder(), executableRunner(), clangExtractor(), clangLinuxPackageManagers(), composerLockExtractor(), condaCliExtractor(), cpanCliExtractor(),
-                dockerExtractor(),
-                dockerInspectorManager(),
-                gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(), mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(),
-                npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(), pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(),
-                podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
+        return new BomToolFactory(detectConfiguration(), detectFileFinder(), executableRunner(), extractorFactory(), executableFinderFactory(), inspectorManagerFactory());
+    }
+
+    @Bean
+    public ExtractorFactory extractorFactory() throws ParserConfigurationException {
+        return new ExtractorFactory(gson(), externalIdFactory(), executableRunner(), detectFileManager(), detectFileFinder(),detectConfiguration());
+    }
+
+    @Bean
+    public ExecutableFinderFactory executableFinderFactory() throws ParserConfigurationException {
+        return new ExecutableFinderFactory(executableRunner(), detectConfiguration(), executableManager());
+    }
+
+    @Bean
+    public InspectorManagerFactory inspectorManagerFactory() throws ParserConfigurationException {
+        return new InspectorManagerFactory(executableRunner(), detectFileManager(), detectConfiguration(), executableManager(), detectConfigurationUtility(), xmlDocumentBuilder(), configuration());
     }
 
     @Bean
     public BomToolSearchProvider bomToolSearchProvider() throws ParserConfigurationException {
-        return new BomToolSearchProvider(bomToolFactory(), bomToolProfiler());
+        return new BomToolSearchProvider(bomToolFactory());
+    }
+
+    @Bean
+    public BomToolSearchEvaluator bomToolSearchEvaluator() throws ParserConfigurationException {
+        return new BomToolSearchEvaluator();
     }
 
     @Bean
     public SearchManager searchManager() throws ParserConfigurationException {
-        return new SearchManager(reportManager(), bomToolSearchProvider(), phoneHomeManager(), detectConfiguration());
+        return new SearchManager(reportManager(), bomToolSearchProvider(), phoneHomeManager(), detectConfiguration(), bomToolSearchEvaluator(), bomToolProfiler());
     }
 
     @Bean
@@ -490,7 +509,7 @@ public class BeanConfiguration {
 
     @Bean
     public CondaCliExtractor condaCliExtractor() {
-        return new CondaCliExtractor(condaListParser(), externalIdFactory(), executableRunner(), detectConfiguration());
+        return new CondaCliExtractor(condaListParser(), externalIdFactory(), executableRunner(), detectConfiguration(), detectFileManager());
     }
 
     @Bean
@@ -500,7 +519,7 @@ public class BeanConfiguration {
 
     @Bean
     public CpanCliExtractor cpanCliExtractor() {
-        return new CpanCliExtractor(cpanListParser(), externalIdFactory(), executableRunner());
+        return new CpanCliExtractor(cpanListParser(), externalIdFactory(), executableRunner(), detectFileManager());
     }
 
     @Bean
@@ -599,8 +618,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public NpmCliDependencyFinder npmCliDependencyFinder() {
-        return new NpmCliDependencyFinder(externalIdFactory());
+    public NpmCliParser npmCliDependencyFinder() {
+        return new NpmCliParser(externalIdFactory());
     }
 
     @Bean
@@ -649,13 +668,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public PearDependencyFinder pearDependencyFinder() {
-        return new PearDependencyFinder(externalIdFactory(), detectConfiguration());
+    public PearParser pearDependencyFinder() {
+        return new PearParser(externalIdFactory(), detectConfiguration());
     }
 
     @Bean
     public PearCliExtractor pearCliExtractor() {
-        return new PearCliExtractor(detectFileFinder(), externalIdFactory(), pearDependencyFinder(), executableRunner());
+        return new PearCliExtractor(detectFileFinder(), externalIdFactory(), pearDependencyFinder(), executableRunner(), detectFileManager());
     }
 
     @Bean

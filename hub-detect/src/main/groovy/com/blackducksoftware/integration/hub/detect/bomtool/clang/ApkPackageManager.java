@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -50,9 +51,9 @@ public class ApkPackageManager extends ClangLinuxPackageManager {
     }
 
     @Override
-    protected void addToPackageList(final ExecutableRunner executableRunner, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) throws ExecutableRunnerException {
+    protected void addToPackageList(final ExecutableRunner executableRunner, File workingDirectory, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) throws ExecutableRunnerException {
         if (architecture == null) {
-            architecture = executableRunner.executeQuietly(PKG_MGR_NAME, INFO_SUBCOMMAND, GET_ARCHITECTURE_OPTION).getStandardOutput().trim();
+            architecture = executableRunner.executeQuietly(workingDirectory, PKG_MGR_NAME, INFO_SUBCOMMAND, GET_ARCHITECTURE_OPTION).getStandardOutput().trim();
             logger.debug(String.format("architecture: %s", architecture));
         }
         final String[] packageLines = queryPackageOutput.split("\n");

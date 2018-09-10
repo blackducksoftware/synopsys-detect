@@ -45,20 +45,20 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchRuleSet;
 
 public class BomToolFinder {
     private final Logger logger = LoggerFactory.getLogger(BomToolFinder.class);
 
-    public List<BomToolEvaluation> findApplicableBomTools(final BomToolSearchProvider bomToolSearchProvider, final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
+    public List<BomToolEvaluation> findApplicableBomTools(final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
         final List<File> subDirectories = new ArrayList<>();
         subDirectories.add(initialDirectory);
-        return findApplicableBomTools(bomToolSearchProvider, subDirectories, new HashSet<BomToolType>(), 0, options);
+        return findApplicableBomTools(subDirectories, new HashSet<BomToolType>(), 0, options);
     }
 
-    private List<BomToolEvaluation> findApplicableBomTools(final BomToolSearchProvider bomToolSearchProvider, final List<File> directoriesToSearch, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options)
+    private List<BomToolEvaluation> findApplicableBomTools(final List<File> directoriesToSearch, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options)
             throws BomToolException, DetectUserFriendlyException {
 
         final List<BomToolEvaluation> results = new ArrayList<>();
@@ -81,7 +81,7 @@ public class BomToolFinder {
 
             final Set<BomToolGroupType> applicableTypes = new HashSet<>();
             final Set<BomToolType> applied = new HashSet<>();
-            final List<BomToolEvaluation> evaluations = processDirectory(bomToolSearchProvider, directory, appliedBefore, depth, options);
+            final List<BomToolEvaluation> evaluations = processDirectory(directory, appliedBefore, depth, options);
             results.addAll(evaluations);
 
             final List<BomToolType> appliedBomTools = evaluations.stream()
@@ -96,7 +96,7 @@ public class BomToolFinder {
             everApplied.addAll(applied);
             everApplied.addAll(appliedBefore);
             final List<File> subdirectories = getSubDirectories(directory, options.getExcludedDirectories());
-            final List<BomToolEvaluation> recursiveResults = findApplicableBomTools(bomToolSearchProvider, subdirectories, everApplied, depth + 1, options);
+            final List<BomToolEvaluation> recursiveResults = findApplicableBomTools(subdirectories, everApplied, depth + 1, options);
             results.addAll(recursiveResults);
 
             logger.debug(directory + ": " + applicableTypes.stream().map(it -> it.toString()).collect(Collectors.joining(", ")));
@@ -105,10 +105,10 @@ public class BomToolFinder {
         return results;
     }
 
-    private List<BomToolEvaluation> processDirectory(final BomToolSearchProvider bomToolSearchProvider, final File directory, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options) {
+    private List<BomToolEvaluation> processDirectory(final File directory, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options) {
         final BomToolEnvironment environment = new BomToolEnvironment(directory, appliedBefore, depth, options.getBomToolFilter(), options.getForceNestedSearch());
-        final BomToolSearchRuleSet bomToolSet = bomToolSearchProvider.createBomToolSearchRuleSet(environment);
-        final List<BomToolEvaluation> evaluations = bomToolSet.evaluate();
+        final BomToolSearchRuleSet bomToolSet = options.getBomToolSearchProvider().createBomToolSearchRuleSet(environment);
+        final List<BomToolEvaluation> evaluations = options.getBomToolSearchEvaluator().evaluate(bomToolSet, options.getBomToolProfiler());
         return evaluations;
     }
 

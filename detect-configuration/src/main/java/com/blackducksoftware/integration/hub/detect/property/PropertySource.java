@@ -32,7 +32,6 @@ public interface PropertySource {
 
     public String getProperty(final String key);
 
-    public Set<String> getArgumentPropertyKeys(); // format lower.case.period
+    public Set<String> getPropertyKeys();
 
-    public Set<String> getEnvironmentPropertyKeys(); // format UPPER_CASE_UNDERSCORE
 }

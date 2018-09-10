@@ -31,7 +31,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.report.CodeLocationReporter;

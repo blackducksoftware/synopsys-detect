@@ -25,6 +25,9 @@ package com.blackducksoftware.integration.hub.detect.workflow.search;
 
 import java.util.List;
 
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchEvaluator;
+import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.synopsys.integration.util.ExcludedIncludedFilter;
 
 public class BomToolFinderOptions {
@@ -33,12 +36,19 @@ public class BomToolFinderOptions {
     private final Boolean forceNestedSearch;
     private final int maximumDepth;
     private final ExcludedIncludedFilter bomToolFilter;
+    private final BomToolSearchProvider bomToolSearchProvider;
+    private final BomToolSearchEvaluator bomToolSearchEvaluator;
+    private final BomToolProfiler bomToolProfiler;
 
-    public BomToolFinderOptions(final List<String> excludedDirectories, final Boolean forceNestedSearch, final int maximumDepth, final ExcludedIncludedFilter bomToolFilter) {
+    public BomToolFinderOptions(final List<String> excludedDirectories, final Boolean forceNestedSearch, final int maximumDepth, final ExcludedIncludedFilter bomToolFilter,
+        final BomToolSearchProvider bomToolSearchProvider, final BomToolSearchEvaluator bomToolSearchEvaluator, BomToolProfiler bomToolProfiler) {
         this.excludedDirectories = excludedDirectories;
         this.forceNestedSearch = forceNestedSearch;
         this.maximumDepth = maximumDepth;
         this.bomToolFilter = bomToolFilter;
+        this.bomToolSearchProvider = bomToolSearchProvider;
+        this.bomToolSearchEvaluator = bomToolSearchEvaluator;
+        this.bomToolProfiler = bomToolProfiler;
     }
 
     public List<String> getExcludedDirectories() {
@@ -57,4 +67,15 @@ public class BomToolFinderOptions {
         return maximumDepth;
     }
 
+    public BomToolSearchProvider getBomToolSearchProvider() {
+        return bomToolSearchProvider;
+    }
+
+    public BomToolSearchEvaluator getBomToolSearchEvaluator() {
+        return bomToolSearchEvaluator;
+    }
+
+    public BomToolProfiler getBomToolProfiler() {
+        return bomToolProfiler;
+    }
 }

@@ -55,9 +55,9 @@ public abstract class ClangLinuxPackageManager {
         this.pkgMgrGetOwnerCmdArgs = pkgMgrGetOwnerCmdArgs;
     }
 
-    public boolean applies(final ExecutableRunner executor) {
+    public boolean applies(File workingDirectory, final ExecutableRunner executor) {
         try {
-            final ExecutableOutput versionOutput = executor.execute(getPkgMgrName(), getCheckPresenceCommandArgs());
+            final ExecutableOutput versionOutput = executor.execute(workingDirectory, getPkgMgrName(), getCheckPresenceCommandArgs());
             logger.debug(String.format("packageStatusOutput: %s", versionOutput.getStandardOutput()));
             if (versionOutput.getStandardOutput().contains(getCheckPresenceCommandOutputExpectedText())) {
                 logger.info(String.format("Found package manager %s", getPkgMgrName()));
@@ -71,14 +71,14 @@ public abstract class ClangLinuxPackageManager {
         return false;
     }
 
-    public List<PackageDetails> getPackages(final ExecutableRunner executableRunner, final Set<File> unManagedDependencyFiles, final DependencyFileDetails dependencyFile) {
+    public List<PackageDetails> getPackages(File workingDirectory, final ExecutableRunner executableRunner, final Set<File> unManagedDependencyFiles, final DependencyFileDetails dependencyFile) {
         final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
         try {
             final List<String> fileSpecificGetOwnerArgs = new ArrayList<>(pkgMgrGetOwnerCmdArgs);
             fileSpecificGetOwnerArgs.add(dependencyFile.getFile().getAbsolutePath());
-            final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(pkgMgrCmdString, fileSpecificGetOwnerArgs);
+            final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(workingDirectory, pkgMgrCmdString, fileSpecificGetOwnerArgs);
             logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput));
-            this.addToPackageList(executableRunner, dependencyDetailsList, queryPackageOutput.getStandardOutput());
+            this.addToPackageList(executableRunner, workingDirectory, dependencyDetailsList, queryPackageOutput.getStandardOutput());
             return dependencyDetailsList;
         } catch (final ExecutableRunnerException e) {
             logger.error(String.format("Error executing %s: %s", pkgMgrCmdString, e.getMessage()));
@@ -94,7 +94,7 @@ public abstract class ClangLinuxPackageManager {
 
     public abstract Forge getDefaultForge();
 
-    protected abstract void addToPackageList(final ExecutableRunner executableRunner, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) throws ExecutableRunnerException;
+    protected abstract void addToPackageList(final ExecutableRunner executableRunner, File workingDirectory, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) throws ExecutableRunnerException;
 
     public String getPkgMgrName() {
         return pkgMgrName;

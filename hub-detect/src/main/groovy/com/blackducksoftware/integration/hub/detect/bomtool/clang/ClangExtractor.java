@@ -133,7 +133,7 @@ public class ClangExtractor {
         return (final File f) -> {
             logger.trace(String.format("Querying package manager for %s", f.getAbsolutePath()));
             final DependencyFileDetails dependencyFileWithMetaData = new DependencyFileDetails(fileFinder.isFileUnderDir(sourceDir, f), f);
-            final Set<PackageDetails> linuxPackages = new HashSet<>(pkgMgr.getPackages(executableRunner, unManagedDependencyFiles, dependencyFileWithMetaData));
+            final Set<PackageDetails> linuxPackages = new HashSet<>(pkgMgr.getPackages(sourceDir, executableRunner, unManagedDependencyFiles, dependencyFileWithMetaData));
             logger.debug(String.format("Found %d packages for %s", linuxPackages.size(), f.getAbsolutePath()));
             return linuxPackages.stream();
         };

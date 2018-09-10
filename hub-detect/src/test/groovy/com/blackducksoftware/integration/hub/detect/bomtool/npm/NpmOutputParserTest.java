@@ -15,7 +15,7 @@ public class NpmOutputParserTest {
 
     @Test
     public void npmCliDependencyFinder() throws IOException {
-        final NpmCliDependencyFinder parser = new NpmCliDependencyFinder(new ExternalIdFactory());
+        final NpmCliParser parser = new NpmCliParser(new ExternalIdFactory());
         final String testIn = testUtil.getResourceAsUTF8String("/npm/packman_proj_dependencies.json");
         final NpmParseResult result = parser.convertNpmJsonFileToCodeLocation(BomToolType.NPM_CLI, "source", testIn);
 

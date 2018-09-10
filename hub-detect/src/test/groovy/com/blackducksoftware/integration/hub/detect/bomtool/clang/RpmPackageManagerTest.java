@@ -22,12 +22,13 @@ public class RpmPackageManagerTest {
         sb.append("glibc-headers-2.17-222.el7.x86_64\n");
         final String pkgMgrOwnedByOutput = sb.toString();
 
+        File depFile = new File("/usr/include/stdlib.h");
         final RpmPackageManager pkgMgr = new RpmPackageManager();
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        Mockito.when(executableRunner.executeQuietly("rpm", Arrays.asList("-qf", "/usr/include/stdlib.h"))).thenReturn(new ExecutableOutput(0, pkgMgrOwnedByOutput, ""));
+        Mockito.when(executableRunner.executeQuietly(null, "rpm", Arrays.asList("-qf", depFile.getAbsolutePath()))).thenReturn(new ExecutableOutput(0, pkgMgrOwnedByOutput, ""));
 
-        final DependencyFileDetails dependencyFile = new DependencyFileDetails(false, new File("/usr/include/stdlib.h"));
-        final List<PackageDetails> pkgs = pkgMgr.getPackages(executableRunner, new HashSet<>(), dependencyFile);
+        final DependencyFileDetails dependencyFile = new DependencyFileDetails(false, depFile);
+        final List<PackageDetails> pkgs = pkgMgr.getPackages(null, executableRunner, new HashSet<>(), dependencyFile);
         assertEquals(1, pkgs.size());
         assertEquals("glibc-headers", pkgs.get(0).getPackageName());
         assertEquals("2.17-222.el7", pkgs.get(0).getPackageVersion());
@@ -36,6 +37,7 @@ public class RpmPackageManagerTest {
 
     @Test
     public void testInValid() throws ExecutableRunnerException {
+        File depFile = new File("/usr/include/stdlib.h");
         final StringBuilder sb = new StringBuilder();
         sb.append("garbage\n");
         sb.append("nonsense\n");
@@ -44,10 +46,10 @@ public class RpmPackageManagerTest {
 
         final RpmPackageManager pkgMgr = new RpmPackageManager();
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        Mockito.when(executableRunner.executeQuietly("rpm", Arrays.asList("-qf", "/usr/include/stdlib.h"))).thenReturn(new ExecutableOutput(0, pkgMgrOwnedByOutput, ""));
+        Mockito.when(executableRunner.executeQuietly(null, "rpm", Arrays.asList("-qf", depFile.getAbsolutePath()))).thenReturn(new ExecutableOutput(0, pkgMgrOwnedByOutput, ""));
 
-        final DependencyFileDetails dependencyFile = new DependencyFileDetails(false, new File("/usr/include/stdlib.h"));
-        final List<PackageDetails> pkgs = pkgMgr.getPackages(executableRunner, new HashSet<>(), dependencyFile);
+        final DependencyFileDetails dependencyFile = new DependencyFileDetails(false, depFile);
+        final List<PackageDetails> pkgs = pkgMgr.getPackages(null, executableRunner, new HashSet<>(), dependencyFile);
         assertEquals(0, pkgs.size());
     }
 

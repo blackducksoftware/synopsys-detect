@@ -31,7 +31,7 @@ class TestNpmBdio {
         // final Process process = processBuilder.start()
         // process.waitFor()
         //
-        // NpmCliDependencyFinder npmCliDependencyFinder = new NpmCliDependencyFinder()
+        // NpmCliParser npmCliDependencyFinder = new NpmCliParser()
         // DetectCodeLocation detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(stdOut, "C:\\Users\\jpiscitelli\\Documents\\node\\test")
         //
         // DetectProject detectProject = new DetectProject()

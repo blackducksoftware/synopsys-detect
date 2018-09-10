@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 

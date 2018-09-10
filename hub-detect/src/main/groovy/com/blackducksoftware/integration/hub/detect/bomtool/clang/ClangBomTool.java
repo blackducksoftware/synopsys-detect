@@ -34,10 +34,10 @@ import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -71,7 +71,7 @@ public class ClangBomTool extends BomTool {
     @Override
     public BomToolResult extractable() throws BomToolException {
         try {
-            selectedPkgMgr = findPkgMgr();
+            selectedPkgMgr = findPkgMgr(environment.getDirectory());
         } catch (final IntegrationException e) {
             return new ExecutableNotFoundBomToolResult("supported Linux package manager");
         }
@@ -84,9 +84,9 @@ public class ClangBomTool extends BomTool {
         return clangExtractor.extract(selectedPkgMgr, environment.getDirectory(), environment.getDepth(), extractionId, jsonCompilationDatabaseFile);
     }
 
-    private ClangLinuxPackageManager findPkgMgr() throws IntegrationException {
+    private ClangLinuxPackageManager findPkgMgr(File workingDirectory) throws IntegrationException {
         for (final ClangLinuxPackageManager pkgMgrCandidate : availablePkgMgrs) {
-            if (pkgMgrCandidate.applies(executableRunner)) {
+            if (pkgMgrCandidate.applies(workingDirectory, executableRunner)) {
                 return pkgMgrCandidate;
             }
         }

@@ -32,10 +32,10 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
@@ -79,7 +79,7 @@ public class CondaCliBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return condaExtractor.extract(this.getBomToolType(), environment.getDirectory(), condaExe);
+        return condaExtractor.extract(this.getBomToolType(), environment.getDirectory(), condaExe, extractionId);
     }
 
 }

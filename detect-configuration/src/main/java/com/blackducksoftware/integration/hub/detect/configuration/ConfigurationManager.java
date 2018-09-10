@@ -42,6 +42,7 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter;
+import com.blackducksoftware.integration.hub.detect.property.PropertyType;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 
@@ -54,8 +55,6 @@ public class ConfigurationManager {
 
     private final TildeInPathResolver tildeInPathResolver;
     private final DetectConfiguration detectConfiguration;
-    private final DetectInfoPrinter detectInfoPrinter;
-    private final DetectConfigurationPrinter detectConfigurationPrinter;
 
     private List<String> bomToolSearchDirectoryExclusions;
 
@@ -72,11 +71,9 @@ public class ConfigurationManager {
     private String nugetInspectorAirGapPath;
     // end properties to be updated
 
-    public ConfigurationManager(final TildeInPathResolver tildeInPathResolver, final DetectConfiguration detectConfiguration, final DetectInfoPrinter detectInfoPrinter, final DetectConfigurationPrinter detectConfigurationPrinter) {
+    public ConfigurationManager(final TildeInPathResolver tildeInPathResolver, final DetectConfiguration detectConfiguration) {
         this.tildeInPathResolver = tildeInPathResolver;
         this.detectConfiguration = detectConfiguration;
-        this.detectInfoPrinter = detectInfoPrinter;
-        this.detectConfigurationPrinter = detectConfigurationPrinter;
     }
 
     public void initialize(final List<DetectOption> detectOptions, final List<String> defaultBdioOutputPieces) throws DetectUserFriendlyException {
@@ -90,18 +87,6 @@ public class ConfigurationManager {
         updateDetectProperties(detectOptions);
     }
 
-    public void printInfo(final PrintStream printstream, final DetectInfo detectInfo) {
-        detectInfoPrinter.printInfo(printstream, detectInfo);
-    }
-
-    public void printConfiguration(final PrintStream printstream, final List<DetectOption> detectOptions) {
-        detectConfigurationPrinter.print(printstream, detectOptions);
-    }
-
-    public void printWarnings(final PrintStream printstream, final List<DetectOption> detectOptions) {
-        detectConfigurationPrinter.printWarnings(printstream, detectOptions);
-    }
-
     private void resolveTildeInPaths() throws DetectUserFriendlyException {
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RESOLVE_TILDE_IN_PATHS)) {
             detectConfiguration.getCurrentProperties().keySet().stream()
@@ -110,10 +95,10 @@ public class ConfigurationManager {
     }
 
     private void resolveTildeInDetectProperty(final DetectProperty detectProperty) {
-        if (DetectPropertyType.STRING == detectProperty.getPropertyType()) {
+        if (PropertyType.STRING == detectProperty.getPropertyType()) {
             final Optional<String> resolved = tildeInPathResolver.resolveTildeInValue(detectConfiguration.getProperty(detectProperty));
             if (resolved.isPresent()) {
-                detectConfiguration.setDetectProperty(detectProperty, resolved.get());
+                detectConfiguration.setProperty(detectProperty, resolved.get());
             }
         }
     }
@@ -214,37 +199,37 @@ public class ConfigurationManager {
 
     private void updateDetectProperties(final List<DetectOption> detectOptions) {
         updateOptionValue(detectOptions, DetectProperty.DETECT_SOURCE_PATH, sourcePath);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, sourcePath);
+        detectConfiguration.setProperty(DetectProperty.DETECT_SOURCE_PATH, sourcePath);
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_OUTPUT_PATH, outputDirectoryPath);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_OUTPUT_PATH, outputDirectoryPath);
+        detectConfiguration.setProperty(DetectProperty.DETECT_OUTPUT_PATH, outputDirectoryPath);
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_BDIO_OUTPUT_PATH, bdioOutputDirectoryPath);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH, bdioOutputDirectoryPath);
+        detectConfiguration.setProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH, bdioOutputDirectoryPath);
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_SCAN_OUTPUT_PATH, scanOutputDirectoryPath);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH, scanOutputDirectoryPath);
+        detectConfiguration.setProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH, scanOutputDirectoryPath);
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, policyCheckFailOnSeverities);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, policyCheckFailOnSeverities);
+        detectConfiguration.setProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, policyCheckFailOnSeverities);
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, String.valueOf(hubSignatureScannerParallelProcessors));
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, String.valueOf(hubSignatureScannerParallelProcessors));
+        detectConfiguration.setProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, String.valueOf(hubSignatureScannerParallelProcessors));
 
         updateOptionValue(detectOptions, DetectProperty.BLACKDUCK_OFFLINE_MODE, String.valueOf(hubOfflineMode));
-        detectConfiguration.setDetectProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, String.valueOf(hubOfflineMode));
+        detectConfiguration.setProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, String.valueOf(hubOfflineMode));
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, StringUtils.join(bomToolSearchDirectoryExclusions, ","));
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, StringUtils.join(bomToolSearchDirectoryExclusions, ","));
+        detectConfiguration.setProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, StringUtils.join(bomToolSearchDirectoryExclusions, ","));
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, dockerInspectorAirGapPath);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, dockerInspectorAirGapPath);
+        detectConfiguration.setProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, dockerInspectorAirGapPath);
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH, gradleInspectorAirGapPath);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH, gradleInspectorAirGapPath);
+        detectConfiguration.setProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH, gradleInspectorAirGapPath);
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH, nugetInspectorAirGapPath);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH, nugetInspectorAirGapPath);
+        detectConfiguration.setProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH, nugetInspectorAirGapPath);
     }
 
     private void updateOptionValue(final List<DetectOption> detectOptions, final DetectProperty detectProperty, final String value) {

@@ -26,7 +26,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class DetailedSearchSummaryReporter {
     public void print(final ReportWriter writer, final List<BomToolEvaluation> results) {

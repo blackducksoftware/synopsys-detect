@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +50,7 @@ public class DpkgPackageManager extends ClangLinuxPackageManager {
     }
 
     @Override
-    protected void addToPackageList(final ExecutableRunner executableRunner, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
+    protected void addToPackageList(final ExecutableRunner executableRunner, File workingDirectory, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
             if (!valid(packageLine)) {
@@ -61,7 +62,7 @@ public class DpkgPackageManager extends ClangLinuxPackageManager {
             final String packageName = packageNameArchParts[0];
             final String packageArch = packageNameArchParts[1];
             logger.debug(String.format("package name: %s; arch: %s", packageName, packageArch));
-            final Optional<String> packageVersion = getPackageVersion(executableRunner, packageName);
+            final Optional<String> packageVersion = getPackageVersion(executableRunner, workingDirectory, packageName);
             final PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion.orElse(null), packageArch);
             dependencyDetailsList.add(dependencyDetails);
         }
@@ -76,9 +77,9 @@ public class DpkgPackageManager extends ClangLinuxPackageManager {
         return packageLine.matches(".+:.+: .+");
     }
 
-    private Optional<String> getPackageVersion(final ExecutableRunner executableRunner, final String packageName) {
+    private Optional<String> getPackageVersion(final ExecutableRunner executableRunner, File workingDirectory, final String packageName) {
         try {
-            final ExecutableOutput packageStatusOutput = executableRunner.executeQuietly(PKG_MGR_NAME, GET_PKG_INFO_OPTION, packageName);
+            final ExecutableOutput packageStatusOutput = executableRunner.executeQuietly(workingDirectory, PKG_MGR_NAME, GET_PKG_INFO_OPTION, packageName);
             logger.debug(String.format("packageStatusOutput: %s", packageStatusOutput));
             return getPackageVersionFromStatusOutput(packageName, packageStatusOutput.getStandardOutput());
         } catch (final ExecutableRunnerException e) {

@@ -47,7 +47,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.workflow.RequiredBomToolChecker.RequiredBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;

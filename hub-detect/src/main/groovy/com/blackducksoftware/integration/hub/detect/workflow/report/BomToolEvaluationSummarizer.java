@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public abstract class BomToolEvaluationSummarizer {
     protected Map<File, List<BomToolEvaluation>> groupByDirectory(final List<BomToolEvaluation> results) {

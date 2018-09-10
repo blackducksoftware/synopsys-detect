@@ -39,8 +39,10 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
+import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchEvaluator;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.synopsys.integration.util.ExcludedIncludedFilter;
 
@@ -51,13 +53,17 @@ public class SearchManager {
     private final BomToolSearchProvider bomToolSearchProvider;
     private final PhoneHomeManager phoneHomeManager;
     private final DetectConfiguration detectConfiguration;
+    private final BomToolSearchEvaluator bomToolSearchEvaluator;
+    private final BomToolProfiler bomToolProfiler;
 
     public SearchManager(final ReportManager reportManager, final BomToolSearchProvider bomToolSearchProvider, final PhoneHomeManager phoneHomeManager,
-            final DetectConfiguration detectConfiguration) {
+        final DetectConfiguration detectConfiguration, final BomToolSearchEvaluator bomToolSearchEvaluator, final BomToolProfiler bomToolProfiler) {
         this.reportManager = reportManager;
         this.bomToolSearchProvider = bomToolSearchProvider;
         this.phoneHomeManager = phoneHomeManager;
         this.detectConfiguration = detectConfiguration;
+        this.bomToolSearchEvaluator = bomToolSearchEvaluator;
+        this.bomToolProfiler = bomToolProfiler;
     }
 
     public SearchResult performSearch() throws DetectUserFriendlyException {
@@ -88,10 +94,10 @@ public class SearchManager {
         final ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(detectConfiguration.getProperty(DetectProperty.DETECT_EXCLUDED_BOM_TOOL_TYPES).toUpperCase(),
                 detectConfiguration.getProperty(DetectProperty.DETECT_INCLUDED_BOM_TOOL_TYPES).toUpperCase());
 
-        final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth, bomToolFilter);
+        final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth, bomToolFilter, bomToolSearchProvider, bomToolSearchEvaluator, bomToolProfiler);
 
         logger.info("Starting search for bom tools.");
         final BomToolFinder bomToolTreeWalker = new BomToolFinder();
-        return bomToolTreeWalker.findApplicableBomTools(bomToolSearchProvider, directory, findOptions);
+        return bomToolTreeWalker.findApplicableBomTools(directory, findOptions);
     }
 }

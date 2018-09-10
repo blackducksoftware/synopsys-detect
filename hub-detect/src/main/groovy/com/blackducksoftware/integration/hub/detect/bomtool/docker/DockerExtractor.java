@@ -163,7 +163,7 @@ public class DockerExtractor {
             importTars(dockerInspectorInfo.offlineDockerInspectorJar, dockerInspectorInfo.offlineTars, outputDirectory, environmentVariables, bashExe);
         }
 
-        // All the arguments should be joined into a single String, as the command to run after the -c
+        // All the configuration should be joined into a single String, as the command to run after the -c
         dockerArguments.add(bashArguments.buildString());
 
         final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), dockerArguments);

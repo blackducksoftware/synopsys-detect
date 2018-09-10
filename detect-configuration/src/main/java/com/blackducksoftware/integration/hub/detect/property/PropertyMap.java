@@ -30,59 +30,59 @@ import java.util.Map;
  * DetectConfiguration should be the only class that uses this.
  */
 
-public class PropertyMap {
-    private final Map<DetectProperty, Object> propertyMap = new HashMap<>();
-    private final DetectPropertyConverter detectPropertyConverter = new DetectPropertyConverter();
+public class PropertyMap<T> {
+    private final Map<T, Object> propertyMap = new HashMap<>();
+    private final PropertyConverter propertyKeyConverter = new PropertyConverter();
 
-    public boolean containsDetectProperty(final DetectProperty detectProperty) {
-        return propertyMap.containsKey(detectProperty);
+    public boolean containsProperty(final T propertyKey) {
+        return propertyMap.containsKey(propertyKey);
     }
 
-    public String getPropertyValueAsString(final DetectProperty detectProperty) {
-        final Object objectValue = propertyMap.get(detectProperty);
-        return detectPropertyConverter.convertFromValue(detectProperty.getPropertyType(), objectValue);
+    public String getPropertyValueAsString(final T propertyKey, final PropertyType type) {
+        final Object objectValue = propertyMap.get(propertyKey);
+        return propertyKeyConverter.convertFromValue(type, objectValue);
     }
 
-    public void setDetectProperty(final DetectProperty detectProperty, final String stringValue) {
-        final Object value = detectPropertyConverter.convertToValue(detectProperty.getPropertyType(), stringValue);
-        propertyMap.put(detectProperty, value);
+    public void setProperty(final T propertyKey, final PropertyType type, final String stringValue) {
+        final Object value = propertyKeyConverter.convertToValue(type, stringValue);
+        propertyMap.put(propertyKey, value);
     }
 
-    public Map<DetectProperty, Object> getUnderlyingPropertyMap() {
+    public Map<T, Object> getUnderlyingPropertyMap() {
         return propertyMap;
     }
 
     // Typed Getters
 
-    public boolean getBooleanProperty(final DetectProperty detectProperty) {
-        final Object value = propertyMap.get(detectProperty);
+    public boolean getBooleanProperty(final T propertyKey) {
+        final Object value = propertyMap.get(propertyKey);
         if (null == value) {
             return false;
         }
         return (boolean) value;
     }
 
-    public Long getLongProperty(final DetectProperty detectProperty) {
-        final Object value = propertyMap.get(detectProperty);
+    public Long getLongProperty(final T propertyKey) {
+        final Object value = propertyMap.get(propertyKey);
         if (null == value) {
             return null;
         }
         return (long) value;
     }
 
-    public Integer getIntegerProperty(final DetectProperty detectProperty) {
-        final Object value = propertyMap.get(detectProperty);
+    public Integer getIntegerProperty(final T propertyKey) {
+        final Object value = propertyMap.get(propertyKey);
         if (null == value) {
             return null;
         }
         return (int) value;
     }
 
-    public String[] getStringArrayProperty(final DetectProperty detectProperty) {
-        return (String[]) propertyMap.get(detectProperty);
+    public String[] getStringArrayProperty(final T propertyKey) {
+        return (String[]) propertyMap.get(propertyKey);
     }
 
-    public String getProperty(final DetectProperty detectProperty) {
-        return (String) propertyMap.get(detectProperty);
+    public String getProperty(final T propertyKey) {
+        return (String) propertyMap.get(propertyKey);
     }
 }

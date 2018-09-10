@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class OverviewSummarizer extends BomToolEvaluationSummarizer {
     public List<OverviewSummaryData> summarize(final List<BomToolEvaluation> evaluations) {

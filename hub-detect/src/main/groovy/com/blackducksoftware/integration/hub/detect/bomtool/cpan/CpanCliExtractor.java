@@ -28,6 +28,8 @@ import java.util.List;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
@@ -41,19 +43,23 @@ public class CpanCliExtractor {
     private final CpanListParser cpanListParser;
     private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;
+    private final DetectFileManager detectFileManager;
 
-    public CpanCliExtractor(final CpanListParser cpanListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner) {
+    public CpanCliExtractor(final CpanListParser cpanListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, DetectFileManager detectFileManager) {
         this.cpanListParser = cpanListParser;
         this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
+        this.detectFileManager = detectFileManager;
     }
 
-    public Extraction extract(final BomToolType bomToolType, final File directory, final File cpanExe, final File cpanmExe) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File cpanExe, final File cpanmExe, ExtractionId extractionId) {
         try {
-            final ExecutableOutput cpanListOutput = executableRunner.execute(cpanExe, "-l");
+            File workingDirectory = detectFileManager.getOutputDirectory(extractionId);
+
+            final ExecutableOutput cpanListOutput = executableRunner.execute(workingDirectory, cpanExe, "-l");
             final List<String> listText = cpanListOutput.getStandardOutputAsList();
 
-            final ExecutableOutput showdepsOutput = executableRunner.execute(cpanmExe, "--showdeps", ".");
+            final ExecutableOutput showdepsOutput = executableRunner.execute(workingDirectory, cpanmExe, "--showdeps", ".");
             final List<String> showdeps = showdepsOutput.getStandardOutputAsList();
 
             final DependencyGraph dependencyGraph = cpanListParser.parse(listText, showdeps);

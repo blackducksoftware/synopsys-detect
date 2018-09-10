@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public class ArgumentStateParserTests {
 
-    ArgumentParser parser = new ArgumentParser();
+    DetectArgumentStateParser parser = new DetectArgumentStateParser();
 
     @Test
     public void helpParsesValue() {

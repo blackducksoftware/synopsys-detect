@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.search;
 
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public abstract class SearchResult {
     public SearchResult() {

@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class DetailedSearchSummarizer extends BomToolEvaluationSummarizer {
     public List<DetailedSearchSummaryData> summarize(final List<BomToolEvaluation> bomToolEvaluations) {

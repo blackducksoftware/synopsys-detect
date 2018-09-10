@@ -38,11 +38,9 @@ public class BomToolSearchRuleSetBuilder {
     private final Map<BomTool, BomToolSearchRuleBuilder> builderMap = new HashMap<>();
     private final List<BomToolYieldBuilder> yieldBuilders = new ArrayList<>();
     private final BomToolEnvironment environment;
-    private final BomToolProfiler bomToolProfiler;
 
-    public BomToolSearchRuleSetBuilder(final BomToolEnvironment environment, final BomToolProfiler bomToolProfiler) {
+    public BomToolSearchRuleSetBuilder(final BomToolEnvironment environment) {
         this.environment = environment;
-        this.bomToolProfiler = bomToolProfiler;
     }
 
     public BomToolSearchRuleBuilder addBomTool(final BomTool bomTool) {
@@ -70,6 +68,6 @@ public class BomToolSearchRuleSetBuilder {
             bomToolRules.add(builder.build());
         }
 
-        return new BomToolSearchRuleSet(bomToolRules, environment, bomToolProfiler);
+        return new BomToolSearchRuleSet(bomToolRules, environment);
     }
 }

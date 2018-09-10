@@ -148,7 +148,7 @@ public class DetectOptionManager implements ExitCodeReporter {
             for (final DetectOption detectOption : detectOptions) {
                 if (detectOption.getDetectProperty().equals(interactiveOption.getDetectProperty())) {
                     detectOption.setInteractiveValue(interactiveOption.getInteractiveValue());
-                    detectConfiguration.setDetectProperty(detectOption.getDetectProperty(), interactiveOption.getInteractiveValue());
+                    detectConfiguration.setProperty(detectOption.getDetectProperty(), interactiveOption.getInteractiveValue());
                     break;
                 }
             }
@@ -190,7 +190,7 @@ public class DetectOptionManager implements ExitCodeReporter {
             final boolean hasValue = null != currentValue;
             if (defaultValue != null && !defaultValue.trim().isEmpty() && !hasValue) {
                 resolvedValue = defaultValue;
-                detectConfiguration.setDetectProperty(detectProperty, resolvedValue);
+                detectConfiguration.setProperty(detectProperty, resolvedValue);
             } else if (hasValue) {
                 resolvedValue = currentValue;
             }

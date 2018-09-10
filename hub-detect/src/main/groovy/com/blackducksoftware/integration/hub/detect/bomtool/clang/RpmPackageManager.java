@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class RpmPackageManager extends ClangLinuxPackageManager {
     }
 
     @Override
-    protected void addToPackageList(final ExecutableRunner executableRunner, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
+    protected void addToPackageList(final ExecutableRunner executableRunner, File workingDirectory, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
             if (!valid(packageLine)) {

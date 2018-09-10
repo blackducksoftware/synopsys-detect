@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -48,14 +49,14 @@ public class DpkgPackageManagerTest {
         sb.append("Original-Maintainer: GNU Libc Maintainers <debian-glibc@lists.debian.org>\n");
 
         final String pkgMgrPkgInfoOutput = sb.toString();
-
+        File depFile =  new File("/usr/include/stdlib.h");
         final DpkgPackageManager pkgMgr = new DpkgPackageManager();
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        Mockito.when(executableRunner.executeQuietly("dpkg", Arrays.asList("-S", "/usr/include/stdlib.h"))).thenReturn(new ExecutableOutput(0, pkgMgrOwnedByOutput, ""));
-        Mockito.when(executableRunner.executeQuietly("dpkg", "-s", "libc6-dev")).thenReturn(new ExecutableOutput(0, pkgMgrPkgInfoOutput, ""));
+        Mockito.when(executableRunner.executeQuietly(null, "dpkg", Arrays.asList("-S", depFile.getAbsolutePath()))).thenReturn(new ExecutableOutput(0, pkgMgrOwnedByOutput, ""));
+        Mockito.when(executableRunner.executeQuietly(null, "dpkg", "-s", "libc6-dev")).thenReturn(new ExecutableOutput(0, pkgMgrPkgInfoOutput, ""));
 
-        final DependencyFileDetails dependencyFile = new DependencyFileDetails(false, new File("/usr/include/stdlib.h"));
-        final List<PackageDetails> pkgs = pkgMgr.getPackages(executableRunner, new HashSet<>(), dependencyFile);
+        final DependencyFileDetails dependencyFile = new DependencyFileDetails(false, depFile);
+        final List<PackageDetails> pkgs = pkgMgr.getPackages(null, executableRunner, new HashSet<>(), dependencyFile);
         assertEquals(1, pkgs.size());
         assertEquals("libc6-dev", pkgs.get(0).getPackageName());
         assertEquals("2.27-3ubuntu1", pkgs.get(0).getPackageVersion());

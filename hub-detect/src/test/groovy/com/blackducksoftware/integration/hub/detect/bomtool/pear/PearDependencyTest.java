@@ -29,14 +29,14 @@ import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class PearDependencyTest {
     private DetectConfiguration detectConfiguration;
-    private PearDependencyFinder pearDependencyFinder;
+    private PearParser pearParser;
 
     private TestUtil testUtil;
 
     @Before
     public void init() {
         detectConfiguration = Mockito.mock(DetectConfiguration.class);
-        pearDependencyFinder = new PearDependencyFinder(new ExternalIdFactory(), detectConfiguration);
+        pearParser = new PearParser(new ExternalIdFactory(), detectConfiguration);
         testUtil = new TestUtil();
     }
 
@@ -47,7 +47,7 @@ public class PearDependencyTest {
         final String dependenciesList = testUtil.getResourceAsUTF8String("/pear/dependencies-list.txt");
         final ExecutableOutput exeOutput = new ExecutableOutput(dependenciesList, "");
 
-        final List<String> actual = pearDependencyFinder.findDependencyNames(exeOutput.getStandardOutputAsList());
+        final List<String> actual = pearParser.findDependencyNames(exeOutput.getStandardOutputAsList());
         final List<String> expected = Arrays.asList(
                 "Archive_Tar",
                 "Structures_Graph",
@@ -70,7 +70,7 @@ public class PearDependencyTest {
                 "Archive_Tar",
                 "Console_Getopt",
                 "Structures_Graph");
-        final DependencyGraph actual = pearDependencyFinder.createPearDependencyGraphFromList(exeOutput.getStandardOutputAsList(), dependencyNames);
+        final DependencyGraph actual = pearParser.createPearDependencyGraphFromList(exeOutput.getStandardOutputAsList(), dependencyNames);
 
         DependencyGraphResourceTestUtil.assertGraph("/pear/dependency-node-list_graph.json", actual);
     }
