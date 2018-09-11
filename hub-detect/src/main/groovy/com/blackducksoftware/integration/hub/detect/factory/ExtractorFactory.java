@@ -47,7 +47,6 @@ import com.google.gson.Gson;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class ExtractorFactory {
-
     //If you find your extractor needing more dependencies than this, I would reconsider the design of the extractor.
     private final Gson gson;
     private final ExternalIdFactory externalIdFactory;
@@ -121,7 +120,6 @@ public class ExtractorFactory {
     private DepPackager depPackager() {
         return new DepPackager(executableRunner, externalIdFactory, detectConfiguration);
     }
-
 
     private GradleReportParser gradleReportParser() {
         return new GradleReportParser(externalIdFactory);

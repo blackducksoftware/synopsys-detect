@@ -153,7 +153,6 @@ import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 import freemarker.template.Configuration;
 
-@org.springframework.context.annotation.Configuration
 public class BeanConfiguration {
     private final ConfigurableEnvironment configurableEnvironment;
 

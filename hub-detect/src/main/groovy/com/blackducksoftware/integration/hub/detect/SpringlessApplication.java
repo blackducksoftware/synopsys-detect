@@ -84,7 +84,7 @@ import com.synopsys.integration.log.SilentLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
 @SpringBootApplication
-@Import({ BeanConfiguration.class })
+//@Import({ BeanConfiguration.class })
 public class SpringlessApplication implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(SpringlessApplication.class);
 
@@ -105,10 +105,11 @@ public class SpringlessApplication implements ApplicationRunner {
 
         ExitCodeType detectExitCode = ExitCodeType.SUCCESS;
         try {
-            BootManager bootManager = new BootManager();
+            AnnotationConfigApplicationContext bootContext = new AnnotationConfigApplicationContext(DetectSharedBeanConfiguration.class, DetectBootBeanConfiguration.class);
+            BootManager bootManager = bootContext.getBean(BootManager.class);
             BootResult bootResult = bootManager.boot(applicationArguments.getSourceArgs(), environment);
             if (bootResult.bootType == BootResult.BootType.CONTINUE){
-                //runDetect(bootResult.detectContext);
+                runDetect(bootContext);
             }
         } catch (final Exception e) {
             //detectExitCode = getExitCodeFromExceptionDetails(e);
@@ -119,7 +120,7 @@ public class SpringlessApplication implements ApplicationRunner {
         //endRun(startTime, detectExitCode);
     }
 
-    private ExitCodeType runDetect(DetectContext context, BomToolManager manager, DetectCodeLocationManager codeLocationManager, BdioManager bdioManager) {
+    private ExitCodeType runDetect(AnnotationConfigApplicationContext bootContext) {
 
         if (!context.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOLS_DISABLED)){
             BomToolResult result = manager.runBomTools();
@@ -129,7 +130,10 @@ public class SpringlessApplication implements ApplicationRunner {
             result.failedBomToolGroupTypes.forEach(it -> bomToolResults.put(it, Result.FAILURE));
         }
 
-        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(BeanConfiguration.class);
+
+
+        AnnotationConfigApplicationContext runContext = new AnnotationConfigApplicationContext(DetectSharedBeanConfiguration.class, DetectBootBeanConfiguration.class);
+
         applicationContext.getBeanFactory().registerSingleton("", "");
 
         if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE)) {

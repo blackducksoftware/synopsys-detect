@@ -37,11 +37,9 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 
 public class DockerProperties {
     private final DetectConfiguration detectConfiguration;
-    private final DetectPropertySource detectPropertySource;
 
-    public DockerProperties(final DetectConfiguration detectConfiguration, final DetectPropertySource detectPropertySource) {
+    public DockerProperties(final DetectConfiguration detectConfiguration) {
         this.detectConfiguration = detectConfiguration;
-        this.detectPropertySource = detectPropertySource;
     }
 
     public void populatePropertiesFile(final File dockerPropertiesFile, final File outputDirectory) throws IOException {
