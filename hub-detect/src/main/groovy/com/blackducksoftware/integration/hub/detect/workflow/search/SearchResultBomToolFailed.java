@@ -24,8 +24,11 @@
 package com.blackducksoftware.integration.hub.detect.workflow.search;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
@@ -43,6 +46,11 @@ public class SearchResultBomToolFailed extends SearchResult {
     @Override
     public List<BomToolEvaluation> getBomToolEvaluations() {
         return new ArrayList<>();
+    }
+
+    @Override
+    public Set<BomToolGroupType> getApplicableBomTools() {
+        return new HashSet<>();
     }
 
     @Override

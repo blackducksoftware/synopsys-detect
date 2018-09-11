@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,10 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.FileNameUtils;
+import com.synopsys.integration.blackduck.summary.Result;
 import com.synopsys.integration.hub.bdio.SimpleBdioFactory;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
@@ -60,6 +64,7 @@ public class BdioManager {
     private final IntegrationEscapeUtil integrationEscapeUtil;
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfiguration detectConfiguration;
+    private DetectCodeLocationManager codeLocationManager;
 
     public BdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil, final CodeLocationNameManager codeLocationNameManager,
             final DetectConfiguration detectConfiguration) {
@@ -68,6 +73,25 @@ public class BdioManager {
         this.integrationEscapeUtil = integrationEscapeUtil;
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
+    }
+
+    public BdioResult createBdioFiles(String aggregateName, String projectName, String projectVersion, List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
+        final List<File> bdioFiles = new ArrayList<>();
+        if (StringUtils.isBlank(aggregateName)) {
+            final DetectCodeLocationResult codeLocationResult = codeLocationManager.process(codeLocations, projectName, projectVersion);
+            //codeLocationResult.getFailedBomToolGroupTypes().forEach(it -> bomToolResults.put(it, Result.FAILURE));
+
+            final List<File> createdBdioFiles = createBdioFiles(codeLocationResult.getBdioCodeLocations(), projectName, projectVersion);
+            bdioFiles.addAll(createdBdioFiles);
+
+            return new BdioResult(codeLocationResult.getBdioCodeLocations(), codeLocationResult.getFailedBomToolGroupTypes(), codeLocationResult.getCodeLocationNames());
+            //reportManager.codeLocationsCompleted(searchResult.getBomToolEvaluations(), codeLocationResult.getCodeLocationNames());
+        } else {
+            final File aggregateBdioFile = createAggregateBdioFile(codeLocations, projectName, projectVersion);
+            bdioFiles.add(aggregateBdioFile);
+        }
+
+        return new BdioResult(null, null, null);
     }
 
     public List<File> createBdioFiles(final List<BdioCodeLocation> bdioCodeLocations, final String projectName, final String projectVersion) throws DetectUserFriendlyException {

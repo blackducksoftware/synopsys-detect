@@ -25,9 +25,12 @@ package com.blackducksoftware.integration.hub.detect;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,9 +39,12 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
@@ -58,15 +64,21 @@ import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManag
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolManager;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.BootManager;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.BootResult;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectContext;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
+import com.blackducksoftware.integration.hub.detect.workflow.project.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.summary.Result;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.SilentLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -105,6 +117,43 @@ public class SpringlessApplication implements ApplicationRunner {
         }
 
         //endRun(startTime, detectExitCode);
+    }
+
+    private ExitCodeType runDetect(DetectContext context, BomToolManager manager, DetectCodeLocationManager codeLocationManager, BdioManager bdioManager) {
+
+        if (!context.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOLS_DISABLED)){
+            BomToolResult result = manager.runBomTools();
+
+            Map<BomToolGroupType, Result> bomToolResults = new HashMap<>();
+            result.succesfullBomToolGroupTypes.forEach(it -> bomToolResults.put(it, Result.SUCCESS));
+            result.failedBomToolGroupTypes.forEach(it -> bomToolResults.put(it, Result.FAILURE));
+        }
+
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(BeanConfiguration.class);
+        applicationContext.getBeanFactory().registerSingleton("", "");
+
+        if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE)) {
+            for (final File bdio : detectProject.getBdioFiles()) {
+                diagnosticManager.registerGlobalFileOfInterest(bdio);
+            }
+        } else {
+            final Optional<ProjectVersionView> originalProjectVersionView = hubManager.updateHubProjectVersion(detectProject);
+            ProjectVersionView projectVersionView = null;
+            if (originalProjectVersionView.isPresent()) {
+                projectVersionView = originalProjectVersionView.get();
+            }
+            hubManager.performScanActions(detectProject);
+            hubManager.performBinaryScanActions(detectProject);
+            // final ProjectVersionView projectVersionView = originalProjectVersionView.orElse(scanProjectVersionView.orElse(null));
+            hubManager.performPostHubActions(detectProject, projectVersionView);
+        }
+
+        if (result.failedBomToolGroupTypes.size() > 0){
+            return ExitCodeType.FAILURE_BOM_TOOL;
+        }
+        if (result.missingBomToolGroupTypes.size() > 0){
+            return ExitCodeType.FAILURE_BOM_TOOL_REQUIRED;
+        }
     }
 
 }

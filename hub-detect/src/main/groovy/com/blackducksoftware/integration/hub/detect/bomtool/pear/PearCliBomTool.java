@@ -37,8 +37,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Execu
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
+import com.blackducksoftware.integration.hub.detect.util.executable.StandardExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.util.executable.StandardExecutableFinder.StandardExecutableType;
 
 public class PearCliBomTool extends BomTool {
     public static final String PACKAGE_XML_FILENAME = "package.xml";

@@ -39,8 +39,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Inspe
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
+import com.blackducksoftware.integration.hub.detect.util.executable.StandardExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.util.executable.StandardExecutableFinder.StandardExecutableType;
 
 public class DockerBomTool extends BomTool {
     private final DockerInspectorManager dockerInspectorManager;

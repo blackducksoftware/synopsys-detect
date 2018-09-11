@@ -272,6 +272,10 @@ public enum DetectProperty {
     @HelpDescription("Depth from source paths to search for sbt report files.")
     DETECT_SEARCH_DEPTH("detect.search.depth", PropertyType.INTEGER, "3"),
 
+    @HelpGroup(primary = GROUP_BOMTOOL, additional = { SEARCH_GROUP_SEARCH })
+    @HelpDescription("Set to true to disable the all bom tools and bom tool searching.")
+    DETECT_BOM_TOOLS_DISABLED("detect.bom.tools.disabled", PropertyType.BOOLEAN, "false"),
+
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("The bom tool to choose when multiple bom tool types are found and one needs to be chosen for project name and version.")
     DETECT_PROJECT_BOM_TOOL("detect.project.bom.tool", PropertyType.STRING),

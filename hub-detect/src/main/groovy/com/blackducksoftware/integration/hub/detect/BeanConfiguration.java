@@ -122,7 +122,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.Diagnost
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.util.executable.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BdioUploader;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckBinaryScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckSignatureScanner;

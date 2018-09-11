@@ -1,9 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.factory;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.GoInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager;
@@ -13,9 +11,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
-import com.google.gson.Gson;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 import freemarker.template.Configuration;
 

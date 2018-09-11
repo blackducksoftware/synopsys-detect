@@ -26,8 +26,6 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.ReportConstants;
-
 public class LogReportWriter implements ReportWriter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

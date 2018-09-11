@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.ReportConstants;
 
 public class OverviewSummaryReporter {
     public void writeReport(final ReportWriter writer, final List<BomToolEvaluation> results) {

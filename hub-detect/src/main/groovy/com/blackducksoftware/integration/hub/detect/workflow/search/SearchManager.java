@@ -49,55 +49,38 @@ import com.synopsys.integration.util.ExcludedIncludedFilter;
 public class SearchManager {
     private final Logger logger = LoggerFactory.getLogger(SearchManager.class);
 
-    private final ReportManager reportManager;
+    private final SearchOptions searchOptions;
     private final BomToolSearchProvider bomToolSearchProvider;
-    private final PhoneHomeManager phoneHomeManager;
-    private final DetectConfiguration detectConfiguration;
     private final BomToolSearchEvaluator bomToolSearchEvaluator;
     private final BomToolProfiler bomToolProfiler;
 
-    public SearchManager(final ReportManager reportManager, final BomToolSearchProvider bomToolSearchProvider, final PhoneHomeManager phoneHomeManager,
-        final DetectConfiguration detectConfiguration, final BomToolSearchEvaluator bomToolSearchEvaluator, final BomToolProfiler bomToolProfiler) {
-        this.reportManager = reportManager;
+    public SearchManager(final SearchOptions searchOptions, final BomToolSearchProvider bomToolSearchProvider, final BomToolSearchEvaluator bomToolSearchEvaluator, final BomToolProfiler bomToolProfiler) {
+        this.searchOptions = searchOptions;
         this.bomToolSearchProvider = bomToolSearchProvider;
-        this.phoneHomeManager = phoneHomeManager;
-        this.detectConfiguration = detectConfiguration;
         this.bomToolSearchEvaluator = bomToolSearchEvaluator;
         this.bomToolProfiler = bomToolProfiler;
     }
 
-    public SearchResult performSearch() throws DetectUserFriendlyException {
-        List<BomToolEvaluation> sourcePathResults = new ArrayList<>();
+    public SearchResult performSearch() {
+        List<BomToolEvaluation> searchResults = new ArrayList<>();
         try {
-            sourcePathResults = findApplicableBomTools(new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)));
+            final BomToolFinderOptions findOptions = new BomToolFinderOptions(searchOptions.excludedDirectories, searchOptions.forceNestedSearch, searchOptions.maxDepth, searchOptions.bomToolFilter, bomToolSearchProvider, bomToolSearchEvaluator, bomToolProfiler);
+
+            logger.info("Starting search for bom tools.");
+            final BomToolFinder bomToolTreeWalker = new BomToolFinder();
+            searchResults = bomToolTreeWalker.findApplicableBomTools(searchOptions.searchPath, findOptions);
         } catch (final BomToolException e) {
             return new SearchResultBomToolFailed(e);
+        } catch (DetectUserFriendlyException e) {
+            e.printStackTrace();
         }
 
-        reportManager.searchCompleted(sourcePathResults);
+        final Set<BomToolGroupType> applicableBomTools = searchResults.stream()
+                                                             .filter(it -> it.isApplicable())
+                                                             .map(it -> it.getBomTool().getBomToolGroupType())
+                                                             .collect(Collectors.toSet());
 
-        final Set<BomToolGroupType> applicableBomTools = sourcePathResults.stream()
-                .filter(it -> it.isApplicable())
-                .map(it -> it.getBomTool().getBomToolGroupType())
-                .collect(Collectors.toSet());
-
-        // we've gone through all applicable bom tools so we now have the complete metadata to phone home
-        phoneHomeManager.startPhoneHome(applicableBomTools);
-
-        return new SearchResultSuccess(sourcePathResults);
+        return new SearchResultSuccess(searchResults, applicableBomTools);
     }
 
-    private List<BomToolEvaluation> findApplicableBomTools(final File directory) throws BomToolException, DetectUserFriendlyException {
-        final List<String> excludedDirectories = Arrays.asList(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION));
-        final Boolean forceNestedSearch = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_CONTINUE);
-        final int maxDepth = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_DEPTH);
-        final ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(detectConfiguration.getProperty(DetectProperty.DETECT_EXCLUDED_BOM_TOOL_TYPES).toUpperCase(),
-                detectConfiguration.getProperty(DetectProperty.DETECT_INCLUDED_BOM_TOOL_TYPES).toUpperCase());
-
-        final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth, bomToolFilter, bomToolSearchProvider, bomToolSearchEvaluator, bomToolProfiler);
-
-        logger.info("Starting search for bom tools.");
-        final BomToolFinder bomToolTreeWalker = new BomToolFinder();
-        return bomToolTreeWalker.findApplicableBomTools(directory, findOptions);
-    }
 }
