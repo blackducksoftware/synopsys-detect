@@ -56,6 +56,8 @@ public class DetectOptionManager implements ExitCodeReporter {
     public DetectOptionManager(final DetectConfiguration detectConfiguration, final DetectInfo detectInfo) {
         this.detectConfiguration = detectConfiguration;
         this.detectInfo = detectInfo;
+
+        init();
     }
 
     public List<DetectOption> getDetectOptions() {
@@ -66,7 +68,7 @@ public class DetectOptionManager implements ExitCodeReporter {
         return detectGroups;
     }
 
-    public void init() {
+    private void init() {
         final Map<DetectProperty, DetectOption> detectOptionsMap = new HashMap<>();
 
         final Map<DetectProperty, Object> propertyMap = detectConfiguration.getCurrentProperties();

@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
+import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 
 public class DetectFileManager {
@@ -49,11 +49,11 @@ public class DetectFileManager {
     private final Map<ExtractionId, File> outputDirectories = new HashMap<>();
     private final DiagnosticManager diagnosticManager;
 
-    private final DetectRunManager detectRunManager;
+    private final DetectRun detectRun;
 
-    public DetectFileManager(final DetectConfiguration detectConfiguration, final DetectRunManager detectRunManager, final DiagnosticManager diagnosticManager) {
+    public DetectFileManager(final DetectConfiguration detectConfiguration, final DetectRun detectRun, final DiagnosticManager diagnosticManager) {
         this.detectConfiguration = detectConfiguration;
-        this.detectRunManager = detectRunManager;
+        this.detectRun = detectRun;
         this.diagnosticManager = diagnosticManager;
     }
 
@@ -138,7 +138,7 @@ public class DetectFileManager {
         File newDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "extractions");
         newDirectory.mkdir();
         if (diagnosticManager.isDiagnosticModeOn()) {
-            newDirectory = new File(newDirectory, detectRunManager.getRunId());
+            newDirectory = new File(newDirectory, detectRun.getRunId());
             newDirectory.mkdir();
         }
         return newDirectory;

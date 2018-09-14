@@ -41,7 +41,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
-@Component
 public class SbtResolutionCacheExtractor {
     private final Logger logger = LoggerFactory.getLogger(SbtResolutionCacheExtractor.class);
 
@@ -49,7 +48,6 @@ public class SbtResolutionCacheExtractor {
     private final ExternalIdFactory externalIdFactory;
     private final DetectConfiguration detectConfiguration;
 
-    @Autowired
     public SbtResolutionCacheExtractor(final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory,
             final DetectConfiguration detectConfiguration) {
         this.detectFileFinder = detectFileFinder;

@@ -44,10 +44,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManage
 public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
-    private final ReportManager reportManager;
-
-    public ExtractionManager(final ReportManager reportManager) {
-        this.reportManager = reportManager;
+    public ExtractionManager() {
     }
 
     public ExtractionResult performExtractions(final List<BomToolEvaluation> results) {
@@ -84,8 +81,7 @@ public class ExtractionManager {
     }
 
 
-    private void extract(final BomToolEvaluation result) {
-        reportManager.extractionStarted(result);
+    private void extract(final BomToolEvaluation result) { //TODO: Replace reporting.
 
         logger.info("Starting extraction: " + result.getBomTool().getBomToolGroupType() + " - " + result.getBomTool().getName());
         logger.info("Identifier: " + result.getExtractionId().toUniqueString());
@@ -108,7 +104,6 @@ public class ExtractionManager {
         }
         logger.info(ReportConstants.SEPERATOR);
 
-        reportManager.extractionEnded(result);
     }
 
 }

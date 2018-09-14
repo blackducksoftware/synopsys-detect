@@ -41,14 +41,12 @@ public class InteractiveManager {
     private final Logger logger = LoggerFactory.getLogger(InteractiveManager.class);
 
     private final DetectOptionManager detectOptionManager;
-    private final InteractiveMode interactiveMode;
 
-    public InteractiveManager(final DetectOptionManager detectOptionManager, final InteractiveMode interactiveMode) {
+    public InteractiveManager(final DetectOptionManager detectOptionManager) {
         this.detectOptionManager = detectOptionManager;
-        this.interactiveMode = interactiveMode;
     }
 
-    public void configureInInteractiveMode() {
+    public void configureInInteractiveMode(InteractiveMode interactiveMode) {
         // TODO: Find a way to close the PrintStream without closing System.out
         // DO NOT CLOSE THIS STREAM, IT WILL CLOSE SYSOUT!
         final PrintStream interactivePrintStream = new PrintStream(System.out);

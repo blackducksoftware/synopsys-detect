@@ -23,14 +23,12 @@
  */
 package com.blackducksoftware.integration.hub.detect;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,51 +38,26 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.help.DetectArgumentState;
-import com.blackducksoftware.integration.hub.detect.help.DetectArgumentStateParser;
-import com.blackducksoftware.integration.hub.detect.help.DetectOption;
-import com.blackducksoftware.integration.hub.detect.help.DetectOption.OptionValidationResult;
-import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
-import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
-import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
-import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
-import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
+import com.blackducksoftware.integration.hub.detect.workflow.RunManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.BootManager;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.BootResult;
-import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectContext;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
-import com.blackducksoftware.integration.hub.detect.workflow.project.BdioManager;
-import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
-import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.blackducksoftware.integration.hub.detect.workflow.boot.CleanupManager;
+import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectRunContext;
 import com.synopsys.integration.blackduck.summary.Result;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.SilentLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
 @SpringBootApplication
-//@Import({ BeanConfiguration.class })
+//@Import({ OldBeanConfiguration.class })
 public class SpringlessApplication implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(SpringlessApplication.class);
 
@@ -103,61 +76,72 @@ public class SpringlessApplication implements ApplicationRunner {
     public void run(final ApplicationArguments applicationArguments) throws Exception {
         final long startTime = System.currentTimeMillis();
 
+        DetectRunContext runContext = null;
+        try {
+            BootResult bootResult = bootDetect();
+            runContext = bootResult.detectRunContext;
+            if (bootResult.bootType == BootResult.BootType.CONTINUE){
+                RunResult runResult = runDetect();
+            }
+        } finally {
+            cleanupDetect(runContext);
+            printStatus();
+        }
+
+         System.exit();
+
+
+
+        ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
         ExitCodeType detectExitCode = ExitCodeType.SUCCESS;
+        BootResult bootResult = null;
         try {
             AnnotationConfigApplicationContext bootContext = new AnnotationConfigApplicationContext(DetectSharedBeanConfiguration.class, DetectBootBeanConfiguration.class);
             BootManager bootManager = bootContext.getBean(BootManager.class);
-            BootResult bootResult = bootManager.boot(applicationArguments.getSourceArgs(), environment);
-            if (bootResult.bootType == BootResult.BootType.CONTINUE){
-                runDetect(bootContext);
+            bootResult = bootManager.boot(applicationArguments.getSourceArgs(), environment);
+        } catch (final Exception e) {
+            detectExitCode = exitCodeUtility.getExitCodeFromExceptionDetails(e);
+        }
+
+        try {
+            if (bootResult != null && bootResult.bootType == BootResult.BootType.CONTINUE){
+                RunResult runResult;
+                AnnotationConfigApplicationContext runContext = new AnnotationConfigApplicationContext(DetectSharedBeanConfiguration.class, DetectRunBeanConfiguration.class);
+                runContext.getBeanFactory().registerSingleton(bootResult.detectRunContext.getClass().getSimpleName(), bootResult.detectRunContext);
+                RunManager runManager = runContext.getBean(RunManager.class);
+                runManager.run();
             }
         } catch (final Exception e) {
-            //detectExitCode = getExitCodeFromExceptionDetails(e);
-        } finally {
-            //cleanupRun(detectExitCode);
+            detectExitCode = exitCodeUtility.getExitCodeFromExceptionDetails(e);
         }
 
-        //endRun(startTime, detectExitCode);
+        try {
+            if (bootResult != null){
+                CleanupManager cleanupManager = new CleanupManager();
+                cleanupManager.cleanup(bootResult.detectRunContext);
+            }
+        } catch (final Exception e){
+            detectExitCode = exitCodeUtility.getExitCodeFromExceptionDetails(e);
+        }
+
+        boolean printOutput = bootResult.detectRunContext.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT);
+        if (!printOutput) {
+            //bootResult.detectRunContext.detectSummaryManager();
+            //detectSummaryManager.logDetectResults(new Slf4jIntLogger(logger), currentExitCodeType);
+        }
+
+        final long endTime = System.currentTimeMillis();
+        logger.info(String.format("Hub-Detect run duration: %s", DurationFormatUtils.formatPeriod(startTime, endTime, "HH'h' mm'm' ss's' SSS'ms'")));
+
+        if (detectExitCode != ExitCodeType.SUCCESS && bootResult.bootType == null) {
+            logger.warn(String.format("Forcing success: Exiting with exit code 0. Ignored exit code was %s.", detectExitCode.getExitCode()));
+            System.exit(0);
+        } else if (detectExitCode != ExitCodeType.SUCCESS) {
+            logger.error(String.format("Exiting with code %s - %s", detectExitCode.getExitCode(), detectExitCode.toString()));
+        }
+
+        System.exit(detectExitCode.getExitCode());
     }
 
-    private ExitCodeType runDetect(AnnotationConfigApplicationContext bootContext) {
-
-        if (!context.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOLS_DISABLED)){
-            BomToolResult result = manager.runBomTools();
-
-            Map<BomToolGroupType, Result> bomToolResults = new HashMap<>();
-            result.succesfullBomToolGroupTypes.forEach(it -> bomToolResults.put(it, Result.SUCCESS));
-            result.failedBomToolGroupTypes.forEach(it -> bomToolResults.put(it, Result.FAILURE));
-        }
-
-
-
-        AnnotationConfigApplicationContext runContext = new AnnotationConfigApplicationContext(DetectSharedBeanConfiguration.class, DetectBootBeanConfiguration.class);
-
-        applicationContext.getBeanFactory().registerSingleton("", "");
-
-        if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE)) {
-            for (final File bdio : detectProject.getBdioFiles()) {
-                diagnosticManager.registerGlobalFileOfInterest(bdio);
-            }
-        } else {
-            final Optional<ProjectVersionView> originalProjectVersionView = hubManager.updateHubProjectVersion(detectProject);
-            ProjectVersionView projectVersionView = null;
-            if (originalProjectVersionView.isPresent()) {
-                projectVersionView = originalProjectVersionView.get();
-            }
-            hubManager.performScanActions(detectProject);
-            hubManager.performBinaryScanActions(detectProject);
-            // final ProjectVersionView projectVersionView = originalProjectVersionView.orElse(scanProjectVersionView.orElse(null));
-            hubManager.performPostHubActions(detectProject, projectVersionView);
-        }
-
-        if (result.failedBomToolGroupTypes.size() > 0){
-            return ExitCodeType.FAILURE_BOM_TOOL;
-        }
-        if (result.missingBomToolGroupTypes.size() > 0){
-            return ExitCodeType.FAILURE_BOM_TOOL_REQUIRED;
-        }
-    }
 
 }

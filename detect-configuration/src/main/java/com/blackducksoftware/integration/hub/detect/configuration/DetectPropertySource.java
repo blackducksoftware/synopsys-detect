@@ -50,10 +50,8 @@ public class DetectPropertySource extends SpringPropertySource {
 
     public DetectPropertySource(ConfigurableEnvironment configurableEnvironment) {
         super(configurableEnvironment);
-    }
 
-    // TODO: Remove redirection from "blackduck.hub." to "blackduck." in version 6.
-    public void init() {
+        // TODO: Remove redirection from "blackduck.hub." to "blackduck." in version 6.
         for (final String propertyName : this.getPropertyKeys()) {
             if (StringUtils.isNotBlank(propertyName)) {
                 if (propertyName.startsWith(DOCKER_PROPERTY_PREFIX)) {

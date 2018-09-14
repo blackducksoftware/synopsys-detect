@@ -93,7 +93,7 @@ public class HubServiceManager {
             hubServerConfig = createHubServerConfig(slf4jIntLogger);
             hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig);
         } catch (IllegalStateException | EncryptionException e) {
-            throw new DetectUserFriendlyException(String.format("Not able to initialize Hub connection: %s", e.getMessage()), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
+            throw new DetectUserFriendlyException(String.format("Not able to process Hub connection: %s", e.getMessage()), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
         }
         final HubService hubService = createHubService();
         final CurrentVersionView currentVersion = hubService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);

@@ -42,6 +42,13 @@ public class DetectConfiguration {
     private final DetectPropertySource detectPropertySource;
     private final PropertyMap<DetectProperty> propertyMap;
 
+    public DetectConfiguration(final DetectPropertySource detectPropertySource) {
+        this.detectPropertySource = detectPropertySource;
+        this.propertyMap = new PropertyMap<>();
+
+        init();
+    }
+
     public DetectConfiguration(final DetectPropertySource detectPropertySource, final PropertyMap<DetectProperty> propertyMap) {
         this.detectPropertySource = detectPropertySource;
         this.propertyMap = propertyMap;
@@ -54,7 +61,7 @@ public class DetectConfiguration {
     }
 
     // TODO: Remove override code in version 6.
-    public void init() {
+    private void init() {
         Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
             final DetectProperty override = fromDeprecatedToOverride(currentProperty);
             final DetectProperty deprecated = fromOverrideToDeprecated(currentProperty);
@@ -181,7 +188,7 @@ public class DetectConfiguration {
     }
 
     /**
-     * DetectOptionManager and ConfigurationManager
+     * DetectOptionManager and DetectConfigurationManager
      */
     public void setProperty(final DetectProperty detectProperty, final String stringValue) {
         // TODO: Remove overrides in a future version of detect.

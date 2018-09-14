@@ -52,19 +52,17 @@ public class SearchManager {
     private final SearchOptions searchOptions;
     private final BomToolSearchProvider bomToolSearchProvider;
     private final BomToolSearchEvaluator bomToolSearchEvaluator;
-    private final BomToolProfiler bomToolProfiler;
 
-    public SearchManager(final SearchOptions searchOptions, final BomToolSearchProvider bomToolSearchProvider, final BomToolSearchEvaluator bomToolSearchEvaluator, final BomToolProfiler bomToolProfiler) {
+    public SearchManager(final SearchOptions searchOptions, final BomToolSearchProvider bomToolSearchProvider, final BomToolSearchEvaluator bomToolSearchEvaluator) { //TODO: replace bom tool profiling
         this.searchOptions = searchOptions;
         this.bomToolSearchProvider = bomToolSearchProvider;
         this.bomToolSearchEvaluator = bomToolSearchEvaluator;
-        this.bomToolProfiler = bomToolProfiler;
     }
 
     public SearchResult performSearch() {
         List<BomToolEvaluation> searchResults = new ArrayList<>();
         try {
-            final BomToolFinderOptions findOptions = new BomToolFinderOptions(searchOptions.excludedDirectories, searchOptions.forceNestedSearch, searchOptions.maxDepth, searchOptions.bomToolFilter, bomToolSearchProvider, bomToolSearchEvaluator, bomToolProfiler);
+            final BomToolFinderOptions findOptions = new BomToolFinderOptions(searchOptions.excludedDirectories, searchOptions.forceNestedSearch, searchOptions.maxDepth, searchOptions.bomToolFilter, bomToolSearchProvider, bomToolSearchEvaluator, null);
 
             logger.info("Starting search for bom tools.");
             final BomToolFinder bomToolTreeWalker = new BomToolFinder();

@@ -1,10 +1,8 @@
 package com.blackducksoftware.integration.hub.detect.workflow.boot;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-
 public class BootResult {
     public BootType bootType;
-    public DetectContext detectContext;
+    public DetectRunContext detectRunContext;
 
     public enum BootType {
         EXIT,

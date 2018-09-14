@@ -24,7 +24,6 @@
 package com.blackducksoftware.integration.hub.detect;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,11 +33,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.Import;
 
-import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
@@ -46,7 +43,6 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.DetectArgumentState;
-import com.blackducksoftware.integration.hub.detect.help.ArgumentParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption.OptionValidationResult;
@@ -58,10 +54,9 @@ import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
+import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
@@ -71,16 +66,14 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.SilentLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
-@SpringBootApplication
-@Import({ BeanConfiguration.class })
 public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
 
     private final DetectOptionManager detectOptionManager;
-    private final DetectInfo detectInfo;
+    private final DetectInfoUtility detectInfoUtility;
     private final DetectPropertySource detectPropertySource;
     private final DetectConfiguration detectConfiguration;
-    private final ConfigurationManager configurationManager;
+    private final DetectConfigurationManager detectConfigurationManager;
     private final DetectProjectManager detectProjectManager;
     private final HelpPrinter helpPrinter;
     private final HelpHtmlWriter helpHtmlWriter;
@@ -93,7 +86,6 @@ public class Application implements ApplicationRunner {
     private final PhoneHomeManager phoneHomeManager;
     private final DetectArgumentStateParser detectArgumentStateParser;
     private final DiagnosticManager diagnosticManager;
-    private final DetectRunManager detectRunManager;
 
     private enum WorkflowStep {
         EXIT_WITH_SUCCESS,
@@ -101,16 +93,15 @@ public class Application implements ApplicationRunner {
     }
 
     @Autowired
-    public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final DetectPropertySource detectPropertySource, final DetectConfiguration detectConfiguration,
-            final ConfigurationManager configurationManager, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
+    public Application(final DetectOptionManager detectOptionManager, final DetectInfoUtility detectInfoUtility, final DetectPropertySource detectPropertySource, final DetectConfiguration detectConfiguration,
+            final DetectConfigurationManager detectConfigurationManager, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
             final HubServiceManager hubServiceManager, final DetectSummaryManager detectSummaryManager, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
-            final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final DetectArgumentStateParser detectArgumentStateParser, final DetectRunManager detectRunManager,
-            final DiagnosticManager diagnosticManager) {
+            final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final DetectArgumentStateParser detectArgumentStateParser, final DiagnosticManager diagnosticManager) {
         this.detectOptionManager = detectOptionManager;
-        this.detectInfo = detectInfo;
+        this.detectInfoUtility = detectInfoUtility;
         this.detectPropertySource = detectPropertySource;
         this.detectConfiguration = detectConfiguration;
-        this.configurationManager = configurationManager;
+        this.detectConfigurationManager = detectConfigurationManager;
         this.detectProjectManager = detectProjectManager;
         this.helpPrinter = helpPrinter;
         this.helpHtmlWriter = helpHtmlWriter;
@@ -122,7 +113,6 @@ public class Application implements ApplicationRunner {
         this.exitCodeReporters = exitCodeReporters;
         this.phoneHomeManager = phoneHomeManager;
         this.detectArgumentStateParser = detectArgumentStateParser;
-        this.detectRunManager = detectRunManager;
         this.diagnosticManager = diagnosticManager;
     }
 
@@ -151,9 +141,9 @@ public class Application implements ApplicationRunner {
     }
 
     private WorkflowStep initializeDetect(final String[] sourceArgs) throws IntegrationException, DetectUserFriendlyException {
-        detectInfo.init();
-        detectRunManager.init();
-        detectPropertySource.init();
+        DetectRun detectRun = DetectRun.createDefault();
+        DetectInfo detectInfo = detectInfoUtility.createDetectInfo();
+        //detectPropertySource.init();
         detectConfiguration.init();
         detectOptionManager.init();
 
@@ -167,7 +157,7 @@ public class Application implements ApplicationRunner {
         }
 
         if (detectArgumentState.isHelpDocument()) {
-            helpHtmlWriter.writeHelpMessage(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()));
+            helpHtmlWriter.writeHtmlDocument(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()), options);
             return WorkflowStep.EXIT_WITH_SUCCESS;
         }
 
@@ -176,15 +166,10 @@ public class Application implements ApplicationRunner {
         detectInfoPrinter.printInfo(System.out, detectInfo);
 
         if (detectArgumentState.isInteractive()) {
-            interactiveManager.configureInInteractiveMode();
+            //interactiveManager.configureInInteractiveMode();
         }
 
-        final List<String> defaultBdioLocation = new ArrayList<>();
-        defaultBdioLocation.add("bdio");
-        if (detectArgumentState.isDiagnostic()) {
-            defaultBdioLocation.add(detectRunManager.getRunId());
-        }
-        configurationManager.initialize(options, defaultBdioLocation);
+        detectConfigurationManager.process(options, detectRun.getRunId());
         detectOptionManager.postInit();
 
         logger.info("Configuration processed completely.");

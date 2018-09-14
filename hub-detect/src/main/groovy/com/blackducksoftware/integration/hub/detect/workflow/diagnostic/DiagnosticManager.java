@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
@@ -46,22 +47,24 @@ public class DiagnosticManager {
 
     private final DiagnosticReportManager diagnosticReportManager;
     private final DiagnosticLogManager diagnosticLogManager;
-    private final DetectRunManager detectRunManager;
+    private final DetectRun detectRun;
     private final DiagnosticFileManager diagnosticFileManager;
 
     private boolean isDiagnosticProtected = false;
     private boolean isDiagnostic = false;
 
     public DiagnosticManager(final DetectConfiguration detectConfiguration, final DiagnosticReportManager diagnosticReportManager, final DiagnosticLogManager diagnosticLogManager,
-            final DetectRunManager detectRunManager, final DiagnosticFileManager diagnosticFileManager) {
+            final DetectRun detectRun, final DiagnosticFileManager diagnosticFileManager, final boolean isDiagnostic, final boolean isDiagnosticProtected) {
         this.detectConfiguration = detectConfiguration;
         this.diagnosticReportManager = diagnosticReportManager;
         this.diagnosticLogManager = diagnosticLogManager;
-        this.detectRunManager = detectRunManager;
+        this.detectRun = detectRun;
         this.diagnosticFileManager = diagnosticFileManager;
+
+        init(isDiagnostic, isDiagnosticProtected);
     }
 
-    public void init(final boolean isDiagnostic, final boolean isDiagnosticProtected) {
+    private void init(final boolean isDiagnostic, final boolean isDiagnosticProtected) {
 
         this.isDiagnostic = isDiagnostic;
         this.isDiagnosticProtected = isDiagnosticProtected;
@@ -72,27 +75,27 @@ public class DiagnosticManager {
 
         System.out.println("");
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("Diagnostic mode on. Run id " + detectRunManager.getRunId());
+        System.out.println("Diagnostic mode on. Run id " + detectRun.getRunId());
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("");
 
         final File bdioDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH));
         this.outputDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH));
         try {
-            diagnosticFileManager.init(outputDirectory, bdioDirectory, detectRunManager.getRunId());
+            diagnosticFileManager.init(outputDirectory, bdioDirectory, detectRun.getRunId());
         } catch (final Exception e) {
             logger.error("Failed to create diagnostics directory.", e);
         }
 
         logger.info("Initializing diagnostic managers.");
         try {
-            diagnosticReportManager.init(diagnosticFileManager.getReportDirectory(), detectRunManager.getRunId());
+            diagnosticReportManager.init(diagnosticFileManager.getReportDirectory(), detectRun.getRunId());
             diagnosticLogManager.init(diagnosticFileManager.getLogDirectory());
         } catch (final Exception e) {
-            logger.error("Failed to initialize.", e);
+            logger.error("Failed to process.", e);
         }
 
-        logger.info("Diagnostic mode on. Run id " + detectRunManager.getRunId());
+        logger.info("Diagnostic mode on. Run id " + detectRun.getRunId());
     }
 
     public void finish() {
@@ -207,7 +210,7 @@ public class DiagnosticManager {
                 .collect(Collectors.toList());
 
         final DiagnosticZipCreator zipper = new DiagnosticZipCreator();
-        return zipper.createDiagnosticZip(detectRunManager.getRunId(), outputDirectory, directoriesToCompress);
+        return zipper.createDiagnosticZip(detectRun.getRunId(), outputDirectory, directoriesToCompress);
     }
 
 }

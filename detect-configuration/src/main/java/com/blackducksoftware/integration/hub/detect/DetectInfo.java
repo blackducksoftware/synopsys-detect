@@ -39,18 +39,16 @@ public class DetectInfo {
 
     private OperatingSystemType currentOs = null;
     private String detectVersion;
+    private int majorVersion;
 
-    public void init() {
-        try {
-            detectVersion = ResourceUtil.getResourceAsString(getClass(), "/version.txt", StandardCharsets.UTF_8.toString());
-            populateCurrentOs();
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
+    public DetectInfo(String detectVersionText, int majorVersion, OperatingSystemType currentOs){
+        this.detectVersion = detectVersionText;
+        this.currentOs = currentOs;
+        this.majorVersion = majorVersion;
     }
 
     public int getDetectMajorVersion() {
-        return Integer.parseInt(getDetectVersion().split(Pattern.quote("."))[0]);
+        return  majorVersion;
     }
 
     public String getDetectVersion() {
@@ -59,23 +57,6 @@ public class DetectInfo {
 
     public OperatingSystemType getCurrentOs() {
         return currentOs;
-    }
-
-    private void populateCurrentOs() {
-        if (SystemUtils.IS_OS_LINUX) {
-            currentOs = OperatingSystemType.LINUX;
-        } else if (SystemUtils.IS_OS_MAC) {
-            currentOs = OperatingSystemType.MAC;
-        } else if (SystemUtils.IS_OS_WINDOWS) {
-            currentOs = OperatingSystemType.WINDOWS;
-        }
-
-        if (currentOs == null) {
-            logger.warn("Your operating system is not supported. Linux will be assumed.");
-            currentOs = OperatingSystemType.LINUX;
-        } else {
-            logger.info("You seem to be running in a " + currentOs + " operating system.");
-        }
     }
 
 }
