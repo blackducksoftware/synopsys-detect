@@ -225,6 +225,7 @@ public class Application implements ApplicationRunner {
         logger.info(String.format("Project Version Name: %s", detectProject.getProjectVersion()));
 
         if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE)) {
+            hubManager.performScanActions(detectProject);
             for (final File bdio : detectProject.getBdioFiles()) {
                 diagnosticManager.registerGlobalFileOfInterest(bdio);
             }
