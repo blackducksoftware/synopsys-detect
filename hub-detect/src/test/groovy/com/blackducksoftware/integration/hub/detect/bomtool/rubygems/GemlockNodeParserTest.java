@@ -51,8 +51,16 @@ public class GemlockNodeParserTest {
 
         Dependency bundler = dependencyGraph.getDependency(new ExternalIdFactory().createNameVersionExternalId(Forge.RUBYGEMS, "bundler", "1.11.2"));
         assertNotNull(bundler);
+    }
 
-        Dependency curb = dependencyGraph.getDependency(new ExternalIdFactory().createNameVersionExternalId(Forge.RUBYGEMS, "curb", "0.8.8"));
-        assertNotNull(curb);
+    @Test
+    public void testMissingVersionsGemfileLock() {
+        final String text = testUtils.getResourceAsUTF8String("/rubygems/Gemfile_missing_versions.lock");
+        final List<String> gemfileLockContents = Arrays.asList(text.split("\n"));
+        final GemlockParser gemlockNodeParser = new GemlockParser(new ExternalIdFactory());
+        final DependencyGraph dependencyGraph = gemlockNodeParser.parseProjectDependencies(gemfileLockContents);
+
+        Dependency newrelic_rpm = dependencyGraph.getDependency(new ExternalIdFactory().createNameVersionExternalId(Forge.RUBYGEMS, "newrelic_rpm", ""));
+        assertNotNull(newrelic_rpm);
     }
 }
