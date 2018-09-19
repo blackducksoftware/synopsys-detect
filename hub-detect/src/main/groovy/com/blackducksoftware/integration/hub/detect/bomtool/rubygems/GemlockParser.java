@@ -126,7 +126,7 @@ public class GemlockParser {
 
     private void parseSpecPackageLine(final String trimmedLine) {
         final NameVersion parentNameVersion = parseNameVersion(trimmedLine);
-        if (parentNameVersion.getVersion() != null) {
+        if (StringUtils.isNotBlank(parentNameVersion.getVersion())) {
             currentParent = new NameDependencyId(parentNameVersion.getName());
             final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, parentNameVersion.getName(), parentNameVersion.getVersion());
             lazyBuilder.setDependencyInfo(currentParent, parentNameVersion.getName(), parentNameVersion.getVersion(), externalId);
@@ -140,6 +140,11 @@ public class GemlockParser {
         if (dependencyNameVersionNode.getName() == null) {
             logger.error(String.format("Line in dependencies section can't be parsed: %s", trimmedLine));
         } else {
+            if (StringUtils.isNotBlank(dependencyNameVersionNode.getVersion())){
+                DependencyId dependencyId = new NameDependencyId(dependencyNameVersionNode.getName());
+                ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, dependencyNameVersionNode.getName(), dependencyNameVersionNode.getVersion());
+                lazyBuilder.setDependencyInfo(dependencyId, dependencyNameVersionNode.getName(), dependencyNameVersionNode.getVersion(), externalId);
+            }
             lazyBuilder.addChildToRoot(new NameDependencyId(dependencyNameVersionNode.getName()));
         }
     }
