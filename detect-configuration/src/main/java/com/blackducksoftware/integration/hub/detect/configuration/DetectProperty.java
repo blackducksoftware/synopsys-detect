@@ -408,8 +408,9 @@ public enum DetectProperty {
     DETECT_NUGET_INSPECTOR_NAME("detect.nuget.inspector.name", DetectPropertyType.STRING, "IntegrationNugetInspector"),
 
     @HelpGroup(primary = GROUP_NUGET)
-    @HelpDescription("Version of the Nuget Inspector")
-    DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version", DetectPropertyType.STRING, "latest"),
+    @HelpDescription("Version of the Nuget Inspector. Wildcards may be specified with *.")
+    @HelpDetailed("Wildcard versions will find the highest version that fits the pattern. For example 1.* will lock to major version 1 where 1.2.* will lock to major 1 and minor 2. Both versions 1.2.3 and 1.2.4 would fulfill both patterns and 1.2.4 would be chosen.")
+    DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version", DetectPropertyType.STRING, "1.*"),
 
     @HelpGroup(primary = GROUP_NUGET)
     @HelpDescription("The names of the projects in a solution to exclude")
