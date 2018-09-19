@@ -25,17 +25,18 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.model.Forge;
-import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.moandjiezana.toml.Toml;
+import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
+import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.hub.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.hub.bdio.model.Forge;
+import com.synopsys.integration.hub.bdio.model.dependency.Dependency;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.util.NameVersion;
 
 public class GopkgLockParser {
-    public ExternalIdFactory externalIdFactory;
+    private final ExternalIdFactory externalIdFactory;
 
     public GopkgLockParser(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
@@ -47,28 +48,45 @@ public class GopkgLockParser {
 
         for (final Project project : gopkgLock.getProjects()) {
             if (project != null) {
-                final String name = project.getName();
-                String version = "";
-                if (StringUtils.isNotBlank(project.getVersion())) {
-                    version = project.getVersion();
-                } else {
-                    version = project.getRevision();
-                }
-                for (final String pkg : project.getPackages()) {
-                    String packageName = name;
-                    if (!pkg.equals(".")) {
-                        packageName = packageName + "/" + pkg;
-                    }
-                    if (packageName.startsWith("golang.org/x/")) {
-                        packageName = packageName.replaceAll("golang.org/x/", "");
-                    }
-                    final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, packageName, version);
-                    final Dependency dependency = new Dependency(packageName, version, dependencyExternalId);
-                    graph.addChildToRoot(dependency);
-                }
+                final NameVersion projectNameVersion = createProjectNameVersion(project);
+                project.getPackages().stream()
+                        .map(packageName -> createDependencyName(projectNameVersion.getName(), packageName))
+                        .map(dependencyName -> createGoDependency(dependencyName, projectNameVersion.getVersion()))
+                        .forEach(graph::addChildToRoot);
             }
         }
 
         return graph;
     }
+
+    private NameVersion createProjectNameVersion(final Project project) {
+        final String version;
+
+        if (StringUtils.isNotBlank(project.getVersion())) {
+            version = project.getVersion();
+        } else {
+            version = project.getRevision();
+        }
+
+        return new NameVersion(project.getName(), version);
+    }
+
+    private String createDependencyName(final String projectName, final String parsedPackageName) {
+        String dependencyName = projectName;
+
+        if (!parsedPackageName.equals(".")) {
+            dependencyName = dependencyName + "/" + parsedPackageName;
+        }
+        if (dependencyName.startsWith("golang.org/x/")) {
+            dependencyName = dependencyName.replaceAll("golang.org/x/", "");
+        }
+
+        return dependencyName;
+    }
+
+    private Dependency createGoDependency(final String name, final String version) {
+        final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, name, version);
+        return new Dependency(name, version, dependencyExternalId);
+    }
+
 }

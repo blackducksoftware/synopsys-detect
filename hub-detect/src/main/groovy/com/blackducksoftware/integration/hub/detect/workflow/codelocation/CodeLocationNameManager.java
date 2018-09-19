@@ -29,27 +29,19 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
 public class CodeLocationNameManager {
-    private final DetectConfigWrapper detectConfigWrapper;
-    private final BomCodeLocationNameService bomCodeLocationNameService;
-    private final DockerCodeLocationNameService dockerCodeLocationNameService;
-    private final ScanCodeLocationNameService scanCodeLocationNameService;
-    private final DockerScanCodeLocationNameService dockerScanCodeLocationNameService;
+    private final DetectConfiguration detectConfiguration;
+    private final CodeLocationNameService codeLocationNameService;
 
     private final Set<String> codeLocationNames = new HashSet<>();
     private int givenCodeLocationOverrideCount = 0;
 
-    public CodeLocationNameManager(final DetectConfigWrapper detectConfigWrapper, final BomCodeLocationNameService bomCodeLocationNameService,
-            final DockerCodeLocationNameService dockerCodeLocationNameService, final ScanCodeLocationNameService scanCodeLocationNameService,
-            final DockerScanCodeLocationNameService dockerScanCodeLocationNameService) {
-        this.detectConfigWrapper = detectConfigWrapper;
-        this.bomCodeLocationNameService = bomCodeLocationNameService;
-        this.dockerCodeLocationNameService = dockerCodeLocationNameService;
-        this.scanCodeLocationNameService = scanCodeLocationNameService;
-        this.dockerScanCodeLocationNameService = dockerScanCodeLocationNameService;
+    public CodeLocationNameManager(final DetectConfiguration detectConfiguration, final CodeLocationNameService codeLocationNameService) {
+        this.detectConfiguration = detectConfiguration;
+        this.codeLocationNameService = codeLocationNameService;
     }
 
     public String createAggregateCodeLocationName(final String projectName, final String projectVersionName) {
@@ -71,10 +63,10 @@ public class CodeLocationNameManager {
         } else if (useCodeLocationOverride()) {
             codeLocationName = getNextCodeLocationOverrideName(CodeLocationType.BOM);
         } else if (BomToolGroupType.DOCKER.equals(detectCodeLocation.getBomToolGroupType())) {
-            codeLocationName = dockerCodeLocationNameService
-                    .createCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
+            codeLocationName = codeLocationNameService.createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix,
+                    suffix);
         } else {
-            codeLocationName = bomCodeLocationNameService.createCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
+            codeLocationName = codeLocationNameService.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
         }
         codeLocationNames.add(codeLocationName);
         return codeLocationName;
@@ -86,21 +78,33 @@ public class CodeLocationNameManager {
         if (useCodeLocationOverride()) {
             scanCodeLocationName = getNextCodeLocationOverrideName(CodeLocationType.SCAN);
         } else if (StringUtils.isNotBlank(dockerTarFilename)) {
-            scanCodeLocationName = dockerScanCodeLocationNameService.createCodeLocationName(dockerTarFilename, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameService.createDockerScanCodeLocationName(dockerTarFilename, projectName, projectVersionName, prefix, suffix);
         } else {
-            scanCodeLocationName = scanCodeLocationNameService.createCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameService.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
+        }
+        codeLocationNames.add(scanCodeLocationName);
+        return scanCodeLocationName;
+    }
+
+    public String createBinaryScanCodeLocationName(final String filename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+        final String scanCodeLocationName;
+
+        if (useCodeLocationOverride()) {
+            scanCodeLocationName = getNextCodeLocationOverrideName(CodeLocationType.SCAN);
+        } else {
+            scanCodeLocationName = codeLocationNameService.createBinaryScanCodeLocationName(filename, projectName, projectVersionName, prefix, suffix);
         }
         codeLocationNames.add(scanCodeLocationName);
         return scanCodeLocationName;
     }
 
     private boolean useCodeLocationOverride() {
-        return StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME));
+        return StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME));
     }
 
     private String getNextCodeLocationOverrideName(final CodeLocationType codeLocationType) { // returns "override", then "override 2", then "override 3", etc
         givenCodeLocationOverrideCount++;
-        final String base = detectConfigWrapper.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME) + " " + codeLocationType.name();
+        final String base = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME) + " " + codeLocationType.name();
         if (givenCodeLocationOverrideCount == 1) {
             return base;
         } else {

@@ -24,16 +24,18 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -42,37 +44,36 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.synopsys.integration.util.NameVersion;
 
 public class GradleInspectorExtractor {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final ExecutableRunner executableRunner;
     private final DetectFileFinder detectFileFinder;
     private final DetectFileManager detectFileManager;
     private final GradleReportParser gradleReportParser;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
     public GradleInspectorExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final DetectFileManager detectFileManager,
-            final GradleReportParser gradleReportParser, final DetectConfigWrapper detectConfigWrapper) {
+            final GradleReportParser gradleReportParser, final DetectConfiguration detectConfiguration) {
         this.executableRunner = executableRunner;
         this.detectFileFinder = detectFileFinder;
         this.detectFileManager = detectFileManager;
         this.gradleReportParser = gradleReportParser;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String gradleExe, final String gradleInspector, final ExtractionId extractionId) {
         try {
-            final File outputDirectory = detectFileManager.getOutputDirectory("Gradle", extractionId);
+            final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
 
-            String gradleCommand = detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND);
+            String gradleCommand = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND);
 
             final List<String> arguments = new ArrayList<>();
             if (StringUtils.isNotBlank(gradleCommand)) {
                 gradleCommand = gradleCommand.replaceAll("dependencies", "").trim();
-                for (final String arg : gradleCommand.split(" ")) {
-                    if (StringUtils.isNotBlank(arg)) {
-                        arguments.add(arg);
-                    }
-                }
+                Arrays.stream(gradleCommand.split(" ")).filter(StringUtils::isNotBlank).forEach(arguments::add);
             }
             arguments.add("dependencies");
             arguments.add(String.format("--init-script=%s", gradleInspector));
@@ -84,29 +85,33 @@ public class GradleInspectorExtractor {
             final ExecutableOutput output = executableRunner.execute(executable);
 
             if (output.getReturnCode() == 0) {
+                final File rootProjectMetadataFile = detectFileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
                 final List<File> codeLocationFiles = detectFileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
 
                 final List<DetectCodeLocation> codeLocations = new ArrayList<>();
                 String projectName = null;
                 String projectVersion = null;
                 if (codeLocationFiles != null) {
-                    for (final File file : codeLocationFiles) {
-                        final InputStream stream = new FileInputStream(file);
-                        final GradleParseResult result = gradleReportParser.parseDependencies(bomToolType, stream);
-                        stream.close();
-                        final DetectCodeLocation codeLocation = result.codeLocation;
-                        codeLocations.add(codeLocation);
-                        if (projectName == null) {
-                            projectName = result.projectName;
-                            projectVersion = result.projectVersion;
+                    codeLocationFiles.stream()
+                            .map(codeLocationFile -> gradleReportParser.parseDependencies(bomToolType, codeLocationFile))
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .forEach(codeLocations::add);
+
+                    if (rootProjectMetadataFile != null) {
+                        final Optional<NameVersion> projectNameVersion = gradleReportParser.parseRootProjectNameVersion(rootProjectMetadataFile);
+                        if (projectNameVersion.isPresent()) {
+                            projectName = projectNameVersion.get().getName();
+                            projectVersion = projectNameVersion.get().getVersion();
                         }
+                    } else {
+                        logger.warn("Gradle inspector did not create a meta data report so no project version information was found.");
                     }
                 }
                 return new Extraction.Builder().success(codeLocations).projectName(projectName).projectVersion(projectVersion).build();
             } else {
                 return new Extraction.Builder().failure("The gradle inspector returned a non-zero exit code: " + output.getReturnCode()).build();
             }
-
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

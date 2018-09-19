@@ -25,13 +25,14 @@ package com.blackducksoftware.integration.hub.detect;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
-import com.blackducksoftware.integration.util.ResourceUtil;
+import com.synopsys.integration.util.ResourceUtil;
 
 public class DetectInfo {
     private final Logger logger = LoggerFactory.getLogger(DetectInfo.class);
@@ -46,6 +47,10 @@ public class DetectInfo {
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public int getDetectMajorVersion() {
+        return Integer.parseInt(getDetectVersion().split(Pattern.quote("."))[0]);
     }
 
     public String getDetectVersion() {

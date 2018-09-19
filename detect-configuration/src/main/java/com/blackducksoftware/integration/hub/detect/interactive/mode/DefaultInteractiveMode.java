@@ -25,15 +25,15 @@ package com.blackducksoftware.integration.hub.detect.interactive.mode;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
-import com.blackducksoftware.integration.log.SilentLogger;
+import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
+import com.synopsys.integration.log.SilentLogger;
 
 public class DefaultInteractiveMode extends InteractiveMode {
-    private final HubServiceWrapper hubServiceWrapper;
+    private final HubServiceManager hubServiceManager;
     private final DetectOptionManager detectOptionManager;
 
-    public DefaultInteractiveMode(final HubServiceWrapper hubServiceWrapper, final DetectOptionManager detectOptionManager) {
-        this.hubServiceWrapper = hubServiceWrapper;
+    public DefaultInteractiveMode(final HubServiceManager hubServiceManager, final DetectOptionManager detectOptionManager) {
+        this.hubServiceManager = hubServiceManager;
         this.detectOptionManager = detectOptionManager;
     }
 
@@ -41,86 +41,86 @@ public class DefaultInteractiveMode extends InteractiveMode {
     public void configure() {
         printWelcome();
 
-        final Boolean connectToHub = askYesOrNo("Would you like to connect to a Hub Instance?");
+        final Boolean connectToHub = askYesOrNo("Would you like to connect to a Black Duck Instance?");
         if (connectToHub == true) {
             boolean connected = false;
             boolean skipConnectionTest = false;
             while (!connected && !skipConnectionTest) {
-                setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_URL, "What is the hub instance url?");
+                setPropertyFromQuestion(DetectProperty.BLACKDUCK_URL, "What is the Black Duck instance url?");
 
-                print("You can now configure the hub with either an API token -OR- a username and password. The API token must already exist on the hub, but it is the preferred approach to configure your connection.");
+                println("You can now configure Black Duck with either an API token -OR- a username and password. The API token must already exist on the hub, but it is the preferred approach to configure your connection.");
                 final Boolean useApiToken = askYesOrNo("Would you like to use an existing API token?");
                 if (useApiToken) {
-                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_API_TOKEN, "What is the hub API token?");
+                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_API_TOKEN, "What is the API token?");
                 } else {
-                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_USERNAME, "What is the hub username?");
+                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_USERNAME, "What is the username?");
 
-                    final Boolean setHubPassword = askYesOrNoWithMessage("Would you like to set the hub password?",
+                    final Boolean setHubPassword = askYesOrNoWithMessage("Would you like to set the password?",
                             "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_HUB_PASSWORD.");
                     if (setHubPassword) {
-                        setPropertyFromSecretQuestion(DetectProperty.BLACKDUCK_HUB_PASSWORD, "What is the hub password?");
+                        setPropertyFromSecretQuestion(DetectProperty.BLACKDUCK_PASSWORD, "What is the password?");
                     }
                 }
 
-                final Boolean useProxy = askYesOrNo("Would you like to configure a proxy for the hub?");
+                final Boolean useProxy = askYesOrNo("Would you like to configure a proxy?");
                 if (useProxy) {
-                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_PROXY_HOST, "What is the hub proxy host?");
-                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_PROXY_PORT, "What is the hub proxy port?");
-                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_PROXY_USERNAME, "What is the hub proxy username?");
-                    final Boolean setHubPassword = askYesOrNoWithMessage("Would you like to set the hub proxy password?",
-                            "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_HUB_PROXY_PASSWORD.");
+                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_PROXY_HOST, "What is the proxy host?");
+                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_PROXY_PORT, "What is the proxy port?");
+                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_PROXY_USERNAME, "What is the hub username?");
+                    final Boolean setHubPassword = askYesOrNoWithMessage("Would you like to set the hub password?",
+                            "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_PROXY_PASSWORD.");
                     if (setHubPassword) {
-                        setPropertyFromSecretQuestion(DetectProperty.BLACKDUCK_HUB_PROXY_PASSWORD, "What is the hub proxy password?");
+                        setPropertyFromSecretQuestion(DetectProperty.BLACKDUCK_PROXY_PASSWORD, "What is the proxy password?");
                     }
                     final Boolean useNtlmProxy = askYesOrNo("Do you use a ntlm proxy?");
                     if (useNtlmProxy) {
-                        setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_PROXY_NTLM_DOMAIN, "What is the ntlm proxy domain?");
-                        setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION, "What is the ntlm proxy workstation?");
+                        setPropertyFromQuestion(DetectProperty.BLACKDUCK_PROXY_NTLM_DOMAIN, "What is the ntlm proxy domain?");
+                        setPropertyFromQuestion(DetectProperty.BLACKDUCK_PROXY_NTLM_WORKSTATION, "What is the ntlm proxy workstation?");
                     }
                 }
 
-                final Boolean trustCert = askYesOrNo("Would you like to automatically trust the hub certificate?");
+                final Boolean trustCert = askYesOrNo("Would you like to automatically trust certificates?");
                 if (trustCert) {
-                    setProperty(DetectProperty.BLACKDUCK_HUB_TRUST_CERT, "true");
+                    setProperty(DetectProperty.BLACKDUCK_TRUST_CERT, "true");
                 }
 
-                final Boolean testHub = askYesOrNo("Would you like to test the hub connection now?");
+                final Boolean testHub = askYesOrNo("Would you like to test the Black Duck connection now?");
                 if (testHub) {
                     try {
                         detectOptionManager.applyInteractiveOptions(getInteractiveOptions());
-                        connected = hubServiceWrapper.testHubConnection(new SilentLogger());
+                        connected = hubServiceManager.testHubConnection(new SilentLogger());
                     } catch (final Exception e) {
-                        println("Failed to test hub connection.");
+                        println("Failed to test connection.");
                         println(e.toString());
                         println("");
                     }
 
                     if (!connected) {
-                        println("Failed to connect to the hub.");
+                        println("Failed to connect.");
                         println("");
-                        skipConnectionTest = !askYesOrNo("Would you like to retry entering the hub information?");
+                        skipConnectionTest = !askYesOrNo("Would you like to retry entering Black Duck information?");
                     }
                 } else {
                     skipConnectionTest = true;
                 }
             }
 
-            final Boolean customDetails = askYesOrNo("Would you like to provide a project name and version to use on the hub?");
+            final Boolean customDetails = askYesOrNo("Would you like to provide a project name and version to use?");
             if (customDetails) {
-                setPropertyFromQuestion(DetectProperty.DETECT_PROJECT_NAME, "What is the hub project name?");
-                setPropertyFromQuestion(DetectProperty.DETECT_PROJECT_VERSION_NAME, "What is the hub project version?");
+                setPropertyFromQuestion(DetectProperty.DETECT_PROJECT_NAME, "What is the project name?");
+                setPropertyFromQuestion(DetectProperty.DETECT_PROJECT_VERSION_NAME, "What is the project version?");
             }
         } else {
-            setProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE, "true");
+            setProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, "true");
         }
 
         final Boolean scan = askYesOrNo("Would you like run a CLI scan?");
         if (!scan) {
-            setProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED, "true");
+            setProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, "true");
         } else if (scan && connectToHub) {
             final Boolean upload = askYesOrNo("Would you like to upload CLI scan results to the hub?");
             if (!upload) {
-                setProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN, "true");
+                setProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, "true");
             }
         }
 
@@ -129,9 +129,9 @@ public class DefaultInteractiveMode extends InteractiveMode {
             if (customScanner) {
                 final Boolean downloadCustomScanner = askYesOrNo("Would you like to download the custom scanner?");
                 if (downloadCustomScanner) {
-                    setPropertyFromQuestion(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL, "What is the scanner host url?");
+                    setPropertyFromQuestion(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, "What is the scanner host url?");
                 } else {
-                    setPropertyFromQuestion(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, "What is the location of your offline scanner?");
+                    setPropertyFromQuestion(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, "What is the location of your offline scanner?");
                 }
             }
         }

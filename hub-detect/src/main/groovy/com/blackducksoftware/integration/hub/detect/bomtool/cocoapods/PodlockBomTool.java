@@ -67,6 +67,7 @@ public class PodlockBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
+        addRelevantDiagnosticFile(foundPodlock);
         return podlockExtractor.extract(this.getBomToolType(), environment.getDirectory(), foundPodlock);
     }
 

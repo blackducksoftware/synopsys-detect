@@ -23,54 +23,72 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
-import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.OfflinePhoneHomeService;
-import com.blackducksoftware.integration.hub.service.PhoneHomeService;
-import com.blackducksoftware.integration.hub.service.model.PhoneHomeResponse;
-import com.blackducksoftware.integration.log.IntLogger;
-import com.blackducksoftware.integration.log.Slf4jIntLogger;
-import com.blackducksoftware.integration.phonehome.PhoneHomeClient;
-import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody;
-import com.blackducksoftware.integration.phonehome.google.analytics.GoogleAnalyticsConstants;
-import com.blackducksoftware.integration.util.IntEnvironmentVariables;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.service.HubRegistrationService;
+import com.synopsys.integration.blackduck.service.HubService;
+import com.synopsys.integration.blackduck.service.HubServicesFactory;
+import com.synopsys.integration.blackduck.service.model.BlackDuckPhoneHomeCallable;
+import com.synopsys.integration.log.Slf4jIntLogger;
+import com.synopsys.integration.phonehome.PhoneHomeCallable;
+import com.synopsys.integration.phonehome.PhoneHomeClient;
+import com.synopsys.integration.phonehome.PhoneHomeResponse;
+import com.synopsys.integration.phonehome.PhoneHomeService;
+import com.synopsys.integration.phonehome.google.analytics.GoogleAnalyticsConstants;
+import com.synopsys.integration.util.IntEnvironmentVariables;
 
 public class PhoneHomeManager {
     private final Logger logger = LoggerFactory.getLogger(PhoneHomeManager.class);
 
     private final DetectInfo detectInfo;
-    private final Gson gson;
-    private final AdditionalPropertyConfig additionalPropertyConfig;
+    private URL hubUrl;
 
+    private PhoneHomeClient phoneHomeClient;
     private PhoneHomeService phoneHomeService;
     private PhoneHomeResponse phoneHomeResponse;
+    private HubService hubService;
+    private HubRegistrationService hubRegistrationService;
+    private boolean isBlackDuckOffline;
+    private HubServicesFactory hubServicesFactory;
+    private final DetectConfiguration detectConfiguration;
+    private final Gson gson;
 
-    public PhoneHomeManager(final DetectInfo detectInfo, final Gson gson, final AdditionalPropertyConfig additionalPropertyConfig) {
+    public PhoneHomeManager(final DetectInfo detectInfo, final DetectConfiguration detectConfiguration, final Gson gson) {
         this.detectInfo = detectInfo;
+        this.detectConfiguration = detectConfiguration;
         this.gson = gson;
-        this.additionalPropertyConfig = additionalPropertyConfig;
     }
 
-    public void init(final PhoneHomeService phoneHomeService) {
+    public void initOffline() {
+
+        this.phoneHomeService = new PhoneHomeService(new Slf4jIntLogger(logger), Executors.newSingleThreadExecutor());
+        this.phoneHomeClient = new PhoneHomeClient(GoogleAnalyticsConstants.PRODUCTION_INTEGRATIONS_TRACKING_ID, new Slf4jIntLogger(logger), gson);
+
+        this.isBlackDuckOffline = true;
+    }
+
+    public void init(final PhoneHomeService phoneHomeService, final PhoneHomeClient phoneHomeClient, final HubServicesFactory hubServicesFactory, final HubService hubService,
+            final HubRegistrationService hubRegistrationService, final URL hubUrl) {
         this.phoneHomeService = phoneHomeService;
-    }
-
-    public void initOffline() throws DetectUserFriendlyException {
-        final IntEnvironmentVariables intEnvironmentVariables = new IntEnvironmentVariables();
-
-        final PhoneHomeClient phoneHomeClient = new PhoneHomeClient(GoogleAnalyticsConstants.PRODUCTION_INTEGRATIONS_TRACKING_ID, logger, gson);
-
-        final IntLogger intLogger = new Slf4jIntLogger(logger);
-        this.phoneHomeService = new OfflinePhoneHomeService(intLogger, phoneHomeClient, intEnvironmentVariables);
+        this.isBlackDuckOffline = false;
+        this.hubServicesFactory = hubServicesFactory;
+        this.hubService = hubService;
+        this.hubRegistrationService = hubRegistrationService;
+        this.hubUrl = hubUrl;
+        this.phoneHomeClient = phoneHomeClient;
     }
 
     public void startPhoneHome() {
@@ -80,27 +98,45 @@ public class PhoneHomeManager {
         // We would prefer to always wait for all the bom tool metadata, but
         // sometimes there is not enough time to complete a phone home before
         // hub-detect exits (if the scanner is disabled, for example).
-        performPhoneHome(null);
+        performPhoneHome(new HashMap<>());
     }
 
     public void startPhoneHome(final Set<BomToolGroupType> applicableBomToolTypes) {
-        performPhoneHome(applicableBomToolTypes);
+        final Map<String, String> metadata = new HashMap<>();
+        if (applicableBomToolTypes != null) {
+            final String applicableBomToolsString = applicableBomToolTypes.stream()
+                    .map(BomToolGroupType::toString)
+                    .collect(Collectors.joining(","));
+            metadata.put("bomToolTypes", applicableBomToolsString);
+        }
+        performPhoneHome(metadata);
     }
 
-    private void performPhoneHome(final Set<BomToolGroupType> applicableBomToolTypes) {
+    public void startPhoneHome(final Map<BomToolGroupType, Long> applicableBomToolTimes) {
+        final Map<String, String> metadata = new HashMap<>();
+        if (applicableBomToolTimes != null) {
+            final String applicableBomToolsString = applicableBomToolTimes.keySet().stream()
+                    .map(it -> String.format("%s:%s", it.toString(), applicableBomToolTimes.get(it)))
+                    .collect(Collectors.joining(","));
+            metadata.put("bomToolTypes", applicableBomToolsString);
+        }
+        performPhoneHome(metadata);
+    }
+
+    private void performPhoneHome(final Map<String, String> metadata) {
         endPhoneHome();
         if (null != phoneHomeService) {
             try {
-                final PhoneHomeRequestBody.Builder phoneHomeRequestBodyBuilder = createBuilder();
-
-                if (applicableBomToolTypes != null) {
-                    final String applicableBomToolsString = StringUtils.join(applicableBomToolTypes, ", ");
-                    phoneHomeRequestBodyBuilder.addToMetaData("bomToolTypes", applicableBomToolsString);
+                final PhoneHomeCallable callable;
+                final Set<Entry<String, String>> additionalMetadata = detectConfiguration.getBlackduckProperties().entrySet();
+                additionalMetadata.forEach(it -> metadata.put(it.getKey(), it.getValue()));
+                if (isBlackDuckOffline) {
+                    callable = createOfflineCallable(metadata);
+                } else {
+                    callable = createOnlineCallable(metadata);
                 }
 
-                final PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build();
-
-                phoneHomeResponse = phoneHomeService.startPhoneHome(phoneHomeRequestBody);
+                phoneHomeResponse = phoneHomeService.startPhoneHome(callable);
             } catch (final IllegalStateException e) {
                 logger.debug(e.getMessage(), e);
             }
@@ -117,20 +153,21 @@ public class PhoneHomeManager {
         return phoneHomeResponse;
     }
 
-    private PhoneHomeRequestBody.Builder createBuilder() {
-        final PhoneHomeRequestBody.Builder phoneHomeRequestBodyBuilder = phoneHomeService.createInitialPhoneHomeRequestBodyBuilder("hub-detect", detectInfo.getDetectVersion());
-        additionalPropertyConfig.getAdditionalPhoneHomePropertyNames().stream().forEach(propertyName -> {
-            final String actualKey = getKeyWithoutPrefix(propertyName, AdditionalPropertyConfig.PHONE_HOME_PROPERTY_PREFIX);
-            final String value = additionalPropertyConfig.getDetectProperty(propertyName);
-            phoneHomeRequestBodyBuilder.addToMetaData(actualKey, value);
-        });
+    // TODO: Don't supply a product url to offine phone home!
+    private PhoneHomeCallable createOfflineCallable(final Map<String, String> metadata) {
+        OfflineBlackDuckPhoneHomeCallable offlineCallable;
+        offlineCallable = new OfflineBlackDuckPhoneHomeCallable(new Slf4jIntLogger(logger), phoneHomeClient, "hub-detect", detectInfo.getDetectVersion(), new IntEnvironmentVariables());
+        metadata.entrySet().forEach(it -> offlineCallable.addMetaData(it.getKey(), it.getValue()));
 
-        return phoneHomeRequestBodyBuilder;
+        return offlineCallable;
+
     }
 
-    private String getKeyWithoutPrefix(final String key, final String prefix) {
-        final int prefixIndex = key.indexOf(prefix) + prefix.length();
-        return key.substring(prefixIndex);
+    private PhoneHomeCallable createOnlineCallable(final Map<String, String> metadata) {
+        final BlackDuckPhoneHomeCallable onlineCallable = (BlackDuckPhoneHomeCallable) hubServicesFactory.createBlackDuckPhoneHomeCallable(hubUrl, "hub-detect", detectInfo.getDetectVersion());
+        metadata.entrySet().forEach(it -> onlineCallable.addMetaData(it.getKey(), it.getValue()));
+
+        return onlineCallable;
     }
 
 }

@@ -27,20 +27,33 @@ import java.util.Arrays;
 
 public class ArgumentStateParser {
 
-    public ArgumentState parseArgs(String[] args) {
-        boolean isHelp = checkArgumentPresent("-h", "--help", args);
-        boolean isHelpDocument = checkArgumentPresent("-hdoc", "--helpdocument", args);
-        boolean isInteractive = checkArgumentPresent("-i", "--interactive", args);
+    public ArgumentState parseArgs(final String[] args) {
+        final boolean isHelp = checkArgumentPresent("-h", "--help", args);
+        final boolean isHelpDocument = checkArgumentPresent("-hdoc", "--helpdocument", args);
+        final boolean isInteractive = checkArgumentPresent("-i", "--interactive", args);
 
-        boolean isVerboseHelp = checkArgumentPresent("-hv", "--helpVerbose", args);
-        boolean isDeprecatedHelp = checkArgumentPresent("-hd", "--helpDeprecated", args);
+        final boolean isVerboseHelp = checkArgumentPresent("-hv", "--helpVerbose", args);
+        final boolean isDeprecatedHelp = checkArgumentPresent("-hd", "--helpDeprecated", args);
+
+        final boolean isDiagnosticProvided = checkArgumentPresent("-d", "--diagnostic", args);
+        final boolean isDiagnosticExtendedProvided = checkArgumentPresent("-de", "--diagnosticExtended", args);
+
+        boolean isDiagnostic = false;
+        boolean isDiagnosticProtected = true;
+
+        if (isDiagnosticProvided || isDiagnosticExtendedProvided) {
+            isDiagnostic = true;
+        }
+        if (isDiagnosticExtendedProvided) {
+            isDiagnosticProtected = false;
+        }
 
         String parsedValue = null;
         if (isHelp) {
             parsedValue = getParsedValueForCommand("-h", "--help", args);
         }
 
-        return new ArgumentState(isHelp, isHelpDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue);
+        return new ArgumentState(isHelp, isHelpDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue, isDiagnostic, isDiagnosticProtected);
     }
 
     private boolean checkArgumentPresent(final String command, final String largeCommand, final String[] args) {

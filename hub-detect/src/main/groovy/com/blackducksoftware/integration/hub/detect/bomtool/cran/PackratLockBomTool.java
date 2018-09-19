@@ -67,6 +67,7 @@ public class PackratLockBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
+        addRelevantDiagnosticFile(packratlock);
         return packratLockExtractor.extract(this.getBomToolType(), environment.getDirectory(), packratlock);
     }
 

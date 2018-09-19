@@ -20,12 +20,12 @@ import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil;
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class RubygemsNodePackagerTest {
     Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
@@ -33,7 +33,6 @@ public class RubygemsNodePackagerTest {
 
     @Test
     public void packagerTest() throws JSONException, IOException, URISyntaxException {
-        final String expected = testUtils.getResourceAsUTF8String("/rubygems/expectedPackager.json");
         final List<String> actualText = Arrays.asList(testUtils.getResourceAsUTF8String("/rubygems/Gemfile.lock").split("\n"));
         final GemlockParser rubygemsNodePackager = new GemlockParser(new ExternalIdFactory());
         final DependencyGraph projects = rubygemsNodePackager.parseProjectDependencies(actualText);

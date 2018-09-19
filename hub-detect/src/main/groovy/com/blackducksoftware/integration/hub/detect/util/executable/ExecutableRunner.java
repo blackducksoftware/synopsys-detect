@@ -32,36 +32,36 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
 public class ExecutableRunner {
     private final Logger logger = LoggerFactory.getLogger(ExecutableRunner.class);
 
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
-    public ExecutableRunner(final DetectConfigWrapper detectConfigWrapper) {
-        this.detectConfigWrapper = detectConfigWrapper;
+    public ExecutableRunner(final DetectConfiguration detectConfiguration) {
+        this.detectConfiguration = detectConfiguration;
     }
 
     public ExecutableOutput execute(final String exePath, final String... args) throws ExecutableRunnerException {
-        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
+        final Executable exe = new Executable(new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
         return execute(exe);
     }
 
     public ExecutableOutput executeQuietly(final String exePath, final String... args) throws ExecutableRunnerException {
-        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
+        final Executable exe = new Executable(new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
         return executeQuietly(exe);
     }
 
     public ExecutableOutput execute(final String exePath, final List<String> args) throws ExecutableRunnerException {
-        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, args);
+        final Executable exe = new Executable(new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, args);
         return execute(exe);
     }
 
     public ExecutableOutput executeQuietly(final String exePath, final List<String> args) throws ExecutableRunnerException {
-        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, args);
-        return execute(exe);
+        final Executable exe = new Executable(new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, args);
+        return executeQuietly(exe);
     }
 
     public ExecutableOutput executeFromDirQuietly(final File workingDir, final String exePath, final List<String> args) throws ExecutableRunnerException {
@@ -70,7 +70,7 @@ public class ExecutableRunner {
     }
 
     public ExecutableOutput execute(final File exePath, final String... args) throws ExecutableRunnerException {
-        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
+        final Executable exe = new Executable(new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
         return execute(exe);
     }
 
@@ -81,7 +81,7 @@ public class ExecutableRunner {
     public ExecutableOutput executeQuietly(final Executable executable) throws ExecutableRunnerException {
         return runExecutable(executable, logger::debug, logger::trace);
     }
-    
+
     private ExecutableOutput runExecutable(final Executable executable, final Consumer<String> standardLoggingMethod, final Consumer<String> traceLoggingMethod) throws ExecutableRunnerException {
         standardLoggingMethod.accept(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
         try {

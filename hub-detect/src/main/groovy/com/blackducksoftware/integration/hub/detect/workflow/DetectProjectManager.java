@@ -29,6 +29,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,34 +40,36 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.workflow.RequiredBomToolChecker.RequiredBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionResult;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolProjectInfo;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.BomToolGroupStatusSummary;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
-import com.blackducksoftware.integration.hub.summary.Result;
-import com.blackducksoftware.integration.util.NameVersion;
+import com.synopsys.integration.blackduck.summary.Result;
+import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.util.NameVersion;
 
 public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupStatusSummary>, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
+    private final Set<BomToolGroupType> applicableBomTools = new HashSet<>();
     private final Map<BomToolGroupType, Result> bomToolGroupSummaryResults = new HashMap<>();
     private ExitCodeType bomToolSearchExitCodeType;
 
@@ -74,24 +77,29 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
     private final ExtractionManager extractionManager;
     private final DetectCodeLocationManager codeLocationManager;
     private final BdioManager bdioManager;
-    private final ExtractionSummaryReporter extractionSummaryReporter;
     private final BomToolNameVersionDecider bomToolNameVersionDecider;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
+    private final ReportManager reportManager;
 
     public DetectProjectManager(final SearchManager searchManager, final ExtractionManager extractionManager, final DetectCodeLocationManager codeLocationManager, final BdioManager bdioManager,
-            final ExtractionSummaryReporter extractionSummaryReporter, final BomToolNameVersionDecider bomToolNameVersionDecider, final DetectConfigWrapper detectConfigWrapper) {
+            final BomToolNameVersionDecider bomToolNameVersionDecider, final DetectConfiguration detectConfiguration, final ReportManager reportManager) {
 
         this.searchManager = searchManager;
         this.extractionManager = extractionManager;
         this.codeLocationManager = codeLocationManager;
         this.bdioManager = bdioManager;
-        this.extractionSummaryReporter = extractionSummaryReporter;
         this.bomToolNameVersionDecider = bomToolNameVersionDecider;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
+        this.reportManager = reportManager;
     }
 
     public DetectProject createDetectProject() throws DetectUserFriendlyException, IntegrationException {
         final SearchResult searchResult = searchManager.performSearch();
+
+        searchResult.getBomToolEvaluations().stream()
+                .filter(it -> it.isApplicable())
+                .map(it -> it.getBomTool().getBomToolGroupType())
+                .forEach(it -> applicableBomTools.add(it));
 
         final ExtractionResult extractionResult = extractionManager.performExtractions(searchResult.getBomToolEvaluations());
         applyBomToolGroupStatus(extractionResult.getSuccessfulBomToolTypes(), extractionResult.getFailedBomToolTypes());
@@ -103,14 +111,14 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
         final List<DetectCodeLocation> codeLocations = extractionResult.getDetectCodeLocations();
 
         final List<File> bdioFiles = new ArrayList<>();
-        if (StringUtils.isBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME))) {
+        if (StringUtils.isBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME))) {
             final DetectCodeLocationResult codeLocationResult = codeLocationManager.process(codeLocations, projectName, projectVersion);
             applyFailedBomToolGroupStatus(codeLocationResult.getFailedBomToolGroupTypes());
 
             final List<File> createdBdioFiles = bdioManager.createBdioFiles(codeLocationResult.getBdioCodeLocations(), projectName, projectVersion);
             bdioFiles.addAll(createdBdioFiles);
 
-            extractionSummaryReporter.print(searchResult.getBomToolEvaluations(), codeLocationResult.getCodeLocationNames());
+            reportManager.codeLocationsCompleted(searchResult.getBomToolEvaluations(), codeLocationResult.getCodeLocationNames());
         } else {
             final File aggregateBdioFile = bdioManager.createAggregateBdioFile(codeLocations, projectName, projectVersion);
             bdioFiles.add(aggregateBdioFile);
@@ -140,6 +148,16 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
         if (null != bomToolSearchExitCodeType) {
             return bomToolSearchExitCodeType;
         }
+        final String requiredText = detectConfiguration.getProperty(DetectProperty.DETECT_REQUIRED_BOM_TOOL_TYPES);
+        if (!StringUtils.isBlank(requiredText)) {
+            logger.info("Checking for required bom tools: " + requiredText);
+            final RequiredBomToolChecker checker = new RequiredBomToolChecker();
+            final RequiredBomToolResult result = checker.checkForMissingBomTools(requiredText, applicableBomTools);
+            if (result.wereBomToolsMissing()) {
+                result.getMissingBomTools().forEach(it -> logger.error("Required a bom tool of type " + it.toString() + " but an applicable bom tool of that type was not found."));
+                return ExitCodeType.FAILURE_BOM_TOOL_REQUIRED;
+            }
+        }
         return ExitCodeType.SUCCESS;
     }
 
@@ -161,30 +179,30 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
     private NameVersion getProjectNameVersion(final List<BomToolEvaluation> bomToolEvaluations) {
         final Optional<NameVersion> bomToolSuggestedNameVersion = findBomToolProjectNameAndVersion(bomToolEvaluations);
 
-        String projectName = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_NAME);
+        String projectName = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_NAME);
         if (StringUtils.isBlank(projectName) && bomToolSuggestedNameVersion.isPresent()) {
             projectName = bomToolSuggestedNameVersion.get().getName();
         }
 
         if (StringUtils.isBlank(projectName)) {
             logger.info("A project name could not be decided. Using the name of the source path.");
-            projectName = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)).getName();
+            projectName = new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)).getName();
         }
 
-        String projectVersionName = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_VERSION_NAME);
+        String projectVersionName = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_NAME);
         if (StringUtils.isBlank(projectVersionName) && bomToolSuggestedNameVersion.isPresent()) {
             projectVersionName = bomToolSuggestedNameVersion.get().getVersion();
         }
 
         if (StringUtils.isBlank(projectVersionName)) {
-            if ("timestamp".equals(detectConfigWrapper.getProperty(DetectProperty.DETECT_DEFAULT_PROJECT_VERSION_SCHEME))) {
+            if ("timestamp".equals(detectConfiguration.getProperty(DetectProperty.DETECT_DEFAULT_PROJECT_VERSION_SCHEME))) {
                 logger.info("A project version name could not be decided. Using the current timestamp.");
-                final String timeformat = detectConfigWrapper.getProperty(DetectProperty.DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT);
+                final String timeformat = detectConfiguration.getProperty(DetectProperty.DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT);
                 final String timeString = DateTimeFormatter.ofPattern(timeformat).withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
                 projectVersionName = timeString;
             } else {
                 logger.info("A project version name could not be decided. Using the default version text.");
-                projectVersionName = detectConfigWrapper.getProperty(DetectProperty.DETECT_DEFAULT_PROJECT_VERSION_TEXT);
+                projectVersionName = detectConfiguration.getProperty(DetectProperty.DETECT_DEFAULT_PROJECT_VERSION_TEXT);
             }
         }
 
@@ -192,7 +210,7 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
     }
 
     private Optional<NameVersion> findBomToolProjectNameAndVersion(final List<BomToolEvaluation> bomToolEvaluations) {
-        final String projectBomTool = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_BOM_TOOL);
+        final String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_BOM_TOOL);
         BomToolGroupType preferredBomToolType = null;
         if (StringUtils.isNotBlank(projectBomTool)) {
             final String projectBomToolFixed = projectBomTool.toUpperCase();

@@ -23,29 +23,11 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.RecursiveToStringStyle;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import com.synopsys.integration.util.Stringable;
 
 // Loaded from json via Gson
-public class CompileCommand {
+public class CompileCommand extends Stringable {
     public String directory;
     public String command;
     public String file;
-
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
-    }
 }

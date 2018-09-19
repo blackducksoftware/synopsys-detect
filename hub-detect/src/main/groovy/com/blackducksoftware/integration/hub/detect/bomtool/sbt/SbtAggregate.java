@@ -23,7 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
-import com.blackducksoftware.integration.util.Stringable;
+import com.synopsys.integration.util.Stringable;
 
 public class SbtAggregate extends Stringable {
     public String name;

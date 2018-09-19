@@ -29,7 +29,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.log.IntLogger;
+import com.synopsys.integration.log.IntLogger;
 
 public class DetectSummaryManager {
     private final List<StatusSummaryProvider<?>> statusSummaryProviders;

@@ -23,6 +23,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
@@ -69,6 +73,16 @@ public abstract class BomTool {
 
     public String getDescriptiveName() {
         return String.format("%s - %s", getBomToolGroupType().toString(), getName());
+    }
+
+    private final List<File> relevantDiagnosticFiles = new ArrayList<>();
+
+    protected void addRelevantDiagnosticFile(final File file) {
+        relevantDiagnosticFiles.add(file);
+    }
+
+    public List<File> getRelevantDiagnosticFiles() {
+        return relevantDiagnosticFiles;
     }
 
 }

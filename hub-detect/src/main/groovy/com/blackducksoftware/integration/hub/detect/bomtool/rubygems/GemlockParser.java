@@ -23,7 +23,11 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.rubygems;
 
-import java.util.HashSet;
+import static com.blackducksoftware.integration.hub.detect.bomtool.rubygems.GemlockParser.GemfileLockSection.BUNDLED_WITH;
+import static com.blackducksoftware.integration.hub.detect.bomtool.rubygems.GemlockParser.GemfileLockSection.DEPENDENCIES;
+import static com.blackducksoftware.integration.hub.detect.bomtool.rubygems.GemlockParser.GemfileLockSection.NONE;
+import static com.blackducksoftware.integration.hub.detect.bomtool.rubygems.GemlockParser.GemfileLockSection.SPECS;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -31,19 +35,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
-import com.blackducksoftware.integration.hub.bdio.model.Forge;
-import com.blackducksoftware.integration.hub.bdio.model.dependencyid.DependencyId;
-import com.blackducksoftware.integration.hub.bdio.model.dependencyid.NameDependencyId;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.util.NameVersion;
+import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
+import com.synopsys.integration.hub.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.hub.bdio.model.Forge;
+import com.synopsys.integration.hub.bdio.model.dependencyid.DependencyId;
+import com.synopsys.integration.hub.bdio.model.dependencyid.NameDependencyId;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.util.NameVersion;
 
 public class GemlockParser {
     public static final String DEPENDENCIES_HEADER = "DEPENDENCIES";
     public static final String BUNDLED_WITH_HEADER = "BUNDLED WITH";
     public static final String SPECS_HEADER = "specs:";
+
     public static final String SPEC_RELATIONSHIP_PREFIX = "      ";
     public static final String SPEC_PACKAGE_PREFIX = "    ";
 
@@ -56,12 +61,9 @@ public class GemlockParser {
 
     private final ExternalIdFactory externalIdFactory;
     private LazyExternalIdDependencyGraphBuilder lazyBuilder;
-    private HashSet<String> directDependencyNames;
     private DependencyId currentParent;
 
-    private boolean inSpecsSection = false;
-    private boolean inDependenciesSection = false;
-    private boolean previousLineWasBundledWith = false;
+    private GemfileLockSection currentSection = NONE;
 
     public GemlockParser(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
@@ -69,50 +71,27 @@ public class GemlockParser {
 
     public DependencyGraph parseProjectDependencies(final List<String> gemfileLockLines) {
         lazyBuilder = new LazyExternalIdDependencyGraphBuilder();
-        directDependencyNames = new HashSet<>();
         currentParent = null;
 
-        gemfileLockLines.forEach(line -> {
-            if (StringUtils.isBlank(line)) {
-                inSpecsSection = false;
-                inDependenciesSection = false;
-                return;
-            }
+        for (final String line : gemfileLockLines) {
+            final String trimmedLine = StringUtils.trimToEmpty(line);
 
-            final String trimmedLine = line.trim();
-
-            if (!inSpecsSection && SPECS_HEADER.equals(trimmedLine)) {
-                inSpecsSection = true;
-                return;
-            }
-
-            if (!inDependenciesSection && DEPENDENCIES_HEADER.equals(trimmedLine)) {
-                inDependenciesSection = true;
-                return;
-            }
-
-            if (BUNDLED_WITH_HEADER.equals(trimmedLine)) {
-                previousLineWasBundledWith = true;
-            } else if (previousLineWasBundledWith) {
-                previousLineWasBundledWith = false;
+            if (StringUtils.isBlank(trimmedLine)) {
+                currentSection = NONE;
+            } else if (SPECS_HEADER.equals(trimmedLine)) {
+                currentSection = SPECS;
+            } else if (DEPENDENCIES_HEADER.equals(trimmedLine)) {
+                currentSection = DEPENDENCIES;
+            } else if (BUNDLED_WITH_HEADER.equals(trimmedLine)) {
+                currentSection = BUNDLED_WITH;
+            } else if (BUNDLED_WITH.equals(currentSection)) {
                 addBundlerDependency(trimmedLine);
-            }
-
-            if (!inSpecsSection && !inDependenciesSection) {
-                return;
-            }
-
-            // we are now either in the specs section or in the dependencies section
-            if (inSpecsSection) {
+            } else if (SPECS.equals(currentSection)) {
                 parseSpecsSectionLine(line);
-            } else {
+            } else if (DEPENDENCIES.equals(currentSection)) {
                 parseDependencySectionLine(trimmedLine);
             }
-        });
-
-        directDependencyNames.forEach(directDependencyName -> {
-            lazyBuilder.addChildToRoot(new NameDependencyId(directDependencyName));
-        });
+        }
 
         return lazyBuilder.build();
     }
@@ -192,4 +171,12 @@ public class GemlockParser {
 
         return Optional.ofNullable(validVersion);
     }
+
+    enum GemfileLockSection {
+        BUNDLED_WITH,
+        DEPENDENCIES,
+        NONE,
+        SPECS;
+    }
+
 }

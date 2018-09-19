@@ -1,8 +1,10 @@
 {
   "externalDataIdRelationships": {
+      "http:npm/co/4_6_0": [
+      "http:npm/hoek/4_2_1"
+    ],
     "http:npm/ajv/5_5_2": [
       "http:npm/co/4_6_0",
-      "http:npm/hoek/4_2_1",
       "http:npm/tr46/0_0_3",
       "http:npm/cssstyle/0_2_37"
     ]

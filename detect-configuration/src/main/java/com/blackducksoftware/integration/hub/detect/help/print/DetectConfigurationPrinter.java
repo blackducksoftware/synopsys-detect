@@ -24,7 +24,6 @@
 package com.blackducksoftware.integration.hub.detect.help.print;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,17 +32,20 @@ import org.apache.commons.lang3.StringUtils;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 
 public class DetectConfigurationPrinter {
+
+    private List<DetectOption> sortOptions(final List<DetectOption> detectOptions) {
+        return detectOptions.stream()
+                .sorted((o1, o2) -> o1.getDetectProperty().getPropertyName().compareTo(o2.getDetectProperty().getPropertyName()))
+                .collect(Collectors.toList());
+    }
+
     public void print(final PrintStream printStream, final List<DetectOption> detectOptions) throws IllegalArgumentException, SecurityException {
         printStream.println("");
         printStream.println("Current property values:");
         printStream.println("--property = value [notes]");
         printStream.println(StringUtils.repeat("-", 60));
 
-        final List<DetectOption> sortedOptions = detectOptions.stream()
-                .sorted((o1, o2) -> o1.getDetectProperty().getPropertyName().compareTo(o2.getDetectProperty().getPropertyName()))
-                .collect(Collectors.toList());
-
-        final List<DetectOption> deprecatedInUse = new ArrayList<>();
+        final List<DetectOption> sortedOptions = sortOptions(detectOptions);
 
         for (final DetectOption option : sortedOptions) {
             final String key = option.getDetectProperty().getPropertyName();
@@ -69,6 +71,8 @@ public class DetectConfigurationPrinter {
                     text = displayName + " = " + fieldValue + " [calculated]";
                 } else if (fieldType == DetectOption.FinalValueType.OVERRIDE) {
                     text = displayName + " = " + fieldValue + " [" + option.getResolvedValue() + "]";
+                } else if (fieldType == DetectOption.FinalValueType.COPIED) {
+                    text = displayName + " = " + fieldValue + " [copied]";
                 }
 
                 if (option.getValidValues().size() > 0) {
@@ -79,12 +83,19 @@ public class DetectConfigurationPrinter {
                 }
 
                 if (option.getWarnings().size() > 0) {
-                    deprecatedInUse.add(option);
                     text += "\t *** WARNING ***";
                 }
                 printStream.println(text);
             }
         }
+        printStream.println(StringUtils.repeat("-", 60));
+        printStream.println("");
+
+    }
+
+    public void printWarnings(final PrintStream printStream, final List<DetectOption> detectOptions) {
+        final List<DetectOption> sortedOptions = sortOptions(detectOptions);
+
         final List<DetectOption> allWarnings = sortedOptions.stream().filter(it -> it.getWarnings().size() > 0).collect(Collectors.toList());
         if (allWarnings.size() > 0) {
             printStream.println("");
@@ -101,10 +112,6 @@ public class DetectConfigurationPrinter {
             }
             printStream.println(StringUtils.repeat("*", 60));
             printStream.println("");
-        } else {
-            printStream.println(StringUtils.repeat("-", 60));
-            printStream.println("");
         }
     }
-
 }

@@ -145,10 +145,14 @@ public abstract class DetectOption {
         return validateValue(resolvedValue);
     }
 
+    private String getDeprecationText() {
+        return "Will cause failures in version " + getDetectOptionHelp().deprecationFailInVersion.getDisplayValue() + ". Will be removed in version " + getDetectOptionHelp().deprecationRemoveInVersion.getDisplayValue() + ". ";
+    }
+
     public void printOption(final HelpTextWriter writer) {
         String description = getDetectOptionHelp().description;
         if (getDetectOptionHelp().isDeprecated) {
-            description = "Will be removed in version " + getDetectOptionHelp().deprecationVersion + ". " + description;
+            description = getDeprecationText() + description;
         }
         if (getValidValues().size() > 0) {
             description += " (" + getValidValues().stream().collect(Collectors.joining("|")) + ")";
@@ -169,7 +173,8 @@ public abstract class DetectOption {
         writer.println("Detailed information for " + detectProperty.getPropertyName());
         writer.println("");
         if (getDetectOptionHelp().isDeprecated) {
-            writer.println("Deprecated: will be removed in version " + getDetectOptionHelp().deprecationVersion);
+            writer.println("Deprecated: " + getDeprecationText());
+            writer.println("Deprecation description: " + getDetectOptionHelp().deprecation);
             writer.println("");
         }
         writer.println("Property description: " + getDetectOptionHelp().description);
@@ -195,7 +200,7 @@ public abstract class DetectOption {
         }
         String deprecationNotice = "";
         if (getDetectOptionHelp().isDeprecated) {
-            deprecationNotice = "Will be removed in version " + getDetectOptionHelp().deprecationVersion + ". " + getDetectOptionHelp().deprecation;
+            deprecationNotice = getDeprecationText() + getDetectOptionHelp().deprecation;
         }
         String propertyName = "";
         String defaultValue = "";
@@ -216,7 +221,8 @@ public abstract class DetectOption {
         LATEST, // the final value was resolved from latest
         CALCULATED, // the resolved value was not set and final value was set during init
         SUPPLIED, // the final value most likely came from spring
-        OVERRIDE // the resolved value was set but during init a new value was set
+        OVERRIDE, // the resolved value was set but during init a new value was set
+        COPIED // the resolved value was copied due to the setting of some other property, such as a deprecated property having an overide.
     }
 
     public static class OptionValidationResult {

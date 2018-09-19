@@ -26,16 +26,19 @@ package com.blackducksoftware.integration.hub.detect.workflow.search.rules;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 
 public class BomToolSearchProvider {
     private final BomToolFactory bomToolFactory;
+    private final BomToolProfiler bomToolProfiler;
 
-    public BomToolSearchProvider(final BomToolFactory bomToolFactory) {
+    public BomToolSearchProvider(final BomToolFactory bomToolFactory, final BomToolProfiler bomToolProfiler) {
         this.bomToolFactory = bomToolFactory;
+        this.bomToolProfiler = bomToolProfiler;
     }
 
     public BomToolSearchRuleSet createBomToolSearchRuleSet(final BomToolEnvironment environment) {
-        final BomToolSearchRuleSetBuilder searchRuleSet = new BomToolSearchRuleSetBuilder(environment);
+        final BomToolSearchRuleSetBuilder searchRuleSet = new BomToolSearchRuleSetBuilder(environment, bomToolProfiler);
 
         searchRuleSet.addBomTool(bomToolFactory.createPodLockBomTool(environment)).defaultNotNested();
         searchRuleSet.addBomTool(bomToolFactory.createCondaBomTool(environment)).defaultNotNested();
@@ -86,7 +89,7 @@ public class BomToolSearchProvider {
         searchRuleSet.addBomTool(bomToolFactory.createSbtResolutionCacheBomTool(environment)).defaultNotNested();
         searchRuleSet.addBomTool(bomToolFactory.createPearCliBomTool(environment)).defaultNotNested();
 
-        searchRuleSet.addBomTool(bomToolFactory.createCLangBomTool(environment)).defaultNested();
+        searchRuleSet.addBomTool(bomToolFactory.createClangBomTool(environment)).defaultNested();
 
         return searchRuleSet.build();
     }

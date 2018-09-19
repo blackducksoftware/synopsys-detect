@@ -23,7 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.summary;
 
-import com.blackducksoftware.integration.hub.summary.Result;
+import com.synopsys.integration.blackduck.summary.Result;
 
 public class StatusSummary {
     private final String descriptionKey;

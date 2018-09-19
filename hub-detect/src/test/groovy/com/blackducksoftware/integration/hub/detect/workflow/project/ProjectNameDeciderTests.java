@@ -9,9 +9,7 @@ import org.junit.Test;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
-import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolProjectInfo;
-import com.blackducksoftware.integration.util.NameVersion;
+import com.synopsys.integration.util.NameVersion;
 
 public class ProjectNameDeciderTests {
 

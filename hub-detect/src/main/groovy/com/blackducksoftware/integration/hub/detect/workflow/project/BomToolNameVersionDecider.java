@@ -41,7 +41,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.P
 import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.TooManyPreferredBomToolsFoundDecision;
 import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.UniqueBomToolDecision;
 import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.UniqueBomToolNotFoundDecision;
-import com.blackducksoftware.integration.util.NameVersion;
+import com.synopsys.integration.util.NameVersion;
 
 public class BomToolNameVersionDecider {
     private final Logger logger = LoggerFactory.getLogger(BomToolNameVersionDecider.class);

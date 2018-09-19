@@ -28,45 +28,46 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
-import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
-import com.blackducksoftware.integration.hub.api.generated.enumeration.PolicyStatusSummaryStatusType;
-import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
-import com.blackducksoftware.integration.hub.api.generated.view.VersionBomPolicyStatusView;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.service.ProjectService;
-import com.blackducksoftware.integration.hub.service.model.PolicyStatusDescription;
+import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.PolicySummaryStatusType;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.api.generated.view.VersionBomPolicyStatusView;
+import com.synopsys.integration.blackduck.service.ProjectService;
+import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class PolicyChecker {
     private final Logger logger = LoggerFactory.getLogger(PolicyChecker.class);
 
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
-    public PolicyChecker(final DetectConfigWrapper detectConfigWrapper) {
-        this.detectConfigWrapper = detectConfigWrapper;
+    public PolicyChecker(final DetectConfiguration detectConfiguration) {
+        this.detectConfiguration = detectConfiguration;
     }
 
     /**
      * For the given DetectProject, find the matching Hub project/version, then all of its code locations, then all of their scan summaries, wait until they are all complete, then get the policy status.
+     *
      * @throws IntegrationException
      */
     public PolicyStatusDescription getPolicyStatus(final ProjectService projectService, final ProjectVersionView version) throws IntegrationException {
         final VersionBomPolicyStatusView versionBomPolicyStatusView = projectService.getPolicyStatusForVersion(version);
         final PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView);
 
-        PolicyStatusSummaryStatusType statusEnum = PolicyStatusSummaryStatusType.NOT_IN_VIOLATION;
+        PolicySummaryStatusType statusEnum = PolicySummaryStatusType.NOT_IN_VIOLATION;
         if (policyStatusDescription.getCountInViolation() != null && policyStatusDescription.getCountInViolation().value > 0) {
-            statusEnum = PolicyStatusSummaryStatusType.IN_VIOLATION;
+            statusEnum = PolicySummaryStatusType.IN_VIOLATION;
         } else if (policyStatusDescription.getCountInViolationOverridden() != null && policyStatusDescription.getCountInViolationOverridden().value > 0) {
-            statusEnum = PolicyStatusSummaryStatusType.IN_VIOLATION_OVERRIDDEN;
+            statusEnum = PolicySummaryStatusType.IN_VIOLATION_OVERRIDDEN;
         }
         logger.info(String.format("Policy Status: %s", statusEnum.name()));
         return policyStatusDescription;
     }
 
     public boolean policyViolated(final PolicyStatusDescription policyStatusDescription) {
-        final String policyFailOnSeverity = detectConfigWrapper.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES);
+        final String policyFailOnSeverity = detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES);
         if (StringUtils.isEmpty(policyFailOnSeverity)) {
             return isAnyPolicyViolated(policyStatusDescription);
         }
@@ -76,7 +77,7 @@ public class PolicyChecker {
     }
 
     private boolean isAnyPolicyViolated(final PolicyStatusDescription policyStatusDescription) {
-        final int inViolationCount = policyStatusDescription.getCountOfStatus(PolicyStatusSummaryStatusType.IN_VIOLATION);
+        final int inViolationCount = policyStatusDescription.getCountOfStatus(PolicySummaryStatusType.IN_VIOLATION);
         return inViolationCount != 0;
     }
 

@@ -23,22 +23,23 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Stack;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.model.Forge;
-import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.util.DependencyHistory;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.hub.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.hub.bdio.model.Forge;
+import com.synopsys.integration.hub.bdio.model.dependency.Dependency;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class PipInspectorTreeParser {
     private final Logger logger = LoggerFactory.getLogger(PipInspectorTreeParser.class);
@@ -57,85 +58,70 @@ public class PipInspectorTreeParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public PipParseResult parse(final BomToolType bomToolType, final String treeText, final String sourcePath) {
-        final List<String> lines = Arrays.asList(treeText.trim().split(System.lineSeparator()));
+    public Optional<PipParseResult> parse(final BomToolType bomToolType, final List<String> pipInspectorOutputAsList, final String sourcePath) {
+        PipParseResult parseResult = null;
 
-        MutableMapDependencyGraph dependencyGraph = null;
-        final Stack<Dependency> tree = new Stack<>();
-
+        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        final DependencyHistory history = new DependencyHistory();
         Dependency project = null;
 
-        int indentation = 0;
-        for (final String line : lines) {
-            if (StringUtils.trimToNull(line) == null) {
+        for (final String line : pipInspectorOutputAsList) {
+            final String trimmedLine = StringUtils.trimToEmpty(line);
+            if (StringUtils.isEmpty(trimmedLine) || !trimmedLine.contains(SEPARATOR) || trimmedLine.startsWith(UNKNOWN_REQUIREMENTS_PREFIX) || trimmedLine.startsWith(UNPARSEABLE_REQUIREMENTS_PREFIX) || trimmedLine.startsWith(UNKNOWN_PACKAGE_PREFIX)) {
+                parseErrorsFromLine(trimmedLine);
                 continue;
             }
 
-            if (line.trim().startsWith(UNKNOWN_REQUIREMENTS_PREFIX)) {
-                final String path = line.replace(UNKNOWN_REQUIREMENTS_PREFIX, "").trim();
-                logger.info("Pip inspector could not find requirements file @ " + path);
-                continue;
+            final Dependency currentDependency = parseDependencyFromLine(trimmedLine, sourcePath);
+            final int lineLevel = getLineLevel(trimmedLine);
+            try {
+                history.clearDependenciesDeeperThan(lineLevel);
+            } catch (final IllegalStateException e) {
+                logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
             }
 
-            if (line.trim().startsWith(UNPARSEABLE_REQUIREMENTS_PREFIX)) {
-                final String path = line.replace(UNPARSEABLE_REQUIREMENTS_PREFIX, "").trim();
-                logger.info("Pip inspector could not parse requirements file @ " + path);
-                continue;
-            }
-
-            if (line.trim().startsWith(UNKNOWN_PACKAGE_PREFIX)) {
-                final String packageName = line.replace(UNKNOWN_PACKAGE_PREFIX, "").trim();
-                logger.info("Pip inspector could not resolve the package: " + packageName);
-                continue;
-            }
-
-            if (line.contains(SEPARATOR) && dependencyGraph == null) {
-                dependencyGraph = new MutableMapDependencyGraph();
-                project = projectLineToDependency(line, sourcePath);
-                continue;
-            }
-
-            if (dependencyGraph == null) {
-                continue;
-            }
-
-            final int currentIndentation = getCurrentIndentation(line);
-            final Dependency next = lineToDependency(line);
-            if (currentIndentation == indentation) {
-                tree.pop();
+            if (project == null) {
+                project = currentDependency;
+            } else if (project.equals(history.getLastDependency())) {
+                graph.addChildToRoot(currentDependency);
+            } else if (history.isEmpty()) {
+                graph.addChildToRoot(currentDependency);
             } else {
-                for (; indentation >= currentIndentation; indentation--) {
-                    tree.pop();
-                }
+                graph.addChildWithParents(currentDependency, history.getLastDependency());
             }
 
-            if (tree.size() > 0) {
-                dependencyGraph.addChildWithParent(next, tree.peek());
-            } else {
-                dependencyGraph.addChildrenToRoot(next);
-            }
-
-            indentation = currentIndentation;
-            tree.push(next);
+            history.add(currentDependency);
         }
 
-        if (project != null && !(project.name.equals("") && project.version.equals("") && dependencyGraph != null && dependencyGraph.getRootDependencyExternalIds().isEmpty())) {
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.PIP, bomToolType, sourcePath, project.externalId, dependencyGraph).build();
-            return new PipParseResult(project.name, project.version, codeLocation);
-        } else {
-            return null;
+        if (project != null) {
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.PIP, bomToolType, sourcePath, project.externalId, graph).build();
+            parseResult = new PipParseResult(project.name, project.version, codeLocation);
+        }
+
+        return Optional.ofNullable(parseResult);
+    }
+
+    private void parseErrorsFromLine(final String trimmedLine) {
+        if (trimmedLine.startsWith(UNKNOWN_REQUIREMENTS_PREFIX)) {
+            logger.error("Pip inspector could not find requirements file @ " + trimmedLine.substring(UNKNOWN_REQUIREMENTS_PREFIX.length()));
+        }
+
+        if (trimmedLine.startsWith(UNPARSEABLE_REQUIREMENTS_PREFIX)) {
+            logger.error("Pip inspector could not parse requirements file @ " + trimmedLine.substring(UNPARSEABLE_REQUIREMENTS_PREFIX.length()));
+        }
+
+        if (trimmedLine.startsWith(UNKNOWN_PACKAGE_PREFIX)) {
+            logger.error("Pip inspector could not resolve the package: " + trimmedLine.substring(UNKNOWN_PACKAGE_PREFIX.length()));
         }
     }
 
-    private Dependency projectLineToDependency(final String line, final String sourcePath) {
-        if (!line.contains(SEPARATOR)) {
-            return null;
-        }
+    private Dependency parseDependencyFromLine(final String line, final String sourcePath) {
         final String[] segments = line.split(SEPARATOR);
+
         String name = segments[0].trim();
         String version = segments[1].trim();
-
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version);
+
         if (name.equals(UNKNOWN_PROJECT_NAME) || version.equals(UNKNOWN_PROJECT_VERSION)) {
             externalId = externalIdFactory.createPathExternalId(Forge.PYPI, sourcePath);
         }
@@ -143,32 +129,17 @@ public class PipInspectorTreeParser {
         name = name.equals(UNKNOWN_PROJECT_NAME) ? "" : name;
         version = version.equals(UNKNOWN_PROJECT_VERSION) ? "" : version;
 
-        final Dependency node = new Dependency(name, version, externalId);
-
-        return node;
+        return new Dependency(name, version, externalId);
     }
 
-    Dependency lineToDependency(final String line) {
-        if (!line.contains(SEPARATOR)) {
-            return null;
-        }
-        final String[] segments = line.split(SEPARATOR);
-        final String name = segments[0].trim();
-        final String version = segments[1].trim();
-
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version);
-        final Dependency node = new Dependency(name, version, externalId);
-
-        return node;
-    }
-
-    int getCurrentIndentation(String line) {
-        int currentIndentation = 0;
-        while (line.startsWith(INDENTATION)) {
-            currentIndentation++;
-            line = line.replaceFirst(INDENTATION, "");
+    private int getLineLevel(final String line) {
+        int level = 0;
+        String tmpLine = line;
+        while (tmpLine.startsWith(INDENTATION)) {
+            tmpLine = tmpLine.replaceFirst(INDENTATION, "");
+            level++;
         }
 
-        return currentIndentation;
+        return level;
     }
 }

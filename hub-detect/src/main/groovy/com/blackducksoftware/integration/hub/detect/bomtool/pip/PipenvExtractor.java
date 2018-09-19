@@ -30,7 +30,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
@@ -43,12 +43,12 @@ public class PipenvExtractor {
 
     private final ExecutableRunner executableRunner;
     private final PipenvGraphParser pipenvTreeParser;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
-    public PipenvExtractor(final ExecutableRunner executableRunner, final PipenvGraphParser pipenvTreeParser, final DetectConfigWrapper detectConfigWrapper) {
+    public PipenvExtractor(final ExecutableRunner executableRunner, final PipenvGraphParser pipenvTreeParser, final DetectConfiguration detectConfiguration) {
         this.executableRunner = executableRunner;
         this.pipenvTreeParser = pipenvTreeParser;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String pythonExe, final String pipenvExe, final File setupFile) {
@@ -68,7 +68,7 @@ public class PipenvExtractor {
             result = pipenvTreeParser.parse(bomToolType, projectName, projectVersionName, pipFreezeOutput.getStandardOutputAsList(), graphOutput.getStandardOutputAsList(), directory.toString());
 
             if (result != null) {
-                extraction = new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
+                extraction = new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
             } else {
                 extraction = new Extraction.Builder().failure("Pipenv graph could not successfully be parsed").build();
             }
@@ -80,7 +80,7 @@ public class PipenvExtractor {
     }
 
     private String getProjectName(final File directory, final String pythonExe, final File setupFile) throws ExecutableRunnerException {
-        String projectName = detectConfigWrapper.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME);
+        String projectName = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME);
 
         if (StringUtils.isBlank(projectName) && setupFile != null && setupFile.exists()) {
             final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(
@@ -94,7 +94,7 @@ public class PipenvExtractor {
     }
 
     private String getProjectVersionName(final File directory, final String pythonExe, final File setupFile) throws ExecutableRunnerException {
-        String projectVersionName = detectConfigWrapper.getProperty(DetectProperty.DETECT_PIP_PROJECT_VERSION_NAME);
+        String projectVersionName = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_PROJECT_VERSION_NAME);
 
         if (StringUtils.isBlank(projectVersionName) && setupFile != null && setupFile.exists()) {
             final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(

@@ -38,13 +38,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.bdio.BdioReader;
-import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.model.Forge;
-import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -56,8 +49,15 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.HubSignatureScanner;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckSignatureScanner;
 import com.google.gson.Gson;
+import com.synopsys.integration.hub.bdio.BdioReader;
+import com.synopsys.integration.hub.bdio.BdioTransformer;
+import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
+import com.synopsys.integration.hub.bdio.model.Forge;
+import com.synopsys.integration.hub.bdio.model.SimpleBdioDocument;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class DockerExtractor {
     public static final String TAR_FILENAME_PATTERN = "*.tar.gz";
@@ -72,10 +72,10 @@ public class DockerExtractor {
     private final BdioTransformer bdioTransformer;
     private final ExternalIdFactory externalIdFactory;
     private final Gson gson;
-    private final HubSignatureScanner hubSignatureScanner;
+    private final BlackDuckSignatureScanner blackDuckSignatureScanner;
 
     public DockerExtractor(final DetectFileFinder detectFileFinder, final DetectFileManager detectFileManager, final DockerProperties dockerProperties,
-            final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson, final HubSignatureScanner hubSignatureScanner) {
+            final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson, final BlackDuckSignatureScanner blackDuckSignatureScanner) {
         this.detectFileFinder = detectFileFinder;
         this.detectFileManager = detectFileManager;
         this.dockerProperties = dockerProperties;
@@ -83,10 +83,11 @@ public class DockerExtractor {
         this.bdioTransformer = bdioTransformer;
         this.externalIdFactory = externalIdFactory;
         this.gson = gson;
-        this.hubSignatureScanner = hubSignatureScanner;
+        this.blackDuckSignatureScanner = blackDuckSignatureScanner;
     }
 
-    public Extraction extract(final BomToolType bomToolType, final File directory, final ExtractionId extractionId, final File bashExe, final File dockerExe, final String image, final String tar, final DockerInspectorInfo dockerInspectorInfo) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final ExtractionId extractionId, final File bashExe, final File dockerExe, final String image, final String tar,
+            final DockerInspectorInfo dockerInspectorInfo) {
         try {
             String imageArgument = null;
             String imagePiece = null;
@@ -132,11 +133,12 @@ public class DockerExtractor {
         }
     }
 
-    private Extraction executeDocker(final BomToolType bomToolType, final ExtractionId extractionId, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File dockerExe, final File bashExe,
+    private Extraction executeDocker(final BomToolType bomToolType, final ExtractionId extractionId, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File dockerExe,
+            final File bashExe,
             final DockerInspectorInfo dockerInspectorInfo)
             throws FileNotFoundException, IOException, ExecutableRunnerException {
 
-        final File outputDirectory = detectFileManager.getOutputDirectory("Docker", extractionId);
+        final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
         final File dockerPropertiesFile = detectFileManager.getOutputFile(outputDirectory, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
 
@@ -169,14 +171,14 @@ public class DockerExtractor {
 
         final File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
         if (null != producedTarFile && producedTarFile.isFile()) {
-            hubSignatureScanner.setDockerTarFile(producedTarFile);
+            blackDuckSignatureScanner.setDockerTarFile(producedTarFile);
         } else {
             logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", TAR_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
             if (StringUtils.isNotBlank(dockerTarFilePath)) {
                 final File dockerTarFile = new File(dockerTarFilePath);
                 if (dockerTarFile.isFile()) {
                     logger.debug(String.format("Will scan the provided Docker tar file %s", dockerTarFile.getCanonicalPath()));
-                    hubSignatureScanner.setDockerTarFile(dockerTarFile);
+                    blackDuckSignatureScanner.setDockerTarFile(dockerTarFile);
                 }
             }
         }

@@ -11,25 +11,19 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class PipInspectorTreeParserTest {
     private PipInspectorTreeParser parser;
-    private final TestUtil testUtil = new TestUtil();
-
-    private final String name = "pip";
-    private final String version = "1.0.0";
-    private final String fullName = name + PipInspectorTreeParser.SEPARATOR + version;
-    private final String line1 = PipInspectorTreeParser.INDENTATION + fullName;
-    private final String line2 = PipInspectorTreeParser.INDENTATION + PipInspectorTreeParser.INDENTATION + line1;
-    private final String line3 = "invalid line";
 
     @Before
     public void init() {
@@ -37,33 +31,70 @@ public class PipInspectorTreeParserTest {
     }
 
     @Test
-    public void getCurrentIndentationTest() {
-        final int indentation1 = parser.getCurrentIndentation(line1);
-        Assert.assertEquals(1, indentation1);
+    public void indendtationAndLineToNodeTest() {
+        final List<String> pipInspectorOutput = new ArrayList<>();
+        pipInspectorOutput.add("projectName==projectVersionName");
+        pipInspectorOutput.add("   appnope==0.1.0");
+        pipInspectorOutput.add("   decorator==4.3.0");
+        pipInspectorOutput.add("   dj-database-url==0.5.0");
+        pipInspectorOutput.add("   Django==1.10.4");
+        pipInspectorOutput.add("   ipython==5.1.0");
+        pipInspectorOutput.add("       pexpect==4.6.0");
+        pipInspectorOutput.add("           ptyprocess==0.6.0");
+        pipInspectorOutput.add("       appnope==0.1.0");
+        pipInspectorOutput.add("       setuptools==40.0.0");
+        pipInspectorOutput.add("       simplegeneric==0.8.1");
+        pipInspectorOutput.add("       decorator==4.3.0");
+        pipInspectorOutput.add("       pickleshare==0.7.4");
+        pipInspectorOutput.add("       traitlets==4.3.2");
+        pipInspectorOutput.add("           six==1.11.0");
+        pipInspectorOutput.add("           ipython-genutils==0.2.0");
+        pipInspectorOutput.add("           decorator==4.3.0");
+        pipInspectorOutput.add("       Pygments==2.2.0");
+        pipInspectorOutput.add("       prompt-toolkit==1.0.15");
+        pipInspectorOutput.add("           six==1.11.0");
+        pipInspectorOutput.add("           wcwidth==0.1.7");
+        pipInspectorOutput.add("   ipython-genutils==0.2.0");
+        pipInspectorOutput.add("   mypackage==5.2.0");
+        pipInspectorOutput.add("   pexpect==4.6.0");
+        pipInspectorOutput.add("       ptyprocess==0.6.0");
+        pipInspectorOutput.add("   pickleshare==0.7.4");
+        pipInspectorOutput.add("   prompt-toolkit==1.0.15");
+        pipInspectorOutput.add("       six==1.11.0");
+        pipInspectorOutput.add("       wcwidth==0.1.7");
+        pipInspectorOutput.add("   psycopg2==2.7.5");
+        pipInspectorOutput.add("   ptyprocess==0.6.0");
+        pipInspectorOutput.add("   Pygments==2.2.0");
+        pipInspectorOutput.add("   simplegeneric==0.8.1");
+        pipInspectorOutput.add("   six==1.11.0");
+        pipInspectorOutput.add("   traitlets==4.3.2");
+        pipInspectorOutput.add("       six==1.11.0");
+        pipInspectorOutput.add("       ipython-genutils==0.2.0");
+        pipInspectorOutput.add("       decorator==4.3.0");
+        pipInspectorOutput.add("   wcwidth==0.1.7");
 
-        final int indentation2 = parser.getCurrentIndentation(line2);
-        Assert.assertEquals(3, indentation2);
-    }
-
-    @Test
-    public void lineToNodeTest() {
-        final Dependency validNode1 = parser.lineToDependency(line1);
-        Assert.assertEquals(name, validNode1.name);
-        Assert.assertEquals(version, validNode1.version);
-
-        final Dependency validNode2 = parser.lineToDependency(line2);
-        Assert.assertEquals(validNode1.name, validNode2.name);
-        Assert.assertEquals(validNode1.version, validNode2.version);
-
-        final Dependency invalidNode = parser.lineToDependency(line3);
-        Assert.assertNull(invalidNode);
+        final Optional<PipParseResult> validParse = parser.parse(BomToolType.PIP_INSPECTOR, pipInspectorOutput, "");
+        Assert.assertTrue(validParse.isPresent());
+        Assert.assertTrue(validParse.get().getProjectName().equals("projectName"));
+        Assert.assertTrue(validParse.get().getProjectVersion().equals("projectVersionName"));
     }
 
     @Test
     public void invalidParseTest() {
-        String invalidText = "i am not a valid file" + System.lineSeparator();
-        invalidText += "the result should be null";
-        final PipParseResult root = parser.parse(BomToolType.PIP_INSPECTOR, invalidText, "");
-        Assert.assertNull(root);
+        final List<String> invalidText = new ArrayList<>();
+        invalidText.add("i am not a valid file");
+        invalidText.add("the result should be optional.empty()");
+        final Optional<PipParseResult> invalidParse = parser.parse(BomToolType.PIP_INSPECTOR, invalidText, "");
+        Assert.assertFalse(invalidParse.isPresent());
+    }
+
+    @Test
+    public void errorTest() {
+        final List<String> invalidText = new ArrayList<>();
+        invalidText.add(PipInspectorTreeParser.UNKNOWN_PACKAGE_PREFIX + "probably_an_internal_dependency_PY");
+        invalidText.add(PipInspectorTreeParser.UNPARSEABLE_REQUIREMENTS_PREFIX + "/not/a/real/path/encrypted/requirements.txt");
+        invalidText.add(PipInspectorTreeParser.UNKNOWN_REQUIREMENTS_PREFIX + "/not/a/real/path/requirements.txt");
+        final Optional<PipParseResult> invalidParse = parser.parse(BomToolType.PIP_INSPECTOR, invalidText, "");
+        Assert.assertFalse(invalidParse.isPresent());
     }
 }

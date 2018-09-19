@@ -23,16 +23,12 @@
  */
 package com.blackducksoftware.integration.hub.detect.util;
 
-import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.DetectInfo;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyType;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 
 /**
@@ -51,30 +47,24 @@ import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 public class TildeInPathResolver {
     private final Logger logger = LoggerFactory.getLogger(TildeInPathResolver.class);
 
-    private final DetectInfo detectInfo;
+    private final String systemUserHome;
+    private final OperatingSystemType currentOs;
 
-    public TildeInPathResolver(final DetectInfo detectInfo) {
-        this.detectInfo = detectInfo;
+    public TildeInPathResolver(final String systemUserHome, final OperatingSystemType currentOs) {
+        this.systemUserHome = systemUserHome;
+        this.currentOs = currentOs;
     }
 
-    public void resolveTildeInAllPathFields(final String systemUserHome, final DetectConfigWrapper detectConfigWrapper) throws IllegalArgumentException, IllegalAccessException {
-        final OperatingSystemType currentOs = detectInfo.getCurrentOs();
-
-        Map<DetectProperty, Object> propertyMap = detectConfigWrapper.getPropertyMap();
-        if (null != propertyMap && !propertyMap.isEmpty()) {
-            for (Map.Entry<DetectProperty, Object> propertyEntry : propertyMap.entrySet()) {
-                if (DetectPropertyType.STRING == propertyEntry.getKey().getPropertyType()) {
-                    String originalString = (String) propertyEntry.getValue();
-                    if (StringUtils.isNotBlank(originalString)) {
-                        String resolvedPath = resolveTildeInPath(currentOs, systemUserHome, originalString);
-                        if (!resolvedPath.equals(originalString)) {
-                            detectConfigWrapper.setDetectProperty(propertyEntry.getKey(), resolvedPath);
-                            logger.warn(String.format("We have resolved %s to %s. If this is not expected, please revise the path provided, or specify --detect.resolve.tilde.in.paths=false.", originalString, resolvedPath));
-                        }
-                    }
-                }
+    public Optional<String> resolveTildeInValue(final String value) {
+        final String originalString = value;
+        if (StringUtils.isNotBlank(originalString)) {
+            final String resolvedPath = resolveTildeInPath(currentOs, systemUserHome, originalString);
+            if (!resolvedPath.equals(originalString)) {
+                logger.warn(String.format("We have resolved %s to %s. If this is not expected, please revise the path provided, or specify --detect.resolve.tilde.in.paths=false.", originalString, resolvedPath));
+                return Optional.of(resolvedPath);
             }
         }
+        return Optional.empty();
     }
 
     public String resolveTildeInPath(final OperatingSystemType currentOs, final String systemUserHome, final String filePath) {

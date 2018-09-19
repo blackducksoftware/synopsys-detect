@@ -26,13 +26,25 @@ package com.blackducksoftware.integration.hub.detect.bomtool.hex;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
 public class RebarParseResult {
-    public String projectName;
-    public String projectVersion;
-    public DetectCodeLocation codeLocation;
+    private final String projectName;
+    private final String projectVersion;
+    private final DetectCodeLocation codeLocation;
 
     public RebarParseResult(final String projectName, final String projectVersion, final DetectCodeLocation codeLocation) {
         this.projectName = projectName;
         this.projectVersion = projectVersion;
         this.codeLocation = codeLocation;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public String getProjectVersion() {
+        return projectVersion;
+    }
+
+    public DetectCodeLocation getCodeLocation() {
+        return codeLocation;
     }
 }

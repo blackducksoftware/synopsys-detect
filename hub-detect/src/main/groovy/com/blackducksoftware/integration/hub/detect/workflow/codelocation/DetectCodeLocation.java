@@ -23,10 +23,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.codelocation;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 
 public class DetectCodeLocation {
     private final BomToolGroupType bomToolGroupType;

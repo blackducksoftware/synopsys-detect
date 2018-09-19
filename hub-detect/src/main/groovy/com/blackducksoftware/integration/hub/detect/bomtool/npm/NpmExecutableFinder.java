@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
@@ -48,16 +48,16 @@ public class NpmExecutableFinder {
 
     private final ExecutableManager executableManager;
     private final ExecutableRunner executableRunner;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
     private String foundNpm = null;
     private boolean hasLookedForNpm = false;
 
     public NpmExecutableFinder(final ExecutableManager executableManager, final ExecutableRunner executableRunner,
-            final DetectConfigWrapper detectConfigWrapper) {
+            final DetectConfiguration detectConfiguration) {
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public String findNpm(final BomToolEnvironment environment) throws BomToolException {
@@ -73,7 +73,7 @@ public class NpmExecutableFinder {
     }
 
     String findNpm() {
-        final String npm = executableManager.getExecutablePathOrOverride(ExecutableType.NPM, true, detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH), detectConfigWrapper.getProperty(DetectProperty.DETECT_NPM_PATH));
+        final String npm = executableManager.getExecutablePathOrOverride(ExecutableType.NPM, true, detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH), detectConfiguration.getProperty(DetectProperty.DETECT_NPM_PATH));
         if (validateNpm(null, npm)) {
             return npm;
         }
@@ -86,7 +86,7 @@ public class NpmExecutableFinder {
             final List<String> arguments = new ArrayList<>();
             arguments.add("-version");
 
-            String npmNodePath = detectConfigWrapper.getProperty(DetectProperty.DETECT_NPM_NODE_PATH);
+            String npmNodePath = detectConfiguration.getProperty(DetectProperty.DETECT_NPM_NODE_PATH);
             if (StringUtils.isNotBlank(npmNodePath)) {
                 final int lastSlashIndex = npmNodePath.lastIndexOf("/");
                 if (lastSlashIndex >= 0) {

@@ -17,8 +17,11 @@ Hub Detect
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=detect%3Ahub-detect&metric=alert_status)](https://sonarcloud.io/dashboard?id=detect%3Ahub-detect)
 
 ## Where can I get the latest release? ##
-Available from GitHub by running:  
+Available from GitHub for Linux by running:  
 bash <(curl -s https://blackducksoftware.github.io/hub-detect/hub-detect.sh)
+
+Available from GitHub for Windows by running:  
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://blackducksoftware.github.io/hub-detect/hub-detect.ps1?$(Get-Random) | iex; detect"
 
 ## Documentation
 

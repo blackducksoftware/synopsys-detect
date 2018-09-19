@@ -23,10 +23,12 @@
  */
 package com.blackducksoftware.integration.hub.detect.factory;
 
+import java.util.List;
+
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageManagerFinder;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangLinuxPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaCliBomTool;
@@ -80,18 +82,20 @@ import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCac
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCacheExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockExtractor;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 
 public class BomToolFactory {
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
     private final DetectFileFinder detectFileFinder;
     private final StandardExecutableFinder standardExecutableFinder;
+    private final ExecutableRunner executableRunner;
 
-    private final ClangExtractor cLangExtractor;
-    private final PackageManagerFinder cLangPackageManagerFinder;
+    private final List<ClangLinuxPackageManager> clangLinuxPackageManagers;
+    private final ClangExtractor clangExtractor;
     private final ComposerLockExtractor composerLockExtractor;
     private final CondaCliExtractor condaCliExtractor;
     private final CpanCliExtractor cpanCliExtractor;
@@ -122,8 +126,9 @@ public class BomToolFactory {
     private final SbtResolutionCacheExtractor sbtResolutionCacheExtractor;
     private final YarnLockExtractor yarnLockExtractor;
 
-    public BomToolFactory(final DetectConfigWrapper detectConfigWrapper, final DetectFileFinder detectFileFinder, final StandardExecutableFinder standardExecutableFinder, final ClangExtractor cLangExtractor,
-            final PackageManagerFinder cLangPackageManagerFinder,
+    public BomToolFactory(final DetectConfiguration detectConfiguration, final DetectFileFinder detectFileFinder, final StandardExecutableFinder standardExecutableFinder, final ExecutableRunner executableRunner,
+            final ClangExtractor clangExtractor,
+            final List<ClangLinuxPackageManager> clangLinuxPackageManagers,
             final ComposerLockExtractor composerLockExtractor, final CondaCliExtractor condaCliExtractor, final CpanCliExtractor cpanCliExtractor, final DockerExtractor dockerExtractor,
             final DockerInspectorManager dockerInspectorManager, final GemlockExtractor gemlockExtractor, final GoDepExtractor goDepExtractor, final GoInspectorManager goInspectorManager,
             final GoVndrExtractor goVndrExtractor, final GradleExecutableFinder gradleFinder, final GradleInspectorExtractor gradleInspectorExtractor, final GradleInspectorManager gradleInspectorManager,
@@ -132,11 +137,12 @@ public class BomToolFactory {
             final PackratLockExtractor packratLockExtractor, final PearCliExtractor pearCliExtractor, final PipInspectorExtractor pipInspectorExtractor, final PipInspectorManager pipInspectorManager,
             final PipenvExtractor pipenvExtractor, final PodlockExtractor podlockExtractor, final PythonExecutableFinder pythonExecutableFinder, final RebarExtractor rebarExtractor,
             final SbtResolutionCacheExtractor sbtResolutionCacheExtractor, final YarnLockExtractor yarnLockExtractor) {
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
         this.detectFileFinder = detectFileFinder;
         this.standardExecutableFinder = standardExecutableFinder;
-        this.cLangExtractor = cLangExtractor;
-        this.cLangPackageManagerFinder = cLangPackageManagerFinder;
+        this.executableRunner = executableRunner;
+        this.clangExtractor = clangExtractor;
+        this.clangLinuxPackageManagers = clangLinuxPackageManagers;
         this.composerLockExtractor = composerLockExtractor;
         this.condaCliExtractor = condaCliExtractor;
         this.cpanCliExtractor = cpanCliExtractor;
@@ -168,8 +174,8 @@ public class BomToolFactory {
         this.yarnLockExtractor = yarnLockExtractor;
     }
 
-    public ClangBomTool createCLangBomTool(final BomToolEnvironment environment) {
-        return new ClangBomTool(environment, detectFileFinder, cLangPackageManagerFinder, cLangExtractor);
+    public ClangBomTool createClangBomTool(final BomToolEnvironment environment) {
+        return new ClangBomTool(environment, executableRunner, detectFileFinder, clangLinuxPackageManagers, clangExtractor);
     }
 
     public ComposerLockBomTool createComposerLockBomTool(final BomToolEnvironment environment) {
@@ -185,9 +191,9 @@ public class BomToolFactory {
     }
 
     public DockerBomTool createDockerBomTool(final BomToolEnvironment environment) {
-        final String tar = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_TAR);
-        final String image = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_IMAGE);
-        final boolean dockerRequired = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED);
+        final String tar = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_TAR);
+        final String image = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE);
+        final boolean dockerRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED);
 
         return new DockerBomTool(environment, dockerInspectorManager, standardExecutableFinder, dockerRequired, image, tar, dockerExtractor);
     }
@@ -253,7 +259,7 @@ public class BomToolFactory {
     }
 
     public PipInspectorBomTool createPipInspectorBomTool(final BomToolEnvironment environment) {
-        final String requirementsFile = detectConfigWrapper.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH);
+        final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH);
         return new PipInspectorBomTool(environment, requirementsFile, detectFileFinder, pythonExecutableFinder, pipInspectorManager, pipInspectorExtractor);
     }
 
@@ -270,8 +276,7 @@ public class BomToolFactory {
     }
 
     public YarnLockBomTool createYarnLockBomTool(final BomToolEnvironment environment) {
-        final boolean productionDependenciesOnly = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_YARN_PROD_ONLY);
-        return new YarnLockBomTool(environment, productionDependenciesOnly, detectFileFinder, standardExecutableFinder, yarnLockExtractor);
+        return new YarnLockBomTool(environment, detectFileFinder, standardExecutableFinder, yarnLockExtractor);
     }
 
 }

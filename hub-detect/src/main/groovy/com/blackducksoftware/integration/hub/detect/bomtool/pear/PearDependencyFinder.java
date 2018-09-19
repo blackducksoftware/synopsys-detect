@@ -40,26 +40,26 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.model.Forge;
-import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.XmlUtil;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
+import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
+import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.hub.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.hub.bdio.model.Forge;
+import com.synopsys.integration.hub.bdio.model.dependency.Dependency;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class PearDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(PearDependencyFinder.class);
 
     private final ExternalIdFactory externalIdFactory;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
-    public PearDependencyFinder(final ExternalIdFactory externalIdFactory, final DetectConfigWrapper detectConfigWrapper) {
+    public PearDependencyFinder(final ExternalIdFactory externalIdFactory, final DetectConfiguration detectConfiguration) {
         this.externalIdFactory = externalIdFactory;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public PearParseResult parse(final File packageFile, final ExecutableOutput pearListing, final ExecutableOutput pearDependencies) throws ParserConfigurationException, SAXException, IOException {
@@ -112,7 +112,7 @@ public class PearDependencyFinder {
                 final String dependencyRequired = dependencyInfo[0].trim();
 
                 if (StringUtils.isNotBlank(dependencyName)) {
-                    if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_PEAR_ONLY_REQUIRED_DEPS)) {
+                    if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PEAR_ONLY_REQUIRED_DEPS)) {
                         nameList.add(last(dependencyName.split("/")));
                     } else {
                         if (BooleanUtils.toBoolean(dependencyRequired)) {

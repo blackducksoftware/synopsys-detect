@@ -24,21 +24,24 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.npm;
 
 import org.codehaus.plexus.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
-import com.blackducksoftware.integration.hub.bdio.model.Forge;
-import com.blackducksoftware.integration.hub.bdio.model.dependencyid.DependencyId;
-import com.blackducksoftware.integration.hub.bdio.model.dependencyid.NameDependencyId;
-import com.blackducksoftware.integration.hub.bdio.model.dependencyid.NameVersionDependencyId;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.google.gson.Gson;
+import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
+import com.synopsys.integration.hub.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.hub.bdio.model.Forge;
+import com.synopsys.integration.hub.bdio.model.dependencyid.DependencyId;
+import com.synopsys.integration.hub.bdio.model.dependencyid.NameDependencyId;
+import com.synopsys.integration.hub.bdio.model.dependencyid.NameVersionDependencyId;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class NpmLockfilePackager {
+    private final Logger logger = LoggerFactory.getLogger(NpmLockfilePackager.class);
     private final Gson gson;
     private final ExternalIdFactory externalIdFactory;
 
@@ -49,23 +52,31 @@ public class NpmLockfilePackager {
 
     public NpmParseResult parse(final BomToolType bomToolType, final String sourcePath, final String lockFileText, final boolean includeDevDependencies) {
         final LazyExternalIdDependencyGraphBuilder lazyBuilder = new LazyExternalIdDependencyGraphBuilder();
+        logger.info("Parsing lock file text: ");
+        logger.debug(lockFileText);
 
         final NpmProject npmProject = gson.fromJson(lockFileText, NpmProject.class);
-        npmProject.dependencies.forEach((name, npmDependency) -> {
-            if (shouldInclude(npmDependency, includeDevDependencies)) {
-                final DependencyId dependency = createDependencyId(name, npmDependency.version);
-                setDependencyInfo(dependency, name, npmDependency.version, lazyBuilder);
-                lazyBuilder.addChildToRoot(dependency);
-                if (npmDependency.requires != null) {
-                    npmDependency.requires.forEach((childName, childVersion) -> {
-                        final DependencyId childId = createDependencyId(childName, childVersion);
-                        setDependencyInfo(childId, childName, childVersion, lazyBuilder);
-                        lazyBuilder.addChildWithParent(childId, dependency);
-                    });
+        logger.info("Processing project.");
+        if (npmProject.dependencies != null) {
+            logger.info(String.format("Found %d dependencies.", npmProject.dependencies.size()));
+            npmProject.dependencies.forEach((name, npmDependency) -> {
+                if (shouldInclude(npmDependency, includeDevDependencies)) {
+                    final DependencyId dependency = createDependencyId(name, npmDependency.version);
+                    setDependencyInfo(dependency, name, npmDependency.version, lazyBuilder);
+                    lazyBuilder.addChildToRoot(dependency);
+                    if (npmDependency.requires != null) {
+                        npmDependency.requires.forEach((childName, childVersion) -> {
+                            final DependencyId childId = createDependencyId(childName, childVersion);
+                            setDependencyInfo(childId, childName, childVersion, lazyBuilder);
+                            lazyBuilder.addChildWithParent(childId, dependency);
+                        });
+                    }
                 }
-            }
-        });
-
+            });
+        } else {
+            logger.info("Lock file did not have a 'dependencies' section.");
+        }
+        logger.info("Finished processing.");
         final DependencyGraph graph = lazyBuilder.build();
         final ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPM, npmProject.name, npmProject.version);
         final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.NPM, bomToolType, sourcePath, projectId, graph).build();

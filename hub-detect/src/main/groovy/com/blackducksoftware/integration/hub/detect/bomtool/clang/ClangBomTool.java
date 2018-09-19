@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
 import java.io.File;
+import java.util.List;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
@@ -32,42 +33,46 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExecutableNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class ClangBomTool extends BomTool {
     private static final String JSON_COMPILATION_DATABASE_FILENAME = "compile_commands.json";
-    private final ClangExtractor cLangExtractor;
+    private final ClangExtractor clangExtractor;
     private File jsonCompilationDatabaseFile = null;
     private final DetectFileFinder fileFinder;
-    private final PackageManagerFinder pkgMgrFinder;
+    private final ExecutableRunner executableRunner;
+    private final List<ClangLinuxPackageManager> availablePkgMgrs;
 
-    private LinuxPackageManager pkgMgr;
+    private ClangLinuxPackageManager selectedPkgMgr;
 
-    public ClangBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final PackageManagerFinder pkgMgrFinder, final ClangExtractor cLangExtractor) {
+    public ClangBomTool(final BomToolEnvironment environment, final ExecutableRunner executableRunner, final DetectFileFinder fileFinder, final List<ClangLinuxPackageManager> pkgMgrs, final ClangExtractor clangExtractor) {
         super(environment, "Clang", BomToolGroupType.CLANG, BomToolType.CLANG);
         this.fileFinder = fileFinder;
-        this.pkgMgrFinder = pkgMgrFinder;
-        this.cLangExtractor = cLangExtractor;
+        this.availablePkgMgrs = pkgMgrs;
+        this.executableRunner = executableRunner;
+        this.clangExtractor = clangExtractor;
     }
 
     @Override
     public BomToolResult applicable() {
-        final File jsonCompilationDatabaseFile = fileFinder.findFile(environment.getDirectory(), JSON_COMPILATION_DATABASE_FILENAME);
+        jsonCompilationDatabaseFile = fileFinder.findFile(environment.getDirectory(), JSON_COMPILATION_DATABASE_FILENAME);
         if (jsonCompilationDatabaseFile == null) {
             return new FileNotFoundBomToolResult(JSON_COMPILATION_DATABASE_FILENAME);
         }
-        this.jsonCompilationDatabaseFile = jsonCompilationDatabaseFile;
         return new PassedBomToolResult();
     }
 
     @Override
     public BomToolResult extractable() throws BomToolException {
-        pkgMgr = pkgMgrFinder.findPkgMgr(environment);
-        if (pkgMgr == null) {
+        try {
+            selectedPkgMgr = findPkgMgr();
+        } catch (final IntegrationException e) {
             return new ExecutableNotFoundBomToolResult("supported Linux package manager");
         }
         return new PassedBomToolResult();
@@ -75,7 +80,16 @@ public class ClangBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return cLangExtractor.extract(pkgMgr, environment.getDirectory(), environment.getDepth(), extractionId, jsonCompilationDatabaseFile);
+        addRelevantDiagnosticFile(jsonCompilationDatabaseFile);
+        return clangExtractor.extract(selectedPkgMgr, environment.getDirectory(), environment.getDepth(), extractionId, jsonCompilationDatabaseFile);
     }
 
+    private ClangLinuxPackageManager findPkgMgr() throws IntegrationException {
+        for (final ClangLinuxPackageManager pkgMgrCandidate : availablePkgMgrs) {
+            if (pkgMgrCandidate.applies(executableRunner)) {
+                return pkgMgrCandidate;
+            }
+        }
+        throw new IntegrationException("Unable to execute any supported package manager; Please make sure that one of the supported package managers is on the PATH");
+    }
 }

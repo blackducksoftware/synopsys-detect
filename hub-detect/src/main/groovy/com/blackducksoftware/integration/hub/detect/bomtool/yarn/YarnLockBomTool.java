@@ -43,23 +43,20 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Standard
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
 
 public class YarnLockBomTool extends BomTool {
-    public static final String YARN_LOCK_FILENAME = "yarn.lock";
+    private static final String YARN_LOCK_FILENAME = "yarn.lock";
 
     private final DetectFileFinder fileFinder;
     private final StandardExecutableFinder standardExecutableFinder;
     private final YarnLockExtractor yarnLockExtractor;
-    private final boolean productionDependenciesOnly;
 
     private File yarnlock;
-    private String yarnExe;
+    private String yarnExe = "";
 
-    public YarnLockBomTool(final BomToolEnvironment environment, final boolean productionDependenciesOnly, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder,
-            final YarnLockExtractor yarnLockExtractor) {
+    public YarnLockBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final YarnLockExtractor yarnLockExtractor) {
         super(environment, "Yarn Lock", BomToolGroupType.YARN, BomToolType.YARN_LOCK);
         this.fileFinder = fileFinder;
         this.yarnLockExtractor = yarnLockExtractor;
         this.standardExecutableFinder = standardExecutableFinder;
-        this.productionDependenciesOnly = productionDependenciesOnly;
     }
 
     @Override
@@ -79,8 +76,8 @@ public class YarnLockBomTool extends BomTool {
             yarnExe = yarn.toString();
         }
 
-        if (productionDependenciesOnly && StringUtils.isBlank(yarnExe)) {
-            return new ExecutableNotFoundBomToolResult("Could not find the Yarn executable, can not get the production only dependencies.");
+        if (StringUtils.isBlank(yarnExe)) {
+            return new ExecutableNotFoundBomToolResult("yarn");
         }
 
         return new PassedBomToolResult();

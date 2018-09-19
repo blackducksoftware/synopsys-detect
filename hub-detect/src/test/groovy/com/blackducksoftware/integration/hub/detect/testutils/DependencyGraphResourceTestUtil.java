@@ -7,11 +7,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.graph.summary.DependencyGraphSummarizer;
-import com.blackducksoftware.integration.hub.bdio.graph.summary.GraphSummary;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
+import com.synopsys.integration.hub.bdio.graph.summary.DependencyGraphSummarizer;
+import com.synopsys.integration.hub.bdio.graph.summary.GraphSummary;
 
 public class DependencyGraphResourceTestUtil {
     public static void assertGraph(final String expectedResourceFile, final DependencyGraph actualGraph) {

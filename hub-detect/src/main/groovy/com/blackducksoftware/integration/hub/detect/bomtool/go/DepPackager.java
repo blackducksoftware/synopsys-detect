@@ -35,25 +35,25 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class DepPackager {
     private final Logger logger = LoggerFactory.getLogger(DepPackager.class);
 
     private final ExecutableRunner executableRunner;
     private final ExternalIdFactory externalIdFactory;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
 
-    public DepPackager(final ExecutableRunner executableRunner, final ExternalIdFactory externalIdFactory, final DetectConfigWrapper detectConfigWrapper) {
+    public DepPackager(final ExecutableRunner executableRunner, final ExternalIdFactory externalIdFactory, final DetectConfiguration detectConfiguration) {
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public DependencyGraph makeDependencyGraph(final String sourcePath, final String goDepExecutable) throws IOException {
@@ -79,7 +79,7 @@ public class DepPackager {
         }
 
         // by default, we won't run 'init' and 'ensure' anymore so just return an empty string
-        if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_GO_RUN_DEP_INIT)) {
+        if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_GO_RUN_DEP_INIT)) {
             logger.info("Skipping Dep commands 'init' and 'ensure'");
             return "";
         }

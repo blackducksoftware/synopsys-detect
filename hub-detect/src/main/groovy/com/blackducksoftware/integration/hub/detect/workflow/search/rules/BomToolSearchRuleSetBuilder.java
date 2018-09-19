@@ -31,15 +31,18 @@ import java.util.Map;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 
 public class BomToolSearchRuleSetBuilder {
     private final List<BomTool> desiredBomToolOrder = new ArrayList<>();
     private final Map<BomTool, BomToolSearchRuleBuilder> builderMap = new HashMap<>();
     private final List<BomToolYieldBuilder> yieldBuilders = new ArrayList<>();
     private final BomToolEnvironment environment;
+    private final BomToolProfiler bomToolProfiler;
 
-    public BomToolSearchRuleSetBuilder(final BomToolEnvironment environment) {
+    public BomToolSearchRuleSetBuilder(final BomToolEnvironment environment, final BomToolProfiler bomToolProfiler) {
         this.environment = environment;
+        this.bomToolProfiler = bomToolProfiler;
     }
 
     public BomToolSearchRuleBuilder addBomTool(final BomTool bomTool) {
@@ -67,6 +70,6 @@ public class BomToolSearchRuleSetBuilder {
             bomToolRules.add(builder.build());
         }
 
-        return new BomToolSearchRuleSet(bomToolRules, environment);
+        return new BomToolSearchRuleSet(bomToolRules, environment, bomToolProfiler);
     }
 }

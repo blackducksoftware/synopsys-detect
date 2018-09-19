@@ -34,20 +34,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory;
-import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper;
-import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
-import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangLinuxPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CodeLocationAssembler;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CompileCommandsJsonFileParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependenciesListFileManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DpkgPackageManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.LinuxPackageManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageManagerFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.RpmPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockParser;
@@ -95,9 +87,12 @@ import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.GemlockExtr
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCacheExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnListParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockExtractor;
-import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
+import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockParser;
 import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyMap;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
@@ -105,7 +100,7 @@ import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
+import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -115,35 +110,43 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableMa
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BomCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerCodeLocationNameService;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerScanCodeLocationNameService;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.ScanCodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticFileManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticLogManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BdioUploader;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckBinaryScanner;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.HubSignatureScanner;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.OfflineScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ExtractionSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.PreparationSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
+import com.blackducksoftware.integration.hub.detect.workflow.report.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
-import com.blackducksoftware.integration.hub.detect.workflow.search.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.swip.SwipCliManager;
-import com.blackducksoftware.integration.hub.service.HubServicesFactory;
-import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+import com.synopsys.integration.blackduck.service.HubServicesFactory;
+import com.synopsys.integration.hub.bdio.BdioNodeFactory;
+import com.synopsys.integration.hub.bdio.BdioPropertyHelper;
+import com.synopsys.integration.hub.bdio.BdioTransformer;
+import com.synopsys.integration.hub.bdio.SimpleBdioFactory;
+import com.synopsys.integration.hub.bdio.graph.DependencyGraphTransformer;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 import freemarker.template.Configuration;
 
@@ -162,6 +165,31 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public DetectRunManager detectRunManager() {
+        return new DetectRunManager();
+    }
+
+    @Bean
+    public DiagnosticFileManager diagnosticFileManager() {
+        return new DiagnosticFileManager();
+    }
+
+    @Bean
+    public DiagnosticManager diagnosticManager() {
+        return new DiagnosticManager(detectConfiguration(), diagnosticReportManager(), diagnosticLogManager(), detectRunManager(), diagnosticFileManager());
+    }
+
+    @Bean
+    public DiagnosticLogManager diagnosticLogManager() {
+        return new DiagnosticLogManager();
+    }
+
+    @Bean
+    public DiagnosticReportManager diagnosticReportManager() {
+        return new DiagnosticReportManager(bomToolProfiler());
+    }
+
+    @Bean
     public JsonParser jsonParser() { return HubServicesFactory.createDefaultJsonParser(); }
 
     @Bean
@@ -170,6 +198,11 @@ public class BeanConfiguration {
         final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
         final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
         return new SimpleBdioFactory(bdioPropertyHelper, bdioNodeFactory, dependencyGraphTransformer, externalIdFactory(), gson());
+    }
+
+    @Bean
+    public BomToolProfiler bomToolProfiler() {
+        return new BomToolProfiler();
     }
 
     @Bean
@@ -225,22 +258,27 @@ public class BeanConfiguration {
 
     @Bean
     public TildeInPathResolver tildeInPathResolver() {
-        return new TildeInPathResolver(detectInfo());
+        return new TildeInPathResolver(ConfigurationManager.USER_HOME, detectInfo().getCurrentOs());
     }
 
     @Bean
-    public DetectConfigWrapper detectConfigWrapper() {
-        return new DetectConfigWrapper(configurableEnvironment);
+    public DetectConfiguration detectConfiguration() {
+        return new DetectConfiguration(detectPropertySource(), detectPropertyMap());
+    }
+
+    @Bean
+    public DetectPropertyMap detectPropertyMap() {
+        return new DetectPropertyMap();
     }
 
     @Bean
     public ConfigurationManager configurationManager() {
-        return new ConfigurationManager(tildeInPathResolver(), detectConfigWrapper(), detectInfoPrinter(), detectConfigurationPrinter());
+        return new ConfigurationManager(tildeInPathResolver(), detectConfiguration(), detectInfoPrinter(), detectConfigurationPrinter());
     }
 
     @Bean
     public DetectOptionManager detectOptionManager() {
-        return new DetectOptionManager(detectConfigWrapper());
+        return new DetectOptionManager(detectConfiguration(), detectInfo());
     }
 
     @Bean
@@ -255,7 +293,7 @@ public class BeanConfiguration {
 
     @Bean
     public DefaultInteractiveMode defaultInteractiveMode() {
-        return new DefaultInteractiveMode(hubServiceWrapper(), detectOptionManager());
+        return new DefaultInteractiveMode(hubServiceManager(), detectOptionManager());
     }
 
     @Bean
@@ -264,13 +302,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public AdditionalPropertyConfig additionalPropertyConfig() {
-        return new AdditionalPropertyConfig(configurableEnvironment);
+    public DetectPropertySource detectPropertySource() {
+        return new DetectPropertySource(configurableEnvironment);
     }
 
     @Bean
-    public HubServiceWrapper hubServiceWrapper() {
-        return new HubServiceWrapper(detectConfigWrapper(), additionalPropertyConfig(), gson(), jsonParser());
+    public HubServiceManager hubServiceManager() {
+        return new HubServiceManager(detectConfiguration(), detectConfigurationUtility(), gson(), jsonParser());
     }
 
     @Bean
@@ -280,12 +318,12 @@ public class BeanConfiguration {
 
     @Bean
     public DetectFileManager detectFileManager() {
-        return new DetectFileManager(detectConfigWrapper());
+        return new DetectFileManager(detectConfiguration(), detectRunManager(), diagnosticManager());
     }
 
     @Bean
     public ExecutableRunner executableRunner() {
-        return new ExecutableRunner(detectConfigWrapper());
+        return new ExecutableRunner(detectConfiguration());
     }
 
     @Bean
@@ -294,28 +332,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public BomCodeLocationNameService bomCodeLocationNameService() {
-        return new BomCodeLocationNameService(detectFileFinder());
-    }
-
-    @Bean
-    public DockerCodeLocationNameService dockerCodeLocationNameService() {
-        return new DockerCodeLocationNameService(detectFileFinder());
-    }
-
-    @Bean
-    public DockerScanCodeLocationNameService dockerScanCodeLocationNameService() {
-        return new DockerScanCodeLocationNameService(detectFileFinder());
-    }
-
-    @Bean
-    public ScanCodeLocationNameService scanCodeLocationNameService() {
-        return new ScanCodeLocationNameService(detectFileFinder());
+    public CodeLocationNameService codeLocationNameService() {
+        return new CodeLocationNameService(detectFileFinder());
     }
 
     @Bean
     public CodeLocationNameManager codeLocationNameManager() {
-        return new CodeLocationNameManager(detectConfigWrapper(), bomCodeLocationNameService(), dockerCodeLocationNameService(), scanCodeLocationNameService(), dockerScanCodeLocationNameService());
+        return new CodeLocationNameManager(detectConfiguration(), codeLocationNameService());
     }
 
     @Bean
@@ -325,12 +348,13 @@ public class BeanConfiguration {
 
     @Bean
     public PhoneHomeManager phoneHomeManager() {
-        return new PhoneHomeManager(detectInfo(), gson(), additionalPropertyConfig());
+        return new PhoneHomeManager(detectInfo(), detectConfiguration(), gson());
     }
 
     @Bean
     public BomToolFactory bomToolFactory() throws ParserConfigurationException {
-        return new BomToolFactory(detectConfigWrapper(), detectFileFinder(), standardExecutableFinder(), cLangExtractor(), cLangPackageManagerFinder(), composerLockExtractor(), condaCliExtractor(), cpanCliExtractor(), dockerExtractor(),
+        return new BomToolFactory(detectConfiguration(), detectFileFinder(), standardExecutableFinder(), executableRunner(), clangExtractor(), clangLinuxPackageManagers(), composerLockExtractor(), condaCliExtractor(), cpanCliExtractor(),
+                dockerExtractor(),
                 dockerInspectorManager(),
                 gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(), mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(),
                 npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(), pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(),
@@ -339,12 +363,12 @@ public class BeanConfiguration {
 
     @Bean
     public BomToolSearchProvider bomToolSearchProvider() throws ParserConfigurationException {
-        return new BomToolSearchProvider(bomToolFactory());
+        return new BomToolSearchProvider(bomToolFactory(), bomToolProfiler());
     }
 
     @Bean
     public SearchManager searchManager() throws ParserConfigurationException {
-        return new SearchManager(searchSummaryReporter(), bomToolSearchProvider(), phoneHomeManager(), detectConfigWrapper());
+        return new SearchManager(reportManager(), bomToolSearchProvider(), phoneHomeManager(), detectConfiguration());
     }
 
     @Bean
@@ -358,23 +382,22 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public ExtractionReporter extractionReporter() {
-        return new ExtractionReporter();
+    public ReportManager reportManager() {
+        return new ReportManager(bomToolProfiler(), phoneHomeManager(), diagnosticManager(), preparationSummaryReporter(), extractionSummaryReporter(), searchSummaryReporter());
     }
 
-    @Bean
     public ExtractionManager extractionManager() {
-        return new ExtractionManager(preparationSummaryReporter(), extractionReporter());
+        return new ExtractionManager(reportManager());
     }
 
     @Bean
     public DetectCodeLocationManager detectCodeLocationManager() {
-        return new DetectCodeLocationManager(codeLocationNameManager(), detectConfigWrapper());
+        return new DetectCodeLocationManager(codeLocationNameManager(), detectConfiguration());
     }
 
     @Bean
     public BdioManager bdioManager() {
-        return new BdioManager(detectInfo(), simpleBdioFactory(), integrationEscapeUtil(), codeLocationNameManager(), detectConfigWrapper());
+        return new BdioManager(detectInfo(), simpleBdioFactory(), integrationEscapeUtil(), codeLocationNameManager(), detectConfiguration());
     }
 
     @Bean
@@ -384,17 +407,12 @@ public class BeanConfiguration {
 
     @Bean
     public DetectProjectManager detectProjectManager() throws ParserConfigurationException {
-        return new DetectProjectManager(searchManager(), extractionManager(), detectCodeLocationManager(), bdioManager(), extractionSummaryReporter(), bomToolNameVersionDecider(), detectConfigWrapper());
+        return new DetectProjectManager(searchManager(), extractionManager(), detectCodeLocationManager(), bdioManager(), bomToolNameVersionDecider(), detectConfiguration(), reportManager());
     }
 
     @Bean
-    public OfflineScanner offlineScanner() {
-        return new OfflineScanner(gson(), detectConfigWrapper());
-    }
-
-    @Bean
-    public HubSignatureScanner hubSignatureScanner() {
-        return new HubSignatureScanner(detectFileManager(), detectFileFinder(), offlineScanner(), codeLocationNameManager(), detectConfigWrapper());
+    public BlackDuckSignatureScanner blackDuckSignatureScanner() {
+        return new BlackDuckSignatureScanner(detectFileManager(), detectFileFinder(), codeLocationNameManager(), detectConfiguration());
     }
 
     @Bean
@@ -404,39 +422,39 @@ public class BeanConfiguration {
     public DetectSummaryManager statusSummary() throws ParserConfigurationException {
         final List<StatusSummaryProvider<?>> statusSummaryProviders = new ArrayList<>();
         statusSummaryProviders.add(detectProjectManager());
-        statusSummaryProviders.add(hubSignatureScanner());
+        statusSummaryProviders.add(blackDuckSignatureScanner());
 
         return new DetectSummaryManager(statusSummaryProviders);
     }
 
     @Bean
     public PolicyChecker policyChecker() {
-        return new PolicyChecker(detectConfigWrapper());
+        return new PolicyChecker(detectConfiguration());
     }
 
     @Bean
     public BdioUploader bdioUploader() {
-        return new BdioUploader(detectConfigWrapper());
+        return new BdioUploader(detectConfiguration(), detectFileManager());
+    }
+
+    @Bean
+    public BlackDuckBinaryScanner blackDuckBinaryScanner() {
+        return new BlackDuckBinaryScanner(codeLocationNameService());
     }
 
     @Bean
     public HubManager hubManager() {
-        return new HubManager(bdioUploader(), codeLocationNameManager(), detectConfigWrapper(), hubServiceWrapper(), hubSignatureScanner(), policyChecker());
+        return new HubManager(bdioUploader(), codeLocationNameManager(), detectConfiguration(), hubServiceManager(), blackDuckSignatureScanner(), policyChecker(), blackDuckBinaryScanner());
     }
 
     @Bean
     public StandardExecutableFinder standardExecutableFinder() {
-        return new StandardExecutableFinder(executableManager(), detectConfigWrapper());
+        return new StandardExecutableFinder(executableManager(), detectConfiguration());
     }
 
     @Bean
-    public DependenciesListFileManager cLangDependenciesListFileParser() {
+    public DependenciesListFileManager clangDependenciesListFileParser() {
         return new DependenciesListFileManager(executableRunner());
-    }
-
-    @Bean
-    public CompileCommandsJsonFileParser cLangCompileCommandsJsonFileParser() {
-        return new CompileCommandsJsonFileParser();
     }
 
     @Bean
@@ -445,17 +463,16 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public ClangExtractor cLangExtractor() {
-        return new ClangExtractor(executableRunner(), detectFileManager(), cLangDependenciesListFileParser(), cLangCompileCommandsJsonFileParser(), codeLocationAssembler());
+    public ClangExtractor clangExtractor() {
+        return new ClangExtractor(executableRunner(), gson(), detectFileFinder(), detectFileManager(), clangDependenciesListFileParser(), codeLocationAssembler());
     }
 
-    @Bean
-    public PackageManagerFinder cLangPackageManagerFinder() {
-        final List<LinuxPackageManager> pkgMgrs = new ArrayList<>();
-        pkgMgrs.add(new ApkPackageManager());
-        pkgMgrs.add(new DpkgPackageManager());
-        pkgMgrs.add(new RpmPackageManager());
-        return new PackageManagerFinder(executableRunner(), pkgMgrs);
+    public List<ClangLinuxPackageManager> clangLinuxPackageManagers() {
+        final List<ClangLinuxPackageManager> clangLinuxPackageManagers = new ArrayList<>();
+        clangLinuxPackageManagers.add(new ApkPackageManager());
+        clangLinuxPackageManagers.add(new DpkgPackageManager());
+        clangLinuxPackageManagers.add(new RpmPackageManager());
+        return clangLinuxPackageManagers;
     }
 
     @Bean
@@ -475,7 +492,7 @@ public class BeanConfiguration {
 
     @Bean
     public CondaCliExtractor condaCliExtractor() {
-        return new CondaCliExtractor(condaListParser(), externalIdFactory(), executableRunner(), detectConfigWrapper());
+        return new CondaCliExtractor(condaListParser(), externalIdFactory(), executableRunner(), detectConfiguration());
     }
 
     @Bean
@@ -500,17 +517,22 @@ public class BeanConfiguration {
 
     @Bean
     public DockerExtractor dockerExtractor() {
-        return new DockerExtractor(detectFileFinder(), detectFileManager(), dockerProperties(), executableRunner(), bdioTransformer(), externalIdFactory(), gson(), hubSignatureScanner());
+        return new DockerExtractor(detectFileFinder(), detectFileManager(), dockerProperties(), executableRunner(), bdioTransformer(), externalIdFactory(), gson(), blackDuckSignatureScanner());
+    }
+
+    @Bean
+    public DetectConfigurationUtility detectConfigurationUtility() {
+        return new DetectConfigurationUtility(detectConfiguration());
     }
 
     @Bean
     public DockerInspectorManager dockerInspectorManager() {
-        return new DockerInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfigWrapper());
+        return new DockerInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility());
     }
 
     @Bean
     public DockerProperties dockerProperties() {
-        return new DockerProperties(detectConfigWrapper(), additionalPropertyConfig());
+        return new DockerProperties(detectConfiguration(), detectPropertySource());
     }
 
     @Bean
@@ -520,7 +542,7 @@ public class BeanConfiguration {
 
     @Bean
     public GoInspectorManager goInspectorManager() {
-        return new GoInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfigWrapper());
+        return new GoInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration());
     }
 
     @Bean
@@ -530,7 +552,7 @@ public class BeanConfiguration {
 
     @Bean
     public DepPackager depPackager() {
-        return new DepPackager(executableRunner(), externalIdFactory(), detectConfigWrapper());
+        return new DepPackager(executableRunner(), externalIdFactory(), detectConfiguration());
     }
 
     @Bean
@@ -540,17 +562,17 @@ public class BeanConfiguration {
 
     @Bean
     public GradleExecutableFinder gradleExecutableFinder() {
-        return new GradleExecutableFinder(executableManager(), detectConfigWrapper());
+        return new GradleExecutableFinder(executableManager(), detectConfiguration());
     }
 
     @Bean
     public GradleInspectorExtractor gradleInspectorExtractor() {
-        return new GradleInspectorExtractor(executableRunner(), detectFileFinder(), detectFileManager(), gradleReportParser(), detectConfigWrapper());
+        return new GradleInspectorExtractor(executableRunner(), detectFileFinder(), detectFileManager(), gradleReportParser(), detectConfiguration());
     }
 
     @Bean
     public GradleInspectorManager gradleInspectorManager() throws ParserConfigurationException {
-        return new GradleInspectorManager(detectFileManager(), configuration(), xmlDocumentBuilder(), detectConfigWrapper());
+        return new GradleInspectorManager(detectFileManager(), configuration(), xmlDocumentBuilder(), detectConfiguration(), detectConfigurationUtility());
     }
 
     @Bean
@@ -570,12 +592,12 @@ public class BeanConfiguration {
 
     @Bean
     public MavenCliExtractor mavenCliExtractor() {
-        return new MavenCliExtractor(executableRunner(), mavenCodeLocationPackager(), detectConfigWrapper());
+        return new MavenCliExtractor(executableRunner(), mavenCodeLocationPackager(), detectConfiguration());
     }
 
     @Bean
     public MavenExecutableFinder mavenExecutableFinder() {
-        return new MavenExecutableFinder(executableManager(), detectConfigWrapper());
+        return new MavenExecutableFinder(executableManager(), detectConfiguration());
     }
 
     @Bean
@@ -590,17 +612,17 @@ public class BeanConfiguration {
 
     @Bean
     public NpmCliExtractor npmCliExtractor() {
-        return new NpmCliExtractor(executableRunner(), npmCliDependencyFinder(), detectConfigWrapper());
+        return new NpmCliExtractor(executableRunner(), npmCliDependencyFinder(), detectConfiguration());
     }
 
     @Bean
     public NpmLockfileExtractor npmLockfileExtractor() {
-        return new NpmLockfileExtractor(npmLockfilePackager(), detectConfigWrapper());
+        return new NpmLockfileExtractor(npmLockfilePackager(), detectConfiguration());
     }
 
     @Bean
     public NpmExecutableFinder npmExecutableFinder() {
-        return new NpmExecutableFinder(executableManager(), executableRunner(), detectConfigWrapper());
+        return new NpmExecutableFinder(executableManager(), executableRunner(), detectConfiguration());
     }
 
     @Bean
@@ -610,17 +632,17 @@ public class BeanConfiguration {
 
     @Bean
     public NugetInspectorExtractor nugetInspectorExtractor() {
-        return new NugetInspectorExtractor(detectFileManager(), nugetInspectorPackager(), executableRunner(), detectFileFinder(), detectConfigWrapper());
+        return new NugetInspectorExtractor(detectFileManager(), nugetInspectorPackager(), executableRunner(), detectFileFinder(), detectConfiguration());
     }
 
     @Bean
     public NugetInspectorManager nugetInspectorManager() {
-        return new NugetInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfigWrapper());
+        return new NugetInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration());
     }
 
     @Bean
     public PackagistParser packagistParser() {
-        return new PackagistParser(externalIdFactory(), detectConfigWrapper());
+        return new PackagistParser(externalIdFactory(), detectConfiguration());
     }
 
     @Bean
@@ -630,7 +652,7 @@ public class BeanConfiguration {
 
     @Bean
     public PearDependencyFinder pearDependencyFinder() {
-        return new PearDependencyFinder(externalIdFactory(), detectConfigWrapper());
+        return new PearDependencyFinder(externalIdFactory(), detectConfiguration());
     }
 
     @Bean
@@ -645,7 +667,7 @@ public class BeanConfiguration {
 
     @Bean
     public PipenvExtractor pipenvExtractor() {
-        return new PipenvExtractor(executableRunner(), pipenvGraphParser(), detectConfigWrapper());
+        return new PipenvExtractor(executableRunner(), pipenvGraphParser(), detectConfiguration());
     }
 
     @Bean
@@ -655,7 +677,7 @@ public class BeanConfiguration {
 
     @Bean
     public PipInspectorExtractor pipInspectorExtractor() {
-        return new PipInspectorExtractor(executableRunner(), pipInspectorTreeParser(), detectConfigWrapper());
+        return new PipInspectorExtractor(executableRunner(), pipInspectorTreeParser(), detectConfiguration());
     }
 
     @Bean
@@ -665,7 +687,7 @@ public class BeanConfiguration {
 
     @Bean
     public PythonExecutableFinder pythonExecutableFinder() {
-        return new PythonExecutableFinder(executableManager(), detectConfigWrapper());
+        return new PythonExecutableFinder(executableManager(), detectConfiguration());
     }
 
     @Bean
@@ -675,17 +697,22 @@ public class BeanConfiguration {
 
     @Bean
     public SbtResolutionCacheExtractor sbtResolutionCacheExtractor() {
-        return new SbtResolutionCacheExtractor(detectFileFinder(), externalIdFactory(), detectConfigWrapper());
+        return new SbtResolutionCacheExtractor(detectFileFinder(), externalIdFactory(), detectConfiguration());
     }
 
     @Bean
     public YarnListParser yarnListParser() {
-        return new YarnListParser();
+        return new YarnListParser(externalIdFactory(), yarnLockParser());
+    }
+
+    @Bean
+    public YarnLockParser yarnLockParser() {
+        return new YarnLockParser();
     }
 
     @Bean
     public YarnLockExtractor yarnLockExtractor() {
-        return new YarnLockExtractor(externalIdFactory(), yarnListParser(), executableRunner(), detectConfigWrapper());
+        return new YarnLockExtractor(externalIdFactory(), yarnListParser(), executableRunner(), detectConfiguration());
     }
 
 }

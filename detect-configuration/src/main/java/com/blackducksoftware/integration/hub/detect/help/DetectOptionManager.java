@@ -35,22 +35,27 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.DetectInfo;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption.OptionValidationResult;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
 
-public class DetectOptionManager {
+public class DetectOptionManager implements ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class);
 
-    public final DetectConfigWrapper detectConfigWrapper;
+    private final DetectConfiguration detectConfiguration;
+    private final DetectInfo detectInfo;
 
     private List<DetectOption> detectOptions;
     private List<String> detectGroups;
 
-    public DetectOptionManager(final DetectConfigWrapper detectConfigWrapper) {
-        this.detectConfigWrapper = detectConfigWrapper;
+    public DetectOptionManager(final DetectConfiguration detectConfiguration, final DetectInfo detectInfo) {
+        this.detectConfiguration = detectConfiguration;
+        this.detectInfo = detectInfo;
     }
 
     public List<DetectOption> getDetectOptions() {
@@ -64,13 +69,13 @@ public class DetectOptionManager {
     public void init() {
         final Map<DetectProperty, DetectOption> detectOptionsMap = new HashMap<>();
 
-        final Map<DetectProperty, Object> propertyMap = detectConfigWrapper.getPropertyMap();
+        final Map<DetectProperty, Object> propertyMap = detectConfiguration.getCurrentProperties();
         if (null != propertyMap && !propertyMap.isEmpty()) {
-            for (final Map.Entry<DetectProperty, Object> propertyEntry : propertyMap.entrySet()) {
-                final DetectOption option = processField(propertyEntry.getKey(), detectConfigWrapper.getPropertyValueAsString(propertyEntry.getKey()));
+            for (final DetectProperty detectProperty : propertyMap.keySet()) {
+                final DetectOption option = processField(detectProperty, detectConfiguration.getPropertyValueAsString(detectProperty));
                 if (option != null) {
-                    if (!detectOptionsMap.containsKey(propertyEntry.getKey())) {
-                        detectOptionsMap.put(propertyEntry.getKey(), option);
+                    if (!detectOptionsMap.containsKey(detectProperty)) {
+                        detectOptionsMap.put(detectProperty, option);
                     }
                 }
             }
@@ -85,15 +90,19 @@ public class DetectOptionManager {
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
+
+        checkForRemovedProperties();
     }
 
     public void postInit() throws IllegalArgumentException, SecurityException {
         for (final DetectOption option : detectOptions) {
             String fieldValue = option.getPostInitValue();
             if (StringUtils.isBlank(fieldValue)) {
-                fieldValue = detectConfigWrapper.getPropertyValueAsString(option.getDetectProperty());
+                fieldValue = detectConfiguration.getPropertyValueAsString(option.getDetectProperty());
             }
-            if (!option.getResolvedValue().equals(fieldValue)) {
+            final boolean valuesMatch = option.getResolvedValue().equals(fieldValue);
+            final boolean propertyWasSet = detectConfiguration.wasPropertyActuallySet(option.getDetectProperty());
+            if (!valuesMatch && propertyWasSet) {
                 if (option.getInteractiveValue() != null) {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.INTERACTIVE);
                 } else if (option.getResolvedValue().equals("latest")) {
@@ -107,15 +116,21 @@ public class DetectOptionManager {
                 if (option.getDetectProperty().isEqualToDefault(fieldValue)) {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.DEFAULT);
                 } else {
-                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.SUPPLIED);
-                    if (option.getDetectOptionHelp().isDeprecated) {
-                        option.requestDeprecation();
+                    if (propertyWasSet) {
+                        option.setFinalValue(fieldValue, DetectOption.FinalValueType.SUPPLIED);
+                        if (option.getDetectOptionHelp().isDeprecated) {
+                            option.requestDeprecation();
+                        }
+                    } else {
+                        option.setFinalValue(fieldValue, DetectOption.FinalValueType.COPIED);
                     }
                 }
             }
 
             if (option.isRequestedDeprecation()) {
-                option.addWarning("As of version " + option.getDetectOptionHelp().deprecationVersion + " this property will be removed: " + option.getDetectOptionHelp().deprecation);
+                final String removeVersion = option.getDetectOptionHelp().deprecationRemoveInVersion.getDisplayValue();
+                final String failVersion = option.getDetectOptionHelp().deprecationFailInVersion.getDisplayValue();
+                option.addWarning(option.getDetectOptionHelp().deprecation + " It will cause failure in " + failVersion + " and be removed in " + removeVersion + ".");
             }
         }
     }
@@ -125,7 +140,7 @@ public class DetectOptionManager {
             for (final DetectOption detectOption : detectOptions) {
                 if (detectOption.getDetectProperty().equals(interactiveOption.getDetectProperty())) {
                     detectOption.setInteractiveValue(interactiveOption.getInteractiveValue());
-                    detectConfigWrapper.setDetectProperty(detectOption.getDetectProperty(), interactiveOption.getInteractiveValue());
+                    detectConfiguration.setDetectProperty(detectOption.getDetectProperty(), interactiveOption.getInteractiveValue());
                     break;
                 }
             }
@@ -167,7 +182,7 @@ public class DetectOptionManager {
             final boolean hasValue = null != currentValue;
             if (defaultValue != null && !defaultValue.trim().isEmpty() && !hasValue) {
                 resolvedValue = defaultValue;
-                detectConfigWrapper.setDetectProperty(detectProperty, resolvedValue);
+                detectConfiguration.setDetectProperty(detectProperty, resolvedValue);
             } else if (hasValue) {
                 resolvedValue = currentValue;
             }
@@ -210,14 +225,45 @@ public class DetectOptionManager {
             help.detailedHelp = issuesAnnotation.value();
         }
 
-        final ValueDeprecation deprecationAnnotation = field.getAnnotation(ValueDeprecation.class);
+        final DetectDeprecation deprecationAnnotation = field.getAnnotation(DetectDeprecation.class);
         if (deprecationAnnotation != null) {
             help.isDeprecated = true;
             help.deprecation = deprecationAnnotation.description();
-            help.deprecationVersion = deprecationAnnotation.willRemoveInVersion();
+            help.deprecationFailInVersion = deprecationAnnotation.failInVersion();
+            help.deprecationRemoveInVersion = deprecationAnnotation.removeInVersion();
         }
 
         return help;
+    }
+
+    private void checkForRemovedProperties() {
+        final int detectMajorVersion = detectInfo.getDetectMajorVersion();
+        for (final DetectOption detectOption : detectOptions) {
+            if (detectOption.getDetectOptionHelp().isDeprecated) {
+                if (detectMajorVersion >= detectOption.getDetectOptionHelp().deprecationRemoveInVersion.getIntValue()) {
+                    throw new RuntimeException("A property should have been removed in this Detect Major Version: " + detectOption.getDetectProperty().getPropertyName());
+                }
+            }
+        }
+    }
+
+    @Override
+    public ExitCodeType getExitCodeType() {
+        final int detectMajorVersion = detectInfo.getDetectMajorVersion();
+        boolean atLeastOneDeprecatedFailure = false;
+        for (final DetectOption detectOption : detectOptions) {
+            if (detectOption.hasWarnings() && detectOption.isRequestedDeprecation()) {
+                if (detectMajorVersion >= detectOption.getDetectOptionHelp().deprecationFailInVersion.getIntValue()) {
+                    atLeastOneDeprecatedFailure = true;
+                    logger.error(detectOption.getDetectProperty().getPropertyName() + " is deprecated and should not be used.");
+                }
+            }
+        }
+        if (atLeastOneDeprecatedFailure) {
+            logger.error("Configuration is using deprecated properties. Please fix deprecation issues. To ignore these messages and force detect to succeed supply --" + DetectProperty.DETECT_FORCE_SUCCESS.getPropertyName() + "=true");
+            return ExitCodeType.FAILURE_CONFIGURATION;
+        }
+        return ExitCodeType.SUCCESS;
     }
 
 }
