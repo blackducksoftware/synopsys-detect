@@ -38,7 +38,6 @@ import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class GoVndrExtractor {
-
     private final ExternalIdFactory externalIdFactory;
 
     public GoVndrExtractor(final ExternalIdFactory externalIdFactory) {

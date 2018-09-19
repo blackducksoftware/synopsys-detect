@@ -97,7 +97,7 @@ public class HubServiceManager {
         }
         final HubService hubService = createHubService();
         final CurrentVersionView currentVersion = hubService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
-        logger.info(String.format("Successfully connected to Hub (version %s)!", currentVersion.version));
+        logger.info(String.format("Successfully connected to BlackDuck (version %s)!", currentVersion.version));
     }
 
     public boolean testHubConnection(final IntLogger intLogger) {
