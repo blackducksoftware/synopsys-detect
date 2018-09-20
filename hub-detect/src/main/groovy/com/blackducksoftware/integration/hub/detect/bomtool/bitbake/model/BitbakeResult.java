@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,44 +21,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.type;
+package com.blackducksoftware.integration.hub.detect.bomtool.bitbake.model;
 
-public enum ExecutableType {
-    BASH,
-    BITBAKE,
-    CONDA,
-    CPAN,
-    CPANM,
-    DOCKER,
-    GO,
-    GO_DEP("dep"),
-    GRADLE,
-    GRADLEW,
-    MVN,
-    MVNW,
-    NPM,
-    NUGET,
-    PEAR,
-    PERL,
-    PIP,
-    PIP3,
-    PIPENV,
-    PYTHON,
-    PYTHON3,
-    REBAR3,
-    YARN;
+import java.io.File;
 
-    private String executableName;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 
-    private ExecutableType() {
-        this.executableName = this.name().toLowerCase();
+public class BitbakeResult {
+    private final ExecutableOutput executableOutput;
+    private final String executableDescription;
+    private final File recipeDependsFile;
+
+    public BitbakeResult(final ExecutableOutput executableOutput, final String executableDescription, final File recipeDependsFile) {
+        this.executableOutput = executableOutput;
+        this.executableDescription = executableDescription;
+        this.recipeDependsFile = recipeDependsFile;
     }
 
-    private ExecutableType(final String executableName) {
-        this.executableName = executableName;
+    public ExecutableOutput getExecutableOutput() {
+        return executableOutput;
     }
 
-    public String getExecutable() {
-        return executableName;
+    public String getExecutableDescription() {
+        return executableDescription;
+    }
+
+    public File getRecipeDependsFile() {
+        return recipeDependsFile;
     }
 }

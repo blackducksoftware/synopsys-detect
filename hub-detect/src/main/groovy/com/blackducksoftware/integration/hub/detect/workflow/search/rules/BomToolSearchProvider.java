@@ -40,6 +40,8 @@ public class BomToolSearchProvider {
     public BomToolSearchRuleSet createBomToolSearchRuleSet(final BomToolEnvironment environment) {
         final BomToolSearchRuleSetBuilder searchRuleSet = new BomToolSearchRuleSetBuilder(environment, bomToolProfiler);
 
+        searchRuleSet.addBomTool(bomToolFactory.createBitbakeBomTool(environment)).defaultNotNested();
+
         searchRuleSet.addBomTool(bomToolFactory.createPodLockBomTool(environment)).defaultNotNested();
         searchRuleSet.addBomTool(bomToolFactory.createCondaBomTool(environment)).defaultNotNested();
         searchRuleSet.addBomTool(bomToolFactory.createCpanCliBomTool(environment)).defaultNotNested();

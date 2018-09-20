@@ -34,6 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.GraphParserTransformer;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangLinuxPackageManager;
@@ -359,13 +361,21 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public GraphParserTransformer graphParserTransformer() {
+        return new GraphParserTransformer();
+    }
+
+    @Bean
+    public BitbakeExtractor bitbakeExtractor() {
+        return new BitbakeExtractor(executableManager(), executableRunner(), detectConfiguration(), detectFileManager(), detectFileFinder(), graphParserTransformer());
+    }
+
+    @Bean
     public BomToolFactory bomToolFactory() throws ParserConfigurationException {
-        return new BomToolFactory(detectConfiguration(), detectFileFinder(), standardExecutableFinder(), executableRunner(), clangExtractor(), clangLinuxPackageManagers(), composerLockExtractor(), condaCliExtractor(), cpanCliExtractor(),
-            dockerExtractor(),
-            dockerInspectorManager(),
-            gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(), mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(),
-            npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(), pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(),
-            podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
+        return new BomToolFactory(detectConfiguration(), detectFileFinder(), standardExecutableFinder(), executableRunner(), bitbakeExtractor(), clangExtractor(), clangLinuxPackageManagers(), composerLockExtractor(), condaCliExtractor(),
+            cpanCliExtractor(), dockerExtractor(), dockerInspectorManager(), gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(),
+            mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(), npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(),
+            pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(), podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
     }
 
     @Bean
