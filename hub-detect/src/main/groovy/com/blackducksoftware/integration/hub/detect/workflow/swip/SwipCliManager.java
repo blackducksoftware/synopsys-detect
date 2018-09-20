@@ -63,6 +63,7 @@ public class SwipCliManager {
         if (swipCliPath.isPresent()) {
             Map<String, String> environmentVariables = new HashMap<>();
             environmentVariables.put("COVERITY_UNSUPPORTED", "1");
+            environmentVariables.put("SWIP_USER_INPUT_TIMEOUT_MINUTES", "1");
 
             logger.info("Found swip cli: " + swipCliPath.get());
             List<String> arguments = new ArrayList<>();

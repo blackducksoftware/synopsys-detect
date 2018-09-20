@@ -244,8 +244,11 @@ public class Application implements ApplicationRunner {
             hubManager.performPostHubActions(detectProject, projectVersionView);
         }
 
-        logger.info("about to try swip: " + detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH));
-        swipCliManager.runSwip(new Slf4jIntLogger(logger), new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)));
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SWIP_ENABLED)) {
+            String sourcePathForSwip = detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH);
+            logger.info("about to run swip: " + sourcePathForSwip);
+            swipCliManager.runSwip(new Slf4jIntLogger(logger), new File(sourcePathForSwip));
+        }
     }
 
     private ExitCodeType getExitCodeFromCompletedRun(final ExitCodeType initialExitCodeType) {
