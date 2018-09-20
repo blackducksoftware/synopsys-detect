@@ -95,6 +95,13 @@ public class DetectVersionRange {
         return new DetectVersionRange(major, minor, patch, majorWild, minorWild, patchWild);
     }
 
+    public String toVersionString() {
+        final String majorVersion = isMajorWildcard() ? "*" : String.valueOf(this.majorVersion);
+        final String minorVersion = isMajorWildcard() ? "*" : String.valueOf(this.minorVersion);
+        final String patchVersion = isMajorWildcard() ? "*" : String.valueOf(this.patchVersion);
+        return String.format("%s.%s.%s", majorVersion, minorVersion, patchVersion);
+    }
+
     public int getMajorVersion() {
         return majorVersion;
     }
@@ -117,5 +124,9 @@ public class DetectVersionRange {
 
     public boolean isPatchWildcard() {
         return isPatchWildcard;
+    }
+
+    public boolean containsWildcard() {
+        return isMajorWildcard() || isMinorWildcard() || isPatchWildcard();
     }
 }

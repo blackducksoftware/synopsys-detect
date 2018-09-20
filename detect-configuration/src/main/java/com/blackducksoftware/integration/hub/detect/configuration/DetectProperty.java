@@ -376,8 +376,9 @@ public enum DetectProperty {
     DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES("detect.policy.check.fail.on.severities", DetectPropertyType.STRING),
 
     @HelpGroup(primary = GROUP_GRADLE)
-    @HelpDescription("Version of the Gradle Inspector")
-    DETECT_GRADLE_INSPECTOR_VERSION("detect.gradle.inspector.version", DetectPropertyType.STRING, "latest"),
+    @HelpDescription("Version of the Gradle Inspector. Wildcards may be specified with *.")
+    @HelpDetailed("Wildcard versions will find the highest version that fits the pattern. For example 1.* will lock to major version 1 where 1.2.* will lock to major 1 and minor 2. Both versions 1.2.3 and 1.2.4 would fulfill both patterns and 1.2.4 would be chosen.")
+    DETECT_GRADLE_INSPECTOR_VERSION("detect.gradle.inspector.version", DetectPropertyType.STRING, "0.*"),
 
     @HelpGroup(primary = GROUP_GRADLE)
     @HelpDescription("Gradle build command")
