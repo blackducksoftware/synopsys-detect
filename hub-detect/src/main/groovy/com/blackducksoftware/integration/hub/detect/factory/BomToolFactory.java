@@ -24,6 +24,8 @@
 package com.blackducksoftware.integration.hub.detect.factory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeBomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageManagerFinder;
@@ -90,6 +92,7 @@ public class BomToolFactory {
     private final DetectFileFinder detectFileFinder;
     private final StandardExecutableFinder standardExecutableFinder;
 
+    private final BitbakeExtractor bitbakeExtractor;
     private final ClangExtractor cLangExtractor;
     private final PackageManagerFinder cLangPackageManagerFinder;
     private final ComposerLockExtractor composerLockExtractor;
@@ -122,19 +125,21 @@ public class BomToolFactory {
     private final SbtResolutionCacheExtractor sbtResolutionCacheExtractor;
     private final YarnLockExtractor yarnLockExtractor;
 
-    public BomToolFactory(final DetectConfigWrapper detectConfigWrapper, final DetectFileFinder detectFileFinder, final StandardExecutableFinder standardExecutableFinder, final ClangExtractor cLangExtractor,
-            final PackageManagerFinder cLangPackageManagerFinder,
-            final ComposerLockExtractor composerLockExtractor, final CondaCliExtractor condaCliExtractor, final CpanCliExtractor cpanCliExtractor, final DockerExtractor dockerExtractor,
-            final DockerInspectorManager dockerInspectorManager, final GemlockExtractor gemlockExtractor, final GoDepExtractor goDepExtractor, final GoInspectorManager goInspectorManager,
-            final GoVndrExtractor goVndrExtractor, final GradleExecutableFinder gradleFinder, final GradleInspectorExtractor gradleInspectorExtractor, final GradleInspectorManager gradleInspectorManager,
-            final MavenCliExtractor mavenCliExtractor, final MavenExecutableFinder mavenExecutableFinder, final NpmCliExtractor npmCliExtractor, final NpmExecutableFinder npmExecutableFinder,
-            final NpmLockfileExtractor npmLockfileExtractor, final NugetInspectorExtractor nugetInspectorExtractor, final NugetInspectorManager nugetInspectorManager,
-            final PackratLockExtractor packratLockExtractor, final PearCliExtractor pearCliExtractor, final PipInspectorExtractor pipInspectorExtractor, final PipInspectorManager pipInspectorManager,
-            final PipenvExtractor pipenvExtractor, final PodlockExtractor podlockExtractor, final PythonExecutableFinder pythonExecutableFinder, final RebarExtractor rebarExtractor,
-            final SbtResolutionCacheExtractor sbtResolutionCacheExtractor, final YarnLockExtractor yarnLockExtractor) {
+    public BomToolFactory(final DetectConfigWrapper detectConfigWrapper, final DetectFileFinder detectFileFinder, final StandardExecutableFinder standardExecutableFinder,
+        final BitbakeExtractor bitbakeExtractor, final ClangExtractor cLangExtractor,
+        final PackageManagerFinder cLangPackageManagerFinder,
+        final ComposerLockExtractor composerLockExtractor, final CondaCliExtractor condaCliExtractor, final CpanCliExtractor cpanCliExtractor, final DockerExtractor dockerExtractor,
+        final DockerInspectorManager dockerInspectorManager, final GemlockExtractor gemlockExtractor, final GoDepExtractor goDepExtractor, final GoInspectorManager goInspectorManager,
+        final GoVndrExtractor goVndrExtractor, final GradleExecutableFinder gradleFinder, final GradleInspectorExtractor gradleInspectorExtractor, final GradleInspectorManager gradleInspectorManager,
+        final MavenCliExtractor mavenCliExtractor, final MavenExecutableFinder mavenExecutableFinder, final NpmCliExtractor npmCliExtractor, final NpmExecutableFinder npmExecutableFinder,
+        final NpmLockfileExtractor npmLockfileExtractor, final NugetInspectorExtractor nugetInspectorExtractor, final NugetInspectorManager nugetInspectorManager,
+        final PackratLockExtractor packratLockExtractor, final PearCliExtractor pearCliExtractor, final PipInspectorExtractor pipInspectorExtractor, final PipInspectorManager pipInspectorManager,
+        final PipenvExtractor pipenvExtractor, final PodlockExtractor podlockExtractor, final PythonExecutableFinder pythonExecutableFinder, final RebarExtractor rebarExtractor,
+        final SbtResolutionCacheExtractor sbtResolutionCacheExtractor, final YarnLockExtractor yarnLockExtractor) {
         this.detectConfigWrapper = detectConfigWrapper;
         this.detectFileFinder = detectFileFinder;
         this.standardExecutableFinder = standardExecutableFinder;
+        this.bitbakeExtractor = bitbakeExtractor;
         this.cLangExtractor = cLangExtractor;
         this.cLangPackageManagerFinder = cLangPackageManagerFinder;
         this.composerLockExtractor = composerLockExtractor;
@@ -166,6 +171,10 @@ public class BomToolFactory {
         this.rebarExtractor = rebarExtractor;
         this.sbtResolutionCacheExtractor = sbtResolutionCacheExtractor;
         this.yarnLockExtractor = yarnLockExtractor;
+    }
+
+    public BitbakeBomTool createBitbakeBomTool(final BomToolEnvironment bomToolEnvironment) {
+        return new BitbakeBomTool(bomToolEnvironment, detectFileFinder, detectConfigWrapper, bitbakeExtractor);
     }
 
     public ClangBomTool createCLangBomTool(final BomToolEnvironment environment) {

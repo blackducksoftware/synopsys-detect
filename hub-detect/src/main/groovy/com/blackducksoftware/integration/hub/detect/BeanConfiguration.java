@@ -40,14 +40,16 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.GraphParserTransformer;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CodeLocationAssembler;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CompileCommandsJsonFileParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependenciesListFileManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageManagerFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CodeLocationAssembler;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DpkgPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.LinuxPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageManagerFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.RpmPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockParser;
@@ -324,11 +326,10 @@ public class BeanConfiguration {
 
     @Bean
     public BomToolFactory bomToolFactory() throws ParserConfigurationException {
-        return new BomToolFactory(detectConfigWrapper(), detectFileFinder(), standardExecutableFinder(), cLangExtractor(), cLangPackageManagerFinder(), composerLockExtractor(), condaCliExtractor(), cpanCliExtractor(), dockerExtractor(),
-                dockerInspectorManager(),
-                gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(), mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(),
-                npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(), pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(),
-                podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
+        return new BomToolFactory(detectConfigWrapper(), detectFileFinder(), standardExecutableFinder(), bitbakeExtractor(), cLangExtractor(), cLangPackageManagerFinder(), composerLockExtractor(), condaCliExtractor(), cpanCliExtractor(),
+            dockerExtractor(), dockerInspectorManager(), gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(), mavenCliExtractor(),
+            mavenExecutableFinder(), npmCliExtractor(), npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(), pipInspectorExtractor(),
+            pipInspectorManager(), pipenvExtractor(), podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
     }
 
     @Bean
@@ -433,6 +434,16 @@ public class BeanConfiguration {
     @Bean
     public CodeLocationAssembler codeLocationAssembler() {
         return new CodeLocationAssembler(externalIdFactory());
+    }
+
+    @Bean
+    public BitbakeExtractor bitbakeExtractor() {
+        return new BitbakeExtractor(executableManager(), executableRunner(), detectConfigWrapper(), detectFileManager(), detectFileFinder(), graphTransformer());
+    }
+
+    @Bean
+    public GraphParserTransformer graphTransformer() {
+        return new GraphParserTransformer();
     }
 
     @Bean

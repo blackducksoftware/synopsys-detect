@@ -502,6 +502,14 @@ public enum DetectProperty {
     @HelpDescription("The output directory for notices report. Default is the source directory")
     DETECT_NOTICES_REPORT_PATH("detect.notices.report.path", DetectPropertyType.STRING, "."),
 
+    @HelpGroup(primary = GROUP_BITBAKE)
+    @HelpDescription("The name of the build environment init script")
+    DETECT_INIT_BUILD_ENV_NAME("detect.bitbake.build.env.name", DetectPropertyType.STRING, "oe-init-build-env"),
+
+    @HelpGroup(primary = GROUP_BITBAKE)
+    @HelpDescription("A comma-separated list of package names to extract dependencies from")
+    DETECT_BITBAKE_PACKAGE_NAME("detect.bitbake.package.names", DetectPropertyType.STRING, "core-image-minimal"),
+
     @HelpGroup(primary = GROUP_CONDA)
     @HelpDescription("The path of the conda executable")
     DETECT_CONDA_PATH("detect.conda.path", DetectPropertyType.STRING),
@@ -588,6 +596,7 @@ public enum DetectProperty {
         public static final String GROUP_PATHS = "paths";
         public static final String GROUP_BOMTOOL = "bomtool";
         public static final String GROUP_CODELOCATION = "codelocation";
+        public static final String GROUP_BITBAKE = "bitbake";
         public static final String GROUP_CONDA = "conda";
         public static final String GROUP_CPAN = "cpan";
         public static final String GROUP_DOCKER = "docker";
