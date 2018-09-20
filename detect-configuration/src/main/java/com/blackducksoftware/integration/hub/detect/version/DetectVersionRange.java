@@ -1,17 +1,12 @@
 package com.blackducksoftware.integration.hub.detect.version;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.swing.text.html.Option;
-
 import org.apache.commons.lang3.builder.CompareToBuilder;
-
-import sun.misc.Regexp;
 
 public class DetectVersionRange {
 
@@ -32,37 +27,37 @@ public class DetectVersionRange {
         this.isPatchWildcard = isPatchWildcard;
     }
 
-    public Optional<DetectVersion> bestMatch(List<DetectVersion> versions){
-        List<DetectVersion> possible = versions.stream()
-            .filter(it -> it.getPatchVersion() == patchVersion || isPatchWildcard)
-            .filter(it -> it.getMinorVersion() == minorVersion || isMinorWildcard)
-            .filter(it -> it.getMajorVersion() == majorVersion || isMajorWildcard)
-            .collect(Collectors.toList());
+    public Optional<DetectVersion> bestMatch(final List<DetectVersion> versions) {
+        final List<DetectVersion> possible = versions.stream()
+                                                 .filter(it -> it.getPatchVersion() == patchVersion || isPatchWildcard)
+                                                 .filter(it -> it.getMinorVersion() == minorVersion || isMinorWildcard)
+                                                 .filter(it -> it.getMajorVersion() == majorVersion || isMajorWildcard)
+                                                 .collect(Collectors.toList());
 
-        List<DetectVersion> sorted = possible.stream().sorted((o1, o2) -> new CompareToBuilder()
-                .append(o1.getMajorVersion(), o2.getMajorVersion())
-                .append(o1.getMinorVersion(), o2.getMinorVersion())
-                .append(o1.getPatchVersion(), o2.getPatchVersion())
-                .toComparison())
-                .collect(Collectors.toList());
+        final List<DetectVersion> sorted = possible.stream().sorted((o1, o2) -> new CompareToBuilder()
+                                                                                    .append(o1.getMajorVersion(), o2.getMajorVersion())
+                                                                                    .append(o1.getMinorVersion(), o2.getMinorVersion())
+                                                                                    .append(o1.getPatchVersion(), o2.getPatchVersion())
+                                                                                    .toComparison())
+                                               .collect(Collectors.toList());
 
         Collections.reverse(sorted);
 
         return sorted.stream().findFirst();
     }
 
-    public static DetectVersionRange fromString(String rawVersion) {
-        String[] pieces = rawVersion.split(Pattern.quote("."));
+    public static DetectVersionRange fromString(final String rawVersion) {
+        final String[] pieces = rawVersion.split(Pattern.quote("."));
         Optional<String> majorString = Optional.empty();
         Optional<String> minorString = Optional.empty();
         Optional<String> patchString = Optional.empty();
-        if (pieces.length >= 1){
+        if (pieces.length >= 1) {
             majorString = Optional.of(pieces[0]);
         }
-        if (pieces.length >= 2){
+        if (pieces.length >= 2) {
             minorString = Optional.of(pieces[1]);
         }
-        if (pieces.length >= 3){
+        if (pieces.length >= 3) {
             patchString = Optional.of(pieces[2]);
         }
 
@@ -73,27 +68,27 @@ public class DetectVersionRange {
         boolean minorWild = false;
         boolean patchWild = false;
 
-        if (majorString.isPresent()){
-            if (majorString.get().equals("*")){
+        if (majorString.isPresent()) {
+            if (majorString.get().equals("*") || majorString.get().equals("latest")) {
                 majorWild = true;
                 minorWild = true;
                 patchWild = true;
-            }else {
+            } else {
                 major = Integer.valueOf(majorString.get());
             }
         }
-        if (minorString.isPresent() && minorWild == false){
-            if (minorString.get().equals("*")){
+        if (minorString.isPresent() && minorWild == false) {
+            if (minorString.get().equals("*")) {
                 minorWild = true;
                 patchWild = true;
-            }else {
+            } else {
                 minor = Integer.valueOf(minorString.get());
             }
         }
-        if (patchString.isPresent() && patchWild == false){
-            if (patchString.get().equals("*")){
+        if (patchString.isPresent() && patchWild == false) {
+            if (patchString.get().equals("*")) {
                 patchWild = true;
-            }else {
+            } else {
                 patch = Integer.valueOf(patchString.get());
             }
         }

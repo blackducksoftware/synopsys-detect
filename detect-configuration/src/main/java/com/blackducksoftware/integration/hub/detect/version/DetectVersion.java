@@ -16,13 +16,14 @@ public class DetectVersion {
 
     public static DetectVersion fromString(String rawVersion) {
         String[] pieces = rawVersion.split(Pattern.quote("."));
-        if (pieces.length != 3) throw new IllegalArgumentException("Version must have three pieces seperated by a dot.");
+        if (pieces.length != 3)
+            throw new IllegalArgumentException("Version must have three pieces seperated by a dot.");
 
         int majorVersion = Integer.valueOf(pieces[0]);
         int minorVersion = Integer.valueOf(pieces[1]);
         int patchVersion = Integer.valueOf(pieces[2]);
 
-        return  new DetectVersion(majorVersion, minorVersion, patchVersion);
+        return new DetectVersion(majorVersion, minorVersion, patchVersion);
     }
 
     public int getMajorVersion() {
