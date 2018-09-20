@@ -73,6 +73,7 @@ public class HubServiceManager {
 
     private final DetectConfiguration detectConfiguration;
     private final DetectConfigurationUtility detectConfigurationUtility;
+    private final CleanupZipExpander cleanupZipExpander;
     private final Gson gson;
     private final JsonParser jsonParser;
 
@@ -80,9 +81,10 @@ public class HubServiceManager {
     private HubServerConfig hubServerConfig;
     private HubServicesFactory hubServicesFactory;
 
-    public HubServiceManager(final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final Gson gson, final JsonParser jsonParser) {
+    public HubServiceManager(final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final CleanupZipExpander cleanupZipExpander, final Gson gson, final JsonParser jsonParser) {
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationUtility = detectConfigurationUtility;
+        this.cleanupZipExpander = cleanupZipExpander;
         this.gson = gson;
         this.jsonParser = jsonParser;
     }
@@ -167,7 +169,7 @@ public class HubServiceManager {
             return ScanJobManager.createDefaultScanManager(slf4jIntLogger, hubServerConfig);
         } else {
             OperatingSystemType operatingSystemType = OperatingSystemType.determineFromSystem();
-            ScanPathsUtility scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, operatingSystemType);
+            ScanPathsUtility scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, getEnvironmentVariables(), operatingSystemType);
             ScanCommandRunner scanCommandRunner = new ScanCommandRunner(slf4jIntLogger, getEnvironmentVariables(), scanPathsUtility);
 
             if (StringUtils.isNotBlank(locallScannerInstallPath)) {
@@ -183,7 +185,6 @@ public class HubServiceManager {
                 restConnectionBuilder.setLogger(slf4jIntLogger);
 
                 final RestConnection restConnection = restConnectionBuilder.build();
-                final CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
                 final ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, restConnection, cleanupZipExpander, scanPathsUtility, userProvidedScannerInstallUrl, operatingSystemType);
 
                 return new ScanJobManager(slf4jIntLogger, getEnvironmentVariables(), scannerZipInstaller, scanPathsUtility, scanCommandRunner);

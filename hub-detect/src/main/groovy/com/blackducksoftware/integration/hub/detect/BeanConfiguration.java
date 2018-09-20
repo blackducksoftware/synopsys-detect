@@ -30,6 +30,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -136,6 +138,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManage
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
+import com.blackducksoftware.integration.hub.detect.workflow.swip.SwipCliManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.synopsys.integration.blackduck.service.HubServicesFactory;
@@ -145,12 +148,16 @@ import com.synopsys.integration.hub.bdio.BdioTransformer;
 import com.synopsys.integration.hub.bdio.SimpleBdioFactory;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.log.Slf4jIntLogger;
+import com.synopsys.integration.util.CleanupZipExpander;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 import freemarker.template.Configuration;
 
 @org.springframework.context.annotation.Configuration
 public class BeanConfiguration {
+    private final Logger logger = LoggerFactory.getLogger(BeanConfiguration.class);
+
     private final ConfigurableEnvironment configurableEnvironment;
 
     @Autowired
@@ -309,7 +316,12 @@ public class BeanConfiguration {
 
     @Bean
     public HubServiceManager hubServiceManager() {
-        return new HubServiceManager(detectConfiguration(), detectConfigurationUtility(), gson(), jsonParser());
+        return new HubServiceManager(detectConfiguration(), detectConfigurationUtility(), cleanupZipExpander(), gson(), jsonParser());
+    }
+
+    @Bean
+    public SwipCliManager swipCliManager() {
+        return new SwipCliManager(detectFileManager(), executableRunner(), detectConfigurationUtility());
     }
 
     @Bean
@@ -409,6 +421,11 @@ public class BeanConfiguration {
     @Bean
     public DetectProjectManager detectProjectManager() throws ParserConfigurationException {
         return new DetectProjectManager(searchManager(), extractionManager(), detectCodeLocationManager(), bdioManager(), bomToolNameVersionDecider(), detectConfiguration(), reportManager());
+    }
+
+    @Bean
+    public CleanupZipExpander cleanupZipExpander() {
+        return new CleanupZipExpander(new Slf4jIntLogger(logger));
     }
 
     @Bean

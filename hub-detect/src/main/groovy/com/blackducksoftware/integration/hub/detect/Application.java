@@ -62,6 +62,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.Diagnost
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
+import com.blackducksoftware.integration.hub.detect.workflow.swip.SwipCliManager;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.SilentLogger;
@@ -90,6 +91,7 @@ public class Application implements ApplicationRunner {
     private final ArgumentStateParser argumentStateParser;
     private final DiagnosticManager diagnosticManager;
     private final DetectRunManager detectRunManager;
+    private final SwipCliManager swipCliManager;
 
     private enum WorkflowStep {
         EXIT_WITH_SUCCESS,
@@ -100,7 +102,7 @@ public class Application implements ApplicationRunner {
     public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final DetectPropertySource detectPropertySource, final DetectConfiguration detectConfiguration,
             final ConfigurationManager configurationManager, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
             final HubServiceManager hubServiceManager, final DetectSummaryManager detectSummaryManager, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
-            final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final ArgumentStateParser argumentStateParser, final DetectRunManager detectRunManager, final DiagnosticManager diagnosticManager) {
+            final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final ArgumentStateParser argumentStateParser, final DetectRunManager detectRunManager, final DiagnosticManager diagnosticManager, SwipCliManager swipCliManager) {
         this.detectOptionManager = detectOptionManager;
         this.detectInfo = detectInfo;
         this.detectPropertySource = detectPropertySource;
@@ -119,6 +121,7 @@ public class Application implements ApplicationRunner {
         this.argumentStateParser = argumentStateParser;
         this.detectRunManager = detectRunManager;
         this.diagnosticManager = diagnosticManager;
+        this.swipCliManager = swipCliManager;
     }
 
     public static void main(final String[] args) {
@@ -240,6 +243,9 @@ public class Application implements ApplicationRunner {
             // final ProjectVersionView projectVersionView = originalProjectVersionView.orElse(scanProjectVersionView.orElse(null));
             hubManager.performPostHubActions(detectProject, projectVersionView);
         }
+
+        logger.info("about to try swip: " + detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH));
+        swipCliManager.runSwip(new Slf4jIntLogger(logger), new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)));
     }
 
     private ExitCodeType getExitCodeFromCompletedRun(final ExitCodeType initialExitCodeType) {
