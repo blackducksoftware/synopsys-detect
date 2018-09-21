@@ -38,8 +38,7 @@ public class DetectVersionRange {
                                                                                     .append(o1.getMajorVersion(), o2.getMajorVersion())
                                                                                     .append(o1.getMinorVersion(), o2.getMinorVersion())
                                                                                     .append(o1.getPatchVersion(), o2.getPatchVersion())
-                                                                                    .toComparison())
-                                               .collect(Collectors.toList());
+                                                                                    .toComparison()).collect(Collectors.toList());
 
         Collections.reverse(sorted);
 
@@ -97,8 +96,8 @@ public class DetectVersionRange {
 
     public String toVersionString() {
         final String majorVersion = isMajorWildcard() ? "*" : String.valueOf(this.majorVersion);
-        final String minorVersion = isMajorWildcard() ? "*" : String.valueOf(this.minorVersion);
-        final String patchVersion = isMajorWildcard() ? "*" : String.valueOf(this.patchVersion);
+        final String minorVersion = isMinorWildcard() ? "*" : String.valueOf(this.minorVersion);
+        final String patchVersion = isPatchWildcard() ? "*" : String.valueOf(this.patchVersion);
         return String.format("%s.%s.%s", majorVersion, minorVersion, patchVersion);
     }
 

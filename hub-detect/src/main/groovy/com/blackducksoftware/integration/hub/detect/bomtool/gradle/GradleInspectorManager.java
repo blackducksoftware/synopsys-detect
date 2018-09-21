@@ -101,7 +101,7 @@ public class GradleInspectorManager {
     private DetectVersion resolveInspectorVersion() {
         final String gradleInspectorVersionRaw = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION);
         final DetectVersionRange detectVersionRange = DetectVersionRange.fromString(gradleInspectorVersionRaw);
-        DetectVersion gradleInspectorVersion = DetectVersion.fromString(gradleInspectorVersionRaw);
+        DetectVersion gradleInspectorVersion = null;
 
         if (detectVersionRange.containsWildcard()) {
             try {
@@ -133,6 +133,8 @@ public class GradleInspectorManager {
                 logger.warn("Exception encountered when resolving latest version of Gradle Inspector, skipping resolution.");
                 logger.debug(e.getMessage());
             }
+        } else {
+            gradleInspectorVersion = DetectVersion.fromString(gradleInspectorVersionRaw);
         }
 
         return gradleInspectorVersion;

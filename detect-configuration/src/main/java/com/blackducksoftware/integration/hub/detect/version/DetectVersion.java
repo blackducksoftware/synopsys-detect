@@ -17,7 +17,7 @@ public class DetectVersion {
     public static DetectVersion fromString(final String rawVersion) {
         final String[] pieces = rawVersion.split(Pattern.quote("."));
         if (pieces.length != 3)
-            throw new IllegalArgumentException("Version must have three pieces seperated by a dot.");
+            throw new IllegalArgumentException("Version must have three pieces separated by a dot.");
 
         final int majorVersion = Integer.valueOf(pieces[0]);
         final int minorVersion = Integer.valueOf(pieces[1]);
