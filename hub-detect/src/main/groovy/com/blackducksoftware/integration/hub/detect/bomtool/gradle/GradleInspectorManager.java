@@ -51,8 +51,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.blackducksoftware.integration.hub.detect.version.DetectVersion;
-import com.blackducksoftware.integration.hub.detect.version.DetectVersionRange;
+import com.github.zafarkhaja.semver.Version;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
 import com.synopsys.integration.rest.request.Request;
@@ -88,7 +87,7 @@ public class GradleInspectorManager {
     public String getGradleInspector() throws BomToolException {
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
-            resolvedVersion = resolveInspectorVersion().toVersionString();
+            resolvedVersion = resolveInspectorVersion().toString();
             try {
                 resolvedInitScript = resolveInitScriptPath(resolvedVersion);
             } catch (final Exception e) {
@@ -98,58 +97,60 @@ public class GradleInspectorManager {
         return resolvedInitScript;
     }
 
-    private DetectVersion resolveInspectorVersion() {
-        final String gradleInspectorVersionRaw = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION);
-        final DetectVersionRange detectVersionRange = DetectVersionRange.fromString(gradleInspectorVersionRaw);
-        DetectVersion gradleInspectorVersion = null;
+    private Version resolveInspectorVersion() {
+        final String versionRange = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION);
+        Version gradleInspectorVersion = null;
 
-        if (detectVersionRange.containsWildcard()) {
-            try {
-                Document xmlDocument = null;
-                final File airGapMavenMetadataFile = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH), "maven-metadata.xml");
-                if (airGapMavenMetadataFile.exists()) {
-                    final InputStream inputStream = new FileInputStream(airGapMavenMetadataFile);
+        try {
+            Document xmlDocument = null;
+            final File airGapMavenMetadataFile = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH), "maven-metadata.xml");
+            if (airGapMavenMetadataFile.exists()) {
+                final InputStream inputStream = new FileInputStream(airGapMavenMetadataFile);
+                xmlDocument = xmlDocumentBuilder.parse(inputStream);
+            } else {
+                final String mavenMetadataUrl = "http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
+                final Request request = new Request.Builder().uri(mavenMetadataUrl).build();
+                Response response = null;
+                try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(mavenMetadataUrl)) {
+                    response = restConnection.executeRequest(request);
+                    final InputStream inputStream = response.getContent();
                     xmlDocument = xmlDocumentBuilder.parse(inputStream);
-                } else {
-                    final String mavenMetadataUrl = "http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
-                    final Request request = new Request.Builder().uri(mavenMetadataUrl).build();
-                    Response response = null;
-                    try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(mavenMetadataUrl)) {
-                        response = restConnection.executeRequest(request);
-                        final InputStream inputStream = response.getContent();
-                        xmlDocument = xmlDocumentBuilder.parse(inputStream);
-                    } finally {
-                        ResourceUtil.closeQuietly(response);
-                    }
+                } finally {
+                    ResourceUtil.closeQuietly(response);
                 }
-                final Optional<DetectVersion> detectVersionFromXML = detectVersionFromXML(xmlDocument, detectVersionRange);
-                if (detectVersionFromXML.isPresent()) {
-                    gradleInspectorVersion = detectVersionFromXML.get();
-                    logger.info(String.format("Resolved gradle inspector version from [%s] to [%s]", detectVersionRange.toVersionString(), gradleInspectorVersion.toVersionString()));
-                } else {
-                    throw new IntegrationException(String.format("Failed to find a version matching [%s] in maven-metadata.xml", detectVersionRange.toVersionString()));
-                }
-            } catch (final IntegrationException | SAXException | IOException | DetectUserFriendlyException e) {
-                logger.warn("Exception encountered when resolving latest version of Gradle Inspector, skipping resolution.");
-                logger.debug(e.getMessage());
             }
-        } else {
-            gradleInspectorVersion = DetectVersion.fromString(gradleInspectorVersionRaw);
+            final Optional<Version> detectVersionFromXML = detectVersionFromXML(xmlDocument, versionRange);
+            if (detectVersionFromXML.isPresent()) {
+                gradleInspectorVersion = detectVersionFromXML.get();
+                logger.info(String.format("Resolved gradle inspector version from [%s] to [%s]", versionRange, gradleInspectorVersion.toString()));
+            } else {
+                throw new IntegrationException(String.format("Failed to find a version matching [%s] in maven-metadata.xml", versionRange));
+            }
+        } catch (final IntegrationException | SAXException | IOException | DetectUserFriendlyException e) {
+            logger.warn("Exception encountered when resolving latest version of Gradle Inspector, skipping resolution.");
+            logger.debug(e.getMessage());
         }
 
         return gradleInspectorVersion;
     }
 
-    private Optional<DetectVersion> detectVersionFromXML(final Document xmlDocument, final DetectVersionRange detectVersionRange) {
-        final List<DetectVersion> foundDetectVersions = new ArrayList<>();
+    private Optional<Version> detectVersionFromXML(final Document xmlDocument, final String versionRange) {
+        final List<Version> foundVersions = new ArrayList<>();
         final NodeList nodeVersions = xmlDocument.getElementsByTagName("version");
         for (int i = 0; i < nodeVersions.getLength(); i++) {
             final String versionNodeText = nodeVersions.item(i).getTextContent();
-            final DetectVersion foundDetectVersion = DetectVersion.fromString(versionNodeText);
-            foundDetectVersions.add(foundDetectVersion);
+            final Version foundVersion = Version.valueOf(versionNodeText);
+            foundVersions.add(foundVersion);
         }
 
-        return detectVersionRange.bestMatch(foundDetectVersions);
+        Version bestVersion = null;
+        for (final Version foundVersion : foundVersions) {
+            if ((bestVersion == null || foundVersion.greaterThan(bestVersion)) && foundVersion.satisfies(versionRange)) {
+                bestVersion = foundVersion;
+            }
+        }
+
+        return Optional.ofNullable(bestVersion);
     }
 
     private String resolveInitScriptPath(final String version) throws IOException, TemplateException {

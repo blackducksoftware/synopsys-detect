@@ -25,15 +25,21 @@ package com.blackducksoftware.integration.hub.detect.bomtool.nuget;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
+import javax.xml.parsers.DocumentBuilder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -45,6 +51,11 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableMa
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.github.zafarkhaja.semver.Version;
+import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
+import com.synopsys.integration.rest.request.Request;
+import com.synopsys.integration.rest.request.Response;
 
 public class NugetInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorManager.class);
@@ -53,17 +64,23 @@ public class NugetInspectorManager {
     private final ExecutableManager executableManager;
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
+    private final DetectConfigurationUtility detectConfigurationUtility;
+    private final DocumentBuilder xmlDocumentBuilder;
+    private final NugetXmlParser nugetXmlParser;
 
     private boolean hasResolvedInspector;
     private String resolvedNugetInspectorExecutable;
-    private String resolvedInspectorVersion;
 
     public NugetInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
-            final DetectConfiguration detectConfiguration) {
+        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final DocumentBuilder xmlDocumentBuilder,
+        final NugetXmlParser nugetXmlParser) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
+        this.detectConfigurationUtility = detectConfigurationUtility;
+        this.xmlDocumentBuilder = xmlDocumentBuilder;
+        this.nugetXmlParser = nugetXmlParser;
     }
 
     public String findNugetInspector() throws BomToolException {
@@ -81,10 +98,11 @@ public class NugetInspectorManager {
 
     public void install() throws DetectUserFriendlyException, ExecutableRunnerException, IOException {
         final String nugetExecutable = executableManager
-                .getExecutablePathOrOverride(ExecutableType.NUGET, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_PATH));
-        resolvedInspectorVersion = resolveInspectorVersion(nugetExecutable);
-        if (resolvedInspectorVersion != null) {
-            resolvedNugetInspectorExecutable = installInspector(nugetExecutable, detectFileManager.getSharedDirectory("nuget"), resolvedInspectorVersion);
+                                           .getExecutablePathOrOverride(ExecutableType.NUGET, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)),
+                                               detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_PATH));
+        final Optional<Version> resolvedInspectorVersion = resolveInspectorVersion(nugetExecutable);
+        if (resolvedInspectorVersion.isPresent()) {
+            resolvedNugetInspectorExecutable = installInspector(nugetExecutable, detectFileManager.getSharedDirectory("nuget"), resolvedInspectorVersion.get().toString());
             if (resolvedNugetInspectorExecutable == null) {
                 throw new DetectUserFriendlyException("Unable to install nuget inspector version from available nuget sources.", ExitCodeType.FAILURE_CONFIGURATION);
             }
@@ -93,26 +111,27 @@ public class NugetInspectorManager {
         }
     }
 
-    private String resolveInspectorVersion(final String nugetExecutablePath) throws ExecutableRunnerException {
-        final String nugetInspectorPackageVersion = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_VERSION);
-        if ("latest".equalsIgnoreCase(nugetInspectorPackageVersion)) {
-            if (shouldUseAirGap()) {
-                logger.debug("Running in airgap mode. Resolving version from local path");
-                return resolveVersionFromSource(detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH), nugetExecutablePath);
-            } else {
-                logger.debug("Running online. Resolving version through nuget");
-                for (final String source : detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL)) {
-                    logger.debug("Attempting source: " + source);
-                    final String inspectorVersion = resolveVersionFromSource(source, nugetExecutablePath);
-                    if (inspectorVersion != null) {
-                        return inspectorVersion;
-                    }
+    private Optional<Version> resolveInspectorVersion(final String nugetExecutablePath) throws ExecutableRunnerException {
+        final String nugetInspectorPackageVersionRaw = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_VERSION);
+        Optional<Version> version = Optional.of(Version.valueOf(nugetInspectorPackageVersionRaw));
+
+        if (shouldUseAirGap()) {
+            logger.debug("Running in airgap mode. Resolving version from local path");
+            version = resolveVersionFromSource(detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH), nugetExecutablePath);
+        } else {
+            logger.debug("Running online. Resolving version through Nuget");
+            for (final String source : detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL)) {
+                logger.debug("Attempting source: " + source);
+                final Optional<Version> inspectorVersion = resolveVersionFromSource(source, nugetExecutablePath);
+                if (inspectorVersion.isPresent()) {
+                    logger.debug(String.format("Found version [%s] in source [%s]", inspectorVersion, source));
+                    version = inspectorVersion;
+                    break;
                 }
             }
-        } else {
-            return nugetInspectorPackageVersion;
         }
-        return null;
+
+        return version;
     }
 
     private boolean shouldUseAirGap() {
@@ -120,21 +139,20 @@ public class NugetInspectorManager {
         return airGapNugetInspectorDirectory.exists();
     }
 
-    private String resolveVersionFromSource(final String source, final String nugetExecutablePath) throws ExecutableRunnerException {
-        String version = null;
+    private Optional<Version> resolveVersionFromSource(final String source, final String nugetExecutablePath) throws ExecutableRunnerException {
+        Optional<Version> detectVersion = Optional.empty();
 
-        final List<String> nugetOptions = new ArrayList<>();
+        final List<String> nugetOptions = new ArrayList<>(Arrays.asList(
+            "list",
+            detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME),
+            "-Source",
+            source)
+        );
 
-        nugetOptions.addAll(Arrays.asList(
-                "list",
-                detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME),
-                "-Source",
-                source));
-
-        final String nugetConfigPath = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
-        if (StringUtils.isNotBlank(nugetConfigPath)) {
+        final Optional<String> nugetConfigPath = detectConfiguration.getOptionalProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
+        if (nugetConfigPath.isPresent()) {
             nugetOptions.add("-ConfigFile");
-            nugetOptions.add(nugetConfigPath);
+            nugetOptions.add(nugetConfigPath.get());
         }
 
         final Executable getInspectorVersionExecutable = new Executable(new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), nugetExecutablePath, nugetOptions);
@@ -143,12 +161,35 @@ public class NugetInspectorManager {
         for (final String line : output) {
             final String[] lineChunks = line.split(" ");
             if (detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME).equalsIgnoreCase(lineChunks[0])) {
-                version = lineChunks[1];
+                detectVersion = Optional.of(Version.valueOf(lineChunks[1]));
             }
         }
 
-        return version;
+        return detectVersion;
+    }
 
+    private Optional<Version> resolveVersionFromAPI_V2(final String nugetUrl, final String inspectorName, final String versionRange) {
+        final Request request = new Request.Builder(nugetUrl).addQueryParameter("id", "'" + inspectorName + "'").build();
+        List<Version> foundVersions = new ArrayList<>();
+
+        try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(nugetUrl)) {
+            final Response response = restConnection.executeRequest(request);
+            final InputStream inputStream = response.getContent();
+            final Document xmlDocument = xmlDocumentBuilder.parse(inputStream);
+            foundVersions = nugetXmlParser.parseVersions(xmlDocument, inspectorName);
+        } catch (final IOException | IntegrationException | SAXException | DetectUserFriendlyException e) {
+            logger.warn(String.format("Failed to resolve nuget inspector (%s) version from url: %s", inspectorName, nugetUrl));
+            logger.debug(e.getMessage(), e);
+        }
+
+        Version bestVersion = null;
+        for (final Version foundVersion : foundVersions) {
+            if ((bestVersion == null || foundVersion.greaterThan(bestVersion)) && foundVersion.satisfies(versionRange)) {
+                bestVersion = foundVersion;
+            }
+        }
+
+        return Optional.ofNullable(bestVersion);
     }
 
     private String installInspector(final String nugetExecutablePath, final File outputDirectory, final String inspectorVersion) throws IOException, ExecutableRunnerException {
@@ -164,7 +205,7 @@ public class NugetInspectorManager {
 
             for (final String source : detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL)) {
                 logger.debug("Attempting source: " + source);
-                final boolean success = attemptInstallInspectorFromSource(source, nugetExecutablePath, outputDirectory);
+                final boolean success = attemptInstallInspectorFromSource(source, nugetExecutablePath, outputDirectory, inspectorVersion);
                 if (success) {
                     break;
                 }
@@ -184,31 +225,27 @@ public class NugetInspectorManager {
         return inspectorExe.getCanonicalPath();
     }
 
-    private boolean attemptInstallInspectorFromSource(final String source, final String nugetExecutablePath, final File outputDirectory) throws IOException, ExecutableRunnerException {
-        final List<String> nugetOptions = new ArrayList<>();
+    private boolean attemptInstallInspectorFromSource(final String source, final String nugetExecutablePath, final File outputDirectory, final String resolvedInspectorVersion) throws IOException, ExecutableRunnerException {
+        final List<String> nugetOptions = new ArrayList<>(Arrays.asList(
+            "install",
+            detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME),
+            "-OutputDirectory",
+            outputDirectory.getCanonicalPath(),
+            "-Source",
+            source,
+            "-Version",
+            resolvedInspectorVersion)
+        );
 
-        nugetOptions.addAll(Arrays.asList(
-                "install",
-                detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME),
-                "-OutputDirectory",
-                outputDirectory.getCanonicalPath(),
-                "-Source",
-                source,
-                "-Version",
-                resolvedInspectorVersion));
-        final String nugetConfigPath = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
-        if (StringUtils.isNotBlank(nugetConfigPath)) {
+        final Optional<String> nugetConfigPath = detectConfiguration.getOptionalProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
+        if (nugetConfigPath.isPresent()) {
             nugetOptions.add("-ConfigFile");
-            nugetOptions.add(nugetConfigPath);
+            nugetOptions.add(nugetConfigPath.get());
         }
 
         final Executable installInspectorExecutable = new Executable(new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), nugetExecutablePath, nugetOptions);
         final ExecutableOutput result = executableRunner.execute(installInspectorExecutable);
 
-        if (result.getReturnCode() == 0 && result.getErrorOutputAsList().size() == 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return result.getReturnCode() == 0 && result.getErrorOutputAsList().size() == 0;
     }
 }

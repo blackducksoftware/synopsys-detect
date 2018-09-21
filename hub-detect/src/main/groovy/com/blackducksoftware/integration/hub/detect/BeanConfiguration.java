@@ -73,6 +73,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePacka
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetXmlParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.ComposerLockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearCliExtractor;
@@ -238,6 +239,11 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public NugetXmlParser nugetXmlParser() {
+        return new NugetXmlParser();
+    }
+
+    @Bean
     public DetectInfo detectInfo() {
         return new DetectInfo();
     }
@@ -355,11 +361,11 @@ public class BeanConfiguration {
     @Bean
     public BomToolFactory bomToolFactory() throws ParserConfigurationException {
         return new BomToolFactory(detectConfiguration(), detectFileFinder(), standardExecutableFinder(), executableRunner(), clangExtractor(), clangLinuxPackageManagers(), composerLockExtractor(), condaCliExtractor(), cpanCliExtractor(),
-                dockerExtractor(),
-                dockerInspectorManager(),
-                gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(), mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(),
-                npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(), pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(),
-                podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
+            dockerExtractor(),
+            dockerInspectorManager(),
+            gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(), mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(),
+            npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(), pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(),
+            podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
     }
 
     @Bean
@@ -634,8 +640,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public NugetInspectorManager nugetInspectorManager() {
-        return new NugetInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration());
+    public NugetInspectorManager nugetInspectorManager() throws ParserConfigurationException {
+        return new NugetInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), nugetXmlParser());
     }
 
     @Bean
