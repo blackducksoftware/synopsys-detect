@@ -1,9 +1,10 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
-import com.blackducksoftware.integration.hub.detect.BeanConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3.*
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.github.zafarkhaja.semver.Version
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import org.junit.Before
 import org.junit.Test
 
@@ -22,8 +23,8 @@ class NugetRegistrationJsonParserTest {
 
     @Before
     void init() {
-        final BeanConfiguration beanConfiguration = new BeanConfiguration(null)
-        nugetJsonParser = beanConfiguration.nugetJsonParser()
+        final Gson gson = new GsonBuilder().setPrettyPrinting().create()
+        nugetJsonParser = new NugetRegistrationJsonParser(gson)
 
         synopsysNugetCatalogEntry = new NugetCatalogEntry()
         synopsysNugetCatalogEntry.setId("https://api.nuget.org/v3/catalog0/data/2018.07.27.16.24.26/integrationnugetinspector.2.5.0.json")

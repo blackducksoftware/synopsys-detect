@@ -1,17 +1,17 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle
 
-import com.blackducksoftware.integration.hub.detect.BeanConfiguration
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.github.zafarkhaja.semver.Version
 import org.junit.Test
 import org.w3c.dom.Document
 
 import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
 
 class GradleInspectorManagerTest {
-    final TestUtil testUtil = new TestUtil();
-    final BeanConfiguration beanConfiguration = new BeanConfiguration(null)
-    final DocumentBuilder xmlDocumentBuilder = beanConfiguration.xmlDocumentBuilder()
+    final TestUtil testUtil = new TestUtil()
+    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance()
+    final DocumentBuilder xmlDocumentBuilder = factory.newDocumentBuilder()
 
     @Test
     void detectVersionFromXML() {
