@@ -158,18 +158,20 @@ public class HubServiceManager {
     }
 
     public ScanJobManager createScanJobManager(final ExecutorService executorService) throws IntegrationException, DetectUserFriendlyException {
+        OperatingSystemType operatingSystemType = OperatingSystemType.determineFromSystem();
+        ScanPathsUtility scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, getEnvironmentVariables(), operatingSystemType);
+        ScanCommandRunner scanCommandRunner = new ScanCommandRunner(slf4jIntLogger, getEnvironmentVariables(), scanPathsUtility, executorService);
+
         final boolean blackDuckOffline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE);
-        final String locallScannerInstallPath = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH);
+        final String localScannerInstallPath = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH);
         final String userProvidedScannerInstallUrl = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL);
 
-        if (StringUtils.isBlank(locallScannerInstallPath) && StringUtils.isBlank(userProvidedScannerInstallUrl) && !blackDuckOffline) {
+        if (StringUtils.isBlank(localScannerInstallPath) && StringUtils.isBlank(userProvidedScannerInstallUrl) && !blackDuckOffline) {
             // will will use the hub server to download/update the scanner - this is the most likely situation
-            return ScanJobManager.createDefaultScanManager(slf4jIntLogger, hubServerConfig);
+            ScannerZipInstaller scannerZipInstaller = ScannerZipInstaller.defaultUtility(slf4jIntLogger, hubServerConfig, scanPathsUtility, operatingSystemType);
+            ScanJobManager scanJobManager = ScanJobManager.createFullScanManager(slf4jIntLogger, getEnvironmentVariables(), scannerZipInstaller, scanPathsUtility, scanCommandRunner);
+            return scanJobManager;
         } else {
-            OperatingSystemType operatingSystemType = OperatingSystemType.determineFromSystem();
-            ScanPathsUtility scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, getEnvironmentVariables(), operatingSystemType);
-            ScanCommandRunner scanCommandRunner = new ScanCommandRunner(slf4jIntLogger, getEnvironmentVariables(), scanPathsUtility);
-
             if (StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
                 // we will use the provided url to download/update the scanner
                 final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
@@ -186,7 +188,7 @@ public class HubServiceManager {
                 return ScanJobManager.createFullScanManager(slf4jIntLogger, getEnvironmentVariables(), scannerZipInstaller, scanPathsUtility, scanCommandRunner);
             } else {
                 // either we were given an existing path for the scanner or
-                // we are offline - either way, we won't attempt to download/update it
+                // we are offline - either way, we won't attempt to manage the install
                 return ScanJobManager.createScanManagerWithNoInstaller(slf4jIntLogger, getEnvironmentVariables(), scanPathsUtility, scanCommandRunner);
             }
         }
