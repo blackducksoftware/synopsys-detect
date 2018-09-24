@@ -72,7 +72,6 @@ public class GradleInspectorManager {
     private final DetectConfigurationUtility detectConfigurationUtility;
 
     private String resolvedInitScript = null;
-    private String resolvedVersion = null;
     private boolean hasResolvedInspector = false;
 
     public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DocumentBuilder xmlDocumentBuilder,
@@ -87,7 +86,7 @@ public class GradleInspectorManager {
     public String getGradleInspector() throws BomToolException {
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
-            resolvedVersion = resolveInspectorVersion().toString();
+            final String resolvedVersion = resolveInspectorVersion().toString();
             try {
                 resolvedInitScript = resolveInitScriptPath(resolvedVersion);
             } catch (final Exception e) {
