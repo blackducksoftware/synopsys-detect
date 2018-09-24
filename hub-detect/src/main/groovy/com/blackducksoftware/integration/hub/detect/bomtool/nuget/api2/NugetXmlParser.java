@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget;
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget.api2;
 
 import java.util.ArrayList;
 import java.util.List;

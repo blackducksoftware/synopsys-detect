@@ -1,6 +1,8 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
 import com.blackducksoftware.integration.hub.detect.BeanConfiguration
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api2.NugetEntry
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api2.NugetXmlParser
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.github.zafarkhaja.semver.Version
 import org.junit.Before
@@ -12,8 +14,7 @@ import javax.xml.parsers.DocumentBuilder
 class NugetXmlParserTest {
     private final static INSPECTOR_NAME = "IntegrationNugetInspector"
 
-    private final NugetXmlParser nugetXmlParser = new NugetXmlParser()
-
+    NugetXmlParser nugetXmlParser
     Document xmlDocument;
 
     @Before

@@ -748,7 +748,8 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_NUGET)
     @HelpDescription("The source for nuget packages")
-    DETECT_NUGET_PACKAGES_REPO_URL("detect.nuget.packages.repo.url", DetectPropertyType.STRING_ARRAY, "https://www.nuget.org/api/v2/"),
+    @HelpDetailed("Set this to \"https://www.nuget.org/api/v2/\" if your are still using a nuget client expecting the v2 api")
+    DETECT_NUGET_PACKAGES_REPO_URL("detect.nuget.packages.repo.url", DetectPropertyType.STRING_ARRAY, "https://api.nuget.org/v3/index.json"),
 
     @HelpGroup(primary = GROUP_GRADLE)
     @HelpDescription("The respository gradle should use to look for the gradle inspector")

@@ -172,6 +172,10 @@ public class DetectConfiguration {
         return detectPropertyMap.getStringArrayProperty(detectProperty);
     }
 
+    public Optional<String[]> getOptionalStringArrayProperty(final DetectProperty detectProperty) {
+        return Optional.ofNullable(getStringArrayProperty(detectProperty));
+    }
+
     public String getProperty(final DetectProperty detectProperty) {
         return detectPropertyMap.getProperty(detectProperty);
     }

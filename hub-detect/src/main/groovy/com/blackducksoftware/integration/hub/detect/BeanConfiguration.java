@@ -73,7 +73,9 @@ import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePacka
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetXmlParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api2.NugetXmlParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3.NugetIndexJsonParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3.NugetRegistrationJsonParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.ComposerLockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearCliExtractor;
@@ -241,6 +243,16 @@ public class BeanConfiguration {
     @Bean
     public NugetXmlParser nugetXmlParser() {
         return new NugetXmlParser();
+    }
+
+    @Bean
+    public NugetRegistrationJsonParser nugetJsonParser() {
+        return new NugetRegistrationJsonParser(gson());
+    }
+
+    @Bean
+    public NugetIndexJsonParser nugetIndexJsonParser() {
+        return new NugetIndexJsonParser(gson());
     }
 
     @Bean
@@ -641,7 +653,7 @@ public class BeanConfiguration {
 
     @Bean
     public NugetInspectorManager nugetInspectorManager() throws ParserConfigurationException {
-        return new NugetInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), nugetXmlParser());
+        return new NugetInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), nugetXmlParser(), nugetJsonParser(), nugetIndexJsonParser());
     }
 
     @Bean
