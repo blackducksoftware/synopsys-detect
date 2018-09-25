@@ -21,21 +21,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3;
-
-import java.util.List;
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3;
 
 import com.google.gson.annotations.SerializedName;
 
-public class NugetCatalogPage {
-    @SerializedName("items")
-    private List<NugetPackage> items;
+public class NugetApi3Package {
+    @SerializedName("catalogEntry")
+    private NugetApi3CatalogEntry catalogEntry;
 
-    public List<NugetPackage> getItems() {
-        return items;
+    public NugetApi3CatalogEntry getCatalogEntry() {
+        return catalogEntry;
     }
 
-    public void setItems(final List<NugetPackage> items) {
-        this.items = items;
+    public void setCatalogEntry(final NugetApi3CatalogEntry catalogEntry) {
+        this.catalogEntry = catalogEntry;
     }
 }

@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget.api2;
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,47 +34,47 @@ import org.w3c.dom.NodeList;
 import com.github.zafarkhaja.semver.Version;
 import com.synopsys.integration.util.NameVersion;
 
-public class NugetXmlParser {
+public class NugetApi2XmlParser {
     public List<Version> parseVersions(final Document xmlDocument, final String inspectorName) {
-        final List<NugetEntry> nugetEntries = parseEntries(xmlDocument);
+        final List<NugetApi2Entry> nugetEntries = parseEntries(xmlDocument);
 
         return transformNugetEntries(nugetEntries, inspectorName);
     }
 
-    private List<Version> transformNugetEntries(final List<NugetEntry> nugetEntries, final String inspectorName) {
+    private List<Version> transformNugetEntries(final List<NugetApi2Entry> nugetEntries, final String inspectorName) {
         return nugetEntries.stream()
-                   .filter((final NugetEntry nugetEntry) -> isBlackDuckPackage(nugetEntry, inspectorName))
+                   .filter((final NugetApi2Entry nugetApi2Entry) -> isBlackDuckPackage(nugetApi2Entry, inspectorName))
                    .map(this::transformNugetEntry)
                    .collect(Collectors.toList());
     }
 
-    private boolean isBlackDuckPackage(final NugetEntry nugetEntry, final String inspectorName) {
-        final boolean nameMatches = nugetEntry.getName().equals(inspectorName);
-        final boolean companyMatches = nugetEntry.getAuthors().contains("Black Duck Software") || nugetEntry.getAuthors().contains("Black Duck by Synopsys");
-        final boolean oneAuthor = nugetEntry.getAuthors().size() == 1;
+    private boolean isBlackDuckPackage(final NugetApi2Entry nugetApi2Entry, final String inspectorName) {
+        final boolean nameMatches = nugetApi2Entry.getName().equals(inspectorName);
+        final boolean companyMatches = nugetApi2Entry.getAuthors().contains("Black Duck Software") || nugetApi2Entry.getAuthors().contains("Black Duck by Synopsys");
+        final boolean oneAuthor = nugetApi2Entry.getAuthors().size() == 1;
 
         return nameMatches && companyMatches && oneAuthor;
     }
 
-    private Version transformNugetEntry(final NugetEntry nugetEntry) {
-        return Version.valueOf(nugetEntry.getVersion());
+    private Version transformNugetEntry(final NugetApi2Entry nugetApi2Entry) {
+        return Version.valueOf(nugetApi2Entry.getVersion());
     }
 
-    private List<NugetEntry> parseEntries(final Document xmlDocument) {
-        final List<NugetEntry> nugetEntries = new ArrayList<>();
+    private List<NugetApi2Entry> parseEntries(final Document xmlDocument) {
+        final List<NugetApi2Entry> nugetEntries = new ArrayList<>();
         final NodeList nodeVersions = xmlDocument.getElementsByTagName("entry");
 
         for (int index = 0; index < nodeVersions.getLength(); index++) {
             final NodeList entryNodes = nodeVersions.item(index).getChildNodes();
-            final NugetEntry nugetEntry = parseEntry(entryNodes);
+            final NugetApi2Entry nugetApi2Entry = parseEntry(entryNodes);
 
-            nugetEntries.add(nugetEntry);
+            nugetEntries.add(nugetApi2Entry);
         }
 
         return nugetEntries;
     }
 
-    private NugetEntry parseEntry(final NodeList entryNodes) {
+    private NugetApi2Entry parseEntry(final NodeList entryNodes) {
         String id = null;
         List<String> authors = null;
         NameVersion nameVersion = null;
@@ -96,7 +96,7 @@ public class NugetXmlParser {
             }
         }
 
-        return new NugetEntry(id, authors, nameVersion.getName(), nameVersion.getVersion());
+        return new NugetApi2Entry(id, authors, nameVersion.getName(), nameVersion.getVersion());
     }
 
     private List<String> getEntryAuthorNames(final NodeList authorNameNodeList) {

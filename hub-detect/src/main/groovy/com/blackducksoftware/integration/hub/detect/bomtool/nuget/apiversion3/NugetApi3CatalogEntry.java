@@ -21,36 +21,52 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget.api2;
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3;
 
-import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
-public class NugetEntry {
-    private final String id;
-    private final List<String> authors;
-    private final String name;
-    private final String version;
+public class NugetApi3CatalogEntry {
+    @SerializedName("@id")
+    private String id;
 
-    public NugetEntry(final String id, final List<String> authors, final String name, final String version) {
-        this.id = id;
-        this.authors = authors;
-        this.name = name;
-        this.version = version;
-    }
+    @SerializedName("authors")
+    private String authors;
+
+    @SerializedName("id")
+    private String packageName;
+
+    @SerializedName("version")
+    private String packageVersion;
 
     public String getId() {
         return id;
     }
 
-    public List<String> getAuthors() {
+    public void setId(final String id) {
+        this.id = id;
+    }
+
+    public String getAuthors() {
         return authors;
     }
 
-    public String getName() {
-        return name;
+    public void setAuthors(final String authors) {
+        this.authors = authors;
     }
 
-    public String getVersion() {
-        return version;
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(final String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getPackageVersion() {
+        return packageVersion;
+    }
+
+    public void setPackageVersion(final String packageVersion) {
+        this.packageVersion = packageVersion;
     }
 }

@@ -21,14 +21,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3;
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3;
 
-public enum ResourceType {
+public enum NugetApi3ResourceType {
     RegistrationBaseUrl("RegistrationBaseUrl");
 
     private final String type;
 
-    ResourceType(final String type) {
+    NugetApi3ResourceType(final String type) {
         this.type = type;
     }
 

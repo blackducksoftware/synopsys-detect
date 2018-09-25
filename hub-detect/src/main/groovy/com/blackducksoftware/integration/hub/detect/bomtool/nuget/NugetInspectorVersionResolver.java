@@ -42,11 +42,11 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api2.NugetXmlParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3.NugetIndexJsonParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3.NugetRegistrationJsonParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3.NugetResource;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3.ResourceType;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion2.NugetApi2XmlParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3IndexJsonParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3RegistrationJsonParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3Resource;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3ResourceType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
@@ -67,20 +67,20 @@ public class NugetInspectorVersionResolver {
     private final DetectConfiguration detectConfiguration;
     private final DetectConfigurationUtility detectConfigurationUtility;
     private final DocumentBuilder xmlDocumentBuilder;
-    private final NugetXmlParser nugetXmlParser;
-    private final NugetRegistrationJsonParser nugetRegistrationJsonParser;
-    private final NugetIndexJsonParser nugetIndexJsonParser;
+    private final NugetApi2XmlParser nugetApi2XmlParser;
+    private final NugetApi3RegistrationJsonParser nugetApi3RegistrationJsonParser;
+    private final NugetApi3IndexJsonParser nugetApi3IndexJsonParser;
 
     public NugetInspectorVersionResolver(final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration,
-        final DetectConfigurationUtility detectConfigurationUtility, final DocumentBuilder xmlDocumentBuilder, final NugetXmlParser nugetXmlParser,
-        final NugetRegistrationJsonParser nugetRegistrationJsonParser, final NugetIndexJsonParser nugetIndexJsonParser) {
+        final DetectConfigurationUtility detectConfigurationUtility, final DocumentBuilder xmlDocumentBuilder, final NugetApi2XmlParser nugetApi2XmlParser,
+        final NugetApi3RegistrationJsonParser nugetApi3RegistrationJsonParser, final NugetApi3IndexJsonParser nugetApi3IndexJsonParser) {
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationUtility = detectConfigurationUtility;
         this.xmlDocumentBuilder = xmlDocumentBuilder;
-        this.nugetXmlParser = nugetXmlParser;
-        this.nugetRegistrationJsonParser = nugetRegistrationJsonParser;
-        this.nugetIndexJsonParser = nugetIndexJsonParser;
+        this.nugetApi2XmlParser = nugetApi2XmlParser;
+        this.nugetApi3RegistrationJsonParser = nugetApi3RegistrationJsonParser;
+        this.nugetApi3IndexJsonParser = nugetApi3IndexJsonParser;
     }
 
     public Optional<Version> resolveInspectorVersion(final String nugetExecutablePath) throws ExecutableRunnerException {
@@ -185,7 +185,7 @@ public class NugetInspectorVersionResolver {
             final Response response = restConnection.executeRequest(request);
             final InputStream inputStream = response.getContent();
             final Document xmlDocument = xmlDocumentBuilder.parse(inputStream);
-            foundVersions = nugetXmlParser.parseVersions(xmlDocument, inspectorName);
+            foundVersions = nugetApi2XmlParser.parseVersions(xmlDocument, inspectorName);
         } catch (final IOException | IntegrationException | SAXException | DetectUserFriendlyException e) {
             logger.warn(String.format("Failed to resolve nuget inspector (%s) version from url: %s", inspectorName, nugetPackageRepo));
             logger.debug(e.getMessage(), e);
@@ -216,7 +216,7 @@ public class NugetInspectorVersionResolver {
         try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(nugetPackageRepo)) {
             final Response response = restConnection.executeRequest(request);
             final String jsonResponse = IOUtils.toString(response.getContent(), StandardCharsets.UTF_8);
-            final List<Version> versions = nugetRegistrationJsonParser.parseNugetResponse(jsonResponse, inspectorName);
+            final List<Version> versions = nugetApi3RegistrationJsonParser.findInspectionVersions(jsonResponse, inspectorName);
 
             foundVersions.addAll(versions);
         } catch (final IOException | IntegrationException | DetectUserFriendlyException e) {
@@ -236,7 +236,7 @@ public class NugetInspectorVersionResolver {
             final Request request = new Request.Builder(nugetPackageRepo).build();
             final Response response = restConnection.executeRequest(request);
             final String indexJson = IOUtils.toString(response.getContent(), StandardCharsets.UTF_8);
-            final Optional<NugetResource> registrationBaseUrlResource = nugetIndexJsonParser.parseResourceFromIndexJson(indexJson, ResourceType.RegistrationBaseUrl);
+            final Optional<NugetApi3Resource> registrationBaseUrlResource = nugetApi3IndexJsonParser.parseResourceFromIndexJson(indexJson, NugetApi3ResourceType.RegistrationBaseUrl);
 
             if (registrationBaseUrlResource.isPresent()) {
                 registrationUrl = registrationBaseUrlResource.get().getId();

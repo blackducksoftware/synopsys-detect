@@ -75,9 +75,9 @@ import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspector
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorVersionResolver;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api2.NugetXmlParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3.NugetIndexJsonParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3.NugetRegistrationJsonParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion2.NugetApi2XmlParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3IndexJsonParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3RegistrationJsonParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.ComposerLockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearCliExtractor;
@@ -639,18 +639,18 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public NugetXmlParser nugetXmlParser() {
-        return new NugetXmlParser();
+    public NugetApi2XmlParser nugetApi2XmlParser() {
+        return new NugetApi2XmlParser();
     }
 
     @Bean
-    public NugetRegistrationJsonParser nugetRegistrationJsonParser() {
-        return new NugetRegistrationJsonParser(gson());
+    public NugetApi3RegistrationJsonParser nugetApi3RegistrationJsonParser() {
+        return new NugetApi3RegistrationJsonParser(gson());
     }
 
     @Bean
-    public NugetIndexJsonParser nugetIndexJsonParser() {
-        return new NugetIndexJsonParser(gson());
+    public NugetApi3IndexJsonParser nugetApi3IndexJsonParser() {
+        return new NugetApi3IndexJsonParser(gson());
     }
 
     @Bean
@@ -660,7 +660,7 @@ public class BeanConfiguration {
 
     @Bean
     public NugetInspectorVersionResolver nugetInspectorVersionResolver() throws ParserConfigurationException {
-        return new NugetInspectorVersionResolver(executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), nugetXmlParser(), nugetRegistrationJsonParser(), nugetIndexJsonParser());
+        return new NugetInspectorVersionResolver(executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), nugetApi2XmlParser(), nugetApi3RegistrationJsonParser(), nugetApi3IndexJsonParser());
     }
 
     @Bean

@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3;
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,25 +35,25 @@ import com.google.gson.Gson;
 /**
  * Used for parsing the JSON response from the Nuget Registration API
  */
-public class NugetRegistrationJsonParser {
+public class NugetApi3RegistrationJsonParser {
     final Gson gson;
 
-    public NugetRegistrationJsonParser(final Gson gson) {
+    public NugetApi3RegistrationJsonParser(final Gson gson) {
         this.gson = gson;
     }
 
-    public List<Version> parseNugetResponse(final String jsonResponse, final String inspectorName) {
-        final NugetResponse nugetResponse = gson.fromJson(jsonResponse, NugetResponse.class);
+    public List<Version> findInspectionVersions(final String jsonResponse, final String inspectorName) {
+        final NugetApi3Response nugetApi3Response = gson.fromJson(jsonResponse, NugetApi3Response.class);
 
-        return getVersionsFromNugetResponse(nugetResponse, inspectorName);
+        return getVersionsFromNugetResponse(nugetApi3Response, inspectorName);
     }
 
-    private List<Version> getVersionsFromNugetResponse(final NugetResponse nugetResponse, final String inspectorName) {
+    private List<Version> getVersionsFromNugetResponse(final NugetApi3Response nugetApi3Response, final String inspectorName) {
         final List<Version> foundVersions = new ArrayList<>();
 
-        for (final NugetCatalogPage catalogPage : nugetResponse.getItems()) {
-            for (final NugetPackage nugetPackage : catalogPage.getItems()) {
-                final NugetCatalogEntry catalogEntry = nugetPackage.getCatalogEntry();
+        for (final NugetApi3CatalogPage catalogPage : nugetApi3Response.getItems()) {
+            for (final NugetApi3Package nugetApi3Package : catalogPage.getItems()) {
+                final NugetApi3CatalogEntry catalogEntry = nugetApi3Package.getCatalogEntry();
                 final Optional<Version> version = getVersionFromCatalogEntry(catalogEntry, inspectorName);
 
                 version.ifPresent(foundVersions::add);
@@ -63,7 +63,7 @@ public class NugetRegistrationJsonParser {
         return foundVersions;
     }
 
-    private Optional<Version> getVersionFromCatalogEntry(final NugetCatalogEntry catalogEntry, final String inspectorName) {
+    private Optional<Version> getVersionFromCatalogEntry(final NugetApi3CatalogEntry catalogEntry, final String inspectorName) {
         Optional<Version> version = Optional.empty();
         if (isBlackDuckCatalogEntry(catalogEntry, inspectorName)) {
             final String foundVersion = catalogEntry.getPackageVersion();
@@ -75,7 +75,7 @@ public class NugetRegistrationJsonParser {
         return version;
     }
 
-    private boolean isBlackDuckCatalogEntry(final NugetCatalogEntry catalogEntry, final String inspectorName) {
+    private boolean isBlackDuckCatalogEntry(final NugetApi3CatalogEntry catalogEntry, final String inspectorName) {
         final boolean nameMatches = catalogEntry.getPackageName().equals(inspectorName);
         final boolean companyMatches = catalogEntry.getAuthors().equalsIgnoreCase("Black Duck Software") || catalogEntry.getAuthors().equalsIgnoreCase("Black Duck by Synopsys");
 

@@ -21,43 +21,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3;
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion2;
 
-import java.util.Optional;
+import java.util.List;
 
-import com.google.gson.annotations.SerializedName;
+public class NugetApi2Entry {
+    private final String id;
+    private final List<String> authors;
+    private final String name;
+    private final String version;
 
-public class NugetResource {
-    @SerializedName("@id")
-    private String id;
-
-    @SerializedName("@type")
-    private String type;
-
-    @SerializedName("comment")
-    private String comment;
-
-    public Optional<String> getId() {
-        return Optional.ofNullable(id);
-    }
-
-    public void setId(final String id) {
+    public NugetApi2Entry(final String id, final List<String> authors, final String name, final String version) {
         this.id = id;
+        this.authors = authors;
+        this.name = name;
+        this.version = version;
     }
 
-    public Optional<String> getType() {
-        return Optional.ofNullable(type);
+    public String getId() {
+        return id;
     }
 
-    public void setType(final String type) {
-        this.type = type;
+    public List<String> getAuthors() {
+        return authors;
     }
 
-    public Optional<String> getComment() {
-        return Optional.ofNullable(comment);
+    public String getName() {
+        return name;
     }
 
-    public void setComment(final String comment) {
-        this.comment = comment;
+    public String getVersion() {
+        return version;
     }
 }

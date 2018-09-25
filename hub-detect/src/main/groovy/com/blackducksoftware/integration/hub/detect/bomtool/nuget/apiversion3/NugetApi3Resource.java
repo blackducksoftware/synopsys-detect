@@ -21,52 +21,43 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3;
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3;
+
+import java.util.Optional;
 
 import com.google.gson.annotations.SerializedName;
 
-public class NugetCatalogEntry {
+public class NugetApi3Resource {
     @SerializedName("@id")
     private String id;
 
-    @SerializedName("authors")
-    private String authors;
+    @SerializedName("@type")
+    private String type;
 
-    @SerializedName("id")
-    private String packageName;
+    @SerializedName("comment")
+    private String comment;
 
-    @SerializedName("version")
-    private String packageVersion;
-
-    public String getId() {
-        return id;
+    public Optional<String> getId() {
+        return Optional.ofNullable(id);
     }
 
     public void setId(final String id) {
         this.id = id;
     }
 
-    public String getAuthors() {
-        return authors;
+    public Optional<String> getType() {
+        return Optional.ofNullable(type);
     }
 
-    public void setAuthors(final String authors) {
-        this.authors = authors;
+    public void setType(final String type) {
+        this.type = type;
     }
 
-    public String getPackageName() {
-        return packageName;
+    public Optional<String> getComment() {
+        return Optional.ofNullable(comment);
     }
 
-    public void setPackageName(final String packageName) {
-        this.packageName = packageName;
-    }
-
-    public String getPackageVersion() {
-        return packageVersion;
-    }
-
-    public void setPackageVersion(final String packageVersion) {
-        this.packageVersion = packageVersion;
+    public void setComment(final String comment) {
+        this.comment = comment;
     }
 }
