@@ -60,6 +60,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleExecuta
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleReportParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleXmlDocumentVersionExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.Rebar3TreeParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.RebarExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenCliExtractor;
@@ -574,8 +575,13 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public GradleXmlDocumentVersionExtractor gradleXmlDocumentVersionExtractor() {
+        return new GradleXmlDocumentVersionExtractor();
+    }
+
+    @Bean
     public GradleInspectorManager gradleInspectorManager() throws ParserConfigurationException {
-        return new GradleInspectorManager(detectFileManager(), configuration(), xmlDocumentBuilder(), detectConfiguration(), detectConfigurationUtility());
+        return new GradleInspectorManager(detectFileManager(), configuration(), xmlDocumentBuilder(), detectConfiguration(), detectConfigurationUtility(), gradleXmlDocumentVersionExtractor());
     }
 
     @Bean

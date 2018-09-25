@@ -29,9 +29,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -42,7 +40,6 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
@@ -70,17 +67,19 @@ public class GradleInspectorManager {
     private final DocumentBuilder xmlDocumentBuilder;
     private final DetectConfiguration detectConfiguration;
     private final DetectConfigurationUtility detectConfigurationUtility;
+    private final GradleXmlDocumentVersionExtractor gradleXmlDocumentVersionExtractor;
 
     private String resolvedInitScript = null;
     private boolean hasResolvedInspector = false;
 
     public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DocumentBuilder xmlDocumentBuilder,
-        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility) {
+        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final GradleXmlDocumentVersionExtractor gradleXmlDocumentVersionExtractor) {
         this.detectFileManager = detectFileManager;
         this.configuration = configuration;
         this.xmlDocumentBuilder = xmlDocumentBuilder;
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationUtility = detectConfigurationUtility;
+        this.gradleXmlDocumentVersionExtractor = gradleXmlDocumentVersionExtractor;
     }
 
     public String getGradleInspector() throws BomToolException {
@@ -118,7 +117,7 @@ public class GradleInspectorManager {
                     ResourceUtil.closeQuietly(response);
                 }
             }
-            final Optional<Version> detectVersionFromXML = detectVersionFromXML(xmlDocument, versionRange);
+            final Optional<Version> detectVersionFromXML = gradleXmlDocumentVersionExtractor.detectVersionFromXML(xmlDocument, versionRange);
             if (detectVersionFromXML.isPresent()) {
                 gradleInspectorVersion = detectVersionFromXML.get();
                 logger.info(String.format("Resolved gradle inspector version from [%s] to [%s]", versionRange, gradleInspectorVersion.toString()));
@@ -131,25 +130,6 @@ public class GradleInspectorManager {
         }
 
         return gradleInspectorVersion;
-    }
-
-    private Optional<Version> detectVersionFromXML(final Document xmlDocument, final String versionRange) {
-        final List<Version> foundVersions = new ArrayList<>();
-        final NodeList nodeVersions = xmlDocument.getElementsByTagName("version");
-        for (int i = 0; i < nodeVersions.getLength(); i++) {
-            final String versionNodeText = nodeVersions.item(i).getTextContent();
-            final Version foundVersion = Version.valueOf(versionNodeText);
-            foundVersions.add(foundVersion);
-        }
-
-        Version bestVersion = null;
-        for (final Version foundVersion : foundVersions) {
-            if ((bestVersion == null || foundVersion.greaterThan(bestVersion)) && foundVersion.satisfies(versionRange)) {
-                bestVersion = foundVersion;
-            }
-        }
-
-        return Optional.ofNullable(bestVersion);
     }
 
     private String resolveInitScriptPath(final String version) throws IOException, TemplateException {
