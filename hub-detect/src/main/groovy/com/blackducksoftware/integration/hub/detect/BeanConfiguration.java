@@ -71,8 +71,10 @@ import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmExecutableFin
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfileExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorInstaller;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorVersionResolver;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api2.NugetXmlParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3.NugetIndexJsonParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.api3.NugetRegistrationJsonParser;
@@ -238,21 +240,6 @@ public class BeanConfiguration {
     public DocumentBuilder xmlDocumentBuilder() throws ParserConfigurationException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         return factory.newDocumentBuilder();
-    }
-
-    @Bean
-    public NugetXmlParser nugetXmlParser() {
-        return new NugetXmlParser();
-    }
-
-    @Bean
-    public NugetRegistrationJsonParser nugetJsonParser() {
-        return new NugetRegistrationJsonParser(gson());
-    }
-
-    @Bean
-    public NugetIndexJsonParser nugetIndexJsonParser() {
-        return new NugetIndexJsonParser(gson());
     }
 
     @Bean
@@ -652,8 +639,33 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public NugetXmlParser nugetXmlParser() {
+        return new NugetXmlParser();
+    }
+
+    @Bean
+    public NugetRegistrationJsonParser nugetRegistrationJsonParser() {
+        return new NugetRegistrationJsonParser(gson());
+    }
+
+    @Bean
+    public NugetIndexJsonParser nugetIndexJsonParser() {
+        return new NugetIndexJsonParser(gson());
+    }
+
+    @Bean
+    public NugetInspectorInstaller nugetInspectorInstaller() {
+        return new NugetInspectorInstaller(detectFileManager(), detectConfiguration(), executableRunner());
+    }
+
+    @Bean
+    public NugetInspectorVersionResolver nugetInspectorVersionResolver() throws ParserConfigurationException {
+        return new NugetInspectorVersionResolver(executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), nugetXmlParser(), nugetRegistrationJsonParser(), nugetIndexJsonParser());
+    }
+
+    @Bean
     public NugetInspectorManager nugetInspectorManager() throws ParserConfigurationException {
-        return new NugetInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), nugetXmlParser(), nugetJsonParser(), nugetIndexJsonParser());
+        return new NugetInspectorManager(nugetInspectorVersionResolver(), nugetInspectorInstaller(), executableManager(), detectConfiguration());
     }
 
     @Bean
