@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,7 +69,7 @@ public class DetectConfiguration {
 
     private void handleStandardProperty(final DetectProperty currentProperty) {
         actuallySetValues.add(currentProperty);
-        String value = detectPropertySource.getDetectProperty(currentProperty.getPropertyName(), currentProperty.getDefaultValue());
+        final String value = detectPropertySource.getDetectProperty(currentProperty.getPropertyName(), currentProperty.getDefaultValue());
         detectPropertyMap.setDetectProperty(currentProperty, value);
     }
 
@@ -119,9 +118,9 @@ public class DetectConfiguration {
     // TODO: Remove in version 6.
     private DetectProperty fromOverrideToDeprecated(final DetectProperty detectProperty) {
         final Optional<DetectProperty> found = DetectPropertyDeprecations.PROPERTY_OVERRIDES.entrySet().stream()
-                .filter(it -> it.getValue().equals(detectProperty))
-                .map(it -> it.getKey())
-                .findFirst();
+                                                   .filter(it -> it.getValue().equals(detectProperty))
+                                                   .map(it -> it.getKey())
+                                                   .findFirst();
 
         return found.orElse(null);
     }
@@ -173,8 +172,25 @@ public class DetectConfiguration {
         return detectPropertyMap.getStringArrayProperty(detectProperty);
     }
 
+    public Optional<String[]> getOptionalStringArrayProperty(final DetectProperty detectProperty) {
+        return Optional.ofNullable(getStringArrayProperty(detectProperty));
+    }
+
     public String getProperty(final DetectProperty detectProperty) {
         return detectPropertyMap.getProperty(detectProperty);
+    }
+
+    /**
+     * Same as <code>getProperty()</code>, but returns an optional after performing a <code>StringUtils.isBlank()</code> check
+     */
+    public Optional<String> getOptionalProperty(final DetectProperty detectProperty) {
+        final String property = getProperty(detectProperty);
+        Optional<String> optionalProperty = Optional.empty();
+        if (StringUtils.isNotBlank(property)) {
+            optionalProperty = Optional.of(property);
+        }
+
+        return optionalProperty;
     }
 
     public String getPropertyValueAsString(final DetectProperty detectProperty) {

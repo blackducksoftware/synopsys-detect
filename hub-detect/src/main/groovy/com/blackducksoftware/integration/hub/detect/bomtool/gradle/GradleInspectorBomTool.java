@@ -51,7 +51,7 @@ public class GradleInspectorBomTool extends BomTool {
     private String gradleInspector;
 
     public GradleInspectorBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final GradleExecutableFinder gradleFinder, final GradleInspectorManager gradleInspectorManager,
-            final GradleInspectorExtractor gradleInspectorExtractor) {
+        final GradleInspectorExtractor gradleInspectorExtractor) {
         super(environment, "Gradle Inspector", BomToolGroupType.GRADLE, BomToolType.GRADLE_INSPECTOR);
         this.fileFinder = fileFinder;
         this.gradleFinder = gradleFinder;
@@ -76,7 +76,7 @@ public class GradleInspectorBomTool extends BomTool {
             return new ExecutableNotFoundBomToolResult("gradle");
         }
 
-        gradleInspector = gradleInspectorManager.getGradleInspector(environment);
+        gradleInspector = gradleInspectorManager.getGradleInspector();
         if (gradleInspector == null) {
             return new InspectorNotFoundBomToolResult("gradle");
         }

@@ -376,8 +376,9 @@ public enum DetectProperty {
     DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES("detect.policy.check.fail.on.severities", "3.0.0", DetectPropertyType.STRING),
 
     @HelpGroup(primary = GROUP_GRADLE)
-    @HelpDescription("Version of the Gradle Inspector")
-    DETECT_GRADLE_INSPECTOR_VERSION("detect.gradle.inspector.version", "3.0.0", DetectPropertyType.STRING, "latest"),
+    @HelpDescription("Version of the Gradle Inspector. Wildcards may be specified with *.")
+    @HelpDetailed("Wildcard versions will find the highest version that fits the pattern. For example 1.* will lock to major version 1 where 1.2.* will lock to major 1 and minor 2. Both versions 1.2.3 and 1.2.4 would fulfill both patterns and 1.2.4 would be chosen.")
+    DETECT_GRADLE_INSPECTOR_VERSION("detect.gradle.inspector.version", "3.0.0", DetectPropertyType.STRING, "0.*"),
 
     @HelpGroup(primary = GROUP_GRADLE)
     @HelpDescription("Gradle build command")
@@ -408,7 +409,8 @@ public enum DetectProperty {
     DETECT_NUGET_INSPECTOR_NAME("detect.nuget.inspector.name", "3.0.0", DetectPropertyType.STRING, "IntegrationNugetInspector"),
 
     @HelpGroup(primary = GROUP_NUGET)
-    @HelpDescription("Version of the Nuget Inspector")
+    @HelpDescription("Version of the Nuget Inspector. Wildcards may be specified with *.")
+    @HelpDetailed("Wildcard versions will find the highest version that fits the pattern. For example 1.* will lock to major version 1 where 1.2.* will lock to major 1 and minor 2. Both versions 1.2.3 and 1.2.4 would fulfill both patterns and 1.2.4 would be chosen.")
     DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version", "3.0.0", DetectPropertyType.STRING, "2.*"),
 
     @HelpGroup(primary = GROUP_NUGET)
@@ -746,7 +748,8 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_NUGET)
     @HelpDescription("The source for nuget packages")
-    DETECT_NUGET_PACKAGES_REPO_URL("detect.nuget.packages.repo.url", "3.0.0", DetectPropertyType.STRING_ARRAY, "https://www.nuget.org/api/v2/"),
+    @HelpDetailed("Set this to \"https://www.nuget.org/api/v2/\" if your are still using a nuget client expecting the v2 api")
+    DETECT_NUGET_PACKAGES_REPO_URL("detect.nuget.packages.repo.url", "3.0.0", DetectPropertyType.STRING_ARRAY, "https://api.nuget.org/v3/index.json"),
 
     @HelpGroup(primary = GROUP_GRADLE)
     @HelpDescription("The respository gradle should use to look for the gradle inspector")

@@ -60,6 +60,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleExecuta
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleReportParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleXmlDocumentVersionExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.Rebar3TreeParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.RebarExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenCliExtractor;
@@ -71,8 +72,13 @@ import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmExecutableFin
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfileExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorInstaller;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorVersionResolver;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion2.NugetApi2XmlParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3IndexJsonParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3RegistrationJsonParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.ComposerLockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearCliExtractor;
@@ -355,11 +361,11 @@ public class BeanConfiguration {
     @Bean
     public BomToolFactory bomToolFactory() throws ParserConfigurationException {
         return new BomToolFactory(detectConfiguration(), detectFileFinder(), standardExecutableFinder(), executableRunner(), clangExtractor(), clangLinuxPackageManagers(), composerLockExtractor(), condaCliExtractor(), cpanCliExtractor(),
-                dockerExtractor(),
-                dockerInspectorManager(),
-                gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(), mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(),
-                npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(), pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(),
-                podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
+            dockerExtractor(),
+            dockerInspectorManager(),
+            gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(), mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(),
+            npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(), pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(),
+            podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
     }
 
     @Bean
@@ -569,8 +575,13 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public GradleXmlDocumentVersionExtractor gradleXmlDocumentVersionExtractor() {
+        return new GradleXmlDocumentVersionExtractor();
+    }
+
+    @Bean
     public GradleInspectorManager gradleInspectorManager() throws ParserConfigurationException {
-        return new GradleInspectorManager(detectFileManager(), configuration(), xmlDocumentBuilder(), detectConfiguration(), detectConfigurationUtility());
+        return new GradleInspectorManager(detectFileManager(), configuration(), xmlDocumentBuilder(), detectConfiguration(), detectConfigurationUtility(), gradleXmlDocumentVersionExtractor());
     }
 
     @Bean
@@ -634,8 +645,33 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public NugetInspectorManager nugetInspectorManager() {
-        return new NugetInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration());
+    public NugetApi2XmlParser nugetApi2XmlParser() {
+        return new NugetApi2XmlParser();
+    }
+
+    @Bean
+    public NugetApi3RegistrationJsonParser nugetApi3RegistrationJsonParser() {
+        return new NugetApi3RegistrationJsonParser(gson());
+    }
+
+    @Bean
+    public NugetApi3IndexJsonParser nugetApi3IndexJsonParser() {
+        return new NugetApi3IndexJsonParser(gson());
+    }
+
+    @Bean
+    public NugetInspectorInstaller nugetInspectorInstaller() {
+        return new NugetInspectorInstaller(detectFileManager(), detectConfiguration(), executableRunner());
+    }
+
+    @Bean
+    public NugetInspectorVersionResolver nugetInspectorVersionResolver() throws ParserConfigurationException {
+        return new NugetInspectorVersionResolver(executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), nugetApi2XmlParser(), nugetApi3RegistrationJsonParser(), nugetApi3IndexJsonParser());
+    }
+
+    @Bean
+    public NugetInspectorManager nugetInspectorManager() throws ParserConfigurationException {
+        return new NugetInspectorManager(nugetInspectorVersionResolver(), nugetInspectorInstaller(), executableManager(), detectConfiguration());
     }
 
     @Bean
