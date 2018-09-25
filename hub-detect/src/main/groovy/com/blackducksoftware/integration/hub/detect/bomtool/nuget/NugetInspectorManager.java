@@ -144,16 +144,15 @@ public class NugetInspectorManager {
             for (final String source : nugetPackageRepos.get()) {
                 logger.debug("Attempting source: " + source);
                 Optional<Version> inspectorVersion = resolveVersionFromAPI_V3(source, inspectorName, versionRange);
-                boolean usedV3 = true;
+                String apiVersion = "v3";
 
                 if (!inspectorVersion.isPresent()) {
                     logger.debug("Failed to resolve version from Nuget API v3, attempting to resolve through Nuget API v2");
                     inspectorVersion = resolveVersionFromAPI_V2(source, inspectorName, versionRange);
-                    usedV3 = false;
+                    apiVersion = "v2";
                 }
 
                 if (inspectorVersion.isPresent()) {
-                    final String apiVersion = usedV3 ? "v3" : "v2";
                     logger.debug(String.format("Found version [%s] in source [%s] with Nuget API %s", inspectorVersion, source, apiVersion));
                     version = inspectorVersion;
                     break;
