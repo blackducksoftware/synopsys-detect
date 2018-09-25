@@ -13,6 +13,7 @@ package com.blackducksoftware.integration.hub.detect.testutils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -44,13 +45,17 @@ public class TestUtil {
     }
 
     public String getResourceAsUTF8String(final String resourcePath) {
-        String data;
+        final String data;
         try {
             data = ResourceUtil.getResourceAsString(getClass(), resourcePath, StandardCharsets.UTF_8.toString());
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
         return Arrays.asList(data.split("\r?\n")).stream().collect(Collectors.joining(System.lineSeparator()));
+    }
+
+    public InputStream getResourceAsInputStream(final String resourcePath) {
+        return getClass().getResourceAsStream(resourcePath);
     }
 
     public void createExpectedFile(final String resourcePath, final Object expectedObject) {

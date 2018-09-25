@@ -193,7 +193,7 @@ public abstract class InteractiveMode {
             outputStream = new FileOutputStream(applicationsProperty);
             properties.store(outputStream, "Automatically generated during Detect Interactive Mode.");
             printStream.println();
-            printStream.println("Succesfully saved to '" + applicationsProperty.getCanonicalPath() + "'!");
+            printStream.println("Successfully saved to '" + applicationsProperty.getCanonicalPath() + "'!");
             outputStream.close();
         } catch (final IOException e) {
             printStream.println(e);
