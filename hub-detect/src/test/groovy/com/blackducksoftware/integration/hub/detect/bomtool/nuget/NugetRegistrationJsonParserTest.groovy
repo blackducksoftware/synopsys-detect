@@ -84,30 +84,4 @@ class NugetRegistrationJsonParserTest {
 
         assert versions.size() == 23
     }
-
-    @Test
-    void getVersionsFromNugetResponseTest() {
-        final List<Version> allVersions = nugetJsonParser.getVersionsFromNugetResponse(nugetResponse, INSPECTOR_NAME)
-
-        assert allVersions.size() == 2
-    }
-
-    @Test
-    void getVersionFromCatalogEntryTest() {
-        final Optional<Version> version = nugetJsonParser.getVersionFromCatalogEntry(synopsysNugetCatalogEntry, INSPECTOR_NAME)
-        assert version.isPresent()
-        assert version.get().toString() == "2.5.0"
-
-        final Optional<Version> noVersion = nugetJsonParser.getVersionFromCatalogEntry(invalidPackageNugetCatalogEntry, INSPECTOR_NAME)
-        assert !noVersion.isPresent()
-    }
-
-    @Test
-    void isBlackDuckCatalogEntryTest() {
-        assert nugetJsonParser.isBlackDuckCatalogEntry(synopsysNugetCatalogEntry, INSPECTOR_NAME)
-        assert nugetJsonParser.isBlackDuckCatalogEntry(synopsysNugetCatalogEntry, INSPECTOR_NAME)
-
-        assert !nugetJsonParser.isBlackDuckCatalogEntry(invalidAuthorNugetCatalogEntry, INSPECTOR_NAME)
-        assert !nugetJsonParser.isBlackDuckCatalogEntry(invalidPackageNugetCatalogEntry, INSPECTOR_NAME)
-    }
 }
