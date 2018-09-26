@@ -1,0 +1,82 @@
+package com.blackducksoftware.integration.hub.detect.util;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.xml.parsers.DocumentBuilder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.github.zafarkhaja.semver.Version;
+import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
+import com.synopsys.integration.rest.request.Request;
+import com.synopsys.integration.rest.request.Response;
+import com.synopsys.integration.util.ResourceUtil;
+
+public class MavenMetadataService {
+    private final Logger logger = LoggerFactory.getLogger(MavenMetadataService.class);
+
+    private final DocumentBuilder xmlDocumentBuilder;
+    private final DetectConfigurationUtility detectConfigurationUtility;
+
+    public MavenMetadataService(final DocumentBuilder xmlDocumentBuilder, final DetectConfigurationUtility detectConfigurationUtility) {
+        this.xmlDocumentBuilder = xmlDocumentBuilder;
+        this.detectConfigurationUtility = detectConfigurationUtility;
+    }
+
+    public Document fetchXmlDocumentFromFile(final File mavenMetadataXmlFile) throws IOException, SAXException {
+        final InputStream inputStream = new FileInputStream(mavenMetadataXmlFile);
+        final Document xmlDocument = xmlDocumentBuilder.parse(inputStream);
+
+        return xmlDocument;
+    }
+
+    public Document fetchXmlDocumentFromUrl(final String mavenMetadataUrl) throws IntegrationException, IOException, SAXException, DetectUserFriendlyException {
+        final Request request = new Request.Builder().uri(mavenMetadataUrl).build();
+        Document xmlDocument = null;
+        Response response = null;
+
+        try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(mavenMetadataUrl)) {
+            response = restConnection.executeRequest(request);
+            final InputStream inputStream = response.getContent();
+            xmlDocument = xmlDocumentBuilder.parse(inputStream);
+        } finally {
+            ResourceUtil.closeQuietly(response);
+        }
+
+        return xmlDocument;
+    }
+
+    public Optional<String> parseVersionFromXML(final Document xmlDocument, final String versionRange) {
+        final List<String> foundVersions = new ArrayList<>();
+        final NodeList nodeVersions = xmlDocument.getElementsByTagName("version");
+        for (int i = 0; i < nodeVersions.getLength(); i++) {
+            final String versionNodeText = nodeVersions.item(i).getTextContent();
+            foundVersions.add(versionNodeText);
+        }
+
+        return getBestVersion(foundVersions, versionRange);
+    }
+
+    public Optional<String> getBestVersion(final List<String> versions, final String versionRange) {
+        final Optional<String> bestVersion = versions.stream()
+                                                 .map(Version::valueOf)
+                                                 .filter(p -> p.satisfies(versionRange))
+                                                 .max(Version::compareTo)
+                                                 .map(Version::toString);
+
+        return bestVersion;
+    }
+}

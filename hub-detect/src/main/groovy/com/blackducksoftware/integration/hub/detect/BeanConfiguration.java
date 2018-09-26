@@ -110,7 +110,7 @@ import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManag
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.blackducksoftware.integration.hub.detect.util.MavenMetadataVersionParser;
+import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -531,7 +531,7 @@ public class BeanConfiguration {
 
     @Bean
     public DockerInspectorManager dockerInspectorManager() throws ParserConfigurationException {
-        return new DockerInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), mavenMetadataVersionParser());
+        return new DockerInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), mavenMetadataService());
     }
 
     @Bean
@@ -575,13 +575,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public MavenMetadataVersionParser mavenMetadataVersionParser() {
-        return new MavenMetadataVersionParser();
+    public MavenMetadataService mavenMetadataService() throws ParserConfigurationException {
+        return new MavenMetadataService(xmlDocumentBuilder(), detectConfigurationUtility());
     }
 
     @Bean
     public GradleInspectorManager gradleInspectorManager() throws ParserConfigurationException {
-        return new GradleInspectorManager(detectFileManager(), configuration(), xmlDocumentBuilder(), detectConfiguration(), detectConfigurationUtility(), mavenMetadataVersionParser());
+        return new GradleInspectorManager(detectFileManager(), configuration(), xmlDocumentBuilder(), detectConfiguration(), detectConfigurationUtility(), mavenMetadataService());
     }
 
     @Bean

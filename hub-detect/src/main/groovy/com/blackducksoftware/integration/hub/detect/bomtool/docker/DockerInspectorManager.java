@@ -25,7 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.docker;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,12 +46,11 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.blackducksoftware.integration.hub.detect.util.MavenMetadataVersionParser;
+import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
-import com.github.zafarkhaja.semver.Version;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
 import com.synopsys.integration.rest.request.Request;
@@ -71,18 +69,18 @@ public class DockerInspectorManager {
     private final DetectConfiguration detectConfiguration;
     private final DetectConfigurationUtility detectConfigurationUtility;
     private final DocumentBuilder xmlDocumentBuilder;
-    private final MavenMetadataVersionParser mavenMetadataVersionParser;
+    private final MavenMetadataService mavenMetadataService;
 
     public DockerInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
         final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final DocumentBuilder xmlDocumentBuilder,
-        final MavenMetadataVersionParser mavenMetadataVersionParser) {
+        final MavenMetadataService mavenMetadataService) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationUtility = detectConfigurationUtility;
         this.xmlDocumentBuilder = xmlDocumentBuilder;
-        this.mavenMetadataVersionParser = mavenMetadataVersionParser;
+        this.mavenMetadataService = mavenMetadataService;
     }
 
     private boolean hasResolvedInspector;
@@ -175,7 +173,7 @@ public class DockerInspectorManager {
                 isOffline = true;
             } else {
                 String hubDockerInspectorShellScriptUrl = LATEST_URL;
-                if (!"latest".equals(dockerInspectorVersion)) {
+                if (!"latest".equals(dockerInspectorVersion) && dockerInspectorVersion != null) {
                     hubDockerInspectorShellScriptUrl = String.format("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-%s.sh", dockerInspectorVersion);
                 }
                 logger.info(String.format("Getting the Docker inspector shell script from %s", hubDockerInspectorShellScriptUrl));
@@ -209,30 +207,11 @@ public class DockerInspectorManager {
         }
     }
 
-    private String getVersionFromArtifactory(final String versionRange) {
+    private String getVersionFromArtifactory(final String versionRange) throws IOException, DetectUserFriendlyException, SAXException, IntegrationException {
         final String mavenMetadataUrl = "https://test-repo.blackducksoftware.com:443/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-docker-inspector/maven-metadata.xml";
-        final Request request = new Request.Builder().uri(mavenMetadataUrl).build();
-        Response response = null;
-        String version;
+        final Document xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
+        final Optional<String> version = mavenMetadataService.parseVersionFromXML(xmlDocument, versionRange);
 
-        try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(mavenMetadataUrl)) {
-            response = restConnection.executeRequest(request);
-            final InputStream inputStream = response.getContent();
-            final Document xmlDocument = xmlDocumentBuilder.parse(inputStream);
-            final Optional<Version> foundVersion = mavenMetadataVersionParser.parseVersionFromXML(xmlDocument, versionRange);
-            if (foundVersion.isPresent()) {
-                version = foundVersion.get().toString();
-            } else {
-                throw new IntegrationException(String.format("Failed to find version matching [%s] from Artifactory", versionRange));
-            }
-        } catch (final DetectUserFriendlyException | IntegrationException | IOException | SAXException e) {
-            logger.warn("Failed to resolve version from Artifactory. Defaulting to latest");
-            logger.debug(e.getMessage(), e);
-            version = "latest";
-        } finally {
-            ResourceUtil.closeQuietly(response);
-        }
-
-        return version;
+        return version.orElse(versionRange);
     }
 }
