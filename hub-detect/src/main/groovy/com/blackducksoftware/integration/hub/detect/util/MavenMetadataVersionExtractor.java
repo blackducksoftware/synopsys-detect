@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
+package com.blackducksoftware.integration.hub.detect.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import org.w3c.dom.NodeList;
 
 import com.github.zafarkhaja.semver.Version;
 
-public class GradleXmlDocumentVersionExtractor {
+public class MavenMetadataVersionExtractor {
     public Optional<Version> detectVersionFromXML(final Document xmlDocument, final String versionRange) {
         final List<Version> foundVersions = new ArrayList<>();
         final NodeList nodeVersions = xmlDocument.getElementsByTagName("version");

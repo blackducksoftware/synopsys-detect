@@ -525,7 +525,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_DOCKER)
     @HelpDescription("Version of the Docker Inspector to use")
-    DETECT_DOCKER_INSPECTOR_VERSION("detect.docker.inspector.version", "3.0.0", DetectPropertyType.STRING, "latest"),
+    DETECT_DOCKER_INSPECTOR_VERSION("detect.docker.inspector.version", "3.0.0", DetectPropertyType.STRING, "6.*"),
 
     @HelpGroup(primary = GROUP_DOCKER)
     @HelpDescription("A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.")

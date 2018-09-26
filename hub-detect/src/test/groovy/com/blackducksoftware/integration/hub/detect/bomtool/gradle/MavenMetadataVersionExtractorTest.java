@@ -13,18 +13,19 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
+import com.blackducksoftware.integration.hub.detect.util.MavenMetadataVersionExtractor;
 import com.github.zafarkhaja.semver.Version;
 
-public class GradleXmlDocumentVersionExtractorTest {
+public class MavenMetadataVersionExtractorTest {
     final TestUtil testUtil = new TestUtil();
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     final DocumentBuilder xmlDocumentBuilder = factory.newDocumentBuilder();
 
-    public GradleXmlDocumentVersionExtractorTest() throws ParserConfigurationException {}
+    public MavenMetadataVersionExtractorTest() throws ParserConfigurationException {}
 
     @Test
     public void detectVersionFromXML() throws IOException, SAXException {
-        final GradleXmlDocumentVersionExtractor gradleXmlDocumentVersionExtractor = new GradleXmlDocumentVersionExtractor();
+        final MavenMetadataVersionExtractor mavenMetadataVersionExtractor = new MavenMetadataVersionExtractor();
         final Document xmlDocument = getMavenMetadataXML();
 
         final String latest = "*";
@@ -33,19 +34,19 @@ public class GradleXmlDocumentVersionExtractorTest {
         final String lockedPatch = "0.5.0";
         final String invalidVersionRange = "2.*";
 
-        final Version wildcardVersion = gradleXmlDocumentVersionExtractor.detectVersionFromXML(xmlDocument, latest).get();
+        final Version wildcardVersion = mavenMetadataVersionExtractor.detectVersionFromXML(xmlDocument, latest).get();
         assert wildcardVersion.toString().equals("1.1.0");
 
-        final Version lockedMajorVersion = gradleXmlDocumentVersionExtractor.detectVersionFromXML(xmlDocument, lockedMajor).get();
+        final Version lockedMajorVersion = mavenMetadataVersionExtractor.detectVersionFromXML(xmlDocument, lockedMajor).get();
         assert lockedMajorVersion.toString().equals("0.7.0");
 
-        final Version lockedMinorVersion = gradleXmlDocumentVersionExtractor.detectVersionFromXML(xmlDocument, lockedMinor).get();
+        final Version lockedMinorVersion = mavenMetadataVersionExtractor.detectVersionFromXML(xmlDocument, lockedMinor).get();
         assert lockedMinorVersion.toString().equals("0.2.2");
 
-        final Version lockedPatchVersion = gradleXmlDocumentVersionExtractor.detectVersionFromXML(xmlDocument, lockedPatch).get();
+        final Version lockedPatchVersion = mavenMetadataVersionExtractor.detectVersionFromXML(xmlDocument, lockedPatch).get();
         assert lockedPatchVersion.toString().equals("0.5.0");
 
-        final Optional<Version> invalidVersionRangeVersion = gradleXmlDocumentVersionExtractor.detectVersionFromXML(xmlDocument, invalidVersionRange);
+        final Optional<Version> invalidVersionRangeVersion = mavenMetadataVersionExtractor.detectVersionFromXML(xmlDocument, invalidVersionRange);
         assert !invalidVersionRangeVersion.isPresent();
     }
 

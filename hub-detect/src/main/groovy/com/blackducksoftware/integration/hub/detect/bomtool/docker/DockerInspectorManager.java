@@ -25,13 +25,19 @@ package com.blackducksoftware.integration.hub.detect.bomtool.docker;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
+import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
@@ -41,10 +47,13 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.MavenMetadataVersionExtractor;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.github.zafarkhaja.semver.Version;
+import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.request.Response;
@@ -61,14 +70,19 @@ public class DockerInspectorManager {
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
     private final DetectConfigurationUtility detectConfigurationUtility;
+    private final DocumentBuilder xmlDocumentBuilder;
+    private final MavenMetadataVersionExtractor mavenMetadataVersionExtractor;
 
     public DockerInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
-            final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility) {
+        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final DocumentBuilder xmlDocumentBuilder,
+        final MavenMetadataVersionExtractor mavenMetadataVersionExtractor) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationUtility = detectConfigurationUtility;
+        this.xmlDocumentBuilder = xmlDocumentBuilder;
+        this.mavenMetadataVersionExtractor = mavenMetadataVersionExtractor;
     }
 
     private boolean hasResolvedInspector;
@@ -89,8 +103,8 @@ public class DockerInspectorManager {
         hasResolvedInspector = true;
 
         final DockerInspectorInfo info = resolveShellScript();
-        final String bashExecutablePath = executableManager
-                .getExecutablePathOrOverride(ExecutableType.BASH, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH));
+        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)),
+            detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH));
         info.version = resolveInspectorVersion(bashExecutablePath, info.dockerInspectorScript);
 
         if (info.isOffline) {
@@ -119,7 +133,7 @@ public class DockerInspectorManager {
 
     private String resolveInspectorVersion(final String bashExecutablePath, final File dockerInspectorShellScript) throws DetectUserFriendlyException {
         try {
-            final String dockerInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
+            final String dockerInspectorVersion = getVersionFromArtifactory(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION));
             if ("latest".equalsIgnoreCase(dockerInspectorVersion)) {
                 final String dockerInspectorArg = "--version";
                 final String responseFromDockerInspector = getResponseFromDockerInspector(bashExecutablePath, dockerInspectorShellScript, dockerInspectorArg);
@@ -147,6 +161,7 @@ public class DockerInspectorManager {
     private DockerInspectorInfo resolveShellScript() throws DetectUserFriendlyException {
         try {
             final String suppliedDockerVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
+            final String dockerInspectorVersion = getVersionFromArtifactory(suppliedDockerVersion);
             final File shellScriptFile;
             final File airGapHubDockerInspectorShellScript = new File(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH), "hub-docker-inspector.sh");
             boolean isOffline = false;
@@ -159,7 +174,6 @@ public class DockerInspectorManager {
                 shellScriptFile = airGapHubDockerInspectorShellScript;
                 isOffline = true;
             } else {
-                final String dockerInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
                 String hubDockerInspectorShellScriptUrl = LATEST_URL;
                 if (!"latest".equals(dockerInspectorVersion)) {
                     hubDockerInspectorShellScriptUrl = String.format("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-%s.sh", dockerInspectorVersion);
@@ -170,7 +184,7 @@ public class DockerInspectorManager {
                 String shellScriptContents;
                 Response response = null;
 
-                try (UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(hubDockerInspectorShellScriptUrl)) {
+                try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(hubDockerInspectorShellScriptUrl)) {
                     response = restConnection.executeRequest(request);
                     shellScriptContents = response.getContentString();
                 } finally {
@@ -191,7 +205,34 @@ public class DockerInspectorManager {
 
             return info;
         } catch (final Exception e) {
-            throw new DetectUserFriendlyException(String.format("There was a problem retrieving the docker inspector shell script: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+            throw new DetectUserFriendlyException(String.format("There was a problem retrieving the docker inspector shell script. Please use version 5.0.0 and up: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
+    }
+
+    private String getVersionFromArtifactory(final String versionRange) {
+        final String mavenMetadataUrl = "https://test-repo.blackducksoftware.com:443/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-docker-inspector/maven-metadata.xml";
+        final Request request = new Request.Builder().uri(mavenMetadataUrl).build();
+        Response response = null;
+        String version;
+
+        try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(mavenMetadataUrl)) {
+            response = restConnection.executeRequest(request);
+            final InputStream inputStream = response.getContent();
+            final Document xmlDocument = xmlDocumentBuilder.parse(inputStream);
+            final Optional<Version> foundVersion = mavenMetadataVersionExtractor.detectVersionFromXML(xmlDocument, versionRange);
+            if (foundVersion.isPresent()) {
+                version = foundVersion.get().toString();
+            } else {
+                throw new IntegrationException(String.format("Failed to find version matching [%s] from Artifactory", versionRange));
+            }
+        } catch (final DetectUserFriendlyException | IntegrationException | IOException | SAXException e) {
+            logger.warn("Failed to resolve version from Artifactory. Defaulting to latest");
+            logger.debug(e.getMessage(), e);
+            version = "latest";
+        } finally {
+            ResourceUtil.closeQuietly(response);
+        }
+
+        return version;
     }
 }

@@ -48,6 +48,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.MavenMetadataVersionExtractor;
 import com.github.zafarkhaja.semver.Version;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
@@ -67,19 +68,19 @@ public class GradleInspectorManager {
     private final DocumentBuilder xmlDocumentBuilder;
     private final DetectConfiguration detectConfiguration;
     private final DetectConfigurationUtility detectConfigurationUtility;
-    private final GradleXmlDocumentVersionExtractor gradleXmlDocumentVersionExtractor;
+    private final MavenMetadataVersionExtractor mavenMetadataVersionExtractor;
 
     private String resolvedInitScript = null;
     private boolean hasResolvedInspector = false;
 
     public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DocumentBuilder xmlDocumentBuilder,
-        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final GradleXmlDocumentVersionExtractor gradleXmlDocumentVersionExtractor) {
+        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataVersionExtractor mavenMetadataVersionExtractor) {
         this.detectFileManager = detectFileManager;
         this.configuration = configuration;
         this.xmlDocumentBuilder = xmlDocumentBuilder;
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationUtility = detectConfigurationUtility;
-        this.gradleXmlDocumentVersionExtractor = gradleXmlDocumentVersionExtractor;
+        this.mavenMetadataVersionExtractor = mavenMetadataVersionExtractor;
     }
 
     public String getGradleInspector() throws BomToolException {
@@ -117,7 +118,7 @@ public class GradleInspectorManager {
                     ResourceUtil.closeQuietly(response);
                 }
             }
-            final Optional<Version> detectVersionFromXML = gradleXmlDocumentVersionExtractor.detectVersionFromXML(xmlDocument, versionRange);
+            final Optional<Version> detectVersionFromXML = mavenMetadataVersionExtractor.detectVersionFromXML(xmlDocument, versionRange);
             if (detectVersionFromXML.isPresent()) {
                 gradleInspectorVersion = detectVersionFromXML.get();
                 logger.info(String.format("Resolved gradle inspector version from [%s] to [%s]", versionRange, gradleInspectorVersion.toString()));
