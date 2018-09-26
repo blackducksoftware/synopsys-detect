@@ -24,16 +24,12 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -43,17 +39,12 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.github.zafarkhaja.semver.Version;
+import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
-import com.synopsys.integration.rest.request.Request;
-import com.synopsys.integration.rest.request.Response;
-import com.synopsys.integration.util.ResourceUtil;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -64,28 +55,23 @@ public class GradleInspectorManager {
 
     private final DetectFileManager detectFileManager;
     private final Configuration configuration;
-    private final DocumentBuilder xmlDocumentBuilder;
     private final DetectConfiguration detectConfiguration;
-    private final DetectConfigurationUtility detectConfigurationUtility;
-    private final GradleXmlDocumentVersionExtractor gradleXmlDocumentVersionExtractor;
+    private final MavenMetadataService mavenMetadataService;
 
     private String resolvedInitScript = null;
     private boolean hasResolvedInspector = false;
 
-    public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DocumentBuilder xmlDocumentBuilder,
-        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final GradleXmlDocumentVersionExtractor gradleXmlDocumentVersionExtractor) {
+    public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DetectConfiguration detectConfiguration, final MavenMetadataService mavenMetadataService) {
         this.detectFileManager = detectFileManager;
         this.configuration = configuration;
-        this.xmlDocumentBuilder = xmlDocumentBuilder;
         this.detectConfiguration = detectConfiguration;
-        this.detectConfigurationUtility = detectConfigurationUtility;
-        this.gradleXmlDocumentVersionExtractor = gradleXmlDocumentVersionExtractor;
+        this.mavenMetadataService = mavenMetadataService;
     }
 
     public String getGradleInspector() throws BomToolException {
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
-            final String resolvedVersion = resolveInspectorVersion().toString();
+            final String resolvedVersion = resolveInspectorVersion();
             try {
                 resolvedInitScript = resolveInitScriptPath(resolvedVersion);
             } catch (final Exception e) {
@@ -95,31 +81,23 @@ public class GradleInspectorManager {
         return resolvedInitScript;
     }
 
-    private Version resolveInspectorVersion() {
+    private String resolveInspectorVersion() {
         final String versionRange = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION);
-        Version gradleInspectorVersion = null;
+        String gradleInspectorVersion = null;
 
         try {
             Document xmlDocument = null;
             final File airGapMavenMetadataFile = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH), "maven-metadata.xml");
             if (airGapMavenMetadataFile.exists()) {
-                final InputStream inputStream = new FileInputStream(airGapMavenMetadataFile);
-                xmlDocument = xmlDocumentBuilder.parse(inputStream);
+                xmlDocument = mavenMetadataService.fetchXmlDocumentFromFile(airGapMavenMetadataFile);
             } else {
                 final String mavenMetadataUrl = "http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
-                final Request request = new Request.Builder().uri(mavenMetadataUrl).build();
-                Response response = null;
-                try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(mavenMetadataUrl)) {
-                    response = restConnection.executeRequest(request);
-                    final InputStream inputStream = response.getContent();
-                    xmlDocument = xmlDocumentBuilder.parse(inputStream);
-                } finally {
-                    ResourceUtil.closeQuietly(response);
-                }
+                xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
             }
-            final Optional<Version> detectVersionFromXML = gradleXmlDocumentVersionExtractor.detectVersionFromXML(xmlDocument, versionRange);
-            if (detectVersionFromXML.isPresent()) {
-                gradleInspectorVersion = detectVersionFromXML.get();
+
+            final Optional<String> versionFromXML = mavenMetadataService.parseVersionFromXML(xmlDocument, versionRange);
+            if (versionFromXML.isPresent()) {
+                gradleInspectorVersion = versionFromXML.get();
                 logger.info(String.format("Resolved gradle inspector version from [%s] to [%s]", versionRange, gradleInspectorVersion.toString()));
             } else {
                 throw new IntegrationException(String.format("Failed to find a version matching [%s] in maven-metadata.xml", versionRange));

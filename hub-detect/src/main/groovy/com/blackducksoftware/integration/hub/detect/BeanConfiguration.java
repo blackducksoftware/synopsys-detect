@@ -60,7 +60,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleExecuta
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleReportParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleXmlDocumentVersionExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.Rebar3TreeParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.RebarExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenCliExtractor;
@@ -111,6 +110,7 @@ import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManag
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -530,8 +530,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public DockerInspectorManager dockerInspectorManager() {
-        return new DockerInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility());
+    public DockerInspectorManager dockerInspectorManager() throws ParserConfigurationException {
+        return new DockerInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), mavenMetadataService());
     }
 
     @Bean
@@ -575,13 +575,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public GradleXmlDocumentVersionExtractor gradleXmlDocumentVersionExtractor() {
-        return new GradleXmlDocumentVersionExtractor();
+    public MavenMetadataService mavenMetadataService() throws ParserConfigurationException {
+        return new MavenMetadataService(xmlDocumentBuilder(), detectConfigurationUtility());
     }
 
     @Bean
     public GradleInspectorManager gradleInspectorManager() throws ParserConfigurationException {
-        return new GradleInspectorManager(detectFileManager(), configuration(), xmlDocumentBuilder(), detectConfiguration(), detectConfigurationUtility(), gradleXmlDocumentVersionExtractor());
+        return new GradleInspectorManager(detectFileManager(), configuration(), detectConfiguration(), mavenMetadataService());
     }
 
     @Bean
