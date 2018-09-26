@@ -31,8 +31,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.xml.parsers.DocumentBuilder;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
@@ -41,7 +39,6 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -58,21 +55,16 @@ public class GradleInspectorManager {
 
     private final DetectFileManager detectFileManager;
     private final Configuration configuration;
-    private final DocumentBuilder xmlDocumentBuilder;
     private final DetectConfiguration detectConfiguration;
-    private final DetectConfigurationUtility detectConfigurationUtility;
     private final MavenMetadataService mavenMetadataService;
 
     private String resolvedInitScript = null;
     private boolean hasResolvedInspector = false;
 
-    public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DocumentBuilder xmlDocumentBuilder,
-        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
+    public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DetectConfiguration detectConfiguration, final MavenMetadataService mavenMetadataService) {
         this.detectFileManager = detectFileManager;
         this.configuration = configuration;
-        this.xmlDocumentBuilder = xmlDocumentBuilder;
         this.detectConfiguration = detectConfiguration;
-        this.detectConfigurationUtility = detectConfigurationUtility;
         this.mavenMetadataService = mavenMetadataService;
     }
 

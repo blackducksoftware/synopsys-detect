@@ -531,7 +531,7 @@ public class BeanConfiguration {
 
     @Bean
     public DockerInspectorManager dockerInspectorManager() throws ParserConfigurationException {
-        return new DockerInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), mavenMetadataService());
+        return new DockerInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), mavenMetadataService());
     }
 
     @Bean
@@ -581,7 +581,7 @@ public class BeanConfiguration {
 
     @Bean
     public GradleInspectorManager gradleInspectorManager() throws ParserConfigurationException {
-        return new GradleInspectorManager(detectFileManager(), configuration(), xmlDocumentBuilder(), detectConfiguration(), detectConfigurationUtility(), mavenMetadataService());
+        return new GradleInspectorManager(detectFileManager(), configuration(), detectConfiguration(), mavenMetadataService());
     }
 
     @Bean

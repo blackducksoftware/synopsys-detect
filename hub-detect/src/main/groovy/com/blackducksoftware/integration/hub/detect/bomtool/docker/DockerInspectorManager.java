@@ -30,8 +30,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import javax.xml.parsers.DocumentBuilder;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,18 +66,15 @@ public class DockerInspectorManager {
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
     private final DetectConfigurationUtility detectConfigurationUtility;
-    private final DocumentBuilder xmlDocumentBuilder;
     private final MavenMetadataService mavenMetadataService;
 
     public DockerInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
-        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final DocumentBuilder xmlDocumentBuilder,
-        final MavenMetadataService mavenMetadataService) {
+        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationUtility = detectConfigurationUtility;
-        this.xmlDocumentBuilder = xmlDocumentBuilder;
         this.mavenMetadataService = mavenMetadataService;
     }
 
