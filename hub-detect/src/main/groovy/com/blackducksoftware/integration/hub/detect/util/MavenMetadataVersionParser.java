@@ -32,8 +32,8 @@ import org.w3c.dom.NodeList;
 
 import com.github.zafarkhaja.semver.Version;
 
-public class MavenMetadataVersionExtractor {
-    public Optional<Version> detectVersionFromXML(final Document xmlDocument, final String versionRange) {
+public class MavenMetadataVersionParser {
+    public Optional<Version> parseVersionFromXML(final Document xmlDocument, final String versionRange) {
         final List<Version> foundVersions = new ArrayList<>();
         final NodeList nodeVersions = xmlDocument.getElementsByTagName("version");
         for (int i = 0; i < nodeVersions.getLength(); i++) {

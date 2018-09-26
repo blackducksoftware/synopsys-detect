@@ -13,19 +13,19 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
-import com.blackducksoftware.integration.hub.detect.util.MavenMetadataVersionExtractor;
+import com.blackducksoftware.integration.hub.detect.util.MavenMetadataVersionParser;
 import com.github.zafarkhaja.semver.Version;
 
-public class MavenMetadataVersionExtractorTest {
+public class MavenMetadataVersionParserTest {
     final TestUtil testUtil = new TestUtil();
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     final DocumentBuilder xmlDocumentBuilder = factory.newDocumentBuilder();
 
-    public MavenMetadataVersionExtractorTest() throws ParserConfigurationException {}
+    public MavenMetadataVersionParserTest() throws ParserConfigurationException {}
 
     @Test
-    public void detectVersionFromXML() throws IOException, SAXException {
-        final MavenMetadataVersionExtractor mavenMetadataVersionExtractor = new MavenMetadataVersionExtractor();
+    public void parseVersionFromXML() throws IOException, SAXException {
+        final MavenMetadataVersionParser mavenMetadataVersionParser = new MavenMetadataVersionParser();
         final Document xmlDocument = getMavenMetadataXML();
 
         final String latest = "*";
@@ -34,19 +34,19 @@ public class MavenMetadataVersionExtractorTest {
         final String lockedPatch = "0.5.0";
         final String invalidVersionRange = "2.*";
 
-        final Version wildcardVersion = mavenMetadataVersionExtractor.detectVersionFromXML(xmlDocument, latest).get();
+        final Version wildcardVersion = mavenMetadataVersionParser.parseVersionFromXML(xmlDocument, latest).get();
         assert wildcardVersion.toString().equals("1.1.0");
 
-        final Version lockedMajorVersion = mavenMetadataVersionExtractor.detectVersionFromXML(xmlDocument, lockedMajor).get();
+        final Version lockedMajorVersion = mavenMetadataVersionParser.parseVersionFromXML(xmlDocument, lockedMajor).get();
         assert lockedMajorVersion.toString().equals("0.7.0");
 
-        final Version lockedMinorVersion = mavenMetadataVersionExtractor.detectVersionFromXML(xmlDocument, lockedMinor).get();
+        final Version lockedMinorVersion = mavenMetadataVersionParser.parseVersionFromXML(xmlDocument, lockedMinor).get();
         assert lockedMinorVersion.toString().equals("0.2.2");
 
-        final Version lockedPatchVersion = mavenMetadataVersionExtractor.detectVersionFromXML(xmlDocument, lockedPatch).get();
+        final Version lockedPatchVersion = mavenMetadataVersionParser.parseVersionFromXML(xmlDocument, lockedPatch).get();
         assert lockedPatchVersion.toString().equals("0.5.0");
 
-        final Optional<Version> invalidVersionRangeVersion = mavenMetadataVersionExtractor.detectVersionFromXML(xmlDocument, invalidVersionRange);
+        final Optional<Version> invalidVersionRangeVersion = mavenMetadataVersionParser.parseVersionFromXML(xmlDocument, invalidVersionRange);
         assert !invalidVersionRangeVersion.isPresent();
     }
 

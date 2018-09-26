@@ -110,7 +110,7 @@ import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManag
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.blackducksoftware.integration.hub.detect.util.MavenMetadataVersionExtractor;
+import com.blackducksoftware.integration.hub.detect.util.MavenMetadataVersionParser;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -531,7 +531,7 @@ public class BeanConfiguration {
 
     @Bean
     public DockerInspectorManager dockerInspectorManager() throws ParserConfigurationException {
-        return new DockerInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), mavenMetadataVersionExtractor());
+        return new DockerInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), mavenMetadataVersionParser());
     }
 
     @Bean
@@ -575,13 +575,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public MavenMetadataVersionExtractor mavenMetadataVersionExtractor() {
-        return new MavenMetadataVersionExtractor();
+    public MavenMetadataVersionParser mavenMetadataVersionParser() {
+        return new MavenMetadataVersionParser();
     }
 
     @Bean
     public GradleInspectorManager gradleInspectorManager() throws ParserConfigurationException {
-        return new GradleInspectorManager(detectFileManager(), configuration(), xmlDocumentBuilder(), detectConfiguration(), detectConfigurationUtility(), mavenMetadataVersionExtractor());
+        return new GradleInspectorManager(detectFileManager(), configuration(), xmlDocumentBuilder(), detectConfiguration(), detectConfigurationUtility(), mavenMetadataVersionParser());
     }
 
     @Bean

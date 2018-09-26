@@ -47,7 +47,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.blackducksoftware.integration.hub.detect.util.MavenMetadataVersionExtractor;
+import com.blackducksoftware.integration.hub.detect.util.MavenMetadataVersionParser;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -71,18 +71,18 @@ public class DockerInspectorManager {
     private final DetectConfiguration detectConfiguration;
     private final DetectConfigurationUtility detectConfigurationUtility;
     private final DocumentBuilder xmlDocumentBuilder;
-    private final MavenMetadataVersionExtractor mavenMetadataVersionExtractor;
+    private final MavenMetadataVersionParser mavenMetadataVersionParser;
 
     public DockerInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
         final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final DocumentBuilder xmlDocumentBuilder,
-        final MavenMetadataVersionExtractor mavenMetadataVersionExtractor) {
+        final MavenMetadataVersionParser mavenMetadataVersionParser) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationUtility = detectConfigurationUtility;
         this.xmlDocumentBuilder = xmlDocumentBuilder;
-        this.mavenMetadataVersionExtractor = mavenMetadataVersionExtractor;
+        this.mavenMetadataVersionParser = mavenMetadataVersionParser;
     }
 
     private boolean hasResolvedInspector;
@@ -219,7 +219,7 @@ public class DockerInspectorManager {
             response = restConnection.executeRequest(request);
             final InputStream inputStream = response.getContent();
             final Document xmlDocument = xmlDocumentBuilder.parse(inputStream);
-            final Optional<Version> foundVersion = mavenMetadataVersionExtractor.detectVersionFromXML(xmlDocument, versionRange);
+            final Optional<Version> foundVersion = mavenMetadataVersionParser.parseVersionFromXML(xmlDocument, versionRange);
             if (foundVersion.isPresent()) {
                 version = foundVersion.get().toString();
             } else {
