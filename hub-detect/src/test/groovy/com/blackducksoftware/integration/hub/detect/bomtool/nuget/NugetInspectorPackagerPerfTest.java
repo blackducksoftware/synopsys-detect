@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.inspector.NugetInspectorPackager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

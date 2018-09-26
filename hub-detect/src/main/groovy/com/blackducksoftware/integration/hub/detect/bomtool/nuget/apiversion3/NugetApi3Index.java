@@ -31,7 +31,7 @@ public class NugetApi3Index {
     @SerializedName("version")
     private String version;
 
-    @SerializedName("resource")
+    @SerializedName("resources")
     private List<NugetApi3Resource> resources;
 
     public String getVersion() {

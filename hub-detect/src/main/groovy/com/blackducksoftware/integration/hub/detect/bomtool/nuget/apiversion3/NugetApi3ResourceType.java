@@ -24,7 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3;
 
 public enum NugetApi3ResourceType {
-    RegistrationBaseUrl("RegistrationBaseUrl");
+    RegistrationBaseUrl("RegistrationsBaseUrl");
 
     private final String type;
 

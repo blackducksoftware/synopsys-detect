@@ -71,14 +71,18 @@ import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfileExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorInstaller;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorVersionResolver;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion2.NugetApi2;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion2.NugetApi2XmlParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3IndexJsonParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3RegistrationJsonParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.inspector.NugetApiVersionResolver;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.inspector.NugetExeVersionResolver;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.inspector.NugetInspectorExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.inspector.NugetInspectorInstaller;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.inspector.NugetInspectorManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.inspector.NugetInspectorPackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.inspector.NugetVersionResolver;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.ComposerLockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearCliExtractor;
@@ -238,9 +242,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public DocumentBuilder xmlDocumentBuilder() throws ParserConfigurationException {
+    public DocumentBuilder xmlDocumentBuilder() {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        return factory.newDocumentBuilder();
+        try {
+            return factory.newDocumentBuilder();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Bean
@@ -645,8 +653,18 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public NugetApi2 nugetApi2() {
+        return new NugetApi2(xmlDocumentBuilder(), nugetApi2XmlParser());
+    }
+
+    @Bean
     public NugetApi2XmlParser nugetApi2XmlParser() {
         return new NugetApi2XmlParser();
+    }
+
+    @Bean
+    public NugetApi3 nugetApi3() {
+        return new NugetApi3(nugetApi3RegistrationJsonParser(), nugetApi3IndexJsonParser());
     }
 
     @Bean
@@ -660,18 +678,28 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public NugetApiVersionResolver nugetApiVersionResolver() {
+        return new NugetApiVersionResolver(nugetApi3(), nugetApi2(), detectConfigurationUtility());
+    }
+
+    @Bean
+    public NugetExeVersionResolver nugetExeVersionResolver() {
+        return new NugetExeVersionResolver();
+    }
+
+    @Bean
+    public NugetVersionResolver nugetInspectorVersionResolver() {
+        return new NugetVersionResolver(detectConfiguration(), detectConfigurationUtility(), nugetExeVersionResolver(), nugetApiVersionResolver());
+    }
+
+    @Bean
     public NugetInspectorInstaller nugetInspectorInstaller() {
-        return new NugetInspectorInstaller(detectFileManager(), detectConfiguration(), executableRunner());
+        return new NugetInspectorInstaller(detectConfiguration(), executableRunner(), nugetInspectorVersionResolver());
     }
 
     @Bean
-    public NugetInspectorVersionResolver nugetInspectorVersionResolver() throws ParserConfigurationException {
-        return new NugetInspectorVersionResolver(executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), nugetApi2XmlParser(), nugetApi3RegistrationJsonParser(), nugetApi3IndexJsonParser());
-    }
-
-    @Bean
-    public NugetInspectorManager nugetInspectorManager() throws ParserConfigurationException {
-        return new NugetInspectorManager(nugetInspectorVersionResolver(), nugetInspectorInstaller(), executableManager(), detectConfiguration());
+    public NugetInspectorManager nugetInspectorManager() {
+        return new NugetInspectorManager(nugetInspectorInstaller(), executableManager(), detectConfiguration(), detectInfo(), detectFileManager());
     }
 
     @Bean

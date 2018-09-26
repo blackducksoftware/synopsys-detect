@@ -29,6 +29,7 @@ public enum ExecutableType {
     CPAN,
     CPANM,
     DOCKER,
+    DOTNET,
     GO,
     GO_DEP("dep"),
     GRADLE,

@@ -47,7 +47,7 @@ public class NugetApi3IndexJsonParser {
 
     private Optional<NugetApi3Resource> resourceFromIndex(final NugetApi3Index nugetApi3Index, final String resourceType) {
         final Optional<NugetApi3Resource> nugetResource = nugetApi3Index.getResources().stream()
-                                                              .filter(p -> p.getType().equals(resourceType))
+                                                              .filter(p -> p.getType().get().equals(resourceType))
                                                               .findFirst();
 
         return nugetResource;

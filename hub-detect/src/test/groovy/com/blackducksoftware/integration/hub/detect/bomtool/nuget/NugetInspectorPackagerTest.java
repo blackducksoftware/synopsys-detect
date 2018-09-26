@@ -12,6 +12,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.inspector.NugetInspectorPackager;
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.google.gson.Gson;

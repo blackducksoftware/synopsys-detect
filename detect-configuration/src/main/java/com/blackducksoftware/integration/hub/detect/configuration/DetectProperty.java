@@ -453,6 +453,10 @@ public enum DetectProperty {
     @HelpDescription("The path of the Nuget executable")
     DETECT_NUGET_PATH("detect.nuget.path", "3.0.0", DetectPropertyType.STRING),
 
+    @HelpGroup(primary = GROUP_NUGET)
+    @HelpDescription("The path of the dotnet executable")
+    DETECT_DOTNET_PATH("detect.dotnet.path", "4.4.0", DetectPropertyType.STRING),
+
     @HelpGroup(primary = GROUP_PIP)
     @DetectDeprecation(description = "This property is being removed. Please use --detect.project.name in the future.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
     @HelpDescription("The name of your pip project, to be used if your project's name cannot be correctly inferred from its setup.py file")
