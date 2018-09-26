@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.bitbake.model;
+package com.blackducksoftware.integration.hub.detect.bomtool.bitbake;
 
 import java.io.File;
 
