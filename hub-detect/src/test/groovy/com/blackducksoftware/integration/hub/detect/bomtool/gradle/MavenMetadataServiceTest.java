@@ -34,16 +34,16 @@ public class MavenMetadataServiceTest {
         final String invalidVersionRange = "2.*";
 
         final String wildcardVersion = mavenMetadataService.parseVersionFromXML(xmlDocument, latest).get();
-        assert wildcardVersion.toString().equals("1.1.0");
+        assert wildcardVersion.equals("1.1.0");
 
         final String lockedMajorVersion = mavenMetadataService.parseVersionFromXML(xmlDocument, lockedMajor).get();
-        assert lockedMajorVersion.toString().equals("0.7.0");
+        assert lockedMajorVersion.equals("0.7.0");
 
         final String lockedMinorVersion = mavenMetadataService.parseVersionFromXML(xmlDocument, lockedMinor).get();
-        assert lockedMinorVersion.toString().equals("0.2.2");
+        assert lockedMinorVersion.equals("0.2.2");
 
         final String lockedPatchVersion = mavenMetadataService.parseVersionFromXML(xmlDocument, lockedPatch).get();
-        assert lockedPatchVersion.toString().equals("0.5.0");
+        assert lockedPatchVersion.equals("0.5.0");
 
         final Optional<String> invalidVersionRangeVersion = mavenMetadataService.parseVersionFromXML(xmlDocument, invalidVersionRange);
         assert !invalidVersionRangeVersion.isPresent();
