@@ -90,7 +90,7 @@ public class GraphParserTransformer {
 
     private String getVersionFromLabel(final String label) {
         final String[] components = label.split("\\\\n:|\\\\n");
-        final String version = "v" + components[1];
+        final String version = components[1];
 
         return version;
     }
