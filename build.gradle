@@ -19,7 +19,7 @@ buildscript {
     }
 }
 
-String sharedVersion = '4.3.0-SNAPSHOT'
+String sharedVersion = '3.4.0-SNAPSHOT'
 version = sharedVersion
 
 configure(subprojects) { project ->
@@ -49,5 +49,55 @@ configure(subprojects) { project ->
         resolutionStrategy {
             force 'com.blackducksoftware.integration:integration-test-common:3.1.3'
         }
+    }
+}
+
+task doIt() {
+    //    dependsOn artifactoryPublish
+    doLast {
+        int majorVersionIndex = project.version.indexOf('.') - 1
+        def majorVersion = project.version[0..majorVersionIndex]
+        def propertyKey = "DETECT_IS_LATEST_${majorVersion}"
+
+        def artifactoryCredentials = "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}"
+        def propertySearchUrl = "${project.ext.artifactoryUrl}/api/search/prop?${propertyKey}=true&repos=${project.ext.artifactoryRepo}"
+        println propertySearchUrl
+
+        URL url = new URL(propertySearchUrl)
+        URLConnection urlConnection = url.openConnection()
+        String basicAuth = "Basic " + new String(Base64.getEncoder().encode(artifactoryCredentials.getBytes()))
+        urlConnection.setRequestProperty("Authorization", basicAuth)
+        urlConnection.setRequestProperty("X-Result-Detail", "info")
+
+        def jsonText = urlConnection.getInputStream().getText()
+        def jsonMap = new groovy.json.JsonSlurper().parseText(jsonText)
+        def itemPaths = getItemPathsToRepoKeys(jsonMap)
+        println itemPaths
+        itemPaths.each { key, value ->
+            setPropertyToFalse(project.ext.artifactoryUrl, artifactoryCredentials, value, key, propertyKey)
+        }
+    }
+}
+
+def getItemPathsToRepoKeys(Map jsonResponse) {
+    def itemPathsToRepoKeys = [:]
+
+    def results = jsonResponse['results']
+    if (results != null && results.size() > 0) {
+        results.each {
+            def itemPath = it['path']
+            def repoKey = it['repo']
+            if (itemPath && repoKey) {
+                itemPathsToRepoKeys.put(itemPath, repoKey)
+            }
+        }
+    }
+
+    return itemPathsToRepoKeys
+}
+
+def setPropertyToFalse(String artifactoryUrl, String artifactoryCredentials, String repoKey, String itemPath, String propertyKey) {
+    exec {
+        commandLine 'curl', '--insecure', '--user', artifactoryCredentials, '--header', 'Content-Type: application/json', '--request', 'PATCH', '--data', "{\"props\":{\"${propertyKey}\":\"false\"}}", "${artifactoryUrl}/api/metadata/${repoKey}${itemPath}"
     }
 }
