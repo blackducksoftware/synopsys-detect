@@ -202,7 +202,7 @@ public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStat
         scanJobBuilder.installDirectory(installDirectory);
         scanJobBuilder.outputDirectory(scannerDirectory);
 
-        //hubScanConfigBuilder.setCleanupLogsOnSuccess(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP));
+        scanJobBuilder.cleanupOutput(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP));
         scanJobBuilder.dryRun(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN));
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE)) {
             scanJobBuilder.snippetMatching(SnippetMatching.SNIPPET_MATCHING);
