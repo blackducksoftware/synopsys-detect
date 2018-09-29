@@ -1,39 +1,26 @@
-task doIt() {
+task updateArtifactoryProperties() {
+    dependsOn artifactoryPublish
     doLast {
-        updateArtifactoryProperties()
-    }
-}
+        try {
+            int majorVersionIndex = project.version.indexOf('.') - 1
+            def majorVersion = project.version[0..majorVersionIndex]
+            def propertyKey = "DETECT_IS_LATEST_${majorVersion}"
 
-class ArtifactoryItem {
-    def itemPath
-    def repoKey
+            def artifactoryCredentials = "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}"
 
-    public ArtifactoryItem(String itemPath, String repoKey) {
-        this.itemPath = itemPath;
-        this.repoKey = repoKey;
-    }
-}
+            def currentArtifact = findCurrentArtifact(artifactoryCredentials)
+            if (currentArtifact) {
+                setArtifactoryProperty(artifactoryCredentials, propertyKey, 'true', currentArtifact['itemPath'], currentArtifact['repoKey'])
 
-def updateArtifactoryProperties() {
-    try {
-        int majorVersionIndex = project.version.indexOf('.') - 1
-        def majorVersion = project.version[0..majorVersionIndex]
-        def propertyKey = "DETECT_IS_LATEST_${majorVersion}"
-
-        def artifactoryCredentials = "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}"
-
-        def currentArtifact = findCurrentArtifact(artifactoryCredentials)
-        if (currentArtifact) {
-            setArtifactoryProperty(artifactoryCredentials, propertyKey, 'true', currentArtifact.itemPath, currentArtifact.repoKey)
-
-            def artifactoryItems = findPropertiesToUpdate(propertyKey, artifactoryCredentials, currentArtifact.itemPath)
-            setPropertiesToFalse(artifactoryItems, artifactoryCredentials, propertyKey)
-        } else {
-            println "Artifactory properties won't be updated since ${project.version} was not found."
+                def artifactoryItems = findPropertiesToUpdate(propertyKey, artifactoryCredentials, currentArtifact['itemPath'])
+                setPropertiesToFalse(artifactoryItems, artifactoryCredentials, propertyKey)
+            } else {
+                println "Artifactory properties won't be updated since ${project.version} was not found."
+            }
+        } catch (Exception e) {
+            println "Manual corrections to the properties of the released artifacts may be necessary."
+            println "Error correcting the artifactory properties: ${e.message}"
         }
-    } catch (Exception e) {
-        println "Manual corrections to the properties of the released artifacts may be necessary."
-        println "Error correcting the artifactory properties: ${e.message}"
     }
 }
 
@@ -81,7 +68,7 @@ def getArtifactoryItems(Map jsonResponse) {
             def itemPath = it['path']
             def repoKey = it['repo']
             if (itemPath && repoKey) {
-                artifactoryItems.add(new ArtifactoryItem(itemPath, repoKey))
+                artifactoryItems.add([itemPath:itemPath, repoKey:repoKey])
             }
         }
     }
@@ -91,7 +78,7 @@ def getArtifactoryItems(Map jsonResponse) {
 
 def setPropertiesToFalse(List artifactoryItems, String artifactoryCredentials, String propertyKey) {
     artifactoryItems.each {
-        setArtifactoryProperty(artifactoryCredentials, propertyKey, 'false', it.itemPath, it.repoKey)
+        setArtifactoryProperty(artifactoryCredentials, propertyKey, 'false', it['itemPath'], it['repoKey'])
     }
 }
 
