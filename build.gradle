@@ -21,7 +21,7 @@ buildscript {
 
 apply plugin: 'java'
 
-String sharedVersion = '4.3.0-SNAPSHOT'
+String sharedVersion = '4.3.0'
 version = sharedVersion
 
 allprojects {
