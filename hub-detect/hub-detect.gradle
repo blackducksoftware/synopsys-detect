@@ -66,4 +66,3 @@ dependencies {
 }
 
 springBoot { mainClassName = 'com.blackducksoftware.integration.hub.detect.Application' }
-

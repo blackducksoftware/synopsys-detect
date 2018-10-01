@@ -1,25 +1,32 @@
 task updateArtifactoryProperties() {
     dependsOn artifactoryPublish
     doLast {
-        try {
-            int majorVersionIndex = project.version.indexOf('.') - 1
-            def majorVersion = project.version[0..majorVersionIndex]
-            def propertyKey = "DETECT_IS_LATEST_${majorVersion}"
+        if (project.isSnapshot) {
+            println 'For a snapshot build, artifactory properties will not be updated.'
+        } else {
+            try {
+                println 'For a release build, an update of artifactory properties will be attempted.'
+                int majorVersionIndex = project.version.indexOf('.') - 1
+                def majorVersion = project.version[0..majorVersionIndex]
+                def propertyKey = "DETECT_IS_LATEST_${majorVersion}"
 
-            def artifactoryCredentials = "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}"
+                def artifactoryCredentials = "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}"
 
-            def currentArtifact = findCurrentArtifact(artifactoryCredentials)
-            if (currentArtifact) {
-                setArtifactoryProperty(artifactoryCredentials, propertyKey, 'true', currentArtifact['itemPath'], currentArtifact['repoKey'])
+                def currentArtifact = findCurrentArtifact(artifactoryCredentials)
+                if (currentArtifact) {
+                    setArtifactoryProperty(artifactoryCredentials, propertyKey, 'true', currentArtifact)
 
-                def artifactoryItems = findPropertiesToUpdate(propertyKey, artifactoryCredentials, currentArtifact['itemPath'])
-                setPropertiesToFalse(artifactoryItems, artifactoryCredentials, propertyKey)
-            } else {
-                println "Artifactory properties won't be updated since ${project.version} was not found."
+                    def artifactoryItems = findPropertiesToUpdate(artifactoryCredentials, propertyKey, currentArtifact['itemPath'])
+                    artifactoryItems.each {
+                        setArtifactoryProperty(artifactoryCredentials, propertyKey, 'false', it)
+                    }
+                } else {
+                    println "Artifactory properties won't be updated since ${project.version} was not found."
+                }
+            } catch (Exception e) {
+                println "Manual corrections to the properties for ${project.name}-${project.version} may be necessary."
+                println "Error correcting the artifactory properties: ${e.message}"
             }
-        } catch (Exception e) {
-            println "Manual corrections to the properties of the released artifacts may be necessary."
-            println "Error correcting the artifactory properties: ${e.message}"
         }
     }
 }
@@ -27,8 +34,7 @@ task updateArtifactoryProperties() {
 def findCurrentArtifact(String artifactoryCredentials) {
     try {
         def url = "${project.ext.artifactoryUrl}/api/search/artifact?name=${project.name}-${project.version}.jar&repos=${project.ext.artifactoryRepo}"
-        def jsonResponse = retrieveJsonResponse(url, artifactoryCredentials)
-        def artifactoryItems = getArtifactoryItems(jsonResponse)
+        def artifactoryItems = getArtifactoryItems(url, artifactoryCredentials)
 
         if (artifactoryItems != null && artifactoryItems.size() == 1) {
             return artifactoryItems[0]
@@ -40,15 +46,16 @@ def findCurrentArtifact(String artifactoryCredentials) {
     return null
 }
 
-def findPropertiesToUpdate(String propertyKey, String artifactoryCredentials, String itemPathToIgnore) {
+def findPropertiesToUpdate(String artifactoryCredentials, String propertyKey, String itemPathToIgnore) {
     def url = "${project.ext.artifactoryUrl}/api/search/prop?${propertyKey}=true&repos=${project.ext.artifactoryRepo}"
-    def jsonResponse = retrieveJsonResponse(url, artifactoryCredentials)
-    def artifactoryItems = getArtifactoryItems(jsonResponse)
+    def artifactoryItems = getArtifactoryItems(url, artifactoryCredentials)
 
     return artifactoryItems.findAll { it.itemPath != itemPathToIgnore }
 }
 
-def retrieveJsonResponse(String url, String artifactoryCredentials) {
+def getArtifactoryItems(String url, String artifactoryCredentials) {
+    def artifactoryItems = []
+
     URL urlObject = new URL(url)
     URLConnection urlConnection = urlObject.openConnection()
     String basicAuth = "Basic " + new String(Base64.getEncoder().encode(artifactoryCredentials.getBytes()))
@@ -56,12 +63,7 @@ def retrieveJsonResponse(String url, String artifactoryCredentials) {
     urlConnection.setRequestProperty("X-Result-Detail", "info")
 
     def jsonText = urlConnection.getInputStream().getText()
-    return new groovy.json.JsonSlurper().parseText(jsonText)
-}
-
-def getArtifactoryItems(Map jsonResponse) {
-    def artifactoryItems = []
-
+    def jsonResponse = new groovy.json.JsonSlurper().parseText(jsonText)
     def results = jsonResponse['results']
     if (results != null && results.size() > 0) {
         results.each {
@@ -76,15 +78,9 @@ def getArtifactoryItems(Map jsonResponse) {
     return artifactoryItems
 }
 
-def setPropertiesToFalse(List artifactoryItems, String artifactoryCredentials, String propertyKey) {
-    artifactoryItems.each {
-        setArtifactoryProperty(artifactoryCredentials, propertyKey, 'false', it['itemPath'], it['repoKey'])
-    }
-}
-
-def setArtifactoryProperty(String artifactoryCredentials, String propertyKey, String propertyValue, String itemPath, String repoKey) {
-    println "Setting ${propertyKey} to ${propertyValue} for ${itemPath}."
+def setArtifactoryProperty(String artifactoryCredentials, String propertyKey, String propertyValue, def artifact) {
+    println "Setting ${propertyKey} to ${propertyValue} for ${artifact['itemPath']}."
     exec {
-        commandLine 'curl', '--silent', '--insecure', '--user', artifactoryCredentials, '--header', 'Content-Type: application/json', '--request', 'PATCH', '--data', "{\"props\":{\"${propertyKey}\":\"${propertyValue}\"}}", "${project.ext.artifactoryUrl}/api/metadata/${repoKey}${itemPath}"
+        commandLine 'curl', '--silent', '--insecure', '--user', artifactoryCredentials, '--header', 'Content-Type: application/json', '--request', 'PATCH', '--data', "{\"props\":{\"${propertyKey}\":\"${propertyValue}\"}}", "${project.ext.artifactoryUrl}/api/metadata/${artifact['repoKey']}${artifact['itemPath']}"
     }
 }
