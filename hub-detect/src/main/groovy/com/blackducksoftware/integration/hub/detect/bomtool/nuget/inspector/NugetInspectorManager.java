@@ -70,19 +70,15 @@ public class NugetInspectorManager {
         final String nugetExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.NUGET, true, new File(detectSourcePath), nugetPath);
 
         //original inspector
-        final String exeInspectorName = detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH);
+        final String exeInspectorName = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME);
         //new inspector
         final String dotnetInspectorName = "IntegrationNugetInspector";
 
-        //what do we do here,
-        //we have a List<String> of repositories
-        //we have a List<InspectorType> of inspectors (exe vs dotnet)
         String nugetExe = executableManager.getExecutablePathOrOverride(ExecutableType.NUGET, true, new File(detectSourcePath), nugetPath);
         if (StringUtils.isBlank(nugetExe)) {
             throw new BomToolException("Nuget must be on the path.");
         }
 
-        Optional<NugetInspector> inspector;
         File outputDirectory = detectFileManager.getSharedDirectory("nuget");
         if (shouldForceExeInspector(detectInfo)) { //If they are using windows we may want to use the old inspector, at lease until 5.
             //try to find a nuget.exe
@@ -111,6 +107,10 @@ public class NugetInspectorManager {
     }
 
     private boolean shouldForceExeInspector(DetectInfo detectInfo) {
+        if (true) {
+            return true;
+        }
+
         if (detectInfo.getCurrentOs() != OperatingSystemType.WINDOWS) {
             return false;
         }

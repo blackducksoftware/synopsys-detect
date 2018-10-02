@@ -116,6 +116,9 @@ public class DiagnosticLogManager {
     private void setLevel(final Level targetLevel) {
         final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(LOGBACK_LOGGER_NAME);
         root.setLevel(Level.ALL);
+
+        final ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("");
+        root.setLevel(Level.ALL);
     }
 
     private void removeAppender(final FileAppender<ILoggingEvent> appender) {

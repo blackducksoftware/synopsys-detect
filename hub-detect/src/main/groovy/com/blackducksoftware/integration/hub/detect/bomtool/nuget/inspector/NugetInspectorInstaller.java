@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,10 +89,10 @@ public class NugetInspectorInstaller {
             final String inspectorDirectoryName = nugetInspectorName + "." + inspectorVersion;
             final File installDirectory = new File(outputDirectory, inspectorDirectoryName);
             if (installDirectory.exists()) {
+                return Optional.of(installDirectory);
+            } else {
                 logger.warn(String.format("Could not find the %s version: %s even after an install attempt.", nugetInspectorName, inspectorVersion));
                 return Optional.empty();
-            } else {
-                return Optional.of(installDirectory);
             }
         }
     }
@@ -118,7 +119,7 @@ public class NugetInspectorInstaller {
         final Executable installInspectorExecutable = new Executable(new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), nugetExecutablePath, nugetOptions);
         final ExecutableOutput result = executableRunner.execute(installInspectorExecutable);
 
-        return result.getReturnCode() == 0 && result.getErrorOutputAsList().size() == 0;
+        return result.getReturnCode() == 0 && StringUtils.isBlank(result.getErrorOutput());
     }
 
     private boolean shouldUseAirGap() {
