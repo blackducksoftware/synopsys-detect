@@ -86,7 +86,6 @@ public class ConfigurationManager {
         resolveSignatureScannerProperties(detectOptions);
         resolveBomToolSearchProperties();
         resolveAirGapPaths();
-
         updateDetectProperties(detectOptions);
     }
 
@@ -105,7 +104,7 @@ public class ConfigurationManager {
     private void resolveTildeInPaths() throws DetectUserFriendlyException {
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RESOLVE_TILDE_IN_PATHS)) {
             detectConfiguration.getCurrentProperties().keySet().stream()
-                    .forEach(it -> resolveTildeInDetectProperty(it));
+                .forEach(it -> resolveTildeInDetectProperty(it));
         }
     }
 
@@ -180,8 +179,8 @@ public class ConfigurationManager {
         if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL)) &&
                 StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH))) {
             throw new DetectUserFriendlyException(
-                    "You have provided both a hub signature scanner url AND a local hub signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
-                    ExitCodeType.FAILURE_GENERAL_ERROR);
+                "You have provided both a hub signature scanner url AND a local hub signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
+                ExitCodeType.FAILURE_GENERAL_ERROR);
         }
         final Boolean originalOfflineMode = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE);
         hubOfflineMode = originalOfflineMode;
