@@ -74,10 +74,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspector
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorInstaller;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorVersionResolver;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion2.NugetApi2XmlParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3IndexJsonParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3RegistrationJsonParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.ComposerLockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearCliExtractor;
@@ -645,33 +641,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public NugetApi2XmlParser nugetApi2XmlParser() {
-        return new NugetApi2XmlParser();
-    }
-
-    @Bean
-    public NugetApi3RegistrationJsonParser nugetApi3RegistrationJsonParser() {
-        return new NugetApi3RegistrationJsonParser(gson());
-    }
-
-    @Bean
-    public NugetApi3IndexJsonParser nugetApi3IndexJsonParser() {
-        return new NugetApi3IndexJsonParser(gson());
-    }
-
-    @Bean
     public NugetInspectorInstaller nugetInspectorInstaller() {
         return new NugetInspectorInstaller(detectFileManager(), detectConfiguration(), executableRunner());
     }
 
     @Bean
-    public NugetInspectorVersionResolver nugetInspectorVersionResolver() throws ParserConfigurationException {
-        return new NugetInspectorVersionResolver(executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), nugetApi2XmlParser(), nugetApi3RegistrationJsonParser(), nugetApi3IndexJsonParser());
-    }
-
-    @Bean
     public NugetInspectorManager nugetInspectorManager() throws ParserConfigurationException {
-        return new NugetInspectorManager(nugetInspectorVersionResolver(), nugetInspectorInstaller(), executableManager(), detectConfiguration());
+        return new NugetInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration());
     }
 
     @Bean
