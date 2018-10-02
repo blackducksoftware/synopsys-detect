@@ -56,14 +56,10 @@ def findPropertiesToUpdate(String artifactoryCredentials, String propertyKey, St
 def getArtifactoryItems(String url, String artifactoryCredentials) {
     def artifactoryItems = []
 
-    URL urlObject = new URL(url)
-    URLConnection urlConnection = urlObject.openConnection()
-    String basicAuth = "Basic " + new String(Base64.getEncoder().encode(artifactoryCredentials.getBytes()))
-    urlConnection.setRequestProperty("Authorization", basicAuth)
-    urlConnection.setRequestProperty("X-Result-Detail", "info")
+    def curlArgs = defaultCurlArgs(artifactoryCredentials) + ['--header', 'X-Result-Detail: info', url]
+    def response = curlResponse(curlArgs)
 
-    def jsonText = urlConnection.getInputStream().getText()
-    def jsonResponse = new groovy.json.JsonSlurper().parseText(jsonText)
+    def jsonResponse = new groovy.json.JsonSlurper().parseText(response)
     def results = jsonResponse['results']
     if (results != null && results.size() > 0) {
         results.each {
@@ -80,7 +76,22 @@ def getArtifactoryItems(String url, String artifactoryCredentials) {
 
 def setArtifactoryProperty(String artifactoryCredentials, String propertyKey, String propertyValue, def artifact) {
     println "Setting ${propertyKey} to ${propertyValue} for ${artifact['itemPath']}."
-    exec {
-        commandLine 'curl', '--silent', '--insecure', '--user', artifactoryCredentials, '--header', 'Content-Type: application/json', '--request', 'PATCH', '--data', "{\"props\":{\"${propertyKey}\":\"${propertyValue}\"}}", "${project.ext.artifactoryUrl}/api/metadata/${artifact['repoKey']}${artifact['itemPath']}"
+    def curlArgs = defaultCurlArgs(artifactoryCredentials) + ['--request', 'PATCH', '--data', "{\"props\":{\"${propertyKey}\":\"${propertyValue}\"}}", "${project.ext.artifactoryUrl}/api/metadata/${artifact['repoKey']}${artifact['itemPath']}"]
+
+    curlResponse(curlArgs)
+}
+
+def defaultCurlArgs(String artifactoryCredentials) {
+    return ['--silent', '--insecure', '--user', artifactoryCredentials, '--header', 'Content-Type: application/json']
+}
+
+def curlResponse(def curlArgs) {
+    new ByteArrayOutputStream().withStream { os ->
+        exec {
+            executable = 'curl'
+            args = curlArgs
+            standardOutput = os
+        }
+        return os.toString()
     }
 }
