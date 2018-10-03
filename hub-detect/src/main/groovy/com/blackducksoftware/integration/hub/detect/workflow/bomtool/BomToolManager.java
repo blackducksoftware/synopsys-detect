@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationResult;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
@@ -23,7 +23,12 @@ public class BomToolManager {
     ReportManager reportManager;
     PhoneHomeManager phoneHomeManager;
 
-    public  BomToolManager(SearchManager searchManager, ExtractionManager extractionManager, ProjectVersionManager projectVersionManager, ReportManager reportManager, PhoneHomeManager phoneHomeManager) {
+    public BomToolManager(SearchManager searchManager, ExtractionManager extractionManager, ProjectVersionManager projectVersionManager, ReportManager reportManager, PhoneHomeManager phoneHomeManager) {
+        this.searchManager = searchManager;
+        this.extractionManager = extractionManager;
+        this.projectVersionManager = projectVersionManager;
+        this.reportManager = reportManager;
+        this.phoneHomeManager = phoneHomeManager;
 
     }
 

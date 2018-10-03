@@ -93,6 +93,13 @@ public class MavenMetadataService {
         return getBestVersion(foundVersions, versionRange);
     }
 
+    public String fetchBestVersionForUrl(String url, String versionRange) throws IOException, DetectUserFriendlyException, SAXException, IntegrationException {
+        final Document xmlDocument = fetchXmlDocumentFromUrl(url);
+        final Optional<String> version = parseVersionFromXML(xmlDocument, versionRange);
+
+        return version.orElse(versionRange);
+    }
+
     public Optional<String> getBestVersion(final List<String> versions, final String versionRange) {
         final Optional<String> bestVersion = versions.stream()
                                                  .map(Version::valueOf)

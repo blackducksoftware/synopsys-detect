@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.run;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,6 +6,7 @@ import java.util.Map;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
 import com.synopsys.integration.blackduck.summary.Result;
@@ -24,10 +25,10 @@ public class RunManager {
         this.bomToolManager = bomToolManager;
     }
 
-    public void run(){
+    public void run() {
         phoneHomeManager.startPhoneHome();
 
-        if (!this.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOLS_DISABLED)){
+        if (!this.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOLS_DISABLED)) {
             BomToolResult result = bomToolManager.runBomTools();
 
             Map<BomToolGroupType, Result> bomToolResults = new HashMap<>();

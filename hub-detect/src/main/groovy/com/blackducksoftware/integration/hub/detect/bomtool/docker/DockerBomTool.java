@@ -33,22 +33,20 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
+import com.blackducksoftware.integration.hub.detect.util.executable.StandardExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.util.executable.StandardExecutableFinder.StandardExecutableType;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.util.executable.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.util.executable.StandardExecutableFinder.StandardExecutableType;
 
 public class DockerBomTool extends BomTool {
     private final DockerInspectorManager dockerInspectorManager;
     private final StandardExecutableFinder standardExecutableFinder;
     private final DockerExtractor dockerExtractor;
-    private final boolean dockerPathRequired;
-    private final String suppliedDockerImage;
-    private final String suppliedDockerTar;
+    private final DockerBomToolOptions dockerBomToolOptions;
 
     private File bashExe;
     private File dockerExe;
@@ -56,21 +54,19 @@ public class DockerBomTool extends BomTool {
     private String tar;
     private DockerInspectorInfo dockerInspectorInfo;
 
-    public DockerBomTool(final BomToolEnvironment environment, final DockerInspectorManager dockerInspectorManager, final StandardExecutableFinder standardExecutableFinder, final boolean dockerPathRequired, final String suppliedDockerImage,
-            final String suppliedDockerTar, final DockerExtractor dockerExtractor) {
+    public DockerBomTool(final BomToolEnvironment environment, final DockerInspectorManager dockerInspectorManager, final StandardExecutableFinder standardExecutableFinder, final DockerExtractor dockerExtractor,
+        DockerBomToolOptions options) {
         super(environment, "Docker", BomToolGroupType.DOCKER, BomToolType.DOCKER);
         this.standardExecutableFinder = standardExecutableFinder;
         this.dockerExtractor = dockerExtractor;
-        this.dockerPathRequired = dockerPathRequired;
         this.dockerInspectorManager = dockerInspectorManager;
-        this.suppliedDockerImage = suppliedDockerImage;
-        this.suppliedDockerTar = suppliedDockerTar;
+        this.dockerBomToolOptions = options;
     }
 
     @Override
     public BomToolResult applicable() {
-        image = suppliedDockerImage;
-        tar = suppliedDockerTar;
+        image = dockerBomToolOptions.getSuppliedDockerImage();
+        tar = dockerBomToolOptions.getSuppliedDockerTar();
 
         if (StringUtils.isBlank(image) && StringUtils.isBlank(tar)) {
             return new PropertyInsufficientBomToolResult();
@@ -88,7 +84,7 @@ public class DockerBomTool extends BomTool {
 
         dockerExe = standardExecutableFinder.getExecutable(StandardExecutableType.DOCKER);
         if (dockerExe == null) {
-            if (dockerPathRequired) {
+            if (dockerBomToolOptions.isDockerPathRequired()) {
                 return new ExecutableNotFoundBomToolResult("docker");
             }
         }
@@ -105,5 +101,5 @@ public class DockerBomTool extends BomTool {
     public Extraction extract(final ExtractionId extractionId) {
         return dockerExtractor.extract(this.getBomToolType(), environment.getDirectory(), extractionId, bashExe, dockerExe, image, tar, dockerInspectorInfo);
     }
-    
+
 }

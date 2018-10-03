@@ -28,12 +28,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
@@ -204,9 +202,6 @@ public class DockerInspectorManager {
 
     private String getVersionFromArtifactory(final String versionRange) throws IOException, DetectUserFriendlyException, SAXException, IntegrationException {
         final String mavenMetadataUrl = "https://test-repo.blackducksoftware.com:443/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-docker-inspector/maven-metadata.xml";
-        final Document xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
-        final Optional<String> version = mavenMetadataService.parseVersionFromXML(xmlDocument, versionRange);
-
-        return version.orElse(versionRange);
+        return mavenMetadataService.fetchBestVersionForUrl(mavenMetadataUrl, versionRange);
     }
 }

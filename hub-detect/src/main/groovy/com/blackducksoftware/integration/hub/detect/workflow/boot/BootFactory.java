@@ -1,11 +1,9 @@
-package com.blackducksoftware.integration.hub.detect;
+package com.blackducksoftware.integration.hub.detect.workflow.boot;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.springframework.context.annotation.Bean;
-
+import com.blackducksoftware.integration.hub.detect.Application;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.synopsys.integration.blackduck.service.HubServicesFactory;
@@ -13,37 +11,35 @@ import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 import freemarker.template.Configuration;
 
-public class DetectSharedBeanConfiguration {
-    @Bean
-    public Gson gson() {
+//Responsible for creating a few classes boot needs
+public class BootFactory {
+    public Gson createGson() {
         return HubServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create();
     }
 
-    @Bean
-    public JsonParser jsonParser() {
+    public JsonParser createJsonParser() {
         return new JsonParser();
     }
 
-    @Bean
-    public Configuration configuration() {
+    public Configuration createConfiguration() {
         final Configuration configuration = new Configuration(Configuration.VERSION_2_3_26);
-        configuration.setClassForTemplateLoading(OldBeanConfiguration.class, "/");
+        configuration.setClassForTemplateLoading(Application.class, "/");
         configuration.setDefaultEncoding("UTF-8");
         configuration.setLogTemplateExceptions(true);
 
         return configuration;
     }
 
-    @Bean
-    public DocumentBuilder xmlDocumentBuilder() throws ParserConfigurationException {
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        return factory.newDocumentBuilder();
+    public DocumentBuilder createXmlDocumentBuilder() {
+        try {
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            return factory.newDocumentBuilder();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-
-    @Bean
-    public IntegrationEscapeUtil integrationEscapeUtil() {
+    public IntegrationEscapeUtil createIntegrationEscapeUtil() {
         return new IntegrationEscapeUtil();
     }
-
 }

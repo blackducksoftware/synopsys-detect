@@ -37,11 +37,11 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PropertyInsufficientBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientBomToolResult;
 import com.synopsys.integration.hub.bdio.model.Forge;
 
 public class BitbakeBomTool extends BomTool {

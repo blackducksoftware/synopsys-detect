@@ -23,6 +23,7 @@ public class InspectorManagerFactory {
     private final DetectConfigurationUtility detectConfigurationUtility;
     private final DocumentBuilder documentBuilder;
     private final Configuration configuration;
+
     public InspectorManagerFactory(final ExecutableRunner executableRunner, final DetectFileManager detectFileManager,
         final DetectConfiguration detectConfiguration, final ExecutableManager executableManager, final DetectConfigurationUtility detectConfigurationUtility, final DocumentBuilder documentBuilder,
         final Configuration configuration) {
@@ -40,7 +41,8 @@ public class InspectorManagerFactory {
     }
 
     public GradleInspectorManager gradleInspectorManager() {
-        return new GradleInspectorManager(detectFileManager, configuration, documentBuilder, detectConfiguration, detectConfigurationUtility);
+        //return new GradleInspectorManager(detectFileManager, configuration, documentBuilder, detectConfiguration, detectConfigurationUtility);
+        return null;
     }
 
     public PipInspectorManager pipInspectorManager() {

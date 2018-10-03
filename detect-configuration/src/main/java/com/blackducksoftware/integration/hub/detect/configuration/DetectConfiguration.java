@@ -47,6 +47,7 @@ public class DetectConfiguration {
     public DetectConfiguration(final DetectPropertySource detectPropertySource, final DetectPropertyMap detectPropertyMap) {
         this.detectPropertySource = detectPropertySource;
         this.detectPropertyMap = detectPropertyMap;
+        init();
     }
 
     private final Set<DetectProperty> actuallySetValues = new HashSet<>();
@@ -56,7 +57,7 @@ public class DetectConfiguration {
     }
 
     // TODO: Remove override code in version 6.
-    public void init() {
+    private void init() {
         Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
             final DetectProperty override = fromDeprecatedToOverride(currentProperty);
             final DetectProperty deprecated = fromOverrideToDeprecated(currentProperty);
@@ -81,14 +82,14 @@ public class DetectConfiguration {
 
     private void handleStandardProperty(final DetectProperty currentProperty) {
         actuallySetValues.add(currentProperty);
-        final String value = detectPropertySource.getDetectProperty(currentProperty.getPropertyName(), currentProperty.getDefaultValue());
+        final String value = detectPropertySource.getDetectProperty(currentProperty);
         detectPropertyMap.setDetectProperty(currentProperty, value);
     }
 
     private void handleDeprecatedProperty(final DetectProperty currentProperty, final DetectProperty overrideProperty) {
-        final boolean currentExists = detectPropertySource.containsDetectProperty(currentProperty.getPropertyName());
+        final boolean currentExists = detectPropertySource.containsDetectProperty(currentProperty);
         if (currentExists) {
-            final boolean overrideExists = detectPropertySource.containsDetectProperty(overrideProperty.getPropertyName());
+            final boolean overrideExists = detectPropertySource.containsDetectProperty(overrideProperty);
             if (!overrideExists) {
                 // current exists but override does not, so we choose to use the current and set the override. Otherwise, ignore this property, it should be set by the override property.
                 setChosenProperty(currentProperty, overrideProperty, true);
@@ -97,8 +98,8 @@ public class DetectConfiguration {
     }
 
     private void handleOverrideProperty(final DetectProperty currentProperty, final DetectProperty deprecatedProperty) {
-        final boolean currentExists = detectPropertySource.containsDetectProperty(currentProperty.getPropertyName());
-        final boolean deprecatedExists = detectPropertySource.containsDetectProperty(deprecatedProperty.getPropertyName());
+        final boolean currentExists = detectPropertySource.containsDetectProperty(currentProperty);
+        final boolean deprecatedExists = detectPropertySource.containsDetectProperty(deprecatedProperty);
         if (currentExists) {
             setChosenProperty(currentProperty, deprecatedProperty, true);
             if (deprecatedExists) { // even though it wasn't chosen, if deprecated was set we want to mark it as set.
@@ -110,7 +111,7 @@ public class DetectConfiguration {
     }
 
     private void setChosenProperty(final DetectProperty chosenProperty, final DetectProperty unchosenProperty, final boolean actuallySetChosen) {
-        final String value = detectPropertySource.getDetectProperty(chosenProperty.getPropertyName(), chosenProperty.getDefaultValue());
+        final String value = detectPropertySource.getDetectProperty(chosenProperty);
         detectPropertyMap.setDetectProperty(chosenProperty, value);
         detectPropertyMap.setDetectProperty(unchosenProperty, value);
         if (actuallySetChosen) {

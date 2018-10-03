@@ -86,7 +86,7 @@ public class DetectConfigurationManager {
     private void resolveTildeInPaths() throws DetectUserFriendlyException {
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RESOLVE_TILDE_IN_PATHS)) {
             detectConfiguration.getCurrentProperties().keySet().stream()
-                    .forEach(it -> resolveTildeInDetectProperty(it));
+                .forEach(it -> resolveTildeInDetectProperty(it));
         }
     }
 
@@ -94,7 +94,7 @@ public class DetectConfigurationManager {
         if (PropertyType.STRING == detectProperty.getPropertyType()) {
             final Optional<String> resolved = tildeInPathResolver.resolveTildeInValue(detectConfiguration.getProperty(detectProperty));
             if (resolved.isPresent()) {
-                detectConfiguration.setProperty(detectProperty, resolved.get());
+                detectConfiguration.setDetectProperty(detectProperty, resolved.get());
             }
         }
     }
@@ -161,8 +161,8 @@ public class DetectConfigurationManager {
         if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL)) &&
                 StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH))) {
             throw new DetectUserFriendlyException(
-                    "You have provided both a hub signature scanner url AND a local hub signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
-                    ExitCodeType.FAILURE_GENERAL_ERROR);
+                "You have provided both a hub signature scanner url AND a local hub signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
+                ExitCodeType.FAILURE_GENERAL_ERROR);
         }
         final Boolean originalOfflineMode = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE);
         hubOfflineMode = originalOfflineMode;
@@ -195,37 +195,37 @@ public class DetectConfigurationManager {
 
     private void updateDetectProperties(final List<DetectOption> detectOptions) {
         updateOptionValue(detectOptions, DetectProperty.DETECT_SOURCE_PATH, sourcePath);
-        detectConfiguration.setProperty(DetectProperty.DETECT_SOURCE_PATH, sourcePath);
+        detectConfiguration.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, sourcePath);
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_OUTPUT_PATH, outputDirectoryPath);
-        detectConfiguration.setProperty(DetectProperty.DETECT_OUTPUT_PATH, outputDirectoryPath);
+        detectConfiguration.setDetectProperty(DetectProperty.DETECT_OUTPUT_PATH, outputDirectoryPath);
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_BDIO_OUTPUT_PATH, bdioOutputDirectoryPath);
-        detectConfiguration.setProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH, bdioOutputDirectoryPath);
+        detectConfiguration.setDetectProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH, bdioOutputDirectoryPath);
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_SCAN_OUTPUT_PATH, scanOutputDirectoryPath);
-        detectConfiguration.setProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH, scanOutputDirectoryPath);
+        detectConfiguration.setDetectProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH, scanOutputDirectoryPath);
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, policyCheckFailOnSeverities);
-        detectConfiguration.setProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, policyCheckFailOnSeverities);
+        detectConfiguration.setDetectProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, policyCheckFailOnSeverities);
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, String.valueOf(hubSignatureScannerParallelProcessors));
-        detectConfiguration.setProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, String.valueOf(hubSignatureScannerParallelProcessors));
+        detectConfiguration.setDetectProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, String.valueOf(hubSignatureScannerParallelProcessors));
 
         updateOptionValue(detectOptions, DetectProperty.BLACKDUCK_OFFLINE_MODE, String.valueOf(hubOfflineMode));
-        detectConfiguration.setProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, String.valueOf(hubOfflineMode));
+        detectConfiguration.setDetectProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, String.valueOf(hubOfflineMode));
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, StringUtils.join(bomToolSearchDirectoryExclusions, ","));
-        detectConfiguration.setProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, StringUtils.join(bomToolSearchDirectoryExclusions, ","));
+        detectConfiguration.setDetectProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, StringUtils.join(bomToolSearchDirectoryExclusions, ","));
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, dockerInspectorAirGapPath);
-        detectConfiguration.setProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, dockerInspectorAirGapPath);
+        detectConfiguration.setDetectProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, dockerInspectorAirGapPath);
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH, gradleInspectorAirGapPath);
-        detectConfiguration.setProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH, gradleInspectorAirGapPath);
+        detectConfiguration.setDetectProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH, gradleInspectorAirGapPath);
 
         updateOptionValue(detectOptions, DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH, nugetInspectorAirGapPath);
-        detectConfiguration.setProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH, nugetInspectorAirGapPath);
+        detectConfiguration.setDetectProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH, nugetInspectorAirGapPath);
     }
 
     private void updateOptionValue(final List<DetectOption> detectOptions, final DetectProperty detectProperty, final String value) {

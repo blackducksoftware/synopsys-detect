@@ -84,19 +84,19 @@ public class DetectOptionManager implements ExitCodeReporter {
         }
 
         detectOptions = detectOptionsMap.values().stream()
-                .sorted((o1, o2) -> o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup))
-                .collect(Collectors.toList());
+                            .sorted((o1, o2) -> o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup))
+                            .collect(Collectors.toList());
 
         detectGroups = detectOptions.stream()
-                .map(it -> it.getDetectOptionHelp().primaryGroup)
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
+                           .map(it -> it.getDetectOptionHelp().primaryGroup)
+                           .distinct()
+                           .sorted()
+                           .collect(Collectors.toList());
 
         checkForRemovedProperties();
     }
 
-    public void postInit() throws IllegalArgumentException, SecurityException {
+    public void postConfigurationProcessedInit() throws IllegalArgumentException, SecurityException {
         for (final DetectOption option : detectOptions) {
             String fieldValue = option.getPostInitValue();
             if (StringUtils.isBlank(fieldValue)) {
@@ -150,7 +150,7 @@ public class DetectOptionManager implements ExitCodeReporter {
             for (final DetectOption detectOption : detectOptions) {
                 if (detectOption.getDetectProperty().equals(interactiveOption.getDetectProperty())) {
                     detectOption.setInteractiveValue(interactiveOption.getInteractiveValue());
-                    detectConfiguration.setProperty(detectOption.getDetectProperty(), interactiveOption.getInteractiveValue());
+                    detectConfiguration.setDetectProperty(detectOption.getDetectProperty(), interactiveOption.getInteractiveValue());
                     break;
                 }
             }
@@ -159,10 +159,10 @@ public class DetectOptionManager implements ExitCodeReporter {
 
     public List<OptionValidationResult> getAllInvalidOptionResults() throws DetectUserFriendlyException {
         return detectOptions.stream()
-                .filter(DetectOption::hasStrictValidation)
-                .map(DetectOption::validate)
-                .filter(validationResult -> !validationResult.isValid())
-                .collect(Collectors.toList());
+                   .filter(DetectOption::hasStrictValidation)
+                   .map(DetectOption::validate)
+                   .filter(validationResult -> !validationResult.isValid())
+                   .collect(Collectors.toList());
     }
 
     private DetectOption processField(final DetectProperty detectProperty, final String currentValue) {
@@ -192,7 +192,7 @@ public class DetectOptionManager implements ExitCodeReporter {
             final boolean hasValue = null != currentValue;
             if (defaultValue != null && !defaultValue.trim().isEmpty() && !hasValue) {
                 resolvedValue = defaultValue;
-                detectConfiguration.setProperty(detectProperty, resolvedValue);
+                detectConfiguration.setDetectProperty(detectProperty, resolvedValue);
             } else if (hasValue) {
                 resolvedValue = currentValue;
             }

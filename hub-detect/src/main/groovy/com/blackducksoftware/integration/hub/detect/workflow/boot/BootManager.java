@@ -2,16 +2,19 @@ package com.blackducksoftware.integration.hub.detect.workflow.boot;
 
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.DetectInfoUtility;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyMap;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -45,22 +48,24 @@ import freemarker.template.Configuration;
 public class BootManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final Gson gson;
-    private final JsonParser jsonParser;
-    private final Configuration configuration;
+    private BootFactory bootFactory;
 
-    public BootManager(final Gson gson, final JsonParser jsonParser, final Configuration configuration) {
-        this.gson = gson;
-        this.jsonParser = jsonParser;
-        this.configuration = configuration;
+    public BootManager(BootFactory bootFactory) {
+        this.bootFactory = bootFactory;
     }
 
     public BootResult boot(final String[] sourceArgs, ConfigurableEnvironment environment) throws DetectUserFriendlyException, IntegrationException {
+        Gson gson = bootFactory.createGson();
+        JsonParser jsonParser = bootFactory.createJsonParser();
+        DocumentBuilder xml = bootFactory.createXmlDocumentBuilder();
+        Configuration configuration = bootFactory.createConfiguration();
+
         DetectRun detectRun = DetectRun.createDefault();
         DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
 
         DetectPropertySource propertySource = new DetectPropertySource(environment);
-        DetectConfiguration detectConfiguration = new DetectConfiguration(propertySource);
+        DetectPropertyMap propertyMap = new DetectPropertyMap();
+        DetectConfiguration detectConfiguration = new DetectConfiguration(propertySource, propertyMap);
         DetectOptionManager detectOptionManager = new DetectOptionManager(detectConfiguration, detectInfo);
 
         final List<DetectOption> options = detectOptionManager.getDetectOptions();
@@ -73,19 +78,19 @@ public class BootManager {
         }
 
         if (detectArgumentState.isHelpDocument()) {
-            printHelpDocument(options, detectInfo);
+            printHelpDocument(options, detectInfo, configuration);
             return BootResult.exit();
         }
 
         printDetectInfo(detectInfo);
 
         if (detectArgumentState.isInteractive()) {
-            startInteractiveMode(detectOptionManager, detectConfiguration);
+            startInteractiveMode(detectOptionManager, detectConfiguration, gson, jsonParser);
         }
 
         processDetectConfiguration(detectInfo, detectRun, detectConfiguration, options);
 
-        detectOptionManager.postInit();
+        detectOptionManager.postConfigurationProcessedInit();
 
         logger.info("Configuration processed completely.");
 
@@ -107,7 +112,7 @@ public class BootManager {
             return BootResult.exit();
         }
 
-        PhoneHomeManager phoneHomeManager = createPhoneHomeManager(detectInfo, detectConfiguration, hubServiceManager);
+        PhoneHomeManager phoneHomeManager = createPhoneHomeManager(detectInfo, detectConfiguration, hubServiceManager, gson);
         DetectFileManager detectFileManager = new DetectFileManager(detectConfiguration, detectRun, diagnosticManager);
 
         //Finished, return created objects.
@@ -120,6 +125,11 @@ public class BootManager {
         detectRunContext.diagnosticManager = diagnosticManager;
         detectRunContext.hubServiceManager = hubServiceManager;
 
+        detectRunContext.gson = gson;
+        detectRunContext.jsonParser = jsonParser;
+        detectRunContext.documentBuilder = xml;
+        //detectRunContext.integrationEscapeUtil =
+
         BootResult result = new BootResult();
         result.detectRunContext = detectRunContext;
         result.bootType = BootResult.BootType.CONTINUE;
@@ -131,7 +141,7 @@ public class BootManager {
         helpPrinter.printAppropriateHelpMessage(System.out, detectOptions, detectArgumentState);
     }
 
-    private void printHelpDocument(List<DetectOption> detectOptions, DetectInfo detectInfo) {
+    private void printHelpDocument(List<DetectOption> detectOptions, DetectInfo detectInfo, Configuration configuration) {
         HelpHtmlWriter helpHtmlWriter = new HelpHtmlWriter(configuration);
         helpHtmlWriter.writeHtmlDocument(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()), detectOptions);
     }
@@ -141,7 +151,7 @@ public class BootManager {
         detectInfoPrinter.printInfo(System.out, detectInfo);
     }
 
-    private void printConfiguration(boolean fullConfiguration, List<DetectOption> detectOptions){
+    private void printConfiguration(boolean fullConfiguration, List<DetectOption> detectOptions) {
         DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter();
         if (!fullConfiguration) {
             detectConfigurationPrinter.print(System.out, detectOptions);
@@ -149,14 +159,14 @@ public class BootManager {
         detectConfigurationPrinter.printWarnings(System.out, detectOptions);
     }
 
-    private void startInteractiveMode(DetectOptionManager detectOptionManager, DetectConfiguration detectConfiguration) {
+    private void startInteractiveMode(DetectOptionManager detectOptionManager, DetectConfiguration detectConfiguration, Gson gson, JsonParser jsonParser) {
         InteractiveManager interactiveManager = new InteractiveManager(detectOptionManager);
         HubServiceManager hubServiceManager = new HubServiceManager(detectConfiguration, new DetectConfigurationUtility(detectConfiguration), gson, jsonParser);
         DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(hubServiceManager, detectOptionManager);
         interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
     }
 
-    private DetectArgumentState parseDetectArgumentState(String[] sourceArgs){
+    private DetectArgumentState parseDetectArgumentState(String[] sourceArgs) {
         DetectArgumentStateParser detectArgumentStateParser = new DetectArgumentStateParser();
         final DetectArgumentState detectArgumentState = detectArgumentStateParser.parseArgs(sourceArgs);
         return detectArgumentState;
@@ -168,22 +178,23 @@ public class BootManager {
         detectConfigurationManager.process(detectOptions, detectRun.getRunId());
     }
 
-    private void checkForInvalidOptions(DetectOptionManager detectOptionManager) throws DetectUserFriendlyException{
+    private void checkForInvalidOptions(DetectOptionManager detectOptionManager) throws DetectUserFriendlyException {
         final List<DetectOption.OptionValidationResult> invalidDetectOptionResults = detectOptionManager.getAllInvalidOptionResults();
         if (!invalidDetectOptionResults.isEmpty()) {
             throw new DetectUserFriendlyException(invalidDetectOptionResults.get(0).getValidationMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }
 
-    private DiagnosticManager createDiagnostics(DetectConfiguration detectConfiguration, DetectRun detectRun, DetectArgumentState detectArgumentState){
+    private DiagnosticManager createDiagnostics(DetectConfiguration detectConfiguration, DetectRun detectRun, DetectArgumentState detectArgumentState) {
         DiagnosticReportManager diagnosticReportManager = new DiagnosticReportManager(new BomToolProfiler());
         DiagnosticLogManager diagnosticLogManager = new DiagnosticLogManager();
         DiagnosticFileManager diagnosticFileManager = new DiagnosticFileManager();
-        DiagnosticManager diagnosticManager = new DiagnosticManager(detectConfiguration, diagnosticReportManager, diagnosticLogManager, detectRun, diagnosticFileManager, detectArgumentState.isDiagnostic(), detectArgumentState.isDiagnosticProtected());
+        DiagnosticManager diagnosticManager = new DiagnosticManager(detectConfiguration, diagnosticReportManager, diagnosticLogManager, detectRun, diagnosticFileManager, detectArgumentState.isDiagnostic(),
+            detectArgumentState.isDiagnosticProtected());
         return diagnosticManager;
     }
 
-    private PhoneHomeManager createPhoneHomeManager(DetectInfo detectInfo, DetectConfiguration detectConfiguration, HubServiceManager hubServiceManager) throws DetectUserFriendlyException, IntegrationException {
+    private PhoneHomeManager createPhoneHomeManager(DetectInfo detectInfo, DetectConfiguration detectConfiguration, HubServiceManager hubServiceManager, Gson gson) throws DetectUserFriendlyException, IntegrationException {
         PhoneHomeManager phoneHomeManager = new PhoneHomeManager(detectInfo, detectConfiguration, gson);
         if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE)) {
             phoneHomeManager.initOffline();

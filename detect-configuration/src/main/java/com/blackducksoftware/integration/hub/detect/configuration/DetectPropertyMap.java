@@ -30,6 +30,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import com.blackducksoftware.integration.hub.detect.property.PropertyType;
+
 /**
  * DetectConfiguration should be the only class that uses this.
  */
@@ -72,9 +74,9 @@ public class DetectPropertyMap {
     public String getPropertyValueAsString(final DetectProperty detectProperty) {
         final Object objectValue = propertyMap.get(detectProperty);
         String displayValue = "";
-        if (DetectPropertyType.STRING == detectProperty.getPropertyType()) {
+        if (PropertyType.STRING == detectProperty.getPropertyType()) {
             displayValue = (String) objectValue;
-        } else if (DetectPropertyType.STRING_ARRAY == detectProperty.getPropertyType()) {
+        } else if (PropertyType.STRING_ARRAY == detectProperty.getPropertyType()) {
             displayValue = StringUtils.join((String[]) objectValue, ",");
         } else if (null != objectValue) {
             displayValue = objectValue.toString();
@@ -96,13 +98,13 @@ public class DetectPropertyMap {
 
     private void updatePropertyMap(final Map<DetectProperty, Object> propertyMap, final DetectProperty detectProperty, final String stringValue) {
         final Object value;
-        if (DetectPropertyType.BOOLEAN == detectProperty.getPropertyType()) {
+        if (PropertyType.BOOLEAN == detectProperty.getPropertyType()) {
             value = convertBoolean(stringValue);
-        } else if (DetectPropertyType.LONG == detectProperty.getPropertyType()) {
+        } else if (PropertyType.LONG == detectProperty.getPropertyType()) {
             value = convertLong(stringValue);
-        } else if (DetectPropertyType.INTEGER == detectProperty.getPropertyType()) {
+        } else if (PropertyType.INTEGER == detectProperty.getPropertyType()) {
             value = convertInt(stringValue);
-        } else if (DetectPropertyType.STRING_ARRAY == detectProperty.getPropertyType()) {
+        } else if (PropertyType.STRING_ARRAY == detectProperty.getPropertyType()) {
             value = convertStringArray(stringValue);
         } else {
             if (null == stringValue) {
