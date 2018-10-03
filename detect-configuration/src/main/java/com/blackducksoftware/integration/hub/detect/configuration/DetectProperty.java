@@ -731,8 +731,8 @@ public enum DetectProperty {
     DETECT_INIT_BUILD_ENV_NAME("detect.bitbake.build.env.name", "4.4.0", DetectPropertyType.STRING, "oe-init-build-env"),
 
     @HelpGroup(primary = GROUP_BITBAKE)
-    @HelpDescription("A comma-separated list of package names to extract dependencies from")
-    DETECT_BITBAKE_PACKAGE_NAME("detect.bitbake.package.names", "4.4.0", DetectPropertyType.STRING, "core-image-minimal"),
+    @HelpDescription("The name of the package to extract dependencies from")
+    DETECT_BITBAKE_PACKAGE_NAME("detect.bitbake.package.name", "4.4.0", DetectPropertyType.STRING),
 
     @HelpGroup(primary = GROUP_CONDA)
     @HelpDescription("The path of the conda executable")
