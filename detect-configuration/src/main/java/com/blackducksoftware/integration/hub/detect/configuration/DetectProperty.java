@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
+import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_BITBAKE;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_BLACKDUCK_CONFIGURATION;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_BOMTOOL;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_CLEANUP;
@@ -409,9 +410,8 @@ public enum DetectProperty {
     DETECT_NUGET_INSPECTOR_NAME("detect.nuget.inspector.name", "3.0.0", DetectPropertyType.STRING, "IntegrationNugetInspector"),
 
     @HelpGroup(primary = GROUP_NUGET)
-    @HelpDescription("Version of the Nuget Inspector. Wildcards may be specified with *.")
-    @HelpDetailed("Wildcard versions will find the highest version that fits the pattern. For example 1.* will lock to major version 1 where 1.2.* will lock to major 1 and minor 2. Both versions 1.2.3 and 1.2.4 would fulfill both patterns and 1.2.4 would be chosen.")
-    DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version", "3.0.0", DetectPropertyType.STRING, "2.*"),
+    @HelpDescription("Version of the Nuget Inspector. Use 'latest' to specify the current latest version. In detect 5.0.0 wildcards will be supported.")
+    DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version", "3.0.0", DetectPropertyType.STRING, "latest"),
 
     @HelpGroup(primary = GROUP_NUGET)
     @HelpDescription("The names of the projects in a solution to exclude")
@@ -726,6 +726,14 @@ public enum DetectProperty {
     @HelpDescription("The output directory for notices report. Default is the source directory")
     DETECT_NOTICES_REPORT_PATH("detect.notices.report.path", "3.0.0", DetectPropertyType.STRING, "."),
 
+    @HelpGroup(primary = GROUP_BITBAKE)
+    @HelpDescription("The name of the build environment init script")
+    DETECT_INIT_BUILD_ENV_NAME("detect.bitbake.build.env.name", "4.4.0", DetectPropertyType.STRING, "oe-init-build-env"),
+
+    @HelpGroup(primary = GROUP_BITBAKE)
+    @HelpDescription("The name of the package to extract dependencies from")
+    DETECT_BITBAKE_PACKAGE_NAME("detect.bitbake.package.name", "4.4.0", DetectPropertyType.STRING),
+
     @HelpGroup(primary = GROUP_CONDA)
     @HelpDescription("The path of the conda executable")
     DETECT_CONDA_PATH("detect.conda.path", "3.0.0", DetectPropertyType.STRING),
@@ -816,6 +824,7 @@ public enum DetectProperty {
         public static final String GROUP_PATHS = "paths";
         public static final String GROUP_BOMTOOL = "bomtool";
         public static final String GROUP_CODELOCATION = "codelocation";
+        public static final String GROUP_BITBAKE = "bitbake";
         public static final String GROUP_CONDA = "conda";
         public static final String GROUP_CPAN = "cpan";
         public static final String GROUP_DOCKER = "docker";

@@ -21,19 +21,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3;
+package com.blackducksoftware.integration.hub.detect.bomtool.bitbake;
 
-import com.google.gson.annotations.SerializedName;
+import java.io.File;
 
-public class NugetApi3Package {
-    @SerializedName("catalogEntry")
-    private NugetApi3CatalogEntry catalogEntry;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 
-    public NugetApi3CatalogEntry getCatalogEntry() {
-        return catalogEntry;
+public class BitbakeResult {
+    private final ExecutableOutput executableOutput;
+    private final String executableDescription;
+    private final File recipeDependsFile;
+
+    public BitbakeResult(final ExecutableOutput executableOutput, final String executableDescription, final File recipeDependsFile) {
+        this.executableOutput = executableOutput;
+        this.executableDescription = executableDescription;
+        this.recipeDependsFile = recipeDependsFile;
     }
 
-    public void setCatalogEntry(final NugetApi3CatalogEntry catalogEntry) {
-        this.catalogEntry = catalogEntry;
+    public ExecutableOutput getExecutableOutput() {
+        return executableOutput;
+    }
+
+    public String getExecutableDescription() {
+        return executableDescription;
+    }
+
+    public File getRecipeDependsFile() {
+        return recipeDependsFile;
     }
 }

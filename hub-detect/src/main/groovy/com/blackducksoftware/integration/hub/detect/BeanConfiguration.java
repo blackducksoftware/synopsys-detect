@@ -34,6 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.GraphParserTransformer;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangLinuxPackageManager;
@@ -74,10 +76,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspector
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorInstaller;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorVersionResolver;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion2.NugetApi2XmlParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3IndexJsonParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.apiversion3.NugetApi3RegistrationJsonParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.ComposerLockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearCliExtractor;
@@ -359,13 +357,21 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public GraphParserTransformer graphParserTransformer() {
+        return new GraphParserTransformer();
+    }
+
+    @Bean
+    public BitbakeExtractor bitbakeExtractor() {
+        return new BitbakeExtractor(executableManager(), executableRunner(), detectConfiguration(), detectFileManager(), detectFileFinder(), graphParserTransformer());
+    }
+
+    @Bean
     public BomToolFactory bomToolFactory() throws ParserConfigurationException {
-        return new BomToolFactory(detectConfiguration(), detectFileFinder(), standardExecutableFinder(), executableRunner(), clangExtractor(), clangLinuxPackageManagers(), composerLockExtractor(), condaCliExtractor(), cpanCliExtractor(),
-            dockerExtractor(),
-            dockerInspectorManager(),
-            gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(), mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(),
-            npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(), pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(),
-            podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
+        return new BomToolFactory(detectConfiguration(), detectFileFinder(), standardExecutableFinder(), executableRunner(), bitbakeExtractor(), clangExtractor(), clangLinuxPackageManagers(), composerLockExtractor(), condaCliExtractor(),
+            cpanCliExtractor(), dockerExtractor(), dockerInspectorManager(), gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(),
+            mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(), npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(),
+            pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(), podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
     }
 
     @Bean
@@ -645,33 +651,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public NugetApi2XmlParser nugetApi2XmlParser() {
-        return new NugetApi2XmlParser();
-    }
-
-    @Bean
-    public NugetApi3RegistrationJsonParser nugetApi3RegistrationJsonParser() {
-        return new NugetApi3RegistrationJsonParser(gson());
-    }
-
-    @Bean
-    public NugetApi3IndexJsonParser nugetApi3IndexJsonParser() {
-        return new NugetApi3IndexJsonParser(gson());
-    }
-
-    @Bean
     public NugetInspectorInstaller nugetInspectorInstaller() {
         return new NugetInspectorInstaller(detectFileManager(), detectConfiguration(), executableRunner());
     }
 
     @Bean
-    public NugetInspectorVersionResolver nugetInspectorVersionResolver() throws ParserConfigurationException {
-        return new NugetInspectorVersionResolver(executableRunner(), detectConfiguration(), detectConfigurationUtility(), xmlDocumentBuilder(), nugetApi2XmlParser(), nugetApi3RegistrationJsonParser(), nugetApi3IndexJsonParser());
-    }
-
-    @Bean
     public NugetInspectorManager nugetInspectorManager() throws ParserConfigurationException {
-        return new NugetInspectorManager(nugetInspectorVersionResolver(), nugetInspectorInstaller(), executableManager(), detectConfiguration());
+        return new NugetInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration());
     }
 
     @Bean

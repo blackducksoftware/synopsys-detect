@@ -14,12 +14,18 @@ buildscript {
     }
 }
 
-String sharedVersion = '4.4.0-SNAPSHOT'
-version = sharedVersion
+apply plugin: 'java'
+
+version = '4.4.0-SNAPSHOT'
+String parentVersion = project.version
+
+allprojects {
+    task dependencies(type: DependencyReportTask) {}
+}
 
 configure(subprojects) { project ->
     group = 'com.blackducksoftware.integration'
-    version = sharedVersion
+    version = parentVersion
 
     apply plugin: 'com.blackducksoftware.integration.solution'
     apply plugin: 'groovy'
@@ -39,5 +45,6 @@ configure(subprojects) { project ->
     dependencies {
         compile 'com.blackducksoftware.integration:hub-common:38.3.3'
         compile 'com.github.zafarkhaja:java-semver:0.9.0'
+        compile 'com.paypal.digraph:digraph-parser:1.0'
     }
 }

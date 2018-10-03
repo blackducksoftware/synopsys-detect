@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.type;
 
 public enum ExecutableType {
     BASH,
+    BITBAKE,
     CONDA,
     CPAN,
     CPANM,
