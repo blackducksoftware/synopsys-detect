@@ -59,7 +59,7 @@ public class NugetInspectorManager {
     private String resolvedInspectorVersion;
 
     public NugetInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
-            final DetectConfiguration detectConfiguration) {
+        final DetectConfiguration detectConfiguration) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
@@ -81,7 +81,8 @@ public class NugetInspectorManager {
 
     public void install() throws DetectUserFriendlyException, ExecutableRunnerException, IOException {
         final String nugetExecutable = executableManager
-                .getExecutablePathOrOverride(ExecutableType.NUGET, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_PATH));
+                                           .getExecutablePathOrOverride(ExecutableType.NUGET, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)),
+                                               detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_PATH));
         resolvedInspectorVersion = resolveInspectorVersion(nugetExecutable);
         if (resolvedInspectorVersion != null) {
             resolvedNugetInspectorExecutable = installInspector(nugetExecutable, detectFileManager.getSharedDirectory("nuget"), resolvedInspectorVersion);
@@ -126,10 +127,10 @@ public class NugetInspectorManager {
         final List<String> nugetOptions = new ArrayList<>();
 
         nugetOptions.addAll(Arrays.asList(
-                "list",
-                detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME),
-                "-Source",
-                source));
+            "list",
+            detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME),
+            "-Source",
+            source));
 
         final String nugetConfigPath = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
         if (StringUtils.isNotBlank(nugetConfigPath)) {
@@ -188,14 +189,14 @@ public class NugetInspectorManager {
         final List<String> nugetOptions = new ArrayList<>();
 
         nugetOptions.addAll(Arrays.asList(
-                "install",
-                detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME),
-                "-OutputDirectory",
-                outputDirectory.getCanonicalPath(),
-                "-Source",
-                source,
-                "-Version",
-                resolvedInspectorVersion));
+            "install",
+            detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME),
+            "-OutputDirectory",
+            outputDirectory.getCanonicalPath(),
+            "-Source",
+            source,
+            "-Version",
+            resolvedInspectorVersion));
         final String nugetConfigPath = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
         if (StringUtils.isNotBlank(nugetConfigPath)) {
             nugetOptions.add("-ConfigFile");

@@ -30,7 +30,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
@@ -49,7 +48,7 @@ public class SbtResolutionCacheExtractor {
     private final DetectConfiguration detectConfiguration;
 
     public SbtResolutionCacheExtractor(final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory,
-            final DetectConfiguration detectConfiguration) {
+        final DetectConfiguration detectConfiguration) {
         this.detectFileFinder = detectFileFinder;
         this.externalIdFactory = externalIdFactory;
         this.detectConfiguration = detectConfiguration;

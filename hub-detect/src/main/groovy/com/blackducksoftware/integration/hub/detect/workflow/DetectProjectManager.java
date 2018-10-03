@@ -97,6 +97,7 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
         final SearchResult searchResult = searchManager.performSearch();
 
         searchResult.getBomToolEvaluations().stream()
+                .filter(it -> it.isApplicable())
                 .map(it -> it.getBomTool().getBomToolGroupType())
                 .forEach(it -> applicableBomTools.add(it));
 

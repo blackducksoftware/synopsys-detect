@@ -23,35 +23,30 @@
  */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.property.PropertyMap;
 import com.synopsys.integration.blackduck.configuration.HubServerConfigBuilder;
 
 public class DetectConfiguration {
     private final Logger logger = LoggerFactory.getLogger(DetectConfiguration.class);
     private final DetectPropertySource detectPropertySource;
-    private final PropertyMap<DetectProperty> propertyMap;
+    private final DetectPropertyMap detectPropertyMap;
 
-    public DetectConfiguration(final DetectPropertySource detectPropertySource) {
+    public DetectConfiguration(final DetectPropertySource detectPropertySource, final DetectPropertyMap detectPropertyMap) {
         this.detectPropertySource = detectPropertySource;
-        this.propertyMap = new PropertyMap<>();
-
-        init();
-    }
-
-    public DetectConfiguration(final DetectPropertySource detectPropertySource, final PropertyMap<DetectProperty> propertyMap) {
-        this.detectPropertySource = detectPropertySource;
-        this.propertyMap = propertyMap;
+        this.detectPropertyMap = detectPropertyMap;
     }
 
     private final Set<DetectProperty> actuallySetValues = new HashSet<>();
@@ -61,7 +56,7 @@ public class DetectConfiguration {
     }
 
     // TODO: Remove override code in version 6.
-    private void init() {
+    public void init() {
         Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
             final DetectProperty override = fromDeprecatedToOverride(currentProperty);
             final DetectProperty deprecated = fromOverrideToDeprecated(currentProperty);
@@ -73,17 +68,27 @@ public class DetectConfiguration {
                 handleOverrideProperty(currentProperty, deprecated);// an override property has a deprecated property
             }
         });
+        //TODO: Find a better way to do this - or - hopefully remove this if the scan cli gets better.
+        String bdScanPaths = detectPropertySource.getProperty("BD_HUB_SCAN_PATH");
+        if (StringUtils.isNotBlank(bdScanPaths)) {
+            logger.warn("The environment variable BD_HUB_SCAN_PATH was set but you should use --" + DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS.getPropertyName() + " instead.");
+            List<String> values = new ArrayList<>();
+            values.addAll(Arrays.asList(getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS)));
+            values.addAll(Arrays.asList(bdScanPaths.split(",")));
+            setDetectProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, values.stream().collect(Collectors.joining(",")));
+        }
     }
 
     private void handleStandardProperty(final DetectProperty currentProperty) {
         actuallySetValues.add(currentProperty);
-        propertyMap.setProperty(currentProperty, currentProperty.getPropertyType(), detectPropertySource.getDetectProperty(currentProperty));
+        final String value = detectPropertySource.getDetectProperty(currentProperty.getPropertyName(), currentProperty.getDefaultValue());
+        detectPropertyMap.setDetectProperty(currentProperty, value);
     }
 
     private void handleDeprecatedProperty(final DetectProperty currentProperty, final DetectProperty overrideProperty) {
-        final boolean currentExists = detectPropertySource.containsDetectProperty(currentProperty);
+        final boolean currentExists = detectPropertySource.containsDetectProperty(currentProperty.getPropertyName());
         if (currentExists) {
-            final boolean overrideExists = detectPropertySource.containsDetectProperty(overrideProperty);
+            final boolean overrideExists = detectPropertySource.containsDetectProperty(overrideProperty.getPropertyName());
             if (!overrideExists) {
                 // current exists but override does not, so we choose to use the current and set the override. Otherwise, ignore this property, it should be set by the override property.
                 setChosenProperty(currentProperty, overrideProperty, true);
@@ -92,8 +97,8 @@ public class DetectConfiguration {
     }
 
     private void handleOverrideProperty(final DetectProperty currentProperty, final DetectProperty deprecatedProperty) {
-        final boolean currentExists = detectPropertySource.containsDetectProperty(currentProperty);
-        final boolean deprecatedExists = detectPropertySource.containsDetectProperty(deprecatedProperty);
+        final boolean currentExists = detectPropertySource.containsDetectProperty(currentProperty.getPropertyName());
+        final boolean deprecatedExists = detectPropertySource.containsDetectProperty(deprecatedProperty.getPropertyName());
         if (currentExists) {
             setChosenProperty(currentProperty, deprecatedProperty, true);
             if (deprecatedExists) { // even though it wasn't chosen, if deprecated was set we want to mark it as set.
@@ -105,9 +110,9 @@ public class DetectConfiguration {
     }
 
     private void setChosenProperty(final DetectProperty chosenProperty, final DetectProperty unchosenProperty, final boolean actuallySetChosen) {
-        final String value = detectPropertySource.getDetectProperty(chosenProperty);
-        propertyMap.setProperty(chosenProperty, chosenProperty.getPropertyType(), value);
-        propertyMap.setProperty(unchosenProperty, unchosenProperty.getPropertyType(), value);
+        final String value = detectPropertySource.getDetectProperty(chosenProperty.getPropertyName(), chosenProperty.getDefaultValue());
+        detectPropertyMap.setDetectProperty(chosenProperty, value);
+        detectPropertyMap.setDetectProperty(unchosenProperty, value);
         if (actuallySetChosen) {
             actuallySetValues.add(chosenProperty);
         }
@@ -125,9 +130,9 @@ public class DetectConfiguration {
     // TODO: Remove in version 6.
     private DetectProperty fromOverrideToDeprecated(final DetectProperty detectProperty) {
         final Optional<DetectProperty> found = DetectPropertyDeprecations.PROPERTY_OVERRIDES.entrySet().stream()
-                .filter(it -> it.getValue().equals(detectProperty))
-                .map(it -> it.getKey())
-                .findFirst();
+                                                   .filter(it -> it.getValue().equals(detectProperty))
+                                                   .map(it -> it.getKey())
+                                                   .findFirst();
 
         return found.orElse(null);
     }
@@ -164,48 +169,65 @@ public class DetectConfiguration {
 
     // Redirect to the underlying map
     public boolean getBooleanProperty(final DetectProperty detectProperty) {
-        return propertyMap.getBooleanProperty(detectProperty);
+        return detectPropertyMap.getBooleanProperty(detectProperty);
     }
 
     public Long getLongProperty(final DetectProperty detectProperty) {
-        return propertyMap.getLongProperty(detectProperty);
+        return detectPropertyMap.getLongProperty(detectProperty);
     }
 
     public Integer getIntegerProperty(final DetectProperty detectProperty) {
-        return propertyMap.getIntegerProperty(detectProperty);
+        return detectPropertyMap.getIntegerProperty(detectProperty);
     }
 
     public String[] getStringArrayProperty(final DetectProperty detectProperty) {
-        return propertyMap.getStringArrayProperty(detectProperty);
+        return detectPropertyMap.getStringArrayProperty(detectProperty);
+    }
+
+    public Optional<String[]> getOptionalStringArrayProperty(final DetectProperty detectProperty) {
+        return Optional.ofNullable(getStringArrayProperty(detectProperty));
     }
 
     public String getProperty(final DetectProperty detectProperty) {
-        return propertyMap.getProperty(detectProperty);
-    }
-
-    public String getPropertyValueAsString(final DetectProperty detectProperty) {
-        return propertyMap.getPropertyValueAsString(detectProperty, detectProperty.getPropertyType());
+        return detectPropertyMap.getProperty(detectProperty);
     }
 
     /**
-     * DetectOptionManager and DetectConfigurationManager
+     * Same as <code>getProperty()</code>, but returns an optional after performing a <code>StringUtils.isBlank()</code> check
      */
-    public void setProperty(final DetectProperty detectProperty, final String stringValue) {
+    public Optional<String> getOptionalProperty(final DetectProperty detectProperty) {
+        final String property = getProperty(detectProperty);
+        Optional<String> optionalProperty = Optional.empty();
+        if (StringUtils.isNotBlank(property)) {
+            optionalProperty = Optional.of(property);
+        }
+
+        return optionalProperty;
+    }
+
+    public String getPropertyValueAsString(final DetectProperty detectProperty) {
+        return detectPropertyMap.getPropertyValueAsString(detectProperty);
+    }
+
+    /**
+     * DetectOptionManager and ConfigurationManager
+     */
+    public void setDetectProperty(final DetectProperty detectProperty, final String stringValue) {
         // TODO: Remove overrides in a future version of detect.
         final DetectProperty override = fromDeprecatedToOverride(detectProperty);
         final DetectProperty deprecated = fromOverrideToDeprecated(detectProperty);
 
-        propertyMap.setProperty(detectProperty, detectProperty.getPropertyType(), stringValue);
+        detectPropertyMap.setDetectProperty(detectProperty, stringValue);
         actuallySetValues.add(detectProperty);
         if (override != null) {
-            propertyMap.setProperty(override, override.getPropertyType(), stringValue);
+            detectPropertyMap.setDetectProperty(override, stringValue);
         } else if (deprecated != null) {
-            propertyMap.setProperty(deprecated, deprecated.getPropertyType(), stringValue);
+            detectPropertyMap.setDetectProperty(deprecated, stringValue);
         }
     }
 
     public Map<DetectProperty, Object> getCurrentProperties() {
-        return new HashMap<DetectProperty, Object>(propertyMap.getUnderlyingPropertyMap());// return an immutable copy
+        return new HashMap<>(detectPropertyMap.getUnderlyingPropertyMap());// return an immutable copy
     }
 
     private Map<String, String> getKeys(final Set<String> keys) {
@@ -215,7 +237,7 @@ public class DetectConfiguration {
     private Map<String, String> getKeysWithoutPrefix(final Set<String> keys, final String prefix) {
         final Map<String, String> properties = new HashMap<>();
         for (final String detectKey : keys) {
-            final Optional<DetectProperty> propertyValue = getPropertyFromKey(detectKey);
+            final Optional<DetectProperty> propertyValue = getPropertyFromString(detectKey);
             String value = null;
             if (propertyValue.isPresent()) {
                 value = getPropertyValueAsString(propertyValue.get());
@@ -231,7 +253,7 @@ public class DetectConfiguration {
         return properties;
     }
 
-    private Optional<DetectProperty> getPropertyFromKey(final String detectKey) {
+    private Optional<DetectProperty> getPropertyFromString(final String detectKey) {
         try {
             final String casedKey = detectKey.toUpperCase().replaceAll("\\.", "_");
             return Optional.of(DetectProperty.valueOf(casedKey));

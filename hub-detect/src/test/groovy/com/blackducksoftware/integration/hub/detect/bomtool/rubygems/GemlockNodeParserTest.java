@@ -1,6 +1,8 @@
 
 package com.blackducksoftware.integration.hub.detect.bomtool.rubygems;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,6 +13,9 @@ import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
+import com.synopsys.integration.hub.bdio.model.Forge;
+import com.synopsys.integration.hub.bdio.model.dependency.Dependency;
+import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class GemlockNodeParserTest {
@@ -35,5 +40,27 @@ public class GemlockNodeParserTest {
         final DependencyGraph dependencyGraph = gemlockNodeParser.parseProjectDependencies(gemfileLockContents);
 
         DependencyGraphResourceTestUtil.assertGraph("/rubygems/expectedParser_graph.json", dependencyGraph);
+    }
+
+    @Test
+    public void testParsingEqualsGemfileLock() {
+        final String text = testUtils.getResourceAsUTF8String("/rubygems/Gemfile_equals_version.lock");
+        final List<String> gemfileLockContents = Arrays.asList(text.split("\n"));
+        final GemlockParser gemlockNodeParser = new GemlockParser(new ExternalIdFactory());
+        final DependencyGraph dependencyGraph = gemlockNodeParser.parseProjectDependencies(gemfileLockContents);
+
+        Dependency bundler = dependencyGraph.getDependency(new ExternalIdFactory().createNameVersionExternalId(Forge.RUBYGEMS, "bundler", "1.11.2"));
+        assertNotNull(bundler);
+    }
+
+    @Test
+    public void testMissingVersionsGemfileLock() {
+        final String text = testUtils.getResourceAsUTF8String("/rubygems/Gemfile_missing_versions.lock");
+        final List<String> gemfileLockContents = Arrays.asList(text.split("\n"));
+        final GemlockParser gemlockNodeParser = new GemlockParser(new ExternalIdFactory());
+        final DependencyGraph dependencyGraph = gemlockNodeParser.parseProjectDependencies(gemfileLockContents);
+
+        Dependency newrelic_rpm = dependencyGraph.getDependency(new ExternalIdFactory().createNameVersionExternalId(Forge.RUBYGEMS, "newrelic_rpm", ""));
+        assertNotNull(newrelic_rpm);
     }
 }
