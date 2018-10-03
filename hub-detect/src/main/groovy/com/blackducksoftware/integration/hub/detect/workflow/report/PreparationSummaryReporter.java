@@ -44,10 +44,16 @@ public class PreparationSummaryReporter {
         for (final PreparationSummaryData data : datas) {
             writer.writeLine(data.getDirectory());
             if (data.getReady().size() > 0) {
-                writer.writeLine("\t READY: " + data.getReady().stream().map(it -> it.getBomTool().getDescriptiveName()).sorted().collect(Collectors.joining(", ")));
+                writer.writeLine("\t READY: " + data.getReady().stream()
+                                                    .map(it -> it.getBomTool().getDescriptiveName())
+                                                    .sorted()
+                                                    .collect(Collectors.joining(", ")));
             }
             if (data.getFailed().size() > 0) {
-                data.getFailed().stream().sorted().forEach(it -> writer.writeLine("\tFAILED:" + it.getBomTool().getDescriptiveName() + " - " + it.getExtractabilityMessage()));
+                data.getFailed().stream()
+                    .map(it -> "\tFAILED:" + it.getBomTool().getDescriptiveName() + " - " + it.getExtractabilityMessage())
+                    .sorted()
+                    .forEach(writer::writeLine);
             }
         }
         writer.writeHeader();
