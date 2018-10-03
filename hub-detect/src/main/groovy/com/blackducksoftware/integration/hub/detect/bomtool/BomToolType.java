@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool;
 
 public enum BomToolType {
+    BITBAKE_CLI,
     PODLOCK,
     CONDA_CLI,
     CPAN_CLI,
