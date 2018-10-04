@@ -93,7 +93,17 @@ public class GradleReportParserTest {
         System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(result.get()));
     }
 
-    private void createNewCodeLocationTest(final String gradleInspectorOutputFilePath, final String expectedResourcePath, final String rootProjectFilePath, final String rootProjectName, final String rootProjectVersionName) throws IOException {
+    @Test
+    public void testImplementationsGraph() throws IOException {
+        final File file = new File("src/test/resources/gradle/gradle_implementations_dependencyGraph.txt");
+        final GradleReportParser gradleReportParser = new GradleReportParser(new ExternalIdFactory());
+        final Optional<DetectCodeLocation> result = gradleReportParser.parseDependencies(BomToolType.GRADLE_INSPECTOR, file);
+        assertTrue(result.isPresent());
+        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(result.get()));
+    }
+
+    private void createNewCodeLocationTest(final String gradleInspectorOutputFilePath, final String expectedResourcePath, final String rootProjectFilePath, final String rootProjectName, final String rootProjectVersionName)
+        throws IOException {
         final GradleReportParser gradleReportParser = new GradleReportParser(new ExternalIdFactory());
         final Optional<DetectCodeLocation> result = gradleReportParser.parseDependencies(BomToolType.GRADLE_INSPECTOR, new File(gradleInspectorOutputFilePath));
         final Optional<NameVersion> rootProjectNameVersion = gradleReportParser.parseRootProjectNameVersion(new File(rootProjectFilePath));

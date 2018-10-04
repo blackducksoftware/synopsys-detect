@@ -144,6 +144,9 @@ public class DetectPropertyMap {
         if (null == booleanString) {
             return null;
         }
+        if (booleanString.equals("")) { //Support defaulting to true (--key is equivalent to --key=true)
+            return true;
+        }
         return BooleanUtils.toBoolean(booleanString);
     }
 }

@@ -24,68 +24,54 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
-import com.synopsys.integration.rest.request.Request;
-import com.synopsys.integration.rest.request.Response;
-import com.synopsys.integration.util.ResourceUtil;
+import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
+import com.synopsys.integration.exception.IntegrationException;
 
-import freemarker.core.ParseException;
 import freemarker.template.Configuration;
-import freemarker.template.MalformedTemplateNameException;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateNotFoundException;
 
 public class GradleInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(GradleInspectorManager.class);
 
     private final DetectFileManager detectFileManager;
     private final Configuration configuration;
-    private final DocumentBuilder xmlDocumentBuilder;
     private final DetectConfiguration detectConfiguration;
-    private final DetectConfigurationUtility detectConfigurationUtility;
+    private final MavenMetadataService mavenMetadataService;
 
     private String resolvedInitScript = null;
-    private String resolvedVersion = null;
     private boolean hasResolvedInspector = false;
 
-    public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DocumentBuilder xmlDocumentBuilder,
-            final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility) {
+    public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DetectConfiguration detectConfiguration, final MavenMetadataService mavenMetadataService) {
         this.detectFileManager = detectFileManager;
         this.configuration = configuration;
-        this.xmlDocumentBuilder = xmlDocumentBuilder;
         this.detectConfiguration = detectConfiguration;
-        this.detectConfigurationUtility = detectConfigurationUtility;
+        this.mavenMetadataService = mavenMetadataService;
     }
 
-    public String getGradleInspector(final BomToolEnvironment environment) throws BomToolException {
+    public String getGradleInspector() throws BomToolException {
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
-            resolvedVersion = resolveInspectorVersion();
+            final String resolvedVersion = resolveInspectorVersion();
             try {
                 resolvedInitScript = resolveInitScriptPath(resolvedVersion);
             } catch (final Exception e) {
@@ -96,42 +82,35 @@ public class GradleInspectorManager {
     }
 
     private String resolveInspectorVersion() {
-        final String gradleInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION);
-        if ("latest".equalsIgnoreCase(gradleInspectorVersion)) {
-            try {
-                Document xmlDocument = null;
-                final File airGapMavenMetadataFile = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH), "maven-metadata.xml");
-                if (airGapMavenMetadataFile.exists()) {
-                    final InputStream inputStream = new FileInputStream(airGapMavenMetadataFile);
-                    xmlDocument = xmlDocumentBuilder.parse(inputStream);
-                } else {
-                    final String mavenMetadataUrl = "http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
-                    final Request request = new Request.Builder().uri(mavenMetadataUrl).build();
-                    Response response = null;
-                    try (UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(mavenMetadataUrl)) {
-                        response = restConnection.executeRequest(request);
-                        final InputStream inputStream = response.getContent();
-                        xmlDocument = xmlDocumentBuilder.parse(inputStream);
-                    } finally {
-                        ResourceUtil.closeQuietly(response);
-                    }
-                }
-                final NodeList latestVersionNodes = xmlDocument.getElementsByTagName("latest");
-                final Node latestVersion = latestVersionNodes.item(0);
-                final String inspectorVersion = latestVersion.getTextContent();
-                logger.info(String.format("Resolved gradle inspector version from latest to: %s", inspectorVersion));
-                return inspectorVersion;
-            } catch (final Exception e) {
-                logger.debug("Exception encountered when resolving latest version of Gradle Inspector, skipping resolution.");
-                logger.debug(e.getMessage());
-                return gradleInspectorVersion;
+        final String versionRange = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION);
+        String gradleInspectorVersion = null;
+
+        try {
+            Document xmlDocument = null;
+            final File airGapMavenMetadataFile = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH), "maven-metadata.xml");
+            if (airGapMavenMetadataFile.exists()) {
+                xmlDocument = mavenMetadataService.fetchXmlDocumentFromFile(airGapMavenMetadataFile);
+            } else {
+                final String mavenMetadataUrl = "http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
+                xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
             }
-        } else {
-            return gradleInspectorVersion;
+
+            final Optional<String> versionFromXML = mavenMetadataService.parseVersionFromXML(xmlDocument, versionRange);
+            if (versionFromXML.isPresent()) {
+                gradleInspectorVersion = versionFromXML.get();
+                logger.info(String.format("Resolved gradle inspector version from [%s] to [%s]", versionRange, gradleInspectorVersion.toString()));
+            } else {
+                throw new IntegrationException(String.format("Failed to find a version matching [%s] in maven-metadata.xml", versionRange));
+            }
+        } catch (final IntegrationException | SAXException | IOException | DetectUserFriendlyException e) {
+            logger.warn("Exception encountered when resolving latest version of Gradle Inspector, skipping resolution.");
+            logger.debug(e.getMessage());
         }
+
+        return gradleInspectorVersion;
     }
 
-    private String resolveInitScriptPath(final String version) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
+    private String resolveInitScriptPath(final String version) throws IOException, TemplateException {
         final File initScriptFile = detectFileManager.createSharedFile("gradle", "init-detect.gradle");
         final Map<String, String> model = new HashMap<>();
         model.put("gradleInspectorVersion", version);

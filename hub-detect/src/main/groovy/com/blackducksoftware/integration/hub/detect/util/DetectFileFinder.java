@@ -88,6 +88,8 @@ public class DetectFileFinder {
             if (foundFiles.size() > 1) {
                 logger.debug(String.format("Found multiple matches for %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
                 logger.debug(String.format("Using %s", foundFile));
+            } else {
+                logger.debug(String.format("Found a match %s for file %s in %s", foundFile.getAbsolutePath(), filenamePattern, sourceDirectory.getAbsolutePath()));
             }
         }
         return foundFile;

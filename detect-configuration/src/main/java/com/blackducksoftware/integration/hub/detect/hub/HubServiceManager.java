@@ -77,7 +77,7 @@ public class HubServiceManager {
     private final Gson gson;
     private final JsonParser jsonParser;
 
-    private Slf4jIntLogger slf4jIntLogger;
+    private Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger);
     private HubServerConfig hubServerConfig;
     private HubServicesFactory hubServicesFactory;
 
@@ -91,7 +91,6 @@ public class HubServiceManager {
 
     public void init() throws IntegrationException, DetectUserFriendlyException {
         try {
-            slf4jIntLogger = new Slf4jIntLogger(logger);
             hubServerConfig = createHubServerConfig(slf4jIntLogger);
             hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig);
         } catch (IllegalStateException | EncryptionException e) {
@@ -161,12 +160,19 @@ public class HubServiceManager {
     }
 
     public ScanJobManager createScanJobManager(final ExecutorService executorService) throws IntegrationException, DetectUserFriendlyException {
-        final String locallScannerInstallPath = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH);
+        OperatingSystemType operatingSystemType = OperatingSystemType.determineFromSystem();
+        ScanPathsUtility scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, getEnvironmentVariables(), operatingSystemType);
+        ScanCommandRunner scanCommandRunner = new ScanCommandRunner(slf4jIntLogger, getEnvironmentVariables(), scanPathsUtility, executorService);
+
+        final boolean blackDuckOffline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE);
+        final String localScannerInstallPath = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH);
         final String userProvidedScannerInstallUrl = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL);
 
-        if (StringUtils.isBlank(locallScannerInstallPath) && StringUtils.isBlank(userProvidedScannerInstallUrl)) {
+        if (StringUtils.isBlank(localScannerInstallPath) && StringUtils.isBlank(userProvidedScannerInstallUrl) && !blackDuckOffline) {
             // will will use the hub server to download/update the scanner - this is the most likely situation
-            return ScanJobManager.createDefaultScanManager(slf4jIntLogger, hubServerConfig);
+            ScannerZipInstaller scannerZipInstaller = ScannerZipInstaller.defaultUtility(slf4jIntLogger, hubServerConfig, scanPathsUtility, operatingSystemType);
+            ScanJobManager scanJobManager = ScanJobManager.createFullScanManager(slf4jIntLogger, getEnvironmentVariables(), scannerZipInstaller, scanPathsUtility, scanCommandRunner);
+            return scanJobManager;
         } else {
             OperatingSystemType operatingSystemType = OperatingSystemType.determineFromSystem();
             ScanPathsUtility scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, getEnvironmentVariables(), operatingSystemType);
@@ -187,7 +193,11 @@ public class HubServiceManager {
                 final RestConnection restConnection = restConnectionBuilder.build();
                 final ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, restConnection, cleanupZipExpander, scanPathsUtility, userProvidedScannerInstallUrl, operatingSystemType);
 
-                return new ScanJobManager(slf4jIntLogger, getEnvironmentVariables(), scannerZipInstaller, scanPathsUtility, scanCommandRunner);
+                return ScanJobManager.createFullScanManager(slf4jIntLogger, getEnvironmentVariables(), scannerZipInstaller, scanPathsUtility, scanCommandRunner);
+            } else {
+                // either we were given an existing path for the scanner or
+                // we are offline - either way, we won't attempt to manage the install
+                return ScanJobManager.createScanManagerWithNoInstaller(slf4jIntLogger, getEnvironmentVariables(), scanPathsUtility, scanCommandRunner);
             }
         }
     }
@@ -222,7 +232,7 @@ public class HubServiceManager {
 
     public IntEnvironmentVariables getEnvironmentVariables() {
         try {
-            return (IntEnvironmentVariables) hubServicesFactory.getClass().getDeclaredField("intEnvironmentVariables").get(hubServicesFactory);
+            return (IntEnvironmentVariables) HubServicesFactory.class.getDeclaredField("intEnvironmentVariables").get(hubServicesFactory);
         } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
             return new IntEnvironmentVariables();
         }
