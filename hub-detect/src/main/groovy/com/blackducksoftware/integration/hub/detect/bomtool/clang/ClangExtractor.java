@@ -135,6 +135,10 @@ public class ClangExtractor {
             final DependencyFileDetails dependencyFileWithMetaData = new DependencyFileDetails(fileFinder.isFileUnderDir(sourceDir, f), f);
             final Set<PackageDetails> linuxPackages = new HashSet<>(pkgMgr.getPackages(executableRunner, unManagedDependencyFiles, dependencyFileWithMetaData));
             logger.debug(String.format("Found %d packages for %s", linuxPackages.size(), f.getAbsolutePath()));
+            if (linuxPackages.size() == 0 && !dependencyFileWithMetaData.isInBuildDir()) {
+                logger.info(String.format("Adding %s to unManagedDependencyFiles", f.getAbsolutePath()));
+                unManagedDependencyFiles.add(f);
+            }
             return linuxPackages.stream();
         };
     }
@@ -195,11 +199,10 @@ public class ClangExtractor {
                 logger.info(String.format("\tComponent: %s", bdioComponent.externalId));
             }
         }
-        logger.info(String.format("Number of dependency files not recognized by the package manager: %d", unManagedDependencyFiles.size()));
-        if (logger.isDebugEnabled()) {
-            for (final File unMatchedDependencyFile : unManagedDependencyFiles) {
-                logger.info(String.format("\tDependency file not recognized by the package manager: %s", unMatchedDependencyFile.getAbsolutePath()));
-            }
+        logger.info("Dependency files outside the build directory that were not recognized by the package manager:");
+        for (final File unMatchedDependencyFile : unManagedDependencyFiles) {
+            logger.info(String.format("\t%s", unMatchedDependencyFile.getAbsolutePath()));
         }
+
     }
 }
