@@ -174,14 +174,7 @@ public class HubServiceManager {
             ScanJobManager scanJobManager = ScanJobManager.createFullScanManager(slf4jIntLogger, getEnvironmentVariables(), scannerZipInstaller, scanPathsUtility, scanCommandRunner);
             return scanJobManager;
         } else {
-            OperatingSystemType operatingSystemType = OperatingSystemType.determineFromSystem();
-            ScanPathsUtility scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, getEnvironmentVariables(), operatingSystemType);
-            ScanCommandRunner scanCommandRunner = new ScanCommandRunner(slf4jIntLogger, getEnvironmentVariables(), scanPathsUtility);
-
-            if (StringUtils.isNotBlank(locallScannerInstallPath)) {
-                // we were given an existing path for the scanner so we won't attempt to download/update it
-                return new ScanJobManager(slf4jIntLogger, getEnvironmentVariables(), null, scanPathsUtility, scanCommandRunner);
-            } else {
+            if (StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
                 // we will use the provided url to download/update the scanner
                 final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
                 restConnectionBuilder.setBaseUrl(userProvidedScannerInstallUrl);
@@ -191,6 +184,7 @@ public class HubServiceManager {
                 restConnectionBuilder.setLogger(slf4jIntLogger);
 
                 final RestConnection restConnection = restConnectionBuilder.build();
+                final CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
                 final ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, restConnection, cleanupZipExpander, scanPathsUtility, userProvidedScannerInstallUrl, operatingSystemType);
 
                 return ScanJobManager.createFullScanManager(slf4jIntLogger, getEnvironmentVariables(), scannerZipInstaller, scanPathsUtility, scanCommandRunner);

@@ -637,7 +637,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_SWIP)
     @HelpDescription("Set to false to disable the Synopsys Swip Tool.")
-    DETECT_SWIP_ENABLED("detect.swip.enabled", DetectPropertyType.BOOLEAN, "false"),
+    DETECT_SWIP_ENABLED("detect.swip.enabled", "4.4.0", DetectPropertyType.BOOLEAN, "false"),
 
     @HelpGroup(primary = GROUP_PACKAGIST)
     @HelpDescription("Set this value to false if you would like to exclude your dev requires dependencies when ran")
