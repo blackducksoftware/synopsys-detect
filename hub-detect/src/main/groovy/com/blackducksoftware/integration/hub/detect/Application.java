@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -43,11 +42,11 @@ import com.blackducksoftware.integration.hub.detect.workflow.boot.BootResult;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.CleanupManager;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectRunContext;
 import com.blackducksoftware.integration.hub.detect.workflow.run.RunManager;
-import com.blackducksoftware.integration.hub.detect.workflow.run.RunResult;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
-@SpringBootApplication
+//@SpringBootApplication
+//@Configuration
 //@Import({ OldBeanConfiguration.class })
+//@EnableAspectJAutoProxy
 public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
 
@@ -78,15 +77,12 @@ public class Application implements ApplicationRunner {
 
         try {
             if (bootResult != null && bootResult.bootType == BootResult.BootType.CONTINUE) {
-                RunResult runResult;
                 final DetectRunContext detectRunContext = bootResult.detectRunContext;
                 AnnotationConfigApplicationContext runContext = new AnnotationConfigApplicationContext();
+                runContext.setDisplayName("Detect Run " + detectRunContext.detectRun.getRunId());
                 runContext.register(BeanConfiguration.class);
                 runContext.registerBean(DetectRunContext.class, () -> { return detectRunContext; });
                 runContext.refresh();
-
-                ExternalIdFactory bomTool1 = runContext.getBean(ExternalIdFactory.class, ExternalIdFactory.class.getSimpleName());
-                ExternalIdFactory bomTool2 = runContext.getBean(ExternalIdFactory.class, ExternalIdFactory.class.getSimpleName());
 
                 RunManager runManager = runContext.getBean(RunManager.class);
                 runManager.run();

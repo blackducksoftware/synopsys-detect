@@ -33,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeBomTool;
@@ -171,6 +170,10 @@ import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 import freemarker.template.Configuration;
 
+//Configuration is used here to allow 'EnableAspectJAutoProxy' because I could not find a way to enable it otherwise.
+//This configuration is NOT loaded when the application starts, but only manually when a DetectRun is needed.
+//Spring scanning should not be invoked as this should not be loaded during boot.
+@org.springframework.context.annotation.Configuration
 public class BeanConfiguration {
     private final DetectRunContext detectRunContext;
 
@@ -681,116 +684,162 @@ public class BeanConfiguration {
     }
 
     //BomTools
+    //Should be scoped to Prototype so a new BomTool is created every time one is needed.
+    //The BomTool factory currently uses Spring to create the bom tools.
     @Bean
-    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE, proxyMode = ScopedProxyMode.TARGET_CLASS)
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public BitbakeBomTool bitbakeBomTool(final BomToolEnvironment environment) {
         return new BitbakeBomTool(environment, detectFileFinder(), detectConfiguration(), bitbakeExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public ClangBomTool clangBomTool(final BomToolEnvironment environment) {
         return new ClangBomTool(environment, executableRunner(), detectFileFinder(), clangLinuxPackageManagers(), clangExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public ComposerLockBomTool composerLockBomTool(final BomToolEnvironment environment) {
         return new ComposerLockBomTool(environment, detectFileFinder(), composerLockExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public CondaCliBomTool condaBomTool(final BomToolEnvironment environment) {
         return new CondaCliBomTool(environment, detectFileFinder(), standardExecutableFinder(), condaCliExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public CpanCliBomTool cpanCliBomTool(final BomToolEnvironment environment) {
         return new CpanCliBomTool(environment, detectFileFinder(), standardExecutableFinder(), cpanCliExtractor());
     }
 
-    public DockerBomTool dockerBomTool(final BomToolEnvironment environment) {
-        final String tar = detectConfiguration().getProperty(DetectProperty.DETECT_DOCKER_TAR);
-        final String image = detectConfiguration().getProperty(DetectProperty.DETECT_DOCKER_IMAGE);
-        final boolean dockerRequired = detectConfiguration().getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED);
-        DockerBomToolOptions options = new DockerBomToolOptions(dockerRequired, image, tar);
-
-        return new DockerBomTool(environment, dockerInspectorManager(), standardExecutableFinder(), dockerExtractor(), options);
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public DockerBomTool dockerBomTool(final BomToolEnvironment environment, DockerBomToolOptions bomToolOptions) {
+        return new DockerBomTool(environment, dockerInspectorManager(), standardExecutableFinder(), dockerExtractor(), bomToolOptions);
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GemlockBomTool gemlockBomTool(final BomToolEnvironment environment) {
         return new GemlockBomTool(environment, detectFileFinder(), gemlockExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GoCliBomTool goCliBomTool(final BomToolEnvironment environment) {
         return new GoCliBomTool(environment, detectFileFinder(), standardExecutableFinder(), goInspectorManager(), goDepExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GoLockBomTool goLockBomTool(final BomToolEnvironment environment) {
         return new GoLockBomTool(environment, detectFileFinder(), standardExecutableFinder(), goInspectorManager(), goDepExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GoVndrBomTool goVndrBomTool(final BomToolEnvironment environment) {
         return new GoVndrBomTool(environment, detectFileFinder(), goVndrExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GradleInspectorBomTool gradleInspectorBomTool(final BomToolEnvironment environment) throws ParserConfigurationException {
         return new GradleInspectorBomTool(environment, detectFileFinder(), gradleExecutableFinder(), gradleInspectorManager(), gradleInspectorExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public MavenPomBomTool mavenPomBomTool(final BomToolEnvironment environment) {
         return new MavenPomBomTool(environment, detectFileFinder(), mavenExecutableFinder(), mavenCliExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public MavenPomWrapperBomTool mavenPomWrapperBomTool(final BomToolEnvironment environment) {
         return new MavenPomWrapperBomTool(environment, detectFileFinder(), mavenExecutableFinder(), mavenCliExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NpmCliBomTool npmCliBomTool(final BomToolEnvironment environment) {
         return new NpmCliBomTool(environment, detectFileFinder(), npmExecutableFinder(), npmCliExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NpmPackageLockBomTool npmPackageLockBomTool(final BomToolEnvironment environment) {
         return new NpmPackageLockBomTool(environment, detectFileFinder(), npmLockfileExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetProjectBomTool nugetProjectBomTool(final BomToolEnvironment environment) {
         return new NugetProjectBomTool(environment, detectFileFinder(), nugetInspectorManager(), nugetInspectorExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NpmShrinkwrapBomTool npmShrinkwrapBomTool(final BomToolEnvironment environment) {
         return new NpmShrinkwrapBomTool(environment, detectFileFinder(), npmLockfileExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetSolutionBomTool nugetSolutionBomTool(final BomToolEnvironment environment) {
         return new NugetSolutionBomTool(environment, detectFileFinder(), nugetInspectorManager(), nugetInspectorExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public PackratLockBomTool packratLockBomTool(final BomToolEnvironment environment) {
         return new PackratLockBomTool(environment, detectFileFinder(), packratLockExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public PearCliBomTool pearCliBomTool(final BomToolEnvironment environment) {
         return new PearCliBomTool(environment, detectFileFinder(), standardExecutableFinder(), pearCliExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public PipenvBomTool pipenvBomTool(final BomToolEnvironment environment) {
         return new PipenvBomTool(environment, detectFileFinder(), pythonExecutableFinder(), pipenvExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public PipInspectorBomTool pipInspectorBomTool(final BomToolEnvironment environment) {
         //final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH);
         return new PipInspectorBomTool(environment, detectConfiguration().getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH), detectFileFinder(), pythonExecutableFinder(), pipInspectorManager(), pipInspectorExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public PodlockBomTool podLockBomTool(final BomToolEnvironment environment) {
         return new PodlockBomTool(environment, detectFileFinder(), podlockExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public RebarBomTool rebarBomTool(final BomToolEnvironment environment) {
         return new RebarBomTool(environment, detectFileFinder(), standardExecutableFinder(), rebarExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public SbtResolutionCacheBomTool sbtResolutionCacheBomTool(final BomToolEnvironment environment) {
         return new SbtResolutionCacheBomTool(environment, detectFileFinder(), sbtResolutionCacheExtractor());
     }
 
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public YarnLockBomTool yarnLockBomTool(final BomToolEnvironment environment) {
         return new YarnLockBomTool(environment, detectFileFinder(), standardExecutableFinder(), yarnLockExtractor());
     }
-
 }

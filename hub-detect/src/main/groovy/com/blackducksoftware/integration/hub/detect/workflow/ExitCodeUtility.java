@@ -25,6 +25,7 @@ public class ExitCodeUtility {
             exceptionExitCodeType = ExitCodeType.FAILURE_GENERAL_ERROR;
         } else {
             logger.error("An unknown/unexpected error occurred");
+            String message = e.getMessage();
             logger.debug(e.getMessage(), e);
             exceptionExitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
