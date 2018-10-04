@@ -73,6 +73,7 @@ public class HubServiceManager {
 
     private final DetectConfiguration detectConfiguration;
     private final DetectConfigurationUtility detectConfigurationUtility;
+    private final CleanupZipExpander cleanupZipExpander;
     private final Gson gson;
     private final JsonParser jsonParser;
 
@@ -80,9 +81,10 @@ public class HubServiceManager {
     private HubServerConfig hubServerConfig;
     private HubServicesFactory hubServicesFactory;
 
-    public HubServiceManager(final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final Gson gson, final JsonParser jsonParser) {
+    public HubServiceManager(final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final CleanupZipExpander cleanupZipExpander, final Gson gson, final JsonParser jsonParser) {
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationUtility = detectConfigurationUtility;
+        this.cleanupZipExpander = cleanupZipExpander;
         this.gson = gson;
         this.jsonParser = jsonParser;
     }
