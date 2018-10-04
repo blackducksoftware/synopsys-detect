@@ -25,8 +25,16 @@ public class ExitCodeUtility {
             exceptionExitCodeType = ExitCodeType.FAILURE_GENERAL_ERROR;
         } else {
             logger.error("An unknown/unexpected error occurred");
-            String message = e.getMessage();
-            logger.debug(e.getMessage(), e);
+            if (e.getMessage() != null) {
+                logger.debug(e.getMessage(), e);
+            } else if (e instanceof NullPointerException) {
+                logger.debug("Null Pointer Exception", e);
+            } else {
+                logger.debug(e.getClass().getSimpleName(), e);
+            }
+            if (e.getStackTrace().length >= 1) {
+                logger.info("Thrown at " + e.getStackTrace()[0].toString());
+            }
             exceptionExitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
         logger.error(e.getMessage());
