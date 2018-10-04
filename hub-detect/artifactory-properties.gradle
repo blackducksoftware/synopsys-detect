@@ -6,20 +6,15 @@ task updateArtifactoryProperties() {
         } else {
             try {
                 println 'For a release build, an update of artifactory properties will be attempted.'
-                int majorVersionIndex = project.version.indexOf('.') - 1
-                def majorVersion = project.version[0..majorVersionIndex]
+                def majorVersion = project.version.split("\\.")[0]
                 def propertyKey = "DETECT_IS_LATEST_${majorVersion}"
 
                 def artifactoryCredentials = "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}"
+                def defaultCurlArgs = defaultCurlArgs(artifactoryCredentials)
 
-                def currentArtifact = findCurrentArtifact(artifactoryCredentials)
+                def currentArtifact = findCurrentArtifact(defaultCurlArgs)
                 if (currentArtifact) {
-                    setArtifactoryProperty(artifactoryCredentials, propertyKey, 'true', currentArtifact)
-
-                    def artifactoryItems = findPropertiesToUpdate(artifactoryCredentials, propertyKey, currentArtifact['itemPath'])
-                    artifactoryItems.each {
-                        setArtifactoryProperty(artifactoryCredentials, propertyKey, 'false', it)
-                    }
+                    setArtifactoryProperty(defaultCurlArgs, propertyKey, currentArtifact['downloadUri'])
                 } else {
                     println "Artifactory properties won't be updated since ${project.version} was not found."
                 }
@@ -31,10 +26,10 @@ task updateArtifactoryProperties() {
     }
 }
 
-def findCurrentArtifact(String artifactoryCredentials) {
+def findCurrentArtifact(def defaultCurlArgs) {
     try {
         def url = "${project.ext.artifactoryUrl}/api/search/artifact?name=${project.name}-${project.version}.jar&repos=${project.ext.artifactoryRepo}"
-        def artifactoryItems = getArtifactoryItems(url, artifactoryCredentials)
+        def artifactoryItems = getArtifactoryItems(url, defaultCurlArgs)
 
         if (artifactoryItems != null && artifactoryItems.size() == 1) {
             return artifactoryItems[0]
@@ -46,27 +41,19 @@ def findCurrentArtifact(String artifactoryCredentials) {
     return null
 }
 
-def findPropertiesToUpdate(String artifactoryCredentials, String propertyKey, String itemPathToIgnore) {
-    def url = "${project.ext.artifactoryUrl}/api/search/prop?${propertyKey}=true&repos=${project.ext.artifactoryRepo}"
-    def artifactoryItems = getArtifactoryItems(url, artifactoryCredentials)
-
-    return artifactoryItems.findAll { it.itemPath != itemPathToIgnore }
-}
-
-def getArtifactoryItems(String url, String artifactoryCredentials) {
+def getArtifactoryItems(String url, def defaultCurlArgs) {
     def artifactoryItems = []
 
-    def curlArgs = defaultCurlArgs(artifactoryCredentials) + ['--header', 'X-Result-Detail: info', url]
+    def curlArgs = defaultCurlArgs + ['--header', 'X-Result-Detail: info', url]
     def response = curlResponse(curlArgs)
 
     def jsonResponse = new groovy.json.JsonSlurper().parseText(response)
     def results = jsonResponse['results']
     if (results != null && results.size() > 0) {
         results.each {
-            def itemPath = it['path']
-            def repoKey = it['repo']
+            def downloadUri = it['downloadUri']
             if (itemPath && repoKey) {
-                artifactoryItems.add([itemPath:itemPath, repoKey:repoKey])
+                artifactoryItems.add([downloadUri:downloadUri])
             }
         }
     }
@@ -74,9 +61,9 @@ def getArtifactoryItems(String url, String artifactoryCredentials) {
     return artifactoryItems
 }
 
-def setArtifactoryProperty(String artifactoryCredentials, String propertyKey, String propertyValue, def artifact) {
-    println "Setting ${propertyKey} to ${propertyValue} for ${artifact['itemPath']}."
-    def curlArgs = defaultCurlArgs(artifactoryCredentials) + ['--request', 'PATCH', '--data', "{\"props\":{\"${propertyKey}\":\"${propertyValue}\"}}", "${project.ext.artifactoryUrl}/api/metadata/${artifact['repoKey']}${artifact['itemPath']}"]
+def setArtifactoryProperty(def defaultCurlArgs, String propertyKey, String propertyValue) {
+    println "Setting ${propertyKey} to ${propertyValue}."
+    def curlArgs = defaultCurlArgs + ['--request', 'PATCH', '--data', "{\"props\":{\"${propertyKey}\":\"${propertyValue}\"}}", "${project.ext.artifactoryUrl}/api/metadata/${project.ext.artifactoryRepo}/com/blackducksoftware/integration/hub-detect"]
 
     curlResponse(curlArgs)
 }

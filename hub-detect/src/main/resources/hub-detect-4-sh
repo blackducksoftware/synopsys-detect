@@ -76,7 +76,7 @@ get_detect() {
     fi
   else
     if [ -z "${DETECT_RELEASE_VERSION}" ]; then
-      VERSION_CURL_CMD="curl ${DETECT_CURL_OPTS} --header \"X-Result-Detail: info\" 'https://test-repo.blackducksoftware.com/artifactory/api/search/prop?DETECT_IS_LATEST_4=true&repos=bds-integrations-release' | grep \"downloadUri\" | sed 's/\\\"downloadUri\\\" \: //' | sed 's/.*\\\"\\(.*\\)\\\".*/\\1/' | tail -1"
+      VERSION_CURL_CMD="curl ${DETECT_CURL_OPTS} --header \"X-Result-Detail: info\" 'https://test-repo.blackducksoftware.com/artifactory/api/storage/maven-local/com/blackducksoftware/integration/hub-detect?properties=DETECT_IS_LATEST_3' | grep \"DETECT_IS_LATEST_3\" | sed 's/[^[]*[^\"]*\"\([^\"]*\).*/\1/'"
       DETECT_SOURCE=$(eval $VERSION_CURL_CMD)
     else
       DETECT_SOURCE="https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect/${DETECT_RELEASE_VERSION}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
