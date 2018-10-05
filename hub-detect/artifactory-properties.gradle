@@ -1,7 +1,7 @@
 task updateArtifactoryProperties() {
     dependsOn artifactoryPublish
     doLast {
-        if (project.isSnapshot || project.findProperty('qa.build')) {
+        if (project.isSnapshot || "true" == project.findProperty('qa.build')) {
             println 'For a snapshot or qa build, artifactory properties will not be updated.'
         } else {
             try {
