@@ -1,9 +1,15 @@
 #!/bin/bash
 
-# To override the default major release version of 4,
-# specify your own DETECT_MAJOR_RELEASE_VERSION in
-# your environment and *that* version will be used.
-DETECT_MAJOR_RELEASE_VERSION=${DETECT_MAJOR_RELEASE_VERSION:-4}
+# To override the default version key, specify your
+# own DETECT_VERSION_KEY in your environment and
+# *that* key will be used to get the download url from
+# artifactory.
+DETECT_VERSION_KEY=${DETECT_VERSION_KEY:-DETECT_LATEST_4}
+
+# You can specify your own download url from
+# artifactory which can bypass using the property keys
+# (this is mainly for QA purposes only)
+DETECT_SOURCE=${DETECT_SOURCE:-}
 
 # To override the default location of /tmp, specify
 # your own DETECT_JAR_PATH in your environment and
@@ -49,20 +55,13 @@ run() {
 }
 
 get_detect() {
-  VERSION_FILE_DESTINATION="${DETECT_JAR_PATH}/hub-detect-latest-commit-id.txt"
-  CURRENT_VERSION=""
-  if [ -f $VERSION_FILE_DESTINATION ]; then
-    CURRENT_VERSION=$( <$VERSION_FILE_DESTINATION )
-  fi
-
-  curl $DETECT_CURL_OPTS --silent -o $VERSION_FILE_DESTINATION https://blackducksoftware.github.io/hub-detect/latest-commit-id.txt
-  LATEST_VERSION=$( <$VERSION_FILE_DESTINATION )
-
-  if [ -z "${DETECT_RELEASE_VERSION}" ]; then
-    VERSION_CURL_CMD="curl ${DETECT_CURL_OPTS} --silent --header \"X-Result-Detail: info\" 'https://test-repo.blackducksoftware.com/artifactory/api/storage/bds-integrations-release/com/blackducksoftware/integration/hub-detect?properties=DETECT_IS_LATEST_${DETECT_MAJOR_RELEASE_VERSION}' | grep \"DETECT_IS_LATEST_${DETECT_MAJOR_RELEASE_VERSION}\" | sed 's/[^[]*[^\"]*\"\([^\"]*\).*/\1/'"
-    DETECT_SOURCE=$(eval $VERSION_CURL_CMD)
-  else
-    DETECT_SOURCE="https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect/${DETECT_RELEASE_VERSION}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
+  if [ -z "${DETECT_SOURCE}" ]; then
+    if [ -z "${DETECT_RELEASE_VERSION}" ]; then
+      VERSION_CURL_CMD="curl ${DETECT_CURL_OPTS} --silent --header \"X-Result-Detail: info\" 'https://test-repo.blackducksoftware.com/artifactory/api/storage/bds-integrations-release/com/blackducksoftware/integration/hub-detect?properties=${DETECT_VERSION_KEY}' | grep \"${DETECT_VERSION_KEY}\" | sed 's/[^[]*[^\"]*\"\([^\"]*\).*/\1/'"
+      DETECT_SOURCE=$(eval $VERSION_CURL_CMD)
+    else
+      DETECT_SOURCE="https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect/${DETECT_RELEASE_VERSION}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
+    fi
   fi
   echo "will look for : ${DETECT_SOURCE}"
 

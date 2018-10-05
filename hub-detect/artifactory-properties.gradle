@@ -1,20 +1,23 @@
 task updateArtifactoryProperties() {
     dependsOn artifactoryPublish
     doLast {
-        if (project.isSnapshot) {
-            println 'For a snapshot build, artifactory properties will not be updated.'
+        if (project.isSnapshot || project.findProperty('qa.build')) {
+            println 'For a snapshot or qa build, artifactory properties will not be updated.'
         } else {
             try {
                 println 'For a release build, an update of artifactory properties will be attempted.'
+                def latestPropertyKey = "DETECT_LATEST"
+
                 def majorVersion = project.version.split("\\.")[0]
-                def propertyKey = "DETECT_IS_LATEST_${majorVersion}"
+                def majorVersionPropertyKey = "${latestPropertyKey}_${majorVersion}"
 
                 def artifactoryCredentials = "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}"
                 def defaultCurlArgs = defaultCurlArgs(artifactoryCredentials)
 
                 def currentArtifact = findCurrentArtifact(defaultCurlArgs)
                 if (currentArtifact) {
-                    setArtifactoryProperty(defaultCurlArgs, propertyKey, currentArtifact['downloadUri'])
+                    setArtifactoryProperty(defaultCurlArgs, latestPropertyKey, currentArtifact['downloadUri'])
+                    setArtifactoryProperty(defaultCurlArgs, majorVersionPropertyKey, currentArtifact['downloadUri'])
                 } else {
                     println "Artifactory properties won't be updated since ${project.version} was not found."
                 }
