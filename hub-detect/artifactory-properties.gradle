@@ -52,7 +52,7 @@ def getArtifactoryItems(String url, def defaultCurlArgs) {
     if (results != null && results.size() > 0) {
         results.each {
             def downloadUri = it['downloadUri']
-            if (itemPath && repoKey) {
+            if (downloadUri) {
                 artifactoryItems.add([downloadUri:downloadUri])
             }
         }
