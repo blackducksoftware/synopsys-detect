@@ -63,6 +63,12 @@ get_detect() {
       DETECT_SOURCE="https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect/${DETECT_RELEASE_VERSION}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
     fi
   fi
+
+  if [ -z "${DETECT_SOURCE}" ]; then
+    echo "DETECT_SOURCE was not set or computed correctly, please check your configuration and environment."
+    exit -1
+  fi
+
   echo "will look for : ${DETECT_SOURCE}"
 
   DETECT_FILENAME=${DETECT_FILENAME:-$(awk -F "/" '{print $NF}' <<< $DETECT_SOURCE)}
@@ -78,8 +84,13 @@ get_detect() {
 
   if [ $USE_REMOTE -eq 1 ]; then
     echo "getting ${DETECT_SOURCE} from remote"
-    curl $DETECT_CURL_OPTS --silent -L -o $DETECT_DESTINATION "${DETECT_SOURCE}"
-    echo "saved ${DETECT_SOURCE} to ${DETECT_DESTINATION}"
+    curlReturn=$(curl $DETECT_CURL_OPTS --silent -w "%{http_code}" -L -o $DETECT_DESTINATION "${DETECT_SOURCE}")
+    if [ 200 -eq $curlReturn ]; then
+      echo "saved ${DETECT_SOURCE} to ${DETECT_DESTINATION}"
+    else
+      echo "The curl response was ${curlReturn}, which is not successful - please check your configuration and environment."
+      exit -1
+    fi
   fi
 }
 
@@ -97,7 +108,6 @@ run_detect() {
   source $DETECT_JAR_PATH/hub-detect-java.sh
   RESULT=$?
   echo "Result code of ${RESULT}, exiting"
-  rm -f $DETECT_JAR_PATH/hub-detect-java.sh
   exit $RESULT
 }
 
