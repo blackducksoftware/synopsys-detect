@@ -14,6 +14,8 @@ DETECT_SOURCE=${DETECT_SOURCE:-}
 # To override the default location of /tmp, specify
 # your own DETECT_JAR_PATH in your environment and
 # *that* location will be used.
+# *NOTE* We currently do not support spaces in the
+# DETECT_JAR_PATH.
 DETECT_JAR_PATH=${DETECT_JAR_PATH:-/tmp}
 
 # If you want to pass any java options to the
