@@ -128,8 +128,6 @@ public class PhoneHomeManager {
         if (null != phoneHomeService) {
             try {
                 final PhoneHomeCallable callable;
-                final Set<Entry<String, String>> additionalMetadata = detectConfiguration.getPhoneHomeProperties().entrySet();
-                additionalMetadata.forEach(it -> metadata.put(it.getKey(), it.getValue()));
                 if (isBlackDuckOffline) {
                     callable = createOfflineCallable(metadata);
                 } else {
