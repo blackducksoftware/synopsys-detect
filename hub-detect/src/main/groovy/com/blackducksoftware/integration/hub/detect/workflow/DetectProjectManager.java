@@ -47,7 +47,6 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.workflow.RequiredBomToolChecker.RequiredBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;
@@ -60,6 +59,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProje
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.BomToolGroupStatusSummary;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
 import com.synopsys.integration.blackduck.summary.Result;
@@ -82,7 +82,7 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
     private final ReportManager reportManager;
 
     public DetectProjectManager(final SearchManager searchManager, final ExtractionManager extractionManager, final DetectCodeLocationManager codeLocationManager, final BdioManager bdioManager,
-            final BomToolNameVersionDecider bomToolNameVersionDecider, final DetectConfiguration detectConfiguration, final ReportManager reportManager) {
+        final BomToolNameVersionDecider bomToolNameVersionDecider, final DetectConfiguration detectConfiguration, final ReportManager reportManager) {
 
         this.searchManager = searchManager;
         this.extractionManager = extractionManager;
@@ -97,9 +97,9 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
         final SearchResult searchResult = searchManager.performSearch();
 
         searchResult.getBomToolEvaluations().stream()
-                .filter(it -> it.isApplicable())
-                .map(it -> it.getBomTool().getBomToolGroupType())
-                .forEach(it -> applicableBomTools.add(it));
+            .filter(it -> it.isApplicable())
+            .map(it -> it.getBomTool().getBomToolGroupType())
+            .forEach(it -> applicableBomTools.add(it));
 
         final ExtractionResult extractionResult = extractionManager.performExtractions(searchResult.getBomToolEvaluations());
         applyBomToolGroupStatus(extractionResult.getSuccessfulBomToolTypes(), extractionResult.getFailedBomToolTypes());
@@ -227,14 +227,14 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
 
     private List<BomToolProjectInfo> createBomToolProjectInfo(final List<BomToolEvaluation> bomToolEvaluations) {
         return bomToolEvaluations.stream()
-                .filter(it -> it.wasExtractionSuccessful())
-                .filter(it -> it.getExtraction().projectName != null)
-                .map(it -> {
-                    final NameVersion nameVersion = new NameVersion(it.getExtraction().projectName, it.getExtraction().projectVersion);
-                    final BomToolProjectInfo possibility = new BomToolProjectInfo(it.getBomTool().getBomToolGroupType(), it.getEnvironment().getDepth(), nameVersion);
-                    return possibility;
-                })
-                .collect(Collectors.toList());
+                   .filter(it -> it.wasExtractionSuccessful())
+                   .filter(it -> it.getExtraction().projectName != null)
+                   .map(it -> {
+                       final NameVersion nameVersion = new NameVersion(it.getExtraction().projectName, it.getExtraction().projectVersion);
+                       final BomToolProjectInfo possibility = new BomToolProjectInfo(it.getBomTool().getBomToolGroupType(), it.getEnvironment().getDepth(), nameVersion);
+                       return possibility;
+                   })
+                   .collect(Collectors.toList());
     }
 
 }

@@ -46,7 +46,6 @@ import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchRuleSet;
 
 public class BomToolFinder {
@@ -59,7 +58,7 @@ public class BomToolFinder {
     }
 
     private List<BomToolEvaluation> findApplicableBomTools(final List<File> directoriesToSearch, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options)
-            throws BomToolException, DetectUserFriendlyException {
+        throws BomToolException, DetectUserFriendlyException {
 
         final List<BomToolEvaluation> results = new ArrayList<>();
 
@@ -85,9 +84,9 @@ public class BomToolFinder {
             results.addAll(evaluations);
 
             final List<BomToolType> appliedBomTools = evaluations.stream()
-                    .filter(it -> it.isApplicable())
-                    .map(it -> it.getBomTool().getBomToolType())
-                    .collect(Collectors.toList());
+                                                          .filter(it -> it.isApplicable())
+                                                          .map(it -> it.getBomTool().getBomToolType())
+                                                          .collect(Collectors.toList());
 
             applied.addAll(appliedBomTools);
 
@@ -108,7 +107,7 @@ public class BomToolFinder {
     private List<BomToolEvaluation> processDirectory(final File directory, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options) {
         final BomToolEnvironment environment = new BomToolEnvironment(directory, appliedBefore, depth, options.getBomToolFilter(), options.getForceNestedSearch());
         final BomToolSearchRuleSet bomToolSet = options.getBomToolSearchProvider().createBomToolSearchRuleSet(environment);
-        final List<BomToolEvaluation> evaluations = options.getBomToolSearchEvaluator().evaluate(bomToolSet, options.getBomToolProfiler());
+        final List<BomToolEvaluation> evaluations = options.getBomToolSearchEvaluator().evaluate(bomToolSet, options.getEventSystem());
         return evaluations;
     }
 
@@ -129,9 +128,9 @@ public class BomToolFinder {
 
             stream = Files.list(directory.toPath());
             return stream.map(path -> path.toFile())
-                    .filter(file -> file.isDirectory())
-                    .filter(excludeDirectoriesPredicate)
-                    .collect(Collectors.toList());
+                       .filter(file -> file.isDirectory())
+                       .filter(excludeDirectoriesPredicate)
+                       .collect(Collectors.toList());
 
         } catch (final IOException e) {
             throw new DetectUserFriendlyException(String.format("Could not get the subdirectories for %s. %s", directory.getAbsolutePath(), e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);

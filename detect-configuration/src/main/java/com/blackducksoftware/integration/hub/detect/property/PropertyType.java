@@ -32,7 +32,7 @@ public enum PropertyType {
 
     private final String displayName;
 
-    private PropertyType(final String displayName) {
+    PropertyType(final String displayName) {
         this.displayName = displayName;
     }
 

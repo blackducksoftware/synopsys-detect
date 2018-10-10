@@ -33,13 +33,12 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
-import com.blackducksoftware.integration.hub.detect.workflow.report.ReportConstants;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction.ExtractionResultType;
-import com.blackducksoftware.integration.hub.detect.workflow.report.LogReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.InfoLogReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ObjectPrinter;
-import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportConstants;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
@@ -80,12 +79,11 @@ public class ExtractionManager {
         return new ExtractionResult(codeLocations, succesfulBomToolGroups, failedBomToolGroups);
     }
 
-
     private void extract(final BomToolEvaluation result) { //TODO: Replace reporting.
 
         logger.info("Starting extraction: " + result.getBomTool().getBomToolGroupType() + " - " + result.getBomTool().getName());
         logger.info("Identifier: " + result.getExtractionId().toUniqueString());
-        ObjectPrinter.printObjectPrivate(new LogReportWriter(), result.getBomTool());
+        ObjectPrinter.printObjectPrivate(new InfoLogReportWriter(), result.getBomTool());
         logger.info(ReportConstants.SEPERATOR);
 
         try {
