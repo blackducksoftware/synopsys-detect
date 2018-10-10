@@ -34,12 +34,12 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class PipInspectorBomTool extends BomTool {
     public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
@@ -55,7 +55,7 @@ public class PipInspectorBomTool extends BomTool {
     private File setupFile;
 
     public PipInspectorBomTool(final BomToolEnvironment environment, final String requirementFilePath, final DetectFileFinder fileFinder, final PythonExecutableFinder pythonExecutableFinder, final PipInspectorManager pipInspectorManager,
-            final PipInspectorExtractor pipInspectorExtractor) {
+        final PipInspectorExtractor pipInspectorExtractor) {
         super(environment, "Pip Inspector", BomToolGroupType.PIP, BomToolType.PIP_INSPECTOR);
         this.fileFinder = fileFinder;
         this.pipInspectorExtractor = pipInspectorExtractor;
@@ -74,7 +74,6 @@ public class PipInspectorBomTool extends BomTool {
         } else {
             return new FileNotFoundBomToolResult(SETUPTOOLS_DEFAULT_FILE_NAME);
         }
-
     }
 
     @Override

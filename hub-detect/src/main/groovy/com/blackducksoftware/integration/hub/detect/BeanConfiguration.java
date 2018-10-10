@@ -123,9 +123,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.factory.ExecutableFinderFactory;
-import com.blackducksoftware.integration.hub.detect.factory.ExtractorFactory;
-import com.blackducksoftware.integration.hub.detect.factory.InspectorManagerFactory;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -299,21 +296,6 @@ public class BeanConfiguration {
     public BomToolFactory bomToolFactory() throws ParserConfigurationException {
         return new BomToolFactory();
         //return new BomToolFactory(detectConfiguration(), detectFileFinder(), executableRunner(), extractorFactory(), executableFinderFactory(), inspectorManagerFactory());
-    }
-
-    @Bean
-    public ExtractorFactory extractorFactory() throws ParserConfigurationException {
-        return new ExtractorFactory(gson(), externalIdFactory(), executableRunner(), detectFileManager(), detectFileFinder(), detectConfiguration());
-    }
-
-    @Bean
-    public ExecutableFinderFactory executableFinderFactory() throws ParserConfigurationException {
-        return new ExecutableFinderFactory(executableRunner(), detectConfiguration(), executableManager());
-    }
-
-    @Bean
-    public InspectorManagerFactory inspectorManagerFactory() throws ParserConfigurationException {
-        return new InspectorManagerFactory(executableRunner(), detectFileManager(), detectConfiguration(), executableManager(), detectConfigurationUtility(), xmlDocumentBuilder(), configuration());
     }
 
     @Bean
