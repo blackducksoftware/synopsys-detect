@@ -16,8 +16,8 @@ buildscript {
 
 apply plugin: 'java'
 
-String sharedVersion = '4.3.1'
-version = sharedVersion
+version = '4.3.2-SNAPSHOT'
+String parentVersion = project.version
 
 allprojects {
    task dependencies(type: DependencyReportTask) {}
@@ -25,7 +25,7 @@ allprojects {
 
 configure(subprojects) { project ->
     group = 'com.blackducksoftware.integration'
-    version = sharedVersion
+    version = parentVersion
 
     apply plugin: 'com.blackducksoftware.integration.solution'
     apply plugin: 'groovy'
