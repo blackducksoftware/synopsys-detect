@@ -26,18 +26,18 @@ public class ExitCodeUtility {
         } else {
             logger.error("An unknown/unexpected error occurred");
             if (e.getMessage() != null) {
-                logger.debug(e.getMessage(), e);
+                logger.error(e.getMessage());
             } else if (e instanceof NullPointerException) {
-                logger.debug("Null Pointer Exception", e);
+                logger.error("Null Pointer Exception");
             } else {
-                logger.debug(e.getClass().getSimpleName(), e);
+                logger.error(e.getClass().getSimpleName());
             }
             if (e.getStackTrace().length >= 1) {
-                logger.info("Thrown at " + e.getStackTrace()[0].toString());
+                logger.error("Thrown at " + e.getStackTrace()[0].toString());
             }
             exceptionExitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
-        logger.error(e.getMessage());
+        logger.debug("Exception", e);
 
         return exceptionExitCodeType;
     }
