@@ -24,14 +24,15 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.bitbake;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
@@ -45,76 +46,79 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.paypal.digraph.parser.GraphParser;
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 
 public class BitbakeExtractor {
-    private static final String RECIPE_DEPENDS_FILE_NAME = "recipe-depends.dot";
+    public static final String RECIPE_DEPENDS_FILE_NAME = "recipe-depends.dot";
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ExecutableManager executableManager;
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
     private final DetectFileManager detectFileManager;
     private final DetectFileFinder detectFileFinder;
-    private final GraphParserTransformer graphParserTransformer;
+    private final BitbakeOutputTransformer bitbakeOutputTransformer;
 
     public BitbakeExtractor(final ExecutableManager executableManager, final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration, final DetectFileManager detectFileManager,
-        final DetectFileFinder detectFileFinder, final GraphParserTransformer graphParserTransformer) {
+        final DetectFileFinder detectFileFinder, final BitbakeOutputTransformer bitbakeOutputTransformer) {
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
         this.detectFileManager = detectFileManager;
         this.detectFileFinder = detectFileFinder;
-        this.graphParserTransformer = graphParserTransformer;
+        this.bitbakeOutputTransformer = bitbakeOutputTransformer;
     }
 
-    public Extraction extract(final ExtractionId extractionId, final String foundBuildEnvScriptPath, final String sourcePath) throws ExecutableRunnerException, FileNotFoundException {
-        final String packageName = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAME);
-        final BitbakeResult bitbakeResult = executeBitbake(extractionId, foundBuildEnvScriptPath);
-        final int returnCode = bitbakeResult.getExecutableOutput().getReturnCode();
+    public Extraction extract(final ExtractionId extractionId, final String foundBuildEnvScriptPath, final String sourcePath) {
+        final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES);
 
-        if (returnCode != 0) {
-            final Extraction.Builder builder = new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", bitbakeResult.getExecutableDescription(), returnCode));
-            return builder.build();
+        final List<DetectCodeLocation> detectCodeLocations = Arrays.stream(packageNames)
+                                                                 .map(packageName -> executeBitbake(extractionId, foundBuildEnvScriptPath, packageName))
+                                                                 .filter(Optional::isPresent)
+                                                                 .map(bitbakeOutput -> bitbakeOutputTransformer.transformBitbakeOutput(bitbakeOutput.get(), sourcePath))
+                                                                 .filter(Optional::isPresent)
+                                                                 .map(Optional::get)
+                                                                 .collect(Collectors.toList());
+
+        final Extraction extraction;
+
+        if (detectCodeLocations.isEmpty()) {
+            extraction = new Extraction.Builder()
+                             .failure("No Code Locations were generated during extraction")
+                             .build();
+        } else {
+            extraction = new Extraction.Builder()
+                             .success(detectCodeLocations)
+                             .build();
         }
-
-        final File recipeDependsFile = bitbakeResult.getRecipeDependsFile();
-        if (recipeDependsFile == null) {
-            final Extraction.Builder builder = new Extraction.Builder().failure(String.format("Could not find expected file: %s", RECIPE_DEPENDS_FILE_NAME));
-            return builder.build();
-        }
-
-        final InputStream recipeDependsInputStream = new FileInputStream(recipeDependsFile);
-        final GraphParser graphParser = new GraphParser(recipeDependsInputStream);
-        final DependencyGraph dependencyGraph = graphParserTransformer.transform(graphParser);
-
-        final ExternalId externalId = new ExternalId(BitbakeBomTool.YOCTO_FORGE);
-        final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.BITBAKE, BomToolType.BITBAKE_CLI, sourcePath, externalId, dependencyGraph).build();
-        final Extraction extraction = new Extraction.Builder()
-                                          .projectName(packageName)
-                                          .success(detectCodeLocation)
-                                          .build();
 
         return extraction;
     }
 
-    private BitbakeResult executeBitbake(final ExtractionId extractionId, final String foundBuildEnvScriptPath) throws ExecutableRunnerException {
-        final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
-        final String packageName = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAME);
-        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, "", detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH));
+    private Optional<BitbakeOutput> executeBitbake(final ExtractionId extractionId, final String foundBuildEnvScriptPath, final String packageName) {
+        Optional<BitbakeOutput> bitbakeOutput = Optional.empty();
 
-        final List<String> arguments = new ArrayList<>();
-        arguments.add("-c");
-        arguments.add(". " + foundBuildEnvScriptPath + "; bitbake -g " + packageName);
-        final Executable sourceExecutable = new Executable(outputDirectory, bashExecutablePath, arguments);
+        try {
+            final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
+            final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, "", detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH));
 
-        final ExecutableOutput executableOutput = executableRunner.execute(sourceExecutable);
-        final String executableDescription = sourceExecutable.getExecutableDescription();
-        final File bitbakeBuildDirectory = new File(outputDirectory, "build");
-        final File recipeDependsFile = detectFileFinder.findFile(bitbakeBuildDirectory, RECIPE_DEPENDS_FILE_NAME);
+            final List<String> arguments = new ArrayList<>();
+            arguments.add("-c");
+            arguments.add(". " + foundBuildEnvScriptPath + "; bitbake -g " + packageName);
+            final Executable sourceExecutable = new Executable(outputDirectory, bashExecutablePath, arguments);
 
-        return new BitbakeResult(executableOutput, executableDescription, recipeDependsFile);
+            final ExecutableOutput executableOutput = executableRunner.execute(sourceExecutable);
+            final String executableDescription = sourceExecutable.getExecutableDescription();
+            final File bitbakeBuildDirectory = new File(outputDirectory, "build");
+            final File recipeDependsFile = detectFileFinder.findFile(bitbakeBuildDirectory, RECIPE_DEPENDS_FILE_NAME);
+
+            bitbakeOutput = Optional.of(new BitbakeOutput(executableOutput, executableDescription, recipeDependsFile));
+        } catch (final ExecutableRunnerException e) {
+            logger.error(String.format("Failed during execution of bitbake against package name [%s]", packageName));
+            logger.debug(e.getMessage(), e);
+        }
+
+        return bitbakeOutput;
     }
 
 }

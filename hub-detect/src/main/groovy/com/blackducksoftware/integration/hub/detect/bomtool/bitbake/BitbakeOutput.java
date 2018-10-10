@@ -27,12 +27,12 @@ import java.io.File;
 
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 
-public class BitbakeResult {
+public class BitbakeOutput {
     private final ExecutableOutput executableOutput;
     private final String executableDescription;
     private final File recipeDependsFile;
 
-    public BitbakeResult(final ExecutableOutput executableOutput, final String executableDescription, final File recipeDependsFile) {
+    public BitbakeOutput(final ExecutableOutput executableOutput, final String executableDescription, final File recipeDependsFile) {
         this.executableOutput = executableOutput;
         this.executableDescription = executableDescription;
         this.recipeDependsFile = recipeDependsFile;
