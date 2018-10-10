@@ -23,9 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,17 +32,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchEvaluator;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
-import com.synopsys.integration.util.ExcludedIncludedFilter;
 
 public class SearchManager {
     private final Logger logger = LoggerFactory.getLogger(SearchManager.class);
@@ -52,17 +45,20 @@ public class SearchManager {
     private final SearchOptions searchOptions;
     private final BomToolSearchProvider bomToolSearchProvider;
     private final BomToolSearchEvaluator bomToolSearchEvaluator;
+    private final EventSystem eventSystem;
 
-    public SearchManager(final SearchOptions searchOptions, final BomToolSearchProvider bomToolSearchProvider, final BomToolSearchEvaluator bomToolSearchEvaluator) { //TODO: replace bom tool profiling
+    public SearchManager(final SearchOptions searchOptions, final BomToolSearchProvider bomToolSearchProvider, final BomToolSearchEvaluator bomToolSearchEvaluator, EventSystem eventSystem) { //TODO: replace bom tool profiling
         this.searchOptions = searchOptions;
         this.bomToolSearchProvider = bomToolSearchProvider;
         this.bomToolSearchEvaluator = bomToolSearchEvaluator;
+        this.eventSystem = eventSystem;
     }
 
     public SearchResult performSearch() {
         List<BomToolEvaluation> searchResults = new ArrayList<>();
         try {
-            final BomToolFinderOptions findOptions = new BomToolFinderOptions(searchOptions.excludedDirectories, searchOptions.forceNestedSearch, searchOptions.maxDepth, searchOptions.bomToolFilter, bomToolSearchProvider, bomToolSearchEvaluator, null);
+            final BomToolFinderOptions findOptions = new BomToolFinderOptions(searchOptions.excludedDirectories, searchOptions.forceNestedSearch, searchOptions.maxDepth, searchOptions.bomToolFilter, bomToolSearchProvider,
+                bomToolSearchEvaluator, eventSystem);
 
             logger.info("Starting search for bom tools.");
             final BomToolFinder bomToolTreeWalker = new BomToolFinder();

@@ -29,33 +29,45 @@ import java.util.Map;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.event.Event;
+import com.blackducksoftware.integration.hub.detect.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class BomToolProfiler {
     public BomToolTimekeeper applicableTimekeeper = new BomToolTimekeeper();
     public BomToolTimekeeper extractableTimekeeper = new BomToolTimekeeper();
     public BomToolTimekeeper extractionTimekeeper = new BomToolTimekeeper();
 
-    public void applicableStarted(final BomTool bomTool) {
+    public BomToolProfiler(EventSystem eventSystem) {
+        eventSystem.registerListener(Event.ApplicableStarted, it -> applicableStarted((BomTool) it));
+        eventSystem.registerListener(Event.ApplicableEnded, it -> applicableEnded((BomTool) it));
+        eventSystem.registerListener(Event.ExtractableStarted, it -> extractableStarted((BomTool) it));
+        eventSystem.registerListener(Event.ExtractableEnded, it -> extractableEnded((BomTool) it));
+        eventSystem.registerListener(Event.ExtractionStarted, it -> extractionStarted(((BomToolEvaluation) it).getBomTool()));
+        eventSystem.registerListener(Event.ExtractionEnded, it -> extractionEnded(((BomToolEvaluation) it).getBomTool()));
+    }
+
+    private void applicableStarted(final BomTool bomTool) {
         applicableTimekeeper.started(bomTool);
     }
 
-    public void applicableEnded(final BomTool bomTool) {
+    private void applicableEnded(final BomTool bomTool) {
         applicableTimekeeper.ended(bomTool);
     }
 
-    public void extractableStarted(final BomTool bomTool) {
+    private void extractableStarted(final BomTool bomTool) {
         extractableTimekeeper.started(bomTool);
     }
 
-    public void extractableEnded(final BomTool bomTool) {
+    private void extractableEnded(final BomTool bomTool) {
         extractableTimekeeper.ended(bomTool);
     }
 
-    public void extractionStarted(final BomTool bomTool) {
+    private void extractionStarted(final BomTool bomTool) {
         extractionTimekeeper.started(bomTool);
     }
 
-    public void extractionEnded(final BomTool bomTool) {
+    private void extractionEnded(final BomTool bomTool) {
         extractionTimekeeper.ended(bomTool);
     }
 

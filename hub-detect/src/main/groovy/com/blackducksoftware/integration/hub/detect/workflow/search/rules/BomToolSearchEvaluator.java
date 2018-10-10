@@ -9,7 +9,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.event.Event;
+import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolExcludedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
@@ -22,7 +23,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Yield
 
 public class BomToolSearchEvaluator {
 
-    public List<BomToolEvaluation> evaluate(BomToolSearchRuleSet rules, BomToolProfiler bomToolProfiler) {
+    public List<BomToolEvaluation> evaluate(BomToolSearchRuleSet rules, EventSystem eventSystem) {
         final List<BomToolEvaluation> evaluations = new ArrayList<>();
         final List<BomTool> appliedSoFar = new ArrayList<>();
         for (final BomToolSearchRule searchRule : rules.getOrderedBomToolRules()) {
@@ -31,9 +32,9 @@ public class BomToolSearchEvaluator {
             evaluations.add(evaluation);
             evaluation.setSearchable(searchable(searchRule, appliedSoFar, rules.getEnvironment()));
             if (evaluation.isSearchable()) {
-                bomToolProfiler.applicableStarted(bomTool);
+                eventSystem.publishEvent(Event.ApplicableStarted, bomTool);
                 evaluation.setApplicable(bomTool.applicable());
-                bomToolProfiler.applicableEnded(bomTool);
+                eventSystem.publishEvent(Event.ApplicableEnded, bomTool);
                 if (evaluation.isApplicable()) {
                     appliedSoFar.add(bomTool);
                 }

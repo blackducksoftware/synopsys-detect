@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.search;
 
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchEvaluator;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.synopsys.integration.util.ExcludedIncludedFilter;
@@ -38,17 +38,17 @@ public class BomToolFinderOptions {
     private final ExcludedIncludedFilter bomToolFilter;
     private final BomToolSearchProvider bomToolSearchProvider;
     private final BomToolSearchEvaluator bomToolSearchEvaluator;
-    private final BomToolProfiler bomToolProfiler;
+    private final EventSystem eventSystem;
 
     public BomToolFinderOptions(final List<String> excludedDirectories, final Boolean forceNestedSearch, final int maximumDepth, final ExcludedIncludedFilter bomToolFilter,
-        final BomToolSearchProvider bomToolSearchProvider, final BomToolSearchEvaluator bomToolSearchEvaluator, BomToolProfiler bomToolProfiler) {
+        final BomToolSearchProvider bomToolSearchProvider, final BomToolSearchEvaluator bomToolSearchEvaluator, EventSystem eventSystem) {
         this.excludedDirectories = excludedDirectories;
         this.forceNestedSearch = forceNestedSearch;
         this.maximumDepth = maximumDepth;
         this.bomToolFilter = bomToolFilter;
         this.bomToolSearchProvider = bomToolSearchProvider;
         this.bomToolSearchEvaluator = bomToolSearchEvaluator;
-        this.bomToolProfiler = bomToolProfiler;
+        this.eventSystem = eventSystem;
     }
 
     public List<String> getExcludedDirectories() {
@@ -75,7 +75,7 @@ public class BomToolFinderOptions {
         return bomToolSearchEvaluator;
     }
 
-    public BomToolProfiler getBomToolProfiler() {
-        return bomToolProfiler;
+    public EventSystem getEventSystem() {
+        return eventSystem;
     }
 }

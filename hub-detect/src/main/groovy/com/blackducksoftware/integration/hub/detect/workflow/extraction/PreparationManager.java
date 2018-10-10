@@ -5,26 +5,27 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
+import com.blackducksoftware.integration.hub.detect.event.Event;
+import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExceptionBomToolResult;
 
 public class PreparationManager {
-    private final ReportManager reportManager;
+    private final EventSystem eventSystem;
 
-    public PreparationManager(final ReportManager reportManager) {
-        this.reportManager = reportManager;
+    public PreparationManager(final EventSystem eventSystem) {
+        this.eventSystem = eventSystem;
     }
 
     private void prepare(final BomToolEvaluation result) {
         if (result.isApplicable()) {
-            reportManager.extractableStarted(result.getBomTool());
+            eventSystem.publishEvent(Event.ExtractableStarted, result.getBomTool());
             try {
                 result.setExtractable(result.getBomTool().extractable());
             } catch (final Exception e) {
                 result.setExtractable(new ExceptionBomToolResult(e));
             }
-            reportManager.extractableEnded(result.getBomTool());
+            eventSystem.publishEvent(Event.ExtractableEnded, result.getBomTool());
         }
     }
 

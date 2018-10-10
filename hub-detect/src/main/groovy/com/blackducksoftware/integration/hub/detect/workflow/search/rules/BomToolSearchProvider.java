@@ -24,9 +24,8 @@
 package com.blackducksoftware.integration.hub.detect.workflow.search.rules;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
-import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 
 public class BomToolSearchProvider {
     private final BomToolFactory bomToolFactory;
