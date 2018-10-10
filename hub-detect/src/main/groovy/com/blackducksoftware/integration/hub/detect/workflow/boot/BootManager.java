@@ -16,6 +16,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyMap;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
+import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.DetectArgumentState;
@@ -55,6 +56,7 @@ public class BootManager {
     }
 
     public BootResult boot(final String[] sourceArgs, ConfigurableEnvironment environment) throws DetectUserFriendlyException, IntegrationException {
+        EventSystem eventSystem = new EventSystem();
         Gson gson = bootFactory.createGson();
         JsonParser jsonParser = bootFactory.createJsonParser();
         DocumentBuilder xml = bootFactory.createXmlDocumentBuilder();
@@ -94,7 +96,7 @@ public class BootManager {
 
         logger.info("Configuration processed completely.");
 
-        DiagnosticManager diagnosticManager = createDiagnostics(detectConfiguration, detectRun, detectArgumentState);
+        DiagnosticManager diagnosticManager = createDiagnostics(detectConfiguration, detectRun, detectArgumentState, eventSystem);
 
         printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT), options);
 
@@ -116,22 +118,23 @@ public class BootManager {
         DetectFileManager detectFileManager = new DetectFileManager(detectConfiguration, detectRun, diagnosticManager);
 
         //Finished, return created objects.
-        DetectRunContext detectRunContext = new DetectRunContext();
-        detectRunContext.detectConfiguration = detectConfiguration;
-        detectRunContext.detectRun = detectRun;
-        detectRunContext.detectInfo = detectInfo;
-        detectRunContext.detectFileManager = detectFileManager;
-        detectRunContext.phoneHomeManager = phoneHomeManager;
-        detectRunContext.diagnosticManager = diagnosticManager;
-        detectRunContext.hubServiceManager = hubServiceManager;
+        DetectRunDependencies detectRunDependencies = new DetectRunDependencies();
+        detectRunDependencies.eventSystem = eventSystem;
+        detectRunDependencies.detectConfiguration = detectConfiguration;
+        detectRunDependencies.detectRun = detectRun;
+        detectRunDependencies.detectInfo = detectInfo;
+        detectRunDependencies.detectFileManager = detectFileManager;
+        detectRunDependencies.phoneHomeManager = phoneHomeManager;
+        detectRunDependencies.diagnosticManager = diagnosticManager;
+        detectRunDependencies.hubServiceManager = hubServiceManager;
 
-        detectRunContext.gson = gson;
-        detectRunContext.jsonParser = jsonParser;
-        detectRunContext.documentBuilder = xml;
-        //detectRunContext.integrationEscapeUtil =
+        detectRunDependencies.gson = gson;
+        detectRunDependencies.jsonParser = jsonParser;
+        detectRunDependencies.documentBuilder = xml;
+        //detectRunDependencies.integrationEscapeUtil =
 
         BootResult result = new BootResult();
-        result.detectRunContext = detectRunContext;
+        result.detectRunDependencies = detectRunDependencies;
         result.bootType = BootResult.BootType.CONTINUE;
         return result;
     }
@@ -185,8 +188,8 @@ public class BootManager {
         }
     }
 
-    private DiagnosticManager createDiagnostics(DetectConfiguration detectConfiguration, DetectRun detectRun, DetectArgumentState detectArgumentState) {
-        DiagnosticReportManager diagnosticReportManager = new DiagnosticReportManager(new BomToolProfiler());
+    private DiagnosticManager createDiagnostics(DetectConfiguration detectConfiguration, DetectRun detectRun, DetectArgumentState detectArgumentState, EventSystem eventSystem) {
+        DiagnosticReportManager diagnosticReportManager = new DiagnosticReportManager(new BomToolProfiler(eventSystem));
         DiagnosticLogManager diagnosticLogManager = new DiagnosticLogManager();
         DiagnosticFileManager diagnosticFileManager = new DiagnosticFileManager();
         DiagnosticManager diagnosticManager = new DiagnosticManager(detectConfiguration, diagnosticReportManager, diagnosticLogManager, detectRun, diagnosticFileManager, detectArgumentState.isDiagnostic(),

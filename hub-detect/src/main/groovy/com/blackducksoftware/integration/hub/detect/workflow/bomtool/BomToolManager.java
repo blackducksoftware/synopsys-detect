@@ -23,12 +23,14 @@ public class BomToolManager {
     ReportManager reportManager;
     PhoneHomeManager phoneHomeManager;
 
-    public BomToolManager(SearchManager searchManager, ExtractionManager extractionManager, ProjectVersionManager projectVersionManager, ReportManager reportManager, PhoneHomeManager phoneHomeManager) {
+    public BomToolManager(SearchManager searchManager, ExtractionManager extractionManager, ProjectVersionManager projectVersionManager, ReportManager reportManager, PhoneHomeManager phoneHomeManager,
+        PreparationManager preparationManager) {
         this.searchManager = searchManager;
         this.extractionManager = extractionManager;
         this.projectVersionManager = projectVersionManager;
         this.reportManager = reportManager;
         this.phoneHomeManager = phoneHomeManager;
+        this.preparationManager = preparationManager;
 
     }
 
@@ -36,9 +38,9 @@ public class BomToolManager {
         List<BomToolEvaluation> bomToolEvaluations = new ArrayList<>();
 
         SearchResult searchResult = searchManager.performSearch();
-        reportManager.searchCompleted(bomToolEvaluations);
 
         bomToolEvaluations.addAll(searchResult.getBomToolEvaluations());
+        reportManager.searchCompleted(bomToolEvaluations);
 
         // we've gone through all applicable bom tools so we now have the complete metadata to phone home
         phoneHomeManager.startPhoneHome(searchResult.getApplicableBomTools());

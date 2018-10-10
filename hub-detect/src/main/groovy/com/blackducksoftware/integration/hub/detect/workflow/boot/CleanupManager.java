@@ -7,13 +7,13 @@ public class CleanupManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     //TODO replicate cleanup and summary
-    public void cleanup(DetectRunContext runContext) {
+    public void cleanup(DetectRunDependencies detectRunDependencies) {
         try {
-            runContext.phoneHomeManager.endPhoneHome();
+            detectRunDependencies.phoneHomeManager.endPhoneHome();
         } catch (final Exception e) {
             logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
         }
 
-        runContext.detectFileManager.cleanup();
+        detectRunDependencies.detectFileManager.cleanup();
     }
 }

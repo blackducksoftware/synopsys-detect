@@ -21,13 +21,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.factory;
+package com.blackducksoftware.integration.hub.detect.bomtool;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockBomTool;

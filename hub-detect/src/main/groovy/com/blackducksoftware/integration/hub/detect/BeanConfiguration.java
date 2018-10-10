@@ -35,6 +35,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.GraphParserTransformer;
@@ -121,7 +122,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockParser;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
+import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.factory.ExecutableFinderFactory;
 import com.blackducksoftware.integration.hub.detect.factory.ExtractorFactory;
 import com.blackducksoftware.integration.hub.detect.factory.InspectorManagerFactory;
@@ -136,12 +137,13 @@ import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ProjectVersionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ProjectVersionOptions;
-import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectRunContext;
+import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectRunDependencies;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BdioUploader;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckBinaryScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckSignatureScanner;
@@ -151,6 +153,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.project.BdioManager
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ExtractionSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.PreparationSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.report.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.run.RunManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
@@ -175,52 +178,57 @@ import freemarker.template.Configuration;
 //Spring scanning should not be invoked as this should not be loaded during boot.
 @org.springframework.context.annotation.Configuration
 public class BeanConfiguration {
-    private final DetectRunContext detectRunContext;
+    private final DetectRunDependencies detectRunDependencies;
 
     @Autowired
-    public BeanConfiguration(final DetectRunContext detectRunContext) {
-        this.detectRunContext = detectRunContext;
+    public BeanConfiguration(final DetectRunDependencies detectRunDependencies) {
+        this.detectRunDependencies = detectRunDependencies;
     }
 
     //Beans from Boot
     @Bean
     public Gson gson() {
-        return detectRunContext.gson;
+        return detectRunDependencies.gson;
+    }
+
+    @Bean
+    public EventSystem eventSystem() {
+        return detectRunDependencies.eventSystem;
     }
 
     @Bean
     public DetectConfiguration detectConfiguration() {
-        return detectRunContext.detectConfiguration;
+        return detectRunDependencies.detectConfiguration;
     }
 
     @Bean
     public DetectRun detectRun() {
-        return detectRunContext.detectRun;
+        return detectRunDependencies.detectRun;
     }
 
     @Bean
     public DiagnosticManager diagnosticManager() {
-        return detectRunContext.diagnosticManager;
+        return detectRunDependencies.diagnosticManager;
     }
 
     @Bean
     public DetectInfo detectInfo() {
-        return detectRunContext.detectInfo;
+        return detectRunDependencies.detectInfo;
     }
 
     @Bean
     public DocumentBuilder xmlDocumentBuilder() {
-        return detectRunContext.documentBuilder;
+        return detectRunDependencies.documentBuilder;
     }
 
     @Bean
     public HubServiceManager hubServiceManager() {
-        return detectRunContext.hubServiceManager;
+        return detectRunDependencies.hubServiceManager;
     }
 
     @Bean
     public Configuration configuration() {
-        return detectRunContext.configuration;
+        return detectRunDependencies.configuration;
     }
 
     //Regular Beans
@@ -230,6 +238,11 @@ public class BeanConfiguration {
         final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
         final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
         return new SimpleBdioFactory(bdioPropertyHelper, bdioNodeFactory, dependencyGraphTransformer, externalIdFactory(), gson());
+    }
+
+    @Bean
+    public ReportManager reportManager() {
+        return new ReportManager(eventSystem(), detectRunDependencies.phoneHomeManager, diagnosticManager(), preparationSummaryReporter(), extractionSummaryReporter(), searchSummaryReporter());
     }
 
     @Bean
@@ -316,7 +329,7 @@ public class BeanConfiguration {
     @Bean
     public SearchManager searchManager() {
         try {
-            return new SearchManager(new SearchOptions(detectConfiguration()), bomToolSearchProvider(), bomToolSearchEvaluator());
+            return new SearchManager(new SearchOptions(detectConfiguration()), bomToolSearchProvider(), bomToolSearchEvaluator(), eventSystem());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -675,12 +688,17 @@ public class BeanConfiguration {
 
     @Bean
     public BomToolManager bomToolManager() {
-        return new BomToolManager(searchManager(), extractionManager(), projectVersionManager(), detectRunContext.reportManager, detectRunContext.phoneHomeManager);
+        return new BomToolManager(searchManager(), extractionManager(), projectVersionManager(), reportManager(), detectRunDependencies.phoneHomeManager, preparationManager());
+    }
+
+    @Bean
+    public PreparationManager preparationManager() {
+        return new PreparationManager(eventSystem());
     }
 
     @Bean
     public RunManager runManager() {
-        return new RunManager(detectRunContext.phoneHomeManager, detectConfiguration(), bomToolManager());
+        return new RunManager(detectRunDependencies.phoneHomeManager, detectConfiguration(), bomToolManager());
     }
 
     //BomTools

@@ -40,7 +40,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.boot.BootFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.BootManager;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.BootResult;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.CleanupManager;
-import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectRunContext;
+import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectRunDependencies;
 import com.blackducksoftware.integration.hub.detect.workflow.run.RunManager;
 
 //@SpringBootApplication
@@ -58,7 +58,9 @@ public class Application implements ApplicationRunner {
     }
 
     public static void main(final String[] args) {
-        new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args);
+        SpringApplicationBuilder builder = new SpringApplicationBuilder(Application.class);
+        builder.logStartupInfo(false);
+        builder.run(args);
     }
 
     @Override
@@ -69,19 +71,23 @@ public class Application implements ApplicationRunner {
         ExitCodeType detectExitCode = ExitCodeType.SUCCESS;
         BootResult bootResult = null;
         try {
+            logger.info("Detect boot begin.");
             BootManager bootManager = new BootManager(new BootFactory());
             bootResult = bootManager.boot(applicationArguments.getSourceArgs(), environment);
+            logger.info("Detect boot complete.");
         } catch (final Exception e) {
+            logger.info("Detect boot failed.");
             detectExitCode = exitCodeUtility.getExitCodeFromExceptionDetails(e);
         }
 
         try {
             if (bootResult != null && bootResult.bootType == BootResult.BootType.CONTINUE) {
-                final DetectRunContext detectRunContext = bootResult.detectRunContext;
+                logger.info("Detect run begin.");
+                final DetectRunDependencies detectRunDependencies = bootResult.detectRunDependencies;
                 AnnotationConfigApplicationContext runContext = new AnnotationConfigApplicationContext();
-                runContext.setDisplayName("Detect Run " + detectRunContext.detectRun.getRunId());
+                runContext.setDisplayName("Detect Run " + detectRunDependencies.detectRun.getRunId());
                 runContext.register(BeanConfiguration.class);
-                runContext.registerBean(DetectRunContext.class, () -> { return detectRunContext; });
+                runContext.registerBean(DetectRunDependencies.class, () -> { return detectRunDependencies; });
                 runContext.refresh();
 
                 RunManager runManager = runContext.getBean(RunManager.class);
@@ -94,15 +100,15 @@ public class Application implements ApplicationRunner {
         try {
             if (bootResult != null) {
                 CleanupManager cleanupManager = new CleanupManager();
-                cleanupManager.cleanup(bootResult.detectRunContext);
+                cleanupManager.cleanup(bootResult.detectRunDependencies);
             }
         } catch (final Exception e) {
             detectExitCode = exitCodeUtility.getExitCodeFromExceptionDetails(e);
         }
 
-        boolean printOutput = bootResult.detectRunContext.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT);
+        boolean printOutput = bootResult.detectRunDependencies.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT);
         if (!printOutput) {
-            //bootResult.detectRunContext.detectSummaryManager();
+            //bootResult.detectRunDependencies.detectSummaryManager();
             //detectSummaryManager.logDetectResults(new Slf4jIntLogger(logger), currentExitCodeType);
         }
 
