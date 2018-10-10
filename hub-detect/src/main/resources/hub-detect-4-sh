@@ -16,7 +16,7 @@ DETECT_RELEASE_VERSION=${DETECT_LATEST_RELEASE_VERSION}
 # and we plan to soon add a DETECT_LATEST_5. Every new
 # major version of detect will have its own
 # DETECT_LATEST_X key.
-DETECT_VERSION_KEY=${DETECT_VERSION_KEY:-DETECT_LATEST}
+DETECT_VERSION_KEY=${DETECT_VERSION_KEY:-DETECT_LATEST_4}
 
 # You can specify your own download url from
 # artifactory which can bypass using the property keys
