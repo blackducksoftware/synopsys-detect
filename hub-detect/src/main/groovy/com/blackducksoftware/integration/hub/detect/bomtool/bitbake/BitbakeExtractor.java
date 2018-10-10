@@ -25,7 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.bitbake;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,10 +71,14 @@ public class BitbakeExtractor {
     public Extraction extract(final ExtractionId extractionId, final String foundBuildEnvScriptPath, final String sourcePath) {
         final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES);
 
-        final List<DetectCodeLocation> detectCodeLocations = Arrays.stream(packageNames)
-                                                                 .map(packageName -> executeBitbake(extractionId, foundBuildEnvScriptPath, packageName))
-                                                                 .filter(Optional::isPresent)
-                                                                 .map(bitbakeOutput -> bitbakeOutputTransformer.transformBitbakeOutput(bitbakeOutput.get(), sourcePath))
+        final List<BitbakeOutput> bitbakeOutputs = new ArrayList<>();
+        for (final String packageName : packageNames) {
+            final Optional<BitbakeOutput> bitbakeOutput = executeBitbake(extractionId, foundBuildEnvScriptPath, packageName);
+            bitbakeOutput.ifPresent(bitbakeOutputs::add);
+        }
+
+        final List<DetectCodeLocation> detectCodeLocations = bitbakeOutputs.stream()
+                                                                 .map(bitbakeOutput -> bitbakeOutputTransformer.transformBitbakeOutput(bitbakeOutput, sourcePath))
                                                                  .filter(Optional::isPresent)
                                                                  .map(Optional::get)
                                                                  .collect(Collectors.toList());
