@@ -23,12 +23,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -65,11 +68,21 @@ public class DetectConfiguration {
                 handleOverrideProperty(currentProperty, deprecated);// an override property has a deprecated property
             }
         });
+        //TODO: Find a better way to do this - or - hopefully remove this if the scan cli gets better.
+        String bdScanPaths = detectPropertySource.getProperty("BD_HUB_SCAN_PATH");
+        if (StringUtils.isNotBlank(bdScanPaths)) {
+            logger.warn("The environment variable BD_HUB_SCAN_PATH was set but you should use --" + DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS.getPropertyName() + " instead.");
+            List<String> values = new ArrayList<>();
+            values.addAll(Arrays.asList(getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS)));
+            values.addAll(Arrays.asList(bdScanPaths.split(",")));
+            setDetectProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, values.stream().collect(Collectors.joining(",")));
+        }
     }
 
     private void handleStandardProperty(final DetectProperty currentProperty) {
         actuallySetValues.add(currentProperty);
-        detectPropertyMap.setDetectProperty(currentProperty, detectPropertySource.getDetectProperty(currentProperty.getPropertyName(), currentProperty.getDefaultValue()));
+        final String value = detectPropertySource.getDetectProperty(currentProperty.getPropertyName(), currentProperty.getDefaultValue());
+        detectPropertyMap.setDetectProperty(currentProperty, value);
     }
 
     private void handleDeprecatedProperty(final DetectProperty currentProperty, final DetectProperty overrideProperty) {
@@ -117,9 +130,9 @@ public class DetectConfiguration {
     // TODO: Remove in version 6.
     private DetectProperty fromOverrideToDeprecated(final DetectProperty detectProperty) {
         final Optional<DetectProperty> found = DetectPropertyDeprecations.PROPERTY_OVERRIDES.entrySet().stream()
-                .filter(it -> it.getValue().equals(detectProperty))
-                .map(it -> it.getKey())
-                .findFirst();
+                                                   .filter(it -> it.getValue().equals(detectProperty))
+                                                   .map(it -> it.getKey())
+                                                   .findFirst();
 
         return found.orElse(null);
     }
@@ -171,8 +184,25 @@ public class DetectConfiguration {
         return detectPropertyMap.getStringArrayProperty(detectProperty);
     }
 
+    public Optional<String[]> getOptionalStringArrayProperty(final DetectProperty detectProperty) {
+        return Optional.ofNullable(getStringArrayProperty(detectProperty));
+    }
+
     public String getProperty(final DetectProperty detectProperty) {
         return detectPropertyMap.getProperty(detectProperty);
+    }
+
+    /**
+     * Same as <code>getProperty()</code>, but returns an optional after performing a <code>StringUtils.isBlank()</code> check
+     */
+    public Optional<String> getOptionalProperty(final DetectProperty detectProperty) {
+        final String property = getProperty(detectProperty);
+        Optional<String> optionalProperty = Optional.empty();
+        if (StringUtils.isNotBlank(property)) {
+            optionalProperty = Optional.of(property);
+        }
+
+        return optionalProperty;
     }
 
     public String getPropertyValueAsString(final DetectProperty detectProperty) {

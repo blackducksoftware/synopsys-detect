@@ -38,7 +38,7 @@ public class GradleReportLine {
     private final Logger logger = LoggerFactory.getLogger(GradleReportLine.class);
 
     private static final String[] DEPENDENCY_INDICATORS = new String[] { "+---", "\\---" };
-    private static final String[] PROJECT_INDICATORS = new String[] { "+--- project :", "\\--- project :" };
+    private static final String[] PROJECT_INDICATORS = new String[] { "+--- project ", "\\--- project " };
     private static final String COMPONENT_PREFIX = "--- ";
     private static final String SEEN_ELSEWHERE_SUFFIX = " (*)";
     private static final String WINNING_INDICATOR = " -> ";

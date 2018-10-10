@@ -29,6 +29,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,6 +46,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.workflow.RequiredBomToolChecker.RequiredBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
@@ -67,6 +69,7 @@ import com.synopsys.integration.util.NameVersion;
 public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupStatusSummary>, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
+    private final Set<BomToolGroupType> applicableBomTools = new HashSet<>();
     private final Map<BomToolGroupType, Result> bomToolGroupSummaryResults = new HashMap<>();
     private ExitCodeType bomToolSearchExitCodeType;
 
@@ -92,6 +95,11 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
 
     public DetectProject createDetectProject() throws DetectUserFriendlyException, IntegrationException {
         final SearchResult searchResult = searchManager.performSearch();
+
+        searchResult.getBomToolEvaluations().stream()
+                .filter(it -> it.isApplicable())
+                .map(it -> it.getBomTool().getBomToolGroupType())
+                .forEach(it -> applicableBomTools.add(it));
 
         final ExtractionResult extractionResult = extractionManager.performExtractions(searchResult.getBomToolEvaluations());
         applyBomToolGroupStatus(extractionResult.getSuccessfulBomToolTypes(), extractionResult.getFailedBomToolTypes());
@@ -139,6 +147,16 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
         }
         if (null != bomToolSearchExitCodeType) {
             return bomToolSearchExitCodeType;
+        }
+        final String requiredText = detectConfiguration.getProperty(DetectProperty.DETECT_REQUIRED_BOM_TOOL_TYPES);
+        if (!StringUtils.isBlank(requiredText)) {
+            logger.info("Checking for required bom tools: " + requiredText);
+            final RequiredBomToolChecker checker = new RequiredBomToolChecker();
+            final RequiredBomToolResult result = checker.checkForMissingBomTools(requiredText, applicableBomTools);
+            if (result.wereBomToolsMissing()) {
+                result.getMissingBomTools().forEach(it -> logger.error("Required a bom tool of type " + it.toString() + " but an applicable bom tool of that type was not found."));
+                return ExitCodeType.FAILURE_BOM_TOOL_REQUIRED;
+            }
         }
         return ExitCodeType.SUCCESS;
     }
