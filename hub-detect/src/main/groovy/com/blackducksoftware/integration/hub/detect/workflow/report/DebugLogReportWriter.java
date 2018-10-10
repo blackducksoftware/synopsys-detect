@@ -23,27 +23,35 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.report;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+public class DebugLogReportWriter implements ReportWriter {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-public class SearchSummaryReporter {
-
-    public void print(ReportWriter writer, final List<BomToolEvaluation> results) {
-        final SearchSummarizer searchSummarizer = new SearchSummarizer();
-        final List<SearchSummaryData> summaryData = searchSummarizer.summarize(results);
-
-        printDirectoriesInfo(writer, summaryData);
+    @Override
+    public void writeLine(final String line) {
+        logger.debug(line);
     }
 
-    private void printDirectoriesInfo(ReportWriter writer, final List<SearchSummaryData> summaryData) {
-        ReporterUtils.printHeader(writer, "Search results");
-        for (final SearchSummaryData data : summaryData) {
-            writer.writeLine(data.getDirectory());
-            writer.writeLine("\tAPPLIES: " + data.getApplicable().stream().map(it -> it.getDescriptiveName()).sorted().collect(Collectors.joining(", ")));
-        }
-        ReporterUtils.printFooter(writer);
+    @Override
+    public void writeSeperator() {
+        writeLine(ReportConstants.SEPERATOR);
+    }
+
+    @Override
+    public void writeLine() {
+        writeLine("");
+    }
+
+    @Override
+    public void writeHeader() {
+        writeLine(ReportConstants.HEADING);
+    }
+
+    @Override
+    public void finish() {
+        // Nothing to clean up
     }
 
 }

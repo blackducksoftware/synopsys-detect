@@ -27,11 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class ExtractionSummaryReporter {
-    public void writeSummary(final ReportWriter writer, final List<BomToolEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+
+    public void writeSummary(ReportWriter writer, final List<BomToolEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final ExtractionSummarizer summarizer = new ExtractionSummarizer();
 
         final List<ExtractionSummaryData> summaries = summarizer.summarize(results, codeLocationNameMap);
@@ -39,12 +40,8 @@ public class ExtractionSummaryReporter {
         writeSummaries(writer, summaries);
     }
 
-    private void writeSummaries(final ReportWriter writer, final List<ExtractionSummaryData> data) {
-        writer.writeLine();
-        writer.writeLine();
-        writer.writeHeader();
-        writer.writeLine("Extraction results:");
-        writer.writeHeader();
+    private void writeSummaries(ReportWriter writer, final List<ExtractionSummaryData> data) {
+        ReporterUtils.printHeader(writer, "Extraction results:");
         data.stream().forEach(it -> {
             if (it.getSuccess().size() > 0 || it.getException().size() > 0 || it.getFailed().size() > 0) {
                 writer.writeLine(it.getDirectory());
@@ -55,9 +52,7 @@ public class ExtractionSummaryReporter {
                 writeEvaluationsIfNotEmpty(writer, "\tException: ", it.getException());
             }
         });
-        writer.writeHeader();
-        writer.writeLine();
-        writer.writeLine();
+        ReporterUtils.printFooter(writer);
     }
 
     private void writeEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final List<BomToolEvaluation> evaluations) {

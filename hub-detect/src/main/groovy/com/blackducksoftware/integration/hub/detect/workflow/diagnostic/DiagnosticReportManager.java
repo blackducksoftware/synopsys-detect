@@ -31,17 +31,17 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.report.CodeLocationReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.DetailedSearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.FileReportWriter;
-import com.blackducksoftware.integration.hub.detect.workflow.report.LogReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.InfoLogReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.OverviewSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ProfilingReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.SearchSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class DiagnosticReportManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -163,7 +163,7 @@ public class DiagnosticReportManager {
         } catch (final Exception e) {
             logger.error("Failed to create report writer: " + reportType.toString(), e);
         }
-        return new LogReportWriter();
+        return new InfoLogReportWriter();
     }
 
     public ReportWriter getReportWriter(final ReportTypes type) {

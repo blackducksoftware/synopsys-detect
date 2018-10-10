@@ -26,7 +26,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LogReportWriter implements ReportWriter {
+public class InfoLogReportWriter implements ReportWriter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override

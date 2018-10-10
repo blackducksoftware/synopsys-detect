@@ -27,16 +27,16 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.event.Event;
+import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
-import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class ReportManager {
     // all entry points to reporting
-    private final BomToolProfiler bomToolProfiler;
+    private final EventSystem eventSystem;
     private final PhoneHomeManager phoneHomeManager;
     private final DiagnosticManager diagnosticManager;
 
@@ -45,23 +45,27 @@ public class ReportManager {
     private final PreparationSummaryReporter preparationSummaryReporter;
     private final ExtractionSummaryReporter extractionSummaryReporter;
 
-    private final LogReportWriter logWriter = new LogReportWriter();
+    private final InfoLogReportWriter logWriter = new InfoLogReportWriter();
+    private final DebugLogReportWriter debugLogWriter = new DebugLogReportWriter();
 
-    public ReportManager(final BomToolProfiler bomToolProfiler, final PhoneHomeManager phoneHomeManager, final DiagnosticManager diagnosticManager,
-            final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter) {
-        this.bomToolProfiler = bomToolProfiler;
+    public ReportManager(final EventSystem eventSystem, final PhoneHomeManager phoneHomeManager, final DiagnosticManager diagnosticManager,
+        final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter) {
+        this.eventSystem = eventSystem;
         this.phoneHomeManager = phoneHomeManager;
         this.diagnosticManager = diagnosticManager;
         this.preparationSummaryReporter = preparationSummaryReporter;
         this.extractionSummaryReporter = extractionSummaryReporter;
         this.searchSummaryReporter = searchSummaryReporter;
+
+        eventSystem.registerListener(Event.ExtractionStarted, it -> extractionStarted((BomToolEvaluation) it));
+        eventSystem.registerListener(Event.ExtractionStarted, it -> extractionEnded((BomToolEvaluation) it));
     }
 
     // Reports
     public void searchCompleted(final List<BomToolEvaluation> bomToolEvaluations) {
         searchSummaryReporter.print(logWriter, bomToolEvaluations);
         final DetailedSearchSummaryReporter detailedSearchSummaryReporter = new DetailedSearchSummaryReporter();
-        detailedSearchSummaryReporter.print(logWriter, bomToolEvaluations);
+        detailedSearchSummaryReporter.print(debugLogWriter, bomToolEvaluations);
     }
 
     public void preparationCompleted(final List<BomToolEvaluation> bomToolEvaluations) {
@@ -69,7 +73,7 @@ public class ReportManager {
     }
 
     public void extractionsCompleted(final List<BomToolEvaluation> bomToolEvaluations) {
-        phoneHomeManager.startPhoneHome(bomToolProfiler.getAggregateBomToolGroupTimes());
+        //phoneHomeManager.startPhoneHome(bomToolProfiler.getAggregateBomToolGroupTimes());
         diagnosticManager.completedBomToolEvaluations(bomToolEvaluations);
     }
 
@@ -79,29 +83,11 @@ public class ReportManager {
     }
 
     // Profiling
-    public void applicableStarted(final BomTool bomTool) {
-        bomToolProfiler.applicableStarted(bomTool);
-    }
-
-    public void applicableEnded(final BomTool bomTool) {
-        bomToolProfiler.applicableEnded(bomTool);
-    }
-
-    public void extractableStarted(final BomTool bomTool) {
-        bomToolProfiler.extractableStarted(bomTool);
-    }
-
-    public void extractableEnded(final BomTool bomTool) {
-        bomToolProfiler.extractableEnded(bomTool);
-    }
-
-    public void extractionStarted(final BomToolEvaluation bomToolEvaluation) {
+    private void extractionStarted(final BomToolEvaluation bomToolEvaluation) {
         diagnosticManager.startLoggingExtraction(bomToolEvaluation.getExtractionId());
-        bomToolProfiler.extractionStarted(bomToolEvaluation.getBomTool());
     }
 
-    public void extractionEnded(final BomToolEvaluation bomToolEvaluation) {
-        bomToolProfiler.extractionEnded(bomToolEvaluation.getBomTool());
+    private void extractionEnded(final BomToolEvaluation bomToolEvaluation) {
         if (diagnosticManager.isDiagnosticModeOn()) {
             final List<File> diagnosticFiles = bomToolEvaluation.getBomTool().getRelevantDiagnosticFiles();
             for (final File file : diagnosticFiles) {

@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class PreparationSummaryReporter {
+
     public void write(final ReportWriter writer, final List<BomToolEvaluation> results) {
         final PreparationSummarizer summarizer = new PreparationSummarizer();
         final List<PreparationSummaryData> result = summarizer.summarize(results);
@@ -36,11 +37,7 @@ public class PreparationSummaryReporter {
     }
 
     private void writeSummary(final ReportWriter writer, final List<PreparationSummaryData> datas) {
-        writer.writeLine();
-        writer.writeLine();
-        writer.writeHeader();
-        writer.writeLine("Preparation for extraction");
-        writer.writeHeader();
+        ReporterUtils.printHeader(writer, "Preparation for extraction");
         for (final PreparationSummaryData data : datas) {
             writer.writeLine(data.getDirectory());
             if (data.getReady().size() > 0) {
@@ -56,9 +53,7 @@ public class PreparationSummaryReporter {
                     .forEach(writer::writeLine);
             }
         }
-        writer.writeHeader();
-        writer.writeLine();
-        writer.writeLine();
+        ReporterUtils.printFooter(writer);
     }
 
 }
