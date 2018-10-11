@@ -8,28 +8,43 @@ function Get-EnvironmentVariable($Key, $DefaultValue) { if (-not (Test-Path Env:
 # from LATEST.
 $EnvDetectDesiredVersion = Get-EnvironmentVariable -Key "DETECT_LATEST_RELEASE_VERSION" -DefaultValue "";
 
-# If you would like to enable the shell script to use
-# the latest snapshot instead of the latest release,
-# specify DETECT_USE_SNAPSHOT=1 in your environment.
-# The default is to NOT use snapshots. If you enable
-# snapshots, the jar file will be downloaded whenever
-# a new commit is added to the master branch.
-$EnvDetectUseSnapshot = Get-EnvironmentVariable -Key "DETECT_USE_SNAPSHOT" -DefaultValue "0";
+# To override the default version key, specify a
+# different DETECT_VERSION_KEY in your environment and
+# *that* key will be used to get the download url from
+# artifactory. These DETECT_VERSION_KEY values are
+# properties in Artifactory that resolve to download
+# urls for the detect jar file.As of 2018-10-10, the
+# available DETECT_VERSION_KEY values are:
+# (DETECT_LATEST, DETECT_LATEST_4, DETECT_LATEST_3)
+# and we plan to soon add a DETECT_LATEST_5. Every new
+# major version of detect will have its own
+# DETECT_LATEST_X key.
+$EnvDetectVersionKey = Get-EnvironmentVariable -Key "DETECT_VERSION_KEY" -DefaultValue "DETECT_LATEST";
 
 # If you want to skip the test for java
 # DETECT_SKIP_JAVA_TEST=1
 $EnvDetectSkipJavaTest = Get-EnvironmentVariable -Key "DETECT_SKIP_JAVA_TEST" -DefaultValue "";
 
-# If you do not want to exit with the detect exit code,
-# set DETECT_EXIT_CODE_PASSTHRU to 1 and this script won't exit, but simply return it (pass it thru).
-$EnvDetectExitCodePassthru = Get-EnvironmentVariable -Key "DETECT_EXIT_CODE_PASSTHRU" -DefaultValue "";
+# You can specify your own download url from
+# artifactory which can bypass using the property keys
+# (this is mainly for QA purposes only)
+$EnvDetectSource = Get-EnvironmentVariable -Key "DETECT_SOURCE" -DefaultValue "";
 
-# To override the default location specify your own DETECT_JAR_PATH
+# To override the default location of /tmp, specify
+# your own DETECT_JAR_PATH in your environment and
+# *that* location will be used.
+# *NOTE* We currently do not support spaces in the
+# DETECT_JAR_PATH.
 # Otherwise, if the environment temp folder is set, it will be used.
 # Otherwise, a temporary folder will be created in your home directory
 $EnvDetectFolder = Get-EnvironmentVariable -Key "DETECT_JAR_PATH" -DefaultValue "";
 $EnvTempFolder = Get-EnvironmentVariable -Key "TMP" -DefaultValue "";
 $EnvHomeTempFolder = "$HOME/tmp"
+
+
+# If you do not want to exit with the detect exit code,
+# set DETECT_EXIT_CODE_PASSTHRU to 1 and this script won't exit, but simply return it (pass it thru).
+$EnvDetectExitCodePassthru = Get-EnvironmentVariable -Key "DETECT_EXIT_CODE_PASSTHRU" -DefaultValue "1";
 
 # If you want to pass proxy information, use detect environment variables such as 'blackduck.proxy.host'
 # If you do pass the proxy information in this way, you do not need to supply it to detect as arguments. 
@@ -44,12 +59,7 @@ $EnvHomeTempFolder = "$HOME/tmp"
 # heap size, you would set DETECT_JAVA_OPTS=-Xmx6G.
 #$DetectJavaOpts = Get-EnvironmentVariable -Key "DETECT_JAVA_OPTS" -DefaultValue "";
 
-$Version = "0.7.0"
-
-$DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect"
-$DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect"
-$DetectCommitUrl = "https://blackducksoftware.github.io/hub-detect/latest-commit-id.txt"
-$DetectVersionUrl = "https://test-repo.blackducksoftware.com/artifactory/api/search/latestVersion?g=com.blackducksoftware.integration&a=hub-detect&repos=bds-integrations-release"
+$Version = "1.0.0"
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 #Enable TLS2
 
@@ -76,11 +86,7 @@ function Detect {
     $ProxyInfo = Get-ProxyInfo
 
     Write-Host "Getting detect."
-    if ($EnvDetectUseSnapshot -eq "1"){
-        $DetectJarFile = Get-DetectSnapshotJar -DetectFolder $DetectFolder -DetectVersion $EnvDetectDesiredVersion -ProxyInfo $ProxyInfo
-    }else{
-        $DetectJarFile = Get-DetectJar -DetectFolder $DetectFolder -DetectVersion $EnvDetectDesiredVersion -ProxyInfo $ProxyInfo
-    }
+    $DetectJarFile = Get-DetectJar -DetectFolder $DetectFolder -DetectSource $EnvDetectSource -DetectVersionKey $EnvDetectVersionKey -DetectVersion $EnvDetectDesiredVersion -ProxyInfo $ProxyInfo
 
     Write-Host "Executing detect."
     $DetectArgs = $args;
@@ -183,49 +189,21 @@ function Invoke-WebRequestWrapper($Url, $ProxyInfo, $DownloadLocation = $null) {
     return Invoke-WebRequest $Url -UseBasicParsing @parameters
 }
 
-function Get-DetectSnapshotJar ($DetectFolder, $DetectVersion, $ProxyInfo) {
-    if ($DetectVersion -eq ""){
-        $DetectVersion = "latest-SNAPSHOT"
-    }
-    
-    Write-Host "Using detect version $DetectVersion"
-
-    $DetectJarFile = "$DetectFolder/hub-detect-$DetectVersion.jar"
-    $DetectCurrentCommitFile = "$DetectFolder/hub-detect-latest-commit.txt"
-
-    $DetectJarExists = Test-Path $DetectJarFile
-    $DetectCurrentCommitFileExists = Test-Path $DetectCurrentCommitFile
-    $DetectLatestCommit = Invoke-WebRequestWrapper -Url $DetectCommitUrl -ProxyInfo $ProxyInfo
-    $DetectLatestCommit = $DetectLatestCommit.ToString().Trim()
-    Write-Host "Detect jar exists '$DetectJarExists', commit file exists '$DetectCurrentCommitFileExists', latest commit '$DetectLatestCommit'"
-
-    $Download = $TRUE;
-    if ($DetectJarExists -and $DetectCurrentCommitFileExists){
-        $DetectCurrentCommit = Get-Content $DetectCurrentCommitFile
-        $DetectCurrentCommit = $DetectCurrentCommit.Trim()
-        Write-Host "Current commit '$DetectCurrentCommit'"
-        if ($DetectCurrentCommit -eq $DetectLatestCommit){
-            $Download = $FALSE;
+function Get-DetectJar ($DetectFolder, $DetectSource, $DetectVersionKey, $DetectVersion, $ProxyInfo) {
+    if ($DetectSource -eq ""){
+        if ($DetectVersion -eq ""){
+            $DetectVersionUrl = "https://test-repo.blackducksoftware.com/artifactory/api/storage/bds-integrations-release/com/blackducksoftware/integration/hub-detect?properties=" + $DetectVersionKey
+            $DetectSource = Receive-DetectSource -ProxyInfo $ProxyInfo -DetectVersionUrl $DetectVersionUrl -DetectVersionKey $DetectVersionKey
+        } else {
+            $DetectSource = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect/" + $DetectVersion + "/hub-detect-" + $DetectVersion + ".jar"
         }
     }
 
-    if ($Download){
-        $DetectUrl = Join-DetectUrl -DetectBaseUrl $DetectSnapshotBaseUrl -DetectVersion $DetectVersion
-        Receive-DetectJar -DetectUrl $DetectUrl -DetectJarFile $DetectJarFile -ProxyInfo $ProxyInfo
-        Set-Content $DetectCurrentCommitFile $DetectLatestCommit
-    }else{
-        Write-Host "You have already downloaded the latest file, so the local file will be used."
-    }
-    
-    return $DetectJarFile    
-}
+	Write-Host "Using detect source $DetectSource"
 
-function Get-DetectJar ($DetectFolder, $DetectVersion, $ProxyInfo) {
-    if ($DetectVersion -eq ""){
-        $DetectVersion = Receive-DetectLatestVersion -ProxyInfo $ProxyInfo
-    }
+    $DetectVersion = Parse-Version -DetectSource $DetectSource
 
-	Write-Host "Using detect version $DetectVersion"
+    Write-Host "Using detect version $DetectVersion"
 
     $DetectJarFile = "$DetectFolder/hub-detect-$DetectVersion.jar"
 
@@ -233,13 +211,21 @@ function Get-DetectJar ($DetectFolder, $DetectVersion, $ProxyInfo) {
     Write-Host "Detect jar exists '$DetectJarExists'"
 
     if (!$DetectJarExists){
-        $DetectUrl = Join-DetectUrl -DetectBaseUrl $DetectReleaseBaseUrl -DetectVersion $DetectVersion
-        Receive-DetectJar -DetectUrl $DetectUrl -DetectJarFile $DetectJarFile -ProxyInfo $ProxyInfo
+        Receive-DetectJar -DetectUrl $DetectSource -DetectJarFile $DetectJarFile -ProxyInfo $ProxyInfo
     }else{
         Write-Host "You have already downloaded the latest file, so the local file will be used."
     }
 
     return $DetectJarFile    
+}
+
+function Parse-Version($DetectSource){
+    $SlashParts = $DetectSource.Split("/")
+    $LastPart = $SlashParts[$SlashParts.Length - 1]
+    $DashParts = $LastPart.Split("-")
+    $VersionJar = $DashParts[$DashParts.Length - 1]
+    $Version = $VersionJar.TrimEnd(".jar")
+    return $Version
 }
 
 function Invoke-Detect ($DetectJarFile, $DetectArgs) {
@@ -253,10 +239,6 @@ function Invoke-Detect ($DetectJarFile, $DetectArgs) {
     $DetectExitCode = $DetectProcess.ExitCode;
     Write-Host "Result code of $DetectExitCode, exiting"
     return $DetectExitCode
-}
-
-function Join-DetectUrl ($DetectBaseUrl, $DetectVersion) {
-    return "$DetectBaseUrl/${DetectVersion}/hub-detect-${DetectVersion}.jar"
 }
 
 function Initialize-DetectFolder ($DetectFolder, $TempFolder, $HomeTempFolder) {
@@ -281,11 +263,15 @@ function Initialize-Folder ($Folder) {
     return $Folder
 }
 
-function Receive-DetectLatestVersion ($ProxyInfo) {
+function Receive-DetectSource ($ProxyInfo, $DetectVersionUrl, $DetectVersionKey) {
     Write-Host "Finding latest detect version."
-    $DetectVersion = Invoke-WebRequestWrapper -Url $DetectVersionUrl -ProxyInfo $ProxyInfo
-    Write-Host "Resolved version $DetectVersion"
-    return $DetectVersion
+    $DetectVersionData = Invoke-WebRequestWrapper -Url $DetectVersionUrl -ProxyInfo $ProxyInfo
+    $DetectVersionJson = ConvertFrom-Json -InputObject $DetectVersionData
+    
+    $Properties = $DetectVersionJson | select -ExpandProperty "properties"
+    $DetectVersionUrl = $Properties | select -ExpandProperty $DetectVersionKey
+    Write-Host "Resolved detect source $DetectVersionUrl"
+    return $DetectVersionUrl
 }
 
 function Receive-DetectJar ($DetectUrl, $DetectJarFile, $ProxyInfo) {
