@@ -44,7 +44,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableArgumentBuilder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
@@ -151,22 +150,28 @@ public class DockerExtractor {
 
         final List<String> dockerArguments = new ArrayList<>();
         // The -c is a bash option, the following String is the command we want to run
-        dockerArguments.add("-c");
+        // ORIG:dockerArguments.add("-c");
+        dockerArguments.add("-jar");
+        dockerArguments.add("/tmp/aaa/hub-docker-inspector-6.3.2.jar");
 
-        final ExecutableArgumentBuilder bashArguments = new ExecutableArgumentBuilder();
-        bashArguments.addArgument(dockerInspectorInfo.dockerInspectorScript.getCanonicalPath(), true);
-        bashArguments.addArgumentPair("--spring.config.location", "file:" + dockerPropertiesFile.getCanonicalPath(), true);
-        bashArguments.addArgument(imageArgument);
+        // final ExecutableArgumentBuilder bashArguments = new ExecutableArgumentBuilder();
+        // bashArguments.addArgument(dockerInspectorInfo.dockerInspectorScript.getCanonicalPath(), true);
+        // bashArguments.addArgumentPair("--spring.config.location", "file:" + dockerPropertiesFile.getCanonicalPath(), true);
+        // bashArguments.addArgument(imageArgument);
+        dockerArguments.add("--spring.config.location");
+        dockerArguments.add("file:" + dockerPropertiesFile.getCanonicalPath());
+        dockerArguments.add(imageArgument);
 
         if (dockerInspectorInfo.isOffline) {
-            bashArguments.insertArgumentPair(2, "--jar.path", dockerInspectorInfo.offlineDockerInspectorJar.getCanonicalPath(), true);
+            // bashArguments.insertArgumentPair(2, "--jar.path", dockerInspectorInfo.offlineDockerInspectorJar.getCanonicalPath(), true);
             importTars(dockerInspectorInfo.offlineDockerInspectorJar, dockerInspectorInfo.offlineTars, outputDirectory, environmentVariables, bashExe);
         }
 
         // All the arguments should be joined into a single String, as the command to run after the -c
-        dockerArguments.add(bashArguments.buildString());
+        // dockerArguments.add(bashArguments.buildString());
 
-        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), dockerArguments);
+        // ORIG:final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), dockerArguments);
+        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, "java", dockerArguments);
         executableRunner.execute(dockerExecutable);
 
         final File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);

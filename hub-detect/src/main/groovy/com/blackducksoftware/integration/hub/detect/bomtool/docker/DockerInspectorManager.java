@@ -69,7 +69,7 @@ public class DockerInspectorManager {
     private final MavenMetadataService mavenMetadataService;
 
     public DockerInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
-        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
+            final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
@@ -97,7 +97,7 @@ public class DockerInspectorManager {
 
         final DockerInspectorInfo info = resolveShellScript();
         final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)),
-            detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH));
+                detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH));
         info.version = resolveInspectorVersion(bashExecutablePath, info.dockerInspectorScript);
 
         if (info.isOffline) {
@@ -206,7 +206,7 @@ public class DockerInspectorManager {
         final String mavenMetadataUrl = "https://test-repo.blackducksoftware.com:443/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-docker-inspector/maven-metadata.xml";
         final Document xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
         final Optional<String> version = mavenMetadataService.parseVersionFromXML(xmlDocument, versionRange);
-
+        logger.info(String.format("*** version: %s", version));
         return version.orElse(versionRange);
     }
 }
