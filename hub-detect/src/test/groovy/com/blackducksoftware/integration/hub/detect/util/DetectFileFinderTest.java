@@ -27,4 +27,22 @@ public class DetectFileFinderTest {
         assertFalse(finder.isFileUnderDir(new File("src/test/resources"), new File("src/test/groovy")));
     }
 
+    @Test
+    public void testFindFile() {
+        final DetectFileFinder finder = new DetectFileFinder();
+        assertEquals("findMe.txt", finder.findFile(new File("src/test/resources/bdignore"), "findMe.txt").getName());
+    }
+
+    @Test
+    public void testBdIgnoreFindFile() {
+        final DetectFileFinder finder = new DetectFileFinder();
+        assertTrue(finder.isFileUnderDir(new File("src/test/resources/bdignore"), new File("src/test/resources/bdignore/traversedDir/findMe.txt")));
+        assertFalse(finder.isFileUnderDir(new File("src/test/resources/bdignore"), new File("src/test/resources/bdignore/ignoredDir1/ignoreMe.txt")));
+        assertFalse(finder.isFileUnderDir(new File("src/test/resources/bdignore"), new File("src/test/resources/bdignore/ignoredDir2/ignoreMe.txt")));
+    }
+
+    @Test
+    public void testBdIgnoreFindFiles() {
+        // TODO
+    }
 }
