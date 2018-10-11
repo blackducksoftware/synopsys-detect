@@ -6,7 +6,7 @@
 DETECT_RELEASE_VERSION=${DETECT_LATEST_RELEASE_VERSION}
 
 # To override the default version key, specify a
-* different DETECT_VERSION_KEY in your environment and
+# different DETECT_VERSION_KEY in your environment and
 # *that* key will be used to get the download url from
 # artifactory. These DETECT_VERSION_KEY values are
 # properties in Artifactory that resolve to download
