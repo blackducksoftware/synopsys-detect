@@ -142,7 +142,7 @@ public class DockerExtractor {
         dockerArguments.add("file:" + dockerPropertiesFile.getCanonicalPath());
         dockerArguments.add(imageArgument);
         if (dockerInspectorInfo.isOffline()) {
-            importTars(dockerInspectorInfo.getDockerInspectorJar(), dockerInspectorInfo.getOfflineTars(), outputDirectory, environmentVariables, bashExe);
+            importTars(dockerInspectorInfo.getDockerInspectorJar(), dockerInspectorInfo.getAirGapInspectorImageTarfiles(), outputDirectory, environmentVariables, bashExe);
         }
         // TODO: someday soon (before 5.0.0 is released), detect will provide the Java executable to use
         final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, "java", dockerArguments);

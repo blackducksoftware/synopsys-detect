@@ -94,30 +94,29 @@ public class DockerInspectorManager {
 
     private DockerInspectorInfo install() throws DetectUserFriendlyException {
         boolean offline = false;
-        Optional<File> jarFileOptional = getUserSpecifiedDiskResidentJar();
-        if (!jarFileOptional.isPresent()) {
-            jarFileOptional = getAirGapJar();
-            if (jarFileOptional.isPresent()) {
+        Optional<File> dockerInspectorJar = getUserSpecifiedDiskResidentJar();
+        if (!dockerInspectorJar.isPresent()) {
+            dockerInspectorJar = getAirGapJar();
+            if (dockerInspectorJar.isPresent()) {
                 offline = true;
             } else {
-                jarFileOptional = Optional.of(downloadJar());
+                dockerInspectorJar = Optional.of(downloadJar());
             }
         }
-        List<File> offlineTars = null;
+        List<File> airGapInspectorImageTarfiles = null;
         if (offline) {
-            offlineTars = new ArrayList<>();
+            airGapInspectorImageTarfiles = new ArrayList<>();
             final String dockerInspectorAirGapPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
             for (final String inspectorName : inspectorNames) {
                 final File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + inspectorName + ".tar");
-                offlineTars.add(osImage);
+                airGapInspectorImageTarfiles.add(osImage);
             }
         }
-        return new DockerInspectorInfo(jarFileOptional.get(), offlineTars);
+        return new DockerInspectorInfo(dockerInspectorJar.get(), airGapInspectorImageTarfiles);
     }
 
     private String getJarFilename(final String version) {
         final String jarFilename = String.format("hub-docker-inspector-%s.jar", version);
-        logger.trace(String.format("Derived jar filename: %s", jarFilename));
         return jarFilename;
     }
 

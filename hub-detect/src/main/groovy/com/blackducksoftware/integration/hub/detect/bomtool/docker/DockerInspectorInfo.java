@@ -30,12 +30,12 @@ import org.springframework.util.CollectionUtils;
 
 public class DockerInspectorInfo {
     private final File dockerInspectorJar;
-    private final List<File> offlineTars;
+    private final List<File> airGapInspectorImageTarfiles;
 
     public DockerInspectorInfo(final File dockerInspectorJar,
-            final List<File> offlineTars) {
+            final List<File> airGapInspectorImageTarfiles) {
         this.dockerInspectorJar = dockerInspectorJar;
-        this.offlineTars = offlineTars;
+        this.airGapInspectorImageTarfiles = airGapInspectorImageTarfiles;
     }
 
     public File getDockerInspectorJar() {
@@ -43,10 +43,10 @@ public class DockerInspectorInfo {
     }
 
     public boolean isOffline() {
-        return !CollectionUtils.isEmpty(offlineTars);
+        return !CollectionUtils.isEmpty(airGapInspectorImageTarfiles);
     }
 
-    public List<File> getOfflineTars() {
-        return offlineTars;
+    public List<File> getAirGapInspectorImageTarfiles() {
+        return airGapInspectorImageTarfiles;
     }
 }
