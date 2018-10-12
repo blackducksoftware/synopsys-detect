@@ -138,10 +138,10 @@ public class DockerInspectorManager {
     }
 
     private Optional<File> getAirGapJar() throws DetectUserFriendlyException {
-        logger.debug("Checking for air gap docker inspector jar file");
         final String airGapDirPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
+        logger.debug(String.format("Checking for air gap docker inspector jar file in %s", airGapDirPath));
         try {
-            final File airGapJarFile = detectFileFinder.findFilesToDepth(airGapDirPath, "*.jar", 0).get(0);
+            final File airGapJarFile = detectFileFinder.findFilesToDepth(airGapDirPath, "*.jar", 1).get(0);
             logger.debug(String.format("Found air gap jar: %s", airGapJarFile.getAbsolutePath()));
             return Optional.of(airGapJarFile);
         } catch (final Exception e) {
