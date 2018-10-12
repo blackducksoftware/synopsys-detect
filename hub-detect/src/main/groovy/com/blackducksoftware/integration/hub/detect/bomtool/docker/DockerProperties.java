@@ -47,6 +47,7 @@ public class DockerProperties {
         dockerProperties.setProperty("output.path", outputDirectory.getAbsolutePath());
         dockerProperties.setProperty("output.include.containerfilesystem", "true");
         dockerProperties.setProperty("phone.home", "false");
+        dockerProperties.setProperty("caller.name", "Detect");
 
         final Map<String, String> additionalDockerProperties = detectConfiguration.getDockerProperties();
         additionalDockerProperties.forEach((key, value) -> dockerProperties.setProperty(key, value));

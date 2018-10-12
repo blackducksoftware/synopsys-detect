@@ -58,6 +58,7 @@ public class DockerInspectorManager {
     private static final String ARTIFACTORY_URL_BASE = "https://test-repo.blackducksoftware.com:443/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-docker-inspector/";
     private static final String ARTIFACTORY_URL_METADATA = ARTIFACTORY_URL_BASE + "maven-metadata.xml";
     private static final String ARTIFACTORY_URL_JAR_PATTERN = ARTIFACTORY_URL_BASE + "%s/%s";
+    private static final List<String> inspectorNames = Arrays.asList("ubuntu", "alpine", "centos");
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -69,6 +70,8 @@ public class DockerInspectorManager {
     private final DetectConfigurationUtility detectConfigurationUtility;
     private final MavenMetadataService mavenMetadataService;
 
+    private DockerInspectorInfo resolvedInfo;
+
     public DockerInspectorManager(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder,
             final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
         this.detectFileManager = detectFileManager;
@@ -78,12 +81,10 @@ public class DockerInspectorManager {
         this.mavenMetadataService = mavenMetadataService;
     }
 
-    private DockerInspectorInfo resolvedInfo;
-
     public DockerInspectorInfo getDockerInspector() throws BomToolException {
         try {
             if (resolvedInfo == null) {
-                install();
+                resolvedInfo = install();
             }
             return resolvedInfo;
         } catch (final Exception e) {
@@ -91,7 +92,7 @@ public class DockerInspectorManager {
         }
     }
 
-    private void install() throws DetectUserFriendlyException {
+    private DockerInspectorInfo install() throws DetectUserFriendlyException {
         boolean offline = false;
         Optional<File> jarFileOptional = getUserSpecifiedDiskResidentJar();
         if (!jarFileOptional.isPresent()) {
@@ -106,12 +107,12 @@ public class DockerInspectorManager {
         if (offline) {
             offlineTars = new ArrayList<>();
             final String dockerInspectorAirGapPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
-            for (final String os : Arrays.asList("ubuntu", "alpine", "centos")) {
-                final File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + os + ".tar");
+            for (final String inspectorName : inspectorNames) {
+                final File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + inspectorName + ".tar");
                 offlineTars.add(osImage);
             }
         }
-        resolvedInfo = new DockerInspectorInfo(jarFileOptional.get(), offlineTars);
+        return new DockerInspectorInfo(jarFileOptional.get(), offlineTars);
     }
 
     private String getJarFilename(final String version) {
