@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeOutputTransformer;
+import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeListTasksParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.GraphParserTransformer;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
@@ -375,13 +375,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public BitbakeOutputTransformer bitbakeOutputTransformer() {
-        return new BitbakeOutputTransformer(graphParserTransformer());
+    public BitbakeListTasksParser bitbakeListTasksParser() {
+        return new BitbakeListTasksParser();
     }
 
     @Bean
     public BitbakeExtractor bitbakeExtractor() {
-        return new BitbakeExtractor(executableManager(), executableRunner(), detectConfiguration(), detectFileManager(), detectFileFinder(), bitbakeOutputTransformer());
+        return new BitbakeExtractor(executableManager(), executableRunner(), detectConfiguration(), detectFileManager(), detectFileFinder(), graphParserTransformer(), bitbakeListTasksParser());
     }
 
     @Bean

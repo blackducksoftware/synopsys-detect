@@ -1,0 +1,59 @@
+Loading cache: 100% |###################################################################################################################################################################################################################| Time: 0:00:00
+Loaded 1282 entries from dependency cache.
+NOTE: Resolving any missing task queue dependencies
+
+Build Configuration:
+BB_VERSION           = "1.37.0"
+BUILD_SYS            = "x86_64-linux"
+NATIVELSBSTRING      = "universal"
+TARGET_SYS           = "i586-poky-linux"
+MACHINE              = "qemux86"
+DISTRO               = "poky"
+DISTRO_VERSION       = "2.5"
+TUNE_FEATURES        = "m32 i586"
+TARGET_FPU           = ""
+meta                 
+meta-poky            
+meta-yocto-bsp       = "my-yocto-2.5:da3625c52e1ab8985fba4fc3d133edf92142f182"
+
+Initialising tasks: 100% |##############################################################################################################################################################################################################| Time: 0:00:01
+NOTE: Executing RunQueue Tasks
+do_build                       Default task for a recipe - depends on all other normal tasks required to 'build' a recipe
+do_checkuri                    Validates the SRC_URI value
+do_clean                       Removes all output files for a target
+do_cleanall                    Removes all output files, shared state cache, and downloaded source files for a target
+do_cleansstate                 Removes all output files and shared state cache for a target
+do_compile                     Compiles the source in the compilation directory
+do_configure                   Configures the source by enabling and disabling any build-time and configuration options for the software being built
+do_devpyshell                  Starts an interactive Python shell for development/debugging
+do_devshell                    Starts a shell with the environment set up for development/debugging
+do_fetch                       Fetches the source code
+do_image                       
+do_image_complete              
+do_image_complete_setscene      (setscene version)
+do_image_ext4                  
+do_image_qa                    
+do_image_qa_setscene            (setscene version)
+do_image_tar                   
+do_install                     Copies files from the compilation directory to a holding area
+do_listtasks                   Lists all defined tasks for a target
+do_package                     Analyzes the content of the holding area and splits it into subsets based on available packages and files
+do_package_qa_setscene         Runs QA checks on packaged files (setscene version)
+do_package_setscene            Analyzes the content of the holding area and splits it into subsets based on available packages and files (setscene version)
+do_package_write_rpm_setscene  Creates the actual RPM packages and places them in the Package Feed area (setscene version)
+do_packagedata                 Creates package metadata used by the build system to generate the final packages
+do_packagedata_setscene        Creates package metadata used by the build system to generate the final packages (setscene version)
+do_patch                       Locates patch files and applies them to the source code
+do_populate_lic                Writes license information for the recipe that is collected later when the image is constructed
+do_populate_lic_setscene       Writes license information for the recipe that is collected later when the image is constructed (setscene version)
+do_populate_sdk                Creates the file and directory structure for an installable SDK
+do_populate_sdk_ext            
+do_populate_sysroot_setscene   Copies a subset of files installed by do_install into the sysroot in order to make them available to other recipes (setscene version)
+do_prepare_recipe_sysroot      
+do_rootfs                      Creates the root filesystem (file and directory structure) for an image
+do_rootfs_wicenv               
+do_sdk_depends                 
+do_unpack                      Unpacks the source code into a working directory
+do_write_qemuboot_conf         
+NOTE: Tasks Summary: Attempted 1 tasks of which 0 didn't need to be rerun and all succeeded.
+
