@@ -83,14 +83,19 @@ public class NugetInspectorManager {
         final String nugetExecutable = executableManager
                                            .getExecutablePathOrOverride(ExecutableType.NUGET, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)),
                                                detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_PATH));
-        resolvedInspectorVersion = resolveInspectorVersion(nugetExecutable);
-        if (resolvedInspectorVersion != null) {
-            resolvedNugetInspectorExecutable = installInspector(nugetExecutable, detectFileManager.getSharedDirectory("nuget"), resolvedInspectorVersion);
-            if (resolvedNugetInspectorExecutable == null) {
-                throw new DetectUserFriendlyException("Unable to install nuget inspector version from available nuget sources.", ExitCodeType.FAILURE_CONFIGURATION);
-            }
+        
+        if (nugetExecutable == null){
+            throw new DetectUserFriendlyException("Unable to find a nuget executable even though nuget applied.", ExitCodeType.FAILURE_CONFIGURATION);
         } else {
-            throw new DetectUserFriendlyException("Unable to resolve nuget inspector version from available nuget sources.", ExitCodeType.FAILURE_CONFIGURATION);
+            resolvedInspectorVersion = resolveInspectorVersion(nugetExecutable);
+            if (resolvedInspectorVersion != null) {
+                resolvedNugetInspectorExecutable = installInspector(nugetExecutable, detectFileManager.getSharedDirectory("nuget"), resolvedInspectorVersion);
+                if (resolvedNugetInspectorExecutable == null) {
+                    throw new DetectUserFriendlyException("Unable to install nuget inspector version from available nuget sources.", ExitCodeType.FAILURE_CONFIGURATION);
+                }
+            } else {
+                throw new DetectUserFriendlyException("Unable to resolve nuget inspector version from available nuget sources.", ExitCodeType.FAILURE_CONFIGURATION);
+            }
         }
     }
 
