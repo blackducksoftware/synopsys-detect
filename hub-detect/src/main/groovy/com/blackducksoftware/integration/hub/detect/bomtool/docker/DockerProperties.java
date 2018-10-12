@@ -64,15 +64,6 @@ public class DockerProperties {
         }
         environmentVariables.put("PATH", path);
 
-        // TODO There is probably more here that can now be removed
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_HOST", detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_HOST));
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_PORT", detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PORT));
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_USERNAME", detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_USERNAME));
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_PASSWORD", detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PASSWORD));
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_IGNORED_HOSTS", detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS));
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_NTLM_DOMAIN", detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_NTLM_DOMAIN));
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION", detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_NTLM_WORKSTATION));
-
         final Map<String, String> additionalDockerProperties = detectConfiguration.getDockerEnvironmentProperties();
         additionalDockerProperties.forEach((key, value) -> environmentVariables.put(key, value));
 

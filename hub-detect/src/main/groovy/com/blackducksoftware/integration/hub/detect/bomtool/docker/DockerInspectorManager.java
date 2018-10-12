@@ -59,7 +59,7 @@ public class DockerInspectorManager {
     private static final String ARTIFACTORY_URL_METADATA = ARTIFACTORY_URL_BASE + "maven-metadata.xml";
     private static final String ARTIFACTORY_URL_JAR_PATTERN = ARTIFACTORY_URL_BASE + "%s/%s";
 
-    private final Logger logger = LoggerFactory.getLogger(DockerInspectorManager.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final String dockerSharedDirectoryName = "docker";
 
@@ -81,7 +81,6 @@ public class DockerInspectorManager {
     private DockerInspectorInfo resolvedInfo;
 
     public DockerInspectorInfo getDockerInspector() throws BomToolException {
-        logger.trace("*** getDockerInspector() called");
         try {
             if (resolvedInfo == null) {
                 install();
@@ -93,7 +92,6 @@ public class DockerInspectorManager {
     }
 
     private void install() throws DetectUserFriendlyException {
-        logger.trace("*** install() called");
         boolean offline = false;
         Optional<File> jarFileOptional = getUserSpecifiedDiskResidentJar();
         if (!jarFileOptional.isPresent()) {
@@ -145,7 +143,7 @@ public class DockerInspectorManager {
             logger.debug(String.format("Found air gap jar: %s", airGapJarFile.getAbsolutePath()));
             return Optional.of(airGapJarFile);
         } catch (final Exception e) {
-            logger.debug(String.format("Did not find a docker inspector jar file in the airgap dir %s (%s)", airGapDirPath, e.getMessage()));
+            logger.debug(String.format("Did not find a docker inspector jar file in the airgap dir %s", airGapDirPath));
             return Optional.empty();
         }
     }

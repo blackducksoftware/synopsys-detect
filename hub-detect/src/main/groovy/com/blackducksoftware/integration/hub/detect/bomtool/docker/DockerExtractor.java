@@ -143,28 +143,14 @@ public class DockerExtractor {
         final Map<String, String> environmentVariables = createEnvironmentVariables(dockerExe);
 
         final List<String> dockerArguments = new ArrayList<>();
-        // The -c is a bash option, the following String is the command we want to run
-        // ORIG:dockerArguments.add("-c");
         dockerArguments.add("-jar");
         dockerArguments.add(dockerInspectorInfo.getDockerInspectorJar().getAbsolutePath());
-
-        // final ExecutableArgumentBuilder bashArguments = new ExecutableArgumentBuilder();
-        // bashArguments.addArgument(dockerInspectorInfo.dockerInspectorScript.getCanonicalPath(), true);
-        // bashArguments.addArgumentPair("--spring.config.location", "file:" + dockerPropertiesFile.getCanonicalPath(), true);
-        // bashArguments.addArgument(imageArgument);
         dockerArguments.add("--spring.config.location");
         dockerArguments.add("file:" + dockerPropertiesFile.getCanonicalPath());
         dockerArguments.add(imageArgument);
-
         if (dockerInspectorInfo.isOffline()) {
-            // bashArguments.insertArgumentPair(2, "--jar.path", dockerInspectorInfo.offlineDockerInspectorJar.getCanonicalPath(), true);
             importTars(dockerInspectorInfo.getDockerInspectorJar(), dockerInspectorInfo.getOfflineTars(), outputDirectory, environmentVariables, bashExe);
         }
-
-        // All the arguments should be joined into a single String, as the command to run after the -c
-        // dockerArguments.add(bashArguments.buildString());
-
-        // ORIG:final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), dockerArguments);
         // TODO: someday soon (before 5.0.0 is released), detect will provide the Java executable to use
         final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, "java", dockerArguments);
         executableRunner.execute(dockerExecutable);
