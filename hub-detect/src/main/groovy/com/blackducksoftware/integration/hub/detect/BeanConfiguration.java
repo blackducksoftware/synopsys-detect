@@ -565,7 +565,7 @@ public class BeanConfiguration {
 
     @Bean
     public DockerProperties dockerProperties() {
-        return new DockerProperties(detectConfiguration(), detectPropertySource());
+        return new DockerProperties(detectConfiguration());
     }
 
     @Bean

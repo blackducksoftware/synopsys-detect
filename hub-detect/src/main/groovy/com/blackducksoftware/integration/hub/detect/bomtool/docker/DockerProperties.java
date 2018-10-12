@@ -31,15 +31,12 @@ import java.util.Properties;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 
 public class DockerProperties {
     private final DetectConfiguration detectConfiguration;
-    private final DetectPropertySource detectPropertySource;
 
-    public DockerProperties(final DetectConfiguration detectConfiguration, final DetectPropertySource detectPropertySource) {
+    public DockerProperties(final DetectConfiguration detectConfiguration) {
         this.detectConfiguration = detectConfiguration;
-        this.detectPropertySource = detectPropertySource;
     }
 
     public void populatePropertiesFile(final File dockerPropertiesFile, final File outputDirectory) throws IOException {
@@ -56,17 +53,4 @@ public class DockerProperties {
 
         dockerProperties.store(new FileOutputStream(dockerPropertiesFile), "");
     }
-
-    public void populateEnvironmentVariables(final Map<String, String> environmentVariables, final File dockerExecutableFile) throws IOException {
-        String path = System.getenv("PATH");
-        if (dockerExecutableFile != null && dockerExecutableFile.exists()) {
-            path += File.pathSeparator + dockerExecutableFile.getParentFile().getCanonicalPath();
-        }
-        environmentVariables.put("PATH", path);
-
-        final Map<String, String> additionalDockerProperties = detectConfiguration.getDockerEnvironmentProperties();
-        additionalDockerProperties.forEach((key, value) -> environmentVariables.put(key, value));
-
-    }
-
 }

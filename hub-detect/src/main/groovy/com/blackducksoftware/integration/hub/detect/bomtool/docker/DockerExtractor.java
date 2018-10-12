@@ -109,12 +109,6 @@ public class DockerExtractor {
         }
     }
 
-    private Map<String, String> createEnvironmentVariables(final File dockerExe) throws IOException {
-        final Map<String, String> environmentVariables = new HashMap<>();
-        dockerProperties.populateEnvironmentVariables(environmentVariables, dockerExe);
-        return environmentVariables;
-    }
-
     private void importTars(final File inspectorJar, final List<File> importTars, final File directory, final Map<String, String> environmentVariables, final File bashExe) {
         try {
             for (final File imageToImport : importTars) {
@@ -140,8 +134,7 @@ public class DockerExtractor {
         final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
         final File dockerPropertiesFile = detectFileManager.getOutputFile(outputDirectory, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
-        final Map<String, String> environmentVariables = createEnvironmentVariables(dockerExe);
-
+        final Map<String, String> environmentVariables = new HashMap<>(0);
         final List<String> dockerArguments = new ArrayList<>();
         dockerArguments.add("-jar");
         dockerArguments.add(dockerInspectorInfo.getDockerInspectorJar().getAbsolutePath());
