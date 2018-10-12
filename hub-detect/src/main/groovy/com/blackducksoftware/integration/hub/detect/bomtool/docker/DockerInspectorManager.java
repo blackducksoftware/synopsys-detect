@@ -117,7 +117,9 @@ public class DockerInspectorManager {
     }
 
     private String getJarFilename(final String version) {
-        return String.format("hub-docker-inspector-%s.jar", version);
+        final String jarFilename = String.format("hub-docker-inspector-%s.jar", version);
+        logger.trace(String.format("Derived jar filename: %s", jarFilename));
+        return jarFilename;
     }
 
     private Optional<File> getUserSpecifiedDiskResidentJar() {
@@ -128,6 +130,7 @@ public class DockerInspectorManager {
             logger.debug(String.format("Using user-provided docker inspector jar path: %s", providedJarPath));
             final File providedJarCandidate = new File(providedJarPath);
             if (providedJarCandidate.isFile()) {
+                logger.debug(String.format("Found user-specified jar: %s", providedJarCandidate.getAbsolutePath()));
                 providedJar = Optional.of(providedJarCandidate);
             }
         }
@@ -138,7 +141,9 @@ public class DockerInspectorManager {
         logger.debug("Checking for air gap docker inspector jar file");
         final String airGapDirPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
         try {
-            return Optional.of(detectFileFinder.findFilesToDepth(airGapDirPath, "*.jar", 0).get(0));
+            final File airGapJarFile = detectFileFinder.findFilesToDepth(airGapDirPath, "*.jar", 0).get(0);
+            logger.debug(String.format("Found air gap jar: %s", airGapJarFile.getAbsolutePath()));
+            return Optional.of(airGapJarFile);
         } catch (final Exception e) {
             logger.debug(String.format("Did not find a docker inspector jar file in the airgap dir %s (%s)", airGapDirPath, e.getMessage()));
             return Optional.empty();
@@ -164,6 +169,7 @@ public class DockerInspectorManager {
         } finally {
             ResourceUtil.closeQuietly(response);
         }
+        logger.debug(String.format("Downloaded docker inspector jar: %s", jarFile.getAbsolutePath()));
         return jarFile;
     }
 
@@ -177,9 +183,11 @@ public class DockerInspectorManager {
     }
 
     private String selectArtifactorVersion(final String versionRange) throws IOException, DetectUserFriendlyException, SAXException, IntegrationException {
+        logger.trace(String.format("selectArtifactorVersion(): given version range: %s", versionRange));
         final String mavenMetadataUrl = ARTIFACTORY_URL_METADATA;
         final Document xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
         final Optional<String> version = mavenMetadataService.parseVersionFromXML(xmlDocument, versionRange);
+        logger.trace(String.format("selectArtifactorVersion(): parsed version: %s", version.get()));
         return version.orElse(versionRange);
     }
 }
