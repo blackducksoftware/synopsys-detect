@@ -24,18 +24,29 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.docker;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.util.CollectionUtils;
+
 public class DockerInspectorInfo {
-    public boolean found = false;
-    public Exception error = null;
-    public String reason = "";
+    private final File dockerInspectorJar;
+    private final List<File> offlineTars;
 
-    public String version;
-    public File dockerInspectorScript;
+    public DockerInspectorInfo(final File dockerInspectorJar,
+            final List<File> offlineTars) {
+        this.dockerInspectorJar = dockerInspectorJar;
+        this.offlineTars = offlineTars;
+    }
 
-    public boolean isOffline = false;
-    public List<File> offlineTars = new ArrayList<>();
-    public File offlineDockerInspectorJar;
+    public File getDockerInspectorJar() {
+        return dockerInspectorJar;
+    }
+
+    public boolean isOffline() {
+        return !CollectionUtils.isEmpty(offlineTars);
+    }
+
+    public List<File> getOfflineTars() {
+        return offlineTars;
+    }
 }

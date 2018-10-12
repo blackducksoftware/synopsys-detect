@@ -25,11 +25,13 @@ package com.blackducksoftware.integration.hub.detect.bomtool.docker;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,13 +44,9 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
 import com.synopsys.integration.rest.request.Request;
@@ -56,34 +54,36 @@ import com.synopsys.integration.rest.request.Response;
 import com.synopsys.integration.util.ResourceUtil;
 
 public class DockerInspectorManager {
-    private static final String LATEST_URL = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh";
+    private static final String IMAGE_INSPECTOR_FAMILY = "hub-imageinspector-ws";
+    private static final String ARTIFACTORY_URL_BASE = "https://test-repo.blackducksoftware.com:443/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-docker-inspector/";
+    private static final String ARTIFACTORY_URL_METADATA = ARTIFACTORY_URL_BASE + "maven-metadata.xml";
+    private static final String ARTIFACTORY_URL_JAR_PATTERN = ARTIFACTORY_URL_BASE + "%s/%s";
+
     private final Logger logger = LoggerFactory.getLogger(DockerInspectorManager.class);
 
     private final String dockerSharedDirectoryName = "docker";
 
     private final DetectFileManager detectFileManager;
-    private final ExecutableManager executableManager;
-    private final ExecutableRunner executableRunner;
+    private final DetectFileFinder detectFileFinder;
     private final DetectConfiguration detectConfiguration;
     private final DetectConfigurationUtility detectConfigurationUtility;
     private final MavenMetadataService mavenMetadataService;
 
-    public DockerInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
+    public DockerInspectorManager(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder,
             final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
         this.detectFileManager = detectFileManager;
-        this.executableManager = executableManager;
-        this.executableRunner = executableRunner;
+        this.detectFileFinder = detectFileFinder;
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationUtility = detectConfigurationUtility;
         this.mavenMetadataService = mavenMetadataService;
     }
 
-    private boolean hasResolvedInspector;
     private DockerInspectorInfo resolvedInfo;
 
     public DockerInspectorInfo getDockerInspector() throws BomToolException {
+        logger.trace("*** getDockerInspector() called");
         try {
-            if (!hasResolvedInspector) {
+            if (resolvedInfo == null) {
                 install();
             }
             return resolvedInfo;
@@ -93,120 +93,93 @@ public class DockerInspectorManager {
     }
 
     private void install() throws DetectUserFriendlyException {
-        hasResolvedInspector = true;
-
-        final DockerInspectorInfo info = resolveShellScript();
-        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)),
-                detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH));
-        info.version = resolveInspectorVersion(bashExecutablePath, info.dockerInspectorScript);
-
-        if (info.isOffline) {
+        logger.trace("*** install() called");
+        boolean offline = false;
+        Optional<File> jarFileOptional = getUserSpecifiedDiskResidentJar();
+        if (!jarFileOptional.isPresent()) {
+            jarFileOptional = getAirGapJar();
+            if (jarFileOptional.isPresent()) {
+                offline = true;
+            } else {
+                jarFileOptional = Optional.of(downloadJar());
+            }
+        }
+        List<File> offlineTars = null;
+        if (offline) {
+            offlineTars = new ArrayList<>();
             final String dockerInspectorAirGapPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
-            final String inspectorImageFamily = resolveInspectorImageFamily(bashExecutablePath, info.dockerInspectorScript);
-            info.offlineDockerInspectorJar = new File(dockerInspectorAirGapPath, "hub-docker-inspector-" + info.version + ".jar");
             for (final String os : Arrays.asList("ubuntu", "alpine", "centos")) {
-                final File osImage = new File(dockerInspectorAirGapPath, inspectorImageFamily + "-" + os + ".tar");
-                info.offlineTars.add(osImage);
+                final File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + os + ".tar");
+                offlineTars.add(osImage);
             }
         }
-
-        resolvedInfo = info;
+        resolvedInfo = new DockerInspectorInfo(jarFileOptional.get(), offlineTars);
     }
 
-    private String resolveInspectorImageFamily(final String bashExecutablePath, final File dockerInspectorShellScript) throws DetectUserFriendlyException {
-        try {
-            final String dockerInspectorArg = "--inspectorimagefamily";
-            final String inspectorImageFamily = getResponseFromDockerInspector(bashExecutablePath, dockerInspectorShellScript, dockerInspectorArg);
-            logger.info(String.format("Resolved docker inspector image family to: %s", inspectorImageFamily));
-            return inspectorImageFamily;
-        } catch (final Exception e) {
-            throw new DetectUserFriendlyException("Unable to find docker inspector version.", e, ExitCodeType.FAILURE_CONFIGURATION);
-        }
+    private String getJarFilename(final String version) {
+        return String.format("hub-docker-inspector-%s.jar", version);
     }
 
-    private String resolveInspectorVersion(final String bashExecutablePath, final File dockerInspectorShellScript) throws DetectUserFriendlyException {
-        try {
-            final String dockerInspectorVersion = getVersionFromArtifactory(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION));
-            if ("latest".equalsIgnoreCase(dockerInspectorVersion)) {
-                final String dockerInspectorArg = "--version";
-                final String responseFromDockerInspector = getResponseFromDockerInspector(bashExecutablePath, dockerInspectorShellScript, dockerInspectorArg);
-                final String inspectorVersion = responseFromDockerInspector.split(" ")[1];
-                logger.info(String.format("Resolved docker inspector version from latest to: %s", inspectorVersion));
-                return inspectorVersion;
-            } else {
-                return dockerInspectorVersion;
+    private Optional<File> getUserSpecifiedDiskResidentJar() {
+        logger.debug("Checking for user-specified disk-resident docker inspector jar file");
+        Optional<File> providedJar = Optional.empty();
+        final String providedJarPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH);
+        if (StringUtils.isNotBlank(providedJarPath)) {
+            logger.debug(String.format("Using user-provided docker inspector jar path: %s", providedJarPath));
+            final File providedJarCandidate = new File(providedJarPath);
+            if (providedJarCandidate.isFile()) {
+                providedJar = Optional.of(providedJarCandidate);
             }
+        }
+        return providedJar;
+    }
+
+    private Optional<File> getAirGapJar() throws DetectUserFriendlyException {
+        logger.debug("Checking for air gap docker inspector jar file");
+        final String airGapDirPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
+        try {
+            return Optional.of(detectFileFinder.findFilesToDepth(airGapDirPath, "*.jar", 0).get(0));
         } catch (final Exception e) {
-            throw new DetectUserFriendlyException("Unable to find docker inspector version.", e, ExitCodeType.FAILURE_CONFIGURATION);
+            logger.debug(String.format("Did not find a docker inspector jar file in the airgap dir %s (%s)", airGapDirPath, e.getMessage()));
+            return Optional.empty();
         }
     }
 
-    private String getResponseFromDockerInspector(final String bashExecutablePath, final File dockerInspectorShellScript, final String dockerInspectorArg) throws IOException, ExecutableRunnerException {
+    private File downloadJar() throws DetectUserFriendlyException {
+        logger.debug("Attempting to download docker inspector jar file");
+        final String resolvedVersion = resolveInspectorVersion();
+        final String jarFilename = this.getJarFilename(resolvedVersion);
         final File inspectorDirectory = detectFileManager.getSharedDirectory(dockerSharedDirectoryName);
-        final List<String> bashArguments = new ArrayList<>();
-        bashArguments.add("-c");
-        bashArguments.add("\"" + dockerInspectorShellScript.getCanonicalPath() + "\" " + dockerInspectorArg);
-        final Executable dockerInspectorExecutable = new Executable(inspectorDirectory, bashExecutablePath, bashArguments);
-        final String responseFromDockerInspector = executableRunner.execute(dockerInspectorExecutable).getStandardOutput();
-        return responseFromDockerInspector;
+        final File jarFile = new File(inspectorDirectory, jarFilename);
+        final String hubDockerInspectorJarUrl = String.format(ARTIFACTORY_URL_JAR_PATTERN, resolvedVersion, jarFilename);
+        final Request request = new Request.Builder().uri(hubDockerInspectorJarUrl).build();
+        Response response = null;
+        try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(hubDockerInspectorJarUrl)) {
+            response = restConnection.executeRequest(request);
+            final InputStream jarBytesInputStream = response.getContent();
+            // TODO Should we add a method to detectFileManager for this?
+            FileUtils.copyInputStreamToFile(jarBytesInputStream, jarFile);
+        } catch (IntegrationException | IOException e) {
+            throw new DetectUserFriendlyException(String.format("There was a problem retrieving the docker inspector shell script from %s: %s", hubDockerInspectorJarUrl, e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+        } finally {
+            ResourceUtil.closeQuietly(response);
+        }
+        return jarFile;
     }
 
-    private DockerInspectorInfo resolveShellScript() throws DetectUserFriendlyException {
+    private String resolveInspectorVersion() throws DetectUserFriendlyException {
+        final String configuredVersionRangeSpec = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
         try {
-            final String suppliedDockerVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
-            final String dockerInspectorVersion = getVersionFromArtifactory(suppliedDockerVersion);
-            final File shellScriptFile;
-            final File airGapHubDockerInspectorShellScript = new File(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH), "hub-docker-inspector.sh");
-            boolean isOffline = false;
-            logger.debug(String.format("Verifying air gap shell script present at %s", airGapHubDockerInspectorShellScript.getCanonicalPath()));
-
-            final String dockerInspectorPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH);
-            if (StringUtils.isNotBlank(dockerInspectorPath)) {
-                shellScriptFile = new File(dockerInspectorPath);
-            } else if (airGapHubDockerInspectorShellScript.exists()) {
-                shellScriptFile = airGapHubDockerInspectorShellScript;
-                isOffline = true;
-            } else {
-                String hubDockerInspectorShellScriptUrl = LATEST_URL;
-                if (!"latest".equals(dockerInspectorVersion) && dockerInspectorVersion != null) {
-                    hubDockerInspectorShellScriptUrl = String.format("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-%s.sh", dockerInspectorVersion);
-                }
-                logger.info(String.format("Getting the Docker inspector shell script from %s", hubDockerInspectorShellScriptUrl));
-
-                final Request request = new Request.Builder().uri(hubDockerInspectorShellScriptUrl).build();
-                String shellScriptContents;
-                Response response = null;
-
-                try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(hubDockerInspectorShellScriptUrl)) {
-                    response = restConnection.executeRequest(request);
-                    shellScriptContents = response.getContentString();
-                } finally {
-                    ResourceUtil.closeQuietly(response);
-                }
-
-                final File inspectorDirectory = detectFileManager.getSharedDirectory(dockerSharedDirectoryName);
-                shellScriptFile = new File(inspectorDirectory, String.format("hub-docker-inspector-%s.sh", suppliedDockerVersion));
-                detectFileManager.writeToFile(shellScriptFile, shellScriptContents);
-                if (!shellScriptFile.setExecutable(true)) {
-                    throw new DetectUserFriendlyException(String.format("The User does not have permission to execute the docker inspector shell script: %s", shellScriptFile.getAbsolutePath()), ExitCodeType.FAILURE_GENERAL_ERROR);
-                }
-            }
-
-            final DockerInspectorInfo info = new DockerInspectorInfo();
-            info.dockerInspectorScript = shellScriptFile;
-            info.isOffline = isOffline;
-
-            return info;
+            return selectArtifactorVersion(configuredVersionRangeSpec);
         } catch (final Exception e) {
-            throw new DetectUserFriendlyException(String.format("There was a problem retrieving the docker inspector shell script. Please use version 5.0.0 and up: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+            throw new DetectUserFriendlyException(String.format("Unable to find docker inspector version matching configured version range %s", configuredVersionRangeSpec), e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
 
-    private String getVersionFromArtifactory(final String versionRange) throws IOException, DetectUserFriendlyException, SAXException, IntegrationException {
-        final String mavenMetadataUrl = "https://test-repo.blackducksoftware.com:443/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-docker-inspector/maven-metadata.xml";
+    private String selectArtifactorVersion(final String versionRange) throws IOException, DetectUserFriendlyException, SAXException, IntegrationException {
+        final String mavenMetadataUrl = ARTIFACTORY_URL_METADATA;
         final Document xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
         final Optional<String> version = mavenMetadataService.parseVersionFromXML(xmlDocument, versionRange);
-        logger.info(String.format("*** version: %s", version));
         return version.orElse(versionRange);
     }
 }

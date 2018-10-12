@@ -387,9 +387,9 @@ public class BeanConfiguration {
     @Bean
     public BomToolFactory bomToolFactory() throws ParserConfigurationException {
         return new BomToolFactory(detectConfiguration(), detectFileFinder(), standardExecutableFinder(), executableRunner(), bitbakeExtractor(), clangExtractor(), clangLinuxPackageManagers(), composerLockExtractor(), condaCliExtractor(),
-            cpanCliExtractor(), dockerExtractor(), dockerInspectorManager(), gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(),
-            mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(), npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(),
-            pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(), podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
+                cpanCliExtractor(), dockerExtractor(), dockerInspectorManager(), gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(),
+                mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(), npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(),
+                pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(), podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
     }
 
     @Bean
@@ -560,7 +560,7 @@ public class BeanConfiguration {
 
     @Bean
     public DockerInspectorManager dockerInspectorManager() throws ParserConfigurationException {
-        return new DockerInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), mavenMetadataService());
+        return new DockerInspectorManager(detectFileManager(), detectFileFinder(), detectConfiguration(), detectConfigurationUtility(), mavenMetadataService());
     }
 
     @Bean

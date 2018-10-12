@@ -109,9 +109,9 @@ public class DockerExtractor {
         }
     }
 
-    private Map<String, String> createEnvironmentVariables(final String dockerInspectorVersion, final File dockerExe) throws IOException {
+    private Map<String, String> createEnvironmentVariables(final File dockerExe) throws IOException {
         final Map<String, String> environmentVariables = new HashMap<>();
-        dockerProperties.populateEnvironmentVariables(dockerInspectorVersion, environmentVariables, dockerExe);
+        dockerProperties.populateEnvironmentVariables(environmentVariables, dockerExe);
         return environmentVariables;
     }
 
@@ -140,19 +140,13 @@ public class DockerExtractor {
         final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
         final File dockerPropertiesFile = detectFileManager.getOutputFile(outputDirectory, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
-
-        String dockerInspectorVersion = "";
-
-        // we want to get the resolved Docker inspector version, if Detect was able to determine a version
-        dockerInspectorVersion = dockerInspectorInfo.version;
-
-        final Map<String, String> environmentVariables = createEnvironmentVariables(dockerInspectorVersion, dockerExe);
+        final Map<String, String> environmentVariables = createEnvironmentVariables(dockerExe);
 
         final List<String> dockerArguments = new ArrayList<>();
         // The -c is a bash option, the following String is the command we want to run
         // ORIG:dockerArguments.add("-c");
         dockerArguments.add("-jar");
-        dockerArguments.add("/tmp/aaa/hub-docker-inspector-6.3.2.jar");
+        dockerArguments.add(dockerInspectorInfo.getDockerInspectorJar().getAbsolutePath());
 
         // final ExecutableArgumentBuilder bashArguments = new ExecutableArgumentBuilder();
         // bashArguments.addArgument(dockerInspectorInfo.dockerInspectorScript.getCanonicalPath(), true);
@@ -162,15 +156,16 @@ public class DockerExtractor {
         dockerArguments.add("file:" + dockerPropertiesFile.getCanonicalPath());
         dockerArguments.add(imageArgument);
 
-        if (dockerInspectorInfo.isOffline) {
+        if (dockerInspectorInfo.isOffline()) {
             // bashArguments.insertArgumentPair(2, "--jar.path", dockerInspectorInfo.offlineDockerInspectorJar.getCanonicalPath(), true);
-            importTars(dockerInspectorInfo.offlineDockerInspectorJar, dockerInspectorInfo.offlineTars, outputDirectory, environmentVariables, bashExe);
+            importTars(dockerInspectorInfo.getDockerInspectorJar(), dockerInspectorInfo.getOfflineTars(), outputDirectory, environmentVariables, bashExe);
         }
 
         // All the arguments should be joined into a single String, as the command to run after the -c
         // dockerArguments.add(bashArguments.buildString());
 
         // ORIG:final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), dockerArguments);
+        // TODO: someday soon (before 5.0.0 is released), detect will provide the Java executable to use
         final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, "java", dockerArguments);
         executableRunner.execute(dockerExecutable);
 

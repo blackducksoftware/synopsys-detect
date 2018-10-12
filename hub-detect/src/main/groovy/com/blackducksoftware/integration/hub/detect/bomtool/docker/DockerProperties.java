@@ -29,8 +29,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
@@ -59,22 +57,14 @@ public class DockerProperties {
         dockerProperties.store(new FileOutputStream(dockerPropertiesFile), "");
     }
 
-    public void populateEnvironmentVariables(final String dockerInspectorVersion, final Map<String, String> environmentVariables, final File dockerExecutableFile) throws IOException {
+    public void populateEnvironmentVariables(final Map<String, String> environmentVariables, final File dockerExecutableFile) throws IOException {
         String path = System.getenv("PATH");
         if (dockerExecutableFile != null && dockerExecutableFile.exists()) {
             path += File.pathSeparator + dockerExecutableFile.getParentFile().getCanonicalPath();
         }
         environmentVariables.put("PATH", path);
 
-        if (StringUtils.isNotBlank(dockerInspectorVersion)) {
-            environmentVariables.put("DOCKER_INSPECTOR_VERSION", dockerInspectorVersion);
-        }
-
-        final String detectCurlOpts = System.getenv("DETECT_CURL_OPTS");
-        if (StringUtils.isNotBlank(detectCurlOpts)) {
-            environmentVariables.put("DOCKER_INSPECTOR_CURL_OPTS", detectCurlOpts);
-        }
-
+        // TODO There is probably more here that can now be removed
         environmentVariables.put("BLACKDUCK_HUB_PROXY_HOST", detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_HOST));
         environmentVariables.put("BLACKDUCK_HUB_PROXY_PORT", detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PORT));
         environmentVariables.put("BLACKDUCK_HUB_PROXY_USERNAME", detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_USERNAME));
