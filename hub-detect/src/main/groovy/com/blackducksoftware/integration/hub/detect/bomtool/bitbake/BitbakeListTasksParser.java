@@ -23,30 +23,25 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.bitbake;
 
-import java.io.File;
+import java.util.Arrays;
+import java.util.Optional;
 
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
-
-public class BitbakeOutput {
-    private final ExecutableOutput executableOutput;
-    private final String executableDescription;
-    private final File recipeDependsFile;
-
-    public BitbakeOutput(final ExecutableOutput executableOutput, final String executableDescription, final File recipeDependsFile) {
-        this.executableOutput = executableOutput;
-        this.executableDescription = executableDescription;
-        this.recipeDependsFile = recipeDependsFile;
+public class BitbakeListTasksParser {
+    public Optional<String> parseTargetArchitecture(final String standardOutput) {
+        return Arrays.stream(standardOutput.split(System.lineSeparator()))
+                   .filter(this::lineContainsArchitecture)
+                   .map(this::getArchitectureFromLine)
+                   .findFirst();
     }
 
-    public ExecutableOutput getExecutableOutput() {
-        return executableOutput;
+    private boolean lineContainsArchitecture(final String line) {
+        return line.trim().startsWith("TARGET_SYS");
     }
 
-    public String getExecutableDescription() {
-        return executableDescription;
-    }
+    private String getArchitectureFromLine(final String line) {
+        final int start = line.indexOf("\"") + 1;
+        final int end = line.lastIndexOf("\"");
 
-    public File getRecipeDependsFile() {
-        return recipeDependsFile;
+        return line.substring(start, end).trim();
     }
 }

@@ -38,7 +38,7 @@ import com.synopsys.integration.hub.bdio.model.dependencyid.NameDependencyId;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 
 public class GraphParserTransformer {
-    public DependencyGraph transform(final GraphParser graphParser) {
+    public DependencyGraph transform(final GraphParser graphParser, final String targetArchitecture) {
         final Map<String, GraphNode> nodes = graphParser.getNodes();
         final Map<String, GraphEdge> edges = graphParser.getEdges();
         final LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
@@ -52,6 +52,7 @@ public class GraphParserTransformer {
                 final ExternalId externalId = new ExternalId(BitbakeBomTool.YOCTO_FORGE);
                 externalId.name = name;
                 externalId.version = version.get();
+                externalId.architecture = targetArchitecture;
                 graphBuilder.setDependencyInfo(dependencyId, name, version.get(), externalId);
             }
 
