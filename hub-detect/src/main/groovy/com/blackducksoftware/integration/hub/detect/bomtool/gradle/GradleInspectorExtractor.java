@@ -38,7 +38,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -51,22 +51,22 @@ public class GradleInspectorExtractor {
 
     private final ExecutableRunner executableRunner;
     private final DetectFileFinder detectFileFinder;
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
     private final GradleReportParser gradleReportParser;
     private final DetectConfiguration detectConfiguration;
 
-    public GradleInspectorExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final DetectFileManager detectFileManager,
-            final GradleReportParser gradleReportParser, final DetectConfiguration detectConfiguration) {
+    public GradleInspectorExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final DirectoryManager directoryManager,
+        final GradleReportParser gradleReportParser, final DetectConfiguration detectConfiguration) {
         this.executableRunner = executableRunner;
         this.detectFileFinder = detectFileFinder;
-        this.detectFileManager = detectFileManager;
+        this.directoryManager = directoryManager;
         this.gradleReportParser = gradleReportParser;
         this.detectConfiguration = detectConfiguration;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String gradleExe, final String gradleInspector, final ExtractionId extractionId) {
         try {
-            final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
+            final File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
 
             String gradleCommand = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND);
 
@@ -93,10 +93,10 @@ public class GradleInspectorExtractor {
                 String projectVersion = null;
                 if (codeLocationFiles != null) {
                     codeLocationFiles.stream()
-                            .map(codeLocationFile -> gradleReportParser.parseDependencies(bomToolType, codeLocationFile))
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
-                            .forEach(codeLocations::add);
+                        .map(codeLocationFile -> gradleReportParser.parseDependencies(bomToolType, codeLocationFile))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .forEach(codeLocations::add);
 
                     if (rootProjectMetadataFile != null) {
                         final Optional<NameVersion> projectNameVersion = gradleReportParser.parseRootProjectNameVersion(rootProjectMetadataFile);

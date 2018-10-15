@@ -41,12 +41,13 @@ import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.blackducksoftware.integration.hub.detect.workflow.DetectFileUtils;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
 import com.synopsys.integration.rest.request.Request;
@@ -59,16 +60,16 @@ public class DockerInspectorManager {
 
     private final String dockerSharedDirectoryName = "docker";
 
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
     private final ExecutableManager executableManager;
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
     private final DetectConfigurationUtility detectConfigurationUtility;
     private final MavenMetadataService mavenMetadataService;
 
-    public DockerInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
+    public DockerInspectorManager(final DirectoryManager directoryManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
         final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
-        this.detectFileManager = detectFileManager;
+        this.directoryManager = directoryManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
@@ -140,7 +141,7 @@ public class DockerInspectorManager {
     }
 
     private String getResponseFromDockerInspector(final String bashExecutablePath, final File dockerInspectorShellScript, final String dockerInspectorArg) throws IOException, ExecutableRunnerException {
-        final File inspectorDirectory = detectFileManager.getSharedDirectory(dockerSharedDirectoryName);
+        final File inspectorDirectory = directoryManager.getSharedDirectory(dockerSharedDirectoryName);
         final List<String> bashArguments = new ArrayList<>();
         bashArguments.add("-c");
         bashArguments.add("\"" + dockerInspectorShellScript.getCanonicalPath() + "\" " + dockerInspectorArg);
@@ -182,9 +183,9 @@ public class DockerInspectorManager {
                     ResourceUtil.closeQuietly(response);
                 }
 
-                final File inspectorDirectory = detectFileManager.getSharedDirectory(dockerSharedDirectoryName);
+                final File inspectorDirectory = directoryManager.getSharedDirectory(dockerSharedDirectoryName);
                 shellScriptFile = new File(inspectorDirectory, String.format("hub-docker-inspector-%s.sh", suppliedDockerVersion));
-                detectFileManager.writeToFile(shellScriptFile, shellScriptContents);
+                DetectFileUtils.writeToFile(shellScriptFile, shellScriptContents);
                 if (!shellScriptFile.setExecutable(true)) {
                     throw new DetectUserFriendlyException(String.format("The User does not have permission to execute the docker inspector shell script: %s", shellScriptFile.getAbsolutePath()), ExitCodeType.FAILURE_GENERAL_ERROR);
                 }

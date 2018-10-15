@@ -91,7 +91,8 @@ public class ReportManager {
         if (diagnosticManager.isDiagnosticModeOn()) {
             final List<File> diagnosticFiles = bomToolEvaluation.getBomTool().getRelevantDiagnosticFiles();
             for (final File file : diagnosticFiles) {
-                diagnosticManager.registerFileOfInterest(bomToolEvaluation.getExtractionId(), file);
+                //TODO fix
+                //diagnosticManager.registerFileOfInterest(bomToolEvaluation.getExtractionId(), file);
             }
         }
         diagnosticManager.stopLoggingExtraction(bomToolEvaluation.getExtractionId());

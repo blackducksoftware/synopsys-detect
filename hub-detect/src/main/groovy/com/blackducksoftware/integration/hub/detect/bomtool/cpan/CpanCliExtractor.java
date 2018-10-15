@@ -29,7 +29,7 @@ import java.util.List;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
@@ -43,18 +43,18 @@ public class CpanCliExtractor {
     private final CpanListParser cpanListParser;
     private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
 
-    public CpanCliExtractor(final CpanListParser cpanListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, DetectFileManager detectFileManager) {
+    public CpanCliExtractor(final CpanListParser cpanListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, DirectoryManager directoryManager) {
         this.cpanListParser = cpanListParser;
         this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
-        this.detectFileManager = detectFileManager;
+        this.directoryManager = directoryManager;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File cpanExe, final File cpanmExe, ExtractionId extractionId) {
         try {
-            File workingDirectory = detectFileManager.getOutputDirectory(extractionId);
+            File workingDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
 
             final ExecutableOutput cpanListOutput = executableRunner.execute(workingDirectory, cpanExe, "-l");
             final List<String> listText = cpanListOutput.getStandardOutputAsList();

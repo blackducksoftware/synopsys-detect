@@ -39,7 +39,7 @@ import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
@@ -49,7 +49,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class NugetInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorManager.class);
 
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
     private final ExecutableManager executableManager;
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
@@ -58,9 +58,9 @@ public class NugetInspectorManager {
     private String resolvedNugetInspectorExecutable;
     private String resolvedInspectorVersion;
 
-    public NugetInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
+    public NugetInspectorManager(final DirectoryManager directoryManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
         final DetectConfiguration detectConfiguration) {
-        this.detectFileManager = detectFileManager;
+        this.directoryManager = directoryManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
@@ -85,7 +85,7 @@ public class NugetInspectorManager {
                                                detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_PATH));
         resolvedInspectorVersion = resolveInspectorVersion(nugetExecutable);
         if (resolvedInspectorVersion != null) {
-            resolvedNugetInspectorExecutable = installInspector(nugetExecutable, detectFileManager.getSharedDirectory("nuget"), resolvedInspectorVersion);
+            resolvedNugetInspectorExecutable = installInspector(nugetExecutable, directoryManager.getSharedDirectory("nuget"), resolvedInspectorVersion);
             if (resolvedNugetInspectorExecutable == null) {
                 throw new DetectUserFriendlyException("Unable to install nuget inspector version from available nuget sources.", ExitCodeType.FAILURE_CONFIGURATION);
             }

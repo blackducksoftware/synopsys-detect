@@ -1,5 +1,6 @@
 package com.blackducksoftware.integration.hub.detect.workflow.boot;
 
+import java.io.File;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -30,14 +31,14 @@ import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticFileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticLogManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.FileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
@@ -96,7 +97,11 @@ public class BootManager {
 
         logger.info("Configuration processed completely.");
 
-        DiagnosticManager diagnosticManager = createDiagnostics(detectConfiguration, detectRun, detectArgumentState, eventSystem);
+        DirectoryManager directoryManager = new DirectoryManager(detectConfiguration, detectRun, new File(detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH)));
+        FileManager fileManager = new FileManager(detectArgumentState.isDiagnostic(),
+            detectArgumentState.isDiagnosticProtected(), directoryManager);
+
+        DiagnosticManager diagnosticManager = createDiagnostics(detectConfiguration, detectRun, detectArgumentState, eventSystem, directoryManager, fileManager);
 
         printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT), options);
 
@@ -115,7 +120,6 @@ public class BootManager {
         }
 
         PhoneHomeManager phoneHomeManager = createPhoneHomeManager(detectInfo, detectConfiguration, hubServiceManager, gson);
-        DetectFileManager detectFileManager = new DetectFileManager(detectConfiguration, detectRun, diagnosticManager);
 
         //Finished, return created objects.
         DetectRunDependencies detectRunDependencies = new DetectRunDependencies();
@@ -123,7 +127,7 @@ public class BootManager {
         detectRunDependencies.detectConfiguration = detectConfiguration;
         detectRunDependencies.detectRun = detectRun;
         detectRunDependencies.detectInfo = detectInfo;
-        detectRunDependencies.detectFileManager = detectFileManager;
+        detectRunDependencies.directoryManager = directoryManager;
         detectRunDependencies.phoneHomeManager = phoneHomeManager;
         detectRunDependencies.diagnosticManager = diagnosticManager;
         detectRunDependencies.hubServiceManager = hubServiceManager;
@@ -188,12 +192,11 @@ public class BootManager {
         }
     }
 
-    private DiagnosticManager createDiagnostics(DetectConfiguration detectConfiguration, DetectRun detectRun, DetectArgumentState detectArgumentState, EventSystem eventSystem) {
+    private DiagnosticManager createDiagnostics(DetectConfiguration detectConfiguration, DetectRun detectRun, DetectArgumentState detectArgumentState, EventSystem eventSystem, DirectoryManager directoryManager, FileManager fileManager) {
         DiagnosticReportManager diagnosticReportManager = new DiagnosticReportManager(new BomToolProfiler(eventSystem));
         DiagnosticLogManager diagnosticLogManager = new DiagnosticLogManager();
-        DiagnosticFileManager diagnosticFileManager = new DiagnosticFileManager();
-        DiagnosticManager diagnosticManager = new DiagnosticManager(detectConfiguration, diagnosticReportManager, diagnosticLogManager, detectRun, diagnosticFileManager, detectArgumentState.isDiagnostic(),
-            detectArgumentState.isDiagnosticProtected());
+        DiagnosticManager diagnosticManager = new DiagnosticManager(detectConfiguration, diagnosticReportManager, diagnosticLogManager, detectRun, fileManager, detectArgumentState.isDiagnostic(),
+            detectArgumentState.isDiagnosticProtected(), directoryManager);
         return diagnosticManager;
     }
 

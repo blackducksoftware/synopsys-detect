@@ -32,18 +32,19 @@ import org.apache.commons.io.IOUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
+import com.blackducksoftware.integration.hub.detect.workflow.DetectFileUtils;
 
 public class PipInspectorManager {
     public static final String INSPECTOR_NAME = "pip-inspector.py";
 
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
 
     private File resolvedInspector = null;
     private boolean hasResolvedInspector = false;
 
-    public PipInspectorManager(final DetectFileManager detectFileManager) {
-        this.detectFileManager = detectFileManager;
+    public PipInspectorManager(final DirectoryManager directoryManager) {
+        this.directoryManager = directoryManager;
     }
 
     public File findPipInspector(final BomToolEnvironment environment) throws BomToolException {
@@ -61,8 +62,8 @@ public class PipInspectorManager {
     private File installInspector() throws IOException {
         final InputStream insptectorFileStream = getClass().getResourceAsStream(String.format("/%s", INSPECTOR_NAME));
         final String inpsectorScriptContents = IOUtils.toString(insptectorFileStream, StandardCharsets.UTF_8);
-        final File inspectorScript = detectFileManager.createSharedFile("pip", INSPECTOR_NAME);
-        return detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents);
+        final File inspectorScript = directoryManager.getSharedFile("pip", INSPECTOR_NAME);
+        return DetectFileUtils.writeToFile(inspectorScript, inpsectorScriptContents);
     }
 
 }

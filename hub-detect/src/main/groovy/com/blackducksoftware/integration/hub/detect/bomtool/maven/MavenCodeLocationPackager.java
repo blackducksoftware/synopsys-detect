@@ -252,7 +252,7 @@ public class MavenCodeLocationPackager {
 
     boolean isProjectSection(final String line) {
         // We only want to parse the dependency:tree output
-        return doesLineContainSegmentsInOrder(line, "---", "maven-dependency-plugin", ":", "tree");
+        return doesLineContainSegmentsInOrder(line, "---", "dependency", ":", "tree");
     }
 
     boolean isDependencyTreeUpdates(final String line) {

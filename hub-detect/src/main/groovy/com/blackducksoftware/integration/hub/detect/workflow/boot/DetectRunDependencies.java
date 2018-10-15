@@ -6,7 +6,7 @@ import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
@@ -21,7 +21,7 @@ public class DetectRunDependencies {
     public DetectRun detectRun;
     public DetectInfo detectInfo;
     public DetectConfiguration detectConfiguration;
-    public DetectFileManager detectFileManager;
+    public DirectoryManager directoryManager;
     public PhoneHomeManager phoneHomeManager;
     public DiagnosticManager diagnosticManager;
     public HubServiceManager hubServiceManager;

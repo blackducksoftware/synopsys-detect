@@ -20,7 +20,7 @@ import org.mockito.Mockito;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -42,7 +42,6 @@ public class ClangExtractorTest {
     public static void tearDownAfterClass() throws Exception {
     }
 
-
     @Ignore
     @Test
     public void testSimple() throws IOException, ExecutableRunnerException {
@@ -61,7 +60,7 @@ public class ClangExtractorTest {
         dependencyFilePaths.add(stdLibIncludeFile.getAbsolutePath());
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        final DetectFileManager detectFileManager = Mockito.mock(DetectFileManager.class);
+        final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
         final DependenciesListFileManager dependenciesListFileManager = Mockito.mock(DependenciesListFileManager.class);
 
         Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommand)).thenReturn(dependencyFilePaths);
@@ -71,8 +70,8 @@ public class ClangExtractorTest {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
         final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(),
-                detectFileManager, dependenciesListFileManager,
-                codeLocationAssembler);
+            directoryManager, dependenciesListFileManager,
+            codeLocationAssembler);
 
         final ClangLinuxPackageManager pkgMgr = Mockito.mock(ClangLinuxPackageManager.class);
         final File givenDir = new File("src/test/resources/clang/source/build");
@@ -80,7 +79,7 @@ public class ClangExtractorTest {
         final ExtractionId extractionId = new ExtractionId(BomToolGroupType.CLANG, EXTRACTION_ID);
         final File jsonCompilationDatabaseFile = new File("src/test/resources/clang/source/build/compile_commands.json");
 
-        Mockito.when(detectFileManager.getOutputDirectory(Mockito.any(ExtractionId.class))).thenReturn(outputDir);
+        Mockito.when(directoryManager.getExtractionOutputDirectory(Mockito.any(ExtractionId.class))).thenReturn(outputDir);
 
         final List<PackageDetails> packages = new ArrayList<>();
         packages.add(new PackageDetails("testPackageName", "testPackageVersion", "testPackageArch"));
@@ -134,7 +133,7 @@ public class ClangExtractorTest {
         dependencyFilePathsGoodbyeWorld.add(printfIncludeFile.getAbsolutePath());
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        final DetectFileManager detectFileManager = Mockito.mock(DetectFileManager.class);
+        final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
         final DependenciesListFileManager dependenciesListFileManager = Mockito.mock(DependenciesListFileManager.class);
 
         Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandHelloWorld)).thenReturn(dependencyFilePathsHelloWorld);
@@ -146,8 +145,8 @@ public class ClangExtractorTest {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
         final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(),
-                detectFileManager, dependenciesListFileManager,
-                codeLocationAssembler);
+            directoryManager, dependenciesListFileManager,
+            codeLocationAssembler);
 
         final ClangLinuxPackageManager pkgMgr = Mockito.mock(ClangLinuxPackageManager.class);
         final File givenDir = new File("src/test/resources/clang/source/build");
@@ -155,7 +154,7 @@ public class ClangExtractorTest {
         final ExtractionId extractionId = new ExtractionId(BomToolGroupType.CLANG, EXTRACTION_ID);
         final File jsonCompilationDatabaseFile = new File("src/test/resources/clang/source/build/compile_commands.json");
 
-        Mockito.when(detectFileManager.getOutputDirectory(Mockito.any(ExtractionId.class))).thenReturn(outputDir);
+        Mockito.when(directoryManager.getExtractionOutputDirectory(Mockito.any(ExtractionId.class))).thenReturn(outputDir);
 
         final List<PackageDetails> packages = new ArrayList<>();
         packages.add(new PackageDetails("testPackageName1", "testPackageVersion1", "testPackageArch1"));

@@ -32,7 +32,7 @@ import java.util.Optional;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -42,12 +42,12 @@ import com.synopsys.integration.swip.common.SwipDownloadUtility;
 import com.synopsys.integration.util.CleanupZipExpander;
 
 public class SwipCliManager {
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
     private final ExecutableRunner executableRunner;
     private final DetectConfigurationUtility detectConfigurationUtility;
 
-    public SwipCliManager(final DetectFileManager detectFileManager, final ExecutableRunner executableRunner, DetectConfigurationUtility detectConfigurationUtility) {
-        this.detectFileManager = detectFileManager;
+    public SwipCliManager(final DirectoryManager directoryManager, final ExecutableRunner executableRunner, DetectConfigurationUtility detectConfigurationUtility) {
+        this.directoryManager = directoryManager;
         this.executableRunner = executableRunner;
         this.detectConfigurationUtility = detectConfigurationUtility;
     }
@@ -55,7 +55,7 @@ public class SwipCliManager {
     public void runSwip(final IntLogger logger, File swipProjectDirectory) throws DetectUserFriendlyException {
         RestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(SwipDownloadUtility.DEFAULT_SWIP_SERVER_URL);
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(logger);
-        File toolsDirectory = detectFileManager.getPermanentDirectory();
+        File toolsDirectory = directoryManager.getPermanentDirectory();
 
         SwipDownloadUtility swipDownloadUtility = new SwipDownloadUtility(logger, restConnection, cleanupZipExpander, SwipDownloadUtility.DEFAULT_SWIP_SERVER_URL, toolsDirectory);
         Optional<String> swipCliPath = swipDownloadUtility.retrieveSwipCliExecutablePath();

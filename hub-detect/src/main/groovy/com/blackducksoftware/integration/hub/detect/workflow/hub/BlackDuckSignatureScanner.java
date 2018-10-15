@@ -42,7 +42,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.ScanStatusSummary;
@@ -66,14 +66,14 @@ public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStat
     private String dockerTarFilePath;
     private String dockerTarFilename;
 
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
     private final DetectFileFinder detectFileFinder;
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfiguration detectConfiguration;
 
-    public BlackDuckSignatureScanner(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder, final CodeLocationNameManager codeLocationNameManager,
-            final DetectConfiguration detectConfiguration) {
-        this.detectFileManager = detectFileManager;
+    public BlackDuckSignatureScanner(final DirectoryManager directoryManager, final DetectFileFinder detectFileFinder, final CodeLocationNameManager codeLocationNameManager,
+        final DetectConfiguration detectConfiguration) {
+        this.directoryManager = directoryManager;
         this.detectFileFinder = detectFileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
@@ -192,7 +192,7 @@ public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStat
         final File scannerDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH));
 
         final String locallScannerInstallPath = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH);
-        File installDirectory = detectFileManager.getPermanentDirectory();
+        File installDirectory = directoryManager.getPermanentDirectory();
         if (StringUtils.isNotBlank(locallScannerInstallPath)) {
             installDirectory = new File(locallScannerInstallPath);
         }

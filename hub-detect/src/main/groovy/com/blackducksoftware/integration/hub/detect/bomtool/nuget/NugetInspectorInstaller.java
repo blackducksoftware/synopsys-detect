@@ -37,7 +37,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -46,21 +46,21 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class NugetInspectorInstaller {
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorInstaller.class);
 
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
     private final DetectConfiguration detectConfiguration;
     private final ExecutableRunner executableRunner;
 
     private String resolvedNugetInspectorExecutable = null;
 
-    public NugetInspectorInstaller(final DetectFileManager detectFileManager, final DetectConfiguration detectConfiguration, final ExecutableRunner executableRunner) {
-        this.detectFileManager = detectFileManager;
+    public NugetInspectorInstaller(final DirectoryManager directoryManager, final DetectConfiguration detectConfiguration, final ExecutableRunner executableRunner) {
+        this.directoryManager = directoryManager;
         this.detectConfiguration = detectConfiguration;
         this.executableRunner = executableRunner;
     }
 
     public String install(final String nugetInspectorVersion, final String nugetExecutablePath) throws DetectUserFriendlyException, ExecutableRunnerException, IOException {
         if (resolvedNugetInspectorExecutable == null) {
-            resolvedNugetInspectorExecutable = installInspector(nugetExecutablePath, detectFileManager.getSharedDirectory("nuget"), nugetInspectorVersion);
+            resolvedNugetInspectorExecutable = installInspector(nugetExecutablePath, directoryManager.getSharedDirectory("nuget"), nugetInspectorVersion);
             if (resolvedNugetInspectorExecutable == null) {
                 throw new DetectUserFriendlyException("Unable to install nuget inspector version from available nuget sources.", ExitCodeType.FAILURE_CONFIGURATION);
             }

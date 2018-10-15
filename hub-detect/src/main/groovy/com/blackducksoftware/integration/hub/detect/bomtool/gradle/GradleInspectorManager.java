@@ -42,7 +42,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -53,7 +53,7 @@ import freemarker.template.TemplateException;
 public class GradleInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(GradleInspectorManager.class);
 
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
     private final Configuration configuration;
     private final DetectConfiguration detectConfiguration;
     private final MavenMetadataService mavenMetadataService;
@@ -61,8 +61,8 @@ public class GradleInspectorManager {
     private String resolvedInitScript = null;
     private boolean hasResolvedInspector = false;
 
-    public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DetectConfiguration detectConfiguration, final MavenMetadataService mavenMetadataService) {
-        this.detectFileManager = detectFileManager;
+    public GradleInspectorManager(final DirectoryManager directoryManager, final Configuration configuration, final DetectConfiguration detectConfiguration, final MavenMetadataService mavenMetadataService) {
+        this.directoryManager = directoryManager;
         this.configuration = configuration;
         this.detectConfiguration = detectConfiguration;
         this.mavenMetadataService = mavenMetadataService;
@@ -111,7 +111,7 @@ public class GradleInspectorManager {
     }
 
     private String resolveInitScriptPath(final String version) throws IOException, TemplateException {
-        final File initScriptFile = detectFileManager.createSharedFile("gradle", "init-detect.gradle");
+        final File initScriptFile = directoryManager.getSharedFile("gradle", "init-detect.gradle");
         final Map<String, String> model = new HashMap<>();
         model.put("gradleInspectorVersion", version);
         model.put("excludedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_PROJECTS));

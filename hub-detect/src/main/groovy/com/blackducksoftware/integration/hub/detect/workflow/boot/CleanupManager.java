@@ -14,6 +14,6 @@ public class CleanupManager {
             logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
         }
 
-        detectRunDependencies.detectFileManager.cleanup();
+        //detectRunDependencies.directoryManager.cleanup();
     }
 }

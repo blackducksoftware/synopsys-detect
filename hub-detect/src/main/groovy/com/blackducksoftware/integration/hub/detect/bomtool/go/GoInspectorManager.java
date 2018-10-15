@@ -34,7 +34,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -43,7 +43,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class GoInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(GoInspectorManager.class);
 
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
     private final ExecutableManager executableManager;
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
@@ -51,9 +51,9 @@ public class GoInspectorManager {
     private boolean hasResolvedInspector;
     private String resolvedGoDep;
 
-    public GoInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
-            final DetectConfiguration detectConfiguration) {
-        this.detectFileManager = detectFileManager;
+    public GoInspectorManager(final DirectoryManager directoryManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
+        final DetectConfiguration detectConfiguration) {
+        this.directoryManager = directoryManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
@@ -95,24 +95,24 @@ public class GoInspectorManager {
         logger.debug("Retrieving the Go Dep tool");
 
         final Executable getGoDep = new Executable(installDirectory, goExecutable, Arrays.asList(
-                "get",
-                "-u",
-                "-v",
-                "-d",
-                "github.com/golang/dep/cmd/dep"));
+            "get",
+            "-u",
+            "-v",
+            "-d",
+            "github.com/golang/dep/cmd/dep"));
         executableRunner.execute(getGoDep);
 
         logger.debug("Building the Go Dep tool in " + installDirectory.getAbsolutePath());
         final Executable buildGoDep = new Executable(installDirectory, goExecutable, Arrays.asList(
-                "build",
-                "github.com/golang/dep/cmd/dep"));
+            "build",
+            "github.com/golang/dep/cmd/dep"));
         executableRunner.execute(buildGoDep);
 
         return goDep.getAbsolutePath();
     }
 
     private File getGoDepInstallLocation() {
-        final File goOutputDirectory = detectFileManager.getSharedDirectory("go");
+        final File goOutputDirectory = directoryManager.getSharedDirectory("go");
         return new File(goOutputDirectory, executableManager.getExecutableName(ExecutableType.GO_DEP));
     }
 }

@@ -34,7 +34,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -50,19 +50,19 @@ public class CondaCliExtractor {
     private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
 
-    public CondaCliExtractor(final CondaListParser condaListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration, DetectFileManager detectFileManager) {
+    public CondaCliExtractor(final CondaListParser condaListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration, DirectoryManager directoryManager) {
         this.condaListParser = condaListParser;
         this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
-        this.detectFileManager = detectFileManager;
+        this.directoryManager = directoryManager;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File condaExe, ExtractionId extractionId) {
         try {
-            File workingDirectory = detectFileManager.getOutputDirectory(extractionId);
+            File workingDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
 
             final List<String> condaListOptions = new ArrayList<>();
             condaListOptions.add("list");

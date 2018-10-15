@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
@@ -63,17 +63,17 @@ public class ClangExtractor {
     private final Gson gson;
     private final DetectFileFinder fileFinder;
     private final DependenciesListFileManager dependenciesListFileManager;
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
     private final CodeLocationAssembler codeLocationAssembler;
     private final SimpleBdioFactory bdioFactory;
 
     public ClangExtractor(final ExecutableRunner executableRunner, final Gson gson, final DetectFileFinder fileFinder,
-            final DetectFileManager detectFileManager, final DependenciesListFileManager dependenciesListFileManager,
-            final CodeLocationAssembler codeLocationAssembler) {
+        final DirectoryManager directoryManager, final DependenciesListFileManager dependenciesListFileManager,
+        final CodeLocationAssembler codeLocationAssembler) {
         this.executableRunner = executableRunner;
         this.gson = gson;
         this.fileFinder = fileFinder;
-        this.detectFileManager = detectFileManager;
+        this.directoryManager = directoryManager;
         this.dependenciesListFileManager = dependenciesListFileManager;
         this.codeLocationAssembler = codeLocationAssembler;
         this.bdioFactory = new SimpleBdioFactory();
@@ -83,20 +83,20 @@ public class ClangExtractor {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final File rootDir = fileFinder.findContainingDir(givenDir, depth);
-            final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
+            final File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> unManagedDependencyFiles = ConcurrentHashMap.newKeySet(64);
             final List<CompileCommand> compileCommands = parseJsonCompilationDatabaseFile(jsonCompilationDatabaseFile);
             final List<Dependency> bdioComponents = compileCommands.parallelStream()
-                    .flatMap(compileCommandToDependencyFilePathsConverter(outputDirectory))
-                    .collect(Collectors.toSet()).parallelStream()
-                    .filter(StringUtils::isNotBlank)
-                    .map(File::new)
-                    .filter(fileIsNewPredicate())
-                    .flatMap(dependencyFileToLinuxPackagesConverter(rootDir, unManagedDependencyFiles, pkgMgr))
-                    .collect(Collectors.toSet()).parallelStream()
-                    .flatMap(linuxPackageToBdioComponentsConverter(pkgMgr))
-                    .collect(Collectors.toList());
+                                                        .flatMap(compileCommandToDependencyFilePathsConverter(outputDirectory))
+                                                        .collect(Collectors.toSet()).parallelStream()
+                                                        .filter(StringUtils::isNotBlank)
+                                                        .map(File::new)
+                                                        .filter(fileIsNewPredicate())
+                                                        .flatMap(dependencyFileToLinuxPackagesConverter(rootDir, unManagedDependencyFiles, pkgMgr))
+                                                        .collect(Collectors.toSet()).parallelStream()
+                                                        .flatMap(linuxPackageToBdioComponentsConverter(pkgMgr))
+                                                        .collect(Collectors.toList());
 
             final DetectCodeLocation detectCodeLocation = codeLocationAssembler.generateCodeLocation(pkgMgr.getDefaultForge(), rootDir, bdioComponents);
             logSummary(bdioComponents, unManagedDependencyFiles);
@@ -147,7 +147,7 @@ public class ClangExtractor {
         return (final PackageDetails pkg) -> {
             final List<Dependency> bdioComponents = new ArrayList<>();
             logger.debug(String.format("Package name//arch//version: %s//%s//%s", pkg.getPackageName(), pkg.getPackageArch(),
-                    pkg.getPackageVersion()));
+                pkg.getPackageVersion()));
             if (dependencyAlreadyProcessed(pkg)) {
                 logger.trace(String.format("dependency %s has already been processed", pkg.toString()));
             } else if (pkg.getPackageName() != null && pkg.getPackageVersion() != null && pkg.getPackageArch() != null) {

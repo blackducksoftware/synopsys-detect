@@ -24,9 +24,9 @@
 package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +34,10 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class DiagnosticManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -48,18 +49,20 @@ public class DiagnosticManager {
     private final DiagnosticReportManager diagnosticReportManager;
     private final DiagnosticLogManager diagnosticLogManager;
     private final DetectRun detectRun;
-    private final DiagnosticFileManager diagnosticFileManager;
+    private final FileManager fileManager;
+    private final DirectoryManager directoryManager;
 
     private boolean isDiagnosticProtected = false;
     private boolean isDiagnostic = false;
 
     public DiagnosticManager(final DetectConfiguration detectConfiguration, final DiagnosticReportManager diagnosticReportManager, final DiagnosticLogManager diagnosticLogManager,
-            final DetectRun detectRun, final DiagnosticFileManager diagnosticFileManager, final boolean isDiagnostic, final boolean isDiagnosticProtected) {
+        final DetectRun detectRun, final FileManager fileManager, final boolean isDiagnostic, final boolean isDiagnosticProtected, DirectoryManager directoryManager) {
         this.detectConfiguration = detectConfiguration;
         this.diagnosticReportManager = diagnosticReportManager;
         this.diagnosticLogManager = diagnosticLogManager;
         this.detectRun = detectRun;
-        this.diagnosticFileManager = diagnosticFileManager;
+        this.fileManager = fileManager;
+        this.directoryManager = directoryManager;
 
         init(isDiagnostic, isDiagnosticProtected);
     }
@@ -82,15 +85,15 @@ public class DiagnosticManager {
         final File bdioDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH));
         this.outputDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH));
         try {
-            diagnosticFileManager.init(outputDirectory, bdioDirectory, detectRun.getRunId());
+            //fileManager.init(outputDirectory, bdioDirectory, detectRun.getRunId());
         } catch (final Exception e) {
             logger.error("Failed to create diagnostics directory.", e);
         }
 
         logger.info("Initializing diagnostic managers.");
         try {
-            diagnosticReportManager.init(diagnosticFileManager.getReportDirectory(), detectRun.getRunId());
-            diagnosticLogManager.init(diagnosticFileManager.getLogDirectory());
+            diagnosticReportManager.init(directoryManager.getReportDirectory(), detectRun.getRunId());
+            diagnosticLogManager.init(directoryManager.getLogDirectory());
         } catch (final Exception e) {
             logger.error("Failed to process.", e);
         }
@@ -128,7 +131,7 @@ public class DiagnosticManager {
 
         if (zipCreated) {
             if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
-                diagnosticFileManager.cleanup();
+                //fileManager.cleanup(); //TODO: FIx
             }
         } else {
             logger.error("Diagnostic mode failed to create zip. Cleanup will not occur.");
@@ -154,26 +157,6 @@ public class DiagnosticManager {
         }
 
         return true;
-    }
-
-    public void registerFileOfInterest(final ExtractionId extractionId, final File file) {
-        if (!isDiagnosticModeOn()) {
-            return;
-        }
-        if (isProtectedModeOn()) {
-            return;
-        }
-        diagnosticFileManager.registerFileOfInterest(extractionId, file);
-    }
-
-    public void registerGlobalFileOfInterest(final File file) {
-        if (!isDiagnosticModeOn()) {
-            return;
-        }
-        if (isProtectedModeOn()) {
-            return;
-        }
-        diagnosticFileManager.registerGlobalFileOfInterest(file);
     }
 
     public void startLoggingExtraction(final ExtractionId extractionId) {
@@ -205,9 +188,10 @@ public class DiagnosticManager {
     }
 
     private boolean createZip() {
-        final List<File> directoriesToCompress = diagnosticFileManager.getAllDirectories().stream()
-                .filter(it -> it.exists())
-                .collect(Collectors.toList());
+        //TODO fix;
+        final List<File> directoriesToCompress = new ArrayList<File>();// = fileManager.getAllDirectories().stream()
+        //.filter(it -> it.exists())
+        //.collect(Collectors.toList());
 
         final DiagnosticZipCreator zipper = new DiagnosticZipCreator();
         return zipper.createDiagnosticZip(detectRun.getRunId(), outputDirectory, directoriesToCompress);

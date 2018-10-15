@@ -29,7 +29,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
@@ -45,19 +45,19 @@ public class PearCliExtractor {
     private final ExternalIdFactory externalIdFactory;
     private final PearParser pearParser;
     private final ExecutableRunner executableRunner;
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
 
-    public PearCliExtractor(final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory, final PearParser pearParser, final ExecutableRunner executableRunner, DetectFileManager detectFileManager) {
+    public PearCliExtractor(final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory, final PearParser pearParser, final ExecutableRunner executableRunner, DirectoryManager directoryManager) {
         this.detectFileFinder = detectFileFinder;
         this.externalIdFactory = externalIdFactory;
         this.pearParser = pearParser;
         this.executableRunner = executableRunner;
-        this.detectFileManager = detectFileManager;
+        this.directoryManager = directoryManager;
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File pearExe, final ExtractionId extractionId) {
         try {
-            File workingDirectory = detectFileManager.getOutputDirectory(extractionId);
+            File workingDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
             final ExecutableOutput pearListing = executableRunner.execute(workingDirectory, pearExe, "list");
             final ExecutableOutput pearDependencies = executableRunner.execute(workingDirectory, pearExe, "package-dependencies", PACKAGE_XML_FILENAME);
 

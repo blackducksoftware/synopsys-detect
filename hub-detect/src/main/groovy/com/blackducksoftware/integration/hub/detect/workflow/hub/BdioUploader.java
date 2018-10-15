@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.FileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.synopsys.integration.blackduck.service.CodeLocationService;
 import com.synopsys.integration.exception.IntegrationException;
@@ -39,18 +39,18 @@ public class BdioUploader {
     private final Logger logger = LoggerFactory.getLogger(BdioUploader.class);
 
     private final DetectConfiguration detectConfiguration;
-    private final DetectFileManager detectFileManager;
+    private final FileManager fileManager;
 
-    public BdioUploader(final DetectConfiguration detectConfiguration, final DetectFileManager detectFileManager) {
+    public BdioUploader(final DetectConfiguration detectConfiguration, final FileManager fileManager) {
         this.detectConfiguration = detectConfiguration;
-        this.detectFileManager = detectFileManager;
+        this.fileManager = fileManager;
     }
 
     public void uploadBdioFiles(final CodeLocationService codeLocationService, final DetectProject detectProject) throws IntegrationException {
         for (final File file : detectProject.getBdioFiles()) {
             logger.info(String.format("uploading %s to %s", file.getName(), detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL)));
             codeLocationService.importBomFile(file);
-            detectFileManager.registerOutputFileForCleanup(file);
+            fileManager.registerOutputFileForCleanup(file);
         }
     }
 

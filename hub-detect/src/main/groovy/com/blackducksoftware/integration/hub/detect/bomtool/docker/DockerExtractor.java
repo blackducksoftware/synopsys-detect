@@ -42,7 +42,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableArgumentBuilder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -66,7 +66,7 @@ public class DockerExtractor {
     private final Logger logger = LoggerFactory.getLogger(DockerExtractor.class);
 
     private final DetectFileFinder detectFileFinder;
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
     private final DockerProperties dockerProperties;
     private final ExecutableRunner executableRunner;
     private final BdioTransformer bdioTransformer;
@@ -74,10 +74,10 @@ public class DockerExtractor {
     private final Gson gson;
     private final BlackDuckSignatureScanner blackDuckSignatureScanner;
 
-    public DockerExtractor(final DetectFileFinder detectFileFinder, final DetectFileManager detectFileManager, final DockerProperties dockerProperties,
-            final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson, final BlackDuckSignatureScanner blackDuckSignatureScanner) {
+    public DockerExtractor(final DetectFileFinder detectFileFinder, final DirectoryManager directoryManager, final DockerProperties dockerProperties,
+        final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson, final BlackDuckSignatureScanner blackDuckSignatureScanner) {
         this.detectFileFinder = detectFileFinder;
-        this.detectFileManager = detectFileManager;
+        this.directoryManager = directoryManager;
         this.dockerProperties = dockerProperties;
         this.executableRunner = executableRunner;
         this.bdioTransformer = bdioTransformer;
@@ -87,7 +87,7 @@ public class DockerExtractor {
     }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final ExtractionId extractionId, final File bashExe, final File dockerExe, final String image, final String tar,
-            final DockerInspectorInfo dockerInspectorInfo) {
+        final DockerInspectorInfo dockerInspectorInfo) {
         try {
             String imageArgument = null;
             String imagePiece = null;
@@ -121,8 +121,8 @@ public class DockerExtractor {
             for (final File imageToImport : importTars) {
                 // The -c is a bash option, the following String is the command we want to run
                 final List<String> dockerImportArguments = Arrays.asList(
-                        "-c",
-                        "docker load -i \"" + imageToImport.getCanonicalPath() + "\"");
+                    "-c",
+                    "docker load -i \"" + imageToImport.getCanonicalPath() + "\"");
 
                 final Executable dockerImportImageExecutable = new Executable(directory, environmentVariables, bashExe.toString(), dockerImportArguments);
                 executableRunner.execute(dockerImportImageExecutable);
@@ -134,12 +134,12 @@ public class DockerExtractor {
     }
 
     private Extraction executeDocker(final BomToolType bomToolType, final ExtractionId extractionId, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File dockerExe,
-            final File bashExe,
-            final DockerInspectorInfo dockerInspectorInfo)
-            throws FileNotFoundException, IOException, ExecutableRunnerException {
+        final File bashExe,
+        final DockerInspectorInfo dockerInspectorInfo)
+        throws FileNotFoundException, IOException, ExecutableRunnerException {
 
-        final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
-        final File dockerPropertiesFile = detectFileManager.getOutputFile(outputDirectory, "application.properties");
+        final File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
+        final File dockerPropertiesFile = new File(outputDirectory, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
 
         String dockerInspectorVersion = "";

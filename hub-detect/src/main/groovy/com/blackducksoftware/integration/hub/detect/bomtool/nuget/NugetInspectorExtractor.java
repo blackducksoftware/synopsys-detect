@@ -41,7 +41,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -55,15 +55,15 @@ public class NugetInspectorExtractor {
 
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorExtractor.class);
 
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
     private final NugetInspectorPackager nugetInspectorPackager;
     private final ExecutableRunner executableRunner;
     private final DetectFileFinder detectFileFinder;
     private final DetectConfiguration detectConfiguration;
 
-    public NugetInspectorExtractor(final DetectFileManager detectFileManager, final NugetInspectorPackager nugetInspectorPackager, final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder,
-            final DetectConfiguration detectConfiguration) {
-        this.detectFileManager = detectFileManager;
+    public NugetInspectorExtractor(final DirectoryManager directoryManager, final NugetInspectorPackager nugetInspectorPackager, final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder,
+        final DetectConfiguration detectConfiguration) {
+        this.directoryManager = directoryManager;
         this.nugetInspectorPackager = nugetInspectorPackager;
         this.executableRunner = executableRunner;
         this.detectFileFinder = detectFileFinder;
@@ -72,12 +72,12 @@ public class NugetInspectorExtractor {
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String inspectorExe, final ExtractionId extractionId) {
         try {
-            final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
+            final File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
 
             final List<String> options = new ArrayList<>(Arrays.asList(
-                    "--target_path=" + directory.toString(),
-                    "--output_directory=" + outputDirectory.getCanonicalPath(),
-                    "--ignore_failure=" + detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NUGET_IGNORE_FAILURE)));
+                "--target_path=" + directory.toString(),
+                "--output_directory=" + outputDirectory.getCanonicalPath(),
+                "--ignore_failure=" + detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NUGET_IGNORE_FAILURE)));
 
             final String nugetExcludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_EXCLUDED_MODULES);
             if (StringUtils.isNotBlank(nugetExcludedModules)) {
@@ -111,14 +111,15 @@ public class NugetInspectorExtractor {
 
             final List<NugetParseResult> parseResults = new ArrayList<>();
             for (final File dependencyNodeFile : dependencyNodeFiles) {
-                detectFileManager.registerFileOfInterest(extractionId, dependencyNodeFile);
+                //TODO fix
+                //directoryManager.registerFileOfInterest(extractionId, dependencyNodeFile);
                 final NugetParseResult result = nugetInspectorPackager.createDetectCodeLocation(bomToolType, dependencyNodeFile);
                 parseResults.add(result);
             }
 
             final List<DetectCodeLocation> codeLocations = parseResults.stream()
-                    .flatMap(it -> it.codeLocations.stream())
-                    .collect(Collectors.toList());
+                                                               .flatMap(it -> it.codeLocations.stream())
+                                                               .collect(Collectors.toList());
 
             if (codeLocations.size() <= 0) {
                 logger.warn("Unable to extract any dependencies from nuget");

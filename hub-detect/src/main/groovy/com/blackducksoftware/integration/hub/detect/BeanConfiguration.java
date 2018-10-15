@@ -125,7 +125,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -139,6 +139,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLo
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.FileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BdioUploader;
@@ -170,7 +171,7 @@ import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 import freemarker.template.Configuration;
 
-//Configuration is used here to allow 'EnableAspectJAutoProxy' because I could not find a way to enable it otherwise.
+//@Configuration is used here to allow 'EnableAspectJAutoProxy' because it could not be enabled it otherwise.
 //This configuration is NOT loaded when the application starts, but only manually when a DetectRun is needed.
 //Spring scanning should not be invoked as this should not be loaded during boot.
 @org.springframework.context.annotation.Configuration
@@ -263,8 +264,15 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public DetectFileManager detectFileManager() {
-        return new DetectFileManager(detectConfiguration(), detectRun(), diagnosticManager());
+    public DirectoryManager directoryManager() {
+        return null;
+        //return new DirectoryManager(detectConfiguration(), detectRun(), diagnosticManager());
+    }
+
+    @Bean
+    public FileManager fileManager() {
+        return null;
+        //return new DirectoryManager(detectConfiguration(), detectRun(), diagnosticManager());
     }
 
     @Bean
@@ -348,7 +356,7 @@ public class BeanConfiguration {
 
     @Bean
     public BlackDuckSignatureScanner blackDuckSignatureScanner() {
-        return new BlackDuckSignatureScanner(detectFileManager(), detectFileFinder(), codeLocationNameManager(), detectConfiguration());
+        return new BlackDuckSignatureScanner(directoryManager(), detectFileFinder(), codeLocationNameManager(), detectConfiguration());
     }
 
     @Bean
@@ -367,7 +375,7 @@ public class BeanConfiguration {
 
     @Bean
     public BdioUploader bdioUploader() {
-        return new BdioUploader(detectConfiguration(), detectFileManager());
+        return new BdioUploader(detectConfiguration(), fileManager());
     }
 
     @Bean
@@ -397,7 +405,7 @@ public class BeanConfiguration {
 
     @Bean
     public ClangExtractor clangExtractor() {
-        return new ClangExtractor(executableRunner(), gson(), detectFileFinder(), detectFileManager(), clangDependenciesListFileParser(), codeLocationAssembler());
+        return new ClangExtractor(executableRunner(), gson(), detectFileFinder(), directoryManager(), clangDependenciesListFileParser(), codeLocationAssembler());
     }
 
     public List<ClangLinuxPackageManager> clangLinuxPackageManagers() {
@@ -425,7 +433,7 @@ public class BeanConfiguration {
 
     @Bean
     public CondaCliExtractor condaCliExtractor() {
-        return new CondaCliExtractor(condaListParser(), externalIdFactory(), executableRunner(), detectConfiguration(), detectFileManager());
+        return new CondaCliExtractor(condaListParser(), externalIdFactory(), executableRunner(), detectConfiguration(), directoryManager());
     }
 
     @Bean
@@ -435,7 +443,7 @@ public class BeanConfiguration {
 
     @Bean
     public CpanCliExtractor cpanCliExtractor() {
-        return new CpanCliExtractor(cpanListParser(), externalIdFactory(), executableRunner(), detectFileManager());
+        return new CpanCliExtractor(cpanListParser(), externalIdFactory(), executableRunner(), directoryManager());
     }
 
     @Bean
@@ -450,7 +458,7 @@ public class BeanConfiguration {
 
     @Bean
     public DockerExtractor dockerExtractor() {
-        return new DockerExtractor(detectFileFinder(), detectFileManager(), dockerProperties(), executableRunner(), bdioTransformer(), externalIdFactory(), gson(), blackDuckSignatureScanner());
+        return new DockerExtractor(detectFileFinder(), directoryManager(), dockerProperties(), executableRunner(), bdioTransformer(), externalIdFactory(), gson(), blackDuckSignatureScanner());
     }
 
     @Bean
@@ -460,7 +468,7 @@ public class BeanConfiguration {
 
     @Bean
     public DockerInspectorManager dockerInspectorManager() {
-        return new DockerInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), mavenMetadataService());
+        return new DockerInspectorManager(directoryManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), mavenMetadataService());
     }
 
     @Bean
@@ -480,7 +488,7 @@ public class BeanConfiguration {
 
     @Bean
     public GoInspectorManager goInspectorManager() {
-        return new GoInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration());
+        return new GoInspectorManager(directoryManager(), executableManager(), executableRunner(), detectConfiguration());
     }
 
     @Bean
@@ -505,12 +513,12 @@ public class BeanConfiguration {
 
     @Bean
     public GradleInspectorExtractor gradleInspectorExtractor() {
-        return new GradleInspectorExtractor(executableRunner(), detectFileFinder(), detectFileManager(), gradleReportParser(), detectConfiguration());
+        return new GradleInspectorExtractor(executableRunner(), detectFileFinder(), directoryManager(), gradleReportParser(), detectConfiguration());
     }
 
     @Bean
     public GradleInspectorManager gradleInspectorManager() throws ParserConfigurationException {
-        return new GradleInspectorManager(detectFileManager(), configuration(), detectConfiguration(), mavenMetadataService());
+        return new GradleInspectorManager(directoryManager(), configuration(), detectConfiguration(), mavenMetadataService());
     }
 
     @Bean
@@ -570,12 +578,12 @@ public class BeanConfiguration {
 
     @Bean
     public NugetInspectorExtractor nugetInspectorExtractor() {
-        return new NugetInspectorExtractor(detectFileManager(), nugetInspectorPackager(), executableRunner(), detectFileFinder(), detectConfiguration());
+        return new NugetInspectorExtractor(directoryManager(), nugetInspectorPackager(), executableRunner(), detectFileFinder(), detectConfiguration());
     }
 
     @Bean
     public NugetInspectorManager nugetInspectorManager() {
-        return new NugetInspectorManager(detectFileManager(), executableManager(), executableRunner(), detectConfiguration());
+        return new NugetInspectorManager(directoryManager(), executableManager(), executableRunner(), detectConfiguration());
     }
 
     @Bean
@@ -595,7 +603,7 @@ public class BeanConfiguration {
 
     @Bean
     public PearCliExtractor pearCliExtractor() {
-        return new PearCliExtractor(detectFileFinder(), externalIdFactory(), pearDependencyFinder(), executableRunner(), detectFileManager());
+        return new PearCliExtractor(detectFileFinder(), externalIdFactory(), pearDependencyFinder(), executableRunner(), directoryManager());
     }
 
     @Bean
@@ -620,7 +628,7 @@ public class BeanConfiguration {
 
     @Bean
     public PipInspectorManager pipInspectorManager() {
-        return new PipInspectorManager(detectFileManager());
+        return new PipInspectorManager(directoryManager());
     }
 
     @Bean
@@ -660,7 +668,7 @@ public class BeanConfiguration {
 
     @Bean
     public BitbakeExtractor bitbakeExtractor() {
-        return new BitbakeExtractor(executableManager(), executableRunner(), detectConfiguration(), detectFileManager(), detectFileFinder(), graphParserTransformer());
+        return new BitbakeExtractor(executableManager(), executableRunner(), detectConfiguration(), directoryManager(), detectFileFinder(), graphParserTransformer());
     }
 
     @Bean

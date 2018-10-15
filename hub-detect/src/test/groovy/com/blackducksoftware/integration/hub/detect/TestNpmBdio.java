@@ -41,9 +41,9 @@ class TestNpmBdio {
         //
         // DetectConfigWrapper detectConfigWrapper = new DetectConfigWrapper()
         // DetectFileFinder fileFinder = new DetectFileFinder()
-        // DetectFileManager detectFileManager = new DetectFileManager()
-        // detectFileManager.fileFinder = fileFinder
-        // detectFileManager.detectConfiguration = detectConfiguration
+        // DirectoryManager directoryManager = new DirectoryManager()
+        // directoryManager.fileFinder = fileFinder
+        // directoryManager.detectConfiguration = detectConfiguration
         // BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper()
         // BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper)
         // DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper)
@@ -51,7 +51,7 @@ class TestNpmBdio {
         //
         // DetectProjectManager detectProjectManager = new DetectProjectManager()
         // detectProjectManager.detectConfiguration = detectConfiguration
-        // detectProjectManager.detectFileManager = detectFileManager
+        // detectProjectManager.directoryManager = directoryManager
         // detectProjectManager.bdioPropertyHelper = bdioPropertyHelper
         // detectProjectManager.bdioNodeFactory = bdioNodeFactory
         // detectProjectManager.dependencyGraphTransformer = dependencyGraphTransformer
