@@ -160,7 +160,7 @@ public class DockerInspectorManager {
         try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(hubDockerInspectorJarUrl)) {
             response = restConnection.executeRequest(request);
             final InputStream jarBytesInputStream = response.getContent();
-            // TODO Should we add a method to detectFileManager for this?
+            jarFile.delete();
             FileUtils.copyInputStreamToFile(jarBytesInputStream, jarFile);
         } catch (IntegrationException | IOException e) {
             throw new DetectUserFriendlyException(String.format("There was a problem retrieving the docker inspector shell script from %s: %s", hubDockerInspectorJarUrl, e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
