@@ -32,8 +32,8 @@ import org.apache.commons.io.IOUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
-import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.DetectFileUtils;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileUtils;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 
 public class PipInspectorManager {
     public static final String INSPECTOR_NAME = "pip-inspector.py";

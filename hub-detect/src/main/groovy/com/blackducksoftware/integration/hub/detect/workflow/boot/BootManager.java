@@ -1,6 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.workflow.boot;
 
-import java.io.File;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -31,7 +30,6 @@ import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
-import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
@@ -39,6 +37,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.Diagnost
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.FileManager;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
@@ -97,7 +96,7 @@ public class BootManager {
 
         logger.info("Configuration processed completely.");
 
-        DirectoryManager directoryManager = new DirectoryManager(detectConfiguration, detectRun, new File(detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH)));
+        DirectoryManager directoryManager = new DirectoryManager(detectConfiguration, detectRun);
         FileManager fileManager = new FileManager(detectArgumentState.isDiagnostic(),
             detectArgumentState.isDiagnosticProtected(), directoryManager);
 

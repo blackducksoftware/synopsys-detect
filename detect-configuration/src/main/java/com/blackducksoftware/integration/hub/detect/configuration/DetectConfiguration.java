@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.configuration.HubServerConfigBuilder;
 
+//Instead of Source of Truth, this is the initial configuration.
 public class DetectConfiguration {
     private final Logger logger = LoggerFactory.getLogger(DetectConfiguration.class);
     private final DetectPropertySource detectPropertySource;

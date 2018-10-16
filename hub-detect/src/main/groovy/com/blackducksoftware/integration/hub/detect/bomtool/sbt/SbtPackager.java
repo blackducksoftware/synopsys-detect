@@ -41,7 +41,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.hub.bdio.model.Forge;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.util.ExcludedIncludedFilter;
@@ -167,7 +167,7 @@ public class SbtPackager {
     }
 
     private List<SbtDependencyModule> extractReportModules(final String path, final File reportPath, final File source, final String included, final String excluded, final List<String> usedReports)
-            throws IOException, SAXException, ParserConfigurationException {
+        throws IOException, SAXException, ParserConfigurationException {
         final List<SbtDependencyModule> modules = new ArrayList<>();
         final String canonical = reportPath.getCanonicalPath();
         if (usedReports.contains(canonical)) {

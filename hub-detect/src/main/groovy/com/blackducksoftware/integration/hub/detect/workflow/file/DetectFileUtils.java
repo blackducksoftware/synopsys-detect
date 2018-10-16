@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.file;
 
 import java.io.File;
 import java.io.IOException;

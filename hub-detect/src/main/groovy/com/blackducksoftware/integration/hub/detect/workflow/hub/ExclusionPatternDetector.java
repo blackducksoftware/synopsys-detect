@@ -33,7 +33,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 
 public class ExclusionPatternDetector {
     private final Logger logger = LoggerFactory.getLogger(ExclusionPatternDetector.class);

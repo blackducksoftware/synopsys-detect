@@ -55,7 +55,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.GemlockBomT
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCacheBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockBomTool;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
 public class BomToolFactory implements BeanFactoryAware {
 
@@ -88,10 +87,7 @@ public class BomToolFactory implements BeanFactoryAware {
 
     public DockerBomTool createDockerBomTool(final BomToolEnvironment environment) {
         DetectConfiguration detectConfiguration = beanFactory.getBean(DetectConfiguration.class);
-        final String tar = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_TAR);
-        final String image = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE);
-        final boolean dockerRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED);
-        DockerBomToolOptions options = new DockerBomToolOptions(dockerRequired, image, tar);
+        DockerBomToolOptions options = DockerBomToolOptions.fromConfiguration(detectConfiguration);
 
         return beanFactory.getBean(DockerBomTool.class, environment, options);
     }

@@ -29,59 +29,59 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.FilesNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class NugetProjectBomTool extends BomTool {
     static final String[] SUPPORTED_PROJECT_PATTERNS = new String[] {
-            // C#
-            "*.csproj",
-            // F#
-            "*.fsproj",
-            // VB
-            "*.vbproj",
-            // Azure Stream Analytics
-            "*.asaproj",
-            // Docker Compose
-            "*.dcproj",
-            // Shared Projects
-            "*.shproj",
-            // Cloud Computing
-            "*.ccproj",
-            // Fabric Application
-            "*.sfproj",
-            // Node.js
-            "*.njsproj",
-            // VC++
-            "*.vcxproj",
-            // VC++
-            "*.vcproj",
-            // .NET Core
-            "*.xproj",
-            // Python
-            "*.pyproj",
-            // Hive
-            "*.hiveproj",
-            // Pig
-            "*.pigproj",
-            // JavaScript
-            "*.jsproj",
-            // U-SQL
-            "*.usqlproj",
-            // Deployment
-            "*.deployproj",
-            // Common Project System Files
-            "*.msbuildproj",
-            // SQL
-            "*.sqlproj",
-            // SQL Project Files
-            "*.dbproj",
-            // RStudio
-            "*.rproj"
+        // C#
+        "*.csproj",
+        // F#
+        "*.fsproj",
+        // VB
+        "*.vbproj",
+        // Azure Stream Analytics
+        "*.asaproj",
+        // Docker Compose
+        "*.dcproj",
+        // Shared Projects
+        "*.shproj",
+        // Cloud Computing
+        "*.ccproj",
+        // Fabric Application
+        "*.sfproj",
+        // Node.js
+        "*.njsproj",
+        // VC++
+        "*.vcxproj",
+        // VC++
+        "*.vcproj",
+        // .NET Core
+        "*.xproj",
+        // Python
+        "*.pyproj",
+        // Hive
+        "*.hiveproj",
+        // Pig
+        "*.pigproj",
+        // JavaScript
+        "*.jsproj",
+        // U-SQL
+        "*.usqlproj",
+        // Deployment
+        "*.deployproj",
+        // Common Project System Files
+        "*.msbuildproj",
+        // SQL
+        "*.sqlproj",
+        // SQL Project Files
+        "*.dbproj",
+        // RStudio
+        "*.rproj"
     };
 
     private final DetectFileFinder fileFinder;

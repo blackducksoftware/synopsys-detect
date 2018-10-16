@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.util;
+package com.blackducksoftware.integration.hub.detect.workflow.file;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -88,19 +88,17 @@ public class DirectoryManager {
 
     }
 
-    private final DetectConfiguration detectConfiguration;
-
     private final File runDirectory;
     private final File sourceDirectory;
 
     private final Map<OutputDirectory, File> outputDirectories = new HashMap<>();
     private final Map<RunDirectory, File> runDirectories = new HashMap<>();
+
     private final Map<ExtractionId, File> extractionDirectories = new HashMap<>();
 
     private final List<File> temporaryFiles = new ArrayList<>();
 
-    public DirectoryManager(final DetectConfiguration detectConfiguration, final DetectRun detectRun, File bdioDirectoryOverride) {
-        this.detectConfiguration = detectConfiguration;
+    public DirectoryManager(final DetectConfiguration detectConfiguration, final DetectRun detectRun) {
 
         String rawSource = detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH);
         if (StringUtils.isBlank(rawSource)) {
@@ -149,6 +147,10 @@ public class DirectoryManager {
         }
     }
 
+    public File getSourceDirectory() {
+        return sourceDirectory;
+    }
+
     public File getRelevantDirectory() {
         return getRunDirectory(RunDirectory.Relevant);
     }
@@ -177,13 +179,13 @@ public class DirectoryManager {
         return actualDirectory;
     }
 
-    public File getSharedDirectory(final String name) { // shared across this invocation of detect (inspectors)
+    public File getSharedDirectory(final String name) { // shared across this invocation of detect (inspectors), returns 'shared/name'
         final File newSharedFile = new File(getOutputDirectory(OutputDirectory.Shared), name);
         newSharedFile.mkdir();
         return newSharedFile;
     }
 
-    public File getSharedFile(final String sharedDirectory, String fileName) { // helper method for shared files
+    public File getSharedFile(final String sharedDirectory, String fileName) { // helper method for shared files, returns 'shared/name/file'
         return new File(getSharedDirectory(sharedDirectory), fileName);
     }
 

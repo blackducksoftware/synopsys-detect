@@ -32,10 +32,10 @@ import java.util.Optional;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.rest.connection.RestConnection;
 import com.synopsys.integration.swip.common.SwipDownloadUtility;

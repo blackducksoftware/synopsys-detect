@@ -3,6 +3,8 @@ package com.blackducksoftware.integration.hub.detect.util;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
+
 public class DirectoryManagerTest {
     @Test
     public void extractFinalPieceFromPath() {

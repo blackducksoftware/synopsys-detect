@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.util.DirectoryManager;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 
 public class FileManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

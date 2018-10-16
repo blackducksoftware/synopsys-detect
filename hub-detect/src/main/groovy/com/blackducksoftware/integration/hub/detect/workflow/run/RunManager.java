@@ -36,6 +36,7 @@ public class RunManager {
             result.failedBomToolGroupTypes.forEach(it -> bomToolResults.put(it, Result.FAILURE));
         }
 
+        
         /*
         AnnotationConfigApplicationContext runContext = new AnnotationConfigApplicationContext(DetectSharedBeanConfiguration.class, DetectBootBeanConfiguration.class);
 

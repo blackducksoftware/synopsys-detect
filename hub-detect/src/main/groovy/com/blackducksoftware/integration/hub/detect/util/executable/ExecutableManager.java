@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 
 public class ExecutableManager {
     private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class);
