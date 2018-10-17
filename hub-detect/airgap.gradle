@@ -65,8 +65,8 @@ task downloadDockerInspectorScript() {
     doLast {
         def dir = new File(dockerAirGapPath)
         dir.mkdir()
-        def dockerInspectorScript = new File(dockerAirGapPath, 'hub-docker-inspector.sh')
-        final def dockerInspectorScriptUrl = 'https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh'
+        def dockerInspectorScript = new File(dockerAirGapPath, 'blackduck-docker-inspector.sh')
+        final def dockerInspectorScriptUrl = 'https://blackducksoftware.github.io/blackduck-docker-inspector/blackduck-docker-inspector.sh'
         fetchFile(dockerInspectorScript, dockerInspectorScriptUrl)              
         dockerInspectorScript.setExecutable(true)          
     }
@@ -78,14 +78,14 @@ task downloadDockerInspector() {
         exec {
         	workingDir "${dockerAirGapPath}"
             environment 'DOCKER_INSPECTOR_CURL_OPTS', '--insecure'
-            commandLine 'bash', "${dockerAirGapPath}/hub-docker-inspector.sh", '--pullairgapzip'
+            commandLine 'bash', "${dockerAirGapPath}/blackduck-docker-inspector.sh", '--pullairgapzip'
         }
         exec {
         	workingDir "${dockerAirGapPath}"
-        	commandLine 'unzip', '-n', 'hub-docker-inspector-*-air-gap.zip'
+        	commandLine 'unzip', '-n', 'blackduck-docker-inspector-*-air-gap.zip'
         }
         delete fileTree("${dockerAirGapPath}") {
-            include 'hub-docker-inspector-*-air-gap.zip'
+            include 'blackduck-docker-inspector-*-air-gap.zip'
         }
     }
 }

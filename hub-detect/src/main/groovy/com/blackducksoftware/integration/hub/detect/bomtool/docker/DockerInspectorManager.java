@@ -54,8 +54,8 @@ import com.synopsys.integration.rest.request.Response;
 import com.synopsys.integration.util.ResourceUtil;
 
 public class DockerInspectorManager {
-    private static final String IMAGE_INSPECTOR_FAMILY = "hub-imageinspector-ws";
-    private static final String ARTIFACTORY_URL_BASE = "https://test-repo.blackducksoftware.com:443/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-docker-inspector/";
+    private static final String IMAGE_INSPECTOR_FAMILY = "blackduck-imageinspector-ws";
+    private static final String ARTIFACTORY_URL_BASE = "https://test-repo.blackducksoftware.com:443/artifactory/bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector/";
     private static final String ARTIFACTORY_URL_METADATA = ARTIFACTORY_URL_BASE + "maven-metadata.xml";
     private static final String ARTIFACTORY_URL_JAR_PATTERN = ARTIFACTORY_URL_BASE + "%s/%s";
     private static final List<String> inspectorNames = Arrays.asList("ubuntu", "alpine", "centos");
@@ -116,7 +116,7 @@ public class DockerInspectorManager {
     }
 
     private String getJarFilename(final String version) {
-        final String jarFilename = String.format("hub-docker-inspector-%s.jar", version);
+        final String jarFilename = String.format("blackduck-docker-inspector-%s.jar", version);
         return jarFilename;
     }
 
