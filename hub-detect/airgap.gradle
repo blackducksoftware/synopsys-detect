@@ -61,21 +61,37 @@ task copyApplicationProperties(type: Copy) {
     into configAirGapPath
 }
 
+File fetchDockerInspectorMavenMetadata(String dockerAirGapPath, final String dockerInspectorArtifactoryBaseUrl) {
+    final String dockerInspectorMavenMetadataUrl = "${dockerInspectorArtifactoryBaseUrl}/maven-metadata.xml"
+    final File dockerInspectorMetadataFile = new File(dockerAirGapPath, 'maven-metadata.xml')
+    dockerInspectorMetadataFile.delete()
+    fetchFile(dockerInspectorMetadataFile, dockerInspectorMavenMetadataUrl)
+    println "downloaded: ${dockerInspectorMetadataFile.getAbsolutePath()}"
+    return dockerInspectorMetadataFile
+}
+
+String getLatestDockerInspectorVersion(final File dockerInspectorMetadataFile) {
+    final String mavenMetadataString = dockerInspectorMetadataFile.getText('UTF-8')
+    final Node metadata = new XmlParser().parseText(mavenMetadataString)
+    final String dockerInspectorLatestVersion = metadata.versioning.latest.text()
+    println "dockerInspectorLatestVersion: ${dockerInspectorLatestVersion}"
+    return dockerInspectorLatestVersion
+}
+
+File downloadDockerInspectorAirGapZip(String dockerAirGapPath, final String dockerInspectorArtifactoryBaseUrl, final String dockerInspectorLatestVersion) {
+    final String dockerInspectorAirGapZipUrl = "${dockerInspectorArtifactoryBaseUrl}/${dockerInspectorLatestVersion}/blackduck-docker-inspector-${dockerInspectorLatestVersion}-air-gap.zip"
+    println "dockerInspectorAirGapZipUrl: ${dockerInspectorAirGapZipUrl}"
+    final File dockerInspectorAirGapZipFile = new File(dockerAirGapPath, "blackduck-docker-inspector-${dockerInspectorLatestVersion}-air-gap.zip")
+    fetchFile(dockerInspectorAirGapZipFile, dockerInspectorAirGapZipUrl)
+    return dockerInspectorAirGapZipFile
+}
+
 task downloadDockerInspector() {
     doLast {
         final String dockerInspectorArtifactoryBaseUrl = 'https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector'
-        final String dockerInspectorMavenMetadataUrl = "${dockerInspectorArtifactoryBaseUrl}/maven-metadata.xml"
-        final File dockerInspectorMetadataFile = new File(dockerAirGapPath, 'maven-metadata.xml')
-        dockerInspectorMetadataFile.delete()
-        fetchFile(dockerInspectorMetadataFile, dockerInspectorMavenMetadataUrl)
-        final String mavenMetadataString = dockerInspectorMetadataFile.getText('UTF-8')
-        final Node metadata = new XmlParser().parseText(mavenMetadataString)
-        final String dockerInspectorLatestVersion = metadata.versioning.latest.text()
-        println "dockerInspectorLatestVersion: ${dockerInspectorLatestVersion}"
-        final String dockerInspectorAirGapZipUrl = "${dockerInspectorArtifactoryBaseUrl}/${dockerInspectorLatestVersion}/blackduck-docker-inspector-${dockerInspectorLatestVersion}-air-gap.zip"
-        println "dockerInspectorAirGapZipUrl: ${dockerInspectorAirGapZipUrl}"
-        final File dockerInspectorAirGapZipFile = new File(dockerAirGapPath, "blackduck-docker-inspector-${dockerInspectorLatestVersion}-air-gap.zip")
-        fetchFile(dockerInspectorAirGapZipFile, dockerInspectorAirGapZipUrl)
+        final File dockerInspectorMetadataFile = fetchDockerInspectorMavenMetadata(dockerAirGapPath, dockerInspectorArtifactoryBaseUrl)
+        final String dockerInspectorLatestVersion = getLatestDockerInspectorVersion(dockerInspectorMetadataFile)
+        final File dockerInspectorAirGapZipFile = downloadDockerInspectorAirGapZip(dockerAirGapPath, dockerInspectorArtifactoryBaseUrl, dockerInspectorLatestVersion)
         exec {
         	workingDir "${dockerAirGapPath}"
         	commandLine 'unzip', '-n', 'blackduck-docker-inspector-*-air-gap.zip'
