@@ -105,14 +105,20 @@ public class DockerInspectorManager {
         }
         List<File> airGapInspectorImageTarfiles = null;
         if (offline) {
-            airGapInspectorImageTarfiles = new ArrayList<>();
-            final String dockerInspectorAirGapPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
-            for (final String inspectorName : inspectorNames) {
-                final File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + inspectorName + ".tar");
-                airGapInspectorImageTarfiles.add(osImage);
-            }
+            airGapInspectorImageTarfiles = getAirGapInspectorImageTarfiles();
         }
         return new DockerInspectorInfo(dockerInspectorJar.get(), airGapInspectorImageTarfiles);
+    }
+
+    private List<File> getAirGapInspectorImageTarfiles() {
+        List<File> airGapInspectorImageTarfiles;
+        airGapInspectorImageTarfiles = new ArrayList<>();
+        final String dockerInspectorAirGapPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
+        for (final String inspectorName : inspectorNames) {
+            final File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + inspectorName + ".tar");
+            airGapInspectorImageTarfiles.add(osImage);
+        }
+        return airGapInspectorImageTarfiles;
     }
 
     private String getJarFilename(final String version) {
