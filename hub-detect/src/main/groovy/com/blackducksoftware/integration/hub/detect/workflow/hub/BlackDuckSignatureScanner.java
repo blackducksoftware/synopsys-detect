@@ -101,7 +101,6 @@ public class BlackDuckSignatureScanner {
         }
 
         reportResults();
-
     }
 
     private void reportResults() {

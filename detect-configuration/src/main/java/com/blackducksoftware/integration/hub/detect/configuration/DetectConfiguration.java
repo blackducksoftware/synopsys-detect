@@ -75,7 +75,7 @@ public class DetectConfiguration {
         if (StringUtils.isNotBlank(bdScanPaths)) {
             logger.warn("The environment variable BD_HUB_SCAN_PATH was set but you should use --" + DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS.getPropertyName() + " instead.");
             List<String> values = new ArrayList<>();
-            values.addAll(Arrays.asList(getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS)));
+            values.addAll(Arrays.asList(getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, PropertyAuthority.None)));
             values.addAll(Arrays.asList(bdScanPaths.split(",")));
             setDetectProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, values.stream().collect(Collectors.joining(",")));
         }
@@ -169,36 +169,58 @@ public class DetectConfiguration {
         return getKeysWithoutPrefix(detectPropertySource.getDockerEnvironmentKeys(), DetectPropertySource.DOCKER_ENVIRONMENT_PREFIX);
     }
 
+    private boolean isLocked = false;
+
+    private void lock() {
+        isLocked = true;
+        logger.info("Configuration has finished.");
+    }
+
+    private void authorize(DetectProperty property, PropertyAuthority authority) {
+        if (!isLocked)
+            return;
+        if (property.getPropertyAuthority() != authority) {
+            throw new RuntimeException("Authority " + authority.toString() + " may not access " + property.getPropertyName() + " whose authority is " + property.getPropertyAuthority());
+        }
+    }
+
     // Redirect to the underlying map
-    public boolean getBooleanProperty(final DetectProperty detectProperty) {
+    public boolean getBooleanProperty(final DetectProperty detectProperty, PropertyAuthority authority) {
+        authorize(detectProperty, authority);
         return detectPropertyMap.getBooleanProperty(detectProperty);
     }
 
-    public Long getLongProperty(final DetectProperty detectProperty) {
+    public Long getLongProperty(final DetectProperty detectProperty, PropertyAuthority authority) {
+        authorize(detectProperty, authority);
         return detectPropertyMap.getLongProperty(detectProperty);
     }
 
-    public Integer getIntegerProperty(final DetectProperty detectProperty) {
+    public Integer getIntegerProperty(final DetectProperty detectProperty, PropertyAuthority authority) {
+        authorize(detectProperty, authority);
         return detectPropertyMap.getIntegerProperty(detectProperty);
     }
 
-    public String[] getStringArrayProperty(final DetectProperty detectProperty) {
+    public String[] getStringArrayProperty(final DetectProperty detectProperty, PropertyAuthority authority) {
+        authorize(detectProperty, authority);
         return detectPropertyMap.getStringArrayProperty(detectProperty);
     }
 
-    public Optional<String[]> getOptionalStringArrayProperty(final DetectProperty detectProperty) {
-        return Optional.ofNullable(getStringArrayProperty(detectProperty));
+    public Optional<String[]> getOptionalStringArrayProperty(final DetectProperty detectProperty, PropertyAuthority authority) {
+        authorize(detectProperty, authority);
+        return Optional.ofNullable(getStringArrayProperty(detectProperty, authority));
     }
 
-    public String getProperty(final DetectProperty detectProperty) {
+    public String getProperty(final DetectProperty detectProperty, PropertyAuthority authority) {
+        authorize(detectProperty, authority);
         return detectPropertyMap.getProperty(detectProperty);
     }
 
     /**
      * Same as <code>getProperty()</code>, but returns an optional after performing a <code>StringUtils.isBlank()</code> check
      */
-    public Optional<String> getOptionalProperty(final DetectProperty detectProperty) {
-        final String property = getProperty(detectProperty);
+    public Optional<String> getOptionalProperty(final DetectProperty detectProperty, PropertyAuthority authority) {
+        authorize(detectProperty, authority);
+        final String property = getProperty(detectProperty, authority);
         Optional<String> optionalProperty = Optional.empty();
         if (StringUtils.isNotBlank(property)) {
             optionalProperty = Optional.of(property);
@@ -207,14 +229,16 @@ public class DetectConfiguration {
         return optionalProperty;
     }
 
-    public String getPropertyValueAsString(final DetectProperty detectProperty) {
+    public String getPropertyValueAsString(final DetectProperty detectProperty, PropertyAuthority authority) {
+        authorize(detectProperty, authority);
         return detectPropertyMap.getPropertyValueAsString(detectProperty);
     }
 
-    /**
-     * DetectOptionManager and ConfigurationManager
-     */
     public void setDetectProperty(final DetectProperty detectProperty, final String stringValue) {
+        if (isLocked) {
+            throw new RuntimeException("Detect configuration has been locked. You may not change properties.");
+        }
+
         // TODO: Remove overrides in a future version of detect.
         final DetectProperty override = fromDeprecatedToOverride(detectProperty);
         final DetectProperty deprecated = fromOverrideToDeprecated(detectProperty);
@@ -228,6 +252,7 @@ public class DetectConfiguration {
         }
     }
 
+    //Does not require autorization because you are bananas
     public Map<DetectProperty, Object> getCurrentProperties() {
         return new HashMap<>(detectPropertyMap.getUnderlyingPropertyMap());// return an immutable copy
     }
@@ -242,7 +267,7 @@ public class DetectConfiguration {
             final Optional<DetectProperty> propertyValue = getPropertyFromString(detectKey);
             String value = null;
             if (propertyValue.isPresent()) {
-                value = getPropertyValueAsString(propertyValue.get());
+                value = getPropertyValueAsString(propertyValue.get(), PropertyAuthority.None);
             }
             if (StringUtils.isBlank(value)) {
                 value = detectPropertySource.getProperty(detectKey);
