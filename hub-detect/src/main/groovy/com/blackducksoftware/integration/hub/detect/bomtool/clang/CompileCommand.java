@@ -29,5 +29,6 @@ import com.synopsys.integration.util.Stringable;
 public class CompileCommand extends Stringable {
     public String directory;
     public String command;
+    public String[] arguments;
     public String file;
 }

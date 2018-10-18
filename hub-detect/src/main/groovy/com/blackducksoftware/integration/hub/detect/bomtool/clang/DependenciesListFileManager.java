@@ -55,7 +55,7 @@ public class DependenciesListFileManager {
         this.executableRunner = executableRunner;
     }
 
-    public Set<String> generateDependencyFilePaths(final File workingDir, final CompileCommand compileCommand) {
+    public Set<String> generateDependencyFilePaths(final File workingDir, final CompileCommandWrapper compileCommand) {
         final Set<String> dependencyFilePaths = new HashSet<>();
         final Optional<File> depsMkFile = generate(workingDir, compileCommand);
         dependencyFilePaths.addAll(parse(depsMkFile.orElse(null)));
@@ -64,14 +64,14 @@ public class DependenciesListFileManager {
     }
 
     private Optional<File> generate(final File workingDir,
-            final CompileCommand compileCommand) {
+            final CompileCommandWrapper compileCommand) {
         final String depsMkFilename = deriveDependenciesListFilename(compileCommand);
         final File depsMkFile = new File(workingDir, depsMkFilename);
         try {
-            executableRunner.executeFromDirQuietly(new File(compileCommand.directory), getCompilerCommand(compileCommand.command),
-                    getCompilerArgsForGeneratingDepsMkFile(compileCommand.command, depsMkFile.getAbsolutePath()));
+            executableRunner.executeFromDirQuietly(new File(compileCommand.getDirectory()), getCompilerCommand(compileCommand.getCommand()),
+                    getCompilerArgsForGeneratingDepsMkFile(compileCommand.getCommand(), depsMkFile.getAbsolutePath()));
         } catch (final ExecutableRunnerException e) {
-            logger.debug(String.format("Error generating dependencies file for command '%s': %s", compileCommand.command, e.getMessage()));
+            logger.debug(String.format("Error generating dependencies file for command '%s': %s", compileCommand.getCommand(), e.getMessage()));
             return Optional.empty();
         }
         return Optional.of(depsMkFile);
@@ -110,9 +110,9 @@ public class DependenciesListFileManager {
         return dependencyFilePaths;
     }
 
-    private String deriveDependenciesListFilename(final CompileCommand compileCommand) {
+    private String deriveDependenciesListFilename(final CompileCommandWrapper compileCommand) {
         final int randomInt = random.nextInt(1) * 1000;
-        final String sourceFilenameBase = getFilenameBase(compileCommand.file);
+        final String sourceFilenameBase = getFilenameBase(compileCommand.getFile());
         return String.format(DEPS_MK_FILENAME_PATTERN, sourceFilenameBase, randomInt);
     }
 
