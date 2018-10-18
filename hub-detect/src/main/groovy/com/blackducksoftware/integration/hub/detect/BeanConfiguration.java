@@ -138,6 +138,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLo
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.FileManager;
+import com.blackducksoftware.integration.hub.detect.workflow.exit.ExitCodeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
@@ -158,8 +159,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManage
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchEvaluator;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
-import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
+import com.blackducksoftware.integration.hub.detect.workflow.status.DetectStatusManager;
 import com.google.gson.Gson;
 import com.synopsys.integration.hub.bdio.BdioNodeFactory;
 import com.synopsys.integration.hub.bdio.BdioPropertyHelper;
@@ -356,16 +356,12 @@ public class BeanConfiguration {
 
     @Bean
     public BlackDuckSignatureScanner blackDuckSignatureScanner() {
-        return new BlackDuckSignatureScanner(directoryManager(), detectFileFinder(), codeLocationNameManager(), detectConfiguration());
+        return new BlackDuckSignatureScanner(directoryManager(), detectFileFinder(), codeLocationNameManager(), detectConfiguration(), eventSystem());
     }
 
     @Bean
-    public DetectSummaryManager statusSummary() throws ParserConfigurationException {
-        final List<StatusSummaryProvider<?>> statusSummaryProviders = new ArrayList<>();
-        //statusSummaryProviders.add(detectProjectManager());
-        statusSummaryProviders.add(blackDuckSignatureScanner());
-
-        return new DetectSummaryManager(statusSummaryProviders);
+    public DetectStatusManager detectStatusManager() {
+        return new DetectStatusManager(eventSystem());
     }
 
     @Bean
@@ -688,7 +684,12 @@ public class BeanConfiguration {
 
     @Bean
     public RunManager runManager() {
-        return new RunManager(detectRunDependencies.phoneHomeManager, detectConfiguration(), bomToolManager());
+        return new RunManager(detectRunDependencies.phoneHomeManager, detectConfiguration(), bomToolManager(), detectStatusManager(), exitCodeManager(), eventSystem());
+    }
+
+    @Bean
+    public ExitCodeManager exitCodeManager() {
+        return new ExitCodeManager(eventSystem());
     }
 
     //BomTools

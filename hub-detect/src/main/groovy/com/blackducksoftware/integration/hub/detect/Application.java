@@ -33,13 +33,11 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.workflow.ExitCodeUtility;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.BootFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.BootManager;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.BootResult;
-import com.blackducksoftware.integration.hub.detect.workflow.boot.CleanupManager;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectRunDependencies;
 import com.blackducksoftware.integration.hub.detect.workflow.run.RunManager;
 
@@ -87,7 +85,7 @@ public class Application implements ApplicationRunner {
                 AnnotationConfigApplicationContext runContext = new AnnotationConfigApplicationContext();
                 runContext.setDisplayName("Detect Run " + detectRunDependencies.detectRun.getRunId());
                 runContext.register(BeanConfiguration.class);
-                runContext.registerBean(DetectRunDependencies.class, () -> { return detectRunDependencies; });
+                runContext.registerBean(DetectRunDependencies.class, () -> detectRunDependencies);
                 runContext.refresh();
 
                 RunManager runManager = runContext.getBean(RunManager.class);
@@ -95,21 +93,6 @@ public class Application implements ApplicationRunner {
             }
         } catch (final Exception e) {
             detectExitCode = exitCodeUtility.getExitCodeFromExceptionDetails(e);
-        }
-
-        try {
-            if (bootResult != null) {
-                CleanupManager cleanupManager = new CleanupManager();
-                cleanupManager.cleanup(bootResult.detectRunDependencies);
-            }
-        } catch (final Exception e) {
-            detectExitCode = exitCodeUtility.getExitCodeFromExceptionDetails(e);
-        }
-
-        boolean printOutput = bootResult.detectRunDependencies.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT);
-        if (!printOutput) {
-            //bootResult.detectRunDependencies.detectSummaryManager();
-            //detectSummaryManager.logDetectResults(new Slf4jIntLogger(logger), currentExitCodeType);
         }
 
         final long endTime = System.currentTimeMillis();

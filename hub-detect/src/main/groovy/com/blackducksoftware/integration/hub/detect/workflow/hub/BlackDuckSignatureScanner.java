@@ -25,13 +25,12 @@ package com.blackducksoftware.integration.hub.detect.workflow.hub;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -39,14 +38,16 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
+import com.blackducksoftware.integration.hub.detect.event.Event;
+import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
+import com.blackducksoftware.integration.hub.detect.workflow.exit.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
-import com.blackducksoftware.integration.hub.detect.workflow.summary.ScanStatusSummary;
-import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
+import com.blackducksoftware.integration.hub.detect.workflow.status.SignatureScanStatus;
+import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 import com.synopsys.integration.blackduck.configuration.HubServerConfig;
 import com.synopsys.integration.blackduck.signaturescanner.ScanJob;
 import com.synopsys.integration.blackduck.signaturescanner.ScanJobBuilder;
@@ -58,11 +59,10 @@ import com.synopsys.integration.blackduck.signaturescanner.command.SnippetMatchi
 import com.synopsys.integration.blackduck.summary.Result;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStatusSummary>, ExitCodeReporter {
+public class BlackDuckSignatureScanner {
     private final Logger logger = LoggerFactory.getLogger(BlackDuckSignatureScanner.class);
-    private final Set<String> scanPaths = new HashSet<>();
+    private final Set<BlackDuckSignatureScannerEvaluation> scans = new HashSet<>();
     private final Map<String, Set<String>> scanPathExclusionPatterns = new HashMap<>();
-    private final Map<String, Result> scanSummaryResults = new HashMap<>();
     private String dockerTarFilePath;
     private String dockerTarFilename;
 
@@ -70,19 +70,21 @@ public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStat
     private final DetectFileFinder detectFileFinder;
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfiguration detectConfiguration;
+    private final EventSystem eventSystem;
 
     public BlackDuckSignatureScanner(final DirectoryManager directoryManager, final DetectFileFinder detectFileFinder, final CodeLocationNameManager codeLocationNameManager,
-        final DetectConfiguration detectConfiguration) {
+        final DetectConfiguration detectConfiguration, EventSystem eventSystem) {
         this.directoryManager = directoryManager;
         this.detectFileFinder = detectFileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
+        this.eventSystem = eventSystem;
     }
 
     public void scanPaths(final HubServerConfig hubServerConfig, ScanJobManager scanJobManager, final DetectProject detectProject) throws IntegrationException, InterruptedException {
         determinePathsAndExclusions(detectProject);
 
-        final ScanJobBuilder scanJobBuilder = createScanJobBuilder(detectProject, scanPaths, dockerTarFilename);
+        final ScanJobBuilder scanJobBuilder = createScanJobBuilder(detectProject, scans.stream().map(it -> it.scanPath).collect(Collectors.toSet()), dockerTarFilename);
         scanJobBuilder.fromHubServerConfig(hubServerConfig);
 
         final ScanJob scanJob = scanJobBuilder.build();
@@ -97,52 +99,51 @@ public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStat
         } catch (IOException e) {
             throw new IntegrationException("Could not execute the scans: " + e.getMessage());
         }
+
+        reportResults();
+
+    }
+
+    private void reportResults() {
+        boolean anyFailed = false;
+        for (final BlackDuckSignatureScannerEvaluation scan : scans) {
+            StatusType scanStatus;
+            if (!scan.scanFinished) {
+                scanStatus = StatusType.FAILURE;
+                logger.info(String.format("Scanning target %s was never scanned by the BlackDuck CLI.", scan.scanPath));
+            } else if (scan.scanResult == Result.FAILURE) {
+                scanStatus = StatusType.FAILURE;
+                logger.error(String.format("Scanning target %s failed: %s", scan.scanPath, scan.scanMessage));
+                if (null != scan.scanException) {
+                    logger.debug(scan.scanMessage, scan.scanException);
+                }
+            } else {
+                scanStatus = StatusType.SUCCESS;
+                logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", scan.scanPath));
+            }
+            anyFailed = anyFailed || scanStatus == StatusType.FAILURE;
+            eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(scan.scanPath, scanStatus));
+        }
+        eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_SCAN));
     }
 
     private void handleScanCommandOutput(final ScanCommandOutput scanCommandOutput) {
         final Result result = scanCommandOutput.getResult();
-        scanSummaryResults.put(scanCommandOutput.getScanTarget(), result);
-        if (Result.FAILURE == result) {
-            logger.error(String.format("Scanning target %s failed: %s", scanCommandOutput.getScanTarget(), scanCommandOutput.getErrorMessage()));
-            if (null != scanCommandOutput.getException()) {
-                logger.debug(scanCommandOutput.getErrorMessage(), scanCommandOutput.getException());
-
-            }
-        } else {
-            logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", scanCommandOutput.getScanTarget()));
-        }
-    }
-
-    @Override
-    public List<ScanStatusSummary> getStatusSummaries() {
-        final List<ScanStatusSummary> detectSummaryResults = new ArrayList<>();
-        for (final Map.Entry<String, Result> entry : scanSummaryResults.entrySet()) {
-            detectSummaryResults.add(new ScanStatusSummary(entry.getKey(), entry.getValue()));
-        }
-        return detectSummaryResults;
-    }
-
-    @Override
-    public ExitCodeType getExitCodeType() {
-        for (final Map.Entry<String, Result> entry : scanSummaryResults.entrySet()) {
-            if (Result.FAILURE == entry.getValue()) {
-                return ExitCodeType.FAILURE_SCAN;
-            }
-        }
-        return ExitCodeType.SUCCESS;
-    }
-
-    public String getDockerTarFilePath() {
-        return dockerTarFilePath;
+        final String path = scanCommandOutput.getScanTarget();
+        scans.stream()
+            .filter(it -> it.scanPath.equals(it))
+            .findFirst()
+            .ifPresent(it -> {
+                it.scanResult = scanCommandOutput.getResult();
+                it.scanException = scanCommandOutput.getException();
+                it.scanMessage = scanCommandOutput.getErrorMessage();
+                it.scanFinished = true;
+            });
     }
 
     public void setDockerTarFile(final File dockerTarFile) throws IOException {
         this.dockerTarFilePath = dockerTarFile.getCanonicalPath();
         this.dockerTarFilename = dockerTarFile.getName();
-    }
-
-    public String getDockerTarFileName() {
-        return dockerTarFilename;
     }
 
     private void determinePathsAndExclusions(final DetectProject detectProject) throws IntegrationException {
@@ -172,9 +173,9 @@ public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStat
         try {
             final File target = new File(path);
             final String targetPath = target.getCanonicalPath();
-            scanPaths.add(targetPath);
-            // Add the path as a FAILURE until it completes successfully
-            scanSummaryResults.put(targetPath, Result.FAILURE);
+            BlackDuckSignatureScannerEvaluation scannerEvaluation = new BlackDuckSignatureScannerEvaluation();
+            scannerEvaluation.scanPath = targetPath;
+            scans.add(scannerEvaluation);
             final ExclusionPatternDetector exclusionPatternDetector = new ExclusionPatternDetector(detectFileFinder, target);
             final Set<String> scanExclusionPatterns = exclusionPatternDetector.determineExclusionPatterns(hubSignatureScannerExclusionNamePatterns);
             if (null != providedExclusionPatterns) {

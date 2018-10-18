@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -60,13 +61,11 @@ import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManage
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.workflow.summary.BomToolGroupStatusSummary;
-import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
 import com.synopsys.integration.blackduck.summary.Result;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
-public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupStatusSummary>, ExitCodeReporter {
+public class DetectProjectManager implements ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
     private final Set<BomToolGroupType> applicableBomTools = new HashSet<>();
@@ -80,9 +79,10 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
     private final BomToolNameVersionDecider bomToolNameVersionDecider;
     private final DetectConfiguration detectConfiguration;
     private final ReportManager reportManager;
+    private final EventSystem eventSystem;
 
     public DetectProjectManager(final SearchManager searchManager, final ExtractionManager extractionManager, final DetectCodeLocationManager codeLocationManager, final BdioManager bdioManager,
-        final BomToolNameVersionDecider bomToolNameVersionDecider, final DetectConfiguration detectConfiguration, final ReportManager reportManager) {
+        final BomToolNameVersionDecider bomToolNameVersionDecider, final DetectConfiguration detectConfiguration, final ReportManager reportManager, EventSystem eventSystem) {
 
         this.searchManager = searchManager;
         this.extractionManager = extractionManager;
@@ -91,6 +91,7 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
         this.bomToolNameVersionDecider = bomToolNameVersionDecider;
         this.detectConfiguration = detectConfiguration;
         this.reportManager = reportManager;
+        this.eventSystem = eventSystem;
     }
 
     public DetectProject createDetectProject() throws DetectUserFriendlyException, IntegrationException {
@@ -102,7 +103,6 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
             .forEach(it -> applicableBomTools.add(it));
 
         final ExtractionResult extractionResult = extractionManager.performExtractions(searchResult.getBomToolEvaluations());
-        applyBomToolGroupStatus(extractionResult.getSuccessfulBomToolTypes(), extractionResult.getFailedBomToolTypes());
 
         final NameVersion nameVersion = getProjectNameVersion(searchResult.getBomToolEvaluations());
         final String projectName = nameVersion.getName();
@@ -113,7 +113,6 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
         final List<File> bdioFiles = new ArrayList<>();
         if (StringUtils.isBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME))) {
             final DetectCodeLocationResult codeLocationResult = codeLocationManager.process(codeLocations, projectName, projectVersion);
-            applyFailedBomToolGroupStatus(codeLocationResult.getFailedBomToolGroupTypes());
 
             final List<File> createdBdioFiles = bdioManager.createBdioFiles(codeLocationResult.getBdioCodeLocations(), projectName, projectVersion);
             bdioFiles.addAll(createdBdioFiles);
@@ -127,15 +126,6 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
         final DetectProject project = new DetectProject(projectName, projectVersion, bdioFiles);
 
         return project;
-    }
-
-    @Override
-    public List<BomToolGroupStatusSummary> getStatusSummaries() {
-        final List<BomToolGroupStatusSummary> detectSummaryResults = new ArrayList<>();
-        for (final Map.Entry<BomToolGroupType, Result> entry : bomToolGroupSummaryResults.entrySet()) {
-            detectSummaryResults.add(new BomToolGroupStatusSummary(entry.getKey(), entry.getValue()));
-        }
-        return detectSummaryResults;
     }
 
     @Override
@@ -159,21 +149,6 @@ public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupS
             }
         }
         return ExitCodeType.SUCCESS;
-    }
-
-    private void applyFailedBomToolGroupStatus(final Set<BomToolGroupType> failedBomToolGroupTypes) {
-        for (final BomToolGroupType type : failedBomToolGroupTypes) {
-            bomToolGroupSummaryResults.put(type, Result.FAILURE);
-        }
-    }
-
-    private void applyBomToolGroupStatus(final Set<BomToolGroupType> succeededBomToolGroupTypes, final Set<BomToolGroupType> failedBomToolGroupTypes) {
-        applyFailedBomToolGroupStatus(failedBomToolGroupTypes);
-        for (final BomToolGroupType type : succeededBomToolGroupTypes) {
-            if (!bomToolGroupSummaryResults.containsKey(type)) {
-                bomToolGroupSummaryResults.put(type, Result.SUCCESS);
-            }
-        }
     }
 
     private NameVersion getProjectNameVersion(final List<BomToolEvaluation> bomToolEvaluations) {

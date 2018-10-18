@@ -46,9 +46,9 @@ public class DetectListOption extends DetectOption {
 
             if (badValues.size() > 0) {
                 final String validationMesssage = String.format("%s: Unknown values %s, acceptable values are %s",
-                        getDetectProperty().getPropertyName(),
-                        badValues.stream().collect(Collectors.joining(",")),
-                        getValidValues().stream().collect(Collectors.joining(",")));
+                    getDetectProperty().getPropertyName(),
+                    badValues.stream().collect(Collectors.joining(",")),
+                    getValidValues().stream().collect(Collectors.joining(",")));
                 result = OptionValidationResult.invalid(validationMesssage);
             } else {
                 result = OptionValidationResult.valid("");

@@ -15,7 +15,7 @@ public class EventSystem {
 
     public void publishEvent(Event event, Object payload) {
         if (event.getEventClass().isAssignableFrom(payload.getClass())) {
-            for (EventListener listener : safelyGet(event)) {
+            for (EventListener listener : safelyGetListeners(event)) {
                 listener.eventOccured(payload);
             }
         } else {
@@ -23,7 +23,15 @@ public class EventSystem {
         }
     }
 
-    private List<EventListener> safelyGet(Event event) {
+    public void registerListener(Event event, EventListener listener) {
+        safelyGetListeners(event).add(listener);
+    }
+
+    public void unregisterListener(Event event, EventListener listener) {
+        safelyGetListeners(event).remove(listener);
+    }
+
+    private List<EventListener> safelyGetListeners(Event event) {
         List<EventListener> listeners;
         if (eventListenerMap.containsKey(event)) {
             listeners = eventListenerMap.get(event);
@@ -32,13 +40,5 @@ public class EventSystem {
             eventListenerMap.put(event, listeners);
         }
         return listeners;
-    }
-
-    public void registerListener(Event event, EventListener listener) {
-        safelyGet(event).add(listener);
-    }
-
-    public void unregisterListener(Event event, EventListener listener) {
-        safelyGet(event).remove(listener);
     }
 }

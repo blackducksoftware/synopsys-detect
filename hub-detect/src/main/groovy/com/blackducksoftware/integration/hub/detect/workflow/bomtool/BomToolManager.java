@@ -61,8 +61,8 @@ public class BomToolManager {
         bomToolResult.bomToolCodeLocations = extractionResult.getDetectCodeLocations();
         bomToolResult.bomToolProjectInfo = nameVersion;
 
-        bomToolResult.succesfullBomToolGroupTypes.addAll(preparationResult.getFailedBomToolTypes());
-        bomToolResult.succesfullBomToolGroupTypes.addAll(extractionResult.getFailedBomToolTypes());
+        bomToolResult.succesfullBomToolGroupTypes.addAll(preparationResult.getSuccessfulBomToolTypes());
+        bomToolResult.succesfullBomToolGroupTypes.addAll(extractionResult.getSuccessfulBomToolTypes());
 
         bomToolResult.failedBomToolGroupTypes.addAll(preparationResult.getFailedBomToolTypes());
         bomToolResult.failedBomToolGroupTypes.addAll(extractionResult.getFailedBomToolTypes());

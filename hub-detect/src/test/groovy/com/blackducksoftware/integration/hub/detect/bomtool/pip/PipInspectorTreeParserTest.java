@@ -83,7 +83,7 @@ public class PipInspectorTreeParserTest {
     public void invalidParseTest() {
         final List<String> invalidText = new ArrayList<>();
         invalidText.add("i am not a valid file");
-        invalidText.add("the result should be optional.empty()");
+        invalidText.add("the status should be optional.empty()");
         final Optional<PipParseResult> invalidParse = parser.parse(BomToolType.PIP_INSPECTOR, invalidText, "");
         Assert.assertFalse(invalidParse.isPresent());
     }
