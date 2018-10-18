@@ -93,23 +93,20 @@ public class DockerInspectorManager {
     }
 
     private DockerInspectorInfo install() throws DetectUserFriendlyException {
-        DockerInspectorInfo info;
-        if ((info = getInfoBasedOnUserProvidedJar()) != null) {
-            return info;
-        } else if ((info = getInfoBasedOnAirGapFiles()) != null) {
-            return info;
-        } else {
-            return getInfoBasedOnDownloadedJar();
+        DockerInspectorInfo dockerInspectorInfo = getInfoBasedOnConfiguredJar();
+        if (dockerInspectorInfo != null) {
+            return dockerInspectorInfo;
         }
+        dockerInspectorInfo = getInfoBasedOnAirGapFiles();
+        if (dockerInspectorInfo != null) {
+            return dockerInspectorInfo;
+        }
+        return getInfoBasedOnDownloadedJar();
     }
 
-    private DockerInspectorInfo getInfoBasedOnUserProvidedJar() {
-        DockerInspectorInfo info = null;
-        final File dockerInspectorJar = getUserSpecifiedDiskResidentJar();
-        if (dockerInspectorJar != null) {
-            info = new DockerInspectorInfo(dockerInspectorJar);
-        }
-        return info;
+    private DockerInspectorInfo getInfoBasedOnConfiguredJar() {
+        final File dockerInspectorJar = getConfiguredJar();
+        return getInfoBasedOnJar(dockerInspectorJar);
     }
 
     private DockerInspectorInfo getInfoBasedOnAirGapFiles() {
@@ -123,8 +120,13 @@ public class DockerInspectorManager {
     }
 
     private DockerInspectorInfo getInfoBasedOnDownloadedJar() throws DetectUserFriendlyException {
+        final File dockerInspectorJar = getDownloadedJar();
+        final DockerInspectorInfo info = getInfoBasedOnJar(dockerInspectorJar);
+        return info;
+    }
+
+    private DockerInspectorInfo getInfoBasedOnJar(final File dockerInspectorJar) {
         DockerInspectorInfo info = null;
-        final File dockerInspectorJar = downloadJar();
         if (dockerInspectorJar != null) {
             info = new DockerInspectorInfo(dockerInspectorJar);
         }
@@ -147,7 +149,7 @@ public class DockerInspectorManager {
         return jarFilename;
     }
 
-    private File getUserSpecifiedDiskResidentJar() {
+    private File getConfiguredJar() {
         logger.debug("Checking for user-specified disk-resident docker inspector jar file");
         File providedJar = null;
         final String providedJarPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH);
@@ -175,13 +177,23 @@ public class DockerInspectorManager {
         }
     }
 
-    private File downloadJar() throws DetectUserFriendlyException {
-        logger.debug("Attempting to download docker inspector jar file");
+    private File getDownloadedJar() throws DetectUserFriendlyException {
+        logger.debug("Looking for / downloading docker inspector jar file");
         final String resolvedVersion = resolveInspectorVersion();
         final String jarFilename = this.getJarFilename(resolvedVersion);
         final File inspectorDirectory = detectFileManager.getSharedDirectory(dockerSharedDirectoryName);
         final File jarFile = new File(inspectorDirectory, jarFilename);
-        final String hubDockerInspectorJarUrl = String.format(ARTIFACTORY_URL_JAR_PATTERN, resolvedVersion, jarFilename);
+        if (jarFile.exists()) {
+            logger.debug(String.format("Found previously-downloaded docker inspector jar file %s", jarFile.getAbsolutePath()));
+        } else {
+            downloadJar(resolvedVersion, jarFile);
+        }
+        return jarFile;
+    }
+
+    private void downloadJar(final String resolvedVersion, final File jarFile) throws DetectUserFriendlyException {
+        final String hubDockerInspectorJarUrl = String.format(ARTIFACTORY_URL_JAR_PATTERN, resolvedVersion, jarFile.getName());
+        logger.debug(String.format("Downloading docker inspector jar file from %s to %s", hubDockerInspectorJarUrl, jarFile.getAbsolutePath()));
         final Request request = new Request.Builder().uri(hubDockerInspectorJarUrl).build();
         Response response = null;
         try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(hubDockerInspectorJarUrl)) {
@@ -195,7 +207,6 @@ public class DockerInspectorManager {
             ResourceUtil.closeQuietly(response);
         }
         logger.debug(String.format("Downloaded docker inspector jar: %s", jarFile.getAbsolutePath()));
-        return jarFile;
     }
 
     private String resolveInspectorVersion() throws DetectUserFriendlyException {
