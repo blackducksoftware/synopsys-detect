@@ -84,7 +84,7 @@ public class DetectConfigurationManager {
     }
 
     private void resolveTildeInPaths() throws DetectUserFriendlyException {
-        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RESOLVE_TILDE_IN_PATHS)) {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RESOLVE_TILDE_IN_PATHS, PropertyAuthority.None)) {
             detectConfiguration.getCurrentProperties().keySet().stream()
                 .forEach(it -> resolveTildeInDetectProperty(it));
         }
@@ -92,7 +92,7 @@ public class DetectConfigurationManager {
 
     private void resolveTildeInDetectProperty(final DetectProperty detectProperty) {
         if (PropertyType.STRING == detectProperty.getPropertyType()) {
-            final Optional<String> resolved = tildeInPathResolver.resolveTildeInValue(detectConfiguration.getProperty(detectProperty));
+            final Optional<String> resolved = tildeInPathResolver.resolveTildeInValue(detectConfiguration.getProperty(detectProperty, PropertyAuthority.None));
             if (resolved.isPresent()) {
                 detectConfiguration.setDetectProperty(detectProperty, resolved.get());
             }
@@ -100,14 +100,14 @@ public class DetectConfigurationManager {
     }
 
     private void resolveTargetAndOutputDirectories(String runId) throws DetectUserFriendlyException {
-        String sourcePath = detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH);
+        String sourcePath = detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None);
         if (StringUtils.isBlank(sourcePath)) {
             sourcePath = System.getProperty("user.dir");
         }
 
-        String outputDirectoryPath = detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH);
-        String bdioOutputDirectoryPath = detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH);
-        String scanOutputDirectoryPath = detectConfiguration.getProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH);
+        String outputDirectoryPath = detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH, PropertyAuthority.None);
+        String bdioOutputDirectoryPath = detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH, PropertyAuthority.None);
+        String scanOutputDirectoryPath = detectConfiguration.getProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH, PropertyAuthority.None);
 
         final File sourceDirectory = new File(sourcePath);
 
@@ -131,7 +131,7 @@ public class DetectConfigurationManager {
     }
 
     private void resolvePolicyProperties() {
-        final String policyCheckFailOnSeverities = detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES);
+        final String policyCheckFailOnSeverities = detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None);
         final boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
         if (atLeastOnePolicySeverity) {
             boolean allSeverities = false;
@@ -152,25 +152,25 @@ public class DetectConfigurationManager {
     }
 
     private void resolveSignatureScannerProperties(final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
-        int hubSignatureScannerParallelProcessors = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS);
+        int hubSignatureScannerParallelProcessors = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, PropertyAuthority.None);
         if (hubSignatureScannerParallelProcessors == -1) {
             hubSignatureScannerParallelProcessors = Runtime.getRuntime().availableProcessors();
         }
         this.hubSignatureScannerParallelProcessors = hubSignatureScannerParallelProcessors;
 
-        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL)) &&
-                StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH))) {
+        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, PropertyAuthority.None)) &&
+                StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, PropertyAuthority.None))) {
             throw new DetectUserFriendlyException(
                 "You have provided both a hub signature scanner url AND a local hub signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
                 ExitCodeType.FAILURE_GENERAL_ERROR);
         }
-        final Boolean originalOfflineMode = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE);
+        final Boolean originalOfflineMode = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
         hubOfflineMode = originalOfflineMode;
-        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL))) {
+        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, PropertyAuthority.None))) {
             logger.info("A hub signature scanner url was provided, which requires hub offline mode. Setting hub offline mode to true.");
             hubOfflineMode = true;
         }
-        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH))) {
+        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, PropertyAuthority.None))) {
             logger.info("A local hub signature scanner path was provided, which requires hub offline mode. Setting hub offline mode to true.");
             hubOfflineMode = true;
         }
@@ -178,19 +178,19 @@ public class DetectConfigurationManager {
 
     private void resolveBomToolSearchProperties() {
         bomToolSearchDirectoryExclusions = new ArrayList<>();
-        for (final String exclusion : detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION)) {
+        for (final String exclusion : detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, PropertyAuthority.None)) {
             bomToolSearchDirectoryExclusions.add(exclusion);
         }
-        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS)) {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS, PropertyAuthority.None)) {
             final List<String> defaultExcludedNames = Arrays.stream(BomToolSearchExcludedDirectories.values()).map(BomToolSearchExcludedDirectories::getDirectoryName).collect(Collectors.toList());
             bomToolSearchDirectoryExclusions.addAll(defaultExcludedNames);
         }
     }
 
     private void resolveAirGapPaths() {
-        dockerInspectorAirGapPath = getInspectorAirGapPath(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH), DOCKER);
-        gradleInspectorAirGapPath = getInspectorAirGapPath(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH), GRADLE);
-        nugetInspectorAirGapPath = getInspectorAirGapPath(detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH), NUGET);
+        dockerInspectorAirGapPath = getInspectorAirGapPath(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, PropertyAuthority.None), DOCKER);
+        gradleInspectorAirGapPath = getInspectorAirGapPath(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH, PropertyAuthority.None), GRADLE);
+        nugetInspectorAirGapPath = getInspectorAirGapPath(detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH, PropertyAuthority.None), NUGET);
     }
 
     private void updateDetectProperties(final List<DetectOption> detectOptions) {

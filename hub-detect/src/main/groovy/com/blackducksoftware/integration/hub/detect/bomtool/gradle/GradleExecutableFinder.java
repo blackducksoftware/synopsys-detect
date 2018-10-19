@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 
@@ -45,7 +46,7 @@ public class GradleExecutableFinder {
 
     public String findGradle(final BomToolEnvironment environment) {
         String resolvedGradle = null;
-        final String userProvidedGradlePath = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_PATH);
+        final String userProvidedGradlePath = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_PATH, PropertyAuthority.None);
         final String gradlePath = executableManager.getExecutablePathOrOverride(ExecutableType.GRADLEW, false, environment.getDirectory(), userProvidedGradlePath);
         if (StringUtils.isNotBlank(gradlePath)) {
             resolvedGradle = gradlePath;

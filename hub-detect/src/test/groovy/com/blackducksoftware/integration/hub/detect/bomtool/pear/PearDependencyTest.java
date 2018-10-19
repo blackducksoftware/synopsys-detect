@@ -21,6 +21,7 @@ import org.mockito.Mockito;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil;
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
@@ -42,21 +43,21 @@ public class PearDependencyTest {
 
     @Test
     public void findDependencyNamesTest() {
-        Mockito.when(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PEAR_ONLY_REQUIRED_DEPS)).thenReturn(true);
+        Mockito.when(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PEAR_ONLY_REQUIRED_DEPS, PropertyAuthority.None)).thenReturn(true);
 
         final String dependenciesList = testUtil.getResourceAsUTF8String("/pear/dependencies-list.txt");
         final ExecutableOutput exeOutput = new ExecutableOutput(dependenciesList, "");
 
         final List<String> actual = pearParser.findDependencyNames(exeOutput.getStandardOutputAsList());
         final List<String> expected = Arrays.asList(
-                "Archive_Tar",
-                "Structures_Graph",
-                "Console_Getopt",
-                "XML_Util",
-                "PEAR_Frontend_Web",
-                "PEAR_Frontend_Gtk",
-                "xml",
-                "pcre");
+            "Archive_Tar",
+            "Structures_Graph",
+            "Console_Getopt",
+            "XML_Util",
+            "PEAR_Frontend_Web",
+            "PEAR_Frontend_Gtk",
+            "xml",
+            "pcre");
 
         Assert.assertEquals(expected, actual);
     }
@@ -67,9 +68,9 @@ public class PearDependencyTest {
         final ExecutableOutput exeOutput = new ExecutableOutput(installedPackages, "");
 
         final List<String> dependencyNames = Arrays.asList(
-                "Archive_Tar",
-                "Console_Getopt",
-                "Structures_Graph");
+            "Archive_Tar",
+            "Console_Getopt",
+            "Structures_Graph");
         final DependencyGraph actual = pearParser.createPearDependencyGraphFromList(exeOutput.getStandardOutputAsList(), dependencyNames);
 
         DependencyGraphResourceTestUtil.assertGraph("/pear/dependency-node-list_graph.json", actual);

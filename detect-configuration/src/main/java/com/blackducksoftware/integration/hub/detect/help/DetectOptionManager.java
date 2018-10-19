@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -74,7 +75,7 @@ public class DetectOptionManager implements ExitCodeReporter {
         final Map<DetectProperty, Object> propertyMap = detectConfiguration.getCurrentProperties();
         if (null != propertyMap && !propertyMap.isEmpty()) {
             for (final DetectProperty detectProperty : propertyMap.keySet()) {
-                final DetectOption option = processField(detectProperty, detectConfiguration.getPropertyValueAsString(detectProperty));
+                final DetectOption option = processField(detectProperty, detectConfiguration.getPropertyValueAsString(detectProperty, PropertyAuthority.None));
                 if (option != null) {
                     if (!detectOptionsMap.containsKey(detectProperty)) {
                         detectOptionsMap.put(detectProperty, option);
@@ -100,7 +101,7 @@ public class DetectOptionManager implements ExitCodeReporter {
         for (final DetectOption option : detectOptions) {
             String fieldValue = option.getPostInitValue();
             if (StringUtils.isBlank(fieldValue)) {
-                fieldValue = detectConfiguration.getPropertyValueAsString(option.getDetectProperty());
+                fieldValue = detectConfiguration.getPropertyValueAsString(option.getDetectProperty(), PropertyAuthority.None);
             }
             final boolean valuesMatch = option.getResolvedValue().equals(fieldValue);
             final boolean propertyWasSet = detectConfiguration.wasPropertyActuallySet(option.getDetectProperty());

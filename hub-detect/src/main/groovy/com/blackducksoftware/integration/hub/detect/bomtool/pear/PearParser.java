@@ -42,6 +42,7 @@ import org.xml.sax.SAXException;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.util.XmlUtil;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
@@ -112,7 +113,7 @@ public class PearParser {
                 final String dependencyRequired = dependencyInfo[0].trim();
 
                 if (StringUtils.isNotBlank(dependencyName)) {
-                    if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PEAR_ONLY_REQUIRED_DEPS)) {
+                    if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PEAR_ONLY_REQUIRED_DEPS, PropertyAuthority.None)) {
                         nameList.add(last(dependencyName.split("/")));
                     } else {
                         if (BooleanUtils.toBoolean(dependencyRequired)) {

@@ -34,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -89,12 +90,12 @@ public class PipInspectorExtractor {
     }
 
     private String getProjectName(final File directory, final String pythonExe, final File setupFile) throws ExecutableRunnerException {
-        String projectName = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME);
+        String projectName = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME, PropertyAuthority.None);
 
         if (setupFile != null && setupFile.exists() && StringUtils.isBlank(projectName)) {
             final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(
-                    setupFile.getAbsolutePath(),
-                    "--name"));
+                setupFile.getAbsolutePath(),
+                "--name"));
             final List<String> output = executableRunner.execute(findProjectNameExecutable).getStandardOutputAsList();
             projectName = output.get(output.size() - 1).replace('_', '-').trim();
         }

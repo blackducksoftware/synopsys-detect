@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
@@ -82,8 +83,8 @@ public class DiagnosticManager {
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("");
 
-        final File bdioDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH));
-        this.outputDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH));
+        final File bdioDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH, PropertyAuthority.None));
+        this.outputDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH, PropertyAuthority.None));
         try {
             //fileManager.init(outputDirectory, bdioDirectory, detectRun.getRunId());
         } catch (final Exception e) {
@@ -130,7 +131,7 @@ public class DiagnosticManager {
         }
 
         if (zipCreated) {
-            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.None)) {
                 //fileManager.cleanup(); //TODO: FIx
             }
         } else {

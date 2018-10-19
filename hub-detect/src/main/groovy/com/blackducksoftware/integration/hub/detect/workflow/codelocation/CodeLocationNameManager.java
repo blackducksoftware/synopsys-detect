@@ -31,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 
 public class CodeLocationNameManager {
     private final DetectConfiguration detectConfiguration;
@@ -64,7 +65,7 @@ public class CodeLocationNameManager {
             codeLocationName = getNextCodeLocationOverrideName(CodeLocationType.BOM);
         } else if (BomToolGroupType.DOCKER.equals(detectCodeLocation.getBomToolGroupType())) {
             codeLocationName = codeLocationNameService.createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix,
-                    suffix);
+                suffix);
         } else {
             codeLocationName = codeLocationNameService.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
         }
@@ -99,12 +100,12 @@ public class CodeLocationNameManager {
     }
 
     private boolean useCodeLocationOverride() {
-        return StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME));
+        return StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None));
     }
 
     private String getNextCodeLocationOverrideName(final CodeLocationType codeLocationType) { // returns "override", then "override 2", then "override 3", etc
         givenCodeLocationOverrideCount++;
-        final String base = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME) + " " + codeLocationType.name();
+        final String base = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None) + " " + codeLocationType.name();
         if (givenCodeLocationOverrideCount == 1) {
             return base;
         } else {

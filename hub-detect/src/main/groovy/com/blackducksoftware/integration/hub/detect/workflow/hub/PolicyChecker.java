@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicySummaryStatusType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
@@ -49,7 +50,6 @@ public class PolicyChecker {
 
     /**
      * For the given DetectProject, find the matching Hub project/version, then all of its code locations, then all of their scan summaries, wait until they are all complete, then get the policy status.
-     *
      * @throws IntegrationException
      */
     public PolicyStatusDescription getPolicyStatus(final ProjectService projectService, final ProjectVersionView version) throws IntegrationException {
@@ -67,7 +67,7 @@ public class PolicyChecker {
     }
 
     public boolean policyViolated(final PolicyStatusDescription policyStatusDescription) {
-        final String policyFailOnSeverity = detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES);
+        final String policyFailOnSeverity = detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None);
         if (StringUtils.isEmpty(policyFailOnSeverity)) {
             return isAnyPolicyViolated(policyStatusDescription);
         }

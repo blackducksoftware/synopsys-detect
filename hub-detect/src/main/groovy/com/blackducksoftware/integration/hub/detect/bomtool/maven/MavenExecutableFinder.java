@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 
@@ -45,7 +46,7 @@ public class MavenExecutableFinder {
 
     public String findMaven(final BomToolEnvironment environment) {
         String resolvedMaven = null;
-        final String providedMavenPath = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_PATH);
+        final String providedMavenPath = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_PATH, PropertyAuthority.None);
         final String mavenPath = executableManager.getExecutablePathOrOverride(ExecutableType.MVNW, false, environment.getDirectory(), providedMavenPath);
         if (StringUtils.isNotBlank(mavenPath)) {
             resolvedMaven = mavenPath;

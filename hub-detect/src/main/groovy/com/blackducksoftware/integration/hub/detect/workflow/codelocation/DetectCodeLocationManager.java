@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
@@ -60,15 +61,16 @@ public class DetectCodeLocationManager {
     public DetectCodeLocationResult process(final List<DetectCodeLocation> detectCodeLocations, final String projectName, final String projectVersion) {
         final Set<BomToolGroupType> failedBomToolGroups = new HashSet<>();
 
-        final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX);
-        final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX);
+        final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.None);
+        final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.None);
 
         final List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
-        final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH), projectName, projectVersion, prefix, suffix);
+        final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None), projectName,
+            projectVersion, prefix, suffix);
         final Map<String, List<DetectCodeLocation>> codeLocationsByName = seperateCodeLocationsByName(codeLocationsAndNames);
 
         // We can create a DetectProperty to combine duplicate code location names in the future if users want that
-        final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)), false);
+        final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None)), false);
 
         // Sanity check that code location names are unique (they should be)
         final Map<String, List<BdioCodeLocation>> bdioByCodeLocationName = groupByCodeLocationNames(bdioCodeLocations);
@@ -94,8 +96,8 @@ public class DetectCodeLocationManager {
 
     private Set<BomToolGroupType> getBomToolGroupTypes(final List<BdioCodeLocation> bdioCodeLocations) {
         return bdioCodeLocations.stream()
-                .map(it -> it.codeLocation.getBomToolGroupType())
-                .collect(Collectors.toSet());
+                   .map(it -> it.codeLocation.getBomToolGroupType())
+                   .collect(Collectors.toSet());
     }
 
     private Map<String, List<BdioCodeLocation>> groupByBdioNames(final List<BdioCodeLocation> bdioCodeLocations) {
@@ -107,7 +109,7 @@ public class DetectCodeLocationManager {
     }
 
     private Map<DetectCodeLocation, String> createCodeLocationNameMap(final List<DetectCodeLocation> codeLocations, final String detectSourcePath, final String projectName, final String projectVersion, final String prefix,
-            final String suffix) {
+        final String suffix) {
         final Map<DetectCodeLocation, String> nameMap = new HashMap<>();
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
             final String codeLocationName = codeLocationNameManager.createCodeLocationName(detectCodeLocation, detectSourcePath, projectName, projectVersion, prefix, suffix);
@@ -167,8 +169,8 @@ public class DetectCodeLocationManager {
                 final MutableDependencyGraph combinedGraph = new MutableMapDependencyGraph();
                 final DetectCodeLocation finalCodeLocation = copyCodeLocation(codeLocations.get(0), combinedGraph);
                 codeLocations.stream()
-                        .filter(codeLocation -> shouldCombine(logger, finalCodeLocation, codeLocation))
-                        .forEach(codeLocation -> combiner.addGraphAsChildrenToRoot(combinedGraph, codeLocation.getDependencyGraph()));
+                    .filter(codeLocation -> shouldCombine(logger, finalCodeLocation, codeLocation))
+                    .forEach(codeLocation -> combiner.addGraphAsChildrenToRoot(combinedGraph, codeLocation.getDependencyGraph()));
 
                 final BdioCodeLocation bdioCodeLocation = new BdioCodeLocation(finalCodeLocation, codeLocationName, createBdioName(codeLocationName, integrationEscapeUtil));
                 bdioCodeLocations = Arrays.asList(bdioCodeLocation);

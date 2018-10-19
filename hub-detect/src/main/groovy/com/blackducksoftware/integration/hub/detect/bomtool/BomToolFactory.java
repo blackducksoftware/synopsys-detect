@@ -153,7 +153,7 @@ public class BomToolFactory implements BeanFactoryAware {
     }
 
     public PipInspectorBomTool createPipInspectorBomTool(final BomToolEnvironment environment) {
-        //final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH);
+        //final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None);
         return beanFactory.getBean(PipInspectorBomTool.class, environment);
     }
 

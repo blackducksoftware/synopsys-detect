@@ -32,6 +32,7 @@ import org.apache.commons.io.FileUtils;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class NpmLockfileExtractor {
@@ -52,7 +53,7 @@ public class NpmLockfileExtractor {
         }
 
         try {
-            final boolean includeDevDeps = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
+            final boolean includeDevDeps = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.None);
             final NpmParseResult result = npmLockfilePackager.parse(bomToolType, directory.getCanonicalPath(), lockText, includeDevDeps);
             return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
         } catch (final IOException e) {

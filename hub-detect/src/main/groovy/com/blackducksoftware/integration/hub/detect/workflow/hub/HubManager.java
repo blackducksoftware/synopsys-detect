@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -79,7 +80,7 @@ public class HubManager implements ExitCodeReporter {
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
     public HubManager(final BdioUploader bdioUploader, final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final HubServiceManager hubServiceManager,
-            final BlackDuckSignatureScanner blackDuckSignatureScanner, final PolicyChecker policyChecker, final BlackDuckBinaryScanner blackDuckBinaryScanner) {
+        final BlackDuckSignatureScanner blackDuckSignatureScanner, final PolicyChecker policyChecker, final BlackDuckBinaryScanner blackDuckBinaryScanner) {
         this.bdioUploader = bdioUploader;
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
@@ -95,7 +96,7 @@ public class HubManager implements ExitCodeReporter {
         final ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectService, hubService);
         if (null != detectProject.getBdioFiles() && !detectProject.getBdioFiles().isEmpty()) {
             final CodeLocationService codeLocationService = hubServiceManager.createCodeLocationService();
-            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP)) {
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP, PropertyAuthority.None)) {
                 try {
                     final List<CodeLocationView> codeLocationViews = hubService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
 
@@ -115,9 +116,9 @@ public class HubManager implements ExitCodeReporter {
     }
 
     public void performScanActions(final DetectProject detectProject) throws IntegrationException, InterruptedException, DetectUserFriendlyException {
-        if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED)) {
+        if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, PropertyAuthority.None)) {
             final HubServerConfig hubServerConfig = hubServiceManager.getHubServerConfig();
-            final ExecutorService executorService = Executors.newFixedThreadPool(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS));
+            final ExecutorService executorService = Executors.newFixedThreadPool(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, PropertyAuthority.None));
             try {
                 final ScanJobManager scanJobManager = hubServiceManager.createScanJobManager(executorService);
                 blackDuckSignatureScanner.scanPaths(hubServerConfig, scanJobManager, detectProject);
@@ -128,11 +129,11 @@ public class HubManager implements ExitCodeReporter {
     }
 
     public void performBinaryScanActions(final DetectProject detectProject) throws DetectUserFriendlyException {
-        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE))) {
-            final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX);
-            final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX);
+        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None))) {
+            final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.None);
+            final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.None);
 
-            final File file = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE));
+            final File file = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None));
             blackDuckBinaryScanner.uploadBinaryScanFile(hubServiceManager.createBinaryScannerService(), file, detectProject.getProjectName(), detectProject.getProjectVersion(), prefix, suffix);
         } else {
             logger.debug("No binary scan path was provided, so binary scan will not occur.");
@@ -147,12 +148,13 @@ public class HubManager implements ExitCodeReporter {
             final CodeLocationService codeLocationService = hubServiceManager.createCodeLocationService();
             final ScanStatusService scanStatusService = hubServiceManager.createScanStatusService();
 
-            if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)) || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF)
-                    || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {
+            if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None)) || detectConfiguration
+                                                                                                                                                              .getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF, PropertyAuthority.None)
+                    || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT, PropertyAuthority.None)) {
                 waitForBomUpdate(codeLocationService, hubService, scanStatusService);
             }
 
-            if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES))) {
+            if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None))) {
                 final PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView);
                 logger.info(policyStatusDescription.getPolicyStatusMessage());
                 if (policyChecker.policyViolated(policyStatusDescription)) {
@@ -161,21 +163,24 @@ public class HubManager implements ExitCodeReporter {
                 }
             }
 
-            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF)) {
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF, PropertyAuthority.None)) {
                 logger.info("Creating risk report pdf");
-                final File pdfFile = reportService.createReportPdfFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_RISK_REPORT_PDF_PATH)), detectProject.getProjectName(), detectProject.getProjectVersion());
+                final File pdfFile = reportService
+                                         .createReportPdfFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_RISK_REPORT_PDF_PATH, PropertyAuthority.None)), detectProject.getProjectName(), detectProject.getProjectVersion());
                 logger.info(String.format("Created risk report pdf: %s", pdfFile.getCanonicalPath()));
             }
 
-            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT, PropertyAuthority.None)) {
                 logger.info("Creating notices report");
-                final File noticesFile = reportService.createNoticesReportFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_NOTICES_REPORT_PATH)), detectProject.getProjectName(), detectProject.getProjectVersion());
+                final File noticesFile = reportService.createNoticesReportFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_NOTICES_REPORT_PATH, PropertyAuthority.None)), detectProject.getProjectName(),
+                    detectProject.getProjectVersion()
+                );
                 if (noticesFile != null) {
                     logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
                 }
             }
 
-            if (!detectProject.getBdioFiles().isEmpty() || !detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED)) {
+            if (!detectProject.getBdioFiles().isEmpty() || !detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, PropertyAuthority.None)) {
                 // only log BOM URL if we have updated it in some way
                 final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(detectProject.getProjectName(), detectProject.getProjectVersion());
                 final String componentsLink = hubService.getFirstLinkSafely(projectVersionWrapper.getProjectVersionView(), ProjectVersionView.COMPONENTS_LINK);
@@ -219,7 +224,7 @@ public class HubManager implements ExitCodeReporter {
     public ProjectVersionView ensureProjectVersionExists(final DetectProject detectProject, final ProjectService projectService, final HubService hubService) throws IntegrationException, DetectUserFriendlyException {
         final ProjectRequest projectRequest = createProjectRequest(detectProject, projectService, hubService);
 
-        final boolean forceUpdate = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_VERSION_UPDATE);
+        final boolean forceUpdate = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_VERSION_UPDATE, PropertyAuthority.None);
 
         return getProjectVersionAndUpdateOrCreateIfNeeded(projectRequest, projectService, hubService, forceUpdate);
     }
@@ -271,13 +276,13 @@ public class HubManager implements ExitCodeReporter {
         projectRequestBuilder.setProjectName(detectProject.getProjectName());
         projectRequestBuilder.setVersionName(detectProject.getProjectVersion());
 
-        projectRequestBuilder.setProjectLevelAdjustments(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_LEVEL_ADJUSTMENTS));
-        projectRequestBuilder.setPhase(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_PHASE));
-        projectRequestBuilder.setDistribution(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_DISTRIBUTION));
-        projectRequestBuilder.setProjectTier(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_PROJECT_TIER));
-        projectRequestBuilder.setDescription(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DESCRIPTION));
-        projectRequestBuilder.setReleaseComments(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_NOTES));
-        projectRequestBuilder.setCloneCategories(convertClonePropertyToEnum(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PROJECT_CLONE_CATEGORIES)));
+        projectRequestBuilder.setProjectLevelAdjustments(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_LEVEL_ADJUSTMENTS, PropertyAuthority.None));
+        projectRequestBuilder.setPhase(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_PHASE, PropertyAuthority.None));
+        projectRequestBuilder.setDistribution(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_DISTRIBUTION, PropertyAuthority.None));
+        projectRequestBuilder.setProjectTier(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_PROJECT_TIER, PropertyAuthority.None));
+        projectRequestBuilder.setDescription(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DESCRIPTION, PropertyAuthority.None));
+        projectRequestBuilder.setReleaseComments(detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_NOTES, PropertyAuthority.None));
+        projectRequestBuilder.setCloneCategories(convertClonePropertyToEnum(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PROJECT_CLONE_CATEGORIES, PropertyAuthority.None)));
 
         final Optional<String> cloneUrl = findCloneUrl(detectProject, projectService, hubService);
         if (cloneUrl.isPresent()) {
@@ -299,7 +304,7 @@ public class HubManager implements ExitCodeReporter {
 
     public Optional<String> findCloneUrl(final DetectProject detectProject, final ProjectService projectService, final HubService hubService) throws DetectUserFriendlyException {
         final String cloneProjectName = detectProject.getProjectName();
-        final String cloneProjectVersionName = detectConfiguration.getProperty(DetectProperty.DETECT_CLONE_PROJECT_VERSION_NAME);
+        final String cloneProjectVersionName = detectConfiguration.getProperty(DetectProperty.DETECT_CLONE_PROJECT_VERSION_NAME, PropertyAuthority.None);
         if (StringUtils.isBlank(cloneProjectName) || StringUtils.isBlank(cloneProjectVersionName)) {
             logger.debug("No clone project or version name supplied. Will not clone.");
             return Optional.empty();

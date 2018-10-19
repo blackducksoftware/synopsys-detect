@@ -37,6 +37,7 @@ import org.xml.sax.SAXException;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -95,12 +96,12 @@ public class DockerInspectorManager {
         hasResolvedInspector = true;
 
         final DockerInspectorInfo info = resolveShellScript();
-        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)),
-            detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH));
+        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None)),
+            detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH, PropertyAuthority.None));
         info.version = resolveInspectorVersion(bashExecutablePath, info.dockerInspectorScript);
 
         if (info.isOffline) {
-            final String dockerInspectorAirGapPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
+            final String dockerInspectorAirGapPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, PropertyAuthority.None);
             final String inspectorImageFamily = resolveInspectorImageFamily(bashExecutablePath, info.dockerInspectorScript);
             info.offlineDockerInspectorJar = new File(dockerInspectorAirGapPath, "hub-docker-inspector-" + info.version + ".jar");
             for (final String os : Arrays.asList("ubuntu", "alpine", "centos")) {
@@ -125,7 +126,7 @@ public class DockerInspectorManager {
 
     private String resolveInspectorVersion(final String bashExecutablePath, final File dockerInspectorShellScript) throws DetectUserFriendlyException {
         try {
-            final String dockerInspectorVersion = getVersionFromArtifactory(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION));
+            final String dockerInspectorVersion = getVersionFromArtifactory(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION, PropertyAuthority.None));
             if ("latest".equalsIgnoreCase(dockerInspectorVersion)) {
                 final String dockerInspectorArg = "--version";
                 final String responseFromDockerInspector = getResponseFromDockerInspector(bashExecutablePath, dockerInspectorShellScript, dockerInspectorArg);
@@ -152,14 +153,14 @@ public class DockerInspectorManager {
 
     private DockerInspectorInfo resolveShellScript() throws DetectUserFriendlyException {
         try {
-            final String suppliedDockerVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
+            final String suppliedDockerVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION, PropertyAuthority.None);
             final String dockerInspectorVersion = getVersionFromArtifactory(suppliedDockerVersion);
             final File shellScriptFile;
-            final File airGapHubDockerInspectorShellScript = new File(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH), "hub-docker-inspector.sh");
+            final File airGapHubDockerInspectorShellScript = new File(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, PropertyAuthority.None), "hub-docker-inspector.sh");
             boolean isOffline = false;
             logger.debug(String.format("Verifying air gap shell script present at %s", airGapHubDockerInspectorShellScript.getCanonicalPath()));
 
-            final String dockerInspectorPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH);
+            final String dockerInspectorPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH, PropertyAuthority.None);
             if (StringUtils.isNotBlank(dockerInspectorPath)) {
                 shellScriptFile = new File(dockerInspectorPath);
             } else if (airGapHubDockerInspectorShellScript.exists()) {

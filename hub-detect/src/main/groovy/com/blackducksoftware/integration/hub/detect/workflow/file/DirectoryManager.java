@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 
 public class DirectoryManager {
@@ -100,14 +101,14 @@ public class DirectoryManager {
 
     public DirectoryManager(final DetectConfiguration detectConfiguration, final DetectRun detectRun) {
 
-        String rawSource = detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH);
+        String rawSource = detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None);
         if (StringUtils.isBlank(rawSource)) {
             sourceDirectory = new File(System.getProperty("user.dir"));
         } else {
             sourceDirectory = new File(rawSource);
         }
 
-        File outputDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH));
+        File outputDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH, PropertyAuthority.None));
 
         EnumSet.allOf(OutputDirectory.class).stream()
             .forEach(it -> outputDirectories.put(it, new File(outputDirectory, it.getDirectoryName())));
@@ -124,7 +125,7 @@ public class DirectoryManager {
     private void initRunDirectory(RunDirectory givenDirectory, DetectConfiguration detectConfiguration) {
         File givenFile = null;
         if (givenDirectory.getOverrideProperty() != null) {
-            String override = detectConfiguration.getProperty(givenDirectory.getOverrideProperty());
+            String override = detectConfiguration.getProperty(givenDirectory.getOverrideProperty(), PropertyAuthority.None);
             if (StringUtils.isNotBlank(override)) {
                 givenFile = new File(override);
             }

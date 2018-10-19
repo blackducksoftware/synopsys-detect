@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.event.Event;
 import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
@@ -47,7 +48,7 @@ public class RunManager {
     public void run() {
         phoneHomeManager.startPhoneHome();
 
-        if (!this.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOLS_DISABLED)) {
+        if (!this.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOLS_DISABLED, PropertyAuthority.None)) {
             BomToolResult result = bomToolManager.runBomTools();
 
             Map<BomToolGroupType, Result> bomToolResults = new HashMap<>();
@@ -97,7 +98,7 @@ public class RunManager {
             detectExitCode = exitCodeUtility.getExitCodeFromExceptionDetails(e);
         }
  */
-        boolean printOutput = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT);
+        boolean printOutput = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT, PropertyAuthority.None);
         if (!printOutput) {
             detectStatusManager.logDetectResults(new Slf4jIntLogger(logger), exitCodeManager.getWinningExitCode());
             //detectSummaryManager.logDetectResults(, currentExitCodeType);

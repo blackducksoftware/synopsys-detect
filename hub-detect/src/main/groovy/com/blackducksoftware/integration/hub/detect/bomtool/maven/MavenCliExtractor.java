@@ -35,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -54,7 +55,7 @@ public class MavenCliExtractor {
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String mavenExe) {
         try {
-            String mavenCommand = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_BUILD_COMMAND);
+            String mavenCommand = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_BUILD_COMMAND, PropertyAuthority.None);
             if (StringUtils.isNotBlank(mavenCommand)) {
                 mavenCommand = mavenCommand.replace("dependency:tree", "");
                 if (StringUtils.isNotBlank(mavenCommand)) {
@@ -66,7 +67,7 @@ public class MavenCliExtractor {
             if (StringUtils.isNotBlank(mavenCommand)) {
                 arguments.addAll(Arrays.asList(mavenCommand.split(" ")));
             }
-            final String mavenScope = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_SCOPE);
+            final String mavenScope = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_SCOPE, PropertyAuthority.None);
             if (StringUtils.isNotBlank(mavenScope)) {
                 arguments.add(String.format("-Dscope=%s", mavenScope));
             }
@@ -77,17 +78,17 @@ public class MavenCliExtractor {
 
             if (mvnOutput.getReturnCode() == 0) {
 
-                final String excludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_MODULES);
-                final String includedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_MODULES);
+                final String excludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_MODULES, PropertyAuthority.None);
+                final String includedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_MODULES, PropertyAuthority.None);
                 final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(bomToolType, directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
 
                 final List<DetectCodeLocation> codeLocations = mavenResults.stream()
-                        .map(it -> it.codeLocation)
-                        .collect(Collectors.toList());
+                                                                   .map(it -> it.codeLocation)
+                                                                   .collect(Collectors.toList());
 
                 final Optional<MavenParseResult> firstWithName = mavenResults.stream()
-                        .filter(it -> StringUtils.isNoneBlank(it.projectName))
-                        .findFirst();
+                                                                     .filter(it -> StringUtils.isNoneBlank(it.projectName))
+                                                                     .findFirst();
 
                 final Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
                 if (firstWithName.isPresent()) {

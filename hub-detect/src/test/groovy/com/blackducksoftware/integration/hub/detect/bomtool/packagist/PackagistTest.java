@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil;
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
@@ -19,7 +20,7 @@ public class PackagistTest {
     @Test
     public void packagistParserTest() throws IOException {
         final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
-        Mockito.when(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES)).thenReturn(true);
+        Mockito.when(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.None)).thenReturn(true);
 
         final PackagistParser packagistParser = new PackagistParser(new ExternalIdFactory(), detectConfiguration);
 

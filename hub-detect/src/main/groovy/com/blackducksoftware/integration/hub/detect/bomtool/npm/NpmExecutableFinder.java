@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -54,7 +55,7 @@ public class NpmExecutableFinder {
     private boolean hasLookedForNpm = false;
 
     public NpmExecutableFinder(final ExecutableManager executableManager, final ExecutableRunner executableRunner,
-            final DetectConfiguration detectConfiguration) {
+        final DetectConfiguration detectConfiguration) {
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
@@ -73,7 +74,8 @@ public class NpmExecutableFinder {
     }
 
     String findNpm() {
-        final String npm = executableManager.getExecutablePathOrOverride(ExecutableType.NPM, true, detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH), detectConfiguration.getProperty(DetectProperty.DETECT_NPM_PATH));
+        final String npm = executableManager.getExecutablePathOrOverride(ExecutableType.NPM, true, detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None),
+            detectConfiguration.getProperty(DetectProperty.DETECT_NPM_PATH, PropertyAuthority.None));
         if (validateNpm(null, npm)) {
             return npm;
         }
@@ -86,7 +88,7 @@ public class NpmExecutableFinder {
             final List<String> arguments = new ArrayList<>();
             arguments.add("-version");
 
-            String npmNodePath = detectConfiguration.getProperty(DetectProperty.DETECT_NPM_NODE_PATH);
+            String npmNodePath = detectConfiguration.getProperty(DetectProperty.DETECT_NPM_NODE_PATH, PropertyAuthority.None);
             if (StringUtils.isNotBlank(npmNodePath)) {
                 final int lastSlashIndex = npmNodePath.lastIndexOf("/");
                 if (lastSlashIndex >= 0) {

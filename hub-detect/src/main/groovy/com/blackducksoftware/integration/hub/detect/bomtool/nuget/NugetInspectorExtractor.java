@@ -40,6 +40,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -77,22 +78,22 @@ public class NugetInspectorExtractor {
             final List<String> options = new ArrayList<>(Arrays.asList(
                 "--target_path=" + directory.toString(),
                 "--output_directory=" + outputDirectory.getCanonicalPath(),
-                "--ignore_failure=" + detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NUGET_IGNORE_FAILURE)));
+                "--ignore_failure=" + detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NUGET_IGNORE_FAILURE, PropertyAuthority.None)));
 
-            final String nugetExcludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_EXCLUDED_MODULES);
+            final String nugetExcludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_EXCLUDED_MODULES, PropertyAuthority.None);
             if (StringUtils.isNotBlank(nugetExcludedModules)) {
                 options.add("--excluded_modules=" + nugetExcludedModules);
             }
-            final String nugetIncludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INCLUDED_MODULES);
+            final String nugetIncludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INCLUDED_MODULES, PropertyAuthority.None);
             if (StringUtils.isNotBlank(nugetIncludedModules)) {
                 options.add("--included_modules=" + nugetIncludedModules);
             }
-            final String[] nugetPackagesRepo = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL);
+            final String[] nugetPackagesRepo = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL, PropertyAuthority.None);
             if (nugetPackagesRepo.length > 0) {
                 final String packagesRepos = Arrays.asList(nugetPackagesRepo).stream().collect(Collectors.joining(","));
                 options.add("--packages_repo_url=" + packagesRepos);
             }
-            final String nugetConfigPath = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
+            final String nugetConfigPath = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH, PropertyAuthority.None);
             if (StringUtils.isNotBlank(nugetConfigPath)) {
                 options.add("--nuget_config_path=" + nugetConfigPath);
             }

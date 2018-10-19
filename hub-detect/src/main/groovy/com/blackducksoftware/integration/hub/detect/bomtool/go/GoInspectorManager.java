@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -72,17 +73,17 @@ public class GoInspectorManager {
     }
 
     public String install() throws ExecutableRunnerException {
-        String goDepPath = detectConfiguration.getProperty(DetectProperty.DETECT_GO_DEP_PATH);
+        String goDepPath = detectConfiguration.getProperty(DetectProperty.DETECT_GO_DEP_PATH, PropertyAuthority.None);
         if (StringUtils.isBlank(goDepPath)) {
             final File goDep = getGoDepInstallLocation();
             if (goDep.exists()) {
                 goDepPath = goDep.getAbsolutePath();
             } else {
-                goDepPath = executableManager.getExecutablePath(ExecutableType.GO_DEP, true, detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH));
+                goDepPath = executableManager.getExecutablePath(ExecutableType.GO_DEP, true, detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None));
             }
         }
         if (StringUtils.isBlank(goDepPath)) {
-            final String goExecutable = executableManager.getExecutablePath(ExecutableType.GO, true, detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH));
+            final String goExecutable = executableManager.getExecutablePath(ExecutableType.GO, true, detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None));
             goDepPath = installGoDep(goExecutable);
         }
         return goDepPath;

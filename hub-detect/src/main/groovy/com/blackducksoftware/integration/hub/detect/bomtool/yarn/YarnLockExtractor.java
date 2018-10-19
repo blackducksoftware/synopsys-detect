@@ -35,6 +35,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -66,7 +67,7 @@ public class YarnLockExtractor {
             final List<String> yarnLockText = Files.readAllLines(yarnlock.toPath(), StandardCharsets.UTF_8);
             final List<String> exeArgs = Stream.of("list", "--emoji", "false").collect(Collectors.toCollection(ArrayList::new));
 
-            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_YARN_PROD_ONLY)) {
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_YARN_PROD_ONLY, PropertyAuthority.None)) {
                 exeArgs.add("--prod");
             }
 

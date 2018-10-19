@@ -2,6 +2,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.docker;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 
 public class DockerBomToolOptions {
 
@@ -10,9 +11,9 @@ public class DockerBomToolOptions {
     private final String suppliedDockerTar;
 
     public static DockerBomToolOptions fromConfiguration(DetectConfiguration detectConfiguration) {
-        final String tar = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_TAR);
-        final String image = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE);
-        final boolean dockerRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED);
+        final String tar = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_TAR, PropertyAuthority.None);
+        final String image = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE, PropertyAuthority.None);
+        final boolean dockerRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED, PropertyAuthority.None);
         return new DockerBomToolOptions(dockerRequired, image, tar);
     }
 

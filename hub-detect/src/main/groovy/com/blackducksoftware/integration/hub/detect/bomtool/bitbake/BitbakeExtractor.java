@@ -35,6 +35,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
@@ -70,7 +71,7 @@ public class BitbakeExtractor {
     }
 
     public Extraction extract(final ExtractionId extractionId, final String foundBuildEnvScriptPath, final String sourcePath) throws ExecutableRunnerException, FileNotFoundException {
-        final String packageName = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAME);
+        final String packageName = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAME, PropertyAuthority.None);
         final BitbakeResult bitbakeResult = executeBitbake(extractionId, foundBuildEnvScriptPath);
         final int returnCode = bitbakeResult.getExecutableOutput().getReturnCode();
 
@@ -101,8 +102,8 @@ public class BitbakeExtractor {
 
     private BitbakeResult executeBitbake(final ExtractionId extractionId, final String foundBuildEnvScriptPath) throws ExecutableRunnerException {
         final File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
-        final String packageName = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAME);
-        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, "", detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH));
+        final String packageName = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAME, PropertyAuthority.None);
+        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, "", detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH, PropertyAuthority.None));
 
         final List<String> arguments = new ArrayList<>();
         arguments.add("-c");

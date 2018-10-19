@@ -34,6 +34,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -66,7 +67,7 @@ public class CondaCliExtractor {
 
             final List<String> condaListOptions = new ArrayList<>();
             condaListOptions.add("list");
-            final String condaEnvironmentName = detectConfiguration.getProperty(DetectProperty.DETECT_CONDA_ENVIRONMENT_NAME);
+            final String condaEnvironmentName = detectConfiguration.getProperty(DetectProperty.DETECT_CONDA_ENVIRONMENT_NAME, PropertyAuthority.None);
             if (StringUtils.isNotBlank(condaEnvironmentName)) {
                 condaListOptions.add("-n");
                 condaListOptions.add(condaEnvironmentName);

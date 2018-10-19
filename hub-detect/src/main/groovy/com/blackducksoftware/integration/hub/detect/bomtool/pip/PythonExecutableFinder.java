@@ -26,6 +26,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
@@ -44,11 +45,11 @@ public class PythonExecutableFinder {
     }
 
     public String findPipenv(final BomToolEnvironment environment) throws BomToolException {
-        return findExecutable(environment, ExecutableType.PIPENV, detectConfiguration.getProperty(DetectProperty.DETECT_PIPENV_PATH));
+        return findExecutable(environment, ExecutableType.PIPENV, detectConfiguration.getProperty(DetectProperty.DETECT_PIPENV_PATH, PropertyAuthority.None));
     }
 
     public String findPython(final BomToolEnvironment environment) throws BomToolException {
-        return findExecutable(environment, ExecutableType.PYTHON, ExecutableType.PYTHON3, detectConfiguration.getProperty(DetectProperty.DETECT_PYTHON_PATH));
+        return findExecutable(environment, ExecutableType.PYTHON, ExecutableType.PYTHON3, detectConfiguration.getProperty(DetectProperty.DETECT_PYTHON_PATH, PropertyAuthority.None));
     }
 
     private String findExecutable(final BomToolEnvironment environment, final ExecutableType pythonAnyVersionExecutableType, final String overridePath) throws BomToolException {
@@ -62,7 +63,7 @@ public class PythonExecutableFinder {
     private String findExecutable(final BomToolEnvironment environment, final ExecutableType python2ExecutableType, final ExecutableType python3ExecutableType, final String overridePath) throws BomToolException {
         try {
             final ExecutableType executableType;
-            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PYTHON_PYTHON3)) {
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PYTHON_PYTHON3, PropertyAuthority.None)) {
                 executableType = python3ExecutableType;
             } else {
                 executableType = python2ExecutableType;

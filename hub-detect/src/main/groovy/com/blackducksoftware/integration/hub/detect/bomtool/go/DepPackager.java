@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -79,7 +80,7 @@ public class DepPackager {
         }
 
         // by default, we won't run 'init' and 'ensure' anymore so just return an empty string
-        if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_GO_RUN_DEP_INIT)) {
+        if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_GO_RUN_DEP_INIT, PropertyAuthority.None)) {
             logger.info("Skipping Dep commands 'init' and 'ensure'");
             return "";
         }
