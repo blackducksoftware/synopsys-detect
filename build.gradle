@@ -16,7 +16,7 @@ buildscript {
 
 apply plugin: 'java'
 
-version = '4.4.1'
+version = '4.4.1-SNAPSHOT'
 String parentVersion = project.version
 
 allprojects {
