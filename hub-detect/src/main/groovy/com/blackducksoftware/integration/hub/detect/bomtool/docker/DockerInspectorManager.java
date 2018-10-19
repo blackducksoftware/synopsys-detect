@@ -69,7 +69,7 @@ public class DockerInspectorManager {
     private final MavenMetadataService mavenMetadataService;
 
     public DockerInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
-            final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
+        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
@@ -95,15 +95,10 @@ public class DockerInspectorManager {
     private void install() throws DetectUserFriendlyException {
         hasResolvedInspector = true;
 
+        final DockerInspectorInfo info = resolveShellScript();
         final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH)),
-                detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH));
-        final DockerInspectorInfo info = resolveShellScript(bashExecutablePath);
-        // resolveShellScript() populates version only if in air gap mode
-        if (info.version == null) {
-            // populate version for non-air-gap mode
-            info.version = resolveInspectorVersion(bashExecutablePath, info.dockerInspectorScript);
-            logger.debug(String.format("Derived version %s for downloaded jar file", info.version));
-        }
+            detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH));
+        info.version = resolveInspectorVersion(bashExecutablePath, info.dockerInspectorScript);
 
         if (info.isOffline) {
             final String dockerInspectorAirGapPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
@@ -133,7 +128,9 @@ public class DockerInspectorManager {
         try {
             final String dockerInspectorVersion = getVersionFromArtifactory(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION));
             if ("latest".equalsIgnoreCase(dockerInspectorVersion)) {
-                final String inspectorVersion = getVersionViaScript(bashExecutablePath, dockerInspectorShellScript);
+                final String dockerInspectorArg = "--version";
+                final String responseFromDockerInspector = getResponseFromDockerInspector(bashExecutablePath, dockerInspectorShellScript, dockerInspectorArg);
+                final String inspectorVersion = responseFromDockerInspector.split(" ")[1];
                 logger.info(String.format("Resolved docker inspector version from latest to: %s", inspectorVersion));
                 return inspectorVersion;
             } else {
@@ -142,13 +139,6 @@ public class DockerInspectorManager {
         } catch (final Exception e) {
             throw new DetectUserFriendlyException("Unable to find docker inspector version.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }
-    }
-
-    private String getVersionViaScript(final String bashExecutablePath, final File dockerInspectorShellScript) throws IOException, ExecutableRunnerException {
-        final String dockerInspectorArg = "--version";
-        final String responseFromDockerInspector = getResponseFromDockerInspector(bashExecutablePath, dockerInspectorShellScript, dockerInspectorArg);
-        final String inspectorVersion = responseFromDockerInspector.split(" ")[1];
-        return inspectorVersion;
     }
 
     private String getResponseFromDockerInspector(final String bashExecutablePath, final File dockerInspectorShellScript, final String dockerInspectorArg) throws IOException, ExecutableRunnerException {
@@ -161,9 +151,8 @@ public class DockerInspectorManager {
         return responseFromDockerInspector;
     }
 
-    private DockerInspectorInfo resolveShellScript(final String bashExecutablePath) throws DetectUserFriendlyException {
+    private DockerInspectorInfo resolveShellScript() throws DetectUserFriendlyException {
         try {
-            final DockerInspectorInfo info = new DockerInspectorInfo();
             final String suppliedDockerVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
             final String dockerInspectorVersion = getVersionFromArtifactory(suppliedDockerVersion);
             final File shellScriptFile;
@@ -176,8 +165,6 @@ public class DockerInspectorManager {
                 shellScriptFile = new File(dockerInspectorPath);
             } else if (airGapHubDockerInspectorShellScript.exists()) {
                 shellScriptFile = airGapHubDockerInspectorShellScript;
-                info.version = getVersionViaScript(bashExecutablePath, shellScriptFile);
-                logger.debug(String.format("Derived version %s for air gap jar file", info.version));
                 isOffline = true;
             } else {
                 String hubDockerInspectorShellScriptUrl = LATEST_URL;
@@ -205,6 +192,7 @@ public class DockerInspectorManager {
                 }
             }
 
+            final DockerInspectorInfo info = new DockerInspectorInfo();
             info.dockerInspectorScript = shellScriptFile;
             info.isOffline = isOffline;
 
@@ -216,13 +204,9 @@ public class DockerInspectorManager {
 
     private String getVersionFromArtifactory(final String versionRange) throws IOException, DetectUserFriendlyException, SAXException, IntegrationException {
         final String mavenMetadataUrl = "https://test-repo.blackducksoftware.com:443/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-docker-inspector/maven-metadata.xml";
-        Optional<String> version = Optional.empty();
-        try {
-            final Document xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
-            version = mavenMetadataService.parseVersionFromXML(xmlDocument, versionRange);
-        } catch (final Exception e) {
-            logger.debug("Unable to get Docker Inspector version via artifactory lookup (which is normal in air gap mode)");
-        }
+        final Document xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
+        final Optional<String> version = mavenMetadataService.parseVersionFromXML(xmlDocument, versionRange);
+
         return version.orElse(versionRange);
     }
 }
