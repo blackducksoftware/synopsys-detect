@@ -11,7 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -43,6 +45,8 @@ public class ClangExtractorTest {
 
     @Test
     public void testSimple() throws IOException, ExecutableRunnerException {
+        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+
         final File outputDir = new File("src/test/resources/clang/output");
 
         final List<CompileCommand> compileCommands = new ArrayList<>();
@@ -68,8 +72,8 @@ public class ClangExtractorTest {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
         final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(),
-                detectFileManager, dependenciesListFileManager,
-                codeLocationAssembler);
+            detectFileManager, dependenciesListFileManager,
+            codeLocationAssembler);
 
         final ClangLinuxPackageManager pkgMgr = Mockito.mock(ClangLinuxPackageManager.class);
         final File givenDir = new File("src/test/resources/clang/source/build");
@@ -100,6 +104,8 @@ public class ClangExtractorTest {
 
     @Test
     public void testMultipleCommandsDependenciesPackages() throws IOException, ExecutableRunnerException {
+        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+
         final File outputDir = new File("src/test/resources/clang/output");
 
         final List<CompileCommand> compileCommands = new ArrayList<>();
@@ -141,8 +147,8 @@ public class ClangExtractorTest {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
         final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(),
-                detectFileManager, dependenciesListFileManager,
-                codeLocationAssembler);
+            detectFileManager, dependenciesListFileManager,
+            codeLocationAssembler);
 
         final ClangLinuxPackageManager pkgMgr = Mockito.mock(ClangLinuxPackageManager.class);
         final File givenDir = new File("src/test/resources/clang/source/build");
