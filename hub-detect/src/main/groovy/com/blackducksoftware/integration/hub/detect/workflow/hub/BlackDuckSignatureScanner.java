@@ -105,13 +105,13 @@ public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStat
         scanSummaryResults.put(scanCommandOutput.getScanTarget(), result);
         if (Result.FAILURE == result) {
             logger.error(String.format("Scanning target %s failed: %s", scanCommandOutput.getScanTarget(), scanCommandOutput.getErrorMessage()));
-            if (null != scanCommandOutput.getException()) {
-                logger.debug(scanCommandOutput.getErrorMessage(), scanCommandOutput.getException());
-                String errorMessage = scanCommandOutput.getErrorMessage();
-                if (errorMessage.contains("The scan failed with return code: ")) {
-                    int returnCode = Integer.valueOf(StringUtils.substringAfter(errorMessage, "The scan failed with return code: "));
-                    anyExitCodeIs64 = anyExitCodeIs64 || returnCode == 64;
-                }
+            if (scanCommandOutput.getScanExitCode().isPresent()) {
+                anyExitCodeIs64 = anyExitCodeIs64 || scanCommandOutput.getScanExitCode().get() == 64;
+            }
+            if (scanCommandOutput.getErrorMessage().isPresent() && scanCommandOutput.getException().isPresent()) {
+                logger.debug(scanCommandOutput.getErrorMessage().get(), scanCommandOutput.getException().get());
+            } else if (scanCommandOutput.getException().isPresent()) {
+                logger.debug("Scanner returned an exception but no message: " + scanCommandOutput.getException().isPresent());
             }
         } else {
             logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", scanCommandOutput.getScanTarget()));
