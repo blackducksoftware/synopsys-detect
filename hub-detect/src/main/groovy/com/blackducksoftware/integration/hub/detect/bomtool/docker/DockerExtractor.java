@@ -141,7 +141,7 @@ public class DockerExtractor {
         dockerArguments.add("--spring.config.location");
         dockerArguments.add("file:" + dockerPropertiesFile.getCanonicalPath());
         dockerArguments.add(imageArgument);
-        if (dockerInspectorInfo.isOffline()) {
+        if (dockerInspectorInfo.hasAirGapImageFiles()) {
             importTars(dockerInspectorInfo.getDockerInspectorJar(), dockerInspectorInfo.getAirGapInspectorImageTarfiles(), outputDirectory, environmentVariables, bashExe);
         }
         // TODO: someday soon (before 5.0.0 is released), detect will provide the Java executable to use

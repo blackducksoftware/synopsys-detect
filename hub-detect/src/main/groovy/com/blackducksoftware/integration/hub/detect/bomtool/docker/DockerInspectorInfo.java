@@ -47,7 +47,7 @@ public class DockerInspectorInfo {
         return dockerInspectorJar;
     }
 
-    public boolean isOffline() {
+    public boolean hasAirGapImageFiles() {
         return !CollectionUtils.isEmpty(airGapInspectorImageTarfiles);
     }
 

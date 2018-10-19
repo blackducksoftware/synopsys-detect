@@ -71,6 +71,7 @@ public class DockerInspectorManager {
     private final MavenMetadataService mavenMetadataService;
 
     private DockerInspectorInfo resolvedInfo;
+    private boolean hasResolvedInspector;
 
     public DockerInspectorManager(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder,
             final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
@@ -83,8 +84,9 @@ public class DockerInspectorManager {
 
     public DockerInspectorInfo getDockerInspector() throws BomToolException {
         try {
-            if (resolvedInfo == null) {
+            if (!hasResolvedInspector) {
                 resolvedInfo = install();
+                hasResolvedInspector = true;
             }
             return resolvedInfo;
         } catch (final Exception e) {
@@ -120,7 +122,7 @@ public class DockerInspectorManager {
     }
 
     private DockerInspectorInfo getInfoBasedOnDownloadedJar() throws DetectUserFriendlyException {
-        final File dockerInspectorJar = getDownloadedJar();
+        final File dockerInspectorJar = findOrDownloadJar();
         final DockerInspectorInfo info = getInfoBasedOnJar(dockerInspectorJar);
         return info;
     }
@@ -177,7 +179,7 @@ public class DockerInspectorManager {
         }
     }
 
-    private File getDownloadedJar() throws DetectUserFriendlyException {
+    private File findOrDownloadJar() throws DetectUserFriendlyException {
         logger.debug("Looking for / downloading docker inspector jar file");
         final String resolvedVersion = resolveInspectorVersion();
         final String jarFilename = this.getJarFilename(resolvedVersion);
