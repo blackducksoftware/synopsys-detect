@@ -1,0 +1,18 @@
+[
+ {
+  "directory": "src/test/resources/clang/source",
+  "arguments": [
+   "gcc",
+   "hello_world.cpp"
+  ],
+  "file": "src/test/resources/clang/source/hello_world.cpp"
+ },
+ {
+  "directory": "src/test/resources/clang/source",
+  "arguments": [
+   "gcc",
+   "goodbye_world.cpp"
+  ],
+  "file": "src/test/resources/clang/source/goodbye_world.cpp"
+ }
+]
