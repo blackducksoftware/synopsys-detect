@@ -86,7 +86,7 @@ public class ClangExtractor {
             final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> unManagedDependencyFiles = ConcurrentHashMap.newKeySet(64);
-            final List<CompileCommand> compileCommands = parseJsonCompilationDatabaseFile(jsonCompilationDatabaseFile);
+            final List<CompileCommandWrapper> compileCommands = parseJsonCompilationDatabaseFile(jsonCompilationDatabaseFile);
             final List<Dependency> bdioComponents = compileCommands.parallelStream()
                     .flatMap(compileCommandToDependencyFilePathsConverter(outputDirectory))
                     .collect(Collectors.toSet()).parallelStream()
@@ -106,9 +106,9 @@ public class ClangExtractor {
         }
     }
 
-    private Function<CompileCommand, Stream<String>> compileCommandToDependencyFilePathsConverter(final File workingDir) {
-        return (final CompileCommand compileCommand) -> {
-            logger.info(String.format("Analyzing source file: %s", compileCommand.file));
+    private Function<CompileCommandWrapper, Stream<String>> compileCommandToDependencyFilePathsConverter(final File workingDir) {
+        return (final CompileCommandWrapper compileCommand) -> {
+            logger.info(String.format("Analyzing source file: %s", compileCommand.getFile()));
             final Set<String> dependencyFilePaths = dependenciesListFileManager.generateDependencyFilePaths(workingDir, compileCommand);
             return dependencyFilePaths.stream();
         };
@@ -186,10 +186,10 @@ public class ClangExtractor {
         return false;
     }
 
-    public List<CompileCommand> parseJsonCompilationDatabaseFile(final File compileCommandsJsonFile) throws IOException {
+    public List<CompileCommandWrapper> parseJsonCompilationDatabaseFile(final File compileCommandsJsonFile) throws IOException {
         final String compileCommandsJson = FileUtils.readFileToString(compileCommandsJsonFile, StandardCharsets.UTF_8);
         final CompileCommand[] compileCommands = gson.fromJson(compileCommandsJson, CompileCommand[].class);
-        return Arrays.asList(compileCommands);
+        return Arrays.stream(compileCommands).map(rawCommand -> new CompileCommandWrapper(rawCommand)).collect(Collectors.toList());
     }
 
     private void logSummary(final List<Dependency> bdioComponents, final Set<File> unManagedDependencyFiles) {
