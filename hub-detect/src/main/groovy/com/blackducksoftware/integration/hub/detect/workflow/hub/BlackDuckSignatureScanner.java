@@ -63,6 +63,7 @@ public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStat
     private final Set<String> scanPaths = new HashSet<>();
     private final Map<String, Set<String>> scanPathExclusionPatterns = new HashMap<>();
     private final Map<String, Result> scanSummaryResults = new HashMap<>();
+    private boolean anyExitCodeIs64 = false;
     private String dockerTarFilePath;
     private String dockerTarFilename;
 
@@ -72,7 +73,7 @@ public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStat
     private final DetectConfiguration detectConfiguration;
 
     public BlackDuckSignatureScanner(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder, final CodeLocationNameManager codeLocationNameManager,
-            final DetectConfiguration detectConfiguration) {
+        final DetectConfiguration detectConfiguration) {
         this.detectFileManager = detectFileManager;
         this.detectFileFinder = detectFileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
@@ -104,9 +105,13 @@ public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStat
         scanSummaryResults.put(scanCommandOutput.getScanTarget(), result);
         if (Result.FAILURE == result) {
             logger.error(String.format("Scanning target %s failed: %s", scanCommandOutput.getScanTarget(), scanCommandOutput.getErrorMessage()));
-            if (null != scanCommandOutput.getException()) {
-                logger.debug(scanCommandOutput.getErrorMessage(), scanCommandOutput.getException());
-
+            if (scanCommandOutput.getScanExitCode().isPresent()) {
+                anyExitCodeIs64 = anyExitCodeIs64 || scanCommandOutput.getScanExitCode().get() == 64;
+            }
+            if (scanCommandOutput.getErrorMessage().isPresent() && scanCommandOutput.getException().isPresent()) {
+                logger.debug(scanCommandOutput.getErrorMessage().get(), scanCommandOutput.getException().get());
+            } else if (scanCommandOutput.getException().isPresent()) {
+                logger.debug("Scanner returned an exception but no message: " + scanCommandOutput.getException().isPresent());
             }
         } else {
             logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", scanCommandOutput.getScanTarget()));
@@ -124,6 +129,14 @@ public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStat
 
     @Override
     public ExitCodeType getExitCodeType() {
+        if (anyExitCodeIs64) {
+            logger.error("");
+            logger.error("Signature scanner returned 64. The most likely cause is you are using an unsupported version of Black Duck (<5.0.0).");
+            logger.error("You should update your Black Duck or downgrade your version of detect.");
+            logger.error("If you are using the detect scripts, you can use DETECT_LATEST_RELEASE_VERSION.");
+            logger.error("");
+            return ExitCodeType.FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED;
+        }
         for (final Map.Entry<String, Result> entry : scanSummaryResults.entrySet()) {
             if (Result.FAILURE == entry.getValue()) {
                 return ExitCodeType.FAILURE_SCAN;

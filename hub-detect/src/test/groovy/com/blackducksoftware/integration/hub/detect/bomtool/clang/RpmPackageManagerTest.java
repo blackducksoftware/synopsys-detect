@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.Assume;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -18,6 +20,8 @@ public class RpmPackageManagerTest {
 
     @Test
     public void testValid() throws ExecutableRunnerException {
+        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+
         final StringBuilder sb = new StringBuilder();
         sb.append("glibc-headers-2.17-222.el7.x86_64\n");
         final String pkgMgrOwnedByOutput = sb.toString();
@@ -36,6 +40,8 @@ public class RpmPackageManagerTest {
 
     @Test
     public void testInValid() throws ExecutableRunnerException {
+        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+
         final StringBuilder sb = new StringBuilder();
         sb.append("garbage\n");
         sb.append("nonsense\n");
