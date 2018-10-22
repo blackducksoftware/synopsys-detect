@@ -62,7 +62,7 @@ public class DockerExtractor {
     public static final String TAR_FILENAME_PATTERN = "*.tar.gz";
     public static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
 
-    private final Logger logger = LoggerFactory.getLogger(DockerExtractor.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DetectFileFinder detectFileFinder;
     private final DetectFileManager detectFileManager;
@@ -85,7 +85,7 @@ public class DockerExtractor {
         this.blackDuckSignatureScanner = blackDuckSignatureScanner;
     }
 
-    public Extraction extract(final BomToolType bomToolType, final File directory, final ExtractionId extractionId, final File bashExe, final File dockerExe, final String image, final String tar,
+    public Extraction extract(final BomToolType bomToolType, final File directory, final ExtractionId extractionId, final File bashExe, final File javaExe, final String image, final String tar,
             final DockerInspectorInfo dockerInspectorInfo) {
         try {
             String imageArgument = null;
@@ -102,7 +102,7 @@ public class DockerExtractor {
             if (StringUtils.isBlank(imageArgument) || StringUtils.isBlank(imagePiece)) {
                 return new Extraction.Builder().failure("No docker image found.").build();
             } else {
-                return executeDocker(bomToolType, extractionId, imageArgument, imagePiece, tar, directory, dockerExe, bashExe, dockerInspectorInfo);
+                return executeDocker(bomToolType, extractionId, imageArgument, imagePiece, tar, directory, javaExe, bashExe, dockerInspectorInfo);
             }
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
@@ -126,10 +126,10 @@ public class DockerExtractor {
         }
     }
 
-    private Extraction executeDocker(final BomToolType bomToolType, final ExtractionId extractionId, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File dockerExe,
+    private Extraction executeDocker(final BomToolType bomToolType, final ExtractionId extractionId, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File javaExe,
             final File bashExe,
             final DockerInspectorInfo dockerInspectorInfo)
-            throws FileNotFoundException, IOException, ExecutableRunnerException {
+            throws IOException, ExecutableRunnerException {
 
         final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
         final File dockerPropertiesFile = detectFileManager.getOutputFile(outputDirectory, "application.properties");
@@ -144,8 +144,7 @@ public class DockerExtractor {
         if (dockerInspectorInfo.hasAirGapImageFiles()) {
             importTars(dockerInspectorInfo.getDockerInspectorJar(), dockerInspectorInfo.getAirGapInspectorImageTarfiles(), outputDirectory, environmentVariables, bashExe);
         }
-        // TODO: someday soon (before 5.0.0 is released), detect will provide the Java executable to use
-        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, "java", dockerArguments);
+        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, javaExe.getAbsolutePath(), dockerArguments);
         executableRunner.execute(dockerExecutable);
 
         final File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);

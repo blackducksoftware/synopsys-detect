@@ -540,6 +540,10 @@ public enum DetectProperty {
     @HelpDescription("Path of the bash executable")
     DETECT_BASH_PATH("detect.bash.path", "3.0.0", DetectPropertyType.STRING),
 
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("Path of the java executable")
+    DETECT_JAVA_PATH("detect.java.path", "5.0.0", DetectPropertyType.STRING),
+
     @HelpGroup(primary = GROUP_LOGGING, additional = { GROUP_LOGGING, SEARCH_GROUP_DEBUG })
     @HelpDescription("The logging level of Detect")
     @AcceptableValues(value = { "ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)

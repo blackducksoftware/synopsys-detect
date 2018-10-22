@@ -43,7 +43,8 @@ public class StandardExecutableFinder {
         GO,
         REBAR3,
         PEAR,
-        YARN
+        YARN,
+        JAVA
     }
 
     private final ExecutableManager executableManager;
@@ -94,6 +95,8 @@ public class StandardExecutableFinder {
             return new StandardExecutableInfo(ExecutableType.PEAR, detectConfiguration.getProperty(DetectProperty.DETECT_PEAR_PATH));
         case YARN:
             return new StandardExecutableInfo(ExecutableType.YARN, detectConfiguration.getProperty(DetectProperty.DETECT_YARN_PATH));
+        case JAVA:
+            return new StandardExecutableInfo(ExecutableType.JAVA, detectConfiguration.getProperty(DetectProperty.DETECT_JAVA_PATH));
         }
         return null;
     }
