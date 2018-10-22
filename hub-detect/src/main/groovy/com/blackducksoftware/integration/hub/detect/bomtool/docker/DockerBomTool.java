@@ -41,8 +41,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PropertyIns
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DockerBomTool extends BomTool {
     private final DockerInspectorManager dockerInspectorManager;
