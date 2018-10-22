@@ -34,6 +34,8 @@ import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 public class ClangExtractorTest {
 
     private static final String EXTRACTION_ID = "testExtractionId";
+    private final Gson gson = new Gson();
+    private final File outputDir = new File("src/test/resources/clang/output");
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -44,23 +46,11 @@ public class ClangExtractorTest {
     }
 
     @Test
-    public void testSimple() throws IOException, ExecutableRunnerException {
+    public void testSimple() throws ExecutableRunnerException {
         Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        final File outputDir = new File("src/test/resources/clang/output");
-
-        final List<CompileCommandWrapper> compileCommands = new ArrayList<>();
-        final CompileCommand compileCommand = new CompileCommand();
-        compileCommand.directory = "src/test/resources/clang/source";
-        compileCommand.file = "src/test/resources/clang/source/hello_world.cpp";
-        compileCommand.command = "gcc hello_world.cpp";
-        final CompileCommandWrapper compileCommandWrapper = new CompileCommandWrapper(compileCommand);
-        compileCommands.add(compileCommandWrapper);
-
-        final File stdLibIncludeFile = new File("/usr/include/stdlib.h");
-        final Set<String> dependencyFilePaths = new HashSet<>();
-        dependencyFilePaths.add("src/test/resources/clang/source/myinclude.h");
-        dependencyFilePaths.add(stdLibIncludeFile.getAbsolutePath());
+        final CompileCommandWrapper compileCommandWrapper = createCompileCommand("src/test/resources/clang/source/hello_world.cpp", "gcc hello_world.cpp", null);
+        final Set<String> dependencyFilePaths = createDependencyFilePaths(new File("/usr/include/stdlib.h"), new File("src/test/resources/clang/source/myinclude.h"));
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final DetectFileManager detectFileManager = Mockito.mock(DetectFileManager.class);
@@ -69,7 +59,6 @@ public class ClangExtractorTest {
         Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapper)).thenReturn(dependencyFilePaths);
         Mockito.when(executableRunner.executeFromDirQuietly(Mockito.any(File.class), Mockito.anyString(), Mockito.anyList())).thenReturn(new ExecutableOutput(0, "", ""));
 
-        final Gson gson = new Gson();
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
         final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(),
@@ -92,50 +81,19 @@ public class ClangExtractorTest {
         Mockito.when(pkgMgr.getForges()).thenReturn(Arrays.asList(Forge.UBUNTU, Forge.DEBIAN));
         final Extraction extraction = extractor.extract(pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile);
 
-        final Dependency dependency = extraction.codeLocations.get(0).getDependencyGraph().getRootDependencies().iterator().next();
-        assertEquals("testPackageName", dependency.name);
-        assertEquals("testPackageVersion", dependency.version);
-        assertEquals("testPackageArch", dependency.externalId.architecture);
-        assertEquals("ubuntu", dependency.externalId.forge.getName());
-        assertEquals(null, dependency.externalId.group);
-        assertEquals("testPackageName", dependency.externalId.name);
-        assertEquals(null, dependency.externalId.path);
-        assertEquals("testPackageVersion", dependency.externalId.version);
+        checkGeneratedDependenciesSimple(extraction);
     }
 
     @Test
-    public void testMultipleCommandsDependenciesPackages() throws IOException, ExecutableRunnerException {
+    public void testMultipleCommandsDependenciesPackages() throws ExecutableRunnerException {
         Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        final File outputDir = new File("src/test/resources/clang/output");
+        final CompileCommandWrapper compileCommandWrapperHelloWorld = createCompileCommand("src/test/resources/clang/source/hello_world.cpp", "gcc hello_world.cpp", null);
+        final CompileCommandWrapper compileCommandWrapperGoodbyeWorld = createCompileCommand("src/test/resources/clang/source/goodbye_world.cpp", "gcc goodbye_world.cpp", null);
 
-        final List<CompileCommandWrapper> compileCommands = new ArrayList<>();
-        final CompileCommand compileCommandHelloWorld = new CompileCommand();
-        compileCommandHelloWorld.directory = "src/test/resources/clang/source";
-        compileCommandHelloWorld.file = "src/test/resources/clang/source/hello_world.cpp";
-        compileCommandHelloWorld.command = "gcc hello_world.cpp";
-        final CompileCommandWrapper compileCommandWrapperHelloWorld = new CompileCommandWrapper(compileCommandHelloWorld);
-        compileCommands.add(compileCommandWrapperHelloWorld);
+        final Set<String> dependencyFilePathsHelloWorld = createDependencyFilePaths(new File("src/test/resources/clang/source/myinclude.h"), new File("/usr/include/stdlib.h"), new File("/usr/include/math.h"));
 
-        final CompileCommand compileCommandGoodbyeWorld = new CompileCommand();
-        compileCommandGoodbyeWorld.directory = "src/test/resources/clang/source";
-        compileCommandGoodbyeWorld.file = "src/test/resources/clang/source/goodbye_world.cpp";
-        compileCommandGoodbyeWorld.command = "gcc goodbye_world.cpp";
-        final CompileCommandWrapper compileCommandWrapperGoodbyeWorld = new CompileCommandWrapper(compileCommandGoodbyeWorld);
-        compileCommands.add(compileCommandWrapperGoodbyeWorld);
-
-        final File stdLibIncludeFile = new File("/usr/include/stdlib.h");
-        final File mathIncludeFile = new File("/usr/include/math.h");
-        final Set<String> dependencyFilePathsHelloWorld = new HashSet<>();
-        dependencyFilePathsHelloWorld.add("src/test/resources/clang/source/myinclude.h");
-        dependencyFilePathsHelloWorld.add(stdLibIncludeFile.getAbsolutePath());
-        dependencyFilePathsHelloWorld.add(mathIncludeFile.getAbsolutePath());
-
-        final File pwdIncludeFile = new File("/usr/include/pwd.h");
-        final File printfIncludeFile = new File("/usr/include/printf.h");
-        final Set<String> dependencyFilePathsGoodbyeWorld = new HashSet<>();
-        dependencyFilePathsGoodbyeWorld.add(pwdIncludeFile.getAbsolutePath());
-        dependencyFilePathsGoodbyeWorld.add(printfIncludeFile.getAbsolutePath());
+        final Set<String> dependencyFilePathsGoodbyeWorld = createDependencyFilePaths(new File("/usr/include/pwd.h"), new File("/usr/include/printf.h"));;
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final DetectFileManager detectFileManager = Mockito.mock(DetectFileManager.class);
@@ -146,7 +104,6 @@ public class ClangExtractorTest {
 
         Mockito.when(executableRunner.executeFromDirQuietly(Mockito.any(File.class), Mockito.anyString(), Mockito.anyList())).thenReturn(new ExecutableOutput(0, "", ""));
 
-        final Gson gson = new Gson();
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
         final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(),
@@ -170,61 +127,19 @@ public class ClangExtractorTest {
         Mockito.when(pkgMgr.getForges()).thenReturn(Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT));
         final Extraction extraction = extractor.extract(pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile);
 
-        final Set<Dependency> dependencies = extraction.codeLocations.get(0).getDependencyGraph().getRootDependencies();
-        assertEquals(6, dependencies.size());
-        for (final Dependency dependency : dependencies) {
-            System.out.printf("Checking dependency: %s:%s / %s\n", dependency.name, dependency.version, dependency.externalId.forge.getName());
-            final char indexChar = dependency.name.charAt(15);
-            assertTrue(indexChar == '1' || indexChar == '2' || indexChar == '3');
-
-            final String forge = dependency.externalId.forge.getName();
-            assertTrue("centos".equals(forge) || "fedora".equals(forge) || "redhat".equals(forge));
-
-            assertEquals(String.format("testPackageName%c", indexChar), dependency.name);
-            assertEquals(String.format("testPackageVersion%c", indexChar), dependency.version);
-            assertEquals(String.format("testPackageArch%c", indexChar), dependency.externalId.architecture);
-
-            assertEquals(forge, dependency.externalId.forge.getName());
-            assertEquals(null, dependency.externalId.group);
-            assertEquals(String.format("testPackageName%c", indexChar), dependency.externalId.name);
-            assertEquals(null, dependency.externalId.path);
-            assertEquals(String.format("testPackageVersion%c", indexChar), dependency.externalId.version);
-        }
+        checkGeneratedDependenciesComplex(extraction);
     }
 
     @Test
-    public void testJsonWithArgumentsNotCommand() throws IOException, ExecutableRunnerException {
-        final File outputDir = new File("src/test/resources/clang/output");
+    public void testJsonWithArgumentsNotCommand() throws ExecutableRunnerException {
 
-        final List<CompileCommandWrapper> compileCommands = new ArrayList<>();
-        final CompileCommand compileCommandHelloWorld = new CompileCommand();
-        compileCommandHelloWorld.directory = "src/test/resources/clang/source";
-        compileCommandHelloWorld.file = "src/test/resources/clang/source/hello_world.cpp";
         final String[] argsHello = { "gcc", "hello_world.cpp" };
-        compileCommandHelloWorld.arguments = argsHello;
-        final CompileCommandWrapper compileCommandWrapperHelloWorld = new CompileCommandWrapper(compileCommandHelloWorld);
-        compileCommands.add(compileCommandWrapperHelloWorld);
-
-        final CompileCommand compileCommandGoodbyeWorld = new CompileCommand();
-        compileCommandGoodbyeWorld.directory = "src/test/resources/clang/source";
-        compileCommandGoodbyeWorld.file = "src/test/resources/clang/source/goodbye_world.cpp";
+        final CompileCommandWrapper compileCommandWrapperHelloWorld = createCompileCommand("src/test/resources/clang/source/hello_world.cpp", null, argsHello);
         final String[] argsGoodbye = { "gcc", "goodbye_world.cpp" };
-        compileCommandGoodbyeWorld.arguments = argsGoodbye;
-        final CompileCommandWrapper compileCommandWrapperGoodbyeWorld = new CompileCommandWrapper(compileCommandGoodbyeWorld);
-        compileCommands.add(compileCommandWrapperGoodbyeWorld);
+        final CompileCommandWrapper compileCommandWrapperGoodbyeWorld = createCompileCommand("src/test/resources/clang/source/goodbye_world.cpp", null, argsGoodbye);
 
-        final File stdLibIncludeFile = new File("/usr/include/stdlib.h");
-        final File mathIncludeFile = new File("/usr/include/math.h");
-        final Set<String> dependencyFilePathsHelloWorld = new HashSet<>();
-        dependencyFilePathsHelloWorld.add("src/test/resources/clang/source/myinclude.h");
-        dependencyFilePathsHelloWorld.add(stdLibIncludeFile.getAbsolutePath());
-        dependencyFilePathsHelloWorld.add(mathIncludeFile.getAbsolutePath());
-
-        final File pwdIncludeFile = new File("/usr/include/pwd.h");
-        final File printfIncludeFile = new File("/usr/include/printf.h");
-        final Set<String> dependencyFilePathsGoodbyeWorld = new HashSet<>();
-        dependencyFilePathsGoodbyeWorld.add(pwdIncludeFile.getAbsolutePath());
-        dependencyFilePathsGoodbyeWorld.add(printfIncludeFile.getAbsolutePath());
+        final Set<String> dependencyFilePathsHelloWorld = createDependencyFilePaths(new File("src/test/resources/clang/source/myinclude.h"), new File("/usr/include/stdlib.h"), new File("/usr/include/math.h"));
+        final Set<String> dependencyFilePathsGoodbyeWorld = createDependencyFilePaths(new File("/usr/include/pwd.h"), new File("/usr/include/printf.h"));;
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final DetectFileManager detectFileManager = Mockito.mock(DetectFileManager.class);
@@ -232,10 +147,8 @@ public class ClangExtractorTest {
 
         Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapperHelloWorld)).thenReturn(dependencyFilePathsHelloWorld);
         Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapperGoodbyeWorld)).thenReturn(dependencyFilePathsGoodbyeWorld);
-
         Mockito.when(executableRunner.executeFromDirQuietly(Mockito.any(File.class), Mockito.anyString(), Mockito.anyList())).thenReturn(new ExecutableOutput(0, "", ""));
 
-        final Gson gson = new Gson();
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
         final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(),
@@ -259,6 +172,22 @@ public class ClangExtractorTest {
         Mockito.when(pkgMgr.getForges()).thenReturn(Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT));
         final Extraction extraction = extractor.extract(pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile);
 
+        checkGeneratedDependenciesComplex(extraction);
+    }
+
+    private void checkGeneratedDependenciesSimple(Extraction extraction) {
+        final Dependency dependency = extraction.codeLocations.get(0).getDependencyGraph().getRootDependencies().iterator().next();
+        assertEquals("testPackageName", dependency.name);
+        assertEquals("testPackageVersion", dependency.version);
+        assertEquals("testPackageArch", dependency.externalId.architecture);
+        assertEquals("ubuntu", dependency.externalId.forge.getName());
+        assertEquals(null, dependency.externalId.group);
+        assertEquals("testPackageName", dependency.externalId.name);
+        assertEquals(null, dependency.externalId.path);
+        assertEquals("testPackageVersion", dependency.externalId.version);
+    }
+
+    private void checkGeneratedDependenciesComplex(Extraction extraction) {
         final Set<Dependency> dependencies = extraction.codeLocations.get(0).getDependencyGraph().getRootDependencies();
         assertEquals(6, dependencies.size());
         for (final Dependency dependency : dependencies) {
@@ -280,4 +209,20 @@ public class ClangExtractorTest {
             assertEquals(String.format("testPackageVersion%c", indexChar), dependency.externalId.version);
         }
     }
+    private Set<String> createDependencyFilePaths(File  ... dependencyFiles) {
+        Set<String> dependencyFilePaths = new HashSet<>();
+        for (File dependencyFile : dependencyFiles) {
+            dependencyFilePaths.add(dependencyFile.getAbsolutePath());
+        }
+        return dependencyFilePaths;
+    }
+    private CompileCommandWrapper createCompileCommand(String file, String command, String[] arguments) {
+        final CompileCommand compileCommandGoodbyeWorld = new CompileCommand();
+        compileCommandGoodbyeWorld.directory = "src/test/resources/clang/source";
+        compileCommandGoodbyeWorld.file = file;
+        compileCommandGoodbyeWorld.command = command;
+        compileCommandGoodbyeWorld.arguments = arguments;
+        return new CompileCommandWrapper(compileCommandGoodbyeWorld);
+    }
+
 }
