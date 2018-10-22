@@ -44,7 +44,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableArgumentBuilder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
@@ -93,7 +92,7 @@ public class DockerExtractor {
             String imagePiece = null;
             if (StringUtils.isNotBlank(tar)) {
                 final File dockerTarFile = new File(tar);
-                imageArgument = String.format("--docker.tar=\"%s\"", dockerTarFile.getCanonicalPath());
+                imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath());
                 imagePiece = detectFileFinder.extractFinalPieceFromPath(dockerTarFile.getCanonicalPath());
             } else if (StringUtils.isNotBlank(image)) {
                 imagePiece = image;
@@ -108,12 +107,6 @@ public class DockerExtractor {
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
-    }
-
-    private Map<String, String> createEnvironmentVariables(final String dockerInspectorVersion, final File dockerExe) throws IOException {
-        final Map<String, String> environmentVariables = new HashMap<>();
-        dockerProperties.populateEnvironmentVariables(dockerInspectorVersion, environmentVariables, dockerExe);
-        return environmentVariables;
     }
 
     private void importTars(final File inspectorJar, final List<File> importTars, final File directory, final Map<String, String> environmentVariables, final File bashExe) {
@@ -141,32 +134,18 @@ public class DockerExtractor {
         final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
         final File dockerPropertiesFile = detectFileManager.getOutputFile(outputDirectory, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
-
-        String dockerInspectorVersion = "";
-
-        // we want to get the resolved Docker inspector version, if Detect was able to determine a version
-        dockerInspectorVersion = dockerInspectorInfo.version;
-
-        final Map<String, String> environmentVariables = createEnvironmentVariables(dockerInspectorVersion, dockerExe);
-
+        final Map<String, String> environmentVariables = new HashMap<>(0);
         final List<String> dockerArguments = new ArrayList<>();
-        // The -c is a bash option, the following String is the command we want to run
-        dockerArguments.add("-c");
-
-        final ExecutableArgumentBuilder bashArguments = new ExecutableArgumentBuilder();
-        bashArguments.addArgument(dockerInspectorInfo.dockerInspectorScript.getCanonicalPath(), true);
-        bashArguments.addArgumentPair("--spring.config.location", "file:" + dockerPropertiesFile.getCanonicalPath(), true);
-        bashArguments.addArgument(imageArgument);
-
-        if (dockerInspectorInfo.isOffline) {
-            bashArguments.insertArgumentPair(2, "--jar.path", dockerInspectorInfo.offlineDockerInspectorJar.getCanonicalPath(), true);
-            importTars(dockerInspectorInfo.offlineDockerInspectorJar, dockerInspectorInfo.offlineTars, outputDirectory, environmentVariables, bashExe);
+        dockerArguments.add("-jar");
+        dockerArguments.add(dockerInspectorInfo.getDockerInspectorJar().getAbsolutePath());
+        dockerArguments.add("--spring.config.location");
+        dockerArguments.add("file:" + dockerPropertiesFile.getCanonicalPath());
+        dockerArguments.add(imageArgument);
+        if (dockerInspectorInfo.hasAirGapImageFiles()) {
+            importTars(dockerInspectorInfo.getDockerInspectorJar(), dockerInspectorInfo.getAirGapInspectorImageTarfiles(), outputDirectory, environmentVariables, bashExe);
         }
-
-        // All the arguments should be joined into a single String, as the command to run after the -c
-        dockerArguments.add(bashArguments.buildString());
-
-        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), dockerArguments);
+        // TODO: someday soon (before 5.0.0 is released), detect will provide the Java executable to use
+        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, "java", dockerArguments);
         executableRunner.execute(dockerExecutable);
 
         final File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
