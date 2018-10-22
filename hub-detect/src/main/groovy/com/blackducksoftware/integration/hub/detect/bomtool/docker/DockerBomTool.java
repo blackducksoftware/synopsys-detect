@@ -41,6 +41,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PropertyIns
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DockerBomTool extends BomTool {
     private final DockerInspectorManager dockerInspectorManager;
@@ -50,6 +52,7 @@ public class DockerBomTool extends BomTool {
     private final String suppliedDockerImage;
     private final String suppliedDockerTar;
 
+    private File javaExe;
     private File bashExe;
     private File dockerExe;
     private String image;
@@ -81,6 +84,11 @@ public class DockerBomTool extends BomTool {
 
     @Override
     public BomToolResult extractable() throws BomToolException {
+        javaExe = standardExecutableFinder.getExecutable(StandardExecutableType.JAVA);
+        if (javaExe == null) {
+            return new ExecutableNotFoundBomToolResult("java");
+        }
+
         bashExe = standardExecutableFinder.getExecutable(StandardExecutableType.BASH);
         if (bashExe == null) {
             return new ExecutableNotFoundBomToolResult("bash");
@@ -103,7 +111,7 @@ public class DockerBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return dockerExtractor.extract(this.getBomToolType(), environment.getDirectory(), extractionId, bashExe, dockerExe, image, tar, dockerInspectorInfo);
+        return dockerExtractor.extract(this.getBomToolType(), environment.getDirectory(), extractionId, bashExe, javaExe, image, tar, dockerInspectorInfo);
     }
     
 }
