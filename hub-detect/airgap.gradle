@@ -61,31 +61,43 @@ task copyApplicationProperties(type: Copy) {
     into configAirGapPath
 }
 
-task downloadDockerInspectorScript() {
-    doLast {
-        def dir = new File(dockerAirGapPath)
-        dir.mkdir()
-        def dockerInspectorScript = new File(dockerAirGapPath, 'hub-docker-inspector.sh')
-        final def dockerInspectorScriptUrl = 'https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh'
-        fetchFile(dockerInspectorScript, dockerInspectorScriptUrl)              
-        dockerInspectorScript.setExecutable(true)          
-    }
+File fetchDockerInspectorMavenMetadata(String dockerAirGapPath, final String dockerInspectorArtifactoryBaseUrl) {
+    final String dockerInspectorMavenMetadataUrl = "${dockerInspectorArtifactoryBaseUrl}/maven-metadata.xml"
+    final File dockerInspectorMetadataFile = new File(dockerAirGapPath, 'maven-metadata.xml')
+    dockerInspectorMetadataFile.delete()
+    fetchFile(dockerInspectorMetadataFile, dockerInspectorMavenMetadataUrl)
+    println "downloaded: ${dockerInspectorMetadataFile.getAbsolutePath()}"
+    return dockerInspectorMetadataFile
+}
+
+String getLatestDockerInspectorVersion(final File dockerInspectorMetadataFile) {
+    final String mavenMetadataString = dockerInspectorMetadataFile.getText('UTF-8')
+    final Node metadata = new XmlParser().parseText(mavenMetadataString)
+    final String dockerInspectorLatestVersion = metadata.versioning.latest.text()
+    println "dockerInspectorLatestVersion: ${dockerInspectorLatestVersion}"
+    return dockerInspectorLatestVersion
+}
+
+File downloadDockerInspectorAirGapZip(String dockerAirGapPath, final String dockerInspectorArtifactoryBaseUrl, final String dockerInspectorLatestVersion) {
+    final String dockerInspectorAirGapZipUrl = "${dockerInspectorArtifactoryBaseUrl}/${dockerInspectorLatestVersion}/blackduck-docker-inspector-${dockerInspectorLatestVersion}-air-gap.zip"
+    println "dockerInspectorAirGapZipUrl: ${dockerInspectorAirGapZipUrl}"
+    final File dockerInspectorAirGapZipFile = new File(dockerAirGapPath, "blackduck-docker-inspector-${dockerInspectorLatestVersion}-air-gap.zip")
+    fetchFile(dockerInspectorAirGapZipFile, dockerInspectorAirGapZipUrl)
+    return dockerInspectorAirGapZipFile
 }
 
 task downloadDockerInspector() {
-    dependsOn downloadDockerInspectorScript
     doLast {
+        final String dockerInspectorArtifactoryBaseUrl = 'https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector'
+        final File dockerInspectorMetadataFile = fetchDockerInspectorMavenMetadata(dockerAirGapPath, dockerInspectorArtifactoryBaseUrl)
+        final String dockerInspectorLatestVersion = getLatestDockerInspectorVersion(dockerInspectorMetadataFile)
+        final File dockerInspectorAirGapZipFile = downloadDockerInspectorAirGapZip(dockerAirGapPath, dockerInspectorArtifactoryBaseUrl, dockerInspectorLatestVersion)
         exec {
         	workingDir "${dockerAirGapPath}"
-            environment 'DOCKER_INSPECTOR_CURL_OPTS', '--insecure'
-            commandLine 'bash', "${dockerAirGapPath}/hub-docker-inspector.sh", '--pullairgapzip'
-        }
-        exec {
-        	workingDir "${dockerAirGapPath}"
-        	commandLine 'unzip', '-n', 'hub-docker-inspector-*-air-gap.zip'
+        	commandLine 'unzip', '-n', 'blackduck-docker-inspector-*-air-gap.zip'
         }
         delete fileTree("${dockerAirGapPath}") {
-            include 'hub-docker-inspector-*-air-gap.zip'
+            include 'blackduck-docker-inspector-*-air-gap.zip'
         }
     }
 }

@@ -15,7 +15,7 @@ public class GraphParserTransformerTest {
         final GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
         final InputStream inputStream = new ClassPathResource("/bitbake/recipe-depends.dot").getInputStream();
         final GraphParser graphParser = new GraphParser(inputStream);
-        final DependencyGraph dependencyGraph = graphParserTransformer.transform(graphParser);
+        final DependencyGraph dependencyGraph = graphParserTransformer.transform(graphParser, "i586-poky-linux");
 
         assert dependencyGraph.getRootDependencies().size() == 480;
     }

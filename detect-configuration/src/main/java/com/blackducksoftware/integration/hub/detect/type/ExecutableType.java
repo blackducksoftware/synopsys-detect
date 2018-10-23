@@ -46,7 +46,8 @@ public enum ExecutableType {
     PYTHON,
     PYTHON3,
     REBAR3,
-    YARN;
+    YARN,
+    JAVA;
 
     private String executableName;
 

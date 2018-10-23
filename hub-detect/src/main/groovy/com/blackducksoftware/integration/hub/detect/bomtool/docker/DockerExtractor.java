@@ -41,14 +41,13 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableArgumentBuilder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckSignatureScanner;
 import com.google.gson.Gson;
 import com.synopsys.integration.hub.bdio.BdioReader;
@@ -63,10 +62,10 @@ public class DockerExtractor {
     public static final String TAR_FILENAME_PATTERN = "*.tar.gz";
     public static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
 
-    private final Logger logger = LoggerFactory.getLogger(DockerExtractor.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DetectFileFinder detectFileFinder;
-    private final DirectoryManager directoryManager;
+    private final DetectFileManager detectFileManager;
     private final DockerProperties dockerProperties;
     private final ExecutableRunner executableRunner;
     private final BdioTransformer bdioTransformer;
@@ -74,10 +73,10 @@ public class DockerExtractor {
     private final Gson gson;
     private final BlackDuckSignatureScanner blackDuckSignatureScanner;
 
-    public DockerExtractor(final DetectFileFinder detectFileFinder, final DirectoryManager directoryManager, final DockerProperties dockerProperties,
-        final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson, final BlackDuckSignatureScanner blackDuckSignatureScanner) {
+    public DockerExtractor(final DetectFileFinder detectFileFinder, final DetectFileManager detectFileManager, final DockerProperties dockerProperties,
+            final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson, final BlackDuckSignatureScanner blackDuckSignatureScanner) {
         this.detectFileFinder = detectFileFinder;
-        this.directoryManager = directoryManager;
+        this.detectFileManager = detectFileManager;
         this.dockerProperties = dockerProperties;
         this.executableRunner = executableRunner;
         this.bdioTransformer = bdioTransformer;
@@ -86,14 +85,14 @@ public class DockerExtractor {
         this.blackDuckSignatureScanner = blackDuckSignatureScanner;
     }
 
-    public Extraction extract(final BomToolType bomToolType, final File directory, final ExtractionId extractionId, final File bashExe, final File dockerExe, final String image, final String tar,
-        final DockerInspectorInfo dockerInspectorInfo) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final ExtractionId extractionId, final File bashExe, final File javaExe, final String image, final String tar,
+            final DockerInspectorInfo dockerInspectorInfo) {
         try {
             String imageArgument = null;
             String imagePiece = null;
             if (StringUtils.isNotBlank(tar)) {
                 final File dockerTarFile = new File(tar);
-                imageArgument = String.format("--docker.tar=\"%s\"", dockerTarFile.getCanonicalPath());
+                imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath());
                 imagePiece = detectFileFinder.extractFinalPieceFromPath(dockerTarFile.getCanonicalPath());
             } else if (StringUtils.isNotBlank(image)) {
                 imagePiece = image;
@@ -103,17 +102,11 @@ public class DockerExtractor {
             if (StringUtils.isBlank(imageArgument) || StringUtils.isBlank(imagePiece)) {
                 return new Extraction.Builder().failure("No docker image found.").build();
             } else {
-                return executeDocker(bomToolType, extractionId, imageArgument, imagePiece, tar, directory, dockerExe, bashExe, dockerInspectorInfo);
+                return executeDocker(bomToolType, extractionId, imageArgument, imagePiece, tar, directory, javaExe, bashExe, dockerInspectorInfo);
             }
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
-    }
-
-    private Map<String, String> createEnvironmentVariables(final String dockerInspectorVersion, final File dockerExe) throws IOException {
-        final Map<String, String> environmentVariables = new HashMap<>();
-        dockerProperties.populateEnvironmentVariables(dockerInspectorVersion, environmentVariables, dockerExe);
-        return environmentVariables;
     }
 
     private void importTars(final File inspectorJar, final List<File> importTars, final File directory, final Map<String, String> environmentVariables, final File bashExe) {
@@ -121,8 +114,8 @@ public class DockerExtractor {
             for (final File imageToImport : importTars) {
                 // The -c is a bash option, the following String is the command we want to run
                 final List<String> dockerImportArguments = Arrays.asList(
-                    "-c",
-                    "docker load -i \"" + imageToImport.getCanonicalPath() + "\"");
+                        "-c",
+                        "docker load -i \"" + imageToImport.getCanonicalPath() + "\"");
 
                 final Executable dockerImportImageExecutable = new Executable(directory, environmentVariables, bashExe.toString(), dockerImportArguments);
                 executableRunner.execute(dockerImportImageExecutable);
@@ -133,40 +126,25 @@ public class DockerExtractor {
         }
     }
 
-    private Extraction executeDocker(final BomToolType bomToolType, final ExtractionId extractionId, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File dockerExe,
-        final File bashExe,
-        final DockerInspectorInfo dockerInspectorInfo)
-        throws FileNotFoundException, IOException, ExecutableRunnerException {
+    private Extraction executeDocker(final BomToolType bomToolType, final ExtractionId extractionId, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File javaExe,
+            final File bashExe,
+            final DockerInspectorInfo dockerInspectorInfo)
+            throws IOException, ExecutableRunnerException {
 
-        final File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
-        final File dockerPropertiesFile = new File(outputDirectory, "application.properties");
+        final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
+        final File dockerPropertiesFile = detectFileManager.getOutputFile(outputDirectory, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
-
-        String dockerInspectorVersion = "";
-
-        // we want to get the resolved Docker inspector version, if Detect was able to determine a version
-        dockerInspectorVersion = dockerInspectorInfo.version;
-
-        final Map<String, String> environmentVariables = createEnvironmentVariables(dockerInspectorVersion, dockerExe);
-
+        final Map<String, String> environmentVariables = new HashMap<>(0);
         final List<String> dockerArguments = new ArrayList<>();
-        // The -c is a bash option, the following String is the command we want to run
-        dockerArguments.add("-c");
-
-        final ExecutableArgumentBuilder bashArguments = new ExecutableArgumentBuilder();
-        bashArguments.addArgument(dockerInspectorInfo.dockerInspectorScript.getCanonicalPath(), true);
-        bashArguments.addArgumentPair("--spring.config.location", "file:" + dockerPropertiesFile.getCanonicalPath(), true);
-        bashArguments.addArgument(imageArgument);
-
-        if (dockerInspectorInfo.isOffline) {
-            bashArguments.insertArgumentPair(2, "--jar.path", dockerInspectorInfo.offlineDockerInspectorJar.getCanonicalPath(), true);
-            importTars(dockerInspectorInfo.offlineDockerInspectorJar, dockerInspectorInfo.offlineTars, outputDirectory, environmentVariables, bashExe);
+        dockerArguments.add("-jar");
+        dockerArguments.add(dockerInspectorInfo.getDockerInspectorJar().getAbsolutePath());
+        dockerArguments.add("--spring.config.location");
+        dockerArguments.add("file:" + dockerPropertiesFile.getCanonicalPath());
+        dockerArguments.add(imageArgument);
+        if (dockerInspectorInfo.hasAirGapImageFiles()) {
+            importTars(dockerInspectorInfo.getDockerInspectorJar(), dockerInspectorInfo.getAirGapInspectorImageTarfiles(), outputDirectory, environmentVariables, bashExe);
         }
-
-        // All the configuration should be joined into a single String, as the command to run after the -c
-        dockerArguments.add(bashArguments.buildString());
-
-        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), dockerArguments);
+        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, javaExe.getAbsolutePath(), dockerArguments);
         executableRunner.execute(dockerExecutable);
 
         final File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);

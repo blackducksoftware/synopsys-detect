@@ -21,14 +21,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.clang;
+package com.blackducksoftware.integration.hub.detect.bomtool.bitbake;
 
-import com.synopsys.integration.util.Stringable;
+import java.util.Arrays;
+import java.util.Optional;
 
-// Loaded from json via Gson
-public class CompileCommand extends Stringable {
-    public String directory;
-    public String command;
-    public String[] arguments;
-    public String file;
+public class BitbakeListTasksParser {
+    public Optional<String> parseTargetArchitecture(final String standardOutput) {
+        return Arrays.stream(standardOutput.split(System.lineSeparator()))
+                   .filter(this::lineContainsArchitecture)
+                   .map(this::getArchitectureFromLine)
+                   .findFirst();
+    }
+
+    private boolean lineContainsArchitecture(final String line) {
+        return line.trim().startsWith("TARGET_SYS");
+    }
+
+    private String getArchitectureFromLine(final String line) {
+        final int start = line.indexOf("\"") + 1;
+        final int end = line.lastIndexOf("\"");
+
+        return line.substring(start, end).trim();
+    }
 }

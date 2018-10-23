@@ -21,32 +21,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.bitbake;
+package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import java.io.File;
+import org.apache.commons.lang3.StringUtils;
 
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
+import com.synopsys.integration.util.Stringable;
 
-public class BitbakeResult {
-    private final ExecutableOutput executableOutput;
-    private final String executableDescription;
-    private final File recipeDependsFile;
+public class CompileCommandWrapper extends Stringable {
+    private final CompileCommand rawCompileCommand;
 
-    public BitbakeResult(final ExecutableOutput executableOutput, final String executableDescription, final File recipeDependsFile) {
-        this.executableOutput = executableOutput;
-        this.executableDescription = executableDescription;
-        this.recipeDependsFile = recipeDependsFile;
+    public CompileCommandWrapper(final CompileCommand rawCompileCommand) {
+        this.rawCompileCommand = rawCompileCommand;
     }
 
-    public ExecutableOutput getExecutableOutput() {
-        return executableOutput;
+    public String getDirectory() {
+        return rawCompileCommand.directory;
     }
 
-    public String getExecutableDescription() {
-        return executableDescription;
+    public String getFile() {
+        return rawCompileCommand.file;
     }
 
-    public File getRecipeDependsFile() {
-        return recipeDependsFile;
+    public String getCommand() {
+        if (StringUtils.isNotBlank(rawCompileCommand.command)) {
+            return rawCompileCommand.command;
+        } else {
+            return String.join(" ", rawCompileCommand.arguments);
+        }
+
     }
 }

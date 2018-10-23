@@ -26,8 +26,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.bitbake;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
@@ -35,14 +33,12 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PropertyInsufficientBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientBomToolResult;
 import com.synopsys.integration.hub.bdio.model.Forge;
 
 public class BitbakeBomTool extends BomTool {
@@ -63,7 +59,7 @@ public class BitbakeBomTool extends BomTool {
 
     @Override
     public BomToolResult applicable() {
-        foundBuildEnvScript = detectFileFinder.findFile(environment.getDirectory(), detectConfiguration.getProperty(DetectProperty.DETECT_INIT_BUILD_ENV_NAME, PropertyAuthority.None));
+        foundBuildEnvScript = detectFileFinder.findFile(environment.getDirectory(), detectConfiguration.getProperty(DetectProperty.DETECT_INIT_BUILD_ENV_NAME));
         if (foundBuildEnvScript == null) {
             return new FileNotFoundBomToolResult(DetectProperty.DETECT_INIT_BUILD_ENV_NAME.getDefaultValue());
         }
@@ -73,8 +69,8 @@ public class BitbakeBomTool extends BomTool {
 
     @Override
     public BomToolResult extractable() {
-        final String packageName = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAME, PropertyAuthority.None);
-        if (StringUtils.isBlank(packageName)) {
+        final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES);
+        if (packageNames == null || packageNames.length == 0) {
             return new PropertyInsufficientBomToolResult();
         }
 
@@ -85,7 +81,7 @@ public class BitbakeBomTool extends BomTool {
     public Extraction extract(final ExtractionId extractionId) {
         try {
             return bitbakeExtractor.extract(extractionId, foundBuildEnvScript.getCanonicalPath(), environment.getDirectory().getCanonicalPath());
-        } catch (final IOException | ExecutableRunnerException e) {
+        } catch (final IOException e) {
             return new Extraction.Builder().failure(String.format("Failed to extract dependencies from bitbake: %s", e.getMessage())).build();
         }
     }

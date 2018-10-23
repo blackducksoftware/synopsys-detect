@@ -64,6 +64,11 @@ public class BlackDuckSignatureScanner {
     private final Logger logger = LoggerFactory.getLogger(BlackDuckSignatureScanner.class);
     private final Set<BlackDuckSignatureScannerEvaluation> scans = new HashSet<>();
     private final Map<String, Set<String>> scanPathExclusionPatterns = new HashMap<>();
+<<<<<<< HEAD
+=======
+    private final Map<String, Result> scanSummaryResults = new HashMap<>();
+    private boolean anyExitCodeIs64 = false;
+>>>>>>> master
     private String dockerTarFilePath;
     private String dockerTarFilename;
 
@@ -73,9 +78,15 @@ public class BlackDuckSignatureScanner {
     private final DetectConfiguration detectConfiguration;
     private final EventSystem eventSystem;
 
+<<<<<<< HEAD
     public BlackDuckSignatureScanner(final DirectoryManager directoryManager, final DetectFileFinder detectFileFinder, final CodeLocationNameManager codeLocationNameManager,
         final DetectConfiguration detectConfiguration, EventSystem eventSystem) {
         this.directoryManager = directoryManager;
+=======
+    public BlackDuckSignatureScanner(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder, final CodeLocationNameManager codeLocationNameManager,
+        final DetectConfiguration detectConfiguration) {
+        this.detectFileManager = detectFileManager;
+>>>>>>> master
         this.detectFileFinder = detectFileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
@@ -100,10 +111,33 @@ public class BlackDuckSignatureScanner {
         } catch (IOException e) {
             throw new IntegrationException("Could not execute the scans: " + e.getMessage());
         }
+<<<<<<< HEAD
+=======
+    }
+
+    private void handleScanCommandOutput(final ScanCommandOutput scanCommandOutput) {
+        final Result result = scanCommandOutput.getResult();
+        scanSummaryResults.put(scanCommandOutput.getScanTarget(), result);
+        if (Result.FAILURE == result) {
+            logger.error(String.format("Scanning target %s failed: %s", scanCommandOutput.getScanTarget(), scanCommandOutput.getErrorMessage()));
+            if (scanCommandOutput.getScanExitCode().isPresent()) {
+                anyExitCodeIs64 = anyExitCodeIs64 || scanCommandOutput.getScanExitCode().get() == 64;
+            }
+            if (scanCommandOutput.getErrorMessage().isPresent() && scanCommandOutput.getException().isPresent()) {
+                logger.debug(scanCommandOutput.getErrorMessage().get(), scanCommandOutput.getException().get());
+            } else if (scanCommandOutput.getException().isPresent()) {
+                logger.debug("Scanner returned an exception but no message: " + scanCommandOutput.getException().isPresent());
+            }
+        } else {
+            logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", scanCommandOutput.getScanTarget()));
+        }
+    }
+>>>>>>> master
 
         reportResults();
     }
 
+<<<<<<< HEAD
     private void reportResults() {
         boolean anyFailed = false;
         for (final BlackDuckSignatureScannerEvaluation scan : scans) {
@@ -120,6 +154,21 @@ public class BlackDuckSignatureScanner {
             } else {
                 scanStatus = StatusType.SUCCESS;
                 logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", scan.scanPath));
+=======
+    @Override
+    public ExitCodeType getExitCodeType() {
+        if (anyExitCodeIs64) {
+            logger.error("");
+            logger.error("Signature scanner returned 64. The most likely cause is you are using an unsupported version of Black Duck (<5.0.0).");
+            logger.error("You should update your Black Duck or downgrade your version of detect.");
+            logger.error("If you are using the detect scripts, you can use DETECT_LATEST_RELEASE_VERSION.");
+            logger.error("");
+            return ExitCodeType.FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED;
+        }
+        for (final Map.Entry<String, Result> entry : scanSummaryResults.entrySet()) {
+            if (Result.FAILURE == entry.getValue()) {
+                return ExitCodeType.FAILURE_SCAN;
+>>>>>>> master
             }
             anyFailed = anyFailed || scanStatus == StatusType.FAILURE;
             eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(scan.scanPath, scanStatus));
