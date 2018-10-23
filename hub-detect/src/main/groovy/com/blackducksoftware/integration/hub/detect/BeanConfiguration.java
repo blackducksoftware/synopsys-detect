@@ -166,6 +166,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToo
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ExitCodeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ExitCodeUtility;
+import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ShutdownManager;
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectStatusManager;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.CodeLocationService;
@@ -247,6 +248,11 @@ public class BeanConfiguration {
     @Bean
     public DetectConfigurationFactory detectConfigurationFactory() {
         return new DetectConfigurationFactory(detectConfiguration());
+    }
+
+    @Bean
+    public ShutdownManager shutdownManager() {
+        return new ShutdownManager(detectStatusManager(), exitCodeManager(), phoneHomeManager(), directoryManager(), detectConfiguration());
     }
 
     @Bean

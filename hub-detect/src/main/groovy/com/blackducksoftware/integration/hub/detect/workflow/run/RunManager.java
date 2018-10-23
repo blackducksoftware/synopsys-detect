@@ -67,12 +67,14 @@ public class RunManager {
         String aggregateName = detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME, PropertyAuthority.None);
 
         Optional<NameVersion> projectNameVersion = Optional.empty();
+        Optional<ProjectVersionView> projectView = Optional.empty();
+
         if (bomToolsEnabled) {
             BomToolResult bomToolResult = bomToolManager.runBomTools();
             projectNameVersion = Optional.of(projectNameVersionManager.evaluateProjectNameVersion(bomToolResult.evaluatedBomTools));
 
             if (isOnline) {
-                Optional<ProjectVersionView> projectView = detectProjectService.createOrUpdateHubProject(projectNameVersion.get());
+                projectView = detectProjectService.createOrUpdateHubProject(projectNameVersion.get());
                 if (projectView.isPresent() && unmapCodeLocations) {
                     detectCodeLocationUnmapService.unmapCodeLocations(projectView.get());
                 }
@@ -89,7 +91,7 @@ public class RunManager {
                 logger.debug("Did not create any bdio files.");
             }
         }
-        Optional<ProjectVersionView> projectView = Optional.empty();
+
         if (!projectNameVersion.isPresent()) {
             projectNameVersion = Optional.of(projectNameVersionManager.calculateDefaultProjectNameVersion());
             projectView = detectProjectService.createOrUpdateHubProject(projectNameVersion.get());
