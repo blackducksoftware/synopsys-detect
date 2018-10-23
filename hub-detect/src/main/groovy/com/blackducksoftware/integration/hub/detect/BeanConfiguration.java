@@ -138,7 +138,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLo
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.FileManager;
-import com.blackducksoftware.integration.hub.detect.workflow.exit.ExitCodeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
@@ -161,6 +160,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManage
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchEvaluator;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
+import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ExitCodeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectStatusManager;
 import com.google.gson.Gson;
 import com.synopsys.integration.hub.bdio.BdioNodeFactory;
@@ -692,7 +692,7 @@ public class BeanConfiguration {
 
     @Bean
     public RunManager runManager() {
-        return new RunManager(detectRunDependencies.phoneHomeManager, detectConfiguration(), bomToolManager(), detectStatusManager(), exitCodeManager(), eventSystem());
+        return new RunManager(detectRunDependencies.phoneHomeManager, detectConfiguration(), bomToolManager(), detectStatusManager(), exitCodeManager(), eventSystem(), bdioManager, detectBdioUploadService);
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.workflow.exit;
+package com.blackducksoftware.integration.hub.detect.workflow.shutdown;
 
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 
@@ -13,5 +13,13 @@ public class ExitCodeRequest {
 
     public ExitCodeRequest(ExitCodeType exitCodeType) {
         this(exitCodeType, null);
+    }
+
+    public ExitCodeType getExitCodeType() {
+        return exitCodeType;
+    }
+
+    public String getReason() {
+        return reason;
     }
 }

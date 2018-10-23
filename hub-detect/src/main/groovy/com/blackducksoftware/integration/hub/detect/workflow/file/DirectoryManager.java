@@ -143,6 +143,10 @@ public class DirectoryManager {
         return getRunDirectory(RunDirectory.Log);
     }
 
+    public File getRunHomeDirectory() {
+        return runDirectory;
+    }
+
     private File getOutputDirectory(OutputDirectory directory) {
         File actualDirectory = outputDirectories.get(directory);
         if (!actualDirectory.exists()) {
@@ -172,4 +176,5 @@ public class DirectoryManager {
     public File getPermanentDirectory() { // shared across all invocations of detect (scan cli)
         return getOutputDirectory(OutputDirectory.Tools);
     }
+
 }

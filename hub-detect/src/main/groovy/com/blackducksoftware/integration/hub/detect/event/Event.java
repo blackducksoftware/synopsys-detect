@@ -1,11 +1,11 @@
 package com.blackducksoftware.integration.hub.detect.event;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.workflow.exit.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
 
 public enum Event {

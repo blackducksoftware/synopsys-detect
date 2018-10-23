@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.shutdown;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

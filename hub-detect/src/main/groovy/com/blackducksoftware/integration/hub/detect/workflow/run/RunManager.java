@@ -8,20 +8,16 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
-import com.blackducksoftware.integration.hub.detect.workflow.exit.ExitCodeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectBdioUploadService;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectCodeLocationUnmapService;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectService;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionManager;
-import com.blackducksoftware.integration.hub.detect.workflow.status.DetectStatusManager;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -32,28 +28,26 @@ public class RunManager {
     private final PhoneHomeManager phoneHomeManager;
     private final DetectConfiguration detectConfiguration;
     private final BomToolManager bomToolManager;
-    private final DetectStatusManager detectStatusManager;
-    private final ExitCodeManager exitCodeManager;
-    private final EventSystem eventSystem;
     private ProjectNameVersionManager projectNameVersionManager;
-    private final DetectProjectService detectProjectService;
-    private final DetectBdioUploadService detectBdioService;
-    private final DetectCodeLocationUnmapService detectCodeLocationUnmapService;
-    private final BdioManager bdioManager;
-    private final DetectBdioUploadService detectBdioUploadService;
-    private final DetectCodeLocationManager detectCodeLocationManager;
+    private DetectProjectService detectProjectService;
+    private DetectCodeLocationUnmapService detectCodeLocationUnmapService;
+    private BdioManager bdioManager;
+    private DetectBdioUploadService detectBdioUploadService;
 
     public RunManager(final PhoneHomeManager phoneHomeManager, final DetectConfiguration detectConfiguration, final BomToolManager bomToolManager,
-        final DetectStatusManager detectStatusManager, final ExitCodeManager exitCodeManager, EventSystem eventSystem) {
+        final ProjectNameVersionManager projectNameVersionManager, final DetectProjectService detectProjectService,
+        final DetectCodeLocationUnmapService detectCodeLocationUnmapService, final BdioManager bdioManager, final DetectBdioUploadService detectBdioUploadService) {
 
         this.phoneHomeManager = phoneHomeManager;
         this.detectConfiguration = detectConfiguration;
 
         this.bomToolManager = bomToolManager;
-        this.detectStatusManager = detectStatusManager;
-        this.exitCodeManager = exitCodeManager;
-        this.eventSystem = eventSystem;
 
+        this.projectNameVersionManager = projectNameVersionManager;
+        this.detectProjectService = detectProjectService;
+        this.detectCodeLocationUnmapService = detectCodeLocationUnmapService;
+        this.bdioManager = bdioManager;
+        this.detectBdioUploadService = detectBdioUploadService;
     }
 
     public void run() throws DetectUserFriendlyException, InterruptedException, IntegrationException {
@@ -62,13 +56,8 @@ public class RunManager {
         boolean bomToolsEnabled = !this.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOLS_DISABLED, PropertyAuthority.None);
         boolean sigScanEnabled = !this.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, PropertyAuthority.None);
         boolean isOnline = !detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
-        boolean checkHubConnectionOnly = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None);
         boolean unmapCodeLocations = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP, PropertyAuthority.None);
         String aggregateName = detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME, PropertyAuthority.None);
-
-        if (checkHubConnectionOnly) {
-
-        }
 
         if (bomToolsEnabled) {
             BomToolResult bomToolResult = bomToolManager.runBomTools();

@@ -34,12 +34,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.workflow.ExitCodeUtility;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.BootFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.BootManager;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.BootResult;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectRunDependencies;
 import com.blackducksoftware.integration.hub.detect.workflow.run.RunManager;
+import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ExitCodeUtility;
+import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ShutdownManager;
 
 //@SpringBootApplication
 //@Configuration
@@ -90,6 +91,9 @@ public class Application implements ApplicationRunner {
 
                 RunManager runManager = runContext.getBean(RunManager.class);
                 runManager.run();
+
+                ShutdownManager shutdownManager = runContext.getBean(ShutdownManager.class);
+                detectExitCode = shutdownManager.shutdown();
             }
         } catch (final Exception e) {
             detectExitCode = exitCodeUtility.getExitCodeFromExceptionDetails(e);
