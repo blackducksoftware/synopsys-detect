@@ -35,9 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 
 public class DirectoryManager {
@@ -64,29 +61,18 @@ public class DirectoryManager {
         Extraction("extractions"),
         Log("logs"),
         Relevant("relevant"),
-        Scan("scan", DetectProperty.DETECT_SCAN_OUTPUT_PATH),
-        Bdio("bdio", DetectProperty.DETECT_BDIO_OUTPUT_PATH);
+        Scan("scan"),
+        Bdio("bdio");
 
         private String directoryName;
-        private DetectProperty overrideProperty;
 
         RunDirectory(String directoryName) {
             this.directoryName = directoryName;
         }
 
-        RunDirectory(String directoryName, DetectProperty overrideProperty) {
-            this.directoryName = directoryName;
-            this.overrideProperty = overrideProperty;
-        }
-
         public String getDirectoryName() {
             return directoryName;
         }
-
-        public DetectProperty getOverrideProperty() {
-            return overrideProperty;
-        }
-
     }
 
     private final File runDirectory;
@@ -99,16 +85,14 @@ public class DirectoryManager {
 
     private final List<File> temporaryFiles = new ArrayList<>();
 
-    public DirectoryManager(final DetectConfiguration detectConfiguration, final DetectRun detectRun) {
-
-        String rawSource = detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None);
-        if (StringUtils.isBlank(rawSource)) {
+    public DirectoryManager(final DirectoryOptions directoryOptions, final DetectRun detectRun) {
+        if (StringUtils.isBlank(directoryOptions.getSourcePathOverride())) {
             sourceDirectory = new File(System.getProperty("user.dir"));
         } else {
-            sourceDirectory = new File(rawSource);
+            sourceDirectory = new File(directoryOptions.getSourcePathOverride());
         }
 
-        File outputDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH, PropertyAuthority.None));
+        File outputDirectory = new File(directoryOptions.getOutputPathOverride());
 
         EnumSet.allOf(OutputDirectory.class).stream()
             .forEach(it -> outputDirectories.put(it, new File(outputDirectory, it.getDirectoryName())));
@@ -116,24 +100,19 @@ public class DirectoryManager {
         runDirectory = new File(getOutputDirectory(OutputDirectory.Runs), detectRun.getRunId());
 
         EnumSet.allOf(RunDirectory.class).stream()
-            .forEach(it -> initRunDirectory(it, detectConfiguration));
+            .forEach(it -> runDirectories.put(it, new File(runDirectory, it.getDirectoryName())));
+
+        //overrides
+        if (StringUtils.isBlank(directoryOptions.getBdioOutputPathOverride())) {
+            runDirectories.put(RunDirectory.Bdio, new File(directoryOptions.getBdioOutputPathOverride()));
+        }
+
+        if (StringUtils.isBlank(directoryOptions.getScanOutputPathOverride())) {
+            runDirectories.put(RunDirectory.Scan, new File(directoryOptions.getScanOutputPathOverride()));
+        }
 
         runDirectories.values().forEach(it -> temporaryFiles.add(it));
 
-    }
-
-    private void initRunDirectory(RunDirectory givenDirectory, DetectConfiguration detectConfiguration) {
-        File givenFile = null;
-        if (givenDirectory.getOverrideProperty() != null) {
-            String override = detectConfiguration.getProperty(givenDirectory.getOverrideProperty(), PropertyAuthority.None);
-            if (StringUtils.isNotBlank(override)) {
-                givenFile = new File(override);
-            }
-        }
-        if (givenFile == null) {
-            givenFile = new File(runDirectory, givenDirectory.getDirectoryName());
-        }
-        runDirectories.put(givenDirectory, givenFile);
     }
 
     public File getExtractionOutputDirectory(final ExtractionId extractionId) {

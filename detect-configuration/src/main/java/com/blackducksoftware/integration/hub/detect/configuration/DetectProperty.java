@@ -756,15 +756,15 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_DOCKER)
     @HelpDescription("The path to the directory containing the docker inspector script, jar, and images")
-    DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH("detect.docker.inspector.air.gap.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH("detect.docker.inspector.air.gap.path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
 
     @HelpGroup(primary = GROUP_GRADLE)
     @HelpDescription("The path to the directory containing the air gap dependencies for the gradle inspector")
-    DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH("detect.gradle.inspector.air.gap.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH("detect.gradle.inspector.air.gap.path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
 
     @HelpGroup(primary = GROUP_NUGET)
     @HelpDescription("The path to the directory containing the nuget inspector nupkg")
-    DETECT_NUGET_INSPECTOR_AIR_GAP_PATH("detect.nuget.inspector.air.gap.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_NUGET_INSPECTOR_AIR_GAP_PATH("detect.nuget.inspector.air.gap.path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
 
     @HelpGroup(primary = GROUP_NUGET)
     @HelpDescription("The source for nuget packages")

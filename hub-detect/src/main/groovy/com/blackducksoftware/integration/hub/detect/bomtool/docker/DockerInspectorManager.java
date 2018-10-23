@@ -34,8 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
@@ -47,6 +47,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileUtils;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
@@ -62,20 +63,22 @@ public class DockerInspectorManager {
     private final String dockerSharedDirectoryName = "docker";
 
     private final DirectoryManager directoryManager;
+    private final AirGapManager airGapManager;
     private final ExecutableManager executableManager;
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
-    private final DetectConfigurationUtility detectConfigurationUtility;
+    private final ConnectionManager connectionManager;
     private final MavenMetadataService mavenMetadataService;
 
-    public DockerInspectorManager(final DirectoryManager directoryManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
-        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
+    public DockerInspectorManager(final DirectoryManager directoryManager, AirGapManager airGapManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
+        final DetectConfiguration detectConfiguration, final ConnectionManager connectionManager, final MavenMetadataService mavenMetadataService) {
         this.directoryManager = directoryManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
-        this.detectConfigurationUtility = detectConfigurationUtility;
+        this.connectionManager = connectionManager;
         this.mavenMetadataService = mavenMetadataService;
+        this.airGapManager = airGapManager;
     }
 
     private boolean hasResolvedInspector;
@@ -96,12 +99,12 @@ public class DockerInspectorManager {
         hasResolvedInspector = true;
 
         final DockerInspectorInfo info = resolveShellScript();
-        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None)),
-            detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH, PropertyAuthority.None));
+        String bashOverride = detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH, PropertyAuthority.None);
+        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, directoryManager.getSourceDirectory(), bashOverride);
         info.version = resolveInspectorVersion(bashExecutablePath, info.dockerInspectorScript);
 
         if (info.isOffline) {
-            final String dockerInspectorAirGapPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, PropertyAuthority.None);
+            final String dockerInspectorAirGapPath = airGapManager.getDockerInspectorAirGapPath();
             final String inspectorImageFamily = resolveInspectorImageFamily(bashExecutablePath, info.dockerInspectorScript);
             info.offlineDockerInspectorJar = new File(dockerInspectorAirGapPath, "hub-docker-inspector-" + info.version + ".jar");
             for (final String os : Arrays.asList("ubuntu", "alpine", "centos")) {
@@ -156,7 +159,7 @@ public class DockerInspectorManager {
             final String suppliedDockerVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION, PropertyAuthority.None);
             final String dockerInspectorVersion = getVersionFromArtifactory(suppliedDockerVersion);
             final File shellScriptFile;
-            final File airGapHubDockerInspectorShellScript = new File(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, PropertyAuthority.None), "hub-docker-inspector.sh");
+            final File airGapHubDockerInspectorShellScript = new File(airGapManager.getDockerInspectorAirGapPath(), "hub-docker-inspector.sh");
             boolean isOffline = false;
             logger.debug(String.format("Verifying air gap shell script present at %s", airGapHubDockerInspectorShellScript.getCanonicalPath()));
 
@@ -177,7 +180,7 @@ public class DockerInspectorManager {
                 String shellScriptContents;
                 Response response = null;
 
-                try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(hubDockerInspectorShellScriptUrl)) {
+                try (final UnauthenticatedRestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(hubDockerInspectorShellScriptUrl)) {
                     response = restConnection.executeRequest(request);
                     shellScriptContents = response.getContentString();
                 } finally {

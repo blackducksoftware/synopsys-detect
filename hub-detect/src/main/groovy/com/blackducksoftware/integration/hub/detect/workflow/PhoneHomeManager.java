@@ -37,6 +37,9 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.event.Event;
+import com.blackducksoftware.integration.hub.detect.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.HubRegistrationService;
 import com.synopsys.integration.blackduck.service.HubService;
@@ -65,11 +68,15 @@ public class PhoneHomeManager {
     private HubServicesFactory hubServicesFactory;
     private final DetectConfiguration detectConfiguration;
     private final Gson gson;
+    private final EventSystem eventSystem;
 
-    public PhoneHomeManager(final DetectInfo detectInfo, final DetectConfiguration detectConfiguration, final Gson gson) {
+    public PhoneHomeManager(final DetectInfo detectInfo, final DetectConfiguration detectConfiguration, final Gson gson, EventSystem eventSystem) {
         this.detectInfo = detectInfo;
         this.detectConfiguration = detectConfiguration;
         this.gson = gson;
+        this.eventSystem = eventSystem;
+
+        eventSystem.registerListener(Event.SearchCompleted, payload -> searchCompleted((SearchResult) payload));
     }
 
     public void initOffline() {
@@ -81,7 +88,7 @@ public class PhoneHomeManager {
     }
 
     public void init(final PhoneHomeService phoneHomeService, final PhoneHomeClient phoneHomeClient, final HubServicesFactory hubServicesFactory, final HubService hubService,
-            final HubRegistrationService hubRegistrationService, final URL hubUrl) {
+        final HubRegistrationService hubRegistrationService, final URL hubUrl) {
         this.phoneHomeService = phoneHomeService;
         this.isBlackDuckOffline = false;
         this.hubServicesFactory = hubServicesFactory;
@@ -105,19 +112,23 @@ public class PhoneHomeManager {
         final Map<String, String> metadata = new HashMap<>();
         if (applicableBomToolTypes != null) {
             final String applicableBomToolsString = applicableBomToolTypes.stream()
-                    .map(BomToolGroupType::toString)
-                    .collect(Collectors.joining(","));
+                                                        .map(BomToolGroupType::toString)
+                                                        .collect(Collectors.joining(","));
             metadata.put("bomToolTypes", applicableBomToolsString);
         }
         performPhoneHome(metadata);
+    }
+
+    public void searchCompleted(final SearchResult searchResult) {
+        startPhoneHome(searchResult.getApplicableBomTools());
     }
 
     public void startPhoneHome(final Map<BomToolGroupType, Long> applicableBomToolTimes) {
         final Map<String, String> metadata = new HashMap<>();
         if (applicableBomToolTimes != null) {
             final String applicableBomToolsString = applicableBomToolTimes.keySet().stream()
-                    .map(it -> String.format("%s:%s", it.toString(), applicableBomToolTimes.get(it)))
-                    .collect(Collectors.joining(","));
+                                                        .map(it -> String.format("%s:%s", it.toString(), applicableBomToolTimes.get(it)))
+                                                        .collect(Collectors.joining(","));
             metadata.put("bomToolTypes", applicableBomToolsString);
         }
         performPhoneHome(metadata);

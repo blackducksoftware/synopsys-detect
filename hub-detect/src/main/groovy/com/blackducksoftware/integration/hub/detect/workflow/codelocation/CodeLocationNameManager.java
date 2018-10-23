@@ -32,6 +32,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.synopsys.integration.util.NameVersion;
 
 public class CodeLocationNameManager {
     private final DetectConfiguration detectConfiguration;
@@ -45,13 +46,13 @@ public class CodeLocationNameManager {
         this.codeLocationNameService = codeLocationNameService;
     }
 
-    public String createAggregateCodeLocationName(final String projectName, final String projectVersionName) {
+    public String createAggregateCodeLocationName(NameVersion projectNameVersion) {
         final String aggregateCodeLocationName;
         if (useCodeLocationOverride()) {
             // The aggregate is exclusively used for the bdio and not the scans
             aggregateCodeLocationName = getNextCodeLocationOverrideName(CodeLocationType.BOM);
         } else {
-            aggregateCodeLocationName = String.format("%s/%s Black Duck I/O Export", projectName, projectVersionName);
+            aggregateCodeLocationName = String.format("%s/%s Black Duck I/O Export", projectNameVersion.getName(), projectNameVersion.getVersion());
         }
         codeLocationNames.add(aggregateCodeLocationName);
         return aggregateCodeLocationName;

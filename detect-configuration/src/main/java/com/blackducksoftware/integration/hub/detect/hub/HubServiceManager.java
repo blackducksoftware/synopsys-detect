@@ -31,8 +31,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -73,7 +73,7 @@ public class HubServiceManager {
     private final Logger logger = LoggerFactory.getLogger(HubServiceManager.class);
 
     private final DetectConfiguration detectConfiguration;
-    private final DetectConfigurationUtility detectConfigurationUtility;
+    private final ConnectionManager connectionManager;
     private final Gson gson;
     private final JsonParser jsonParser;
 
@@ -81,9 +81,9 @@ public class HubServiceManager {
     private HubServerConfig hubServerConfig;
     private HubServicesFactory hubServicesFactory;
 
-    public HubServiceManager(final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final Gson gson, final JsonParser jsonParser) {
+    public HubServiceManager(final DetectConfiguration detectConfiguration, final ConnectionManager connectionManager, final Gson gson, final JsonParser jsonParser) {
         this.detectConfiguration = detectConfiguration;
-        this.detectConfigurationUtility = detectConfigurationUtility;
+        this.connectionManager = connectionManager;
         this.gson = gson;
         this.jsonParser = jsonParser;
     }
@@ -178,7 +178,7 @@ public class HubServiceManager {
                 final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
                 restConnectionBuilder.setBaseUrl(userProvidedScannerInstallUrl);
                 restConnectionBuilder.setTimeout(detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT, PropertyAuthority.None));
-                restConnectionBuilder.applyProxyInfo(detectConfigurationUtility.getHubProxyInfo());
+                restConnectionBuilder.applyProxyInfo(connectionManager.getHubProxyInfo());
                 restConnectionBuilder.setAlwaysTrustServerCertificate(detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_TRUST_CERT, PropertyAuthority.None));
                 restConnectionBuilder.setLogger(slf4jIntLogger);
 

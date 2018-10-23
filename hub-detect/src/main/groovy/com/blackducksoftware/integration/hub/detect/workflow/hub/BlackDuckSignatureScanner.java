@@ -159,7 +159,7 @@ public class BlackDuckSignatureScanner {
         } else if (StringUtils.isNotBlank(dockerTarFilePath)) {
             addScanTarget(dockerTarFilePath, hubSignatureScannerExclusionNamePatterns, providedExclusionPatterns);
         } else {
-            final String sourcePath = detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None);
+            final String sourcePath = directoryManager.getSourceDirectory().getAbsolutePath();
             if (userProvidedScanTargets) {
                 logger.warn(String.format("No Project name or version found. Skipping User provided scan targets - registering the source path %s to scan", sourcePath));
             } else {
@@ -214,7 +214,7 @@ public class BlackDuckSignatureScanner {
         final String projectVersionName = detectProject.getProjectVersion();
         scanJobBuilder.projectAndVersionNames(projectName, projectVersionName);
 
-        final String sourcePath = detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None);
+        final String sourcePath = directoryManager.getSourceDirectory().getAbsolutePath();
         final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.None);
         final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.None);
 

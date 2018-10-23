@@ -10,9 +10,9 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.DetectInfoUtility;
+import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationManager;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyMap;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
@@ -32,6 +32,7 @@ import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
+import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticLogManager;
@@ -97,7 +98,8 @@ public class BootManager {
 
         logger.info("Configuration processed completely.");
 
-        DirectoryManager directoryManager = new DirectoryManager(detectConfiguration, detectRun);
+        DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
+        DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
         FileManager fileManager = new FileManager(detectArgumentState.isDiagnostic(),
             detectArgumentState.isDiagnosticProtected(), directoryManager);
 
@@ -107,7 +109,7 @@ public class BootManager {
 
         checkForInvalidOptions(detectOptionManager);
 
-        HubServiceManager hubServiceManager = new HubServiceManager(detectConfiguration, new DetectConfigurationUtility(detectConfiguration), gson, jsonParser);
+        HubServiceManager hubServiceManager = new HubServiceManager(detectConfiguration, new ConnectionManager(detectConfiguration), gson, jsonParser);
 
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
             hubServiceManager.assertHubConnection(new SilentLogger());
@@ -119,7 +121,7 @@ public class BootManager {
             return BootResult.exit();
         }
 
-        PhoneHomeManager phoneHomeManager = createPhoneHomeManager(detectInfo, detectConfiguration, hubServiceManager, gson);
+        PhoneHomeManager phoneHomeManager = createPhoneHomeManager(detectInfo, detectConfiguration, hubServiceManager, eventSystem, gson);
 
         //Finished, return created objects.
         DetectRunDependencies detectRunDependencies = new DetectRunDependencies();
@@ -168,7 +170,7 @@ public class BootManager {
 
     private void startInteractiveMode(DetectOptionManager detectOptionManager, DetectConfiguration detectConfiguration, Gson gson, JsonParser jsonParser) {
         InteractiveManager interactiveManager = new InteractiveManager(detectOptionManager);
-        HubServiceManager hubServiceManager = new HubServiceManager(detectConfiguration, new DetectConfigurationUtility(detectConfiguration), gson, jsonParser);
+        HubServiceManager hubServiceManager = new HubServiceManager(detectConfiguration, new ConnectionManager(detectConfiguration), gson, jsonParser);
         DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(hubServiceManager, detectOptionManager);
         interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
     }
@@ -200,8 +202,9 @@ public class BootManager {
         return diagnosticManager;
     }
 
-    private PhoneHomeManager createPhoneHomeManager(DetectInfo detectInfo, DetectConfiguration detectConfiguration, HubServiceManager hubServiceManager, Gson gson) throws DetectUserFriendlyException, IntegrationException {
-        PhoneHomeManager phoneHomeManager = new PhoneHomeManager(detectInfo, detectConfiguration, gson);
+    private PhoneHomeManager createPhoneHomeManager(DetectInfo detectInfo, DetectConfiguration detectConfiguration, HubServiceManager hubServiceManager, EventSystem eventSystem, Gson gson)
+        throws DetectUserFriendlyException, IntegrationException {
+        PhoneHomeManager phoneHomeManager = new PhoneHomeManager(detectInfo, detectConfiguration, gson, eventSystem);
         if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None)) {
             phoneHomeManager.initOffline();
         } else {

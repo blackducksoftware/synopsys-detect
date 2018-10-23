@@ -1,26 +1,30 @@
 package com.blackducksoftware.integration.hub.detect.workflow.run;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.event.Event;
 import com.blackducksoftware.integration.hub.detect.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
+import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioManager;
+import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.exit.ExitCodeManager;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectBdioUploadService;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectCodeLocationUnmapService;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectService;
+import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectStatusManager;
-import com.blackducksoftware.integration.hub.detect.workflow.status.DetectorStatus;
-import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
-import com.synopsys.integration.blackduck.summary.Result;
-import com.synopsys.integration.log.Slf4jIntLogger;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.util.NameVersion;
 
 public class RunManager {
     private final Logger logger = LoggerFactory.getLogger(RunManager.class);
@@ -31,6 +35,13 @@ public class RunManager {
     private final DetectStatusManager detectStatusManager;
     private final ExitCodeManager exitCodeManager;
     private final EventSystem eventSystem;
+    private ProjectNameVersionManager projectNameVersionManager;
+    private final DetectProjectService detectProjectService;
+    private final DetectBdioUploadService detectBdioService;
+    private final DetectCodeLocationUnmapService detectCodeLocationUnmapService;
+    private final BdioManager bdioManager;
+    private final DetectBdioUploadService detectBdioUploadService;
+    private final DetectCodeLocationManager detectCodeLocationManager;
 
     public RunManager(final PhoneHomeManager phoneHomeManager, final DetectConfiguration detectConfiguration, final BomToolManager bomToolManager,
         final DetectStatusManager detectStatusManager, final ExitCodeManager exitCodeManager, EventSystem eventSystem) {
@@ -45,25 +56,49 @@ public class RunManager {
 
     }
 
-    public void run() {
+    public void run() throws DetectUserFriendlyException, InterruptedException, IntegrationException {
         phoneHomeManager.startPhoneHome();
 
-        if (!this.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOLS_DISABLED, PropertyAuthority.None)) {
-            BomToolResult result = bomToolManager.runBomTools();
+        boolean bomToolsEnabled = !this.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOLS_DISABLED, PropertyAuthority.None);
+        boolean sigScanEnabled = !this.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, PropertyAuthority.None);
+        boolean isOnline = !detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
+        boolean checkHubConnectionOnly = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None);
+        boolean unmapCodeLocations = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP, PropertyAuthority.None);
+        String aggregateName = detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME, PropertyAuthority.None);
 
-            Map<BomToolGroupType, Result> bomToolResults = new HashMap<>();
-            result.succesfullBomToolGroupTypes.forEach(it -> bomToolResults.put(it, Result.SUCCESS));
-            result.failedBomToolGroupTypes.forEach(it -> bomToolResults.put(it, Result.FAILURE));
+        if (checkHubConnectionOnly) {
 
-            bomToolResults.forEach((bomTool, bomToolResult) -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(bomTool, bomToolResult == Result.SUCCESS ? StatusType.SUCCESS : StatusType.FAILURE)));
+        }
+
+        if (bomToolsEnabled) {
+            BomToolResult bomToolResult = bomToolManager.runBomTools();
+            final NameVersion bomToolProjectInfo = projectNameVersionManager.evaluateProjectNameVersion(bomToolResult.evaluatedBomTools);
+
+            if (isOnline) {
+                Optional<ProjectVersionView> projectView = detectProjectService.createOrUpdateHubProject(bomToolProjectInfo);
+                if (projectView.isPresent() && unmapCodeLocations) {
+                    detectCodeLocationUnmapService.unmapCodeLocations(projectView.get());
+                }
+            }
+
+            BdioResult bdioResult = bdioManager.createBdioFiles(aggregateName, bomToolProjectInfo, bomToolResult.bomToolCodeLocations);
+            if (bdioResult.getBdioFiles().size() > 0) {
+                if (isOnline) {
+                    detectBdioUploadService.uploadBdioFiles(bdioResult.getBdioFiles());
+                } else {
+                    /*
+                       for (final File bdio : detectProject.getBdioFiles()) {
+                            diagnosticManager.registerGlobalFileOfInterest(bdio);
+                        }
+                     */
+                }
+            } else {
+                logger.debug("Did not create any bdio files.");
+            }
         }
 
         
         /*
-        AnnotationConfigApplicationContext runContext = new AnnotationConfigApplicationContext(DetectSharedBeanConfiguration.class, DetectBootBeanConfiguration.class);
-
-        applicationContext.getBeanFactory().registerSingleton("", "");
-
         if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE)) {
             for (final File bdio : detectProject.getBdioFiles()) {
                 diagnosticManager.registerGlobalFileOfInterest(bdio);
@@ -80,29 +115,7 @@ public class RunManager {
             hubManager.performPostHubActions(detectProject, projectVersionView);
         }
 
-        if (status.failedBomToolGroupTypes.size() > 0){
-            return ExitCodeType.FAILURE_BOM_TOOL;
-        }
-        if (status.missingBomToolGroupTypes.size() > 0){
-            return ExitCodeType.FAILURE_BOM_TOOL_REQUIRED;
-        }
         */
-
-        /* cleanup
-        try {
-            if (bootResult != null) {
-                CleanupManager cleanupManager = new CleanupManager();
-                cleanupManager.cleanup(bootResult.detectRunDependencies);
-            }
-        } catch (final Exception e) {
-            detectExitCode = exitCodeUtility.getExitCodeFromExceptionDetails(e);
-        }
- */
-        boolean printOutput = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT, PropertyAuthority.None);
-        if (!printOutput) {
-            detectStatusManager.logDetectResults(new Slf4jIntLogger(logger), exitCodeManager.getWinningExitCode());
-            //detectSummaryManager.logDetectResults(, currentExitCodeType);
-        }
 
     }
 

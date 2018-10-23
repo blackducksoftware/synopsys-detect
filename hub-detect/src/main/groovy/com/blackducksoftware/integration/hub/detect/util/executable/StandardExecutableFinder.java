@@ -32,6 +32,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 
 public class StandardExecutableFinder {
     public enum StandardExecutableType {
@@ -48,12 +49,14 @@ public class StandardExecutableFinder {
 
     private final ExecutableManager executableManager;
     private final DetectConfiguration detectConfiguration;
+    private final DirectoryManager directoryManager;
 
     private final Map<StandardExecutableType, File> alreadyFound = new HashMap<>();
 
-    public StandardExecutableFinder(final ExecutableManager executableManager, final DetectConfiguration detectConfiguration) {
+    public StandardExecutableFinder(final ExecutableManager executableManager, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager) {
         this.executableManager = executableManager;
         this.detectConfiguration = detectConfiguration;
+        this.directoryManager = directoryManager;
     }
 
     public File getExecutable(final StandardExecutableType executableType) throws BomToolException {
@@ -65,7 +68,7 @@ public class StandardExecutableFinder {
             throw new BomToolException("Unknown executable type: " + executableType.toString());
         }
 
-        final String exe = executableManager.getExecutablePathOrOverride(info.detectExecutableType, true, new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None)), info.override);
+        final String exe = executableManager.getExecutablePathOrOverride(info.detectExecutableType, true, directoryManager.getSourceDirectory(), info.override);
         File exeFile = null;
         if (exe != null) {
             exeFile = new File(exe);

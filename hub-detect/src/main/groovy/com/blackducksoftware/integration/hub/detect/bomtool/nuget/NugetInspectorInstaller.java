@@ -42,19 +42,23 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 
 public class NugetInspectorInstaller {
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorInstaller.class);
 
     private final DirectoryManager directoryManager;
+    private final AirGapManager airGapManager;
     private final DetectConfiguration detectConfiguration;
     private final ExecutableRunner executableRunner;
 
     private String resolvedNugetInspectorExecutable = null;
 
-    public NugetInspectorInstaller(final DirectoryManager directoryManager, final DetectConfiguration detectConfiguration, final ExecutableRunner executableRunner) {
+    public NugetInspectorInstaller(final DirectoryManager directoryManager, final AirGapManager airGapManager, final DetectConfiguration detectConfiguration,
+        final ExecutableRunner executableRunner) {
         this.directoryManager = directoryManager;
+        this.airGapManager = airGapManager;
         this.detectConfiguration = detectConfiguration;
         this.executableRunner = executableRunner;
     }
@@ -76,7 +80,7 @@ public class NugetInspectorInstaller {
         final File toolsDirectory;
         final String nugetInspectorName = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME, PropertyAuthority.None);
 
-        final File airGapNugetInspectorDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH, PropertyAuthority.None));
+        final File airGapNugetInspectorDirectory = new File(airGapManager.getNugetInspectorAirGapPath());
         if (airGapNugetInspectorDirectory.exists()) {
             logger.debug("Running in airgap mode. Resolving from local path");
             toolsDirectory = new File(airGapNugetInspectorDirectory, "tools");
@@ -123,7 +127,7 @@ public class NugetInspectorInstaller {
             nugetOptions.add(nugetConfigPath.get());
         }
 
-        final Executable installInspectorExecutable = new Executable(new File(detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None)), nugetExecutablePath, nugetOptions);
+        final Executable installInspectorExecutable = new Executable(directoryManager.getSourceDirectory(), nugetExecutablePath, nugetOptions);
         final ExecutableOutput result = executableRunner.execute(installInspectorExecutable);
 
         return result.getReturnCode() == 0 && result.getErrorOutputAsList().size() == 0;

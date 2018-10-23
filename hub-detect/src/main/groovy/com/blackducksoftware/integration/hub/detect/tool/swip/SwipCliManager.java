@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
+import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -44,16 +44,16 @@ import com.synopsys.integration.util.CleanupZipExpander;
 public class SwipCliManager {
     private final DirectoryManager directoryManager;
     private final ExecutableRunner executableRunner;
-    private final DetectConfigurationUtility detectConfigurationUtility;
+    private final ConnectionManager connectionManager;
 
-    public SwipCliManager(final DirectoryManager directoryManager, final ExecutableRunner executableRunner, DetectConfigurationUtility detectConfigurationUtility) {
+    public SwipCliManager(final DirectoryManager directoryManager, final ExecutableRunner executableRunner, ConnectionManager connectionManager) {
         this.directoryManager = directoryManager;
         this.executableRunner = executableRunner;
-        this.detectConfigurationUtility = detectConfigurationUtility;
+        this.connectionManager = connectionManager;
     }
 
     public void runSwip(final IntLogger logger, File swipProjectDirectory) throws DetectUserFriendlyException {
-        RestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(SwipDownloadUtility.DEFAULT_SWIP_SERVER_URL);
+        RestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(SwipDownloadUtility.DEFAULT_SWIP_SERVER_URL);
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(logger);
         File toolsDirectory = directoryManager.getPermanentDirectory();
 

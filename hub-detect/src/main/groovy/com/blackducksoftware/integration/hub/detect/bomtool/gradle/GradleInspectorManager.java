@@ -44,6 +44,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthor
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
+import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -55,6 +56,7 @@ public class GradleInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(GradleInspectorManager.class);
 
     private final DirectoryManager directoryManager;
+    private final AirGapManager airGapManager;
     private final Configuration configuration;
     private final DetectConfiguration detectConfiguration;
     private final MavenMetadataService mavenMetadataService;
@@ -62,8 +64,10 @@ public class GradleInspectorManager {
     private String resolvedInitScript = null;
     private boolean hasResolvedInspector = false;
 
-    public GradleInspectorManager(final DirectoryManager directoryManager, final Configuration configuration, final DetectConfiguration detectConfiguration, final MavenMetadataService mavenMetadataService) {
+    public GradleInspectorManager(final DirectoryManager directoryManager, final AirGapManager airGapManager, final Configuration configuration,
+        final DetectConfiguration detectConfiguration, final MavenMetadataService mavenMetadataService) {
         this.directoryManager = directoryManager;
+        this.airGapManager = airGapManager;
         this.configuration = configuration;
         this.detectConfiguration = detectConfiguration;
         this.mavenMetadataService = mavenMetadataService;
@@ -88,7 +92,7 @@ public class GradleInspectorManager {
 
         try {
             Document xmlDocument = null;
-            final File airGapMavenMetadataFile = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH, PropertyAuthority.None), "maven-metadata.xml");
+            final File airGapMavenMetadataFile = new File(airGapManager.getGradleInspectorAirGapPath(), "maven-metadata.xml");
             if (airGapMavenMetadataFile.exists()) {
                 xmlDocument = mavenMetadataService.fetchXmlDocumentFromFile(airGapMavenMetadataFile);
             } else {
@@ -121,7 +125,7 @@ public class GradleInspectorManager {
         model.put("includedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS, PropertyAuthority.None));
 
         try {
-            final File gradleInspectorAirGapDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH, PropertyAuthority.None));
+            final File gradleInspectorAirGapDirectory = new File(airGapManager.getGradleInspectorAirGapPath());
             if (gradleInspectorAirGapDirectory.exists()) {
                 model.put("airGapLibsPath", StringEscapeUtils.escapeJava(gradleInspectorAirGapDirectory.getCanonicalPath()));
             }

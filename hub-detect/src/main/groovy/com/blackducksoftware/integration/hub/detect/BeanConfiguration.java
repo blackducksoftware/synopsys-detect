@@ -119,8 +119,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnListParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockParser;
+import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.event.EventSystem;
@@ -130,9 +130,8 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableMa
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
+import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolManager;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ProjectVersionManager;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ProjectVersionOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectRunDependencies;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameService;
@@ -142,15 +141,17 @@ import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.FileMana
 import com.blackducksoftware.integration.hub.detect.workflow.exit.ExitCodeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationManager;
+import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.BdioUploader;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckBinaryScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckSignatureScanner;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectBdioUploadService;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
-import com.blackducksoftware.integration.hub.detect.workflow.project.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
+import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionManager;
+import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ExtractionSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.PreparationSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
@@ -266,7 +267,13 @@ public class BeanConfiguration {
 
     @Bean
     public DirectoryManager directoryManager() {
-        return null;
+        return detectRunDependencies.directoryManager;
+        //return new DirectoryManager(detectConfiguration(), detectRun(), diagnosticManager());
+    }
+
+    @Bean
+    public AirGapManager airGapManager() {
+        return detectRunDependencies.airGapManager;
         //return new DirectoryManager(detectConfiguration(), detectRun(), diagnosticManager());
     }
 
@@ -342,12 +349,12 @@ public class BeanConfiguration {
 
     @Bean
     public DetectCodeLocationManager detectCodeLocationManager() {
-        return new DetectCodeLocationManager(codeLocationNameManager(), detectConfiguration());
+        return new DetectCodeLocationManager(codeLocationNameManager(), detectConfiguration(), directoryManager());
     }
 
     @Bean
     public BdioManager bdioManager() {
-        return new BdioManager(detectInfo(), simpleBdioFactory(), integrationEscapeUtil(), codeLocationNameManager(), detectConfiguration());
+        return new BdioManager(detectInfo(), simpleBdioFactory(), integrationEscapeUtil(), codeLocationNameManager(), detectConfiguration(), directoryManager());
     }
 
     @Bean
@@ -371,8 +378,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public BdioUploader bdioUploader() {
-        return new BdioUploader(detectConfiguration(), fileManager());
+    public DetectBdioUploadService bdioUploader() {
+        return new DetectBdioUploadService(detectConfiguration(), fileManager(), codeLocationService);
     }
 
     @Bean
@@ -387,7 +394,7 @@ public class BeanConfiguration {
 
     @Bean
     public StandardExecutableFinder standardExecutableFinder() {
-        return new StandardExecutableFinder(executableManager(), detectConfiguration());
+        return new StandardExecutableFinder(executableManager(), detectConfiguration(), directoryManager());
     }
 
     @Bean
@@ -459,13 +466,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public DetectConfigurationUtility detectConfigurationUtility() {
-        return new DetectConfigurationUtility(detectConfiguration());
+    public ConnectionManager detectConfigurationUtility() {
+        return new ConnectionManager(detectConfiguration());
     }
 
     @Bean
     public DockerInspectorManager dockerInspectorManager() {
-        return new DockerInspectorManager(directoryManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), mavenMetadataService());
+        return new DockerInspectorManager(directoryManager(), airGapManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), mavenMetadataService());
     }
 
     @Bean
@@ -515,7 +522,7 @@ public class BeanConfiguration {
 
     @Bean
     public GradleInspectorManager gradleInspectorManager() throws ParserConfigurationException {
-        return new GradleInspectorManager(directoryManager(), configuration(), detectConfiguration(), mavenMetadataService());
+        return new GradleInspectorManager(directoryManager(), airGapManager(), configuration(), detectConfiguration(), mavenMetadataService());
     }
 
     @Bean
@@ -565,7 +572,7 @@ public class BeanConfiguration {
 
     @Bean
     public NpmExecutableFinder npmExecutableFinder() {
-        return new NpmExecutableFinder(executableManager(), executableRunner(), detectConfiguration());
+        return new NpmExecutableFinder(directoryManager(), executableManager(), executableRunner(), detectConfiguration());
     }
 
     @Bean
@@ -580,7 +587,7 @@ public class BeanConfiguration {
 
     @Bean
     public NugetInspectorManager nugetInspectorManager() {
-        return new NugetInspectorManager(directoryManager(), executableManager(), executableRunner(), detectConfiguration());
+        return new NugetInspectorManager(directoryManager(), airGapManager(), executableManager(), executableRunner(), detectConfiguration());
     }
 
     @Bean
@@ -669,8 +676,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public ProjectVersionManager projectVersionManager() {
-        return new ProjectVersionManager(new ProjectVersionOptions(detectConfiguration()), bomToolNameVersionDecider());
+    public ProjectNameVersionManager projectVersionManager() {
+        return new ProjectNameVersionManager(new ProjectNameVersionOptions(detectConfiguration(), directoryManager().getSourceDirectory().getName()), bomToolNameVersionDecider());
     }
 
     @Bean

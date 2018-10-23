@@ -1,6 +1,5 @@
-package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
+package com.blackducksoftware.integration.hub.detect.workflow.project;
 
-import java.io.File;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -13,19 +12,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
-import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolProjectInfo;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.synopsys.integration.util.NameVersion;
 
-public class ProjectVersionManager {
+public class ProjectNameVersionManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final ProjectVersionOptions projectVersionOptions;
+    private final ProjectNameVersionOptions projectVersionOptions;
     private final BomToolNameVersionDecider bomToolNameVersionDecider;
 
-    public ProjectVersionManager(final ProjectVersionOptions projectVersionOptions, final BomToolNameVersionDecider bomToolNameVersionDecider) {
+    public ProjectNameVersionManager(final ProjectNameVersionOptions projectVersionOptions, final BomToolNameVersionDecider bomToolNameVersionDecider) {
         this.projectVersionOptions = projectVersionOptions;
         this.bomToolNameVersionDecider = bomToolNameVersionDecider;
     }

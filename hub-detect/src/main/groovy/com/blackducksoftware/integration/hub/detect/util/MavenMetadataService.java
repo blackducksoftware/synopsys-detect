@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
+import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.github.zafarkhaja.semver.Version;
 import com.synopsys.integration.exception.IntegrationException;
@@ -52,11 +52,11 @@ public class MavenMetadataService {
     private final Logger logger = LoggerFactory.getLogger(MavenMetadataService.class);
 
     private final DocumentBuilder xmlDocumentBuilder;
-    private final DetectConfigurationUtility detectConfigurationUtility;
+    private final ConnectionManager connectionManager;
 
-    public MavenMetadataService(final DocumentBuilder xmlDocumentBuilder, final DetectConfigurationUtility detectConfigurationUtility) {
+    public MavenMetadataService(final DocumentBuilder xmlDocumentBuilder, final ConnectionManager connectionManager) {
         this.xmlDocumentBuilder = xmlDocumentBuilder;
-        this.detectConfigurationUtility = detectConfigurationUtility;
+        this.connectionManager = connectionManager;
     }
 
     public Document fetchXmlDocumentFromFile(final File mavenMetadataXmlFile) throws IOException, SAXException {
@@ -71,7 +71,7 @@ public class MavenMetadataService {
         Document xmlDocument = null;
         Response response = null;
 
-        try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(mavenMetadataUrl)) {
+        try (final UnauthenticatedRestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(mavenMetadataUrl)) {
             response = restConnection.executeRequest(request);
             final InputStream inputStream = response.getContent();
             xmlDocument = xmlDocumentBuilder.parse(inputStream);

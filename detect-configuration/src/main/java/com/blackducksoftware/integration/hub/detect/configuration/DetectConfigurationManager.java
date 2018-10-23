@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,9 +41,6 @@ import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 
 public class DetectConfigurationManager {
-    public static final String NUGET = "nuget";
-    public static final String GRADLE = "gradle";
-    public static final String DOCKER = "docker";
     public final static String USER_HOME = System.getProperty("user.home");
     private final Logger logger = LoggerFactory.getLogger(DetectConfigurationManager.class);
 
@@ -55,16 +50,9 @@ public class DetectConfigurationManager {
     private List<String> bomToolSearchDirectoryExclusions;
 
     // properties to be updated
-    private String sourcePath;
-    private String outputDirectoryPath;
-    private String bdioOutputDirectoryPath;
-    private String scanOutputDirectoryPath;
     private String policyCheckFailOnSeverities;
     private int hubSignatureScannerParallelProcessors;
     private boolean hubOfflineMode;
-    private String dockerInspectorAirGapPath;
-    private String gradleInspectorAirGapPath;
-    private String nugetInspectorAirGapPath;
     // end properties to be updated
 
     public DetectConfigurationManager(final TildeInPathResolver tildeInPathResolver, final DetectConfiguration detectConfiguration) {
@@ -74,11 +62,9 @@ public class DetectConfigurationManager {
 
     public void process(final List<DetectOption> detectOptions, String runId) throws DetectUserFriendlyException {
         resolveTildeInPaths();
-        resolveTargetAndOutputDirectories(runId);
         resolvePolicyProperties();
         resolveSignatureScannerProperties(detectOptions);
         resolveBomToolSearchProperties();
-        resolveAirGapPaths();
 
         updateDetectProperties(detectOptions);
     }
@@ -97,37 +83,6 @@ public class DetectConfigurationManager {
                 detectConfiguration.setDetectProperty(detectProperty, resolved.get());
             }
         }
-    }
-
-    private void resolveTargetAndOutputDirectories(String runId) throws DetectUserFriendlyException {
-        String sourcePath = detectConfiguration.getProperty(DetectProperty.DETECT_SOURCE_PATH, PropertyAuthority.None);
-        if (StringUtils.isBlank(sourcePath)) {
-            sourcePath = System.getProperty("user.dir");
-        }
-
-        String outputDirectoryPath = detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH, PropertyAuthority.None);
-        String bdioOutputDirectoryPath = detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH, PropertyAuthority.None);
-        String scanOutputDirectoryPath = detectConfiguration.getProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH, PropertyAuthority.None);
-
-        final File sourceDirectory = new File(sourcePath);
-
-        // make sure the path is absolute
-        try {
-            sourcePath = sourceDirectory.getCanonicalPath();
-            outputDirectoryPath = createDirectoryPath(outputDirectoryPath, USER_HOME, "blackduck");
-            bdioOutputDirectoryPath = createDirectoryPath(bdioOutputDirectoryPath, outputDirectoryPath, runId, "bdio");
-            scanOutputDirectoryPath = createDirectoryPath(scanOutputDirectoryPath, outputDirectoryPath, runId, "scan");
-        } catch (final IOException e) {
-            throw new DetectUserFriendlyException(String.format("There was a problem creating . %s", e.getMessage()), e, ExitCodeType.FAILURE_CONFIGURATION);
-        }
-        ensureDirectoryExists(outputDirectoryPath, "The system property 'user.home' will be used by default, but the output directory must exist.");
-        ensureDirectoryExists(bdioOutputDirectoryPath, "By default, the directory 'bdio' will be created in the outputDirectory, but the directory must exist.");
-        ensureDirectoryExists(scanOutputDirectoryPath, "By default, the directory 'scan' will be created in the outputDirectory, but the directory must exist.");
-
-        this.sourcePath = sourcePath;
-        this.outputDirectoryPath = outputDirectoryPath;
-        this.bdioOutputDirectoryPath = bdioOutputDirectoryPath;
-        this.scanOutputDirectoryPath = scanOutputDirectoryPath;
     }
 
     private void resolvePolicyProperties() {
@@ -187,25 +142,7 @@ public class DetectConfigurationManager {
         }
     }
 
-    private void resolveAirGapPaths() {
-        dockerInspectorAirGapPath = getInspectorAirGapPath(detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, PropertyAuthority.None), DOCKER);
-        gradleInspectorAirGapPath = getInspectorAirGapPath(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH, PropertyAuthority.None), GRADLE);
-        nugetInspectorAirGapPath = getInspectorAirGapPath(detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH, PropertyAuthority.None), NUGET);
-    }
-
     private void updateDetectProperties(final List<DetectOption> detectOptions) {
-        updateOptionValue(detectOptions, DetectProperty.DETECT_SOURCE_PATH, sourcePath);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, sourcePath);
-
-        updateOptionValue(detectOptions, DetectProperty.DETECT_OUTPUT_PATH, outputDirectoryPath);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_OUTPUT_PATH, outputDirectoryPath);
-
-        updateOptionValue(detectOptions, DetectProperty.DETECT_BDIO_OUTPUT_PATH, bdioOutputDirectoryPath);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH, bdioOutputDirectoryPath);
-
-        updateOptionValue(detectOptions, DetectProperty.DETECT_SCAN_OUTPUT_PATH, scanOutputDirectoryPath);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH, scanOutputDirectoryPath);
-
         updateOptionValue(detectOptions, DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, policyCheckFailOnSeverities);
         detectConfiguration.setDetectProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, policyCheckFailOnSeverities);
 
@@ -218,14 +155,6 @@ public class DetectConfigurationManager {
         updateOptionValue(detectOptions, DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, StringUtils.join(bomToolSearchDirectoryExclusions, ","));
         detectConfiguration.setDetectProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, StringUtils.join(bomToolSearchDirectoryExclusions, ","));
 
-        updateOptionValue(detectOptions, DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, dockerInspectorAirGapPath);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, dockerInspectorAirGapPath);
-
-        updateOptionValue(detectOptions, DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH, gradleInspectorAirGapPath);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH, gradleInspectorAirGapPath);
-
-        updateOptionValue(detectOptions, DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH, nugetInspectorAirGapPath);
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH, nugetInspectorAirGapPath);
     }
 
     private void updateOptionValue(final List<DetectOption> detectOptions, final DetectProperty detectProperty, final String value) {
@@ -245,55 +174,4 @@ public class DetectConfigurationManager {
         });
     }
 
-    private String createDirectoryPath(final String providedDirectoryPath, final String defaultDirectoryPath, final String... defaultDirectoryNames) throws IOException {
-        return createDirectoryPath(providedDirectoryPath, defaultDirectoryPath, Arrays.asList(defaultDirectoryNames));
-    }
-
-    private String createDirectoryPath(final String providedDirectoryPath, final String defaultDirectoryPath, final List<String> defaultDirectoryName) throws IOException {
-        if (StringUtils.isBlank(providedDirectoryPath)) {
-            File directory = new File(defaultDirectoryPath);
-            for (final String piece : defaultDirectoryName) {
-                directory = new File(directory, piece);
-            }
-            return directory.getCanonicalPath();
-        }
-        return providedDirectoryPath;
-    }
-
-    private void ensureDirectoryExists(final String directoryPath, final String failureMessage) throws DetectUserFriendlyException {
-        final File directory = new File(directoryPath);
-        directory.mkdirs();
-        if (!directory.exists() || !directory.isDirectory()) {
-            throw new DetectUserFriendlyException(String.format("The directory %s does not exist. %s", directoryPath, failureMessage), ExitCodeType.FAILURE_GENERAL_ERROR);
-        }
-    }
-
-    private String guessDetectJarLocation() {
-        final String containsDetectJarRegex = ".*hub-detect-[^\\\\/]+\\.jar.*";
-        final String javaClasspath = System.getProperty("java.class.path");
-        if (javaClasspath != null && javaClasspath.matches(containsDetectJarRegex)) {
-            for (final String classpathChunk : javaClasspath.split(System.getProperty("path.separator"))) {
-                if (classpathChunk != null && classpathChunk.matches(containsDetectJarRegex)) {
-                    logger.debug(String.format("Guessed Detect jar location as %s", classpathChunk));
-                    return classpathChunk;
-                }
-            }
-        }
-        return "";
-    }
-
-    private String getInspectorAirGapPath(final String inspectorLocationProperty, final String inspectorName) {
-        if (StringUtils.isBlank(inspectorLocationProperty)) {
-            try {
-                final File detectJar = new File(guessDetectJarLocation()).getCanonicalFile();
-                final File inspectorsDirectory = new File(detectJar.getParentFile(), "packaged-inspectors");
-                final File inspectorAirGapDirectory = new File(inspectorsDirectory, inspectorName);
-                return inspectorAirGapDirectory.getCanonicalPath();
-            } catch (final Exception e) {
-                logger.debug(String.format("Exception encountered when guessing air gap path for %s, returning the detect property instead", inspectorName));
-                logger.debug(e.getMessage());
-            }
-        }
-        return inspectorLocationProperty;
-    }
 }

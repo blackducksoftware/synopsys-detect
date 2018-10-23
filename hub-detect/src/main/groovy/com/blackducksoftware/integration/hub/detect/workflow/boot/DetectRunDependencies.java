@@ -9,6 +9,7 @@ import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
+import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
@@ -22,6 +23,7 @@ public class DetectRunDependencies {
     public DetectInfo detectInfo;
     public DetectConfiguration detectConfiguration;
     public DirectoryManager directoryManager;
+    public AirGapManager airGapManager;
     public PhoneHomeManager phoneHomeManager;
     public DiagnosticManager diagnosticManager;
     public HubServiceManager hubServiceManager;
