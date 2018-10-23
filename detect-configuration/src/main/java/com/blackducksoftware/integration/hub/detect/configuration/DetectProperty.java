@@ -533,7 +533,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_DOCKER)
     @HelpDescription("Version of the Docker Inspector to use")
-    DETECT_DOCKER_INSPECTOR_VERSION("detect.docker.inspector.version", "3.0.0", DetectPropertyType.STRING, PropertyAuthority.None, "7.*"),
+    DETECT_DOCKER_INSPECTOR_VERSION("detect.docker.inspector.version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "7.*"),
 
     @HelpGroup(primary = GROUP_DOCKER)
     @HelpDescription("A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.")
@@ -549,7 +549,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PATHS)
     @HelpDescription("Path of the java executable")
-    DETECT_JAVA_PATH("detect.java.path", "5.0.0", DetectPropertyType.STRING),
+    DETECT_JAVA_PATH("detect.java.path", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_LOGGING, additional = { GROUP_LOGGING, SEARCH_GROUP_DEBUG })
     @HelpDescription("The logging level of Detect")
@@ -748,7 +748,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_BITBAKE)
     @HelpDescription("A comma separated list of package names to extract dependencies from")
-    DETECT_BITBAKE_PACKAGE_NAMES("detect.bitbake.package.names", "4.4.0", DetectPropertyType.STRING_ARRAY, PropertyAuthority.None),
+    DETECT_BITBAKE_PACKAGE_NAMES("detect.bitbake.package.names", "4.4.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_CONDA)
     @HelpDescription("The path of the conda executable")

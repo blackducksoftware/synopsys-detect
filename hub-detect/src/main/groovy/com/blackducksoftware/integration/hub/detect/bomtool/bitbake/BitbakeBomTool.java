@@ -33,12 +33,13 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PropertyInsufficientBomToolResult;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientBomToolResult;
 import com.synopsys.integration.hub.bdio.model.Forge;
 
 public class BitbakeBomTool extends BomTool {
@@ -59,7 +60,7 @@ public class BitbakeBomTool extends BomTool {
 
     @Override
     public BomToolResult applicable() {
-        foundBuildEnvScript = detectFileFinder.findFile(environment.getDirectory(), detectConfiguration.getProperty(DetectProperty.DETECT_INIT_BUILD_ENV_NAME));
+        foundBuildEnvScript = detectFileFinder.findFile(environment.getDirectory(), detectConfiguration.getProperty(DetectProperty.DETECT_INIT_BUILD_ENV_NAME, PropertyAuthority.None));
         if (foundBuildEnvScript == null) {
             return new FileNotFoundBomToolResult(DetectProperty.DETECT_INIT_BUILD_ENV_NAME.getDefaultValue());
         }
@@ -69,7 +70,7 @@ public class BitbakeBomTool extends BomTool {
 
     @Override
     public BomToolResult extractable() {
-        final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES);
+        final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES, PropertyAuthority.None);
         if (packageNames == null || packageNames.length == 0) {
             return new PropertyInsufficientBomToolResult();
         }

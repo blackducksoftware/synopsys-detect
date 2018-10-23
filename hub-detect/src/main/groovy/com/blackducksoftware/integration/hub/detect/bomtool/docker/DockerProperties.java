@@ -31,6 +31,7 @@ import java.util.Properties;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 
 public class DockerProperties {
     private final DetectConfiguration detectConfiguration;
@@ -42,7 +43,7 @@ public class DockerProperties {
     public void populatePropertiesFile(final File dockerPropertiesFile, final File outputDirectory) throws IOException {
         final Properties dockerProperties = new Properties();
 
-        dockerProperties.setProperty("logging.level.com.synopsys", detectConfiguration.getProperty(DetectProperty.LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION));
+        dockerProperties.setProperty("logging.level.com.synopsys", detectConfiguration.getProperty(DetectProperty.LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION, PropertyAuthority.None));
         dockerProperties.setProperty("upload.bdio", "false");
         dockerProperties.setProperty("output.path", outputDirectory.getAbsolutePath());
         dockerProperties.setProperty("output.include.containerfilesystem", "true");

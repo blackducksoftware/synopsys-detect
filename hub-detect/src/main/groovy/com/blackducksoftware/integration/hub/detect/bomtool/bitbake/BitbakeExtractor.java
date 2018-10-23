@@ -39,9 +39,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
@@ -49,6 +48,8 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
@@ -62,26 +63,26 @@ public class BitbakeExtractor {
     private final ExecutableManager executableManager;
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
-    private final DetectFileManager detectFileManager;
     private final DetectFileFinder detectFileFinder;
+    private final DirectoryManager directoryManager;
     private final GraphParserTransformer graphParserTransformer;
     private final BitbakeListTasksParser bitbakeListTasksParser;
 
-    public BitbakeExtractor(final ExecutableManager executableManager, final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration, final DetectFileManager detectFileManager,
+    public BitbakeExtractor(final ExecutableManager executableManager, final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager,
         final DetectFileFinder detectFileFinder, final GraphParserTransformer graphParserTransformer, final BitbakeListTasksParser bitbakeListTasksParser) {
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
-        this.detectFileManager = detectFileManager;
+        this.directoryManager = directoryManager;
         this.detectFileFinder = detectFileFinder;
         this.graphParserTransformer = graphParserTransformer;
         this.bitbakeListTasksParser = bitbakeListTasksParser;
     }
 
     public Extraction extract(final ExtractionId extractionId, final String foundBuildEnvScriptPath, final String sourcePath) {
-        final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
+        final File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
         final File bitbakeBuildDirectory = new File(outputDirectory, "build");
-        final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES);
+        final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES, PropertyAuthority.None);
 
         final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
         for (final String packageName : packageNames) {
@@ -152,7 +153,7 @@ public class BitbakeExtractor {
     }
 
     private ExecutableOutput runBitbake(final File outputDirectory, final String foundBuildEnvScriptPath, final String bitbakeCommand) {
-        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, "", detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH));
+        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, "", detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH, PropertyAuthority.None));
 
         final List<String> arguments = new ArrayList<>();
         arguments.add("-c");

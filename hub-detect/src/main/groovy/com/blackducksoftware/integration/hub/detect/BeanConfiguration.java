@@ -38,6 +38,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeListTasksParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.GraphParserTransformer;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangBomTool;
@@ -128,7 +129,6 @@ import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.blackducksoftware.integration.hub.detect.util.executable.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
@@ -141,6 +141,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationManager;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
@@ -415,7 +416,7 @@ public class BeanConfiguration {
 
     @Bean
     public StandardExecutableFinder standardExecutableFinder() {
-        return new StandardExecutableFinder(executableManager(), detectConfiguration(), directoryManager());
+        return new StandardExecutableFinder(directoryManager(), executableManager(), detectConfiguration());
     }
 
     @Bean
@@ -493,7 +494,12 @@ public class BeanConfiguration {
 
     @Bean
     public DockerInspectorManager dockerInspectorManager() {
-        return new DockerInspectorManager(directoryManager(), airGapManager(), executableManager(), executableRunner(), detectConfiguration(), detectConfigurationUtility(), mavenMetadataService());
+        return new DockerInspectorManager(directoryManager(), airGapManager(), detectFileFinder(), detectConfiguration(), connectionManager(), mavenMetadataService());
+    }
+
+    @Bean
+    public ConnectionManager connectionManager() {
+        return new ConnectionManager(detectConfiguration());
     }
 
     @Bean
@@ -608,7 +614,7 @@ public class BeanConfiguration {
 
     @Bean
     public NugetInspectorManager nugetInspectorManager() {
-        return new NugetInspectorManager(directoryManager(), airGapManager(), executableManager(), executableRunner(), detectConfiguration());
+        return new NugetInspectorManager(directoryManager(), executableManager(), executableRunner(), detectConfiguration(), airGapManager());
     }
 
     @Bean
@@ -693,7 +699,12 @@ public class BeanConfiguration {
 
     @Bean
     public BitbakeExtractor bitbakeExtractor() {
-        return new BitbakeExtractor(executableManager(), executableRunner(), detectConfiguration(), directoryManager(), detectFileFinder(), graphParserTransformer());
+        return new BitbakeExtractor(executableManager(), executableRunner(), detectConfiguration(), directoryManager(), detectFileFinder(), graphParserTransformer(), bitbakeListTasksParser());
+    }
+
+    @Bean
+    public BitbakeListTasksParser bitbakeListTasksParser() {
+        return new BitbakeListTasksParser();
     }
 
     @Bean
