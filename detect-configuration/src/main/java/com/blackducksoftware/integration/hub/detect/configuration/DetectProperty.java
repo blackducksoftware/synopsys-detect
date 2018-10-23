@@ -500,6 +500,8 @@ public enum DetectProperty {
     @HelpDescription("Set to true if you would like to include only required packages")
     DETECT_PEAR_ONLY_REQUIRED_DEPS("detect.pear.only.required.deps", "3.0.0", DetectPropertyType.BOOLEAN, "false"),
 
+    @Deprecated
+    @DetectDeprecation(description = "The Pip inspector has been deprecated. Please use pipenv and the Pipenv Graph inspector in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PIP)
     @HelpDescription("The path of the requirements.txt file")
     DETECT_PIP_REQUIREMENTS_PATH("detect.pip.requirements.path", "3.0.0", DetectPropertyType.STRING),
