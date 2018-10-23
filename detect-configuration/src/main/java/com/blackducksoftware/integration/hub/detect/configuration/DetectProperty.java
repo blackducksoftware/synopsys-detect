@@ -250,19 +250,19 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PATHS)
     @HelpDescription("Source path to inspect")
-    DETECT_SOURCE_PATH("detect.source.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_SOURCE_PATH("detect.source.path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_PATHS)
     @HelpDescription("Output path")
-    DETECT_OUTPUT_PATH("detect.output.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_OUTPUT_PATH("detect.output.path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_PATHS)
     @HelpDescription("The output directory for all bdio files. If not set, the bdio files will be in a 'bdio' subdirectory of the output path.")
-    DETECT_BDIO_OUTPUT_PATH("detect.bdio.output.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_BDIO_OUTPUT_PATH("detect.bdio.output.path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB })
     @HelpDescription("The output directory for all scan files. If not set, the scan files will be in a 'scan' subdirectory of the output path.")
-    DETECT_SCAN_OUTPUT_PATH("detect.scan.output.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_SCAN_OUTPUT_PATH("detect.scan.output.path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_SBT, additional = { GROUP_PATHS })
     @HelpDescription("Depth from sbt bom tool paths to search for report files.")

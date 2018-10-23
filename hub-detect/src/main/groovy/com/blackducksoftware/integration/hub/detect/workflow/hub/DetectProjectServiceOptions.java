@@ -3,16 +3,16 @@ package com.blackducksoftware.integration.hub.detect.workflow.hub;
 public class DetectProjectServiceOptions {
     private final String projectVersionPhase;
     private final String projectVersionDistribution;
-    private final int projectTier;
+    private final Integer projectTier;
     private final String projectDescription;
     private final String projectVersionNotes;
     private final String[] cloneCategories;
-    private final boolean projectLevelAdjustments;
-    private final boolean forceProjectVersionUpdate;
+    private final Boolean projectLevelAdjustments;
+    private final Boolean forceProjectVersionUpdate;
     private final String cloneVersionName;
 
-    public DetectProjectServiceOptions(final String projectVersionPhase, final String projectVersionDistribution, final int projectTier, final String projectDescription, final String projectVersionNotes,
-        final String[] cloneCategories, final boolean projectLevelAdjustments, final boolean forceProjectVersionUpdate, final String cloneVersionName) {
+    public DetectProjectServiceOptions(final String projectVersionPhase, final String projectVersionDistribution, final Integer projectTier, final String projectDescription, final String projectVersionNotes,
+        final String[] cloneCategories, final Boolean projectLevelAdjustments, final Boolean forceProjectVersionUpdate, final String cloneVersionName) {
         this.projectVersionPhase = projectVersionPhase;
         this.projectVersionDistribution = projectVersionDistribution;
         this.projectTier = projectTier;
@@ -32,7 +32,7 @@ public class DetectProjectServiceOptions {
         return projectVersionDistribution;
     }
 
-    public int getProjectTier() {
+    public Integer getProjectTier() {
         return projectTier;
     }
 
@@ -48,11 +48,11 @@ public class DetectProjectServiceOptions {
         return cloneCategories;
     }
 
-    public boolean isProjectLevelAdjustments() {
+    public Boolean isProjectLevelAdjustments() {
         return projectLevelAdjustments;
     }
 
-    public boolean isForceProjectVersionUpdate() {
+    public Boolean isForceProjectVersionUpdate() {
         return forceProjectVersionUpdate;
     }
 

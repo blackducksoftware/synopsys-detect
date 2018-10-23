@@ -66,36 +66,33 @@ public class BdioManager {
     private final IntegrationEscapeUtil integrationEscapeUtil;
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfiguration detectConfiguration;
-    private DetectCodeLocationManager codeLocationManager;
+    private final DetectCodeLocationManager codeLocationManager;
     private final DirectoryManager directoryManager;
 
     public BdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil, final CodeLocationNameManager codeLocationNameManager,
-        final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager) {
+        final DetectConfiguration detectConfiguration, final DetectCodeLocationManager codeLocationManager, final DirectoryManager directoryManager) {
         this.detectInfo = detectInfo;
         this.simpleBdioFactory = simpleBdioFactory;
         this.integrationEscapeUtil = integrationEscapeUtil;
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
+        this.codeLocationManager = codeLocationManager;
         this.directoryManager = directoryManager;
     }
 
     public BdioResult createBdioFiles(String aggregateName, NameVersion projectNameVersion, List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
-        final List<File> bdioFiles = new ArrayList<>();
         if (StringUtils.isBlank(aggregateName)) {
             final DetectCodeLocationResult codeLocationResult = codeLocationManager.process(codeLocations, projectNameVersion);
             //codeLocationResult.getFailedBomToolGroupTypes().forEach(it -> bomToolResults.put(it, Result.FAILURE));
 
             final List<File> createdBdioFiles = createBdioFiles(codeLocationResult.getBdioCodeLocations(), projectNameVersion);
-            bdioFiles.addAll(createdBdioFiles);
 
-            return new BdioResult(codeLocationResult.getBdioCodeLocations(), codeLocationResult.getFailedBomToolGroupTypes(), codeLocationResult.getCodeLocationNames());
+            return new BdioResult(codeLocationResult.getBdioCodeLocations(), createdBdioFiles);
             //reportManager.codeLocationsCompleted(searchResult.getBomToolEvaluations(), codeLocationResult.getCodeLocationNames());
         } else {
             final File aggregateBdioFile = createAggregateBdioFile(codeLocations, projectNameVersion);
-            bdioFiles.add(aggregateBdioFile);
+            return new BdioResult(new ArrayList<>(), Arrays.asList(aggregateBdioFile));
         }
-
-        return new BdioResult(null, null, null);
     }
 
     private List<File> createBdioFiles(final List<BdioCodeLocation> bdioCodeLocations, NameVersion projectNameVersion) throws DetectUserFriendlyException {
@@ -103,7 +100,7 @@ public class BdioManager {
         for (final BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
             final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(bdioCodeLocation.codeLocationName, projectNameVersion, bdioCodeLocation.codeLocation);
 
-            final File outputFile = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH, PropertyAuthority.None), bdioCodeLocation.bdioName);
+            final File outputFile = new File(directoryManager.getBdioDirectory(), bdioCodeLocation.bdioName);
             if (outputFile.exists()) {
                 final boolean deleteSuccess = outputFile.delete();
                 logger.debug(String.format("%s deleted: %b", outputFile.getAbsolutePath(), deleteSuccess));
@@ -120,7 +117,7 @@ public class BdioManager {
 
         final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(projectNameVersion, aggregateDependencyGraph);
         final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME, PropertyAuthority.None)));
-        final File aggregateBdioFile = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH, PropertyAuthority.None), filename);
+        final File aggregateBdioFile = new File(directoryManager.getBdioDirectory(), filename);
         if (aggregateBdioFile.exists()) {
             final boolean deleteSuccess = aggregateBdioFile.delete();
             logger.debug(String.format("%s deleted: %b", aggregateBdioFile.getAbsolutePath(), deleteSuccess));

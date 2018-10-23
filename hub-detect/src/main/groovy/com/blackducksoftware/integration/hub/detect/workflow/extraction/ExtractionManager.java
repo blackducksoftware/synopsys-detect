@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.workflow.report.InfoLogReportWriter;
@@ -41,7 +40,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.report.ReportConsta
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class ExtractionManager {
-    private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public ExtractionManager() {
     }

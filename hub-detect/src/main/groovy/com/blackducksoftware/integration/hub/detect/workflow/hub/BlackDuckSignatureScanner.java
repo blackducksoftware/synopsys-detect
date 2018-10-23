@@ -45,7 +45,6 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.workflow.status.SignatureScanStatus;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
@@ -59,6 +58,7 @@ import com.synopsys.integration.blackduck.signaturescanner.command.ScanTarget;
 import com.synopsys.integration.blackduck.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.summary.Result;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckSignatureScanner {
     private final Logger logger = LoggerFactory.getLogger(BlackDuckSignatureScanner.class);
@@ -82,10 +82,10 @@ public class BlackDuckSignatureScanner {
         this.eventSystem = eventSystem;
     }
 
-    public void scanPaths(final HubServerConfig hubServerConfig, ScanJobManager scanJobManager, final DetectProject detectProject) throws IntegrationException, InterruptedException {
-        determinePathsAndExclusions(detectProject);
+    public void scanPaths(final HubServerConfig hubServerConfig, ScanJobManager scanJobManager, final NameVersion projectNameVersion) throws IntegrationException, InterruptedException {
+        determinePathsAndExclusions(projectNameVersion);
 
-        final ScanJobBuilder scanJobBuilder = createScanJobBuilder(detectProject, scans.stream().map(it -> it.scanPath).collect(Collectors.toSet()), dockerTarFilename);
+        final ScanJobBuilder scanJobBuilder = createScanJobBuilder(projectNameVersion, scans.stream().map(it -> it.scanPath).collect(Collectors.toSet()), dockerTarFilename);
         scanJobBuilder.fromHubServerConfig(hubServerConfig);
 
         final ScanJob scanJob = scanJobBuilder.build();
@@ -146,12 +146,12 @@ public class BlackDuckSignatureScanner {
         this.dockerTarFilename = dockerTarFile.getName();
     }
 
-    private void determinePathsAndExclusions(final DetectProject detectProject) throws IntegrationException {
+    private void determinePathsAndExclusions(final NameVersion projectNameVersion) throws IntegrationException {
         final String[] signatureScanPaths = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, PropertyAuthority.None);
         final boolean userProvidedScanTargets = null != signatureScanPaths && signatureScanPaths.length > 0;
         final String[] providedExclusionPatterns = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS, PropertyAuthority.None);
         final String[] hubSignatureScannerExclusionNamePatterns = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS, PropertyAuthority.None);
-        if (null != detectProject.getProjectName() && null != detectProject.getProjectVersion() && userProvidedScanTargets) {
+        if (null != projectNameVersion.getName() && null != projectNameVersion.getVersion() && userProvidedScanTargets) {
             for (final String path : signatureScanPaths) {
                 logger.info(String.format("Registering explicit scan path %s", path));
                 addScanTarget(path, hubSignatureScannerExclusionNamePatterns, providedExclusionPatterns);
@@ -189,8 +189,8 @@ public class BlackDuckSignatureScanner {
         }
     }
 
-    private ScanJobBuilder createScanJobBuilder(final DetectProject detectProject, final Set<String> scanPaths, final String dockerTarFilename) {
-        final File scannerDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH, PropertyAuthority.None));
+    private ScanJobBuilder createScanJobBuilder(final NameVersion projectNameVersion, final Set<String> scanPaths, final String dockerTarFilename) {
+        final File scannerDirectory = directoryManager.getScanDirectory();
 
         final String locallScannerInstallPath = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, PropertyAuthority.None);
         File installDirectory = directoryManager.getPermanentDirectory();
@@ -210,8 +210,8 @@ public class BlackDuckSignatureScanner {
         }
         scanJobBuilder.additionalScanArguments(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS, PropertyAuthority.None));
 
-        final String projectName = detectProject.getProjectName();
-        final String projectVersionName = detectProject.getProjectVersion();
+        final String projectName = projectNameVersion.getName();
+        final String projectVersionName = projectNameVersion.getVersion();
         scanJobBuilder.projectAndVersionNames(projectName, projectVersionName);
 
         final String sourcePath = directoryManager.getSourceDirectory().getAbsolutePath();

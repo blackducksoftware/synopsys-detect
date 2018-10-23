@@ -171,7 +171,7 @@ public class DetectConfiguration {
 
     private boolean isLocked = false;
 
-    private void lock() {
+    public void lock() {
         isLocked = true;
         logger.info("Configuration has finished.");
     }

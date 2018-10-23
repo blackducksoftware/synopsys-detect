@@ -129,7 +129,9 @@ import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.StandardExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
+import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolManager;
 import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectRunDependencies;
@@ -137,7 +139,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLo
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.FileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
@@ -146,6 +147,9 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManag
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckBinaryScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectBdioUploadService;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectCodeLocationUnmapService;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectService;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectServiceOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
@@ -157,18 +161,20 @@ import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManage
 import com.blackducksoftware.integration.hub.detect.workflow.report.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.run.RunManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
-import com.blackducksoftware.integration.hub.detect.workflow.search.SearchOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchEvaluator;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ExitCodeManager;
+import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ExitCodeUtility;
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectStatusManager;
 import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.service.CodeLocationService;
 import com.synopsys.integration.hub.bdio.BdioNodeFactory;
 import com.synopsys.integration.hub.bdio.BdioPropertyHelper;
 import com.synopsys.integration.hub.bdio.BdioTransformer;
 import com.synopsys.integration.hub.bdio.SimpleBdioFactory;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.log.SilentLogger;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 import freemarker.template.Configuration;
@@ -231,7 +237,17 @@ public class BeanConfiguration {
         return detectRunDependencies.configuration;
     }
 
+    @Bean
+    public PhoneHomeManager phoneHomeManager() {
+        return detectRunDependencies.phoneHomeManager;
+    }
+
     //Regular Beans
+    @Bean
+    public DetectConfigurationFactory detectConfigurationFactory() {
+        return new DetectConfigurationFactory(detectConfiguration());
+    }
+
     @Bean
     public SimpleBdioFactory simpleBdioFactory() {
         final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
@@ -278,12 +294,6 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public FileManager fileManager() {
-        return null;
-        //return new DirectoryManager(detectConfiguration(), detectRun(), diagnosticManager());
-    }
-
-    @Bean
     public ExecutableRunner executableRunner() {
         return new ExecutableRunner();
     }
@@ -296,6 +306,12 @@ public class BeanConfiguration {
     @Bean
     public CodeLocationNameService codeLocationNameService() {
         return new CodeLocationNameService(detectFileFinder());
+    }
+
+    @Bean
+    public CodeLocationService codeLocationService() {
+        //TODO: Figure this out...
+        return new CodeLocationService(hubServiceManager().createHubService(), new SilentLogger());
     }
 
     @Bean
@@ -327,7 +343,7 @@ public class BeanConfiguration {
     @Bean
     public SearchManager searchManager() {
         try {
-            return new SearchManager(new SearchOptions(detectConfiguration()), bomToolSearchProvider(), bomToolSearchEvaluator(), eventSystem());
+            return new SearchManager(detectConfigurationFactory().createSearchOptions(directoryManager().getSourceDirectory()), bomToolSearchProvider(), bomToolSearchEvaluator(), eventSystem());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -354,7 +370,12 @@ public class BeanConfiguration {
 
     @Bean
     public BdioManager bdioManager() {
-        return new BdioManager(detectInfo(), simpleBdioFactory(), integrationEscapeUtil(), codeLocationNameManager(), detectConfiguration(), directoryManager());
+        return new BdioManager(detectInfo(), simpleBdioFactory(), integrationEscapeUtil(), codeLocationNameManager(), detectConfiguration(), codeLocationManager(), directoryManager());
+    }
+
+    @Bean
+    public DetectCodeLocationManager codeLocationManager() {
+        return new DetectCodeLocationManager(codeLocationNameManager(), detectConfiguration(), directoryManager());
     }
 
     @Bean
@@ -379,7 +400,7 @@ public class BeanConfiguration {
 
     @Bean
     public DetectBdioUploadService bdioUploader() {
-        return new DetectBdioUploadService(detectConfiguration(), fileManager(), codeLocationService);
+        return new DetectBdioUploadService(detectConfiguration(), eventSystem(), codeLocationService());
     }
 
     @Bean
@@ -677,12 +698,13 @@ public class BeanConfiguration {
 
     @Bean
     public ProjectNameVersionManager projectVersionManager() {
-        return new ProjectNameVersionManager(new ProjectNameVersionOptions(detectConfiguration(), directoryManager().getSourceDirectory().getName()), bomToolNameVersionDecider());
+        ProjectNameVersionOptions options = detectConfigurationFactory().createProjectNameVersionOptions(directoryManager().getSourceDirectory().getName());
+        return new ProjectNameVersionManager(options, bomToolNameVersionDecider());
     }
 
     @Bean
     public BomToolManager bomToolManager() {
-        return new BomToolManager(searchManager(), extractionManager(), projectVersionManager(), reportManager(), detectRunDependencies.phoneHomeManager, preparationManager());
+        return new BomToolManager(searchManager(), extractionManager(), preparationManager(), eventSystem());
     }
 
     @Bean
@@ -692,12 +714,29 @@ public class BeanConfiguration {
 
     @Bean
     public RunManager runManager() {
-        return new RunManager(detectRunDependencies.phoneHomeManager, detectConfiguration(), bomToolManager(), detectStatusManager(), exitCodeManager(), eventSystem(), bdioManager, detectBdioUploadService);
+        return new RunManager(phoneHomeManager(), detectConfiguration(), bomToolManager(), projectVersionManager(), detectProjectService(), detectCodeLocationUnmapService(), bdioManager(), detectBdioUploadService(), hubManager(),
+            hubServiceManager().createHubService());
+    }
+
+    @Bean
+    public DetectProjectService detectProjectService() {
+        DetectProjectServiceOptions options = detectConfigurationFactory().createDetectProjectServiceOptions();
+        return new DetectProjectService(hubServiceManager(), options);
+    }
+
+    @Bean
+    public DetectCodeLocationUnmapService detectCodeLocationUnmapService() {
+        return new DetectCodeLocationUnmapService(hubServiceManager().createHubService(), codeLocationService());
+    }
+
+    @Bean
+    public DetectBdioUploadService detectBdioUploadService() {
+        return new DetectBdioUploadService(detectConfiguration(), eventSystem(), codeLocationService());
     }
 
     @Bean
     public ExitCodeManager exitCodeManager() {
-        return new ExitCodeManager(eventSystem());
+        return new ExitCodeManager(eventSystem(), new ExitCodeUtility());
     }
 
     //BomTools

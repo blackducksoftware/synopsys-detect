@@ -12,7 +12,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationResult;
-import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
@@ -26,7 +25,7 @@ public class BomToolManager {
     ExtractionManager extractionManager;
     EventSystem eventSystem;
 
-    public BomToolManager(SearchManager searchManager, ExtractionManager extractionManager, PreparationManager preparationManager, ProjectNameVersionManager projectNameVersionManager, EventSystem eventSystem) {
+    public BomToolManager(SearchManager searchManager, ExtractionManager extractionManager, PreparationManager preparationManager, EventSystem eventSystem) {
         this.searchManager = searchManager;
         this.extractionManager = extractionManager;
         this.preparationManager = preparationManager;

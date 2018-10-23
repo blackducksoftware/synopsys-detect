@@ -40,7 +40,6 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
-import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.view.ScanSummaryView;
@@ -52,10 +51,10 @@ import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.ReportService;
 import com.synopsys.integration.blackduck.service.ScanStatusService;
 import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
+import com.synopsys.integration.util.NameVersion;
 
 public class HubManager {
     private final Logger logger = LoggerFactory.getLogger(HubManager.class);
@@ -81,32 +80,32 @@ public class HubManager {
         this.blackDuckBinaryScanner = blackDuckBinaryScanner;
     }
 
-    public void performScanActions(final DetectProject detectProject) throws IntegrationException, InterruptedException, DetectUserFriendlyException {
+    public void performScanActions(final NameVersion projectNameVersion) throws IntegrationException, InterruptedException, DetectUserFriendlyException {
         if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, PropertyAuthority.None)) {
             final HubServerConfig hubServerConfig = hubServiceManager.getHubServerConfig();
             final ExecutorService executorService = Executors.newFixedThreadPool(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, PropertyAuthority.None));
             try {
                 final ScanJobManager scanJobManager = hubServiceManager.createScanJobManager(executorService);
-                blackDuckSignatureScanner.scanPaths(hubServerConfig, scanJobManager, detectProject);
+                blackDuckSignatureScanner.scanPaths(hubServerConfig, scanJobManager, projectNameVersion);
             } finally {
                 executorService.shutdownNow();
             }
         }
     }
 
-    public void performBinaryScanActions(final DetectProject detectProject) throws DetectUserFriendlyException {
+    public void performBinaryScanActions(final NameVersion projectNameVersion) throws DetectUserFriendlyException {
         if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None))) {
             final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.None);
             final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.None);
 
             final File file = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None));
-            blackDuckBinaryScanner.uploadBinaryScanFile(hubServiceManager.createBinaryScannerService(), file, detectProject.getProjectName(), detectProject.getProjectVersion(), prefix, suffix);
+            blackDuckBinaryScanner.uploadBinaryScanFile(hubServiceManager.createBinaryScannerService(), file, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);
         } else {
             logger.debug("No binary scan path was provided, so binary scan will not occur.");
         }
     }
 
-    public void performPostHubActions(final DetectProject detectProject, final ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
+    public void performPostHubActions(final NameVersion projectNameVersion, final ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
         try {
             final ProjectService projectService = hubServiceManager.createProjectService();
             final ReportService reportService = hubServiceManager.createReportService();
@@ -132,25 +131,18 @@ public class HubManager {
             if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF, PropertyAuthority.None)) {
                 logger.info("Creating risk report pdf");
                 final File pdfFile = reportService
-                                         .createReportPdfFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_RISK_REPORT_PDF_PATH, PropertyAuthority.None)), detectProject.getProjectName(), detectProject.getProjectVersion());
+                                         .createReportPdfFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_RISK_REPORT_PDF_PATH, PropertyAuthority.None)), projectNameVersion.getName(), projectNameVersion.getVersion());
                 logger.info(String.format("Created risk report pdf: %s", pdfFile.getCanonicalPath()));
             }
 
             if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT, PropertyAuthority.None)) {
                 logger.info("Creating notices report");
-                final File noticesFile = reportService.createNoticesReportFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_NOTICES_REPORT_PATH, PropertyAuthority.None)), detectProject.getProjectName(),
-                    detectProject.getProjectVersion()
+                final File noticesFile = reportService.createNoticesReportFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_NOTICES_REPORT_PATH, PropertyAuthority.None)), projectNameVersion.getName(),
+                    projectNameVersion.getVersion()
                 );
                 if (noticesFile != null) {
                     logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
                 }
-            }
-
-            if (!detectProject.getBdioFiles().isEmpty() || !detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, PropertyAuthority.None)) {
-                // only log BOM URL if we have updated it in some way
-                final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(detectProject.getProjectName(), detectProject.getProjectVersion());
-                final String componentsLink = hubService.getFirstLinkSafely(projectVersionWrapper.getProjectVersionView(), ProjectVersionView.COMPONENTS_LINK);
-                logger.info(String.format("To see your results, follow the URL: %s", componentsLink));
             }
         } catch (final IllegalStateException e) {
             throw new DetectUserFriendlyException(String.format("Your Hub configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);

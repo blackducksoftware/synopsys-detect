@@ -123,6 +123,10 @@ public class BootManager {
 
         PhoneHomeManager phoneHomeManager = createPhoneHomeManager(detectInfo, detectConfiguration, hubServiceManager, eventSystem, gson);
 
+        //lock the configuration, boot has completed.
+        logger.debug("Configuration is now complete. No changes should occur to configuration.");
+        detectConfiguration.lock();
+
         //Finished, return created objects.
         DetectRunDependencies detectRunDependencies = new DetectRunDependencies();
         detectRunDependencies.eventSystem = eventSystem;

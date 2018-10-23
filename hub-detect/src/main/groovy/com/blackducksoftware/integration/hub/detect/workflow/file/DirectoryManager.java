@@ -92,7 +92,12 @@ public class DirectoryManager {
             sourceDirectory = new File(directoryOptions.getSourcePathOverride());
         }
 
-        File outputDirectory = new File(directoryOptions.getOutputPathOverride());
+        File outputDirectory;
+        if (StringUtils.isBlank(directoryOptions.getOutputPathOverride())) {
+            outputDirectory = new File(System.getProperty("user.home"), "blackduck");
+        } else {
+            outputDirectory = new File(directoryOptions.getOutputPathOverride());
+        }
 
         EnumSet.allOf(OutputDirectory.class).stream()
             .forEach(it -> outputDirectories.put(it, new File(outputDirectory, it.getDirectoryName())));
@@ -103,11 +108,11 @@ public class DirectoryManager {
             .forEach(it -> runDirectories.put(it, new File(runDirectory, it.getDirectoryName())));
 
         //overrides
-        if (StringUtils.isBlank(directoryOptions.getBdioOutputPathOverride())) {
+        if (StringUtils.isNotBlank(directoryOptions.getBdioOutputPathOverride())) {
             runDirectories.put(RunDirectory.Bdio, new File(directoryOptions.getBdioOutputPathOverride()));
         }
 
-        if (StringUtils.isBlank(directoryOptions.getScanOutputPathOverride())) {
+        if (StringUtils.isNotBlank(directoryOptions.getScanOutputPathOverride())) {
             runDirectories.put(RunDirectory.Scan, new File(directoryOptions.getScanOutputPathOverride()));
         }
 
@@ -131,6 +136,14 @@ public class DirectoryManager {
         return sourceDirectory;
     }
 
+    public File getBdioDirectory() {
+        return getRunDirectory(RunDirectory.Bdio);
+    }
+
+    public File getScanDirectory() {
+        return getRunDirectory(RunDirectory.Scan);
+    }
+
     public File getRelevantDirectory() {
         return getRunDirectory(RunDirectory.Relevant);
     }
@@ -150,7 +163,7 @@ public class DirectoryManager {
     private File getOutputDirectory(OutputDirectory directory) {
         File actualDirectory = outputDirectories.get(directory);
         if (!actualDirectory.exists()) {
-            actualDirectory.mkdir();
+            actualDirectory.mkdirs();
         }
         return actualDirectory;
     }
@@ -158,14 +171,14 @@ public class DirectoryManager {
     private File getRunDirectory(RunDirectory directory) {
         File actualDirectory = runDirectories.get(directory);
         if (!actualDirectory.exists()) {
-            actualDirectory.mkdir();
+            actualDirectory.mkdirs();
         }
         return actualDirectory;
     }
 
     public File getSharedDirectory(final String name) { // shared across this invocation of detect (inspectors), returns 'shared/name'
         final File newSharedFile = new File(getOutputDirectory(OutputDirectory.Shared), name);
-        newSharedFile.mkdir();
+        newSharedFile.mkdirs();
         return newSharedFile;
     }
 

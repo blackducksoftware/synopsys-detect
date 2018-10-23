@@ -3,6 +3,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.project;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,8 +27,15 @@ public class ProjectNameVersionManager {
         this.bomToolNameVersionDecider = bomToolNameVersionDecider;
     }
 
+    public NameVersion calculateDefaultProjectNameVersion() {
+        return evaluateProjectNameVersion(new ArrayList<>());
+    }
+
     public NameVersion evaluateProjectNameVersion(final List<BomToolEvaluation> bomToolEvaluations) {
-        final Optional<NameVersion> bomToolSuggestedNameVersion = findBomToolProjectNameAndVersion(bomToolEvaluations);
+        Optional<NameVersion> bomToolSuggestedNameVersion = Optional.empty();
+        if (bomToolEvaluations.size() > 0) {
+            bomToolSuggestedNameVersion = findBomToolProjectNameAndVersion(bomToolEvaluations);
+        }
 
         String projectName = projectVersionOptions.overrideProjectName;
         if (StringUtils.isBlank(projectName) && bomToolSuggestedNameVersion.isPresent()) {

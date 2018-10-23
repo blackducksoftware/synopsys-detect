@@ -1,5 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.event;
 
+import java.io.File;
+
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationResult;
@@ -19,7 +21,9 @@ public enum Event {
     ExtractionStarted(BomToolEvaluation.class),
     ExtractionEnded(BomToolEvaluation.class),
     ExitCode(ExitCodeRequest.class),
-    StatusSummary(Status.class);
+    StatusSummary(Status.class),
+    OutputFileOfInterest(File.class),
+    CustomerFileOfInterest(File.class);
 
     Event(Class clazz) {
         this.eventClass = clazz;
