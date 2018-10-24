@@ -33,9 +33,7 @@ import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInte
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticLogManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.FileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
@@ -199,10 +197,9 @@ public class BootManager {
     }
 
     private DiagnosticManager createDiagnostics(DetectConfiguration detectConfiguration, DetectRun detectRun, DetectArgumentState detectArgumentState, EventSystem eventSystem, DirectoryManager directoryManager, FileManager fileManager) {
-        DiagnosticReportManager diagnosticReportManager = new DiagnosticReportManager(new BomToolProfiler(eventSystem));
-        DiagnosticLogManager diagnosticLogManager = new DiagnosticLogManager();
-        DiagnosticManager diagnosticManager = new DiagnosticManager(detectConfiguration, diagnosticReportManager, diagnosticLogManager, detectRun, fileManager, detectArgumentState.isDiagnostic(),
-            detectArgumentState.isDiagnosticProtected(), directoryManager);
+        BomToolProfiler profiler = new BomToolProfiler(eventSystem); //TODO: I think phone home needs one?
+        DiagnosticManager diagnosticManager = new DiagnosticManager(detectConfiguration, detectRun, fileManager, detectArgumentState.isDiagnostic(),
+            detectArgumentState.isDiagnosticProtected(), directoryManager, eventSystem, profiler);
         return diagnosticManager;
     }
 

@@ -12,7 +12,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolManager;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolsResult;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectBdioUploadService;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectCodeLocationUnmapService;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectService;
@@ -70,8 +70,8 @@ public class RunManager {
         Optional<ProjectVersionView> projectView = Optional.empty();
 
         if (bomToolsEnabled) {
-            BomToolResult bomToolResult = bomToolManager.runBomTools();
-            projectNameVersion = Optional.of(projectNameVersionManager.evaluateProjectNameVersion(bomToolResult.evaluatedBomTools));
+            BomToolsResult bomToolsResult = bomToolManager.runBomTools();
+            projectNameVersion = Optional.of(projectNameVersionManager.evaluateProjectNameVersion(bomToolsResult.evaluatedBomTools));
 
             if (isOnline) {
                 projectView = detectProjectService.createOrUpdateHubProject(projectNameVersion.get());
@@ -80,7 +80,7 @@ public class RunManager {
                 }
             }
 
-            BdioResult bdioResult = bdioManager.createBdioFiles(aggregateName, projectNameVersion.get(), bomToolResult.bomToolCodeLocations);
+            BdioResult bdioResult = bdioManager.createBdioFiles(aggregateName, projectNameVersion.get(), bomToolsResult.bomToolCodeLocations);
             if (bdioResult.getBdioFiles().size() > 0) {
                 if (isOnline) {
                     detectBdioUploadService.uploadBdioFiles(bdioResult.getBdioFiles());

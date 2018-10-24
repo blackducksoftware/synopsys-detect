@@ -31,7 +31,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolsResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.report.CodeLocationReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.DetailedSearchSummaryReporter;
@@ -79,18 +83,18 @@ public class DiagnosticReportManager {
         }
     }
 
-    private File reportDirectory;
-    private String runId;
     private final BomToolProfiler bomToolProfiler;
+    private final File reportDirectory;
+    private final String runId;
 
-    public DiagnosticReportManager(final BomToolProfiler bomToolProfiler) {
-        this.bomToolProfiler = bomToolProfiler;
-    }
-
-    public void init(final File reportDirectory, final String runId) {
+    public DiagnosticReportManager(final File reportDirectory, final String runId, EventSystem eventSystem, final BomToolProfiler bomToolProfiler) {
         this.reportDirectory = reportDirectory;
         this.runId = runId;
+        this.bomToolProfiler = bomToolProfiler;
         createReports();
+
+        eventSystem.registerListener(Event.BomToolsComplete, payload -> completedBomToolEvaluations(((BomToolsResult) payload).evaluatedBomTools));
+        eventSystem.registerListener(Event.CodeLocationsCalculated, payload -> completedCodeLocations(((DetectCodeLocationResult) payload).getCodeLocationNames()));
     }
 
     public void finish() {
@@ -99,7 +103,10 @@ public class DiagnosticReportManager {
         closeReportWriters();
     }
 
+    private List<BomToolEvaluation> completedBomToolEvaluations = null;
+
     public void completedBomToolEvaluations(final List<BomToolEvaluation> bomToolEvaluations) {
+        completedBomToolEvaluations = bomToolEvaluations;
         try {
             final SearchSummaryReporter searchReporter = new SearchSummaryReporter();
             searchReporter.print(getReportWriter(ReportTypes.SEARCH), bomToolEvaluations);
@@ -122,12 +129,15 @@ public class DiagnosticReportManager {
         }
     }
 
-    public void completedCodeLocations(final List<BomToolEvaluation> bomToolEvaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+    public void completedCodeLocations(final Map<DetectCodeLocation, String> codeLocationNameMap) {
+        if (completedBomToolEvaluations == null)
+            return;
+
         try {
             final ReportWriter clWriter = getReportWriter(ReportTypes.CODE_LOCATIONS);
             final ReportWriter dcWriter = getReportWriter(ReportTypes.DEPENDENCY_COUNTS);
             final CodeLocationReporter clReporter = new CodeLocationReporter();
-            clReporter.writeCodeLocationReport(clWriter, dcWriter, bomToolEvaluations, codeLocationNameMap);
+            clReporter.writeCodeLocationReport(clWriter, dcWriter, completedBomToolEvaluations, codeLocationNameMap);
         } catch (final Exception e) {
             logger.error("Failed to write code location report.", e);
         }

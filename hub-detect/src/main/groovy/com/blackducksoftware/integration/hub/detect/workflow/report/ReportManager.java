@@ -23,15 +23,19 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.report;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolsResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
+import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class ReportManager {
@@ -57,8 +61,11 @@ public class ReportManager {
         this.extractionSummaryReporter = extractionSummaryReporter;
         this.searchSummaryReporter = searchSummaryReporter;
 
-        eventSystem.registerListener(Event.ExtractionStarted, it -> extractionStarted((BomToolEvaluation) it));
-        eventSystem.registerListener(Event.ExtractionStarted, it -> extractionEnded((BomToolEvaluation) it));
+        eventSystem.registerListener(Event.SearchCompleted, it -> searchCompleted(((SearchResult) it).getBomToolEvaluations()));
+        eventSystem.registerListener(Event.PreparationsCompleted, it -> preparationsCompleted(((PreparationResult) it).getBomToolEvaluations()));
+        eventSystem.registerListener(Event.BomToolsComplete, it -> bomToolsComplete(((BomToolsResult) it).evaluatedBomTools));
+        eventSystem.registerListener(Event.CodeLocationsCalculated, it -> codeLocationsCompleted(((DetectCodeLocationResult) it).getCodeLocationNames()));
+
     }
 
     // Reports
@@ -68,33 +75,18 @@ public class ReportManager {
         detailedSearchSummaryReporter.print(debugLogWriter, bomToolEvaluations);
     }
 
-    public void preparationCompleted(final List<BomToolEvaluation> bomToolEvaluations) {
+    public void preparationsCompleted(final List<BomToolEvaluation> bomToolEvaluations) {
         preparationSummaryReporter.write(logWriter, bomToolEvaluations);
     }
 
-    public void extractionsCompleted(final List<BomToolEvaluation> bomToolEvaluations) {
-        //phoneHomeManager.startPhoneHome(bomToolProfiler.getAggregateBomToolGroupTimes());
-        diagnosticManager.completedBomToolEvaluations(bomToolEvaluations);
+    private List<BomToolEvaluation> completedBomToolEvaluations = new ArrayList<>();
+
+    public void bomToolsComplete(final List<BomToolEvaluation> bomToolEvaluations) {
+        preparationSummaryReporter.write(logWriter, bomToolEvaluations);
+        completedBomToolEvaluations.addAll(bomToolEvaluations);
     }
 
-    public void codeLocationsCompleted(final List<BomToolEvaluation> bomToolEvaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        extractionSummaryReporter.writeSummary(logWriter, bomToolEvaluations, codeLocationNameMap);
-        diagnosticManager.completedCodeLocations(bomToolEvaluations, codeLocationNameMap);
-    }
-
-    // Profiling
-    private void extractionStarted(final BomToolEvaluation bomToolEvaluation) {
-        diagnosticManager.startLoggingExtraction(bomToolEvaluation.getExtractionId());
-    }
-
-    private void extractionEnded(final BomToolEvaluation bomToolEvaluation) {
-        if (diagnosticManager.isDiagnosticModeOn()) {
-            final List<File> diagnosticFiles = bomToolEvaluation.getBomTool().getRelevantDiagnosticFiles();
-            for (final File file : diagnosticFiles) {
-                //TODO fix
-                //diagnosticManager.registerFileOfInterest(bomToolEvaluation.getExtractionId(), file);
-            }
-        }
-        diagnosticManager.stopLoggingExtraction(bomToolEvaluation.getExtractionId());
+    public void codeLocationsCompleted(final Map<DetectCodeLocation, String> codeLocationNameMap) {
+        extractionSummaryReporter.writeSummary(logWriter, completedBomToolEvaluations, codeLocationNameMap);
     }
 }

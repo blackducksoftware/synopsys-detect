@@ -372,7 +372,7 @@ public class BeanConfiguration {
 
     @Bean
     public DetectCodeLocationManager detectCodeLocationManager() {
-        return new DetectCodeLocationManager(codeLocationNameManager(), detectConfiguration(), directoryManager());
+        return new DetectCodeLocationManager(codeLocationNameManager(), detectConfiguration(), directoryManager(), eventSystem());
     }
 
     @Bean
@@ -382,7 +382,7 @@ public class BeanConfiguration {
 
     @Bean
     public DetectCodeLocationManager codeLocationManager() {
-        return new DetectCodeLocationManager(codeLocationNameManager(), detectConfiguration(), directoryManager());
+        return new DetectCodeLocationManager(codeLocationNameManager(), detectConfiguration(), directoryManager(), eventSystem());
     }
 
     @Bean

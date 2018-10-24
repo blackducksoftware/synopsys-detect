@@ -33,6 +33,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
@@ -53,7 +56,8 @@ public class DiagnosticLogManager {
     private FileAppender<ILoggingEvent> fileAppender;
     private FileAppender<ILoggingEvent> extractionAppender;
 
-    public void init(final File logDirectory) {
+    public DiagnosticLogManager(File logDirectory, EventSystem eventSystem) {
+
         this.logDirectory = logDirectory;
 
         logger.info("Attempting to set log level.");
@@ -68,6 +72,9 @@ public class DiagnosticLogManager {
 
         logger.info("Attempting to redirect sysout.");
         captureStdOut();
+
+        eventSystem.registerListener(Event.ExtractionStarted, it -> startLoggingExtraction(((BomToolEvaluation) it).getExtractionId()));
+        eventSystem.registerListener(Event.ExtractableEnded, it -> stopLoggingExtraction(((BomToolEvaluation) it).getExtractionId()));
     }
 
     public void finish() {

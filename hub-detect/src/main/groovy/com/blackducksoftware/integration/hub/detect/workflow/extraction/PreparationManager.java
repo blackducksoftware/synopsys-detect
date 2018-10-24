@@ -46,6 +46,6 @@ public class PreparationManager {
                                                               .map(it -> it.getBomTool().getBomToolGroupType())
                                                               .collect(Collectors.toSet());
 
-        return new PreparationResult(succesfulBomToolGroups, failedBomToolGroups);
+        return new PreparationResult(succesfulBomToolGroups, failedBomToolGroups, results);
     }
 }

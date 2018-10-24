@@ -32,7 +32,7 @@ public class BomToolManager {
         this.eventSystem = eventSystem;
     }
 
-    public BomToolResult runBomTools() {
+    public BomToolsResult runBomTools() {
         List<BomToolEvaluation> bomToolEvaluations = new ArrayList<>();
 
         //search
@@ -42,30 +42,30 @@ public class BomToolManager {
 
         //prepare
         PreparationResult preparationResult = preparationManager.prepareExtractions(bomToolEvaluations);
-        eventSystem.publishEvent(Event.PreparationCompleted, preparationResult);
+        eventSystem.publishEvent(Event.PreparationsCompleted, preparationResult);
 
         //extract
         ExtractionResult extractionResult = extractionManager.performExtractions(bomToolEvaluations);
-        eventSystem.publishEvent(Event.ExtractionCompleted, extractionResult);
+        eventSystem.publishEvent(Event.ExtractionsCompleted, extractionResult);
 
         //create results
-        BomToolResult bomToolResult = new BomToolResult();
-        bomToolResult.evaluatedBomTools = bomToolEvaluations;
-        bomToolResult.bomToolCodeLocations = extractionResult.getDetectCodeLocations();
+        BomToolsResult bomToolsResult = new BomToolsResult();
+        bomToolsResult.evaluatedBomTools = bomToolEvaluations;
+        bomToolsResult.bomToolCodeLocations = extractionResult.getDetectCodeLocations();
 
-        bomToolResult.failedBomToolGroupTypes.addAll(preparationResult.getFailedBomToolTypes());
-        bomToolResult.failedBomToolGroupTypes.addAll(extractionResult.getFailedBomToolTypes());
+        bomToolsResult.failedBomToolGroupTypes.addAll(preparationResult.getFailedBomToolTypes());
+        bomToolsResult.failedBomToolGroupTypes.addAll(extractionResult.getFailedBomToolTypes());
 
-        bomToolResult.succesfullBomToolGroupTypes.addAll(preparationResult.getSuccessfulBomToolTypes());
-        bomToolResult.succesfullBomToolGroupTypes.addAll(extractionResult.getSuccessfulBomToolTypes());
-        bomToolResult.succesfullBomToolGroupTypes.removeIf(it -> bomToolResult.failedBomToolGroupTypes.contains(it));
+        bomToolsResult.succesfullBomToolGroupTypes.addAll(preparationResult.getSuccessfulBomToolTypes());
+        bomToolsResult.succesfullBomToolGroupTypes.addAll(extractionResult.getSuccessfulBomToolTypes());
+        bomToolsResult.succesfullBomToolGroupTypes.removeIf(it -> bomToolsResult.failedBomToolGroupTypes.contains(it));
 
         //post status
         Map<BomToolGroupType, StatusType> bomToolStatus = new HashMap<>();
-        bomToolResult.succesfullBomToolGroupTypes.forEach(it -> bomToolStatus.put(it, StatusType.SUCCESS));
-        bomToolResult.failedBomToolGroupTypes.forEach(it -> bomToolStatus.put(it, StatusType.FAILURE));
+        bomToolsResult.succesfullBomToolGroupTypes.forEach(it -> bomToolStatus.put(it, StatusType.SUCCESS));
+        bomToolsResult.failedBomToolGroupTypes.forEach(it -> bomToolStatus.put(it, StatusType.FAILURE));
         bomToolStatus.forEach((bomTool, status) -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(bomTool, status)));
 
-        return bomToolResult;
+        return bomToolsResult;
     }
 }

@@ -26,44 +26,42 @@ package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 
 public class DiagnosticManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DetectConfiguration detectConfiguration;
-
-    private File outputDirectory;
-
-    private final DiagnosticReportManager diagnosticReportManager;
-    private final DiagnosticLogManager diagnosticLogManager;
+    private DiagnosticReportManager diagnosticReportManager;
+    private DiagnosticLogManager diagnosticLogManager;
     private final DetectRun detectRun;
     private final FileManager fileManager;
     private final DirectoryManager directoryManager;
+    private final EventSystem eventSystem;
 
     private boolean isDiagnosticProtected = false;
     private boolean isDiagnostic = false;
+    private BomToolProfiler bomToolProfiler;
 
-    public DiagnosticManager(final DetectConfiguration detectConfiguration, final DiagnosticReportManager diagnosticReportManager, final DiagnosticLogManager diagnosticLogManager,
-        final DetectRun detectRun, final FileManager fileManager, final boolean isDiagnostic, final boolean isDiagnosticProtected, DirectoryManager directoryManager) {
+    public DiagnosticManager(final DetectConfiguration detectConfiguration,
+        final DetectRun detectRun, final FileManager fileManager, final boolean isDiagnostic, final boolean isDiagnosticProtected, DirectoryManager directoryManager,
+        final EventSystem eventSystem, final BomToolProfiler bomToolProfiler) {
         this.detectConfiguration = detectConfiguration;
-        this.diagnosticReportManager = diagnosticReportManager;
-        this.diagnosticLogManager = diagnosticLogManager;
         this.detectRun = detectRun;
         this.fileManager = fileManager;
         this.directoryManager = directoryManager;
+        this.eventSystem = eventSystem;
+        this.bomToolProfiler = bomToolProfiler;
 
         init(isDiagnostic, isDiagnosticProtected);
     }
@@ -77,7 +75,7 @@ public class DiagnosticManager {
             return;
         }
 
-        System.out.println("");
+        System.out.println();
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("Diagnostic mode on.");
         System.out.println("A zip file will be created with logs and relevant detect output files.");
@@ -86,25 +84,16 @@ public class DiagnosticManager {
             System.out.println("Additional relevant files such as lock files can be collected automatically in extended diagnostics.");
         }
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("");
-
-        final File bdioDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH, PropertyAuthority.None));
-        this.outputDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH, PropertyAuthority.None));
-        try {
-            //fileManager.init(outputDirectory, bdioDirectory, detectRun.getRunId());
-        } catch (final Exception e) {
-            logger.error("Failed to create diagnostics directory.", e);
-        }
+        System.out.println();
 
         logger.info("Initializing diagnostic managers.");
         try {
-            diagnosticReportManager.init(directoryManager.getReportDirectory(), detectRun.getRunId());
-            diagnosticLogManager.init(directoryManager.getLogDirectory());
+            diagnosticReportManager = new DiagnosticReportManager(directoryManager.getReportDirectory(), detectRun.getRunId(), eventSystem, bomToolProfiler);
+            diagnosticLogManager = new DiagnosticLogManager(directoryManager.getLogDirectory(), eventSystem);
         } catch (final Exception e) {
             logger.error("Failed to process.", e);
         }
 
-        logger.info("Diagnostic mode on. Run id " + detectRun.getRunId());
     }
 
     public void finish() {
@@ -150,57 +139,12 @@ public class DiagnosticManager {
         return isDiagnostic;
     }
 
-    /*
-     * If this returns true, customer files or anything related to customer source should NOT be collected during diagnostics. Otherwise, things like lock files, solutions files, build reports may be collected during diagnostics.
-     */
-    public boolean isProtectedModeOn() {
-        return isDiagnosticProtected;
-    }
-
-    public boolean shouldFileManagerCleanup() {
-        if (isDiagnosticModeOn()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public void startLoggingExtraction(final ExtractionId extractionId) {
-        if (!isDiagnosticModeOn()) {
-            return;
-        }
-        diagnosticLogManager.startLoggingExtraction(extractionId);
-    }
-
-    public void stopLoggingExtraction(final ExtractionId extractionId) {
-        if (!isDiagnosticModeOn()) {
-            return;
-        }
-        diagnosticLogManager.stopLoggingExtraction(extractionId);
-    }
-
-    public void completedBomToolEvaluations(final List<BomToolEvaluation> evaluations) {
-        if (!isDiagnosticModeOn()) {
-            return;
-        }
-        diagnosticReportManager.completedBomToolEvaluations(evaluations);
-    }
-
-    public void completedCodeLocations(final List<BomToolEvaluation> evaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        if (!isDiagnosticModeOn()) {
-            return;
-        }
-        diagnosticReportManager.completedCodeLocations(evaluations, codeLocationNameMap);
-    }
-
     private boolean createZip() {
-        //TODO fix;
-        final List<File> directoriesToCompress = new ArrayList<File>();// = fileManager.getAllDirectories().stream()
-        //.filter(it -> it.exists())
-        //.collect(Collectors.toList());
+        final List<File> directoriesToCompress = new ArrayList<>();
+        directoriesToCompress.add(directoryManager.getRunHomeDirectory());
 
         final DiagnosticZipCreator zipper = new DiagnosticZipCreator();
-        return zipper.createDiagnosticZip(detectRun.getRunId(), outputDirectory, directoriesToCompress);
+        return zipper.createDiagnosticZip(detectRun.getRunId(), directoryManager.getRunsDirectory(), directoriesToCompress);
     }
 
 }

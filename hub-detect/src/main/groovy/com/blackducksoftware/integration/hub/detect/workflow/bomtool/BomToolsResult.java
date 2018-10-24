@@ -9,7 +9,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
-public class BomToolResult {
+public class BomToolsResult {
     public List<DetectCodeLocation> bomToolCodeLocations;
 
     public Set<BomToolGroupType> failedBomToolGroupTypes = new HashSet<>();

@@ -140,6 +140,10 @@ public class DirectoryManager {
         return getRunDirectory(RunDirectory.Bdio);
     }
 
+    public File getRunsDirectory() {
+        return getOutputDirectory(OutputDirectory.Runs);
+    }
+
     public File getScanDirectory() {
         return getRunDirectory(RunDirectory.Scan);
     }

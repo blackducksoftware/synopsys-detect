@@ -41,6 +41,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraphCombiner;
@@ -55,11 +57,14 @@ public class DetectCodeLocationManager {
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfiguration detectConfiguration;
     private final DirectoryManager directoryManager;
+    private final EventSystem eventSystem;
 
-    public DetectCodeLocationManager(final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager) {
+    public DetectCodeLocationManager(final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager,
+        final EventSystem eventSystem) {
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
         this.directoryManager = directoryManager;
+        this.eventSystem = eventSystem;
     }
 
     public DetectCodeLocationResult process(final List<DetectCodeLocation> detectCodeLocations, NameVersion projectNameVersion) {
@@ -94,6 +99,7 @@ public class DetectCodeLocationManager {
         }
 
         final DetectCodeLocationResult result = new DetectCodeLocationResult(bdioCodeLocations, failedBomToolGroups, codeLocationsAndNames);
+        eventSystem.publishEvent(Event.CodeLocationsCalculated, result);
         return result;
     }
 
