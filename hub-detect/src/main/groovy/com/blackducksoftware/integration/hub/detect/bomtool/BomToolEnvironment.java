@@ -26,17 +26,17 @@ package com.blackducksoftware.integration.hub.detect.bomtool;
 import java.io.File;
 import java.util.Set;
 
-import com.synopsys.integration.util.ExcludedIncludedFilter;
+import com.blackducksoftware.integration.hub.detect.OverridableExcludedIncludedFilter;
 
 public class BomToolEnvironment {
 
     private final File directory;
     private final Set<BomToolType> appliedToParent;
     private final int depth;
-    private final ExcludedIncludedFilter bomToolFilter;
+    private final OverridableExcludedIncludedFilter bomToolFilter;
     private final boolean forceNestedSearch;
 
-    public BomToolEnvironment(final File directory, final Set<BomToolType> appliedToParent, final int depth, final ExcludedIncludedFilter bomToolFilter, final boolean forceNestedSearch) {
+    public BomToolEnvironment(final File directory, final Set<BomToolType> appliedToParent, final int depth, final OverridableExcludedIncludedFilter bomToolFilter, final boolean forceNestedSearch) {
         this.directory = directory;
         this.appliedToParent = appliedToParent;
         this.depth = depth;
@@ -56,7 +56,7 @@ public class BomToolEnvironment {
         return depth;
     }
 
-    public ExcludedIncludedFilter getBomToolFilter() {
+    public OverridableExcludedIncludedFilter getBomToolFilter() {
         return bomToolFilter;
     }
 

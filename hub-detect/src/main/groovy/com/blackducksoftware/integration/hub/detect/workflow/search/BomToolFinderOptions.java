@@ -24,17 +24,16 @@
 package com.blackducksoftware.integration.hub.detect.workflow.search;
 
 import java.util.List;
-
-import com.synopsys.integration.util.ExcludedIncludedFilter;
+import com.blackducksoftware.integration.hub.detect.OverridableExcludedIncludedFilter;
 
 public class BomToolFinderOptions {
 
     private final List<String> excludedDirectories;
     private final Boolean forceNestedSearch;
     private final int maximumDepth;
-    private final ExcludedIncludedFilter bomToolFilter;
+    private final OverridableExcludedIncludedFilter bomToolFilter;
 
-    public BomToolFinderOptions(final List<String> excludedDirectories, final Boolean forceNestedSearch, final int maximumDepth, final ExcludedIncludedFilter bomToolFilter) {
+    public BomToolFinderOptions(final List<String> excludedDirectories, final Boolean forceNestedSearch, final int maximumDepth, final OverridableExcludedIncludedFilter bomToolFilter) {
         this.excludedDirectories = excludedDirectories;
         this.forceNestedSearch = forceNestedSearch;
         this.maximumDepth = maximumDepth;
@@ -49,7 +48,7 @@ public class BomToolFinderOptions {
         return forceNestedSearch;
     }
 
-    public ExcludedIncludedFilter getBomToolFilter() {
+    public OverridableExcludedIncludedFilter getBomToolFilter() {
         return bomToolFilter;
     }
 
