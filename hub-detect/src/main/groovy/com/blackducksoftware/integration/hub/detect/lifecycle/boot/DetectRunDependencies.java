@@ -5,6 +5,7 @@ import javax.xml.parsers.DocumentBuilder;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
@@ -26,6 +27,7 @@ public class DetectRunDependencies {
     public DiagnosticManager diagnosticManager;
     public HubServiceManager hubServiceManager;
     public EventSystem eventSystem;
+    public ExitCodeManager exitCodeManager;
     //shared resources;
     public Gson gson;
     public JsonParser jsonParser;

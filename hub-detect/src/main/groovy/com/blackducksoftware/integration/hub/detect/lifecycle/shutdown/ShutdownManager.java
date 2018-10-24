@@ -32,6 +32,7 @@ public class ShutdownManager {
 
     public ExitCodeType shutdown() {
         try {
+            logger.debug("Ending phone home.");
             phoneHomeManager.endPhoneHome();
         } catch (final Exception e) {
             logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
@@ -39,7 +40,10 @@ public class ShutdownManager {
 
         try {
             if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.None)) {
+                logger.info("Cleaning up directory: " + directoryManager.getRunHomeDirectory().getAbsolutePath());
                 FileUtils.deleteDirectory(directoryManager.getRunHomeDirectory());
+            } else {
+                logger.info("Skipping cleanup, it is disabled.");
             }
         } catch (final Exception e) {
             logger.debug(String.format("Error trying cleanup the run directory: %s", e.getMessage()));

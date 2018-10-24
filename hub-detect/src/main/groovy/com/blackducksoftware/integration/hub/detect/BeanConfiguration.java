@@ -128,7 +128,6 @@ import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.boot.DetectRunDependencies;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeManager;
-import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ShutdownManager;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
@@ -248,6 +247,11 @@ public class BeanConfiguration {
     @Bean
     public DirectoryManager directoryManager() {
         return detectRunDependencies.directoryManager;
+    }
+
+    @Bean
+    public ExitCodeManager exitCodeManager() {
+        return detectRunDependencies.exitCodeManager;
     }
 
     //Regular Beans
@@ -749,11 +753,6 @@ public class BeanConfiguration {
     @Bean
     public DetectBdioUploadService detectBdioUploadService() {
         return new DetectBdioUploadService(detectConfiguration(), eventSystem(), codeLocationService());
-    }
-
-    @Bean
-    public ExitCodeManager exitCodeManager() {
-        return new ExitCodeManager(eventSystem(), new ExitCodeUtility());
     }
 
     //BomTools

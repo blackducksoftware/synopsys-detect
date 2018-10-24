@@ -30,6 +30,7 @@ import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeManager;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
@@ -55,8 +56,7 @@ public class BootManager {
         this.bootFactory = bootFactory;
     }
 
-    public BootResult boot(final String[] sourceArgs, ConfigurableEnvironment environment) throws DetectUserFriendlyException, IntegrationException {
-        EventSystem eventSystem = new EventSystem();
+    public BootResult boot(final String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, ExitCodeManager exitCodeManager) throws DetectUserFriendlyException, IntegrationException {
         Gson gson = bootFactory.createGson();
         JsonParser jsonParser = bootFactory.createJsonParser();
         DocumentBuilder xml = bootFactory.createXmlDocumentBuilder();
@@ -118,6 +118,7 @@ public class BootManager {
             logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
             return BootResult.exit();
         }
+        hubServiceManager.init();
 
         PhoneHomeManager phoneHomeManager = createPhoneHomeManager(detectInfo, detectConfiguration, hubServiceManager, eventSystem, gson);
 
@@ -128,6 +129,7 @@ public class BootManager {
         //Finished, return created objects.
         DetectRunDependencies detectRunDependencies = new DetectRunDependencies();
         detectRunDependencies.eventSystem = eventSystem;
+        detectRunDependencies.exitCodeManager = exitCodeManager;
         detectRunDependencies.detectConfiguration = detectConfiguration;
         detectRunDependencies.detectRun = detectRun;
         detectRunDependencies.detectInfo = detectInfo;

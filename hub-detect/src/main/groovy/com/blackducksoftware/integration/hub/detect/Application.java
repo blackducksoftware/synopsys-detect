@@ -33,14 +33,18 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.boot.BootFactory;
 import com.blackducksoftware.integration.hub.detect.lifecycle.boot.BootManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.boot.BootResult;
 import com.blackducksoftware.integration.hub.detect.lifecycle.boot.DetectRunDependencies;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunManager;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ShutdownManager;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 
 //@SpringBootApplication
 //@Configuration
@@ -66,22 +70,26 @@ public class Application implements ApplicationRunner {
     public void run(final ApplicationArguments applicationArguments) throws Exception {
         final long startTime = System.currentTimeMillis();
 
+        EventSystem eventSystem = new EventSystem(); //there should be one single event system in all of detect
         ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
-        ExitCodeType detectExitCode = ExitCodeType.SUCCESS;
+        ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
+
         BootResult bootResult = null;
         try {
             logger.info("Detect boot begin.");
             BootManager bootManager = new BootManager(new BootFactory());
-            bootResult = bootManager.boot(applicationArguments.getSourceArgs(), environment);
+            bootResult = bootManager.boot(applicationArguments.getSourceArgs(), environment, eventSystem, exitCodeManager);
             logger.info("Detect boot complete.");
         } catch (final Exception e) {
             logger.info("Detect boot failed.");
-            detectExitCode = exitCodeUtility.getExitCodeFromExceptionDetails(e);
+            exitCodeManager.requestExitCode(e);
         }
+        if (bootResult != null && bootResult.bootType == BootResult.BootType.CONTINUE) {
 
-        try {
-            if (bootResult != null && bootResult.bootType == BootResult.BootType.CONTINUE) {
-                logger.info("Detect run begin.");
+            RunManager runManager = null;
+            ShutdownManager shutdownManager = null;
+            try {
+                logger.info("Detect run initialize.");
                 final DetectRunDependencies detectRunDependencies = bootResult.detectRunDependencies;
                 AnnotationConfigApplicationContext runContext = new AnnotationConfigApplicationContext();
                 runContext.setDisplayName("Detect Run " + detectRunDependencies.detectRun.getRunId());
@@ -89,27 +97,44 @@ public class Application implements ApplicationRunner {
                 runContext.registerBean(DetectRunDependencies.class, () -> detectRunDependencies);
                 runContext.refresh();
 
-                RunManager runManager = runContext.getBean(RunManager.class);
-                runManager.run();
+                runManager = runContext.getBean(RunManager.class);
+                shutdownManager = runContext.getBean(ShutdownManager.class);
 
-                ShutdownManager shutdownManager = runContext.getBean(ShutdownManager.class);
-                detectExitCode = shutdownManager.shutdown();
+                logger.info("Detect run initialized succesfully.");
+            } catch (final Exception e) {
+                exitCodeManager.requestExitCode(e);
             }
-        } catch (final Exception e) {
-            detectExitCode = exitCodeUtility.getExitCodeFromExceptionDetails(e);
+
+            try {
+                logger.info("Detect run begin.");
+                runManager.run();
+                logger.info("Detect run completed.");
+            } catch (final Exception e) {
+                exitCodeManager.requestExitCode(e);
+            }
+
+            try {
+                logger.info("Detect shutdown begin.");
+                ExitCodeType exitCodeType = shutdownManager.shutdown();
+                exitCodeManager.requestExitCode(exitCodeType);
+                logger.info("Detect shutdown completed.");
+            } catch (final Exception e) {
+                exitCodeManager.requestExitCode(e);
+            }
         }
 
         final long endTime = System.currentTimeMillis();
-        logger.info(String.format("Hub-Detect run duration: %s", DurationFormatUtils.formatPeriod(startTime, endTime, "HH'h' mm'm' ss's' SSS'ms'")));
+        logger.info(String.format("Detect duration: %s", DurationFormatUtils.formatPeriod(startTime, endTime, "HH'h' mm'm' ss's' SSS'ms'")));
 
-        if (detectExitCode != ExitCodeType.SUCCESS && bootResult.bootType == null) {
-            logger.warn(String.format("Forcing success: Exiting with exit code 0. Ignored exit code was %s.", detectExitCode.getExitCode()));
+        ExitCodeType finalExitCode = exitCodeManager.getWinningExitCode();
+        if (finalExitCode != ExitCodeType.SUCCESS && bootResult.bootType != null && bootResult.detectRunDependencies.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS, PropertyAuthority.None)) {
+            logger.warn(String.format("Forcing success: Exiting with exit code 0. Ignored exit code was %s.", finalExitCode.getExitCode()));
             System.exit(0);
-        } else if (detectExitCode != ExitCodeType.SUCCESS) {
-            logger.error(String.format("Exiting with code %s - %s", detectExitCode.getExitCode(), detectExitCode.toString()));
+        } else if (finalExitCode != ExitCodeType.SUCCESS) {
+            logger.error(String.format("Exiting with code %s - %s", finalExitCode.getExitCode(), finalExitCode.toString()));
         }
 
-        System.exit(detectExitCode.getExitCode());
+        System.exit(finalExitCode.getExitCode());
     }
 
 }
