@@ -76,7 +76,7 @@ public class PhoneHomeManager {
         this.gson = gson;
         this.eventSystem = eventSystem;
 
-        eventSystem.registerListener(Event.SearchCompleted, payload -> searchCompleted((SearchResult) payload));
+        eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event));
     }
 
     public void initOffline() {

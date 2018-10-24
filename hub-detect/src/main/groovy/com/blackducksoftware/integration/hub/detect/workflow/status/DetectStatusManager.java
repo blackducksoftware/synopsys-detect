@@ -12,7 +12,7 @@ public class DetectStatusManager {
     private List<Status> statusSummaries = new ArrayList<>();
 
     public DetectStatusManager(EventSystem eventSystem) {
-        eventSystem.registerListener(Event.StatusSummary, event -> addStatusSummary((Status) event));
+        eventSystem.registerListener(Event.StatusSummary, event -> addStatusSummary(event));
     }
 
     public void addStatusSummary(Status status) {

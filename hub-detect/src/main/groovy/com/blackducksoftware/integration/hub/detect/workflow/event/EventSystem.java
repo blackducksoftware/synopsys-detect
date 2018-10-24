@@ -11,27 +11,23 @@ import org.slf4j.LoggerFactory;
 public class EventSystem {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    Map<Event, List<EventListener>> eventListenerMap = new HashMap<>();
+    Map<EventType, List<EventListener>> eventListenerMap = new HashMap<>();
 
-    public void publishEvent(Event event, Object payload) {
-        if (event.getEventClass().isAssignableFrom(payload.getClass())) {
-            for (EventListener listener : safelyGetListeners(event)) {
-                listener.eventOccured(payload);
-            }
-        } else {
-            logger.warn("An event was published with the incorrect event type.");
+    public <T> void publishEvent(EventType<T> event, T payload) {
+        for (EventListener listener : safelyGetListeners(event)) {
+            listener.eventOccured(payload);
         }
     }
 
-    public void registerListener(Event event, EventListener listener) {
+    public <T> void registerListener(EventType<T> event, EventListener<T> listener) {
         safelyGetListeners(event).add(listener);
     }
 
-    public void unregisterListener(Event event, EventListener listener) {
+    public <T> void unregisterListener(EventType<T> event, EventListener<T> listener) {
         safelyGetListeners(event).remove(listener);
     }
 
-    private List<EventListener> safelyGetListeners(Event event) {
+    private List<EventListener> safelyGetListeners(EventType event) {
         List<EventListener> listeners;
         if (eventListenerMap.containsKey(event)) {
             listeners = eventListenerMap.get(event);

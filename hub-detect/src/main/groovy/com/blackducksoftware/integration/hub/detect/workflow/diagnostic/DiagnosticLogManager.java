@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
@@ -73,8 +72,8 @@ public class DiagnosticLogManager {
         logger.info("Attempting to redirect sysout.");
         captureStdOut();
 
-        eventSystem.registerListener(Event.ExtractionStarted, it -> startLoggingExtraction(((BomToolEvaluation) it).getExtractionId()));
-        eventSystem.registerListener(Event.ExtractableEnded, it -> stopLoggingExtraction(((BomToolEvaluation) it).getExtractionId()));
+        eventSystem.registerListener(Event.ExtractionStarted, it -> startLoggingExtraction(it.getExtractionId()));
+        eventSystem.registerListener(Event.ExtractionEnded, it -> stopLoggingExtraction(it.getExtractionId()));
     }
 
     public void finish() {

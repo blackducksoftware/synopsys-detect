@@ -27,15 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolsResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class ReportManager {
@@ -61,10 +57,10 @@ public class ReportManager {
         this.extractionSummaryReporter = extractionSummaryReporter;
         this.searchSummaryReporter = searchSummaryReporter;
 
-        eventSystem.registerListener(Event.SearchCompleted, it -> searchCompleted(((SearchResult) it).getBomToolEvaluations()));
-        eventSystem.registerListener(Event.PreparationsCompleted, it -> preparationsCompleted(((PreparationResult) it).getBomToolEvaluations()));
-        eventSystem.registerListener(Event.BomToolsComplete, it -> bomToolsComplete(((BomToolsResult) it).evaluatedBomTools));
-        eventSystem.registerListener(Event.CodeLocationsCalculated, it -> codeLocationsCompleted(((DetectCodeLocationResult) it).getCodeLocationNames()));
+        eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event.getBomToolEvaluations()));
+        eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event.getBomToolEvaluations()));
+        eventSystem.registerListener(Event.BomToolsComplete, event -> bomToolsComplete(event.evaluatedBomTools));
+        eventSystem.registerListener(Event.CodeLocationsCalculated, event -> codeLocationsCompleted(event.getCodeLocationNames()));
 
     }
 

@@ -13,7 +13,7 @@ public class ExitCodeManager {
 
     public ExitCodeManager(EventSystem eventSystem, ExitCodeUtility exitCodeUtility) {
         this.exitCodeUtility = exitCodeUtility;
-        eventSystem.registerListener(Event.ExitCode, event -> addExitCodeRequest((ExitCodeRequest) event));
+        eventSystem.registerListener(Event.ExitCode, event -> addExitCodeRequest(event));
     }
 
     public void requestExitCode(Exception e) {

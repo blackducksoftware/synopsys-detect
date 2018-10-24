@@ -31,9 +31,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolsResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
@@ -93,8 +91,8 @@ public class DiagnosticReportManager {
         this.bomToolProfiler = bomToolProfiler;
         createReports();
 
-        eventSystem.registerListener(Event.BomToolsComplete, payload -> completedBomToolEvaluations(((BomToolsResult) payload).evaluatedBomTools));
-        eventSystem.registerListener(Event.CodeLocationsCalculated, payload -> completedCodeLocations(((DetectCodeLocationResult) payload).getCodeLocationNames()));
+        eventSystem.registerListener(Event.BomToolsComplete, event -> completedBomToolEvaluations(event.evaluatedBomTools));
+        eventSystem.registerListener(Event.CodeLocationsCalculated, event -> completedCodeLocations(event.getCodeLocationNames()));
     }
 
     public void finish() {

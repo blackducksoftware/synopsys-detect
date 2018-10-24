@@ -31,7 +31,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class BomToolProfiler {
     public BomToolTimekeeper applicableTimekeeper = new BomToolTimekeeper();
@@ -39,12 +38,12 @@ public class BomToolProfiler {
     public BomToolTimekeeper extractionTimekeeper = new BomToolTimekeeper();
 
     public BomToolProfiler(EventSystem eventSystem) {
-        eventSystem.registerListener(Event.ApplicableStarted, it -> applicableStarted((BomTool) it));
-        eventSystem.registerListener(Event.ApplicableEnded, it -> applicableEnded((BomTool) it));
-        eventSystem.registerListener(Event.ExtractableStarted, it -> extractableStarted((BomTool) it));
-        eventSystem.registerListener(Event.ExtractableEnded, it -> extractableEnded((BomTool) it));
-        eventSystem.registerListener(Event.ExtractionStarted, it -> extractionStarted(((BomToolEvaluation) it).getBomTool()));
-        eventSystem.registerListener(Event.ExtractionEnded, it -> extractionEnded(((BomToolEvaluation) it).getBomTool()));
+        eventSystem.registerListener(Event.ApplicableStarted, event -> applicableStarted(event));
+        eventSystem.registerListener(Event.ApplicableEnded, event -> applicableEnded(event));
+        eventSystem.registerListener(Event.ExtractableStarted, event -> extractableStarted(event));
+        eventSystem.registerListener(Event.ExtractableEnded, event -> extractableEnded(event));
+        eventSystem.registerListener(Event.ExtractionStarted, event -> extractionStarted(event.getBomTool()));
+        eventSystem.registerListener(Event.ExtractionEnded, event -> extractionEnded(event.getBomTool()));
     }
 
     private void applicableStarted(final BomTool bomTool) {
