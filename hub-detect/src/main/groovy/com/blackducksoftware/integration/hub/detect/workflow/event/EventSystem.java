@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.event;
+package com.blackducksoftware.integration.hub.detect.workflow.event;
 
 import java.util.ArrayList;
 import java.util.HashMap;

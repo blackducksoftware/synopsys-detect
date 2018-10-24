@@ -31,10 +31,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchEvaluator;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;

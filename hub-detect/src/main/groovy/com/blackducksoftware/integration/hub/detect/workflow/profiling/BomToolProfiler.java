@@ -29,8 +29,8 @@ import java.util.Map;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.event.Event;
-import com.blackducksoftware.integration.hub.detect.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class BomToolProfiler {

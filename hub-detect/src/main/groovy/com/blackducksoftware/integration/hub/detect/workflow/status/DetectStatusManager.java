@@ -3,9 +3,9 @@ package com.blackducksoftware.integration.hub.detect.workflow.status;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.event.Event;
-import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.synopsys.integration.log.IntLogger;
 
 public class DetectStatusManager {

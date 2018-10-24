@@ -76,7 +76,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_LOGGING)
     @HelpDescription("If true, the default behavior of printing your configuration properties at startup will be suppressed.")
-    DETECT_SUPPRESS_CONFIGURATION_OUTPUT("detect.suppress.configuration.output", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_SUPPRESS_CONFIGURATION_OUTPUT("detect.suppress.configuration.output", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.BootManager, "false"),
 
     @HelpGroup(primary = GROUP_LOGGING)
     @HelpDescription("If true, the default behavior of printing the Detect Results will be suppressed.")

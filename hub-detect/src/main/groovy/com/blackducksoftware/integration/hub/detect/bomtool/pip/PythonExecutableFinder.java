@@ -24,10 +24,10 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 

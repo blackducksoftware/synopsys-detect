@@ -79,7 +79,12 @@ public class DiagnosticManager {
 
         System.out.println("");
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("Diagnostic mode on. Run id " + detectRun.getRunId());
+        System.out.println("Diagnostic mode on.");
+        System.out.println("A zip file will be created with logs and relevant detect output files.");
+        System.out.println("It is not recommended to leave diagnostic mode on as you must manually clean up the zip.");
+        if (!isDiagnosticProtected) {
+            System.out.println("Additional relevant files such as lock files can be collected automatically in extended diagnostics.");
+        }
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("");
 

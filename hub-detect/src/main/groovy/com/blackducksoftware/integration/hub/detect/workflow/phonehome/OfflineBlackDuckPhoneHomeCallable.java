@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.phonehome;
 
 import java.util.HashMap;
 import java.util.Map;

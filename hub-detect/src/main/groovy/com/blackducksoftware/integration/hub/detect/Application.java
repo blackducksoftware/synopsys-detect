@@ -34,13 +34,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.workflow.boot.BootFactory;
-import com.blackducksoftware.integration.hub.detect.workflow.boot.BootManager;
-import com.blackducksoftware.integration.hub.detect.workflow.boot.BootResult;
-import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectRunDependencies;
-import com.blackducksoftware.integration.hub.detect.workflow.run.RunManager;
-import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ExitCodeUtility;
-import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ShutdownManager;
+import com.blackducksoftware.integration.hub.detect.lifecycle.boot.BootFactory;
+import com.blackducksoftware.integration.hub.detect.lifecycle.boot.BootManager;
+import com.blackducksoftware.integration.hub.detect.lifecycle.boot.BootResult;
+import com.blackducksoftware.integration.hub.detect.lifecycle.boot.DetectRunDependencies;
+import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunManager;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeUtility;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ShutdownManager;
 
 //@SpringBootApplication
 //@Configuration

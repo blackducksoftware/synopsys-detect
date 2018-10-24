@@ -28,8 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class SearchResultBomToolFailed extends SearchResult {

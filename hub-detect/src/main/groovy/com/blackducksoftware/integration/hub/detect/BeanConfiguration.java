@@ -124,25 +124,29 @@ import com.blackducksoftware.integration.hub.detect.configuration.ConnectionMana
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
+import com.blackducksoftware.integration.hub.detect.lifecycle.boot.DetectRunDependencies;
+import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunManager;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeManager;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeUtility;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ShutdownManager;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
-import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolManager;
-import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectRunDependencies;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
+import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckBinaryScanner;
@@ -153,6 +157,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectSe
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectServiceOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
+import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionOptions;
@@ -160,13 +165,9 @@ import com.blackducksoftware.integration.hub.detect.workflow.report.ExtractionSu
 import com.blackducksoftware.integration.hub.detect.workflow.report.PreparationSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.report.SearchSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.run.RunManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchEvaluator;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
-import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ExitCodeManager;
-import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ExitCodeUtility;
-import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ShutdownManager;
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectStatusManager;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.CodeLocationService;
@@ -244,6 +245,11 @@ public class BeanConfiguration {
         return detectRunDependencies.phoneHomeManager;
     }
 
+    @Bean
+    public DirectoryManager directoryManager() {
+        return detectRunDependencies.directoryManager;
+    }
+
     //Regular Beans
     @Bean
     public DetectConfigurationFactory detectConfigurationFactory() {
@@ -265,7 +271,7 @@ public class BeanConfiguration {
 
     @Bean
     public ReportManager reportManager() {
-        return new ReportManager(eventSystem(), detectRunDependencies.phoneHomeManager, diagnosticManager(), preparationSummaryReporter(), extractionSummaryReporter(), searchSummaryReporter());
+        return new ReportManager(eventSystem(), phoneHomeManager(), diagnosticManager(), preparationSummaryReporter(), extractionSummaryReporter(), searchSummaryReporter());
     }
 
     @Bean
@@ -289,15 +295,9 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public DirectoryManager directoryManager() {
-        return detectRunDependencies.directoryManager;
-        //return new DirectoryManager(detectConfiguration(), detectRun(), diagnosticManager());
-    }
-
-    @Bean
     public AirGapManager airGapManager() {
-        return detectRunDependencies.airGapManager;
-        //return new DirectoryManager(detectConfiguration(), detectRun(), diagnosticManager());
+        AirGapOptions airGapOptions = detectConfigurationFactory().createAirGapOptions();
+        return new AirGapManager(airGapOptions);
     }
 
     @Bean

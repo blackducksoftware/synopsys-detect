@@ -27,11 +27,11 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import com.blackducksoftware.integration.hub.detect.event.Event;
-import com.blackducksoftware.integration.hub.detect.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class ReportManager {

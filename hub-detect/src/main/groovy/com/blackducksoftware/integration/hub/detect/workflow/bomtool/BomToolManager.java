@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.event.Event;
-import com.blackducksoftware.integration.hub.detect.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationManager;

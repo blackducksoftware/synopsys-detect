@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.event.Event;
-import com.blackducksoftware.integration.hub.detect.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.synopsys.integration.blackduck.service.CodeLocationService;
 import com.synopsys.integration.exception.IntegrationException;
 

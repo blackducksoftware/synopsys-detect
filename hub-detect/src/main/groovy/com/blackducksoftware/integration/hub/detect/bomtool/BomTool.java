@@ -27,9 +27,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
 
 public abstract class BomTool {
     protected BomToolEnvironment environment;

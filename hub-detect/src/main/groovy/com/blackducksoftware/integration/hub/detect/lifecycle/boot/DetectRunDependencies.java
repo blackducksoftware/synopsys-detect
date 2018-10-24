@@ -1,16 +1,15 @@
-package com.blackducksoftware.integration.hub.detect.workflow.boot;
+package com.blackducksoftware.integration.hub.detect.lifecycle.boot;
 
 import javax.xml.parsers.DocumentBuilder;
 
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
-import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
-import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
+import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
@@ -23,7 +22,6 @@ public class DetectRunDependencies {
     public DetectInfo detectInfo;
     public DetectConfiguration detectConfiguration;
     public DirectoryManager directoryManager;
-    public AirGapManager airGapManager;
     public PhoneHomeManager phoneHomeManager;
     public DiagnosticManager diagnosticManager;
     public HubServiceManager hubServiceManager;

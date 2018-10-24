@@ -31,7 +31,7 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileUtils;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 

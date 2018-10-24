@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.search;
 
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchEvaluator;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.synopsys.integration.util.ExcludedIncludedFilter;

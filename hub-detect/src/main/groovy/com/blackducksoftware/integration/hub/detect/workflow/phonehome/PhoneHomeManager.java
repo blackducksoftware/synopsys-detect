@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.phonehome;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.event.Event;
-import com.blackducksoftware.integration.hub.detect.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.HubRegistrationService;

@@ -14,7 +14,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyMap;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
-import com.blackducksoftware.integration.hub.detect.workflow.boot.DetectRunDependencies;
+import com.blackducksoftware.integration.hub.detect.lifecycle.boot.DetectRunDependencies;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchRuleSet;
 

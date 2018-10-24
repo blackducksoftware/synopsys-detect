@@ -17,17 +17,21 @@ public class AirGapManager {
     private String nugetInspectorAirGapPath;
     private String gradleInspectorAirGapPath;
 
-    public void init(AirGapOptions airGapOptions) throws IOException {
-        final File detectJar = new File(guessDetectJarLocation()).getCanonicalFile();
+    public AirGapManager(AirGapOptions airGapOptions) {
+        File detectJar = null;
+        try {
+            detectJar = new File(guessDetectJarLocation()).getCanonicalFile();
+        } catch (IOException e) {
+            logger.debug("Unable to guess detect jar location.");
+        }
         dockerInspectorAirGapPath = getInspectorAirGapPath(detectJar, airGapOptions.getDockerInspectorPathOverride(), DOCKER);
         gradleInspectorAirGapPath = getInspectorAirGapPath(detectJar, airGapOptions.getGradleInspectorPathOverride(), GRADLE);
         nugetInspectorAirGapPath = getInspectorAirGapPath(detectJar, airGapOptions.getNugetInspectorPathOverride(), NUGET);
     }
 
     private String getInspectorAirGapPath(File detectJar, final String inspectorLocationProperty, final String inspectorName) {
-        if (StringUtils.isBlank(inspectorLocationProperty)) {
+        if (StringUtils.isBlank(inspectorLocationProperty) && detectJar != null) {
             try {
-
                 final File inspectorsDirectory = new File(detectJar.getParentFile(), "packaged-inspectors");
                 final File inspectorAirGapDirectory = new File(inspectorsDirectory, inspectorName);
                 return inspectorAirGapDirectory.getCanonicalPath();

@@ -39,13 +39,13 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.event.Event;
-import com.blackducksoftware.integration.hub.detect.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.workflow.status.SignatureScanStatus;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 import com.synopsys.integration.blackduck.configuration.HubServerConfig;
@@ -101,6 +101,7 @@ public class BlackDuckSignatureScanner {
             throw new IntegrationException("Could not execute the scans: " + e.getMessage());
         }
 
+        reportResults();
     }
 
     private void reportResults() {
@@ -127,7 +128,10 @@ public class BlackDuckSignatureScanner {
             }
             eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(scan.scanPath, scanStatus));
         }
-        eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_SCAN));
+
+        if (anyFailed) {
+            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_SCAN));
+        }
 
         if (anyExitCodeIs64) {
             logger.error("");
@@ -140,10 +144,8 @@ public class BlackDuckSignatureScanner {
     }
 
     private void handleScanCommandOutput(final ScanCommandOutput scanCommandOutput) {
-        final Result result = scanCommandOutput.getResult();
-        final String path = scanCommandOutput.getScanTarget();
         scans.stream()
-            .filter(it -> it.scanPath.equals(it))
+            .filter(it -> it.scanPath.equals(scanCommandOutput.getScanTarget()))
             .findFirst()
             .ifPresent(it -> {
                 it.scanResult = scanCommandOutput.getResult();
@@ -186,8 +188,7 @@ public class BlackDuckSignatureScanner {
         try {
             final File target = new File(path);
             final String targetPath = target.getCanonicalPath();
-            BlackDuckSignatureScannerEvaluation scannerEvaluation = new BlackDuckSignatureScannerEvaluation();
-            scannerEvaluation.scanPath = targetPath;
+            BlackDuckSignatureScannerEvaluation scannerEvaluation = new BlackDuckSignatureScannerEvaluation(targetPath);
             scans.add(scannerEvaluation);
             final ExclusionPatternDetector exclusionPatternDetector = new ExclusionPatternDetector(detectFileFinder, target);
             final Set<String> scanExclusionPatterns = exclusionPatternDetector.determineExclusionPatterns(hubSignatureScannerExclusionNamePatterns);
