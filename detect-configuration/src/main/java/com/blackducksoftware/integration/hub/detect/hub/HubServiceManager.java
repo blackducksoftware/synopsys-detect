@@ -227,8 +227,10 @@ public class HubServiceManager {
     public IntEnvironmentVariables getEnvironmentVariables() {
         try {
             return (IntEnvironmentVariables) HubServicesFactory.class.getDeclaredField("intEnvironmentVariables").get(hubServicesFactory);
-        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-            return new IntEnvironmentVariables();
+        } catch (Exception e) {
+            IntEnvironmentVariables intEnvironmentVariables = new IntEnvironmentVariables();
+            intEnvironmentVariables.putAll(detectConfiguration.getBlackduckProperties());
+            return intEnvironmentVariables;
         }
     }
 }
