@@ -127,7 +127,7 @@ public class DetectFileFinder {
 
     private List<File> findFilesRecursive(final File sourceDirectory, final int currentDepth, final int maxDepth, final Boolean recurseIntoDirectoryMatch, final String... filenamePatterns) {
         final List<File> files = new ArrayList<>();
-        if (currentDepth < maxDepth && sourceDirectory.isDirectory() && sourceDirectory.listFiles().length > 0 && null != filenamePatterns && filenamePatterns.length >= 1) {
+        if (currentDepth < maxDepth && sourceDirectory.isDirectory() && sourceDirectory.listFiles() != null && sourceDirectory.listFiles().length > 0 && null != filenamePatterns && filenamePatterns.length >= 1) {
             for (final File file : sourceDirectory.listFiles()) {
                 final boolean fileMatchesPatterns = Arrays.stream(filenamePatterns).anyMatch(pattern -> FilenameUtils.wildcardMatchOnSystem(file.getName(), pattern));
 
