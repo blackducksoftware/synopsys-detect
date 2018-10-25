@@ -24,7 +24,6 @@
 package com.blackducksoftware.integration.hub.detect.workflow.search;
 
 import java.util.List;
-
 import com.synopsys.integration.util.ExcludedIncludedFilter;
 
 public class BomToolFinderOptions {
