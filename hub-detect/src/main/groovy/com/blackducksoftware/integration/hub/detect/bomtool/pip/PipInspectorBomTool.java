@@ -40,8 +40,11 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoun
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.InspectorNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PipInspectorBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
 
     private final DetectFileFinder fileFinder;
@@ -70,6 +73,9 @@ public class PipInspectorBomTool extends BomTool {
         final boolean hasSetups = setupFile != null;
         final boolean hasRequirements = requirementFilePath != null && StringUtils.isNotBlank(requirementFilePath);
         if (hasSetups || hasRequirements) {
+            logger.warn("------------------------------------------------------------------------------------------------------");
+            logger.warn("The Pip inspector has been deprecated. Please use pipenv and the Pipenv Graph inspector in the future.");
+            logger.warn("------------------------------------------------------------------------------------------------------");
             return new PassedBomToolResult();
         } else {
             return new FileNotFoundBomToolResult(SETUPTOOLS_DEFAULT_FILE_NAME);
