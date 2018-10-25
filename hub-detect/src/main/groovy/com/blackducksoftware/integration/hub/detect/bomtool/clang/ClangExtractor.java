@@ -87,14 +87,14 @@ public class ClangExtractor {
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> unManagedDependencyFiles = ConcurrentHashMap.newKeySet(64);
             final List<CompileCommandWrapper> compileCommands = parseJsonCompilationDatabaseFile(jsonCompilationDatabaseFile);
-            final List<Dependency> bdioComponents = compileCommands.parallelStream()
+            final List<Dependency> bdioComponents = compileCommands.stream()
                     .flatMap(compileCommandToDependencyFilePathsConverter(outputDirectory))
-                    .collect(Collectors.toSet()).parallelStream()
+                    .collect(Collectors.toSet()).stream()
                     .filter(StringUtils::isNotBlank)
                     .map(File::new)
                     .filter(fileIsNewPredicate())
                     .flatMap(dependencyFileToLinuxPackagesConverter(rootDir, unManagedDependencyFiles, pkgMgr))
-                    .collect(Collectors.toSet()).parallelStream()
+                    .collect(Collectors.toSet()).stream()
                     .flatMap(linuxPackageToBdioComponentsConverter(pkgMgr))
                     .collect(Collectors.toList());
 
