@@ -14,7 +14,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyMap;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
-import com.blackducksoftware.integration.hub.detect.lifecycle.boot.DetectRunDependencies;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchRuleSet;
 
@@ -27,13 +26,13 @@ public class BomToolFactoryTest {
         ConfigurableEnvironment environment = new StandardEnvironment();
         DetectConfiguration mockConfig = new DetectConfiguration(new DetectPropertySource(environment), new DetectPropertyMap());
 
-        DetectRunDependencies detectRunDependencies = Mockito.mock(DetectRunDependencies.class);
-        detectRunDependencies.detectConfiguration = mockConfig;
+        BomToolDependencies bomToolDependencies = Mockito.mock(BomToolDependencies.class);
+        bomToolDependencies.detectConfiguration = mockConfig;
 
         runContext = new AnnotationConfigApplicationContext();
         runContext.setDisplayName("Detect Run Test");
-        runContext.register(BeanConfiguration.class);
-        runContext.registerBean(DetectRunDependencies.class, () -> { return detectRunDependencies; });
+        runContext.register(BomToolBeanConfiguration.class);
+        runContext.registerBean(BomToolDependencies.class, () -> { return bomToolDependencies; });
         runContext.refresh();
     }
 

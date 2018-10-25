@@ -27,22 +27,44 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameService;
 import com.synopsys.integration.blackduck.service.BinaryScannerService;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckBinaryScanner {
     private final Logger logger = LoggerFactory.getLogger(BlackDuckBinaryScanner.class);
 
     private final CodeLocationNameService codeLocationNameService;
+    private DetectConfiguration detectConfiguration;
+    private HubServiceManager hubServiceManager;
 
-    public BlackDuckBinaryScanner(final CodeLocationNameService codeLocationNameService) {
+    public BlackDuckBinaryScanner(final CodeLocationNameService codeLocationNameService, final DetectConfiguration detectConfiguration, final HubServiceManager hubServiceManager) {
         this.codeLocationNameService = codeLocationNameService;
+        this.detectConfiguration = detectConfiguration;
+        this.hubServiceManager = hubServiceManager;
+    }
+
+    public void performBinaryScanActions(final NameVersion projectNameVersion) throws DetectUserFriendlyException {
+        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None))) {
+            final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.None);
+            final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.None);
+
+            final File file = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None));
+            uploadBinaryScanFile(hubServiceManager.createBinaryScannerService(), file, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);
+        } else {
+            logger.debug("No binary scan path was provided, so binary scan will not occur.");
+        }
     }
 
     public void uploadBinaryScanFile(final BinaryScannerService binaryService, final File file, final String projectName, final String projectVersionName, final String prefix, final String suffix) throws DetectUserFriendlyException {

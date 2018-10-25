@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +41,9 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
@@ -72,14 +76,29 @@ public class BlackDuckSignatureScanner {
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfiguration detectConfiguration;
     private final EventSystem eventSystem;
+    private final HubServiceManager hubServiceManager;
 
     public BlackDuckSignatureScanner(final DirectoryManager directoryManager, final DetectFileFinder detectFileFinder, final CodeLocationNameManager codeLocationNameManager,
-        final DetectConfiguration detectConfiguration, EventSystem eventSystem) {
+        final DetectConfiguration detectConfiguration, EventSystem eventSystem, final HubServiceManager hubServiceManager) {
         this.directoryManager = directoryManager;
         this.detectFileFinder = detectFileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
         this.eventSystem = eventSystem;
+        this.hubServiceManager = hubServiceManager;
+    }
+
+    public void performScanActions(NameVersion projectNameVersion) throws InterruptedException, IntegrationException, DetectUserFriendlyException {
+        if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, PropertyAuthority.None)) {
+            final HubServerConfig hubServerConfig = hubServiceManager.getHubServerConfig();
+            final ExecutorService executorService = Executors.newFixedThreadPool(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, PropertyAuthority.None));
+            try {
+                final ScanJobManager scanJobManager = hubServiceManager.createScanJobManager(executorService);
+                scanPaths(hubServerConfig, scanJobManager, projectNameVersion);
+            } finally {
+                executorService.shutdownNow();
+            }
+        }
     }
 
     public void scanPaths(final HubServerConfig hubServerConfig, ScanJobManager scanJobManager, final NameVersion projectNameVersion) throws IntegrationException, InterruptedException {

@@ -20,7 +20,7 @@
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations
  * under the License.
- *
+ */
 package com.blackducksoftware.integration.hub.detect;
 
 import java.util.ArrayList;
@@ -60,10 +60,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.cpan.CpanListParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratLockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratLockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratPackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomToolOptions;
-import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.DepPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.GoCliBomTool;
@@ -124,60 +120,15 @@ import com.blackducksoftware.integration.hub.detect.configuration.ConnectionMana
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
-import com.blackducksoftware.integration.hub.detect.lifecycle.boot.DetectRunDependencies;
-import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunManager;
-import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeManager;
-import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ShutdownManager;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
-import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
-import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioManager;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolManager;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameService;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
-import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
-import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckBinaryScanner;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckSignatureScanner;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectBdioUploadService;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectCodeLocationUnmapService;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectService;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectServiceOptions;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
-import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
-import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionManager;
-import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionOptions;
-import com.blackducksoftware.integration.hub.detect.workflow.report.ExtractionSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.report.PreparationSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
-import com.blackducksoftware.integration.hub.detect.workflow.report.SearchSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
-import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchEvaluator;
-import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
-import com.blackducksoftware.integration.hub.detect.workflow.status.DetectStatusManager;
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.service.CodeLocationService;
-import com.synopsys.integration.hub.bdio.BdioNodeFactory;
-import com.synopsys.integration.hub.bdio.BdioPropertyHelper;
-import com.synopsys.integration.hub.bdio.BdioTransformer;
-import com.synopsys.integration.hub.bdio.SimpleBdioFactory;
-import com.synopsys.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.log.SilentLogger;
-import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 import freemarker.template.Configuration;
 
@@ -185,249 +136,84 @@ import freemarker.template.Configuration;
 //This configuration is NOT loaded when the application starts, but only manually when a DetectRun is needed.
 //Spring scanning should not be invoked as this should not be loaded during boot.
 @org.springframework.context.annotation.Configuration
-public class BeanConfiguration {
-    private final DetectRunDependencies detectRunDependencies;
+public class BomToolBeanConfiguration {
+    private final BomToolDependencies bomToolDependencies;
 
     @Autowired
-    public BeanConfiguration(final DetectRunDependencies detectRunDependencies) {
-        this.detectRunDependencies = detectRunDependencies;
+    public BomToolBeanConfiguration(final BomToolDependencies bomToolDependencies) {
+        this.bomToolDependencies = bomToolDependencies;
     }
 
-    //Beans from Boot
+    //Provided Dependencies
     @Bean
     public Gson gson() {
-        return detectRunDependencies.gson;
-    }
-
-    @Bean
-    public EventSystem eventSystem() {
-        return detectRunDependencies.eventSystem;
-    }
-
-    @Bean
-    public DetectConfiguration detectConfiguration() {
-        return detectRunDependencies.detectConfiguration;
-    }
-
-    @Bean
-    public DetectRun detectRun() {
-        return detectRunDependencies.detectRun;
-    }
-
-    @Bean
-    public DiagnosticManager diagnosticManager() {
-        return detectRunDependencies.diagnosticManager;
-    }
-
-    @Bean
-    public DetectInfo detectInfo() {
-        return detectRunDependencies.detectInfo;
-    }
-
-    @Bean
-    public DocumentBuilder xmlDocumentBuilder() {
-        return detectRunDependencies.documentBuilder;
-    }
-
-    @Bean
-    public HubServiceManager hubServiceManager() {
-        return detectRunDependencies.hubServiceManager;
+        return bomToolDependencies.gson;
     }
 
     @Bean
     public Configuration configuration() {
-        return detectRunDependencies.configuration;
+        return bomToolDependencies.configuration;
     }
 
     @Bean
-    public PhoneHomeManager phoneHomeManager() {
-        return detectRunDependencies.phoneHomeManager;
-    }
-
-    @Bean
-    public DirectoryManager directoryManager() {
-        return detectRunDependencies.directoryManager;
-    }
-
-    @Bean
-    public ExitCodeManager exitCodeManager() {
-        return detectRunDependencies.exitCodeManager;
-    }
-
-    //Regular Beans
-    @Bean
-    public DetectConfigurationFactory detectConfigurationFactory() {
-        return new DetectConfigurationFactory(detectConfiguration());
-    }
-
-    @Bean
-    public ShutdownManager shutdownManager() {
-        return new ShutdownManager(detectStatusManager(), exitCodeManager(), phoneHomeManager(), directoryManager(), detectConfiguration());
-    }
-
-    @Bean
-    public SimpleBdioFactory simpleBdioFactory() {
-        final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
-        final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
-        final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
-        return new SimpleBdioFactory(bdioPropertyHelper, bdioNodeFactory, dependencyGraphTransformer, externalIdFactory(), gson());
-    }
-
-    @Bean
-    public ReportManager reportManager() {
-        return new ReportManager(eventSystem(), phoneHomeManager(), diagnosticManager(), preparationSummaryReporter(), extractionSummaryReporter(), searchSummaryReporter());
-    }
-
-    @Bean
-    public BdioTransformer bdioTransformer() {
-        return new BdioTransformer();
-    }
-
-    @Bean
-    public ExternalIdFactory externalIdFactory() {
-        return new ExternalIdFactory();
-    }
-
-    @Bean
-    public IntegrationEscapeUtil integrationEscapeUtil() {
-        return new IntegrationEscapeUtil();
-    }
-
-    @Bean
-    public DetectFileFinder detectFileFinder() {
-        return new DetectFileFinder();
-    }
-
-    @Bean
-    public AirGapManager airGapManager() {
-        AirGapOptions airGapOptions = detectConfigurationFactory().createAirGapOptions();
-        return new AirGapManager(airGapOptions);
+    public DocumentBuilder xmlDocumentBuilder() {
+        return bomToolDependencies.documentBuilder;
     }
 
     @Bean
     public ExecutableRunner executableRunner() {
-        return new ExecutableRunner();
+        return bomToolDependencies.executableRunner;
+    }
+
+    @Bean
+    public ExternalIdFactory externalIdFactory() {
+        return bomToolDependencies.externalIdFactory;
+    }
+
+    @Bean
+    public DetectFileFinder detectFileFinder() {
+        return bomToolDependencies.detectFileFinder;
+    }
+
+    @Bean
+    public DirectoryManager directoryManager() {
+        return bomToolDependencies.directoryManager;
+    }
+
+    @Bean
+    public DetectConfiguration detectConfiguration() {
+        return bomToolDependencies.detectConfiguration;
+    }
+
+    @Bean
+    public ConnectionManager connectionManager() {
+        return bomToolDependencies.connectionManager;
     }
 
     @Bean
     public ExecutableManager executableManager() {
-        return new ExecutableManager(detectFileFinder(), detectInfo());
+        return bomToolDependencies.executableManager;
     }
 
     @Bean
-    public CodeLocationNameService codeLocationNameService() {
-        return new CodeLocationNameService(detectFileFinder());
-    }
-
-    @Bean
-    public CodeLocationService codeLocationService() {
-        //TODO: Figure this out...
-        return new CodeLocationService(hubServiceManager().createHubService(), new SilentLogger());
-    }
-
-    @Bean
-    public CodeLocationNameManager codeLocationNameManager() {
-        return new CodeLocationNameManager(detectConfiguration(), codeLocationNameService());
-    }
-
-    @Bean
-    public SearchSummaryReporter searchSummaryReporter() {
-        return new SearchSummaryReporter();
-    }
-
-    @Bean
-    public BomToolFactory bomToolFactory() throws ParserConfigurationException {
-        return new BomToolFactory();
-        //return new BomToolFactory(detectConfiguration(), detectFileFinder(), executableRunner(), extractorFactory(), executableFinderFactory(), inspectorManagerFactory());
-    }
-
-    @Bean
-    public BomToolSearchProvider bomToolSearchProvider() throws ParserConfigurationException {
-        return new BomToolSearchProvider(bomToolFactory());
-    }
-
-    @Bean
-    public BomToolSearchEvaluator bomToolSearchEvaluator() throws ParserConfigurationException {
-        return new BomToolSearchEvaluator();
-    }
-
-    @Bean
-    public SearchManager searchManager() {
-        try {
-            return new SearchManager(detectConfigurationFactory().createSearchOptions(directoryManager().getSourceDirectory()), bomToolSearchProvider(), bomToolSearchEvaluator(), eventSystem());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Bean
-    public PreparationSummaryReporter preparationSummaryReporter() {
-        return new PreparationSummaryReporter();
-    }
-
-    @Bean
-    public ExtractionSummaryReporter extractionSummaryReporter() {
-        return new ExtractionSummaryReporter();
-    }
-
-    public ExtractionManager extractionManager() {
-        return new ExtractionManager();
-    }
-
-    @Bean
-    public DetectCodeLocationManager detectCodeLocationManager() {
-        return new DetectCodeLocationManager(codeLocationNameManager(), detectConfiguration(), directoryManager(), eventSystem());
-    }
-
-    @Bean
-    public BdioManager bdioManager() {
-        return new BdioManager(detectInfo(), simpleBdioFactory(), integrationEscapeUtil(), codeLocationNameManager(), detectConfiguration(), codeLocationManager(), directoryManager());
-    }
-
-    @Bean
-    public DetectCodeLocationManager codeLocationManager() {
-        return new DetectCodeLocationManager(codeLocationNameManager(), detectConfiguration(), directoryManager(), eventSystem());
-    }
-
-    @Bean
-    public BomToolNameVersionDecider bomToolNameVersionDecider() {
-        return new BomToolNameVersionDecider();
-    }
-
-    @Bean
-    public BlackDuckSignatureScanner blackDuckSignatureScanner() {
-        return new BlackDuckSignatureScanner(directoryManager(), detectFileFinder(), codeLocationNameManager(), detectConfiguration(), eventSystem(), hubServiceManager);
-    }
-
-    @Bean
-    public DetectStatusManager detectStatusManager() {
-        return new DetectStatusManager(eventSystem());
-    }
-
-    @Bean
-    public PolicyChecker policyChecker() {
-        return new PolicyChecker(detectConfiguration());
-    }
-
-    @Bean
-    public DetectBdioUploadService bdioUploader() {
-        return new DetectBdioUploadService(detectConfiguration(), eventSystem(), codeLocationService());
-    }
-
-    @Bean
-    public BlackDuckBinaryScanner blackDuckBinaryScanner() {
-        return new BlackDuckBinaryScanner(codeLocationNameService(), detectConfiguration, hubServiceManager);
-    }
-
-    @Bean
-    public HubManager hubManager() {
-        return new HubManager(bdioUploader(), codeLocationNameManager(), detectConfiguration(), hubServiceManager(), blackDuckSignatureScanner(), policyChecker(), blackDuckBinaryScanner());
+    public AirGapManager airGapManager() {
+        return bomToolDependencies.airGapManager;
     }
 
     @Bean
     public StandardExecutableFinder standardExecutableFinder() {
-        return new StandardExecutableFinder(directoryManager(), executableManager(), detectConfiguration());
+        return bomToolDependencies.standardExecutableFinder;
     }
+
+    //This is the ONLY class that should be extracted from the Configuration manually.
+    //Bom tools should then be extracted using the BomToolFactory.
+
+    @Bean
+    public BomToolFactory bomToolFactory() {
+        return new BomToolFactory();
+    }
+
+    //BomTool-Only Dependencies
 
     @Bean
     public DependenciesListFileManager clangDependenciesListFileParser() {
@@ -493,28 +279,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public DockerExtractor dockerExtractor() {
-        return new DockerExtractor(detectFileFinder(), directoryManager(), dockerProperties(), executableRunner(), bdioTransformer(), externalIdFactory(), gson(), blackDuckSignatureScanner());
-    }
-
-    @Bean
-    public ConnectionManager detectConfigurationUtility() {
-        return new ConnectionManager(detectConfiguration());
-    }
-
-    @Bean
-    public DockerInspectorManager dockerInspectorManager() {
-        return new DockerInspectorManager(directoryManager(), airGapManager(), detectFileFinder(), detectConfiguration(), connectionManager(), mavenMetadataService());
-    }
-
-    @Bean
-    public ConnectionManager connectionManager() {
-        return new ConnectionManager(detectConfiguration());
-    }
-
-    @Bean
     public MavenMetadataService mavenMetadataService() {
-        return new MavenMetadataService(xmlDocumentBuilder(), detectConfigurationUtility());
+        return new MavenMetadataService(xmlDocumentBuilder(), connectionManager());
     }
 
     @Bean
@@ -717,44 +483,6 @@ public class BeanConfiguration {
         return new BitbakeListTasksParser();
     }
 
-    @Bean
-    public ProjectNameVersionManager projectVersionManager() {
-        ProjectNameVersionOptions options = detectConfigurationFactory().createProjectNameVersionOptions(directoryManager().getSourceDirectory().getName());
-        return new ProjectNameVersionManager(options, bomToolNameVersionDecider());
-    }
-
-    @Bean
-    public BomToolManager bomToolManager() {
-        return new BomToolManager(searchManager(), extractionManager(), preparationManager(), eventSystem());
-    }
-
-    @Bean
-    public PreparationManager preparationManager() {
-        return new PreparationManager(eventSystem());
-    }
-
-    @Bean
-    public RunManager runManager() {
-        return new RunManager(phoneHomeManager(), detectConfiguration(), bomToolManager(), projectVersionManager(), detectProjectService(), detectCodeLocationUnmapService(), bdioManager(), detectBdioUploadService(), hubManager(),
-            hubServiceManager().createHubService());
-    }
-
-    @Bean
-    public DetectProjectService detectProjectService() {
-        DetectProjectServiceOptions options = detectConfigurationFactory().createDetectProjectServiceOptions();
-        return new DetectProjectService(hubServiceManager(), options);
-    }
-
-    @Bean
-    public DetectCodeLocationUnmapService detectCodeLocationUnmapService() {
-        return new DetectCodeLocationUnmapService(hubServiceManager().createHubService(), codeLocationService());
-    }
-
-    @Bean
-    public DetectBdioUploadService detectBdioUploadService() {
-        return new DetectBdioUploadService(detectConfiguration(), eventSystem(), codeLocationService());
-    }
-
     //BomTools
     //Should be scoped to Prototype so a new BomTool is created every time one is needed.
     //The BomTool factory currently uses Spring to create the bom tools.
@@ -786,12 +514,6 @@ public class BeanConfiguration {
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public CpanCliBomTool cpanCliBomTool(final BomToolEnvironment environment) {
         return new CpanCliBomTool(environment, detectFileFinder(), standardExecutableFinder(), cpanCliExtractor());
-    }
-
-    @Bean
-    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public DockerBomTool dockerBomTool(final BomToolEnvironment environment, DockerBomToolOptions bomToolOptions) {
-        return new DockerBomTool(environment, dockerInspectorManager(), standardExecutableFinder(), dockerExtractor(), bomToolOptions);
     }
 
     @Bean
@@ -916,4 +638,3 @@ public class BeanConfiguration {
         return new YarnLockBomTool(environment, detectFileFinder(), standardExecutableFinder(), yarnLockExtractor());
     }
 }
-*/

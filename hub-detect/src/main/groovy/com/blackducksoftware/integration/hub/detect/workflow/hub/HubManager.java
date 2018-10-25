@@ -26,8 +26,6 @@ package com.blackducksoftware.integration.hub.detect.workflow.hub;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -43,7 +41,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLo
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.view.ScanSummaryView;
-import com.synopsys.integration.blackduck.configuration.HubServerConfig;
 import com.synopsys.integration.blackduck.exception.HubTimeoutExceededException;
 import com.synopsys.integration.blackduck.service.CodeLocationService;
 import com.synopsys.integration.blackduck.service.HubService;
@@ -51,7 +48,6 @@ import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.ReportService;
 import com.synopsys.integration.blackduck.service.ScanStatusService;
 import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 import com.synopsys.integration.util.NameVersion;
@@ -59,50 +55,19 @@ import com.synopsys.integration.util.NameVersion;
 public class HubManager {
     private final Logger logger = LoggerFactory.getLogger(HubManager.class);
 
-    private final BlackDuckBinaryScanner blackDuckBinaryScanner;
-    private final DetectBdioUploadService detectBdioUploadService;
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfiguration detectConfiguration;
     private final HubServiceManager hubServiceManager;
-    private final BlackDuckSignatureScanner blackDuckSignatureScanner;
     private final PolicyChecker policyChecker;
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
-    public HubManager(final DetectBdioUploadService detectBdioUploadService, final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final HubServiceManager hubServiceManager,
-        final BlackDuckSignatureScanner blackDuckSignatureScanner, final PolicyChecker policyChecker, final BlackDuckBinaryScanner blackDuckBinaryScanner) {
-        this.detectBdioUploadService = detectBdioUploadService;
+    public HubManager(final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final HubServiceManager hubServiceManager,
+        final PolicyChecker policyChecker) {
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
         this.hubServiceManager = hubServiceManager;
-        this.blackDuckSignatureScanner = blackDuckSignatureScanner;
         this.policyChecker = policyChecker;
-        this.blackDuckBinaryScanner = blackDuckBinaryScanner;
-    }
-
-    public void performScanActions(final NameVersion projectNameVersion) throws IntegrationException, InterruptedException, DetectUserFriendlyException {
-        if (!detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, PropertyAuthority.None)) {
-            final HubServerConfig hubServerConfig = hubServiceManager.getHubServerConfig();
-            final ExecutorService executorService = Executors.newFixedThreadPool(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, PropertyAuthority.None));
-            try {
-                final ScanJobManager scanJobManager = hubServiceManager.createScanJobManager(executorService);
-                blackDuckSignatureScanner.scanPaths(hubServerConfig, scanJobManager, projectNameVersion);
-            } finally {
-                executorService.shutdownNow();
-            }
-        }
-    }
-
-    public void performBinaryScanActions(final NameVersion projectNameVersion) throws DetectUserFriendlyException {
-        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None))) {
-            final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.None);
-            final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.None);
-
-            final File file = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None));
-            blackDuckBinaryScanner.uploadBinaryScanFile(hubServiceManager.createBinaryScannerService(), file, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);
-        } else {
-            logger.debug("No binary scan path was provided, so binary scan will not occur.");
-        }
     }
 
     public void performPostHubActions(final NameVersion projectNameVersion, final ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
