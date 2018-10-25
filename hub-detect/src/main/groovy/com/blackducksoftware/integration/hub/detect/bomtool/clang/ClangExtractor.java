@@ -135,10 +135,6 @@ public class ClangExtractor {
             final DependencyFileDetails dependencyFileWithMetaData = new DependencyFileDetails(fileFinder.isFileUnderDir(sourceDir, f), f);
             final Set<PackageDetails> linuxPackages = new HashSet<>(pkgMgr.getPackages(executableRunner, unManagedDependencyFiles, dependencyFileWithMetaData));
             logger.debug(String.format("Found %d packages for %s", linuxPackages.size(), f.getAbsolutePath()));
-            if (linuxPackages.size() == 0 && !dependencyFileWithMetaData.isInBuildDir()) {
-                logger.info(String.format("Adding %s to unManagedDependencyFiles", f.getAbsolutePath()));
-                unManagedDependencyFiles.add(f);
-            }
             return linuxPackages.stream();
         };
     }
@@ -171,19 +167,23 @@ public class ClangExtractor {
     }
 
     private boolean dependencyFileAlreadyProcessed(final File dependencyFile) {
-        if (processedDependencyFiles.contains(dependencyFile)) {
-            return true;
+        synchronized (processedDependencyFiles) {
+            if (processedDependencyFiles.contains(dependencyFile)) {
+                return true;
+            }
+            processedDependencyFiles.add(dependencyFile);
+            return false;
         }
-        processedDependencyFiles.add(dependencyFile);
-        return false;
     }
 
     private boolean dependencyAlreadyProcessed(final PackageDetails dependency) {
-        if (processedDependencies.contains(dependency)) {
-            return true;
+        synchronized (processedDependencies) {
+            if (processedDependencies.contains(dependency)) {
+                return true;
+            }
+            processedDependencies.add(dependency);
+            return false;
         }
-        processedDependencies.add(dependency);
-        return false;
     }
 
     public List<CompileCommandWrapper> parseJsonCompilationDatabaseFile(final File compileCommandsJsonFile) throws IOException {

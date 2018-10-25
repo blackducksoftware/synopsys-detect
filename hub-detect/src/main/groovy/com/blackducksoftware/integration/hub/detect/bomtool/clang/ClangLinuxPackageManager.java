@@ -78,18 +78,19 @@ public abstract class ClangLinuxPackageManager {
             fileSpecificGetOwnerArgs.add(dependencyFile.getFile().getAbsolutePath());
             final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(pkgMgrCmdString, fileSpecificGetOwnerArgs);
             logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput));
-            this.addToPackageList(executableRunner, dependencyDetailsList, queryPackageOutput.getStandardOutput());
-            return dependencyDetailsList;
+            addToPackageList(executableRunner, dependencyDetailsList, queryPackageOutput.getStandardOutput());
         } catch (final ExecutableRunnerException e) {
             logger.error(String.format("Error executing %s: %s", pkgMgrCmdString, e.getMessage()));
+        }
+        if (dependencyDetailsList.size() == 0) {
             if (!dependencyFile.isInBuildDir()) {
-                logger.debug(String.format("%s is not managed by %s", dependencyFile.getFile().getAbsolutePath(), pkgMgrCmdString));
+                logger.debug(String.format("%s is not managed by %s and it's outside the source dir", dependencyFile.getFile().getAbsolutePath(), pkgMgrCmdString));
                 unManagedDependencyFiles.add(dependencyFile.getFile());
             } else {
                 logger.debug(String.format("%s is not managed by %s, but it's in the source.dir", dependencyFile.getFile().getAbsolutePath(), pkgMgrCmdString));
             }
-            return dependencyDetailsList;
         }
+        return dependencyDetailsList;
     }
 
     public abstract Forge getDefaultForge();
