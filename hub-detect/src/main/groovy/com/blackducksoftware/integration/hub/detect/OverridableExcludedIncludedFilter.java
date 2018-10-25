@@ -25,22 +25,24 @@ package com.blackducksoftware.integration.hub.detect;
 
 import com.synopsys.integration.util.ExcludedIncludedFilter;
 
-public class OverridableExcludedIncludedFilter {
-    private ExcludedIncludedFilter excludedIncludedFilter;
+public class OverridableExcludedIncludedFilter extends ExcludedIncludedFilter {
+    private final boolean allExcluded;
 
     public OverridableExcludedIncludedFilter(final String toExclude, final String toInclude) {
+        super(toExclude, toInclude);
         if (toExclude.trim().equalsIgnoreCase("ALL")) {
-            excludedIncludedFilter = null;
+            allExcluded = true;
         } else {
-            excludedIncludedFilter = new ExcludedIncludedFilter(toExclude, toInclude);
+            allExcluded = false;
         }
     }
 
+    @Override
     public boolean shouldInclude(final String itemName) {
-        if (excludedIncludedFilter == null) {
+        if (allExcluded) {
             return false;
         } else {
-            return excludedIncludedFilter.shouldInclude(itemName);
+            return super.shouldInclude(itemName);
         }
     }
 }
