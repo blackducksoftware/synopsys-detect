@@ -24,10 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,7 +34,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +82,7 @@ public class ClangExtractor {
             final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> unManagedDependencyFiles = ConcurrentHashMap.newKeySet(64);
-            final List<CompileCommand> compileCommands = parseJsonCompilationDatabaseFile(jsonCompilationDatabaseFile);
+            final List<CompileCommand> compileCommands = CompileCommandsJsonFile.parseJsonCompilationDatabaseFile(gson, jsonCompilationDatabaseFile);
             final List<Dependency> bdioComponents = compileCommands.parallelStream()
                     .flatMap(compileCommandToDependencyFilePathsConverter(outputDirectory))
                     .collect(Collectors.toSet()).parallelStream()
@@ -184,12 +180,6 @@ public class ClangExtractor {
             processedDependencies.add(dependency);
             return false;
         }
-    }
-
-    public List<CompileCommand> parseJsonCompilationDatabaseFile(final File compileCommandsJsonFile) throws IOException {
-        final String compileCommandsJson = FileUtils.readFileToString(compileCommandsJsonFile, StandardCharsets.UTF_8);
-        final CompileCommandJsonData[] compileCommands = gson.fromJson(compileCommandsJson, CompileCommandJsonData[].class);
-        return Arrays.stream(compileCommands).map(rawCommand -> new CompileCommand(rawCommand)).collect(Collectors.toList());
     }
 
     private void logSummary(final List<Dependency> bdioComponents, final Set<File> unManagedDependencyFiles) {
