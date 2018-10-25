@@ -76,7 +76,7 @@ public class ClangExtractorTest {
         packages.add(new PackageDetails("testPackageName", "testPackageVersion", "testPackageArch"));
 
         Mockito.when(pkgMgr.getDefaultForge()).thenReturn(Forge.UBUNTU);
-        //Mockito.when(pkgMgr.getPackages(Mockito.any(ExecutableRunner.class), Mockito.any(Set.class), Mockito.any(DependencyFileDetails.class))).thenReturn(packages);
+        Mockito.when(pkgMgr.getPackages(Mockito.any(File.class), Mockito.any(ExecutableRunner.class), Mockito.any(Set.class), Mockito.any(DependencyFileDetails.class))).thenReturn(packages);
         Mockito.when(pkgMgr.getForges()).thenReturn(Arrays.asList(Forge.UBUNTU, Forge.DEBIAN));
         final Extraction extraction = extractor.extract(pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile);
 
@@ -91,9 +91,7 @@ public class ClangExtractorTest {
         final CompileCommandWrapper compileCommandWrapperGoodbyeWorld = createCompileCommand("src/test/resources/clang/source/goodbye_world.cpp", "gcc goodbye_world.cpp", null);
 
         final Set<String> dependencyFilePathsHelloWorld = createDependencyFilePaths(new File("src/test/resources/clang/source/myinclude.h"), new File("/usr/include/stdlib.h"), new File("/usr/include/math.h"));
-
         final Set<String> dependencyFilePathsGoodbyeWorld = createDependencyFilePaths(new File("/usr/include/pwd.h"), new File("/usr/include/printf.h"));
-        ;
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
@@ -123,7 +121,7 @@ public class ClangExtractorTest {
         packages.add(new PackageDetails("testPackageName2", "testPackageVersion2", "testPackageArch2"));
 
         Mockito.when(pkgMgr.getDefaultForge()).thenReturn(Forge.CENTOS);
-        //Mockito.when(pkgMgr.getPackages(Mockito.any(ExecutableRunner.class), Mockito.any(Set.class), Mockito.any(DependencyFileDetails.class))).thenReturn(packages);
+        Mockito.when(pkgMgr.getPackages(Mockito.any(File.class), Mockito.any(ExecutableRunner.class), Mockito.any(Set.class), Mockito.any(DependencyFileDetails.class))).thenReturn(packages);
         Mockito.when(pkgMgr.getForges()).thenReturn(Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT));
         final Extraction extraction = extractor.extract(pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile);
 
@@ -169,7 +167,7 @@ public class ClangExtractorTest {
         packages.add(new PackageDetails("testPackageName2", "testPackageVersion2", "testPackageArch2"));
 
         Mockito.when(pkgMgr.getDefaultForge()).thenReturn(Forge.CENTOS);
-        //Mockito.when(pkgMgr.getPackages(Mockito.any(ExecutableRunner.class), Mockito.any(Set.class), Mockito.any(DependencyFileDetails.class))).thenReturn(packages);
+        Mockito.when(pkgMgr.getPackages(Mockito.any(File.class), Mockito.any(ExecutableRunner.class), Mockito.any(Set.class), Mockito.any(DependencyFileDetails.class))).thenReturn(packages);
         Mockito.when(pkgMgr.getForges()).thenReturn(Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT));
         final Extraction extraction = extractor.extract(pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile);
 
