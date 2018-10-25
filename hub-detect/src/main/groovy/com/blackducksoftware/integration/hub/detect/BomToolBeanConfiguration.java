@@ -205,8 +205,9 @@ public class BomToolBeanConfiguration {
         return bomToolDependencies.standardExecutableFinder;
     }
 
-    //This is the ONLY class that should be extracted from the Configuration manually.
-    //Bom tools should then be extracted using the BomToolFactory.
+    //BomToolFactory
+    //This is the ONLY class that should be taken from the Configuration manually.
+    //Bom tools should be accessed using the BomToolFactory which will create them through Spring.
 
     @Bean
     public BomToolFactory bomToolFactory() {
@@ -214,6 +215,7 @@ public class BomToolBeanConfiguration {
     }
 
     //BomTool-Only Dependencies
+    //All bom tool support classes. These are classes not actually used outside of the bom tools but are necessary for some bom tools.
 
     @Bean
     public DependenciesListFileManager clangDependenciesListFileParser() {
@@ -485,7 +487,8 @@ public class BomToolBeanConfiguration {
 
     //BomTools
     //Should be scoped to Prototype so a new BomTool is created every time one is needed.
-    //The BomTool factory currently uses Spring to create the bom tools.
+    //Should only be accessed through the BomToolFactory.
+
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public BitbakeBomTool bitbakeBomTool(final BomToolEnvironment environment) {

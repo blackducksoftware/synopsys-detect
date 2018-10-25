@@ -23,12 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.phonehome;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -36,67 +33,31 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.service.HubRegistrationService;
-import com.synopsys.integration.blackduck.service.HubService;
-import com.synopsys.integration.blackduck.service.HubServicesFactory;
-import com.synopsys.integration.blackduck.service.model.BlackDuckPhoneHomeCallable;
-import com.synopsys.integration.log.Slf4jIntLogger;
-import com.synopsys.integration.phonehome.PhoneHomeCallable;
-import com.synopsys.integration.phonehome.PhoneHomeClient;
 import com.synopsys.integration.phonehome.PhoneHomeResponse;
-import com.synopsys.integration.phonehome.PhoneHomeService;
-import com.synopsys.integration.phonehome.google.analytics.GoogleAnalyticsConstants;
-import com.synopsys.integration.util.IntEnvironmentVariables;
 
-public class PhoneHomeManager {
+public abstract class PhoneHomeManager {
     private final Logger logger = LoggerFactory.getLogger(PhoneHomeManager.class);
 
-    private final DetectInfo detectInfo;
-    private URL hubUrl;
+    protected final Gson gson;
+    protected final DetectInfo detectInfo;
+    protected final EventSystem eventSystem;
+    protected PhoneHomeResponse currentPhoneHomeResponse;
+    protected Map<String, String> additionalMetaData;
 
-    private PhoneHomeClient phoneHomeClient;
-    private PhoneHomeService phoneHomeService;
-    private PhoneHomeResponse phoneHomeResponse;
-    private HubService hubService;
-    private HubRegistrationService hubRegistrationService;
-    private boolean isBlackDuckOffline;
-    private HubServicesFactory hubServicesFactory;
-    private final DetectConfiguration detectConfiguration;
-    private final Gson gson;
-    private final EventSystem eventSystem;
-
-    public PhoneHomeManager(final DetectInfo detectInfo, final DetectConfiguration detectConfiguration, final Gson gson, EventSystem eventSystem) {
-        this.detectInfo = detectInfo;
-        this.detectConfiguration = detectConfiguration;
+    public PhoneHomeManager(Map<String, String> additionalMetaData, final DetectInfo detectInfo, final Gson gson, EventSystem eventSystem) {
         this.gson = gson;
+        this.detectInfo = detectInfo;
         this.eventSystem = eventSystem;
+        this.additionalMetaData = additionalMetaData;
 
         eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event));
     }
 
-    public void initOffline() {
-
-        this.phoneHomeService = new PhoneHomeService(new Slf4jIntLogger(logger), Executors.newSingleThreadExecutor());
-        this.phoneHomeClient = new PhoneHomeClient(GoogleAnalyticsConstants.PRODUCTION_INTEGRATIONS_TRACKING_ID, new Slf4jIntLogger(logger), gson);
-
-        this.isBlackDuckOffline = true;
-    }
-
-    public void init(final PhoneHomeService phoneHomeService, final PhoneHomeClient phoneHomeClient, final HubServicesFactory hubServicesFactory, final HubService hubService,
-        final HubRegistrationService hubRegistrationService, final URL hubUrl) {
-        this.phoneHomeService = phoneHomeService;
-        this.isBlackDuckOffline = false;
-        this.hubServicesFactory = hubServicesFactory;
-        this.hubService = hubService;
-        this.hubRegistrationService = hubRegistrationService;
-        this.hubUrl = hubUrl;
-        this.phoneHomeClient = phoneHomeClient;
-    }
+    public abstract PhoneHomeResponse phoneHome(final Map<String, String> metadata);
 
     public void startPhoneHome() {
         // hub-detect will attempt to phone home twice - once upon startup and
@@ -105,7 +66,7 @@ public class PhoneHomeManager {
         // We would prefer to always wait for all the bom tool metadata, but
         // sometimes there is not enough time to complete a phone home before
         // hub-detect exits (if the scanner is disabled, for example).
-        performPhoneHome(new HashMap<>());
+        safelyPhoneHome(new HashMap<>());
     }
 
     public void startPhoneHome(final Set<BomToolGroupType> applicableBomToolTypes) {
@@ -116,11 +77,7 @@ public class PhoneHomeManager {
                                                         .collect(Collectors.joining(","));
             metadata.put("bomToolTypes", applicableBomToolsString);
         }
-        performPhoneHome(metadata);
-    }
-
-    public void searchCompleted(final SearchResult searchResult) {
-        startPhoneHome(searchResult.getApplicableBomTools());
+        safelyPhoneHome(metadata);
     }
 
     public void startPhoneHome(final Map<BomToolGroupType, Long> applicableBomToolTimes) {
@@ -131,54 +88,25 @@ public class PhoneHomeManager {
                                                         .collect(Collectors.joining(","));
             metadata.put("bomToolTypes", applicableBomToolsString);
         }
-        performPhoneHome(metadata);
+        safelyPhoneHome(metadata);
     }
 
-    private void performPhoneHome(final Map<String, String> metadata) {
-        endPhoneHome();
-        if (null != phoneHomeService) {
-            try {
-                final PhoneHomeCallable callable;
-                final Set<Entry<String, String>> additionalMetadata = detectConfiguration.getPhoneHomeProperties().entrySet();
-                additionalMetadata.forEach(it -> metadata.put(it.getKey(), it.getValue()));
-                if (isBlackDuckOffline) {
-                    callable = createOfflineCallable(metadata);
-                } else {
-                    callable = createOnlineCallable(metadata);
-                }
+    public void searchCompleted(final SearchResult searchResult) {
+        startPhoneHome(searchResult.getApplicableBomTools());
+    }
 
-                phoneHomeResponse = phoneHomeService.startPhoneHome(callable);
-            } catch (final IllegalStateException e) {
-                logger.debug(e.getMessage(), e);
-            }
+    private void safelyPhoneHome(final Map<String, String> metadata) {
+        endPhoneHome();
+        try {
+            currentPhoneHomeResponse = phoneHome(metadata);
+        } catch (final IllegalStateException e) {
+            logger.debug(e.getMessage(), e);
         }
     }
 
     public void endPhoneHome() {
-        if (phoneHomeResponse != null) {
-            phoneHomeResponse.endPhoneHome();
+        if (currentPhoneHomeResponse != null) {
+            currentPhoneHomeResponse.endPhoneHome();
         }
     }
-
-    public PhoneHomeResponse getPhoneHomeResponse() {
-        return phoneHomeResponse;
-    }
-
-    // TODO: Don't supply a product url to offine phone home!
-    private PhoneHomeCallable createOfflineCallable(final Map<String, String> metadata) {
-        OfflineBlackDuckPhoneHomeCallable offlineCallable;
-        offlineCallable = new OfflineBlackDuckPhoneHomeCallable(new Slf4jIntLogger(logger), phoneHomeClient, "hub-detect", detectInfo.getDetectVersion(), new IntEnvironmentVariables());
-        metadata.entrySet().forEach(it -> offlineCallable.addMetaData(it.getKey(), it.getValue()));
-
-        return offlineCallable;
-
-    }
-
-    private PhoneHomeCallable createOnlineCallable(final Map<String, String> metadata) {
-        final BlackDuckPhoneHomeCallable onlineCallable = (BlackDuckPhoneHomeCallable) hubServicesFactory.createBlackDuckPhoneHomeCallable(hubUrl, "hub-detect", detectInfo.getDetectVersion());
-        metadata.entrySet().forEach(it -> onlineCallable.addMetaData(it.getKey(), it.getValue()));
-
-        return onlineCallable;
-    }
-
 }

@@ -1,6 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.lifecycle.boot;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -38,6 +39,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.Diagnost
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.FileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
+import com.blackducksoftware.integration.hub.detect.workflow.phonehome.OfflinePhoneHomeManager;
+import com.blackducksoftware.integration.hub.detect.workflow.phonehome.OnlinePhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 import com.google.gson.Gson;
@@ -205,16 +208,14 @@ public class BootManager {
         return diagnosticManager;
     }
 
-    private PhoneHomeManager createPhoneHomeManager(DetectInfo detectInfo, DetectConfiguration detectConfiguration, HubServiceManager hubServiceManager, EventSystem eventSystem, Gson gson)
-        throws DetectUserFriendlyException, IntegrationException {
-        PhoneHomeManager phoneHomeManager = new PhoneHomeManager(detectInfo, detectConfiguration, gson, eventSystem);
-        if (detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None)) {
-            phoneHomeManager.initOffline();
+    private PhoneHomeManager createPhoneHomeManager(DetectInfo detectInfo, DetectConfiguration detectConfiguration, HubServiceManager hubServiceManager, EventSystem eventSystem, Gson gson) {
+        boolean online = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
+
+        Map<String, String> additionalMetaData = detectConfiguration.getPhoneHomeProperties();
+        if (online) {
+            return new OnlinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem, hubServiceManager);
         } else {
-            hubServiceManager.init();
-            phoneHomeManager.init(hubServiceManager.createPhoneHomeService(), hubServiceManager.createPhoneHomeClient(), hubServiceManager.getHubServicesFactory(), hubServiceManager.createHubService(),
-                hubServiceManager.createHubRegistrationService(), hubServiceManager.getHubServicesFactory().getRestConnection().getBaseUrl());
+            return new OfflinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem);
         }
-        return phoneHomeManager;
     }
 }
