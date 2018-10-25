@@ -300,7 +300,7 @@ public enum DetectProperty {
     DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS("detect.bom.tool.search.exclusion.defaults", "3.2.0", DetectPropertyType.BOOLEAN, "true"),
 
     @HelpGroup(primary = GROUP_BOMTOOL, additional = { SEARCH_GROUP_SEARCH })
-    @HelpDescription("By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.")
+    @HelpDescription("By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. If you want to exclude all tools, specify \"ALL\". Exclusion rules always win.")
     DETECT_EXCLUDED_BOM_TOOL_TYPES("detect.excluded.bom.tool.types", "3.0.0", DetectPropertyType.STRING),
 
     @HelpGroup(primary = GROUP_BOMTOOL, additional = { SEARCH_GROUP_SEARCH })
