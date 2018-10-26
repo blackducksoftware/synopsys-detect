@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackDuckSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -47,7 +48,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckSignatureScanner;
 import com.google.gson.Gson;
 import com.synopsys.integration.hub.bdio.BdioReader;
 import com.synopsys.integration.hub.bdio.BdioTransformer;
@@ -148,14 +148,16 @@ public class DockerExtractor {
 
         final File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
         if (null != producedTarFile && producedTarFile.isFile()) {
-            blackDuckSignatureScanner.setDockerTarFile(producedTarFile);
+            //TODO: FIX
+            //blackDuckSignatureScanner.setDockerTarFile(producedTarFile);
         } else {
             logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", TAR_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
             if (StringUtils.isNotBlank(dockerTarFilePath)) {
                 final File dockerTarFile = new File(dockerTarFilePath);
                 if (dockerTarFile.isFile()) {
+                    //TODO: FIX
                     logger.debug(String.format("Will scan the provided Docker tar file %s", dockerTarFile.getCanonicalPath()));
-                    blackDuckSignatureScanner.setDockerTarFile(dockerTarFile);
+                    //blackDuckSignatureScanner.setDockerTarFile(dockerTarFile);
                 }
             }
         }

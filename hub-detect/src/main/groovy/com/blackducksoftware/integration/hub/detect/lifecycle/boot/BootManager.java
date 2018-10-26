@@ -31,6 +31,7 @@ import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
+import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunDependencies;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeManager;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
@@ -121,7 +122,10 @@ public class BootManager {
             logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
             return BootResult.exit();
         }
-        hubServiceManager.init();
+
+        if (!detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None)) {
+            hubServiceManager.init();
+        }
 
         PhoneHomeManager phoneHomeManager = createPhoneHomeManager(detectInfo, detectConfiguration, hubServiceManager, eventSystem, gson);
 
@@ -130,24 +134,24 @@ public class BootManager {
         detectConfiguration.lock();
 
         //Finished, return created objects.
-        DetectRunDependencies detectRunDependencies = new DetectRunDependencies();
-        detectRunDependencies.eventSystem = eventSystem;
-        detectRunDependencies.exitCodeManager = exitCodeManager;
-        detectRunDependencies.detectConfiguration = detectConfiguration;
-        detectRunDependencies.detectRun = detectRun;
-        detectRunDependencies.detectInfo = detectInfo;
-        detectRunDependencies.directoryManager = directoryManager;
-        detectRunDependencies.phoneHomeManager = phoneHomeManager;
-        detectRunDependencies.diagnosticManager = diagnosticManager;
-        detectRunDependencies.hubServiceManager = hubServiceManager;
+        RunDependencies runDependencies = new RunDependencies();
+        runDependencies.eventSystem = eventSystem;
+        runDependencies.exitCodeManager = exitCodeManager;
+        runDependencies.detectConfiguration = detectConfiguration;
+        runDependencies.detectRun = detectRun;
+        runDependencies.detectInfo = detectInfo;
+        runDependencies.directoryManager = directoryManager;
+        runDependencies.phoneHomeManager = phoneHomeManager;
+        runDependencies.diagnosticManager = diagnosticManager;
+        runDependencies.hubServiceManager = hubServiceManager;
 
-        detectRunDependencies.gson = gson;
-        detectRunDependencies.jsonParser = jsonParser;
-        detectRunDependencies.documentBuilder = xml;
-        //detectRunDependencies.integrationEscapeUtil =
+        runDependencies.gson = gson;
+        runDependencies.jsonParser = jsonParser;
+        runDependencies.documentBuilder = xml;
+        //runDependencies.integrationEscapeUtil =
 
         BootResult result = new BootResult();
-        result.detectRunDependencies = detectRunDependencies;
+        result.runDependencies = runDependencies;
         result.bootType = BootResult.BootType.CONTINUE;
         return result;
     }
@@ -209,7 +213,7 @@ public class BootManager {
     }
 
     private PhoneHomeManager createPhoneHomeManager(DetectInfo detectInfo, DetectConfiguration detectConfiguration, HubServiceManager hubServiceManager, EventSystem eventSystem, Gson gson) {
-        boolean online = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
+        boolean online = !detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
 
         Map<String, String> additionalMetaData = detectConfiguration.getPhoneHomeProperties();
         if (online) {

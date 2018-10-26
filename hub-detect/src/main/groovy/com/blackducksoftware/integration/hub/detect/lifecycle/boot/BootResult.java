@@ -1,8 +1,10 @@
 package com.blackducksoftware.integration.hub.detect.lifecycle.boot;
 
+import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunDependencies;
+
 public class BootResult {
     public BootType bootType;
-    public DetectRunDependencies detectRunDependencies;
+    public RunDependencies runDependencies;
 
     public enum BootType {
         EXIT,

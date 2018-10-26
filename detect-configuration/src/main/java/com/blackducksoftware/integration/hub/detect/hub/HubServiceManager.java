@@ -24,10 +24,8 @@
 package com.blackducksoftware.integration.hub.detect.hub;
 
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,10 +50,6 @@ import com.synopsys.integration.blackduck.service.HubServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.ReportService;
 import com.synopsys.integration.blackduck.service.ScanStatusService;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
-import com.synopsys.integration.blackduck.signaturescanner.command.ScanCommandRunner;
-import com.synopsys.integration.blackduck.signaturescanner.command.ScanPathsUtility;
-import com.synopsys.integration.blackduck.signaturescanner.command.ScannerZipInstaller;
 import com.synopsys.integration.exception.EncryptionException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
@@ -63,10 +57,7 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.phonehome.PhoneHomeClient;
 import com.synopsys.integration.phonehome.PhoneHomeService;
 import com.synopsys.integration.rest.connection.RestConnection;
-import com.synopsys.integration.rest.connection.UnauthenticatedRestConnectionBuilder;
-import com.synopsys.integration.util.CleanupZipExpander;
 import com.synopsys.integration.util.IntEnvironmentVariables;
-import com.synopsys.integration.util.OperatingSystemType;
 import com.synopsys.integration.util.ResourceUtil;
 
 public class HubServiceManager {
@@ -156,43 +147,6 @@ public class HubServiceManager {
 
     public ReportService createReportService() throws IntegrationException {
         return hubServicesFactory.createReportService(detectConfiguration.getLongProperty(DetectProperty.DETECT_API_TIMEOUT, PropertyAuthority.None));
-    }
-
-    public ScanJobManager createScanJobManager(final ExecutorService executorService) throws IntegrationException, DetectUserFriendlyException {
-        OperatingSystemType operatingSystemType = OperatingSystemType.determineFromSystem();
-        ScanPathsUtility scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, getEnvironmentVariables(), operatingSystemType);
-        ScanCommandRunner scanCommandRunner = new ScanCommandRunner(slf4jIntLogger, getEnvironmentVariables(), scanPathsUtility, executorService);
-
-        final boolean blackDuckOffline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
-        final String localScannerInstallPath = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, PropertyAuthority.None);
-        final String userProvidedScannerInstallUrl = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, PropertyAuthority.None);
-
-        if (StringUtils.isBlank(localScannerInstallPath) && StringUtils.isBlank(userProvidedScannerInstallUrl) && !blackDuckOffline) {
-            // will will use the hub server to download/update the scanner - this is the most likely situation
-            ScannerZipInstaller scannerZipInstaller = ScannerZipInstaller.defaultUtility(slf4jIntLogger, hubServerConfig, scanPathsUtility, operatingSystemType);
-            ScanJobManager scanJobManager = ScanJobManager.createFullScanManager(slf4jIntLogger, getEnvironmentVariables(), scannerZipInstaller, scanPathsUtility, scanCommandRunner);
-            return scanJobManager;
-        } else {
-            if (StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
-                // we will use the provided url to download/update the scanner
-                final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
-                restConnectionBuilder.setBaseUrl(userProvidedScannerInstallUrl);
-                restConnectionBuilder.setTimeout(detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT, PropertyAuthority.None));
-                restConnectionBuilder.applyProxyInfo(connectionManager.getHubProxyInfo());
-                restConnectionBuilder.setAlwaysTrustServerCertificate(detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_TRUST_CERT, PropertyAuthority.None));
-                restConnectionBuilder.setLogger(slf4jIntLogger);
-
-                final RestConnection restConnection = restConnectionBuilder.build();
-                final CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
-                final ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, restConnection, cleanupZipExpander, scanPathsUtility, userProvidedScannerInstallUrl, operatingSystemType);
-
-                return ScanJobManager.createFullScanManager(slf4jIntLogger, getEnvironmentVariables(), scannerZipInstaller, scanPathsUtility, scanCommandRunner);
-            } else {
-                // either we were given an existing path for the scanner or
-                // we are offline - either way, we won't attempt to manage the install
-                return ScanJobManager.createScanManagerWithNoInstaller(slf4jIntLogger, getEnvironmentVariables(), scanPathsUtility, scanCommandRunner);
-            }
-        }
     }
 
     private HubServicesFactory createHubServicesFactory(final IntLogger slf4jIntLogger, final HubServerConfig hubServerConfig) throws IntegrationException {

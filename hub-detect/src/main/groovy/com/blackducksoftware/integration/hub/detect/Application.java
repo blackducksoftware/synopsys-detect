@@ -90,7 +90,7 @@ public class Application implements ApplicationRunner {
         }
         if (bootResult != null && bootResult.bootType == BootResult.BootType.CONTINUE) {
 
-            RunManager runManager = new RunManager(bootResult.detectRunDependencies);
+            RunManager runManager = new RunManager(bootResult.runDependencies);
             try {
                 logger.info("Detect run begin.");
                 runManager.run();
@@ -100,9 +100,9 @@ public class Application implements ApplicationRunner {
                 logger.info("Detect run failed: ", e);
             }
 
-            PhoneHomeManager phoneHomeManager = bootResult.detectRunDependencies.phoneHomeManager;
-            DirectoryManager directoryManager = bootResult.detectRunDependencies.directoryManager;
-            DetectConfiguration detectConfiguration = bootResult.detectRunDependencies.detectConfiguration;
+            PhoneHomeManager phoneHomeManager = bootResult.runDependencies.phoneHomeManager;
+            DirectoryManager directoryManager = bootResult.runDependencies.directoryManager;
+            DetectConfiguration detectConfiguration = bootResult.runDependencies.detectConfiguration;
             ShutdownManager shutdownManager = new ShutdownManager(statusManager, exitCodeManager, phoneHomeManager, directoryManager, detectConfiguration);
             try {
                 logger.info("Detect shutdown begin.");
@@ -119,7 +119,7 @@ public class Application implements ApplicationRunner {
         logger.info(String.format("Detect duration: %s", DurationFormatUtils.formatPeriod(startTime, endTime, "HH'h' mm'm' ss's' SSS'ms'")));
 
         ExitCodeType finalExitCode = exitCodeManager.getWinningExitCode();
-        if (finalExitCode != ExitCodeType.SUCCESS && bootResult.bootType != null && bootResult.detectRunDependencies.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS, PropertyAuthority.None)) {
+        if (finalExitCode != ExitCodeType.SUCCESS && bootResult.bootType != null && bootResult.runDependencies.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS, PropertyAuthority.None)) {
             logger.warn(String.format("Forcing success: Exiting with exit code 0. Ignored exit code was %s.", finalExitCode.getExitCode()));
             System.exit(0);
         } else if (finalExitCode != ExitCodeType.SUCCESS) {

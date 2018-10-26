@@ -43,7 +43,6 @@ public class BomToolSearchProvider {
         searchRuleSet.addBomTool(bomToolFactory.createCondaBomTool(environment)).defaultNotNested();
         searchRuleSet.addBomTool(bomToolFactory.createCpanCliBomTool(environment)).defaultNotNested();
         searchRuleSet.addBomTool(bomToolFactory.createPackratLockBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(bomToolFactory.createDockerBomTool(environment)).nestable(false).maxDepth(0);
 
         searchRuleSet.addBomTool(bomToolFactory.createGoCliBomTool(environment)).defaultNotNested();
         searchRuleSet.addBomTool(bomToolFactory.createGoLockBomTool(environment)).defaultNotNested();

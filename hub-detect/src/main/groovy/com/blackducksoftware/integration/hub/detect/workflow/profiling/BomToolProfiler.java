@@ -36,14 +36,17 @@ public class BomToolProfiler {
     public BomToolTimekeeper applicableTimekeeper = new BomToolTimekeeper();
     public BomToolTimekeeper extractableTimekeeper = new BomToolTimekeeper();
     public BomToolTimekeeper extractionTimekeeper = new BomToolTimekeeper();
+    private EventSystem eventSystem;
 
     public BomToolProfiler(EventSystem eventSystem) {
+        this.eventSystem = eventSystem;
         eventSystem.registerListener(Event.ApplicableStarted, event -> applicableStarted(event));
         eventSystem.registerListener(Event.ApplicableEnded, event -> applicableEnded(event));
         eventSystem.registerListener(Event.ExtractableStarted, event -> extractableStarted(event));
         eventSystem.registerListener(Event.ExtractableEnded, event -> extractableEnded(event));
         eventSystem.registerListener(Event.ExtractionStarted, event -> extractionStarted(event.getBomTool()));
         eventSystem.registerListener(Event.ExtractionEnded, event -> extractionEnded(event.getBomTool()));
+        eventSystem.registerListener(Event.BomToolsComplete, event -> bomToolsComplete());
     }
 
     private void applicableStarted(final BomTool bomTool) {
@@ -80,6 +83,12 @@ public class BomToolProfiler {
 
     public List<BomToolTime> getExtractionTimings() {
         return extractionTimekeeper.getTimings();
+    }
+
+    public void bomToolsComplete() {
+        BomToolAggregateTimings timings = new BomToolAggregateTimings();
+        timings.bomToolTimings = getAggregateBomToolGroupTimes();
+        eventSystem.publishEvent(Event.BomToolsProfiled, timings);
     }
 
     public Map<BomToolGroupType, Long> getAggregateBomToolGroupTimes() {

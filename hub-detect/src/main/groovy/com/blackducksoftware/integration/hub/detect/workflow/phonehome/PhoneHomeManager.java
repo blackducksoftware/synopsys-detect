@@ -55,6 +55,7 @@ public abstract class PhoneHomeManager {
         this.additionalMetaData = additionalMetaData;
 
         eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event));
+        eventSystem.registerListener(Event.BomToolsProfiled, event -> startPhoneHome(event.bomToolTimings));
     }
 
     public abstract PhoneHomeResponse phoneHome(final Map<String, String> metadata);

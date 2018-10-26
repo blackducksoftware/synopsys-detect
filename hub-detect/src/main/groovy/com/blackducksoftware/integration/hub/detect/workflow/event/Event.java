@@ -8,6 +8,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolsRes
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationResult;
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolAggregateTimings;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
@@ -17,6 +18,7 @@ public class Event {
     public static EventType<PreparationResult> PreparationsCompleted = new EventType(PreparationResult.class);
     public static EventType<ExtractionResult> ExtractionsCompleted = new EventType(ExtractionResult.class);
     public static EventType<BomToolsResult> BomToolsComplete = new EventType(BomToolsResult.class);
+    public static EventType<BomToolAggregateTimings> BomToolsProfiled = new EventType(BomToolAggregateTimings.class);
     public static EventType<BomTool> ApplicableStarted = new EventType(BomTool.class);
     public static EventType<BomTool> ApplicableEnded = new EventType(BomTool.class);
     public static EventType<BomTool> ExtractableStarted = new EventType(BomTool.class);
