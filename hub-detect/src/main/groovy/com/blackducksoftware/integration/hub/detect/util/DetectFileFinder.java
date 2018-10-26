@@ -107,14 +107,18 @@ public class DetectFileFinder {
     }
 
     public List<File> findFilesToDepth(final File sourceDirectory, final String filenamePattern, final int maxDepth) {
-        return findFilesRecursive(sourceDirectory, 0, maxDepth, true, filenamePattern);
+        return findFilesRecursive(sourceDirectory, 0, maxDepth, null, true, filenamePattern);
     }
 
     /**
      * Will recursively look for files/directories matching these name patterns within the source directory. It will not look for matching files/directories within a directory that matched one of the patterns.
      */
     public List<File> findAllFilesToMaxDepth(final File sourceDirectory, final String... filenamePatterns) {
-        return findFilesRecursive(sourceDirectory, 0, Integer.MAX_VALUE, false, filenamePatterns);
+        return findFilesRecursive(sourceDirectory, 0, Integer.MAX_VALUE, null, false, filenamePatterns);
+    }
+
+    public List<File> findAllFilesToDepth(final File sourceDirectory, final StringBuilder maxDepthHitMsgPattern, final int maxDepth, final String... filenamePatterns) {
+        return findFilesRecursive(sourceDirectory, 0, maxDepth, maxDepthHitMsgPattern, false, filenamePatterns);
     }
 
     public List<File> findDirectoriesContainingDirectoriesToDepth(final String sourcePath, final String filenamePattern, final int maxDepth) {
@@ -125,9 +129,15 @@ public class DetectFileFinder {
         return findDirectoriesContainingDirectoriesToDepthRecursive(sourceDirectory, directoryPattern, 0, maxDepth);
     }
 
-    private List<File> findFilesRecursive(final File sourceDirectory, final int currentDepth, final int maxDepth, final Boolean recurseIntoDirectoryMatch, final String... filenamePatterns) {
+    private List<File> findFilesRecursive(final File sourceDirectory, final int currentDepth, final int maxDepth, StringBuilder maxDepthHitMsgPattern, final Boolean recurseIntoDirectoryMatch, final String... filenamePatterns) {
         final List<File> files = new ArrayList<>();
-        if (currentDepth < maxDepth && sourceDirectory.isDirectory() && sourceDirectory.listFiles().length > 0 && null != filenamePatterns && filenamePatterns.length >= 1) {
+        if (currentDepth >= maxDepth) {
+            if (StringUtils.isNotBlank(maxDepthHitMsgPattern)) {
+                logger.warn(String.format(maxDepthHitMsgPattern.toString(), sourceDirectory.getAbsolutePath()));
+                // Ensure msg only shown once
+                maxDepthHitMsgPattern.setLength(0);
+            }
+        } else if (sourceDirectory.isDirectory() && sourceDirectory.listFiles().length > 0 && null != filenamePatterns && filenamePatterns.length >= 1) {
             for (final File file : sourceDirectory.listFiles()) {
                 final boolean fileMatchesPatterns = Arrays.stream(filenamePatterns).anyMatch(pattern -> FilenameUtils.wildcardMatchOnSystem(file.getName(), pattern));
 
@@ -137,7 +147,7 @@ public class DetectFileFinder {
 
                 if (file.isDirectory() && (!fileMatchesPatterns || recurseIntoDirectoryMatch)) {
                     // only go into the directory if it is not a match OR it is a match and the flag is set to go into matching directories
-                    files.addAll(findFilesRecursive(file, currentDepth + 1, maxDepth, recurseIntoDirectoryMatch, filenamePatterns));
+                    files.addAll(findFilesRecursive(file, currentDepth + 1, maxDepth, maxDepthHitMsgPattern, recurseIntoDirectoryMatch, filenamePatterns));
                 }
             }
 
