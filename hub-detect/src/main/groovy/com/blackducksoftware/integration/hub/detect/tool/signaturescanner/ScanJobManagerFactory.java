@@ -44,7 +44,7 @@ public class ScanJobManagerFactory {
         return ScanJobManager.createScanManagerWithNoInstaller(slf4jIntLogger, intEnvironmentVariables, scanPathsUtility, scanCommandRunner);
     }
 
-    public ScanJobManager withUserProvidedUrl(String userProvidedScannerInstallUrl, ConnectionManager connectionManager, Integer timeout, boolean trustCert, ExecutorService executorService, IntEnvironmentVariables intEnvironmentVariables)
+    public ScanJobManager withUserProvidedUrl(String userProvidedScannerInstallUrl, ConnectionManager connectionManager, ExecutorService executorService, IntEnvironmentVariables intEnvironmentVariables)
         throws DetectUserFriendlyException {
         // we will use the provided url to download/update the scanner
         OperatingSystemType operatingSystemType = OperatingSystemType.determineFromSystem();

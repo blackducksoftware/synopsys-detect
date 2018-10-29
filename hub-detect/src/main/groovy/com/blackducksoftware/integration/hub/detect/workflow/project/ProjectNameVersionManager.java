@@ -27,7 +27,7 @@ public class ProjectNameVersionManager {
         this.bomToolNameVersionDecider = bomToolNameVersionDecider;
     }
 
-    public NameVersion calculateDefaultProjectNameVersion() {
+    public NameVersion evaluateDefaultProjectNameVersion() {
         return evaluateProjectNameVersion(new ArrayList<>());
     }
 

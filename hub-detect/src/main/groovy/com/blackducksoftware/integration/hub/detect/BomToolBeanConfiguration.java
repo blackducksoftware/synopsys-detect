@@ -147,62 +147,62 @@ public class BomToolBeanConfiguration {
     //Provided Dependencies
     @Bean
     public Gson gson() {
-        return bomToolDependencies.gson;
+        return bomToolDependencies.getGson();
     }
 
     @Bean
     public Configuration configuration() {
-        return bomToolDependencies.configuration;
+        return bomToolDependencies.getConfiguration();
     }
 
     @Bean
     public DocumentBuilder xmlDocumentBuilder() {
-        return bomToolDependencies.documentBuilder;
+        return bomToolDependencies.getDocumentBuilder();
     }
 
     @Bean
     public ExecutableRunner executableRunner() {
-        return bomToolDependencies.executableRunner;
+        return bomToolDependencies.getExecutableRunner();
     }
 
     @Bean
     public ExternalIdFactory externalIdFactory() {
-        return bomToolDependencies.externalIdFactory;
+        return bomToolDependencies.getExternalIdFactory();
     }
 
     @Bean
     public DetectFileFinder detectFileFinder() {
-        return bomToolDependencies.detectFileFinder;
+        return bomToolDependencies.getDetectFileFinder();
     }
 
     @Bean
     public DirectoryManager directoryManager() {
-        return bomToolDependencies.directoryManager;
+        return bomToolDependencies.getDirectoryManager();
     }
 
     @Bean
     public DetectConfiguration detectConfiguration() {
-        return bomToolDependencies.detectConfiguration;
+        return bomToolDependencies.getDetectConfiguration();
     }
 
     @Bean
     public ConnectionManager connectionManager() {
-        return bomToolDependencies.connectionManager;
+        return bomToolDependencies.getConnectionManager();
     }
 
     @Bean
     public ExecutableManager executableManager() {
-        return bomToolDependencies.executableManager;
+        return bomToolDependencies.getExecutableManager();
     }
 
     @Bean
     public AirGapManager airGapManager() {
-        return bomToolDependencies.airGapManager;
+        return bomToolDependencies.getAirGapManager();
     }
 
     @Bean
     public StandardExecutableFinder standardExecutableFinder() {
-        return bomToolDependencies.standardExecutableFinder;
+        return bomToolDependencies.getStandardExecutableFinder();
     }
 
     //BomToolFactory

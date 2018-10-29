@@ -17,18 +17,89 @@ import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import freemarker.template.Configuration;
 
 public class BomToolDependencies {
-    public Gson gson;
-    public JsonParser jsonParser;
-    public Configuration configuration;
-    public DocumentBuilder documentBuilder;
+    private final Gson gson;
+    private final JsonParser jsonParser;
+    private final Configuration configuration;
+    private final DocumentBuilder documentBuilder;
 
-    public ExecutableRunner executableRunner;
-    public AirGapManager airGapManager;
-    public ExecutableManager executableManager;
-    public ExternalIdFactory externalIdFactory;
-    public DetectFileFinder detectFileFinder;
-    public DirectoryManager directoryManager;
-    public DetectConfiguration detectConfiguration;
-    public ConnectionManager connectionManager;
-    public StandardExecutableFinder standardExecutableFinder;
+    private final ExecutableRunner executableRunner;
+    private final AirGapManager airGapManager;
+    private final ExecutableManager executableManager;
+    private final ExternalIdFactory externalIdFactory;
+    private final DetectFileFinder detectFileFinder;
+    private final DirectoryManager directoryManager;
+    private final DetectConfiguration detectConfiguration;
+    private final ConnectionManager connectionManager;
+    private final StandardExecutableFinder standardExecutableFinder;
+
+    public BomToolDependencies(final Gson gson, final JsonParser jsonParser, final Configuration configuration, final DocumentBuilder documentBuilder,
+        final ExecutableRunner executableRunner, final AirGapManager airGapManager, final ExecutableManager executableManager, final ExternalIdFactory externalIdFactory,
+        final DetectFileFinder detectFileFinder, final DirectoryManager directoryManager, final DetectConfiguration detectConfiguration, final ConnectionManager connectionManager,
+        final StandardExecutableFinder standardExecutableFinder) {
+        this.gson = gson;
+        this.jsonParser = jsonParser;
+        this.configuration = configuration;
+        this.documentBuilder = documentBuilder;
+        this.executableRunner = executableRunner;
+        this.airGapManager = airGapManager;
+        this.executableManager = executableManager;
+        this.externalIdFactory = externalIdFactory;
+        this.detectFileFinder = detectFileFinder;
+        this.directoryManager = directoryManager;
+        this.detectConfiguration = detectConfiguration;
+        this.connectionManager = connectionManager;
+        this.standardExecutableFinder = standardExecutableFinder;
+    }
+
+    public Gson getGson() {
+        return gson;
+    }
+
+    public JsonParser getJsonParser() {
+        return jsonParser;
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public DocumentBuilder getDocumentBuilder() {
+        return documentBuilder;
+    }
+
+    public ExecutableRunner getExecutableRunner() {
+        return executableRunner;
+    }
+
+    public AirGapManager getAirGapManager() {
+        return airGapManager;
+    }
+
+    public ExecutableManager getExecutableManager() {
+        return executableManager;
+    }
+
+    public ExternalIdFactory getExternalIdFactory() {
+        return externalIdFactory;
+    }
+
+    public DetectFileFinder getDetectFileFinder() {
+        return detectFileFinder;
+    }
+
+    public DirectoryManager getDirectoryManager() {
+        return directoryManager;
+    }
+
+    public DetectConfiguration getDetectConfiguration() {
+        return detectConfiguration;
+    }
+
+    public ConnectionManager getConnectionManager() {
+        return connectionManager;
+    }
+
+    public StandardExecutableFinder getStandardExecutableFinder() {
+        return standardExecutableFinder;
+    }
 }

@@ -32,8 +32,6 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
-import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.synopsys.integration.blackduck.service.CodeLocationService;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -41,12 +39,10 @@ public class DetectBdioUploadService {
     private final Logger logger = LoggerFactory.getLogger(DetectBdioUploadService.class);
 
     private final DetectConfiguration detectConfiguration;
-    private final EventSystem eventSystem;
     private final CodeLocationService codeLocationService;
 
-    public DetectBdioUploadService(final DetectConfiguration detectConfiguration, final EventSystem eventSystem, final CodeLocationService codeLocationService) {
+    public DetectBdioUploadService(final DetectConfiguration detectConfiguration, final CodeLocationService codeLocationService) {
         this.detectConfiguration = detectConfiguration;
-        this.eventSystem = eventSystem;
         this.codeLocationService = codeLocationService;
     }
 
@@ -54,7 +50,6 @@ public class DetectBdioUploadService {
         for (final File file : bdioFiles) {
             logger.info(String.format("uploading %s to %s", file.getName(), detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None)));
             codeLocationService.importBomFile(file);
-            eventSystem.publishEvent(Event.OutputFileOfInterest, file);
         }
     }
 
