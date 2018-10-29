@@ -23,31 +23,21 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.io.FileUtils;
 
-import com.synopsys.integration.util.Stringable;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import com.google.gson.Gson;
 
-public class CompileCommand extends Stringable {
-    private final CompileCommandJsonData rawCompileCommand;
+public class CompileCommandsJsonFile {
 
-    public CompileCommand(final CompileCommandJsonData rawCompileCommand) {
-        this.rawCompileCommand = rawCompileCommand;
-    }
-
-    public String getDirectory() {
-        return rawCompileCommand.directory;
-    }
-
-    public String getFile() {
-        return rawCompileCommand.file;
-    }
-
-    public String getCommand() {
-        if (StringUtils.isNotBlank(rawCompileCommand.command)) {
-            return rawCompileCommand.command;
-        } else {
-            return String.join(" ", rawCompileCommand.arguments);
-        }
-
+    public static List<CompileCommand> parseJsonCompilationDatabaseFile(final Gson gson, final File compileCommandsJsonFile) throws IOException {
+        final String compileCommandsJson = FileUtils.readFileToString(compileCommandsJsonFile, StandardCharsets.UTF_8);
+        final CompileCommandJsonData[] compileCommands = gson.fromJson(compileCommandsJson, CompileCommandJsonData[].class);
+        return Arrays.stream(compileCommands).map(rawCommand -> new CompileCommand(rawCommand)).collect(Collectors.toList());
     }
 }
