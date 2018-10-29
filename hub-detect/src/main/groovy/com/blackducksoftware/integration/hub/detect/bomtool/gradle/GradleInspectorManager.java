@@ -52,8 +52,8 @@ import freemarker.template.TemplateException;
 import java.net.URL;
 
 public class GradleInspectorManager {
-    public static final String GRADLE_INSPECTOR_METADATA_RELATIVE_URL = "com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
-    public static final String MAVEN_CENTRAL_BASE_URL = "http://repo2.maven.org/maven2/";
+    private static final String MAVEN_CENTRAL_BASE_URL = "http://repo2.maven.org/maven2/";
+    private static final String GRADLE_INSPECTOR_METADATA_RELATIVE_URL = "com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
     private final Logger logger = LoggerFactory.getLogger(GradleInspectorManager.class);
 
     private final DetectFileManager detectFileManager;
