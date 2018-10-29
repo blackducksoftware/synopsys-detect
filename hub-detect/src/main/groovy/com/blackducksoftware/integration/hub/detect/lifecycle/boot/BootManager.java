@@ -148,6 +148,7 @@ public class BootManager {
         runDependencies.gson = gson;
         runDependencies.jsonParser = jsonParser;
         runDependencies.documentBuilder = xml;
+        runDependencies.configuration = configuration;
         //runDependencies.integrationEscapeUtil =
 
         BootResult result = new BootResult();

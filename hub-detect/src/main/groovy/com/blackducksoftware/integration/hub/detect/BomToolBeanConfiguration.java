@@ -60,7 +60,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.cpan.CpanListParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratLockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratLockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratPackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.DepPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.GoCliBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.GoDepExtractor;
@@ -283,11 +282,6 @@ public class BomToolBeanConfiguration {
     @Bean
     public MavenMetadataService mavenMetadataService() {
         return new MavenMetadataService(xmlDocumentBuilder(), connectionManager());
-    }
-
-    @Bean
-    public DockerProperties dockerProperties() {
-        return new DockerProperties(detectConfiguration());
     }
 
     @Bean

@@ -100,7 +100,7 @@ public class BdioManager {
         for (final BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
             final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(bdioCodeLocation.codeLocationName, projectNameVersion, bdioCodeLocation.codeLocation);
 
-            final File outputFile = new File(directoryManager.getBdioDirectory(), bdioCodeLocation.bdioName);
+            final File outputFile = new File(directoryManager.getBdioOutputDirectory(), bdioCodeLocation.bdioName);
             if (outputFile.exists()) {
                 final boolean deleteSuccess = outputFile.delete();
                 logger.debug(String.format("%s deleted: %b", outputFile.getAbsolutePath(), deleteSuccess));
@@ -117,7 +117,7 @@ public class BdioManager {
 
         final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(projectNameVersion, aggregateDependencyGraph);
         final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME, PropertyAuthority.None)));
-        final File aggregateBdioFile = new File(directoryManager.getBdioDirectory(), filename);
+        final File aggregateBdioFile = new File(directoryManager.getBdioOutputDirectory(), filename);
         if (aggregateBdioFile.exists()) {
             final boolean deleteSuccess = aggregateBdioFile.delete();
             logger.debug(String.format("%s deleted: %b", aggregateBdioFile.getAbsolutePath(), deleteSuccess));

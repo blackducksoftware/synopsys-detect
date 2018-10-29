@@ -28,17 +28,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class ReportManager {
     // all entry points to reporting
     private final EventSystem eventSystem;
-    private final PhoneHomeManager phoneHomeManager;
-    private final DiagnosticManager diagnosticManager;
 
     // Summary, print collections or final groups or information.
     private final SearchSummaryReporter searchSummaryReporter;
@@ -48,11 +44,13 @@ public class ReportManager {
     private final InfoLogReportWriter logWriter = new InfoLogReportWriter();
     private final DebugLogReportWriter debugLogWriter = new DebugLogReportWriter();
 
-    public ReportManager(final EventSystem eventSystem, final PhoneHomeManager phoneHomeManager, final DiagnosticManager diagnosticManager,
+    public static ReportManager createDefault(EventSystem eventSystem) {
+        return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter());
+    }
+
+    public ReportManager(final EventSystem eventSystem,
         final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter) {
         this.eventSystem = eventSystem;
-        this.phoneHomeManager = phoneHomeManager;
-        this.diagnosticManager = diagnosticManager;
         this.preparationSummaryReporter = preparationSummaryReporter;
         this.extractionSummaryReporter = extractionSummaryReporter;
         this.searchSummaryReporter = searchSummaryReporter;
@@ -78,7 +76,6 @@ public class ReportManager {
     private List<BomToolEvaluation> completedBomToolEvaluations = new ArrayList<>();
 
     public void bomToolsComplete(final List<BomToolEvaluation> bomToolEvaluations) {
-        preparationSummaryReporter.write(logWriter, bomToolEvaluations);
         completedBomToolEvaluations.addAll(bomToolEvaluations);
     }
 

@@ -63,8 +63,8 @@ public class CodeLocationReporter {
         writer.writeLine("Name : " + codeLocationName);
         writer.writeLine("Directory : " + codeLocation.getSourcePath());
         writer.writeLine("Extraction : " + extractionId);
-        writer.writeLine("Bom Tool : " + codeLocation.getBomToolType());
-        writer.writeLine("Bom Tool Group : " + codeLocation.getBomToolGroupType());
+        writer.writeLine("Bom DetectTool : " + codeLocation.getBomToolType());
+        writer.writeLine("Bom DetectTool Group : " + codeLocation.getBomToolGroupType());
 
         final DependencyGraph graph = codeLocation.getDependencyGraph();
 

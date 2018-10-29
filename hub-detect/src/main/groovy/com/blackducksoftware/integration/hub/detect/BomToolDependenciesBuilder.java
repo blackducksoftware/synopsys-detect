@@ -7,10 +7,8 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunDependencies;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
-import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.google.gson.Gson;
@@ -44,18 +42,8 @@ public class BomToolDependenciesBuilder {
         return this;
     }
 
-    public BomToolDependenciesBuilder fromDetectConfigurationFactory(DetectConfigurationFactory detectConfigurationFactory) {
-        AirGapOptions airGapOptions = detectConfigurationFactory.createAirGapOptions();
-        setAirGapManager(new AirGapManager(airGapOptions));
-        return this;
-    }
-
-    public BomToolDependenciesBuilder fromDefaults(DetectInfo detectInfo) {
-        setExecutableRunner(new ExecutableRunner());
+    public BomToolDependenciesBuilder fromDefaults() {
         setExternalIdFactory(new ExternalIdFactory());
-        setExecutableManager(new ExecutableManager(new DetectFileFinder(), detectInfo));
-        setStandardExecutableFinder(new StandardExecutableFinder(directoryManager, executableManager, detectConfiguration));
-
         return this;
     }
 

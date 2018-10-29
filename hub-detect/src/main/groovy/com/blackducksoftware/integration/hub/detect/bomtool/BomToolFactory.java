@@ -33,8 +33,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockBom
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaCliBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.cpan.CpanCliBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratLockBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomToolOptions;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.GoCliBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.GoLockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.GoVndrBomTool;
@@ -54,7 +52,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipenvBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.GemlockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCacheBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockBomTool;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 
 public class BomToolFactory implements BeanFactoryAware {
 
@@ -83,13 +80,6 @@ public class BomToolFactory implements BeanFactoryAware {
 
     public CpanCliBomTool createCpanCliBomTool(final BomToolEnvironment environment) {
         return beanFactory.getBean(CpanCliBomTool.class, environment);
-    }
-
-    public DockerBomTool createDockerBomTool(final BomToolEnvironment environment) {
-        DetectConfiguration detectConfiguration = beanFactory.getBean(DetectConfiguration.class);
-        DockerBomToolOptions options = DockerBomToolOptions.fromConfiguration(detectConfiguration);
-
-        return beanFactory.getBean(DockerBomTool.class, environment, options);
     }
 
     public GemlockBomTool createGemlockBomTool(final BomToolEnvironment environment) {

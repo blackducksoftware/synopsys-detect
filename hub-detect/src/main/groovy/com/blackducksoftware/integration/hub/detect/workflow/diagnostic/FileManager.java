@@ -56,7 +56,7 @@ public class FileManager {
         }
 
         if (this.interestMode != InterestMode.NoFiles) {
-            relevantDirectory = directoryManager.getRelevantDirectory();
+            relevantDirectory = directoryManager.getRelevantOutputDirectory();
         }
     }
 

@@ -205,12 +205,10 @@ public abstract class BlackDuckSignatureScanner {
     }
 
     protected ScanJobBuilder createDefaultScanJobBuilder(final NameVersion projectNameVersion, final List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
-        final File scannerDirectory = directoryManager.getScanDirectory();
-
         final ScanJobBuilder scanJobBuilder = new ScanJobBuilder();
         scanJobBuilder.scanMemoryInMegabytes(signatureScannerOptions.getScanMemory());
-        scanJobBuilder.installDirectory(directoryManager.getScanDirectory());
-        scanJobBuilder.outputDirectory(scannerDirectory);
+        scanJobBuilder.installDirectory(directoryManager.getPermanentDirectory());
+        scanJobBuilder.outputDirectory(directoryManager.getScanOutputDirectory());
 
         scanJobBuilder.cleanupOutput(signatureScannerOptions.getCleanupOutput());
         scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());

@@ -62,6 +62,7 @@ public class DirectoryManager {
         Log("logs"),
         Relevant("relevant"),
         Scan("scan"),
+        Docker("docker"),
         Bdio("bdio");
 
         private String directoryName;
@@ -136,27 +137,31 @@ public class DirectoryManager {
         return sourceDirectory;
     }
 
-    public File getBdioDirectory() {
+    public File getBdioOutputDirectory() {
         return getRunDirectory(RunDirectory.Bdio);
     }
 
-    public File getRunsDirectory() {
+    public File getRunsOutputDirectory() {
         return getOutputDirectory(OutputDirectory.Runs);
     }
 
-    public File getScanDirectory() {
+    public File getScanOutputDirectory() {
         return getRunDirectory(RunDirectory.Scan);
     }
 
-    public File getRelevantDirectory() {
+    public File getDockerOutputDirectory() {
+        return getRunDirectory(RunDirectory.Docker);
+    }
+
+    public File getRelevantOutputDirectory() {
         return getRunDirectory(RunDirectory.Relevant);
     }
 
-    public File getReportDirectory() {
+    public File getReportOutputDirectory() {
         return getRunDirectory(RunDirectory.Report);
     }
 
-    public File getLogDirectory() {
+    public File getLogOutputDirectory() {
         return getRunDirectory(RunDirectory.Log);
     }
 

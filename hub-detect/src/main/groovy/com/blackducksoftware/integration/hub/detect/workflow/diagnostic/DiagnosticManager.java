@@ -88,8 +88,8 @@ public class DiagnosticManager {
 
         logger.info("Initializing diagnostic managers.");
         try {
-            diagnosticReportManager = new DiagnosticReportManager(directoryManager.getReportDirectory(), detectRun.getRunId(), eventSystem, bomToolProfiler);
-            diagnosticLogManager = new DiagnosticLogManager(directoryManager.getLogDirectory(), eventSystem);
+            diagnosticReportManager = new DiagnosticReportManager(directoryManager.getReportOutputDirectory(), detectRun.getRunId(), eventSystem, bomToolProfiler);
+            diagnosticLogManager = new DiagnosticLogManager(directoryManager.getLogOutputDirectory(), eventSystem);
         } catch (final Exception e) {
             logger.error("Failed to process.", e);
         }
@@ -144,7 +144,7 @@ public class DiagnosticManager {
         directoriesToCompress.add(directoryManager.getRunHomeDirectory());
 
         final DiagnosticZipCreator zipper = new DiagnosticZipCreator();
-        return zipper.createDiagnosticZip(detectRun.getRunId(), directoryManager.getRunsDirectory(), directoriesToCompress);
+        return zipper.createDiagnosticZip(detectRun.getRunId(), directoryManager.getRunsOutputDirectory(), directoriesToCompress);
     }
 
 }

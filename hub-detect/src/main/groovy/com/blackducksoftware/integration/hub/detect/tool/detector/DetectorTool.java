@@ -10,6 +10,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolsResult;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationManager;
@@ -53,6 +54,7 @@ public class DetectorTool {
         logger.info("Running bom tools.");
         BomToolsResult bomToolsResult = bomToolManager.runBomTools();
         logger.info("Finished running bom tools.");
+        eventSystem.publishEvent(Event.BomToolsComplete, bomToolsResult);
         return bomToolsResult;
     }
 }

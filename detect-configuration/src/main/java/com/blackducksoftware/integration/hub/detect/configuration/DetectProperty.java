@@ -275,8 +275,13 @@ public enum DetectProperty {
     DETECT_SEARCH_DEPTH("detect.search.depth", "3.0.0", PropertyType.INTEGER, PropertyAuthority.None, "3"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
-    @HelpDescription("The bom tool to choose when multiple bom tool types are found and one needs to be chosen for project name and version.")
+    @HelpDescription("The bom tool to choose when multiple bom tool types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.")
     DETECT_PROJECT_BOM_TOOL("detect.project.bom.tool", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
+    @HelpDescription("The tool priority for project name and version. The first tool in this list that provides a project name and version will be used.")
+    @AcceptableValues(value = { "DETECTOR", "DOCKER" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
+    DETECT_PROJECT_TOOL("detect.project.tool", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "DETECTOR,DOCKER"),
 
     //DETECT_BOM_TOOLS_DISABLED
 

@@ -48,7 +48,7 @@ public class PreparationSummaryReporter {
             }
             if (data.getFailed().size() > 0) {
                 data.getFailed().stream()
-                    .map(it -> "\tFAILED:" + it.getBomTool().getDescriptiveName() + " - " + it.getExtractabilityMessage())
+                    .map(it -> "\tFAILED: " + it.getBomTool().getDescriptiveName() + " - " + it.getExtractabilityMessage())
                     .sorted()
                     .forEach(writer::writeLine);
             }

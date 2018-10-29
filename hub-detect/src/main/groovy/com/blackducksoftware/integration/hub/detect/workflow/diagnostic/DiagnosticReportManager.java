@@ -53,8 +53,8 @@ public class DiagnosticReportManager {
     public enum ReportTypes {
         SEARCH("search_report", "Search Result Report", "A breakdown of bom tool searching by directory."),
         SEARCH_DETAILED("search_detailed_report", "Search Result Report", "A breakdown of bom tool searching by directory."),
-        BOM_TOOL("bom_tool_report", "Bom Tool Report", "A breakdown of bom tool's that were applicable and their preparation and extraction results."),
-        BOM_TOOL_PROFILE("bom_tool_profile_report", "Bom Tool Profile Report", "A breakdown of timing and profiling for all bom tools."),
+        BOM_TOOL("bom_tool_report", "Bom DetectTool Report", "A breakdown of bom tool's that were applicable and their preparation and extraction results."),
+        BOM_TOOL_PROFILE("bom_tool_profile_report", "Bom DetectTool Profile Report", "A breakdown of timing and profiling for all bom tools."),
         CODE_LOCATIONS("code_location_report", "Code Location Report", "A breakdown of code locations created, their dependencies and status results."),
         DEPENDENCY_COUNTS("dependency_counts_report", "Dependency Count Report", "A breakdown of how many dependencies each bom tool group generated in their graphs.");
 
