@@ -49,8 +49,11 @@ import com.synopsys.integration.exception.IntegrationException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import java.net.URL;
 
 public class GradleInspectorManager {
+    public static final String GRADLE_INSPECTOR_METADATA_RELATIVE_URL = "com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
+    public static final String MAVEN_CENTRAL_BASE_URL = "http://repo2.maven.org/maven2/";
     private final Logger logger = LoggerFactory.getLogger(GradleInspectorManager.class);
 
     private final DetectFileManager detectFileManager;
@@ -91,8 +94,20 @@ public class GradleInspectorManager {
             if (airGapMavenMetadataFile.exists()) {
                 xmlDocument = mavenMetadataService.fetchXmlDocumentFromFile(airGapMavenMetadataFile);
             } else {
-                final String mavenMetadataUrl = "http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
-                xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
+                final String mavenMetadataBaseUrlString;
+                final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
+                if (StringUtils.isBlank(configuredGradleInspectorRepositoryUrl)) {
+                    mavenMetadataBaseUrlString = MAVEN_CENTRAL_BASE_URL;
+                    logger.debug(String.format("Gradle Inspector Metadata base url defaulting to %s", mavenMetadataBaseUrlString));
+                } else {
+                    mavenMetadataBaseUrlString = configuredGradleInspectorRepositoryUrl;
+                    logger.debug(String.format("Gradle Inspector Metadata base url overridden to %s", mavenMetadataBaseUrlString));
+                }
+                URL mavenMetaDataBaseUrl = new URL(mavenMetadataBaseUrlString);
+                logger.debug(String.format("mavenMetaDataBaseUrl: %s; relative part: %s", mavenMetaDataBaseUrl.toString(), GRADLE_INSPECTOR_METADATA_RELATIVE_URL));
+                URL mavenMetaDataFullUrl = new URL(mavenMetaDataBaseUrl, GRADLE_INSPECTOR_METADATA_RELATIVE_URL);
+                logger.debug(String.format("Derived Gradle Inspector Metadata full url: %s", mavenMetaDataFullUrl.toString()));
+                xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetaDataFullUrl.toString());
             }
 
             final Optional<String> versionFromXML = mavenMetadataService.parseVersionFromXML(xmlDocument, versionRange);
