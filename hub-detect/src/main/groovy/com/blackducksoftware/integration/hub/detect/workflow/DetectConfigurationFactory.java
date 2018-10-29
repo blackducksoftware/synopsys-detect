@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import com.blackducksoftware.integration.hub.detect.OverridableExcludedIncludedFilter;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
@@ -14,7 +15,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryOptio
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectServiceOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchOptions;
-import com.synopsys.integration.util.ExcludedIncludedFilter;
 
 public class DetectConfigurationFactory {
     DetectConfiguration detectConfiguration;
@@ -46,7 +46,7 @@ public class DetectConfigurationFactory {
         int maxDepth = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_DEPTH, PropertyAuthority.None);
         String excluded = detectConfiguration.getProperty(DetectProperty.DETECT_EXCLUDED_BOM_TOOL_TYPES, PropertyAuthority.None).toUpperCase();
         String included = detectConfiguration.getProperty(DetectProperty.DETECT_INCLUDED_BOM_TOOL_TYPES, PropertyAuthority.None).toUpperCase();
-        ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(excluded, included);
+        OverridableExcludedIncludedFilter bomToolFilter = new OverridableExcludedIncludedFilter(excluded, included);
         return new SearchOptions(directory, excludedDirectories, forceNestedSearch, maxDepth, bomToolFilter);
     }
 
@@ -92,7 +92,7 @@ public class DetectConfigurationFactory {
         final String codeLocationPrefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.None);
         final String codeLocationSuffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.None);
         final String additionalArguments = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS, PropertyAuthority.None);
-        
+
         return new BlackDuckSignatureScannerOptions(signatureScannerPaths, exclusionPatterns, exclusionNamePatterns, scanMemory, parrallelProcessors, cleanupOutput, dryRun,
             snippetMatching, codeLocationPrefix, codeLocationSuffix, additionalArguments);
     }

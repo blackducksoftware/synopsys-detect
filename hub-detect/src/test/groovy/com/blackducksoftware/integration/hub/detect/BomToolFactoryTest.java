@@ -27,7 +27,6 @@ public class BomToolFactoryTest {
         DetectConfiguration mockConfig = new DetectConfiguration(new DetectPropertySource(environment), new DetectPropertyMap());
 
         BomToolDependencies bomToolDependencies = Mockito.mock(BomToolDependencies.class);
-        bomToolDependencies.detectConfiguration = mockConfig;
 
         runContext = new AnnotationConfigApplicationContext();
         runContext.setDisplayName("Detect Run Test");

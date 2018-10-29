@@ -26,22 +26,22 @@ package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.InspectorNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
 
 public class PipInspectorBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -58,7 +58,7 @@ public class PipInspectorBomTool extends BomTool {
     private File setupFile;
 
     public PipInspectorBomTool(final BomToolEnvironment environment, final String requirementFilePath, final DetectFileFinder fileFinder, final PythonExecutableFinder pythonExecutableFinder, final PipInspectorManager pipInspectorManager,
-            final PipInspectorExtractor pipInspectorExtractor) {
+        final PipInspectorExtractor pipInspectorExtractor) {
         super(environment, "Pip Inspector", BomToolGroupType.PIP, BomToolType.PIP_INSPECTOR);
         this.fileFinder = fileFinder;
         this.pipInspectorExtractor = pipInspectorExtractor;
