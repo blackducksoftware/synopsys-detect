@@ -189,7 +189,11 @@ public class BlackDuckSignatureScanner implements StatusSummaryProvider<ScanStat
             // Add the path as a FAILURE until it completes successfully
             scanSummaryResults.put(targetPath, Result.FAILURE);
             final ExclusionPatternDetector exclusionPatternDetector = new ExclusionPatternDetector(detectFileFinder, target);
-            final Set<String> scanExclusionPatterns = exclusionPatternDetector.determineExclusionPatterns(hubSignatureScannerExclusionNamePatterns);
+            DetectProperty maxDepthProperty = DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH;
+            Integer maxDepth = detectConfiguration.getIntegerProperty(maxDepthProperty);
+            final String maxDepthHitMsg = String.format("Maximum depth %d hit while traversing source tree to generate signature scanner exclusion patterns. To search deeper, adjust the value of property %s",
+                    maxDepth, maxDepthProperty.getPropertyName());
+            final Set<String> scanExclusionPatterns = exclusionPatternDetector.determineExclusionPatterns(maxDepthHitMsg, maxDepth, hubSignatureScannerExclusionNamePatterns);
             if (null != providedExclusionPatterns) {
                 for (final String providedExclusionPattern : providedExclusionPatterns) {
                     scanExclusionPatterns.add(providedExclusionPattern);
