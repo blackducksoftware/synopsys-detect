@@ -55,7 +55,7 @@ public class DependenciesListFileManager {
         this.executableRunner = executableRunner;
     }
 
-    public Set<String> generateDependencyFilePaths(final File workingDir, final CompileCommandWrapper compileCommand) {
+    public Set<String> generateDependencyFilePaths(final File workingDir, final CompileCommand compileCommand) {
         final Set<String> dependencyFilePaths = new HashSet<>();
         final Optional<File> depsMkFile = generate(workingDir, compileCommand);
         dependencyFilePaths.addAll(parse(depsMkFile.orElse(null)));
@@ -64,7 +64,7 @@ public class DependenciesListFileManager {
     }
 
     private Optional<File> generate(final File workingDir,
-            final CompileCommandWrapper compileCommand) {
+            final CompileCommand compileCommand) {
         final String depsMkFilename = deriveDependenciesListFilename(compileCommand);
         final File depsMkFile = new File(workingDir, depsMkFilename);
         try {
@@ -110,7 +110,7 @@ public class DependenciesListFileManager {
         return dependencyFilePaths;
     }
 
-    private String deriveDependenciesListFilename(final CompileCommandWrapper compileCommand) {
+    private String deriveDependenciesListFilename(final CompileCommand compileCommand) {
         final int randomInt = random.nextInt(1) * 1000;
         final String sourceFilenameBase = getFilenameBase(compileCommand.getFile());
         return String.format(DEPS_MK_FILENAME_PATTERN, sourceFilenameBase, randomInt);

@@ -21,33 +21,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.clang;
+package com.blackducksoftware.integration.hub.detect;
 
-import org.apache.commons.lang3.StringUtils;
+import com.synopsys.integration.util.ExcludedIncludedFilter;
 
-import com.synopsys.integration.util.Stringable;
+public class OverridableExcludedIncludedFilter extends ExcludedIncludedFilter {
+    private final boolean allExcluded;
 
-public class CompileCommand extends Stringable {
-    private final CompileCommandJsonData rawCompileCommand;
-
-    public CompileCommand(final CompileCommandJsonData rawCompileCommand) {
-        this.rawCompileCommand = rawCompileCommand;
-    }
-
-    public String getDirectory() {
-        return rawCompileCommand.directory;
-    }
-
-    public String getFile() {
-        return rawCompileCommand.file;
-    }
-
-    public String getCommand() {
-        if (StringUtils.isNotBlank(rawCompileCommand.command)) {
-            return rawCompileCommand.command;
+    public OverridableExcludedIncludedFilter(final String toExclude, final String toInclude) {
+        super(toExclude, toInclude);
+        if (toExclude.trim().equalsIgnoreCase("ALL")) {
+            allExcluded = true;
         } else {
-            return String.join(" ", rawCompileCommand.arguments);
+            allExcluded = false;
         }
+    }
 
+    @Override
+    public boolean shouldInclude(final String itemName) {
+        if (allExcluded) {
+            return false;
+        } else {
+            return super.shouldInclude(itemName);
+        }
     }
 }

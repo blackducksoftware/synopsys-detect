@@ -29,19 +29,22 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExecutableNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.InspectorNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PipInspectorBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
 
     private final DetectFileFinder fileFinder;
@@ -55,7 +58,7 @@ public class PipInspectorBomTool extends BomTool {
     private File setupFile;
 
     public PipInspectorBomTool(final BomToolEnvironment environment, final String requirementFilePath, final DetectFileFinder fileFinder, final PythonExecutableFinder pythonExecutableFinder, final PipInspectorManager pipInspectorManager,
-        final PipInspectorExtractor pipInspectorExtractor) {
+            final PipInspectorExtractor pipInspectorExtractor) {
         super(environment, "Pip Inspector", BomToolGroupType.PIP, BomToolType.PIP_INSPECTOR);
         this.fileFinder = fileFinder;
         this.pipInspectorExtractor = pipInspectorExtractor;
@@ -70,10 +73,14 @@ public class PipInspectorBomTool extends BomTool {
         final boolean hasSetups = setupFile != null;
         final boolean hasRequirements = requirementFilePath != null && StringUtils.isNotBlank(requirementFilePath);
         if (hasSetups || hasRequirements) {
+            logger.warn("------------------------------------------------------------------------------------------------------");
+            logger.warn("The Pip inspector has been deprecated. Please use pipenv and the Pipenv Graph inspector in the future.");
+            logger.warn("------------------------------------------------------------------------------------------------------");
             return new PassedBomToolResult();
         } else {
             return new FileNotFoundBomToolResult(SETUPTOOLS_DEFAULT_FILE_NAME);
         }
+
     }
 
     @Override
