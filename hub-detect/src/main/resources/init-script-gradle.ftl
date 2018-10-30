@@ -22,11 +22,19 @@ initscript {
 <#elseif customRepositoryUrl??>
         mavenLocal()
         maven {
+            name 'SynopsysIntegrationRepository'
+            url '${integrationRepositoryUrl}'
+        }
+        maven {
             name 'UserDefinedRepository'
             url '${customRepositoryUrl}'
         }
 <#else>
         mavenLocal()
+        maven {
+            name 'SynopsysIntegrationRepository'
+            url '${integrationRepositoryUrl}'
+        }
         mavenCentral()
 </#if>
     }

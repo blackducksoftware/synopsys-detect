@@ -23,6 +23,23 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
+import com.synopsys.integration.exception.IntegrationException;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,28 +48,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
-import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
-import com.synopsys.integration.exception.IntegrationException;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-
 public class GradleInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(GradleInspectorManager.class);
 
+    private static final String DEFAULT_GRADLE_INSPECTOR_REPO_URL = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/";
     private final DetectFileManager detectFileManager;
     private final Configuration configuration;
     private final DetectConfiguration detectConfiguration;
@@ -91,7 +90,7 @@ public class GradleInspectorManager {
             if (airGapMavenMetadataFile.exists()) {
                 xmlDocument = mavenMetadataService.fetchXmlDocumentFromFile(airGapMavenMetadataFile);
             } else {
-                final String mavenMetadataUrl = "http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
+                final String mavenMetadataUrl = DEFAULT_GRADLE_INSPECTOR_REPO_URL + "com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
                 xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
             }
 
@@ -118,23 +117,25 @@ public class GradleInspectorManager {
         model.put("includedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_PROJECTS));
         model.put("excludedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS));
         model.put("includedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS));
-
+        boolean airGapMode = false;
         try {
             final File gradleInspectorAirGapDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH));
             if (gradleInspectorAirGapDirectory.exists()) {
                 model.put("airGapLibsPath", StringEscapeUtils.escapeJava(gradleInspectorAirGapDirectory.getCanonicalPath()));
+                airGapMode = true;
             }
         } catch (final Exception e) {
             logger.debug("Exception encountered when resolving air gap path for gradle, running in online mode instead");
             logger.debug(e.getMessage());
         }
-
-        final String gradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
-        if (StringUtils.isNotBlank(gradleInspectorRepositoryUrl)) {
-            model.put("customRepositoryUrl", gradleInspectorRepositoryUrl);
+        if (!airGapMode) {
+            model.put("integrationRepositoryUrl", DEFAULT_GRADLE_INSPECTOR_REPO_URL);
+            final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
+            if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
+                model.put("customRepositoryUrl", configuredGradleInspectorRepositoryUrl);
+            }
         }
         final Template initScriptTemplate = configuration.getTemplate("init-script-gradle.ftl");
-
         final Writer fileWriter = new FileWriter(initScriptFile);
         initScriptTemplate.process(model, fileWriter);
         fileWriter.close();
