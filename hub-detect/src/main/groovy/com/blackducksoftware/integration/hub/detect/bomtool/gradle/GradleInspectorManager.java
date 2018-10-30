@@ -49,9 +49,15 @@ import java.util.Map;
 import java.util.Optional;
 
 public class GradleInspectorManager {
-    private final Logger logger = LoggerFactory.getLogger(GradleInspectorManager.class);
-
     private static final String DEFAULT_GRADLE_INSPECTOR_REPO_URL = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/";
+    public static final String VERSION_METADATA_XML_FILENAME = "maven-metadata.xml";
+    public static final String RELATIVE_PATH_TO_VERSION_METADATA = "com/blackducksoftware/integration/integration-gradle-inspector/" + VERSION_METADATA_XML_FILENAME;
+
+    public static final String GRADLE_DIR_NAME = "gradle";
+    public static final String GRADLE_SCRIPT_TEMPLATE_FILENAME = "init-script-gradle.ftl";
+    public static final String GENERATED_GRADLE_SCRIPT_NAME = "init-detect.gradle";
+
+    private final Logger logger = LoggerFactory.getLogger(GradleInspectorManager.class);
     private final DetectFileManager detectFileManager;
     private final Configuration configuration;
     private final DetectConfiguration detectConfiguration;
@@ -86,11 +92,11 @@ public class GradleInspectorManager {
 
         try {
             Document xmlDocument = null;
-            final File airGapMavenMetadataFile = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH), "maven-metadata.xml");
+            final File airGapMavenMetadataFile = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH), VERSION_METADATA_XML_FILENAME);
             if (airGapMavenMetadataFile.exists()) {
                 xmlDocument = mavenMetadataService.fetchXmlDocumentFromFile(airGapMavenMetadataFile);
             } else {
-                final String mavenMetadataUrl = DEFAULT_GRADLE_INSPECTOR_REPO_URL + "com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
+                final String mavenMetadataUrl = DEFAULT_GRADLE_INSPECTOR_REPO_URL + RELATIVE_PATH_TO_VERSION_METADATA;
                 xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
             }
 
@@ -110,7 +116,7 @@ public class GradleInspectorManager {
     }
 
     private String resolveInitScriptPath(final String version) throws IOException, TemplateException {
-        final File initScriptFile = detectFileManager.createSharedFile("gradle", "init-detect.gradle");
+        final File initScriptFile = detectFileManager.createSharedFile(GRADLE_DIR_NAME, GENERATED_GRADLE_SCRIPT_NAME);
         final Map<String, String> model = new HashMap<>();
         model.put("gradleInspectorVersion", version);
         model.put("excludedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_PROJECTS));
@@ -135,7 +141,7 @@ public class GradleInspectorManager {
                 model.put("customRepositoryUrl", configuredGradleInspectorRepositoryUrl);
             }
         }
-        final Template initScriptTemplate = configuration.getTemplate("init-script-gradle.ftl");
+        final Template initScriptTemplate = configuration.getTemplate(GRADLE_SCRIPT_TEMPLATE_FILENAME);
         final Writer fileWriter = new FileWriter(initScriptFile);
         initScriptTemplate.process(model, fileWriter);
         fileWriter.close();
