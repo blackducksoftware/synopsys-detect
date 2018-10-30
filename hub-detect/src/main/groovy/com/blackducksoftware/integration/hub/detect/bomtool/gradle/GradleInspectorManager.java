@@ -50,20 +50,20 @@ import java.util.Optional;
 
 public class GradleInspectorManager {
     private static final String DEFAULT_GRADLE_INSPECTOR_REPO_URL = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/";
-    public static final String VERSION_METADATA_XML_FILENAME = "maven-metadata.xml";
-    public static final String RELATIVE_PATH_TO_VERSION_METADATA = "com/blackducksoftware/integration/integration-gradle-inspector/" + VERSION_METADATA_XML_FILENAME;
+    private static final String VERSION_METADATA_XML_FILENAME = "maven-metadata.xml";
+    private static final String RELATIVE_PATH_TO_VERSION_METADATA = "com/blackducksoftware/integration/integration-gradle-inspector/" + VERSION_METADATA_XML_FILENAME;
 
-    public static final String GRADLE_DIR_NAME = "gradle";
-    public static final String GRADLE_SCRIPT_TEMPLATE_FILENAME = "init-script-gradle.ftl";
-    public static final String GENERATED_GRADLE_SCRIPT_NAME = "init-detect.gradle";
+    private static final String GRADLE_DIR_NAME = "gradle";
+    private static final String GRADLE_SCRIPT_TEMPLATE_FILENAME = "init-script-gradle.ftl";
+    private static final String GENERATED_GRADLE_SCRIPT_NAME = "init-detect.gradle";
 
-    private final Logger logger = LoggerFactory.getLogger(GradleInspectorManager.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectFileManager detectFileManager;
     private final Configuration configuration;
     private final DetectConfiguration detectConfiguration;
     private final MavenMetadataService mavenMetadataService;
 
-    private String resolvedInitScript = null;
+    private String generatedGradleScriptPath = null;
     private boolean hasResolvedInspector = false;
 
     public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DetectConfiguration detectConfiguration, final MavenMetadataService mavenMetadataService) {
@@ -78,18 +78,17 @@ public class GradleInspectorManager {
             hasResolvedInspector = true;
             final String resolvedVersion = resolveInspectorVersion();
             try {
-                resolvedInitScript = resolveInitScriptPath(resolvedVersion);
+                generatedGradleScriptPath = generateGradleScript(resolvedVersion);
             } catch (final Exception e) {
                 throw new BomToolException(e);
             }
         }
-        return resolvedInitScript;
+        return generatedGradleScriptPath;
     }
 
     private String resolveInspectorVersion() {
         final String versionRange = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION);
         String gradleInspectorVersion = null;
-
         try {
             Document xmlDocument = null;
             final File airGapMavenMetadataFile = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH), VERSION_METADATA_XML_FILENAME);
@@ -103,49 +102,50 @@ public class GradleInspectorManager {
             final Optional<String> versionFromXML = mavenMetadataService.parseVersionFromXML(xmlDocument, versionRange);
             if (versionFromXML.isPresent()) {
                 gradleInspectorVersion = versionFromXML.get();
-                logger.info(String.format("Resolved gradle inspector version from [%s] to [%s]", versionRange, gradleInspectorVersion.toString()));
+                logger.info(String.format("Resolved gradle inspector version from [%s] to [%s]", versionRange, gradleInspectorVersion));
             } else {
                 throw new IntegrationException(String.format("Failed to find a version matching [%s] in maven-metadata.xml", versionRange));
             }
         } catch (final IntegrationException | SAXException | IOException | DetectUserFriendlyException e) {
-            logger.warn("Exception encountered when resolving latest version of Gradle Inspector, skipping resolution.");
-            logger.debug(e.getMessage());
+            logger.warn(String.format("Exception encountered when resolving latest version of Gradle Inspector, skipping resolution: %s", e.getMessage()));
         }
-
         return gradleInspectorVersion;
     }
 
-    private String resolveInitScriptPath(final String version) throws IOException, TemplateException {
-        final File initScriptFile = detectFileManager.createSharedFile(GRADLE_DIR_NAME, GENERATED_GRADLE_SCRIPT_NAME);
-        final Map<String, String> model = new HashMap<>();
-        model.put("gradleInspectorVersion", version);
-        model.put("excludedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_PROJECTS));
-        model.put("includedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_PROJECTS));
-        model.put("excludedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS));
-        model.put("includedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS));
-        boolean airGapMode = false;
+    private String generateGradleScript(final String version) throws IOException, TemplateException {
+        final File generatedGradleScriptFile = detectFileManager.createSharedFile(GRADLE_DIR_NAME, GENERATED_GRADLE_SCRIPT_NAME);
+        final Map<String, String> gradleScriptData = new HashMap<>();
+        gradleScriptData.put("gradleInspectorVersion", version);
+        gradleScriptData.put("excludedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_PROJECTS));
+        gradleScriptData.put("includedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_PROJECTS));
+        gradleScriptData.put("excludedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS));
+        gradleScriptData.put("includedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS));
+        addReposToGradleScriptData(gradleScriptData);
+        populateGradleScriptWithData(generatedGradleScriptFile, gradleScriptData);
+        return generatedGradleScriptFile.getCanonicalPath();
+    }
+
+    private void addReposToGradleScriptData(Map<String, String> gradleScriptData) {
         try {
             final File gradleInspectorAirGapDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH));
             if (gradleInspectorAirGapDirectory.exists()) {
-                model.put("airGapLibsPath", StringEscapeUtils.escapeJava(gradleInspectorAirGapDirectory.getCanonicalPath()));
-                airGapMode = true;
+                gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(gradleInspectorAirGapDirectory.getCanonicalPath()));
+                return;
             }
         } catch (final Exception e) {
-            logger.debug("Exception encountered when resolving air gap path for gradle, running in online mode instead");
-            logger.debug(e.getMessage());
+            logger.debug(String.format("Exception encountered when resolving air gap path for gradle, running in online mode instead: %s", e.getMessage()));
         }
-        if (!airGapMode) {
-            model.put("integrationRepositoryUrl", DEFAULT_GRADLE_INSPECTOR_REPO_URL);
-            final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
-            if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
-                model.put("customRepositoryUrl", configuredGradleInspectorRepositoryUrl);
-            }
+        gradleScriptData.put("integrationRepositoryUrl", DEFAULT_GRADLE_INSPECTOR_REPO_URL);
+        final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
+        if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
+            gradleScriptData.put("customRepositoryUrl", configuredGradleInspectorRepositoryUrl);
         }
-        final Template initScriptTemplate = configuration.getTemplate(GRADLE_SCRIPT_TEMPLATE_FILENAME);
-        final Writer fileWriter = new FileWriter(initScriptFile);
-        initScriptTemplate.process(model, fileWriter);
-        fileWriter.close();
+    }
 
-        return initScriptFile.getCanonicalPath();
+    private void populateGradleScriptWithData(File generatedGradleScriptFile, Map<String, String> gradleScriptData) throws IOException, TemplateException {
+        final Template gradleScriptTemplate = configuration.getTemplate(GRADLE_SCRIPT_TEMPLATE_FILENAME);
+        try (final Writer fileWriter = new FileWriter(generatedGradleScriptFile)) {
+            gradleScriptTemplate.process(gradleScriptData, fileWriter);
+        }
     }
 }
