@@ -29,6 +29,7 @@ import static com.blackducksoftware.integration.hub.detect.configuration.DetectP
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_CLEANUP;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_CONDA;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_CPAN;
+import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_DETECTOR;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_DOCKER;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_GENERAL;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_GO;
@@ -265,7 +266,7 @@ public enum DetectProperty {
     DETECT_SCAN_OUTPUT_PATH("detect.scan.output.path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_SBT, additional = { GROUP_PATHS })
-    @HelpDescription("Depth from sbt bom tool paths to search for report files.")
+    @HelpDescription("Depth the sbt detector will use to search for report files.")
     DETECT_SBT_REPORT_DEPTH("detect.sbt.report.search.depth", "4.3.0", PropertyType.INTEGER, PropertyAuthority.None, "3"),
 
     @Deprecated
@@ -275,49 +276,104 @@ public enum DetectProperty {
     DETECT_SEARCH_DEPTH("detect.search.depth", "3.0.0", PropertyType.INTEGER, PropertyAuthority.None, "3"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
-    @HelpDescription("The bom tool to choose when multiple bom tool types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.")
-    DETECT_PROJECT_BOM_TOOL("detect.project.bom.tool", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
-
-    @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("The tool priority for project name and version. The first tool in this list that provides a project name and version will be used.")
     @AcceptableValues(value = { "DETECTOR", "DOCKER" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
     DETECT_PROJECT_TOOL("detect.project.tool", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "DETECTOR,DOCKER"),
 
-    //DETECT_BOM_TOOLS_DISABLED
+    @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
+    @HelpDescription("The tools detect should run in a comma-separated list. The default of AUTO will try to automatically determine which tools to run based on your property configuration.")
+    @AcceptableValues(value = { "AUTO", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "SWIP_CLI", "DOCKER" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
+    DETECT_TOOLS("detect.tools", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "AUTO"),
 
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.project.detector in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
+    @HelpDescription("The bom tool to choose when multiple bom tool types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.")
+    DETECT_PROJECT_BOM_TOOL("detect.project.bom.tool", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_SEARCH })
+    @HelpDescription("The detector to choose when multiple detector types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.")
+    DETECT_PROJECT_DETECTOR("detect.project.detector", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.detector.search.depth in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("Depth from source paths to search for files to determine if a bom tool applies.")
     DETECT_BOM_TOOL_SEARCH_DEPTH("detect.bom.tool.search.depth", "3.2.0", PropertyType.INTEGER, PropertyAuthority.None, "0"),
 
+    @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_SEARCH })
+    @HelpDescription("Depth from source paths to search for files to determine if a detector applies.")
+    DETECT_DETECTOR_SEARCH_DEPTH("detect.detector.search.depth", "3.2.0", PropertyType.INTEGER, PropertyAuthority.None, "0"),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.required.detector.types in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_BOMTOOL, additional = { GROUP_BOMTOOL })
     @HelpDescription("If set, detect will fail if it does not find the bom tool types supplied here.")
     DETECT_REQUIRED_BOM_TOOL_TYPES("detect.required.bom.tool.types", "4.3.0", PropertyType.STRING, PropertyAuthority.None),
 
+    @HelpGroup(primary = GROUP_DETECTOR, additional = { GROUP_DETECTOR })
+    @HelpDescription("If set, detect will fail if it does not find the detector types supplied here.")
+    DETECT_REQUIRED_DETECTOR_TYPES("detect.required.detector.types", "4.3.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.tools in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_BOMTOOL, additional = { GROUP_BOMTOOL })
     @HelpDescription("If true, detect will not perform any bom tool work.")
     DETECT_BOM_TOOLS_DISABLED("detect.bom.tools.disabled", "5.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.detector.search.continue in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.")
     @HelpDetailed("If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc.\r\nIf false, Detect will only find bom tools in subdirectories of a project if they are of a different type such as an Npm project in a subdirectory of a Gradle project.")
     DETECT_BOM_TOOL_SEARCH_CONTINUE("detect.bom.tool.search.continue", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_SEARCH })
+    @HelpDescription("If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.")
+    @HelpDetailed("If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc.\r\nIf false, Detect will only find bom tools in subdirectories of a project if they are of a different type such as an Npm project in a subdirectory of a Gradle project.")
+    DETECT_DETECTOR_SEARCH_CONTINUE("detect.detector.search.continue", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.detector.search.exclusion in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("A comma-separated list of directory names to exclude from the bom tool search.")
     DETECT_BOM_TOOL_SEARCH_EXCLUSION("detect.bom.tool.search.exclusion", "3.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
+    @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_SEARCH })
+    @HelpDescription("A comma-separated list of directory names to exclude from the bom tool search.")
+    DETECT_DETECTOR_SEARCH_EXCLUSION("detect.detector.search.exclusion", "3.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.detector.search.exclusion.defaults in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.")
     @HelpDetailed("If true, these directories will be excluded from the bom tool search: " + BomToolSearchExcludedDirectories.DIRECTORY_NAMES)
     DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS("detect.bom.tool.search.exclusion.defaults", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
+    @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_SEARCH })
+    @HelpDescription("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.")
+    @HelpDetailed("If true, these directories will be excluded from the bom tool search: " + BomToolSearchExcludedDirectories.DIRECTORY_NAMES)
+    DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS("detect.detector.search.exclusion.defaults", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.excluded.detector.types in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_BOMTOOL, additional = { SEARCH_GROUP_SEARCH })
     @HelpDescription("By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. If you want to exclude all tools, specify \"ALL\". Exclusion rules always win.")
     DETECT_EXCLUDED_BOM_TOOL_TYPES("detect.excluded.bom.tool.types", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
+    @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_SEARCH })
+    @HelpDescription("By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. If you want to exclude all tools, specify \"ALL\". Exclusion rules always win.")
+    DETECT_EXCLUDED_DETECTOR_TYPES("detect.excluded.detector.types", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.included.detector.types in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_BOMTOOL, additional = { SEARCH_GROUP_SEARCH })
     @HelpDescription("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
     DETECT_INCLUDED_BOM_TOOL_TYPES("detect.included.bom.tool.types", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_SEARCH })
+    @HelpDescription("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
+    DETECT_INCLUDED_DETECTOR_TYPES("detect.included.detector.types", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("An override for the name detect will use for the code location it creates. If supplied and multiple code locations are found, detect will append an index to each code location name.")
@@ -624,11 +680,13 @@ public enum DetectProperty {
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY("detect.blackduck.signature.scanner.memory", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "4096"),
 
     @Deprecated
-    @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.disabled in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @DetectDeprecation(description = "This property is changing. Please use --detect.tools in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_DEBUG, SEARCH_GROUP_HUB })
     @HelpDescription("Set to true to disable the Hub Signature Scanner.")
     DETECT_HUB_SIGNATURE_SCANNER_DISABLED("detect.hub.signature.scanner.disabled", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.tools in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_DEBUG, SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Set to true to disable the Black Duck Signature Scanner.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED("detect.blackduck.signature.scanner.disabled", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
@@ -840,14 +898,17 @@ public enum DetectProperty {
 
     public final class PropertyConstants {
         @Deprecated
+        public static final String GROUP_BOMTOOL = "bomtool";
+        @Deprecated
         public static final String GROUP_HUB_CONFIGURATION = "hub configuration";
+
         public static final String GROUP_BLACKDUCK_CONFIGURATION = "blackduck configuration";
         public static final String GROUP_GENERAL = "general";
         public static final String GROUP_LOGGING = "logging";
         public static final String GROUP_CLEANUP = "cleanup";
         public static final String GROUP_PATHS = "paths";
-        public static final String GROUP_BOMTOOL = "bomtool";
         public static final String GROUP_CODELOCATION = "codelocation";
+        public static final String GROUP_DETECTOR = "detector";
         public static final String GROUP_BITBAKE = "bitbake";
         public static final String GROUP_CONDA = "conda";
         public static final String GROUP_CPAN = "cpan";

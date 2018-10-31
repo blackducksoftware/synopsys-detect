@@ -1,96 +1,43 @@
-/**
- * hub-detect
- *
- * Copyright (C) 2018 Black Duck Software, Inc.
- * http://www.blackducksoftware.com/
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.blackducksoftware.integration.hub.detect.tool.docker;
 
-import java.io.File;
+import java.util.Collections;
 
-import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
 
 public class DockerTool {
-    private final DockerInspectorManager dockerInspectorManager;
-    private final StandardExecutableFinder standardExecutableFinder;
-    private final DockerExtractor dockerExtractor;
-    private final DockerOptions dockerBomToolOptions;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private File javaExe;
-    private File bashExe;
-    private File dockerExe;
-    private String image;
-    private String tar;
-    private DockerInspectorInfo dockerInspectorInfo;
+    private final DetectContext detectContext;
 
-    public DockerTool(final DockerInspectorManager dockerInspectorManager, final StandardExecutableFinder standardExecutableFinder, final DockerExtractor dockerExtractor,
-        DockerOptions options) {
-        this.standardExecutableFinder = standardExecutableFinder;
-        this.dockerExtractor = dockerExtractor;
-        this.dockerInspectorManager = dockerInspectorManager;
-        this.dockerBomToolOptions = options;
+    public DockerTool(DetectContext detectContext) {
+        this.detectContext = detectContext;
     }
 
-    public boolean shouldRun() {
-        image = dockerBomToolOptions.getSuppliedDockerImage();
-        tar = dockerBomToolOptions.getSuppliedDockerTar();
+    public DockerToolResult run() throws BomToolException {
+        DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
 
-        if (StringUtils.isBlank(image) && StringUtils.isBlank(tar)) {
-            return false;
-        }
+        BomToolEnvironment bomToolEnvironment = new BomToolEnvironment(directoryManager.getSourceDirectory(), Collections.emptySet(), 0, null, false);
+        DockerBomTool dockerBomTool = detectContext.getBean(DockerBomTool.class, bomToolEnvironment);
 
-        return true;
+        logger.info("Will run the docker tool.");
+
+        BomToolResult applicableResult = dockerBomTool.applicable();
+        BomToolResult extractableResult = dockerBomTool.extractable();
+        ExtractionId extractionId = new ExtractionId(BomToolGroupType.DOCKER, "docker");
+        Extraction extractResult = dockerBomTool.extract(extractionId);
+        DockerToolResult dockerToolResult = new DockerToolResult();
+        dockerToolResult.dockerCodeLocations = extractResult.codeLocations;
+        return dockerToolResult;
+        //TODO get docker file!
     }
-
-    public DockerResult run(File sourcePath, File outputDirectory) throws DetectUserFriendlyException, BomToolException {
-        javaExe = standardExecutableFinder.getExecutable(StandardExecutableType.JAVA);
-        if (javaExe == null) {
-            throw new DetectUserFriendlyException("Docker requires java to run.", ExitCodeType.FAILURE_GENERAL_ERROR);
-        }
-
-        bashExe = standardExecutableFinder.getExecutable(StandardExecutableType.BASH);
-        if (bashExe == null) {
-            throw new DetectUserFriendlyException("Docker requires bash to run.", ExitCodeType.FAILURE_GENERAL_ERROR);
-        }
-
-        dockerExe = standardExecutableFinder.getExecutable(StandardExecutableType.DOCKER);
-        if (dockerExe == null) {
-            if (dockerBomToolOptions.isDockerPathRequired()) {
-                throw new DetectUserFriendlyException("Docker requires docker to run.", ExitCodeType.FAILURE_GENERAL_ERROR);
-            }
-        }
-
-        dockerInspectorInfo = dockerInspectorManager.getDockerInspector();
-        if (dockerInspectorInfo == null) {
-            throw new DetectUserFriendlyException("Docker requires the docker inspector to run.", ExitCodeType.FAILURE_GENERAL_ERROR);
-        }
-
-        return dockerExtractor.extract(BomToolType.DOCKER, sourcePath, outputDirectory, bashExe, javaExe, image, tar, dockerInspectorInfo);
-
-    }
-
 }

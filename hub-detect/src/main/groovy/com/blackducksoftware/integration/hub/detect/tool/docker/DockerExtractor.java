@@ -45,7 +45,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.google.gson.Gson;
 import com.synopsys.integration.hub.bdio.BdioReader;
 import com.synopsys.integration.hub.bdio.BdioTransformer;
@@ -62,17 +61,15 @@ public class DockerExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DetectFileFinder detectFileFinder;
-    private final DirectoryManager directoryManager;
     private final DockerProperties dockerProperties;
     private final ExecutableRunner executableRunner;
     private final BdioTransformer bdioTransformer;
     private final ExternalIdFactory externalIdFactory;
     private final Gson gson;
 
-    public DockerExtractor(final DetectFileFinder detectFileFinder, final DirectoryManager directoryManager, final DockerProperties dockerProperties,
+    public DockerExtractor(final DetectFileFinder detectFileFinder, final DockerProperties dockerProperties,
         final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson) {
         this.detectFileFinder = detectFileFinder;
-        this.directoryManager = directoryManager;
         this.dockerProperties = dockerProperties;
         this.executableRunner = executableRunner;
         this.bdioTransformer = bdioTransformer;

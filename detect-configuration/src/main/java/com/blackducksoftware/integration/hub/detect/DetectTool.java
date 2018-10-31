@@ -11,4 +11,5 @@ public enum DetectTool {
     DOCKER;
 
     public static List<DetectTool> DEFAULT_PROJECT_ORDER = Arrays.asList(DOCKER, DETECTOR);
+
 }

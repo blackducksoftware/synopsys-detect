@@ -9,8 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import com.blackducksoftware.integration.hub.detect.BomToolBeanConfiguration;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.DetectInfoUtility;
+import com.blackducksoftware.integration.hub.detect.RunBeanConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationManager;
@@ -31,8 +33,7 @@ import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
-import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunDependencies;
-import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeManager;
+import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
@@ -60,13 +61,12 @@ public class BootManager {
         this.bootFactory = bootFactory;
     }
 
-    public BootResult boot(final String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, ExitCodeManager exitCodeManager) throws DetectUserFriendlyException, IntegrationException {
+    public BootResult boot(DetectRun detectRun, final String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) throws DetectUserFriendlyException, IntegrationException {
         Gson gson = bootFactory.createGson();
         JsonParser jsonParser = bootFactory.createJsonParser();
         DocumentBuilder xml = bootFactory.createXmlDocumentBuilder();
         Configuration configuration = bootFactory.createConfiguration();
 
-        DetectRun detectRun = DetectRun.createDefault();
         DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
 
         DetectPropertySource propertySource = new DetectPropertySource(environment);
@@ -133,27 +133,29 @@ public class BootManager {
         logger.debug("Configuration is now complete. No changes should occur to configuration.");
         detectConfiguration.lock();
 
-        //Finished, return created objects.
-        RunDependencies runDependencies = new RunDependencies();
-        runDependencies.eventSystem = eventSystem;
-        runDependencies.exitCodeManager = exitCodeManager;
-        runDependencies.detectConfiguration = detectConfiguration;
-        runDependencies.detectRun = detectRun;
-        runDependencies.detectInfo = detectInfo;
-        runDependencies.directoryManager = directoryManager;
-        runDependencies.phoneHomeManager = phoneHomeManager;
-        runDependencies.diagnosticManager = diagnosticManager;
-        runDependencies.hubServiceManager = hubServiceManager;
+        //Finished, populate the detect context
+        detectContext.registerBean(detectRun);
+        detectContext.registerBean(eventSystem);
 
-        runDependencies.gson = gson;
-        runDependencies.jsonParser = jsonParser;
-        runDependencies.documentBuilder = xml;
-        runDependencies.configuration = configuration;
-        //runDependencies.integrationEscapeUtil =
+        detectContext.registerBean(detectConfiguration);
+        detectContext.registerBean(detectInfo);
+        detectContext.registerBean(directoryManager);
+        detectContext.registerBean(phoneHomeManager);
+        detectContext.registerBean(diagnosticManager);
+        detectContext.registerBean(hubServiceManager);
+
+        detectContext.registerBean(gson);
+        detectContext.registerBean(jsonParser);
+        detectContext.registerBean(xml);
+        detectContext.registerBean(configuration);
+
+        detectContext.registerConfiguration(RunBeanConfiguration.class);
+        detectContext.registerConfiguration(BomToolBeanConfiguration.class);
+        detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
         BootResult result = new BootResult();
-        result.runDependencies = runDependencies;
         result.bootType = BootResult.BootType.CONTINUE;
+        result.detectConfiguration = detectConfiguration;
         return result;
     }
 

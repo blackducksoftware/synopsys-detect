@@ -101,7 +101,6 @@ public abstract class BlackDuckSignatureScanner {
     }
 
     private void reportResults(List<SignatureScanPath> signatureScanPaths, List<ScanCommandOutput> scanCommandOutputList) {
-
         boolean anyFailed = false;
         boolean anyExitCodeIs64 = false;
         for (final SignatureScanPath target : signatureScanPaths) {

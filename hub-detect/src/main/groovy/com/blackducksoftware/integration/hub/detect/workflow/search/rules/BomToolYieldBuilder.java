@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.rules;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 
 public class BomToolYieldBuilder {
@@ -36,6 +37,11 @@ public class BomToolYieldBuilder {
 
     public BomToolYieldBuilder to(final BomToolType bomToolType) {
         this.yieldingToBomToolType = bomToolType;
+        return this;
+    }
+
+    public BomToolYieldBuilder to(final BomTool bomTool) {
+        this.yieldingToBomToolType = bomTool.getBomToolType();
         return this;
     }
 

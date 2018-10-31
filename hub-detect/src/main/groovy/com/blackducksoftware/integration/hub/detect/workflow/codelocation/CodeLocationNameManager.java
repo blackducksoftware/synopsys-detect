@@ -36,14 +36,14 @@ import com.synopsys.integration.util.NameVersion;
 
 public class CodeLocationNameManager {
     private final DetectConfiguration detectConfiguration;
-    private final CodeLocationNameService codeLocationNameService;
+    private final CodeLocationNameGenerator codeLocationNameGenerator;
 
     private final Set<String> codeLocationNames = new HashSet<>();
     private int givenCodeLocationOverrideCount = 0;
 
-    public CodeLocationNameManager(final DetectConfiguration detectConfiguration, final CodeLocationNameService codeLocationNameService) {
+    public CodeLocationNameManager(final DetectConfiguration detectConfiguration, final CodeLocationNameGenerator codeLocationNameGenerator) {
         this.detectConfiguration = detectConfiguration;
-        this.codeLocationNameService = codeLocationNameService;
+        this.codeLocationNameGenerator = codeLocationNameGenerator;
     }
 
     public String createAggregateCodeLocationName(NameVersion projectNameVersion) {
@@ -65,10 +65,11 @@ public class CodeLocationNameManager {
         } else if (useCodeLocationOverride()) {
             codeLocationName = getNextCodeLocationOverrideName(CodeLocationType.BOM);
         } else if (BomToolGroupType.DOCKER.equals(detectCodeLocation.getBomToolGroupType())) {
-            codeLocationName = codeLocationNameService.createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix,
-                suffix);
+            codeLocationName = codeLocationNameGenerator
+                                   .createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix,
+                                       suffix);
         } else {
-            codeLocationName = codeLocationNameService.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
+            codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
         }
         codeLocationNames.add(codeLocationName);
         return codeLocationName;
@@ -80,9 +81,9 @@ public class CodeLocationNameManager {
         if (useCodeLocationOverride()) {
             scanCodeLocationName = getNextCodeLocationOverrideName(CodeLocationType.SCAN);
         } else if (StringUtils.isNotBlank(dockerTarFilename)) {
-            scanCodeLocationName = codeLocationNameService.createDockerScanCodeLocationName(dockerTarFilename, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTarFilename, projectName, projectVersionName, prefix, suffix);
         } else {
-            scanCodeLocationName = codeLocationNameService.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameGenerator.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
         }
         codeLocationNames.add(scanCodeLocationName);
         return scanCodeLocationName;
@@ -94,7 +95,7 @@ public class CodeLocationNameManager {
         if (useCodeLocationOverride()) {
             scanCodeLocationName = getNextCodeLocationOverrideName(CodeLocationType.SCAN);
         } else {
-            scanCodeLocationName = codeLocationNameService.createBinaryScanCodeLocationName(filename, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameGenerator.createBinaryScanCodeLocationName(filename, projectName, projectVersionName, prefix, suffix);
         }
         codeLocationNames.add(scanCodeLocationName);
         return scanCodeLocationName;

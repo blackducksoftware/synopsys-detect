@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.rules;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
@@ -59,13 +60,17 @@ public class BomToolSearchProvider {
 
         searchRuleSet.addBomTool(bomToolFactory.createYarnLockBomTool(environment)).defaultNested();
 
-        searchRuleSet.addBomTool(bomToolFactory.createNpmPackageLockBomTool(environment)).defaultNested();
-        searchRuleSet.addBomTool(bomToolFactory.createNpmShrinkwrapBomTool(environment)).defaultNested();
-        searchRuleSet.addBomTool(bomToolFactory.createNpmCliBomTool(environment)).defaultNested();
+        BomTool npmPackageLock = bomToolFactory.createNpmPackageLockBomTool(environment);
+        BomTool npmShrinkwrap = bomToolFactory.createNpmShrinkwrapBomTool(environment);
+        BomTool npmCli = bomToolFactory.createNpmCliBomTool(environment);
 
-        searchRuleSet.yield(BomToolType.NPM_SHRINKWRAP).to(BomToolType.NPM_PACKAGELOCK);
-        searchRuleSet.yield(BomToolType.NPM_CLI).to(BomToolType.NPM_PACKAGELOCK);
-        searchRuleSet.yield(BomToolType.NPM_CLI).to(BomToolType.NPM_SHRINKWRAP);
+        searchRuleSet.addBomTool(npmPackageLock).defaultNested();
+        searchRuleSet.addBomTool(npmShrinkwrap).defaultNested();
+        searchRuleSet.addBomTool(npmCli).defaultNested();
+
+        searchRuleSet.yield(npmShrinkwrap).to(npmPackageLock);
+        searchRuleSet.yield(npmCli).to(npmPackageLock);
+        searchRuleSet.yield(npmCli).to(npmShrinkwrap);
 
         searchRuleSet.yield(BomToolType.NPM_CLI).to(BomToolType.YARN_LOCK);
         searchRuleSet.yield(BomToolType.NPM_PACKAGELOCK).to(BomToolType.YARN_LOCK);

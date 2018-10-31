@@ -1,5 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.tool.docker;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
@@ -34,5 +36,9 @@ public class DockerOptions {
 
     public String getSuppliedDockerTar() {
         return suppliedDockerTar;
+    }
+
+    public boolean hasDockerImageOrTag() {
+        return StringUtils.isNotBlank(getSuppliedDockerImage()) && StringUtils.isNotBlank(getSuppliedDockerTar());
     }
 }

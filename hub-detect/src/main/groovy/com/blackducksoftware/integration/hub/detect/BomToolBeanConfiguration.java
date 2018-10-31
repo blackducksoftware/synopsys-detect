@@ -127,6 +127,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 import freemarker.template.Configuration;
@@ -136,73 +137,33 @@ import freemarker.template.Configuration;
 //Spring scanning should not be invoked as this should not be loaded during boot.
 @org.springframework.context.annotation.Configuration
 public class BomToolBeanConfiguration {
-    private final BomToolDependencies bomToolDependencies;
-
-    @Autowired
-    public BomToolBeanConfiguration(final BomToolDependencies bomToolDependencies) {
-        this.bomToolDependencies = bomToolDependencies;
-    }
-
     //Provided Dependencies
-    @Bean
-    public Gson gson() {
-        return bomToolDependencies.getGson();
-    }
-
-    @Bean
-    public Configuration configuration() {
-        return bomToolDependencies.getConfiguration();
-    }
-
-    @Bean
-    public DocumentBuilder xmlDocumentBuilder() {
-        return bomToolDependencies.getDocumentBuilder();
-    }
-
-    @Bean
-    public ExecutableRunner executableRunner() {
-        return bomToolDependencies.getExecutableRunner();
-    }
-
-    @Bean
-    public ExternalIdFactory externalIdFactory() {
-        return bomToolDependencies.getExternalIdFactory();
-    }
-
-    @Bean
-    public DetectFileFinder detectFileFinder() {
-        return bomToolDependencies.getDetectFileFinder();
-    }
-
-    @Bean
-    public DirectoryManager directoryManager() {
-        return bomToolDependencies.getDirectoryManager();
-    }
-
-    @Bean
-    public DetectConfiguration detectConfiguration() {
-        return bomToolDependencies.getDetectConfiguration();
-    }
-
-    @Bean
-    public ConnectionManager connectionManager() {
-        return bomToolDependencies.getConnectionManager();
-    }
-
-    @Bean
-    public ExecutableManager executableManager() {
-        return bomToolDependencies.getExecutableManager();
-    }
-
-    @Bean
-    public AirGapManager airGapManager() {
-        return bomToolDependencies.getAirGapManager();
-    }
-
-    @Bean
-    public StandardExecutableFinder standardExecutableFinder() {
-        return bomToolDependencies.getStandardExecutableFinder();
-    }
+    @Autowired
+    public Gson gson;
+    @Autowired
+    public JsonParser jsonParser;
+    @Autowired
+    public Configuration configuration;
+    @Autowired
+    public DocumentBuilder documentBuilder;
+    @Autowired
+    public ExecutableRunner executableRunner;
+    @Autowired
+    public AirGapManager airGapManager;
+    @Autowired
+    public ExecutableManager executableManager;
+    @Autowired
+    public ExternalIdFactory externalIdFactory;
+    @Autowired
+    public DetectFileFinder detectFileFinder;
+    @Autowired
+    public DirectoryManager directoryManager;
+    @Autowired
+    public DetectConfiguration detectConfiguration;
+    @Autowired
+    public ConnectionManager connectionManager;
+    @Autowired
+    public StandardExecutableFinder standardExecutableFinder;
 
     //BomToolFactory
     //This is the ONLY class that should be taken from the Configuration manually.
@@ -218,17 +179,17 @@ public class BomToolBeanConfiguration {
 
     @Bean
     public DependenciesListFileManager clangDependenciesListFileParser() {
-        return new DependenciesListFileManager(executableRunner());
+        return new DependenciesListFileManager(executableRunner);
     }
 
     @Bean
     public CodeLocationAssembler codeLocationAssembler() {
-        return new CodeLocationAssembler(externalIdFactory());
+        return new CodeLocationAssembler(externalIdFactory);
     }
 
     @Bean
     public ClangExtractor clangExtractor() {
-        return new ClangExtractor(executableRunner(), gson(), detectFileFinder(), directoryManager(), clangDependenciesListFileParser(), codeLocationAssembler());
+        return new ClangExtractor(executableRunner, gson, detectFileFinder, directoryManager, clangDependenciesListFileParser(), codeLocationAssembler());
     }
 
     public List<ClangLinuxPackageManager> clangLinuxPackageManagers() {
@@ -241,157 +202,157 @@ public class BomToolBeanConfiguration {
 
     @Bean
     public PodlockParser podlockParser() {
-        return new PodlockParser(externalIdFactory());
+        return new PodlockParser(externalIdFactory);
     }
 
     @Bean
     public PodlockExtractor podlockExtractor() {
-        return new PodlockExtractor(podlockParser(), externalIdFactory());
+        return new PodlockExtractor(podlockParser(), externalIdFactory);
     }
 
     @Bean
     public CondaListParser condaListParser() {
-        return new CondaListParser(gson(), externalIdFactory());
+        return new CondaListParser(gson, externalIdFactory);
     }
 
     @Bean
     public CondaCliExtractor condaCliExtractor() {
-        return new CondaCliExtractor(condaListParser(), externalIdFactory(), executableRunner(), detectConfiguration(), directoryManager());
+        return new CondaCliExtractor(condaListParser(), externalIdFactory, executableRunner, detectConfiguration, directoryManager);
     }
 
     @Bean
     public CpanListParser cpanListParser() {
-        return new CpanListParser(externalIdFactory());
+        return new CpanListParser(externalIdFactory);
     }
 
     @Bean
     public CpanCliExtractor cpanCliExtractor() {
-        return new CpanCliExtractor(cpanListParser(), externalIdFactory(), executableRunner(), directoryManager());
+        return new CpanCliExtractor(cpanListParser(), externalIdFactory, executableRunner, directoryManager);
     }
 
     @Bean
     public PackratPackager packratPackager() {
-        return new PackratPackager(externalIdFactory());
+        return new PackratPackager(externalIdFactory);
     }
 
     @Bean
     public PackratLockExtractor packratLockExtractor() {
-        return new PackratLockExtractor(packratPackager(), externalIdFactory(), detectFileFinder());
+        return new PackratLockExtractor(packratPackager(), externalIdFactory, detectFileFinder);
     }
 
     @Bean
     public MavenMetadataService mavenMetadataService() {
-        return new MavenMetadataService(xmlDocumentBuilder(), connectionManager());
+        return new MavenMetadataService(documentBuilder, connectionManager);
     }
 
     @Bean
     public GoDepExtractor goDepExtractor() {
-        return new GoDepExtractor(depPackager(), externalIdFactory());
+        return new GoDepExtractor(depPackager(), externalIdFactory);
     }
 
     @Bean
     public GoInspectorManager goInspectorManager() {
-        return new GoInspectorManager(directoryManager(), executableManager(), executableRunner(), detectConfiguration());
+        return new GoInspectorManager(directoryManager, executableManager, executableRunner, detectConfiguration);
     }
 
     @Bean
     public GoVndrExtractor goVndrExtractor() {
-        return new GoVndrExtractor(externalIdFactory());
+        return new GoVndrExtractor(externalIdFactory);
     }
 
     @Bean
     public DepPackager depPackager() {
-        return new DepPackager(executableRunner(), externalIdFactory(), detectConfiguration());
+        return new DepPackager(executableRunner, externalIdFactory, detectConfiguration);
     }
 
     @Bean
     public GradleReportParser gradleReportParser() {
-        return new GradleReportParser(externalIdFactory());
+        return new GradleReportParser(externalIdFactory);
     }
 
     @Bean
     public GradleExecutableFinder gradleExecutableFinder() {
-        return new GradleExecutableFinder(executableManager(), detectConfiguration());
+        return new GradleExecutableFinder(executableManager, detectConfiguration);
     }
 
     @Bean
     public GradleInspectorExtractor gradleInspectorExtractor() {
-        return new GradleInspectorExtractor(executableRunner(), detectFileFinder(), directoryManager(), gradleReportParser(), detectConfiguration());
+        return new GradleInspectorExtractor(executableRunner, detectFileFinder, directoryManager, gradleReportParser(), detectConfiguration);
     }
 
     @Bean
     public GradleInspectorManager gradleInspectorManager() throws ParserConfigurationException {
-        return new GradleInspectorManager(directoryManager(), airGapManager(), configuration(), detectConfiguration(), mavenMetadataService());
+        return new GradleInspectorManager(directoryManager, airGapManager, configuration, detectConfiguration, mavenMetadataService());
     }
 
     @Bean
     public Rebar3TreeParser rebar3TreeParser() {
-        return new Rebar3TreeParser(externalIdFactory());
+        return new Rebar3TreeParser(externalIdFactory);
     }
 
     @Bean
     public RebarExtractor rebarExtractor() {
-        return new RebarExtractor(executableRunner(), rebar3TreeParser());
+        return new RebarExtractor(executableRunner, rebar3TreeParser());
     }
 
     @Bean
     public MavenCodeLocationPackager mavenCodeLocationPackager() {
-        return new MavenCodeLocationPackager(externalIdFactory());
+        return new MavenCodeLocationPackager(externalIdFactory);
     }
 
     @Bean
     public MavenCliExtractor mavenCliExtractor() {
-        return new MavenCliExtractor(executableRunner(), mavenCodeLocationPackager(), detectConfiguration());
+        return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager(), detectConfiguration);
     }
 
     @Bean
     public MavenExecutableFinder mavenExecutableFinder() {
-        return new MavenExecutableFinder(executableManager(), detectConfiguration());
+        return new MavenExecutableFinder(executableManager, detectConfiguration);
     }
 
     @Bean
     public NpmCliParser npmCliDependencyFinder() {
-        return new NpmCliParser(externalIdFactory());
+        return new NpmCliParser(externalIdFactory);
     }
 
     @Bean
     public NpmLockfilePackager npmLockfilePackager() {
-        return new NpmLockfilePackager(gson(), externalIdFactory());
+        return new NpmLockfilePackager(gson, externalIdFactory);
     }
 
     @Bean
     public NpmCliExtractor npmCliExtractor() {
-        return new NpmCliExtractor(executableRunner(), npmCliDependencyFinder(), detectConfiguration());
+        return new NpmCliExtractor(executableRunner, npmCliDependencyFinder(), detectConfiguration);
     }
 
     @Bean
     public NpmLockfileExtractor npmLockfileExtractor() {
-        return new NpmLockfileExtractor(npmLockfilePackager(), detectConfiguration());
+        return new NpmLockfileExtractor(npmLockfilePackager(), detectConfiguration);
     }
 
     @Bean
     public NpmExecutableFinder npmExecutableFinder() {
-        return new NpmExecutableFinder(directoryManager(), executableManager(), executableRunner(), detectConfiguration());
+        return new NpmExecutableFinder(directoryManager, executableManager, executableRunner, detectConfiguration);
     }
 
     @Bean
     public NugetInspectorPackager nugetInspectorPackager() {
-        return new NugetInspectorPackager(gson(), externalIdFactory());
+        return new NugetInspectorPackager(gson, externalIdFactory);
     }
 
     @Bean
     public NugetInspectorExtractor nugetInspectorExtractor() {
-        return new NugetInspectorExtractor(directoryManager(), nugetInspectorPackager(), executableRunner(), detectFileFinder(), detectConfiguration());
+        return new NugetInspectorExtractor(directoryManager, nugetInspectorPackager(), executableRunner, detectFileFinder, detectConfiguration);
     }
 
     @Bean
     public NugetInspectorManager nugetInspectorManager() {
-        return new NugetInspectorManager(directoryManager(), executableManager(), executableRunner(), detectConfiguration(), airGapManager());
+        return new NugetInspectorManager(directoryManager, executableManager, executableRunner, detectConfiguration, airGapManager);
     }
 
     @Bean
     public PackagistParser packagistParser() {
-        return new PackagistParser(externalIdFactory(), detectConfiguration());
+        return new PackagistParser(externalIdFactory, detectConfiguration);
     }
 
     @Bean
@@ -401,57 +362,57 @@ public class BomToolBeanConfiguration {
 
     @Bean
     public PearParser pearDependencyFinder() {
-        return new PearParser(externalIdFactory(), detectConfiguration());
+        return new PearParser(externalIdFactory, detectConfiguration);
     }
 
     @Bean
     public PearCliExtractor pearCliExtractor() {
-        return new PearCliExtractor(detectFileFinder(), externalIdFactory(), pearDependencyFinder(), executableRunner(), directoryManager());
+        return new PearCliExtractor(detectFileFinder, externalIdFactory, pearDependencyFinder(), executableRunner, directoryManager);
     }
 
     @Bean
     public PipenvGraphParser pipenvGraphParser() {
-        return new PipenvGraphParser(externalIdFactory());
+        return new PipenvGraphParser(externalIdFactory);
     }
 
     @Bean
     public PipenvExtractor pipenvExtractor() {
-        return new PipenvExtractor(executableRunner(), pipenvGraphParser(), detectConfiguration());
+        return new PipenvExtractor(executableRunner, pipenvGraphParser(), detectConfiguration);
     }
 
     @Bean
     public PipInspectorTreeParser pipInspectorTreeParser() {
-        return new PipInspectorTreeParser(externalIdFactory());
+        return new PipInspectorTreeParser(externalIdFactory);
     }
 
     @Bean
     public PipInspectorExtractor pipInspectorExtractor() {
-        return new PipInspectorExtractor(executableRunner(), pipInspectorTreeParser(), detectConfiguration());
+        return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser(), detectConfiguration);
     }
 
     @Bean
     public PipInspectorManager pipInspectorManager() {
-        return new PipInspectorManager(directoryManager());
+        return new PipInspectorManager(directoryManager);
     }
 
     @Bean
     public PythonExecutableFinder pythonExecutableFinder() {
-        return new PythonExecutableFinder(executableManager(), detectConfiguration());
+        return new PythonExecutableFinder(executableManager, detectConfiguration);
     }
 
     @Bean
     public GemlockExtractor gemlockExtractor() {
-        return new GemlockExtractor(externalIdFactory());
+        return new GemlockExtractor(externalIdFactory);
     }
 
     @Bean
     public SbtResolutionCacheExtractor sbtResolutionCacheExtractor() {
-        return new SbtResolutionCacheExtractor(detectFileFinder(), externalIdFactory(), detectConfiguration());
+        return new SbtResolutionCacheExtractor(detectFileFinder, externalIdFactory, detectConfiguration);
     }
 
     @Bean
     public YarnListParser yarnListParser() {
-        return new YarnListParser(externalIdFactory(), yarnLockParser());
+        return new YarnListParser(externalIdFactory, yarnLockParser());
     }
 
     @Bean
@@ -461,7 +422,7 @@ public class BomToolBeanConfiguration {
 
     @Bean
     public YarnLockExtractor yarnLockExtractor() {
-        return new YarnLockExtractor(externalIdFactory(), yarnListParser(), executableRunner(), detectConfiguration());
+        return new YarnLockExtractor(externalIdFactory, yarnListParser(), executableRunner, detectConfiguration);
     }
 
     @Bean
@@ -471,7 +432,7 @@ public class BomToolBeanConfiguration {
 
     @Bean
     public BitbakeExtractor bitbakeExtractor() {
-        return new BitbakeExtractor(executableManager(), executableRunner(), detectConfiguration(), directoryManager(), detectFileFinder(), graphParserTransformer(), bitbakeListTasksParser());
+        return new BitbakeExtractor(executableManager, executableRunner, detectConfiguration, directoryManager, detectFileFinder, graphParserTransformer(), bitbakeListTasksParser());
     }
 
     @Bean
@@ -486,152 +447,152 @@ public class BomToolBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public BitbakeBomTool bitbakeBomTool(final BomToolEnvironment environment) {
-        return new BitbakeBomTool(environment, detectFileFinder(), detectConfiguration(), bitbakeExtractor());
+        return new BitbakeBomTool(environment, detectFileFinder, detectConfiguration, bitbakeExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public ClangBomTool clangBomTool(final BomToolEnvironment environment) {
-        return new ClangBomTool(environment, executableRunner(), detectFileFinder(), clangLinuxPackageManagers(), clangExtractor());
+        return new ClangBomTool(environment, executableRunner, detectFileFinder, clangLinuxPackageManagers(), clangExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public ComposerLockBomTool composerLockBomTool(final BomToolEnvironment environment) {
-        return new ComposerLockBomTool(environment, detectFileFinder(), composerLockExtractor());
+        return new ComposerLockBomTool(environment, detectFileFinder, composerLockExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public CondaCliBomTool condaBomTool(final BomToolEnvironment environment) {
-        return new CondaCliBomTool(environment, detectFileFinder(), standardExecutableFinder(), condaCliExtractor());
+        return new CondaCliBomTool(environment, detectFileFinder, standardExecutableFinder, condaCliExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public CpanCliBomTool cpanCliBomTool(final BomToolEnvironment environment) {
-        return new CpanCliBomTool(environment, detectFileFinder(), standardExecutableFinder(), cpanCliExtractor());
+        return new CpanCliBomTool(environment, detectFileFinder, standardExecutableFinder, cpanCliExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GemlockBomTool gemlockBomTool(final BomToolEnvironment environment) {
-        return new GemlockBomTool(environment, detectFileFinder(), gemlockExtractor());
+        return new GemlockBomTool(environment, detectFileFinder, gemlockExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GoCliBomTool goCliBomTool(final BomToolEnvironment environment) {
-        return new GoCliBomTool(environment, detectFileFinder(), standardExecutableFinder(), goInspectorManager(), goDepExtractor());
+        return new GoCliBomTool(environment, detectFileFinder, standardExecutableFinder, goInspectorManager(), goDepExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GoLockBomTool goLockBomTool(final BomToolEnvironment environment) {
-        return new GoLockBomTool(environment, detectFileFinder(), standardExecutableFinder(), goInspectorManager(), goDepExtractor());
+        return new GoLockBomTool(environment, detectFileFinder, standardExecutableFinder, goInspectorManager(), goDepExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GoVndrBomTool goVndrBomTool(final BomToolEnvironment environment) {
-        return new GoVndrBomTool(environment, detectFileFinder(), goVndrExtractor());
+        return new GoVndrBomTool(environment, detectFileFinder, goVndrExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GradleInspectorBomTool gradleInspectorBomTool(final BomToolEnvironment environment) throws ParserConfigurationException {
-        return new GradleInspectorBomTool(environment, detectFileFinder(), gradleExecutableFinder(), gradleInspectorManager(), gradleInspectorExtractor());
+        return new GradleInspectorBomTool(environment, detectFileFinder, gradleExecutableFinder(), gradleInspectorManager(), gradleInspectorExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public MavenPomBomTool mavenPomBomTool(final BomToolEnvironment environment) {
-        return new MavenPomBomTool(environment, detectFileFinder(), mavenExecutableFinder(), mavenCliExtractor());
+        return new MavenPomBomTool(environment, detectFileFinder, mavenExecutableFinder(), mavenCliExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public MavenPomWrapperBomTool mavenPomWrapperBomTool(final BomToolEnvironment environment) {
-        return new MavenPomWrapperBomTool(environment, detectFileFinder(), mavenExecutableFinder(), mavenCliExtractor());
+        return new MavenPomWrapperBomTool(environment, detectFileFinder, mavenExecutableFinder(), mavenCliExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NpmCliBomTool npmCliBomTool(final BomToolEnvironment environment) {
-        return new NpmCliBomTool(environment, detectFileFinder(), npmExecutableFinder(), npmCliExtractor());
+        return new NpmCliBomTool(environment, detectFileFinder, npmExecutableFinder(), npmCliExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NpmPackageLockBomTool npmPackageLockBomTool(final BomToolEnvironment environment) {
-        return new NpmPackageLockBomTool(environment, detectFileFinder(), npmLockfileExtractor());
+        return new NpmPackageLockBomTool(environment, detectFileFinder, npmLockfileExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetProjectBomTool nugetProjectBomTool(final BomToolEnvironment environment) {
-        return new NugetProjectBomTool(environment, detectFileFinder(), nugetInspectorManager(), nugetInspectorExtractor());
+        return new NugetProjectBomTool(environment, detectFileFinder, nugetInspectorManager(), nugetInspectorExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NpmShrinkwrapBomTool npmShrinkwrapBomTool(final BomToolEnvironment environment) {
-        return new NpmShrinkwrapBomTool(environment, detectFileFinder(), npmLockfileExtractor());
+        return new NpmShrinkwrapBomTool(environment, detectFileFinder, npmLockfileExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetSolutionBomTool nugetSolutionBomTool(final BomToolEnvironment environment) {
-        return new NugetSolutionBomTool(environment, detectFileFinder(), nugetInspectorManager(), nugetInspectorExtractor());
+        return new NugetSolutionBomTool(environment, detectFileFinder, nugetInspectorManager(), nugetInspectorExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public PackratLockBomTool packratLockBomTool(final BomToolEnvironment environment) {
-        return new PackratLockBomTool(environment, detectFileFinder(), packratLockExtractor());
+        return new PackratLockBomTool(environment, detectFileFinder, packratLockExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public PearCliBomTool pearCliBomTool(final BomToolEnvironment environment) {
-        return new PearCliBomTool(environment, detectFileFinder(), standardExecutableFinder(), pearCliExtractor());
+        return new PearCliBomTool(environment, detectFileFinder, standardExecutableFinder, pearCliExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public PipenvBomTool pipenvBomTool(final BomToolEnvironment environment) {
-        return new PipenvBomTool(environment, detectFileFinder(), pythonExecutableFinder(), pipenvExtractor());
+        return new PipenvBomTool(environment, detectFileFinder, pythonExecutableFinder(), pipenvExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public PipInspectorBomTool pipInspectorBomTool(final BomToolEnvironment environment) {
         //final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None);
-        return new PipInspectorBomTool(environment, detectConfiguration().getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None), detectFileFinder(), pythonExecutableFinder(), pipInspectorManager(),
+        return new PipInspectorBomTool(environment, detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None), detectFileFinder, pythonExecutableFinder(), pipInspectorManager(),
             pipInspectorExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public PodlockBomTool podLockBomTool(final BomToolEnvironment environment) {
-        return new PodlockBomTool(environment, detectFileFinder(), podlockExtractor());
+        return new PodlockBomTool(environment, detectFileFinder, podlockExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public RebarBomTool rebarBomTool(final BomToolEnvironment environment) {
-        return new RebarBomTool(environment, detectFileFinder(), standardExecutableFinder(), rebarExtractor());
+        return new RebarBomTool(environment, detectFileFinder, standardExecutableFinder, rebarExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public SbtResolutionCacheBomTool sbtResolutionCacheBomTool(final BomToolEnvironment environment) {
-        return new SbtResolutionCacheBomTool(environment, detectFileFinder(), sbtResolutionCacheExtractor());
+        return new SbtResolutionCacheBomTool(environment, detectFileFinder, sbtResolutionCacheExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public YarnLockBomTool yarnLockBomTool(final BomToolEnvironment environment) {
-        return new YarnLockBomTool(environment, detectFileFinder(), standardExecutableFinder(), yarnLockExtractor());
+        return new YarnLockBomTool(environment, detectFileFinder, standardExecutableFinder, yarnLockExtractor());
     }
 }

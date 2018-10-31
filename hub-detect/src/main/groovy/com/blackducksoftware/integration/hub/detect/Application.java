@@ -36,6 +36,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.lifecycle.boot.BootFactory;
 import com.blackducksoftware.integration.hub.detect.lifecycle.boot.BootManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.boot.BootResult;
@@ -43,6 +44,7 @@ import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ShutdownManager;
+import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
@@ -72,6 +74,11 @@ public class Application implements ApplicationRunner {
     public void run(final ApplicationArguments applicationArguments) throws Exception {
         final long startTime = System.currentTimeMillis();
 
+        //Before boot even begins, we create a new Spring context for Detect to work within.
+        logger.info("Preparing detect.");
+        DetectRun detectRun = DetectRun.createDefault();
+        DetectContext detectContext = new DetectContext(detectRun);
+
         EventSystem eventSystem = new EventSystem(); //there should be one single event system in all of detect
         DetectStatusManager statusManager = new DetectStatusManager(eventSystem); //there should be one status manager
 
@@ -82,15 +89,15 @@ public class Application implements ApplicationRunner {
         try {
             logger.info("Detect boot begin.");
             BootManager bootManager = new BootManager(new BootFactory());
-            bootResult = bootManager.boot(applicationArguments.getSourceArgs(), environment, eventSystem, exitCodeManager);
+            bootResult = bootManager.boot(detectRun, applicationArguments.getSourceArgs(), environment, eventSystem, detectContext);
             logger.info("Detect boot completed.");
         } catch (final Exception e) {
             logger.info("Detect boot failed: ", e);
             exitCodeManager.requestExitCode(e);
         }
         if (bootResult != null && bootResult.bootType == BootResult.BootType.CONTINUE) {
-
-            RunManager runManager = new RunManager(bootResult.runDependencies);
+            logger.info("Detect will attempt to run.");
+            RunManager runManager = new RunManager(detectContext);
             try {
                 logger.info("Detect run begin.");
                 runManager.run();
@@ -100,9 +107,9 @@ public class Application implements ApplicationRunner {
                 logger.info("Detect run failed: ", e);
             }
 
-            PhoneHomeManager phoneHomeManager = bootResult.runDependencies.phoneHomeManager;
-            DirectoryManager directoryManager = bootResult.runDependencies.directoryManager;
-            DetectConfiguration detectConfiguration = bootResult.runDependencies.detectConfiguration;
+            PhoneHomeManager phoneHomeManager = detectContext.getBean(PhoneHomeManager.class);
+            DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
+            DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
             ShutdownManager shutdownManager = new ShutdownManager(statusManager, exitCodeManager, phoneHomeManager, directoryManager, detectConfiguration);
             try {
                 logger.info("Detect shutdown begin.");
@@ -119,7 +126,7 @@ public class Application implements ApplicationRunner {
         logger.info(String.format("Detect duration: %s", DurationFormatUtils.formatPeriod(startTime, endTime, "HH'h' mm'm' ss's' SSS'ms'")));
 
         ExitCodeType finalExitCode = exitCodeManager.getWinningExitCode();
-        if (finalExitCode != ExitCodeType.SUCCESS && bootResult.bootType != null && bootResult.runDependencies.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS, PropertyAuthority.None)) {
+        if (finalExitCode != ExitCodeType.SUCCESS && bootResult.bootType != null && bootResult.detectConfiguration != null && bootResult.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS, PropertyAuthority.None)) {
             logger.warn(String.format("Forcing success: Exiting with exit code 0. Ignored exit code was %s.", finalExitCode.getExitCode()));
             System.exit(0);
         } else if (finalExitCode != ExitCodeType.SUCCESS) {
