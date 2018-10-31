@@ -95,10 +95,9 @@ public class GradleInspectorManager {
             if (airGapMavenMetadataFile.exists()) {
                 xmlDocument = mavenMetadataService.fetchXmlDocumentFromFile(airGapMavenMetadataFile);
             } else {
-                final String mavenMetadataUrl = DEFAULT_GRADLE_INSPECTOR_REPO_URL + RELATIVE_PATH_TO_VERSION_METADATA;
+                final String mavenMetadataUrl = deriveMavenMetadataUrl();
                 xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
             }
-
             final Optional<String> versionFromXML = mavenMetadataService.parseVersionFromXML(xmlDocument, versionRange);
             if (versionFromXML.isPresent()) {
                 gradleInspectorVersion = versionFromXML.get();
@@ -110,6 +109,21 @@ public class GradleInspectorManager {
             logger.warn(String.format("Exception encountered when resolving latest version of Gradle Inspector, skipping resolution: %s", e.getMessage()));
         }
         return gradleInspectorVersion;
+    }
+
+    private String deriveMavenMetadataUrl() {
+        final String mavenMetadataUrl;
+        final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
+        if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
+            if (configuredGradleInspectorRepositoryUrl.endsWith("/")) {
+                mavenMetadataUrl = configuredGradleInspectorRepositoryUrl + RELATIVE_PATH_TO_VERSION_METADATA;
+            } else {
+                mavenMetadataUrl = configuredGradleInspectorRepositoryUrl + "/" + RELATIVE_PATH_TO_VERSION_METADATA;
+            }
+        } else {
+            mavenMetadataUrl = DEFAULT_GRADLE_INSPECTOR_REPO_URL + RELATIVE_PATH_TO_VERSION_METADATA;
+        }
+        return mavenMetadataUrl;
     }
 
     private String generateGradleScript(final String version) throws IOException, TemplateException {
