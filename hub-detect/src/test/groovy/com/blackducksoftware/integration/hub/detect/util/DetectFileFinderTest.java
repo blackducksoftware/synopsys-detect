@@ -1,5 +1,6 @@
 package com.blackducksoftware.integration.hub.detect.util;
 
+import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -13,18 +14,42 @@ public class DetectFileFinderTest {
     @Test
     public void testFindContainingDir() {
         final DetectFileFinder finder = new DetectFileFinder();
-        assertEquals("clang", finder.findContainingDir(new File("src/test/resources/clang"), 0).getName());
-        assertEquals("resources", finder.findContainingDir(new File("src/test/resources/clang"), 1).getName());
-        assertEquals("test", finder.findContainingDir(new File("src/test/resources/clang"), 2).getName());
+        File targetDir = new File("src/test/resources/clang");
+        assertEquals("clang", finder.findContainingDir(targetDir, 0).getName());
+        assertEquals("resources", finder.findContainingDir(targetDir, 1).getName());
+        assertEquals("test", finder.findContainingDir(targetDir, 2).getName());
     }
 
     @Test
     public void testIsFileUnderDir() {
         final DetectFileFinder finder = new DetectFileFinder();
-        assertTrue(finder.isFileUnderDir(new File("src/test/resources"), new File("src/test/resources/clang")));
-        assertTrue(finder.isFileUnderDir(new File("src/test/resources"), new File("src/test/resources/")));
-        assertTrue(finder.isFileUnderDir(new File("src/test/resources"), new File("src/test/resources/clang/../clang")));
-        assertFalse(finder.isFileUnderDir(new File("src/test/resources"), new File("src/test/groovy")));
+        File targetDir = new File("src/test/resources");
+        assertTrue(finder.isFileUnderDir(targetDir, new File("src/test/resources/clang")));
+        assertTrue(finder.isFileUnderDir(targetDir, new File("src/test/resources/")));
+        assertTrue(finder.isFileUnderDir(targetDir, new File("src/test/resources/clang/../clang")));
+        assertFalse(finder.isFileUnderDir(targetDir, new File("src/test/groovy")));
     }
 
+    @Test
+    public void testFindAllFilesToMaxDepth() {
+        final DetectFileFinder finder = new DetectFileFinder();
+        File targetDir = new File("src/test/resources/fileFinder");
+        List<File> filesFound = finder.findAllFilesToMaxDepth(targetDir, "*.txt");
+        assertEquals(4, filesFound.size());
+    }
+
+    @Test
+    public void testFindAllFilesToDepth() {
+        final DetectFileFinder finder = new DetectFileFinder();
+        File targetDir = new File("src/test/resources/fileFinder");
+        List<File> filesFound = finder.findAllFilesToDepth(targetDir, new StringBuilder("Maximum search depth hit during test at %s"), 2,"*.txt");
+        assertEquals(1, filesFound.size());
+    }
+    @Test
+    public void testFindAllFilesToDepthSimpleMsgString() {
+        final DetectFileFinder finder = new DetectFileFinder();
+        File targetDir = new File("src/test/resources/fileFinder");
+        List<File> filesFound = finder.findAllFilesToDepth(targetDir, new StringBuilder("Maximum search depth hit during test"), 2,"*.txt");
+        assertEquals(1, filesFound.size());
+    }
 }

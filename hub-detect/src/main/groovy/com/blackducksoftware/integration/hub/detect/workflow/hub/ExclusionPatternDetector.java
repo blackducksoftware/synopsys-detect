@@ -46,14 +46,14 @@ public class ExclusionPatternDetector {
         this.scanTarget = scanTarget;
     }
 
-    public Set<String> determineExclusionPatterns(final String... hubSignatureScannerExclusionNamePatterns) {
+    public Set<String> determineExclusionPatterns(final String maxDepthHitMsg, final int maxDepth, final String... hubSignatureScannerExclusionNamePatterns) {
         if (null == hubSignatureScannerExclusionNamePatterns || hubSignatureScannerExclusionNamePatterns.length < 1 && scanTarget.isDirectory()) {
             return Collections.emptySet();
         }
         final Set<String> scanExclusionPatterns = new HashSet<>();
         try {
             final String scanTargetPath = scanTarget.getCanonicalPath();
-            final List<File> matchingFiles = detectFileFinder.findAllFilesToMaxDepth(scanTarget, hubSignatureScannerExclusionNamePatterns);
+            final List<File> matchingFiles = detectFileFinder.findAllFilesToDepth(scanTarget, new StringBuilder(maxDepthHitMsg), maxDepth, hubSignatureScannerExclusionNamePatterns);
             for (final File matchingFile : matchingFiles) {
                 final String matchingFilePath = matchingFile.getCanonicalPath();
                 final String scanExclusionPattern = createExclusionPatternFromPaths(scanTargetPath, matchingFilePath);
