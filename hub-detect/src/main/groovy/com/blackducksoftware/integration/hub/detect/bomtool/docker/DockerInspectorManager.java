@@ -54,8 +54,7 @@ import java.util.Optional;
 
 public class DockerInspectorManager {
     private static final String IMAGE_INSPECTOR_FAMILY = "blackduck-imageinspector-ws";
-    // TODO change to: https://repo.blackducksoftware.com/artifactory/
-    private static final String ARTIFACTORY_URL_BASE = "https://test-repo.blackducksoftware.com:443/artifactory/bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector/";
+    private static final String ARTIFACTORY_URL_BASE = "https://repo.blackducksoftware.com/artifactory/bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector/";
     private static final String ARTIFACTORY_URL_METADATA = ARTIFACTORY_URL_BASE + "maven-metadata.xml";
     private static final String ARTIFACTORY_URL_JAR_PATTERN = ARTIFACTORY_URL_BASE + "%s/%s";
     private static final List<String> inspectorNames = Arrays.asList("ubuntu", "alpine", "centos");

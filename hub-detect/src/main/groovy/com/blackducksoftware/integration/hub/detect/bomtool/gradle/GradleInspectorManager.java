@@ -53,8 +53,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class GradleInspectorManager {
-    // TODO change to: https://repo.blackducksoftware.com/artifactory/
-    private static final String DEFAULT_GRADLE_INSPECTOR_REPO_URL = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/";
+    private static final String DEFAULT_GRADLE_INSPECTOR_REPO_URL = "https://repo.blackducksoftware.com/artifactory/bds-integrations-release/";
     private static final String VERSION_METADATA_XML_FILENAME = "maven-metadata.xml";
     private static final String GRADLE_INSPECTOR_PACKAGE_PATH = "com/blackducksoftware/integration/integration-gradle-inspector/";
     private static final String RELATIVE_PATH_TO_VERSION_METADATA = GRADLE_INSPECTOR_PACKAGE_PATH + VERSION_METADATA_XML_FILENAME;
@@ -181,15 +180,12 @@ public class GradleInspectorManager {
         try {
             if (gradleInspectorAirGapDirectory != null) {
                 gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(gradleInspectorAirGapDirectory.getCanonicalPath()));
-                return;
-            } else {
-                gradleScriptData.put("gradleInspectorDirPath", inspectorDirPath);
+                return; // airgap has everything
             }
         } catch (final Exception e) {
             logger.debug(String.format("Exception encountered when resolving air gap path for gradle, running in online mode instead: %s", e.getMessage()));
         }
-        // TODO: refactor? Split?
-        String jarRepoUrl = DEFAULT_GRADLE_INSPECTOR_REPO_URL;
+        gradleScriptData.put("gradleInspectorDirPath", inspectorDirPath);
         gradleScriptData.put("integrationRepositoryUrl", DEFAULT_GRADLE_INSPECTOR_REPO_URL);
         final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
         if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
