@@ -282,7 +282,7 @@ public class BomToolBeanConfiguration {
 
     @Bean
     public GradleInspectorManager gradleInspectorManager() throws ParserConfigurationException {
-        return new GradleInspectorManager(directoryManager, airGapManager, configuration, detectConfiguration, mavenMetadataService());
+        return new GradleInspectorManager(directoryManager, airGapManager, configuration, detectConfiguration, connectionManager, mavenMetadataService());
     }
 
     @Bean

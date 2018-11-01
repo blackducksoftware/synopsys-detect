@@ -46,10 +46,10 @@ public class ErrorSummaryReporter {
         data.stream().forEach(it -> {
             if (it.getException().size() > 0 || it.getFailed().size() > 0 || it.getNotExtractable().size() > 0) {
                 writer.writeLine(it.getDirectory());
-                String spacer = "\t\t\t";
+                String spacer = "\t\t";
                 writeEvaluationsIfNotEmpty(writer, "\tNot Extractable: ", spacer, it.getNotExtractable());
-                writeEvaluationsIfNotEmpty(writer, "\t        Failure: ", spacer, it.getFailed());
-                writeEvaluationsIfNotEmpty(writer, "\t      Exception: ", spacer, it.getException());
+                writeEvaluationsIfNotEmpty(writer, "\tFailure: ", spacer, it.getFailed());
+                writeEvaluationsIfNotEmpty(writer, "\tException: ", spacer, it.getException());
             }
         });
         ReporterUtils.printFooter(writer);

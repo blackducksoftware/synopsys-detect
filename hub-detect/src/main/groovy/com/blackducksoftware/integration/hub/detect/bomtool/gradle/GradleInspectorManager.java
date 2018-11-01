@@ -40,14 +40,16 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
+import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
+import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
 import com.synopsys.integration.rest.request.Request;
@@ -70,21 +72,23 @@ public class GradleInspectorManager {
     private static final String GENERATED_GRADLE_SCRIPT_NAME = "init-detect.gradle";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
+    private final AirGapManager airGapManager;
     private final Configuration configuration;
     private final DetectConfiguration detectConfiguration;
-    private final DetectConfigurationUtility detectConfigurationUtility;
+    private final ConnectionManager connectionManager;
     private final MavenMetadataService mavenMetadataService;
 
     private String generatedGradleScriptPath = null;
     private boolean hasResolvedInspector = false;
 
-    public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility,
+    public GradleInspectorManager(final DirectoryManager directoryManager, AirGapManager airGapManager, final Configuration configuration, final DetectConfiguration detectConfiguration, final ConnectionManager connectionManager,
         final MavenMetadataService mavenMetadataService) {
-        this.detectFileManager = detectFileManager;
+        this.directoryManager = directoryManager;
+        this.airGapManager = airGapManager;
         this.configuration = configuration;
         this.detectConfiguration = detectConfiguration;
-        this.detectConfigurationUtility = detectConfigurationUtility;
+        this.connectionManager = connectionManager;
         this.mavenMetadataService = mavenMetadataService;
     }
 
@@ -92,10 +96,10 @@ public class GradleInspectorManager {
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
             try {
-                final File inspectorDirectory = detectFileManager.getSharedDirectory(GRADLE_DIR_NAME);
+                final File inspectorDirectory = directoryManager.getSharedDirectory(GRADLE_DIR_NAME);
                 String repoBaseUrl = deriveRepoBaseUrl();
                 final String resolvedVersion = resolveInspectorVersion(repoBaseUrl);
-                String gradleInspectorAirGapDirectoryPath = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH);
+                String gradleInspectorAirGapDirectoryPath = airGapManager.getGradleInspectorAirGapPath();
                 File gradleInspectorAirGapDirectory = deriveGradleAirGapDir(gradleInspectorAirGapDirectoryPath);
                 if (gradleInspectorAirGapDirectory == null) {
                     findOrDownloadJar(inspectorDirectory, repoBaseUrl, resolvedVersion);
@@ -122,11 +126,11 @@ public class GradleInspectorManager {
     }
 
     private String resolveInspectorVersion(String repoBaseUrl) {
-        final String versionRange = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION);
+        final String versionRange = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION, PropertyAuthority.None);
         String gradleInspectorVersion = null;
         try {
             Document xmlDocument = null;
-            final File airGapMavenMetadataFile = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH), VERSION_METADATA_XML_FILENAME);
+            final File airGapMavenMetadataFile = new File(airGapManager.getGradleInspectorAirGapPath(), VERSION_METADATA_XML_FILENAME);
             if (airGapMavenMetadataFile.exists()) {
                 xmlDocument = mavenMetadataService.fetchXmlDocumentFromFile(airGapMavenMetadataFile);
             } else {
@@ -149,7 +153,7 @@ public class GradleInspectorManager {
 
     private String deriveRepoBaseUrl() {
         final String repoBaseUrl;
-        final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
+        final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL, PropertyAuthority.None);
         if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
             if (configuredGradleInspectorRepositoryUrl.endsWith("/")) {
                 repoBaseUrl = configuredGradleInspectorRepositoryUrl;
@@ -170,13 +174,13 @@ public class GradleInspectorManager {
     }
 
     private String generateGradleScript(String inspectorDirPath, File gradleInspectorAirGapDirectory, final String version) throws IOException, TemplateException {
-        final File generatedGradleScriptFile = detectFileManager.createSharedFile(GRADLE_DIR_NAME, GENERATED_GRADLE_SCRIPT_NAME);
+        final File generatedGradleScriptFile = directoryManager.getSharedFile(GRADLE_DIR_NAME, GENERATED_GRADLE_SCRIPT_NAME);
         final Map<String, String> gradleScriptData = new HashMap<>();
         gradleScriptData.put("gradleInspectorVersion", version);
-        gradleScriptData.put("excludedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_PROJECTS));
-        gradleScriptData.put("includedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_PROJECTS));
-        gradleScriptData.put("excludedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS));
-        gradleScriptData.put("includedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS));
+        gradleScriptData.put("excludedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_PROJECTS, PropertyAuthority.None));
+        gradleScriptData.put("includedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_PROJECTS, PropertyAuthority.None));
+        gradleScriptData.put("excludedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS, PropertyAuthority.None));
+        gradleScriptData.put("includedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS, PropertyAuthority.None));
         addReposToGradleScriptData(gradleInspectorAirGapDirectory, gradleScriptData, inspectorDirPath);
         populateGradleScriptWithData(generatedGradleScriptFile, gradleScriptData);
         logger.trace(String.format("Derived generatedGradleScriptFile path: %s", generatedGradleScriptFile.getCanonicalPath()));
@@ -194,7 +198,7 @@ public class GradleInspectorManager {
         }
         gradleScriptData.put("gradleInspectorDirPath", inspectorDirPath);
         gradleScriptData.put("integrationRepositoryUrl", DEFAULT_GRADLE_INSPECTOR_REPO_URL);
-        final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
+        final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL, PropertyAuthority.None);
         if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
             gradleScriptData.put("customRepositoryUrl", configuredGradleInspectorRepositoryUrl);
         }
@@ -225,7 +229,7 @@ public class GradleInspectorManager {
         logger.debug(String.format("Downloading gradle inspector jar file from %s to %s", gradleInspectorJarUrl, jarFile.getAbsolutePath()));
         final Request request = new Request.Builder().uri(gradleInspectorJarUrl).build();
         Response response = null;
-        try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(gradleInspectorJarUrl)) {
+        try (final UnauthenticatedRestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(gradleInspectorJarUrl)) {
             response = restConnection.executeRequest(request);
             final InputStream jarBytesInputStream = response.getContent();
             jarFile.delete();

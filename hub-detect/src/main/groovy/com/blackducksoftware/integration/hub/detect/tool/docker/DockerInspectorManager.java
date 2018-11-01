@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.docker;
+package com.blackducksoftware.integration.hub.detect.tool.docker;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,15 +38,17 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
+import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
+import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
 import com.synopsys.integration.rest.request.Request;
@@ -64,21 +66,23 @@ public class DockerInspectorManager {
 
     private final String dockerSharedDirectoryName = "docker";
 
-    private final DetectFileManager detectFileManager;
+    private final DirectoryManager directoryManager;
+    private final AirGapManager airGapManager;
     private final DetectFileFinder detectFileFinder;
     private final DetectConfiguration detectConfiguration;
-    private final DetectConfigurationUtility detectConfigurationUtility;
+    private final ConnectionManager connectionManager;
     private final MavenMetadataService mavenMetadataService;
 
     private DockerInspectorInfo resolvedInfo;
     private boolean hasResolvedInspector;
 
-    public DockerInspectorManager(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder,
-        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
-        this.detectFileManager = detectFileManager;
+    public DockerInspectorManager(final DirectoryManager directoryManager, AirGapManager airGapManager, final DetectFileFinder detectFileFinder,
+        final DetectConfiguration detectConfiguration, final ConnectionManager connectionManager, final MavenMetadataService mavenMetadataService) {
+        this.directoryManager = directoryManager;
+        this.airGapManager = airGapManager;
         this.detectFileFinder = detectFileFinder;
         this.detectConfiguration = detectConfiguration;
-        this.detectConfigurationUtility = detectConfigurationUtility;
+        this.connectionManager = connectionManager;
         this.mavenMetadataService = mavenMetadataService;
     }
 
@@ -138,7 +142,7 @@ public class DockerInspectorManager {
     private List<File> getAirGapInspectorImageTarfiles() {
         List<File> airGapInspectorImageTarfiles;
         airGapInspectorImageTarfiles = new ArrayList<>();
-        final String dockerInspectorAirGapPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
+        final String dockerInspectorAirGapPath = airGapManager.getDockerInspectorAirGapPath();
         for (final String inspectorName : inspectorNames) {
             final File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + inspectorName + ".tar");
             airGapInspectorImageTarfiles.add(osImage);
@@ -154,7 +158,7 @@ public class DockerInspectorManager {
     private File getConfiguredJar() {
         logger.debug("Checking for user-specified disk-resident docker inspector jar file");
         File providedJar = null;
-        final String providedJarPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH);
+        final String providedJarPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH, PropertyAuthority.None);
         if (StringUtils.isNotBlank(providedJarPath)) {
             logger.debug(String.format("Using user-provided docker inspector jar path: %s", providedJarPath));
             final File providedJarCandidate = new File(providedJarPath);
@@ -167,7 +171,7 @@ public class DockerInspectorManager {
     }
 
     private File getAirGapJar() {
-        final String airGapDirPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
+        final String airGapDirPath = airGapManager.getDockerInspectorAirGapPath();
         logger.debug(String.format("Checking for air gap docker inspector jar file in %s", airGapDirPath));
         try {
             final File airGapJarFile = detectFileFinder.findFilesToDepth(airGapDirPath, "*.jar", 1).get(0);
@@ -183,7 +187,7 @@ public class DockerInspectorManager {
         logger.debug("Looking for / downloading docker inspector jar file");
         final String resolvedVersion = resolveInspectorVersion();
         final String jarFilename = getJarFilename(resolvedVersion);
-        final File inspectorDirectory = detectFileManager.getSharedDirectory(dockerSharedDirectoryName);
+        final File inspectorDirectory = directoryManager.getSharedDirectory(dockerSharedDirectoryName);
         final File jarFile = new File(inspectorDirectory, jarFilename);
         if (jarFile.exists()) {
             logger.debug(String.format("Found previously-downloaded docker inspector jar file %s", jarFile.getAbsolutePath()));
@@ -198,7 +202,7 @@ public class DockerInspectorManager {
         logger.debug(String.format("Downloading docker inspector jar file from %s to %s", hubDockerInspectorJarUrl, jarFile.getAbsolutePath()));
         final Request request = new Request.Builder().uri(hubDockerInspectorJarUrl).build();
         Response response = null;
-        try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(hubDockerInspectorJarUrl)) {
+        try (final UnauthenticatedRestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(hubDockerInspectorJarUrl)) {
             response = restConnection.executeRequest(request);
             final InputStream jarBytesInputStream = response.getContent();
             jarFile.delete();
@@ -212,7 +216,7 @@ public class DockerInspectorManager {
     }
 
     private String resolveInspectorVersion() throws DetectUserFriendlyException {
-        final String configuredVersionRangeSpec = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
+        final String configuredVersionRangeSpec = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION, PropertyAuthority.None);
         try {
             return selectArtifactoryVersion(configuredVersionRangeSpec);
         } catch (final Exception e) {

@@ -56,7 +56,7 @@ public class ErrorSummarizer extends BomToolEvaluationSummarizer {
 
         final List<ErrorSummaryBomToolError> notExtractable = evaluations.stream()
                                                                   .filter(it -> it.isApplicable() && !it.isExtractable())
-                                                                  .map(it -> new ErrorSummaryBomToolError(it.getBomTool().getName(), it.getExtractabilityMessage()))
+                                                                  .map(it -> new ErrorSummaryBomToolError(it.getBomTool().getDescriptiveName(), it.getExtractabilityMessage()))
                                                                   .collect(Collectors.toList());
 
         final List<BomToolEvaluation> extractions = evaluations.stream()
@@ -65,12 +65,12 @@ public class ErrorSummarizer extends BomToolEvaluationSummarizer {
 
         final List<ErrorSummaryBomToolError> failure = extractions.stream()
                                                            .filter(it -> it.getExtraction().result == ExtractionResultType.FAILURE)
-                                                           .map(it -> new ErrorSummaryBomToolError(it.getBomTool().getName(), it.getExtraction().description))
+                                                           .map(it -> new ErrorSummaryBomToolError(it.getBomTool().getDescriptiveName(), it.getExtraction().description))
                                                            .collect(Collectors.toList());
 
         final List<ErrorSummaryBomToolError> exception = extractions.stream()
                                                              .filter(it -> it.getExtraction().result == ExtractionResultType.EXCEPTION)
-                                                             .map(it -> new ErrorSummaryBomToolError(it.getBomTool().getName(), getExceptionMessage(it.getExtraction())))
+                                                             .map(it -> new ErrorSummaryBomToolError(it.getBomTool().getDescriptiveName(), getExceptionMessage(it.getExtraction())))
                                                              .collect(Collectors.toList());
 
         return new ErrorSummaryData(directory, notExtractable, failure, exception);
