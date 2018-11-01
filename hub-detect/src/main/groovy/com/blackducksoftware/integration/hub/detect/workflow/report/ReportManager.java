@@ -40,20 +40,22 @@ public class ReportManager {
     private final SearchSummaryReporter searchSummaryReporter;
     private final PreparationSummaryReporter preparationSummaryReporter;
     private final ExtractionSummaryReporter extractionSummaryReporter;
+    private final ErrorSummaryReporter errorSummaryReporter;
 
     private final InfoLogReportWriter logWriter = new InfoLogReportWriter();
     private final DebugLogReportWriter debugLogWriter = new DebugLogReportWriter();
 
     public static ReportManager createDefault(EventSystem eventSystem) {
-        return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter());
+        return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new ErrorSummaryReporter());
     }
 
     public ReportManager(final EventSystem eventSystem,
-        final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter) {
+        final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter, ErrorSummaryReporter errorSummaryReporter) {
         this.eventSystem = eventSystem;
         this.preparationSummaryReporter = preparationSummaryReporter;
         this.extractionSummaryReporter = extractionSummaryReporter;
         this.searchSummaryReporter = searchSummaryReporter;
+        this.errorSummaryReporter = errorSummaryReporter;
 
         eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event.getBomToolEvaluations()));
         eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event.getBomToolEvaluations()));
@@ -81,5 +83,9 @@ public class ReportManager {
 
     public void codeLocationsCompleted(final Map<DetectCodeLocation, String> codeLocationNameMap) {
         extractionSummaryReporter.writeSummary(logWriter, completedBomToolEvaluations, codeLocationNameMap);
+    }
+
+    public void printDetectorIssues() {
+        errorSummaryReporter.writeSummary(logWriter, completedBomToolEvaluations);
     }
 }

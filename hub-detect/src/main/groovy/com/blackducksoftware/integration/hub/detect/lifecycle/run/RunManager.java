@@ -41,7 +41,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionDecider;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionOptions;
-import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchOptions;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.exception.IntegrationException;
@@ -72,7 +71,6 @@ public class RunManager {
         DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
         Optional<HubServiceManager> hubServiceManager = Optional.ofNullable(detectContext.getBean(HubServiceManager.class));
 
-        ReportManager.createDefault(eventSystem);
         phoneHomeManager.startPhoneHome();
 
         RunResult runResult = new RunResult();
@@ -129,7 +127,7 @@ public class RunManager {
 
         logger.info("Completed project and version actions.");
 
-        logger.info("Creating BDIO files.");
+        logger.info("Processing Detect Code Locations.");
         BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new IntegrationEscapeUtil(), codeLocationNameManager, detectConfiguration, bdioCodeLocationCreator, directoryManager);
         BdioResult bdioResult = bdioManager.createBdioFiles(runOptions.getAggregateName(), projectNameVersion, runResult.getDetectCodeLocations());
 
@@ -145,7 +143,7 @@ public class RunManager {
             logger.debug("Did not create any BDIO files.");
         }
 
-        logger.info("Completed BDIO files.");
+        logger.info("Completed Detect Code Location processing.");
 
         if (runOptions.isSigScanEnabled()) {
             logger.info("Will run the signature scanner tool.");

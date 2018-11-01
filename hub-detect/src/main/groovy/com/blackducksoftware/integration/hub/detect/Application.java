@@ -45,6 +45,7 @@ import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeM
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ShutdownManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
@@ -82,7 +83,7 @@ public class Application implements ApplicationRunner {
         ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
         ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
 
-        ReportManager.createDefault(eventSystem);
+        ReportManager reportManager = ReportManager.createDefault(eventSystem);
 
         //Before boot even begins, we create a new Spring context for Detect to work within.
         logger.info("Preparing detect.");
@@ -111,10 +112,11 @@ public class Application implements ApplicationRunner {
                 logger.info("Detect run failed: ", e);
             }
 
+            DiagnosticManager diagnosticManager = detectContext.getBean(DiagnosticManager.class);
             PhoneHomeManager phoneHomeManager = detectContext.getBean(PhoneHomeManager.class);
             DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
             DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
-            ShutdownManager shutdownManager = new ShutdownManager(statusManager, exitCodeManager, phoneHomeManager, directoryManager, detectConfiguration);
+            ShutdownManager shutdownManager = new ShutdownManager(statusManager, exitCodeManager, phoneHomeManager, directoryManager, detectConfiguration, reportManager, diagnosticManager);
             try {
                 logger.info("Detect shutdown begin.");
                 ExitCodeType exitCodeType = shutdownManager.shutdown();

@@ -82,14 +82,17 @@ public class BdioManager {
 
     public BdioResult createBdioFiles(String aggregateName, NameVersion projectNameVersion, List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
         if (StringUtils.isBlank(aggregateName)) {
+            logger.info("Creating BDIO code locations.");
             final BdioCodeLocationResult codeLocationResult = bdioCodeLocationCreator.createFromDetectCodeLocations(codeLocations, projectNameVersion);
             //codeLocationResult.getFailedBomToolGroupTypes().forEach(it -> bomToolResults.put(it, Result.FAILURE));
 
+            logger.info("Creating BDIO files.");
             final List<File> createdBdioFiles = createBdioFiles(codeLocationResult.getBdioCodeLocations(), projectNameVersion);
 
             return new BdioResult(codeLocationResult.getBdioCodeLocations(), createdBdioFiles);
             //reportManager.codeLocationsCompleted(searchResult.getBomToolEvaluations(), codeLocationResult.getCodeLocationNames());
         } else {
+            logger.info("Creating aggregate bdio file.")
             final File aggregateBdioFile = createAggregateBdioFile(codeLocations, projectNameVersion);
             return new BdioResult(new ArrayList<>(), Arrays.asList(aggregateBdioFile));
         }
