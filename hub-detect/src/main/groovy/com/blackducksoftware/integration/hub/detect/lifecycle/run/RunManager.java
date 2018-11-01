@@ -2,7 +2,6 @@ package com.blackducksoftware.integration.hub.detect.lifecycle.run;
 
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,9 +26,8 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioResult;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameGenerator;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
@@ -68,26 +66,16 @@ public class RunManager {
         DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
         EventSystem eventSystem = detectContext.getBean(EventSystem.class);
         CodeLocationNameManager codeLocationNameManager = detectContext.getBean(CodeLocationNameManager.class);
-        DetectCodeLocationManager detectCodeLocationManager = detectContext.getBean(DetectCodeLocationManager.class);
+        BdioCodeLocationCreator bdioCodeLocationCreator = detectContext.getBean(BdioCodeLocationCreator.class);
         ConnectionManager connectionManager = detectContext.getBean(ConnectionManager.class);
-        CodeLocationNameGenerator codeLocationNameGenerator = detectContext.getBean(CodeLocationNameGenerator.class);
         DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
         Optional<HubServiceManager> hubServiceManager = Optional.ofNullable(detectContext.getBean(HubServiceManager.class));
 
         ReportManager.createDefault(eventSystem);
         phoneHomeManager.startPhoneHome();
 
-        //this should be detect run options
-        boolean bomToolsEnabled = !detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOLS_DISABLED, PropertyAuthority.None);
-        boolean sigScanEnabled = !detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, PropertyAuthority.None);
-        boolean binScanEnabled = StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None));
-        boolean isOnline = !detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
-        boolean unmapCodeLocations = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP, PropertyAuthority.None);
-        boolean swipEnabled = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SWIP_ENABLED, PropertyAuthority.None);
-        String aggregateName = detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME, PropertyAuthority.None);
-        String preferredTools = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_TOOL, PropertyAuthority.None);
-
         RunResult runResult = new RunResult();
+        RunOptions runOptions = detectConfigurationFactory.createRunOptions();
 
         DockerOptions dockerOptions = DockerOptions.fromConfiguration(detectConfiguration);
         if (dockerOptions.hasDockerImageOrTag()) {
@@ -100,11 +88,11 @@ public class RunManager {
             runResult.addDockerFile(dockerToolResult.dockerTar);
         }
 
-        if (bomToolsEnabled) {
+        if (runOptions.isBomToolsEnabled()) {
             logger.info("Will run the detector tool.");
             String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_BOM_TOOL, PropertyAuthority.None);
             SearchOptions searchOptions = detectConfigurationFactory.createSearchOptions(directoryManager.getSourceDirectory());
-            DetectorTool detectorTool = new DetectorTool(detectContext, eventSystem);
+            DetectorTool detectorTool = new DetectorTool(detectContext);
 
             DetectorToolResult detectorToolResult = detectorTool.performBomTools(searchOptions, projectBomTool);
             runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
@@ -117,19 +105,19 @@ public class RunManager {
 
         ProjectNameVersionOptions projectNameVersionOptions = detectConfigurationFactory.createProjectNameVersionOptions(directoryManager.getSourceDirectory().getName());
         ProjectNameVersionDecider projectNameVersionDecider = new ProjectNameVersionDecider(projectNameVersionOptions);
-        NameVersion projectNameVersion = projectNameVersionDecider.decideProjectNameVersion(preferredTools, runResult.getDetectToolProjectInfo());
+        NameVersion projectNameVersion = projectNameVersionDecider.decideProjectNameVersion(runOptions.getPreferredTools(), runResult.getDetectToolProjectInfo());
 
         logger.info("Project name: " + projectNameVersion.getName());
         logger.info("Project version: " + projectNameVersion.getVersion());
 
         Optional<ProjectVersionView> projectView = Optional.empty();
 
-        if (isOnline && hubServiceManager.isPresent()) {
+        if (runOptions.isOnline() && hubServiceManager.isPresent()) {
             logger.info("Getting or creating project.");
             DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
             DetectProjectService detectProjectService = new DetectProjectService(hubServiceManager.get(), options);
             projectView = detectProjectService.createOrUpdateHubProject(projectNameVersion);
-            if (projectView.isPresent() && unmapCodeLocations) {
+            if (projectView.isPresent() && runOptions.isUnmapCodeLocations()) {
                 logger.info("Unmapping code locations.");
                 DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(hubServiceManager.get().createHubService(), hubServiceManager.get().createCodeLocationService());
                 detectCodeLocationUnmapService.unmapCodeLocations(projectView.get());
@@ -137,13 +125,13 @@ public class RunManager {
         }
 
         logger.info("Creating BDIO files.");
-        BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new IntegrationEscapeUtil(), codeLocationNameManager, detectConfiguration, detectCodeLocationManager, directoryManager);
-        BdioResult bdioResult = bdioManager.createBdioFiles(aggregateName, projectNameVersion, runResult.getDetectCodeLocations());
+        BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new IntegrationEscapeUtil(), codeLocationNameManager, detectConfiguration, bdioCodeLocationCreator, directoryManager);
+        BdioResult bdioResult = bdioManager.createBdioFiles(runOptions.getAggregateName(), projectNameVersion, runResult.getDetectCodeLocations());
 
         if (bdioResult.getBdioFiles().size() > 0) {
             logger.info("Created " + bdioResult.getBdioFiles().size() + " BDIO files.");
             bdioResult.getBdioFiles().forEach(it -> eventSystem.publishEvent(Event.OutputFileOfInterest, it));
-            if (isOnline && hubServiceManager.isPresent()) {
+            if (runOptions.isOnline() && hubServiceManager.isPresent()) {
                 logger.info("Uploading BDIO files.");
                 DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, hubServiceManager.get().createCodeLocationService());
                 detectBdioUploadService.uploadBdioFiles(bdioResult.getBdioFiles());
@@ -154,26 +142,26 @@ public class RunManager {
 
         logger.info("Completed BDIO files.");
 
-        if (sigScanEnabled) {
+        if (runOptions.isSigScanEnabled()) {
             logger.info("Will run the signature scanner tool.");
             BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
             BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
             blackDuckSignatureScannerTool.runScanTool(projectNameVersion, runResult.getDockerTar());
         }
 
-        if (binScanEnabled && hubServiceManager.isPresent()) {
+        if (runOptions.isBinScanEnabled() && hubServiceManager.isPresent()) {
             logger.info("Will run the binary scanner tool.");
-            BlackDuckBinaryScanner blackDuckBinaryScanner = new BlackDuckBinaryScanner(codeLocationNameGenerator, detectConfiguration, hubServiceManager.get());
+            BlackDuckBinaryScanner blackDuckBinaryScanner = new BlackDuckBinaryScanner(codeLocationNameManager, detectConfiguration, hubServiceManager.get());
             blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
         }
 
-        if (swipEnabled) {
-            SwipCliManager swipCliManager = new SwipCliManager(directoryManager, new ExecutableRunner(), connectionManager);
+        if (runOptions.isSwipEnabled()) {
             logger.info("Will run the swip tool.");
+            SwipCliManager swipCliManager = new SwipCliManager(directoryManager, new ExecutableRunner(), connectionManager);
             swipCliManager.runSwip(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
         }
 
-        if (isOnline && hubServiceManager.isPresent() && projectView.isPresent()) {
+        if (runOptions.isOnline() && hubServiceManager.isPresent() && projectView.isPresent()) {
             logger.info("Will perform hub actions.");
             HubManager hubManager = new HubManager(codeLocationNameManager, detectConfiguration, hubServiceManager.get(), new PolicyChecker(detectConfiguration));
             hubManager.performPostHubActions(projectNameVersion, projectView.get());

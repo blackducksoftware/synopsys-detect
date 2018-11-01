@@ -55,6 +55,8 @@ import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 public class DockerExtractor {
+    public static final String DOCKER_TAR_META_DATA_KEY = "dockerTar";
+
     public static final String TAR_FILENAME_PATTERN = "*.tar.gz";
     public static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
 
@@ -77,7 +79,7 @@ public class DockerExtractor {
         this.gson = gson;
     }
 
-    public DockerResult extract(final BomToolType bomToolType, final File directory, final File outputDirectory, final File bashExe, final File javaExe, final String image, final String tar,
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File outputDirectory, final File bashExe, final File javaExe, final String image, final String tar,
         final DockerInspectorInfo dockerInspectorInfo) {
         try {
             String imageArgument = null;
@@ -92,14 +94,12 @@ public class DockerExtractor {
             }
 
             if (StringUtils.isBlank(imageArgument) || StringUtils.isBlank(imagePiece)) {
-                Extraction extraction = new Extraction.Builder().failure("No docker image found.").build();
-                return new DockerResult(extraction, null);
+                return new Extraction.Builder().failure("No docker image found.").build();
             } else {
                 return executeDocker(bomToolType, outputDirectory, imageArgument, imagePiece, tar, directory, javaExe, bashExe, dockerInspectorInfo);
             }
         } catch (final Exception e) {
-            Extraction extraction = new Extraction.Builder().exception(e).build();
-            return new DockerResult(extraction, null);
+            return new Extraction.Builder().exception(e).build();
         }
     }
 
@@ -120,7 +120,7 @@ public class DockerExtractor {
         }
     }
 
-    private DockerResult executeDocker(final BomToolType bomToolType, File outputDirectory, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File javaExe,
+    private Extraction executeDocker(final BomToolType bomToolType, File outputDirectory, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File javaExe,
         final File bashExe,
         final DockerInspectorInfo dockerInspectorInfo)
         throws IOException, ExecutableRunnerException {
@@ -155,11 +155,12 @@ public class DockerExtractor {
             }
         }
 
-        Extraction extraction = findCodeLocations(bomToolType, outputDirectory, directory, imagePiece);
-        return new DockerResult(extraction, scanFile);
+        Extraction.Builder extractionBuilder = findCodeLocations(bomToolType, outputDirectory, directory, imagePiece);
+        extractionBuilder.metaData(DOCKER_TAR_META_DATA_KEY, scanFile);
+        return extractionBuilder.build();
     }
 
-    private Extraction findCodeLocations(final BomToolType bomToolType, final File directoryToSearch, final File directory, final String imageName) {
+    private Extraction.Builder findCodeLocations(final BomToolType bomToolType, final File directoryToSearch, final File directory, final String imageName) {
         final File bdioFile = detectFileFinder.findFile(directoryToSearch, DEPENDENCIES_PATTERN);
         if (bdioFile != null) {
             SimpleBdioDocument simpleBdioDocument = null;
@@ -167,7 +168,7 @@ public class DockerExtractor {
             try (final InputStream dockerOutputInputStream = new FileInputStream(bdioFile); BdioReader bdioReader = new BdioReader(gson, dockerOutputInputStream)) {
                 simpleBdioDocument = bdioReader.readSimpleBdioDocument();
             } catch (final Exception e) {
-                return new Extraction.Builder().exception(e).build();
+                return new Extraction.Builder().exception(e);
             }
 
             if (simpleBdioDocument != null) {
@@ -182,11 +183,11 @@ public class DockerExtractor {
 
                 final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.DOCKER, bomToolType, directory.toString(), projectExternalId, dependencyGraph).dockerImage(imageName).build();
 
-                return new Extraction.Builder().success(detectCodeLocation).projectName(projectName).projectVersion(projectVersionName).build();
+                return new Extraction.Builder().success(detectCodeLocation).projectName(projectName).projectVersion(projectVersionName);
             }
         }
 
-        return new Extraction.Builder().failure("No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString()).build();
+        return new Extraction.Builder().failure("No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString());
     }
 
 }

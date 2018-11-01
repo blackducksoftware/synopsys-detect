@@ -40,10 +40,10 @@ import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthor
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocationCreator;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.FileNameUtils;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.hub.bdio.SimpleBdioFactory;
@@ -66,23 +66,23 @@ public class BdioManager {
     private final IntegrationEscapeUtil integrationEscapeUtil;
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfiguration detectConfiguration;
-    private final DetectCodeLocationManager codeLocationManager;
+    private final BdioCodeLocationCreator bdioCodeLocationCreator;
     private final DirectoryManager directoryManager;
 
     public BdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil, final CodeLocationNameManager codeLocationNameManager,
-        final DetectConfiguration detectConfiguration, final DetectCodeLocationManager codeLocationManager, final DirectoryManager directoryManager) {
+        final DetectConfiguration detectConfiguration, final BdioCodeLocationCreator codeLocationManager, final DirectoryManager directoryManager) {
         this.detectInfo = detectInfo;
         this.simpleBdioFactory = simpleBdioFactory;
         this.integrationEscapeUtil = integrationEscapeUtil;
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
-        this.codeLocationManager = codeLocationManager;
+        this.bdioCodeLocationCreator = codeLocationManager;
         this.directoryManager = directoryManager;
     }
 
     public BdioResult createBdioFiles(String aggregateName, NameVersion projectNameVersion, List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
         if (StringUtils.isBlank(aggregateName)) {
-            final DetectCodeLocationResult codeLocationResult = codeLocationManager.process(codeLocations, projectNameVersion);
+            final BdioCodeLocationResult codeLocationResult = bdioCodeLocationCreator.createFromDetectCodeLocations(codeLocations, projectNameVersion);
             //codeLocationResult.getFailedBomToolGroupTypes().forEach(it -> bomToolResults.put(it, Result.FAILURE));
 
             final List<File> createdBdioFiles = createBdioFiles(codeLocationResult.getBdioCodeLocations(), projectNameVersion);

@@ -48,6 +48,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectStatusManager;
 
 //@SpringBootApplication
@@ -74,16 +75,19 @@ public class Application implements ApplicationRunner {
     public void run(final ApplicationArguments applicationArguments) throws Exception {
         final long startTime = System.currentTimeMillis();
 
+        //Events, Status and Exit Codes are required even if boot fails.
+        EventSystem eventSystem = new EventSystem();
+        DetectStatusManager statusManager = new DetectStatusManager(eventSystem);
+
+        ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
+        ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
+
+        ReportManager.createDefault(eventSystem);
+
         //Before boot even begins, we create a new Spring context for Detect to work within.
         logger.info("Preparing detect.");
         DetectRun detectRun = DetectRun.createDefault();
         DetectContext detectContext = new DetectContext(detectRun);
-
-        EventSystem eventSystem = new EventSystem(); //there should be one single event system in all of detect
-        DetectStatusManager statusManager = new DetectStatusManager(eventSystem); //there should be one status manager
-
-        ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
-        ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
 
         BootResult bootResult = null;
         try {

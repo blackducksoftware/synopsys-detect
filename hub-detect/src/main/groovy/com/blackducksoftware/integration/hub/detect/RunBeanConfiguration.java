@@ -24,9 +24,9 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableMa
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
@@ -102,8 +102,8 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public DetectCodeLocationManager detectCodeLocationManager() {
-        return new DetectCodeLocationManager(codeLocationNameManager(), detectConfiguration, directoryManager, eventSystem);
+    public BdioCodeLocationCreator detectCodeLocationManager() {
+        return new BdioCodeLocationCreator(codeLocationNameManager(), detectConfiguration, directoryManager, eventSystem);
     }
 
     @Bean

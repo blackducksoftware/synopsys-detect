@@ -23,16 +23,15 @@ import com.synopsys.integration.util.NameVersion;
 public class DetectorTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectContext detectContext;
-    private final EventSystem eventSystem;
 
-    public DetectorTool(DetectContext detectContext, EventSystem eventSystem) {
+    public DetectorTool(DetectContext detectContext) {
         this.detectContext = detectContext;
-        this.eventSystem = eventSystem;
     }
 
     public DetectorToolResult performBomTools(SearchOptions searchOptions, String projectBomTool) {
         logger.info("Preparing to initialize bom tools.");
         BomToolFactory bomToolFactory = detectContext.getBean(BomToolFactory.class);
+        EventSystem eventSystem = detectContext.getBean(EventSystem.class);
 
         logger.info("Building bom tool system.");
         BomToolSearchProvider bomToolSearchProvider = new BomToolSearchProvider(bomToolFactory);

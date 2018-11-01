@@ -5,7 +5,7 @@ import java.io.File;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationResult;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolAggregateTimings;
@@ -25,7 +25,7 @@ public class Event {
     public static EventType<BomTool> ExtractableEnded = new EventType(BomTool.class);
     public static EventType<BomToolEvaluation> ExtractionStarted = new EventType(BomToolEvaluation.class);
     public static EventType<BomToolEvaluation> ExtractionEnded = new EventType(BomToolEvaluation.class);
-    public static EventType<DetectCodeLocationResult> CodeLocationsCalculated = new EventType(DetectCodeLocationResult.class);
+    public static EventType<BdioCodeLocationResult> CodeLocationsCalculated = new EventType(BdioCodeLocationResult.class);
     public static EventType<ExitCodeRequest> ExitCode = new EventType(ExitCodeRequest.class);
     public static EventType<Status> StatusSummary = new EventType(Status.class);
     public static EventType<File> OutputFileOfInterest = new EventType(File.class);

@@ -24,7 +24,10 @@
 package com.blackducksoftware.integration.hub.detect.workflow.extraction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
@@ -37,6 +40,7 @@ public class Extraction {
 
     public String projectVersion;
     public String projectName;
+    public Map<String, Object> metaData; //TODO: Typesafe way to provide meta data?
 
     private Extraction(final Builder builder) {
         this.codeLocations = builder.codeLocations;
@@ -46,6 +50,15 @@ public class Extraction {
 
         this.projectVersion = builder.projectVersion;
         this.projectName = builder.projectName;
+        this.metaData = builder.metaData;
+    }
+
+    public Optional<Object> getMetaDataValue(String key) {
+        if (metaData.containsKey(key)) {
+            return Optional.ofNullable(metaData.get(key));
+        } else {
+            return Optional.empty();
+        }
     }
 
     public static class Builder {
@@ -56,6 +69,7 @@ public class Extraction {
 
         private String projectVersion;
         private String projectName;
+        private Map<String, Object> metaData = new HashMap<>();
 
         public Builder projectName(final String projectName) {
             this.projectName = projectName;
@@ -71,34 +85,46 @@ public class Extraction {
             codeLocations.add(codeLocation);
             return this;
         }
+
         public Builder codeLocations(final List<DetectCodeLocation> codeLocation) {
             codeLocations.addAll(codeLocation);
             return this;
         }
+
         public Builder success(final DetectCodeLocation codeLocation) {
             this.codeLocations(codeLocation);
             this.success();
             return this;
         }
+
         public Builder success(final List<DetectCodeLocation> codeLocation) {
             this.codeLocations(codeLocation);
             this.success();
             return this;
         }
+
         public Builder success() {
             this.result = ExtractionResultType.SUCCESS;
             return this;
         }
+
         public Builder failure(final String description) {
             this.result = ExtractionResultType.FAILURE;
             this.description = description;
             return this;
         }
+
         public Builder exception(final Exception error) {
             this.result = ExtractionResultType.EXCEPTION;
             this.error = error;
             return this;
         }
+
+        public Builder metaData(String key, Object value) {
+            this.metaData.put(key, value);
+            return this;
+        }
+
         public Extraction build() {
             return new Extraction(this);
         }

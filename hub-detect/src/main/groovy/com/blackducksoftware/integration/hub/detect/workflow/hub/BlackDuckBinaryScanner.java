@@ -37,7 +37,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthor
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameGenerator;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.blackduck.service.BinaryScannerService;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -45,12 +45,12 @@ import com.synopsys.integration.util.NameVersion;
 public class BlackDuckBinaryScanner {
     private final Logger logger = LoggerFactory.getLogger(BlackDuckBinaryScanner.class);
 
-    private final CodeLocationNameGenerator codeLocationNameGenerator;
+    private final CodeLocationNameManager codeLocationNameManager;
     private DetectConfiguration detectConfiguration;
     private HubServiceManager hubServiceManager;
 
-    public BlackDuckBinaryScanner(final CodeLocationNameGenerator codeLocationNameGenerator, final DetectConfiguration detectConfiguration, final HubServiceManager hubServiceManager) {
-        this.codeLocationNameGenerator = codeLocationNameGenerator;
+    public BlackDuckBinaryScanner(final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final HubServiceManager hubServiceManager) {
+        this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
         this.hubServiceManager = hubServiceManager;
     }
@@ -68,7 +68,7 @@ public class BlackDuckBinaryScanner {
     }
 
     public void uploadBinaryScanFile(final BinaryScannerService binaryService, final File file, final String projectName, final String projectVersionName, final String prefix, final String suffix) throws DetectUserFriendlyException {
-        final String codeLocationName = codeLocationNameGenerator.createBinaryScanCodeLocationName(file.getName(), projectName, projectVersionName, prefix, suffix);
+        final String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(file.getName(), projectName, projectVersionName, prefix, suffix);
         try {
             logger.info("Preparing to upload binary scan file: " + codeLocationName);
             binaryService.scanBinary(file, projectName, projectVersionName, codeLocationName);
