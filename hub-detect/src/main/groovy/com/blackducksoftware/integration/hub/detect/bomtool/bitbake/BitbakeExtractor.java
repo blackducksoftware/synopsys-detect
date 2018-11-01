@@ -28,9 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,17 +86,21 @@ public class BitbakeExtractor {
 
         final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
         for (final String packageName : packageNames) {
-            final File recipeDependsFile = executeBitbakeForRecipeDependsFile(outputDirectory, bitbakeBuildDirectory, foundBuildEnvScriptPath, packageName);
-            final Optional<String> targetArchitecture = executeBitbakeForTargetArchitecture(outputDirectory, foundBuildEnvScriptPath, packageName);
+            final File dependsFile = executeBitbakeForRecipeDependsFile(outputDirectory, bitbakeBuildDirectory, foundBuildEnvScriptPath, packageName);
+            final String targetArchitecture = executeBitbakeForTargetArchitecture(outputDirectory, foundBuildEnvScriptPath, packageName);
 
             try {
-                if (!targetArchitecture.isPresent()) {
+                if (dependsFile == null) {
+                    throw new IntegrationException(
+                        String.format("Failed to find %s. This may be due to this project being a version of The Yocto Project earlier than 2.3 (Pyro) which is the minimum version for Detect", RECIPE_DEPENDS_FILE_NAME));
+                }
+                if (StringUtils.isBlank(targetArchitecture)) {
                     throw new IntegrationException("Failed to find a target architecture");
                 }
 
-                final InputStream recipeDependsInputStream = FileUtils.openInputStream(recipeDependsFile);
+                final InputStream recipeDependsInputStream = FileUtils.openInputStream(dependsFile);
                 final GraphParser graphParser = new GraphParser(recipeDependsInputStream);
-                final DependencyGraph dependencyGraph = graphParserTransformer.transform(graphParser, targetArchitecture.get());
+                final DependencyGraph dependencyGraph = graphParserTransformer.transform(graphParser, targetArchitecture);
                 final ExternalId externalId = new ExternalId(BitbakeBomTool.YOCTO_FORGE);
                 final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.BITBAKE, BomToolType.BITBAKE_CLI, sourcePath, externalId, dependencyGraph).build();
 
@@ -137,14 +141,14 @@ public class BitbakeExtractor {
         return recipeDependsFile;
     }
 
-    private Optional<String> executeBitbakeForTargetArchitecture(final File outputDirectory, final String foundBuildEnvScriptPath, final String packageName) {
+    private String executeBitbakeForTargetArchitecture(final File outputDirectory, final String foundBuildEnvScriptPath, final String packageName) {
         final String bitbakeCommand = "bitbake -c listtasks " + packageName;
         final ExecutableOutput executableOutput = runBitbake(outputDirectory, foundBuildEnvScriptPath, bitbakeCommand);
         final int returnCode = executableOutput.getReturnCode();
-        Optional<String> targetArchitecture = Optional.empty();
+        String targetArchitecture = null;
 
         if (returnCode == 0) {
-            targetArchitecture = bitbakeListTasksParser.parseTargetArchitecture(executableOutput.getStandardOutput());
+            targetArchitecture = bitbakeListTasksParser.parseTargetArchitecture(executableOutput.getStandardOutput()).orElse(null);
         } else {
             logger.error(String.format("Executing command '%s' returned a non-zero exit code %s", bitbakeCommand, returnCode));
         }
