@@ -20,7 +20,7 @@ import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackD
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.OfflineBlackDuckSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.OnlineBlackDuckSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
@@ -29,7 +29,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLo
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
@@ -112,8 +112,8 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public ExecutableManager executableManager() {
-        return new ExecutableManager(detectFileFinder(), detectInfo);
+    public ExecutableFinder executableManager() {
+        return new ExecutableFinder(detectFileFinder(), detectInfo);
     }
 
     @Bean
@@ -133,8 +133,8 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public StandardExecutableFinder standardExecutableFinder() {
-        return new StandardExecutableFinder(directoryManager, executableManager(), detectConfiguration);
+    public CacheableExecutableFinder standardExecutableFinder() {
+        return new CacheableExecutableFinder(directoryManager, executableManager(), detectConfiguration);
     }
 
     @Bean

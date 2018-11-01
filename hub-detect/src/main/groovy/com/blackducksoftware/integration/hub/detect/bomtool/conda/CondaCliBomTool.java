@@ -31,9 +31,9 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
@@ -44,15 +44,15 @@ public class CondaCliBomTool extends BomTool {
     public static final String ENVIRONEMNT_YML = "environment.yml";
 
     private final DetectFileFinder fileFinder;
-    private StandardExecutableFinder standardExecutableFinder;
+    private CacheableExecutableFinder cacheableExecutableFinder;
     private final CondaCliExtractor condaExtractor;
 
     private File condaExe;
 
-    public CondaCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final CondaCliExtractor condaExtractor) {
+    public CondaCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final CacheableExecutableFinder cacheableExecutableFinder, final CondaCliExtractor condaExtractor) {
         super(environment, "Conda Cli", BomToolGroupType.CONDA, BomToolType.CONDA_CLI);
         this.fileFinder = fileFinder;
-        this.standardExecutableFinder = standardExecutableFinder;
+        this.cacheableExecutableFinder = cacheableExecutableFinder;
         this.condaExtractor = condaExtractor;
     }
 
@@ -68,7 +68,7 @@ public class CondaCliBomTool extends BomTool {
 
     @Override
     public BomToolResult extractable() throws BomToolException {
-        condaExe = standardExecutableFinder.getExecutable(StandardExecutableType.CONDA);
+        condaExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.CONDA);
 
         if (condaExe == null) {
             return new ExecutableNotFoundBomToolResult("conda");

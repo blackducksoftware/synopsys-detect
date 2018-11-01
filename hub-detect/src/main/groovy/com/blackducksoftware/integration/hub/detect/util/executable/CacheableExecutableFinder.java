@@ -35,14 +35,14 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 
-public class StandardExecutableFinder {
+public class CacheableExecutableFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private DirectoryManager directoryManager;
 
-    public enum StandardExecutableType {
+    public enum CacheableExecutableType {
         CONDA,
         CPAN,
         CPANM,
@@ -55,18 +55,18 @@ public class StandardExecutableFinder {
         JAVA
     }
 
-    private final ExecutableManager executableManager;
+    private final ExecutableFinder executableFinder;
     private final DetectConfiguration detectConfiguration;
 
-    private final Map<StandardExecutableType, File> alreadyFound = new HashMap<>();
+    private final Map<CacheableExecutableType, File> alreadyFound = new HashMap<>();
 
-    public StandardExecutableFinder(final DirectoryManager directoryManager, final ExecutableManager executableManager, final DetectConfiguration detectConfiguration) {
+    public CacheableExecutableFinder(final DirectoryManager directoryManager, final ExecutableFinder executableFinder, final DetectConfiguration detectConfiguration) {
         this.directoryManager = directoryManager;
-        this.executableManager = executableManager;
+        this.executableFinder = executableFinder;
         this.detectConfiguration = detectConfiguration;
     }
 
-    public File getExecutable(final StandardExecutableType executableType) throws BomToolException {
+    public File getExecutable(final CacheableExecutableType executableType) throws BomToolException {
         if (alreadyFound.containsKey(executableType)) {
             return alreadyFound.get(executableType);
         }
@@ -75,7 +75,7 @@ public class StandardExecutableFinder {
             throw new BomToolException("Unknown executable type: " + executableType.toString());
         }
 
-        final String exe = executableManager.getExecutablePathOrOverride(info.detectExecutableType, true, directoryManager.getSourceDirectory(), info.override);
+        final String exe = executableFinder.getExecutablePathOrOverride(info.detectExecutableType, true, directoryManager.getSourceDirectory(), info.override);
         File exeFile = null;
         if (exe != null) {
             exeFile = new File(exe);
@@ -85,7 +85,7 @@ public class StandardExecutableFinder {
         return exeFile;
     }
 
-    public StandardExecutableInfo createInfo(final StandardExecutableType type) {
+    public StandardExecutableInfo createInfo(final CacheableExecutableType type) {
         switch (type) {
             case CONDA:
                 return new StandardExecutableInfo(ExecutableType.CONDA, detectConfiguration.getProperty(DetectProperty.DETECT_CONDA_PATH, PropertyAuthority.None));

@@ -42,7 +42,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -60,7 +60,7 @@ public class BitbakeExtractor {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final ExecutableManager executableManager;
+    private final ExecutableFinder executableFinder;
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
     private final DetectFileFinder detectFileFinder;
@@ -68,9 +68,9 @@ public class BitbakeExtractor {
     private final GraphParserTransformer graphParserTransformer;
     private final BitbakeListTasksParser bitbakeListTasksParser;
 
-    public BitbakeExtractor(final ExecutableManager executableManager, final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager,
+    public BitbakeExtractor(final ExecutableFinder executableFinder, final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager,
         final DetectFileFinder detectFileFinder, final GraphParserTransformer graphParserTransformer, final BitbakeListTasksParser bitbakeListTasksParser) {
-        this.executableManager = executableManager;
+        this.executableFinder = executableFinder;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
         this.directoryManager = directoryManager;
@@ -157,7 +157,7 @@ public class BitbakeExtractor {
     }
 
     private ExecutableOutput runBitbake(final File outputDirectory, final String foundBuildEnvScriptPath, final String bitbakeCommand) {
-        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, "", detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH, PropertyAuthority.None));
+        final String bashExecutablePath = executableFinder.getExecutablePathOrOverride(ExecutableType.BASH, true, "", detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH, PropertyAuthority.None));
 
         final List<String> arguments = new ArrayList<>();
         arguments.add("-c");

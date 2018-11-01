@@ -40,7 +40,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
@@ -49,17 +49,17 @@ public class NpmExecutableFinder {
     private final Logger logger = LoggerFactory.getLogger(NpmExecutableFinder.class);
 
     private final DirectoryManager directoryManager;
-    private final ExecutableManager executableManager;
+    private final ExecutableFinder executableFinder;
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
 
     private String foundNpm = null;
     private boolean hasLookedForNpm = false;
 
-    public NpmExecutableFinder(final DirectoryManager directoryManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
+    public NpmExecutableFinder(final DirectoryManager directoryManager, final ExecutableFinder executableFinder, final ExecutableRunner executableRunner,
         final DetectConfiguration detectConfiguration) {
         this.directoryManager = directoryManager;
-        this.executableManager = executableManager;
+        this.executableFinder = executableFinder;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
     }
@@ -77,7 +77,7 @@ public class NpmExecutableFinder {
     }
 
     String findNpm() {
-        final String npm = executableManager.getExecutablePathOrOverride(ExecutableType.NPM, true, directoryManager.getSourceDirectory(),
+        final String npm = executableFinder.getExecutablePathOrOverride(ExecutableType.NPM, true, directoryManager.getSourceDirectory(),
             detectConfiguration.getProperty(DetectProperty.DETECT_NPM_PATH, PropertyAuthority.None));
         if (validateNpm(null, npm)) {
             return npm;

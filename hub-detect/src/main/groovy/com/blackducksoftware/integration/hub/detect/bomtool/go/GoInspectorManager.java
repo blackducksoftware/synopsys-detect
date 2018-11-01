@@ -36,7 +36,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
@@ -45,17 +45,17 @@ public class GoInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(GoInspectorManager.class);
 
     private final DirectoryManager directoryManager;
-    private final ExecutableManager executableManager;
+    private final ExecutableFinder executableFinder;
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
 
     private boolean hasResolvedInspector;
     private String resolvedGoDep;
 
-    public GoInspectorManager(final DirectoryManager directoryManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
+    public GoInspectorManager(final DirectoryManager directoryManager, final ExecutableFinder executableFinder, final ExecutableRunner executableRunner,
         final DetectConfiguration detectConfiguration) {
         this.directoryManager = directoryManager;
-        this.executableManager = executableManager;
+        this.executableFinder = executableFinder;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
     }
@@ -79,11 +79,11 @@ public class GoInspectorManager {
             if (goDep.exists()) {
                 goDepPath = goDep.getAbsolutePath();
             } else {
-                goDepPath = executableManager.getExecutablePath(ExecutableType.GO_DEP, true, directoryManager.getSourceDirectory().getAbsolutePath());
+                goDepPath = executableFinder.getExecutablePath(ExecutableType.GO_DEP, true, directoryManager.getSourceDirectory().getAbsolutePath());
             }
         }
         if (StringUtils.isBlank(goDepPath)) {
-            final String goExecutable = executableManager.getExecutablePath(ExecutableType.GO, true, directoryManager.getSourceDirectory().getAbsolutePath());
+            final String goExecutable = executableFinder.getExecutablePath(ExecutableType.GO, true, directoryManager.getSourceDirectory().getAbsolutePath());
             goDepPath = installGoDep(goExecutable);
         }
         return goDepPath;
@@ -114,6 +114,6 @@ public class GoInspectorManager {
 
     private File getGoDepInstallLocation() {
         final File goOutputDirectory = directoryManager.getSharedDirectory("go");
-        return new File(goOutputDirectory, executableManager.getExecutableName(ExecutableType.GO_DEP));
+        return new File(goOutputDirectory, executableFinder.getExecutableName(ExecutableType.GO_DEP));
     }
 }

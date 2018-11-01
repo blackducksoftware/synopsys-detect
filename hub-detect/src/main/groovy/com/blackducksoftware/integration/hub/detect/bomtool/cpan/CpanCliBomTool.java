@@ -31,9 +31,9 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
@@ -44,17 +44,17 @@ public class CpanCliBomTool extends BomTool {
     public static final String MAKEFILE = "Makefile.PL";
 
     private final DetectFileFinder fileFinder;
-    private final StandardExecutableFinder standardExecutableFinder;
+    private final CacheableExecutableFinder cacheableExecutableFinder;
     private final CpanCliExtractor cpanCliExtractor;
 
     private File cpanExe;
     private File cpanmExe;
 
-    public CpanCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final CpanCliExtractor cpanCliExtractor) {
+    public CpanCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final CacheableExecutableFinder cacheableExecutableFinder, final CpanCliExtractor cpanCliExtractor) {
         super(environment, "Cpan Cli", BomToolGroupType.CPAN, BomToolType.CPAN_CLI);
         this.fileFinder = fileFinder;
         this.cpanCliExtractor = cpanCliExtractor;
-        this.standardExecutableFinder = standardExecutableFinder;
+        this.cacheableExecutableFinder = cacheableExecutableFinder;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class CpanCliBomTool extends BomTool {
 
     @Override
     public BomToolResult extractable() throws BomToolException {
-        final File cpan = standardExecutableFinder.getExecutable(StandardExecutableType.CPAN);
+        final File cpan = cacheableExecutableFinder.getExecutable(CacheableExecutableType.CPAN);
 
         if (cpan == null) {
             return new ExecutableNotFoundBomToolResult("cpan");
@@ -77,7 +77,7 @@ public class CpanCliBomTool extends BomTool {
             cpanExe = cpan;
         }
 
-        final File cpanm = standardExecutableFinder.getExecutable(StandardExecutableType.CPANM);
+        final File cpanm = cacheableExecutableFinder.getExecutable(CacheableExecutableType.CPANM);
 
         if (cpanm == null) {
             return new ExecutableNotFoundBomToolResult("cpanm");

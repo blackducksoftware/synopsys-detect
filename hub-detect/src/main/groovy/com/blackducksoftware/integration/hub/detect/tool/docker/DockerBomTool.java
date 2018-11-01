@@ -33,9 +33,9 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
@@ -46,7 +46,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Prope
 public class DockerBomTool extends BomTool {
     private final DirectoryManager directoryManager;
     private final DockerInspectorManager dockerInspectorManager;
-    private final StandardExecutableFinder standardExecutableFinder;
+    private final CacheableExecutableFinder cacheableExecutableFinder;
     private final DockerExtractor dockerExtractor;
     private final boolean dockerPathRequired;
     private final String suppliedDockerImage;
@@ -60,11 +60,11 @@ public class DockerBomTool extends BomTool {
     private DockerInspectorInfo dockerInspectorInfo;
 
     public DockerBomTool(final BomToolEnvironment environment, final DirectoryManager directoryManager, final DockerInspectorManager dockerInspectorManager,
-        final StandardExecutableFinder standardExecutableFinder, final boolean dockerPathRequired, final String suppliedDockerImage,
+        final CacheableExecutableFinder cacheableExecutableFinder, final boolean dockerPathRequired, final String suppliedDockerImage,
         final String suppliedDockerTar, final DockerExtractor dockerExtractor) {
         super(environment, "Docker", BomToolGroupType.DOCKER, BomToolType.DOCKER);
         this.directoryManager = directoryManager;
-        this.standardExecutableFinder = standardExecutableFinder;
+        this.cacheableExecutableFinder = cacheableExecutableFinder;
         this.dockerExtractor = dockerExtractor;
         this.dockerPathRequired = dockerPathRequired;
         this.dockerInspectorManager = dockerInspectorManager;
@@ -86,17 +86,17 @@ public class DockerBomTool extends BomTool {
 
     @Override
     public BomToolResult extractable() throws BomToolException {
-        javaExe = standardExecutableFinder.getExecutable(StandardExecutableType.JAVA);
+        javaExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.JAVA);
         if (javaExe == null) {
             return new ExecutableNotFoundBomToolResult("java");
         }
 
-        bashExe = standardExecutableFinder.getExecutable(StandardExecutableType.BASH);
+        bashExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.BASH);
         if (bashExe == null) {
             return new ExecutableNotFoundBomToolResult("bash");
         }
 
-        dockerExe = standardExecutableFinder.getExecutable(StandardExecutableType.DOCKER);
+        dockerExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.DOCKER);
         if (dockerExe == null) {
             if (dockerPathRequired) {
                 return new ExecutableNotFoundBomToolResult("docker");

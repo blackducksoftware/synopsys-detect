@@ -120,9 +120,9 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
@@ -151,7 +151,7 @@ public class BomToolBeanConfiguration {
     @Autowired
     public AirGapManager airGapManager;
     @Autowired
-    public ExecutableManager executableManager;
+    public ExecutableFinder executableFinder;
     @Autowired
     public ExternalIdFactory externalIdFactory;
     @Autowired
@@ -163,7 +163,7 @@ public class BomToolBeanConfiguration {
     @Autowired
     public ConnectionManager connectionManager;
     @Autowired
-    public StandardExecutableFinder standardExecutableFinder;
+    public CacheableExecutableFinder cacheableExecutableFinder;
 
     //BomToolFactory
     //This is the ONLY class that should be taken from the Configuration manually.
@@ -252,7 +252,7 @@ public class BomToolBeanConfiguration {
 
     @Bean
     public GoInspectorManager goInspectorManager() {
-        return new GoInspectorManager(directoryManager, executableManager, executableRunner, detectConfiguration);
+        return new GoInspectorManager(directoryManager, executableFinder, executableRunner, detectConfiguration);
     }
 
     @Bean
@@ -272,7 +272,7 @@ public class BomToolBeanConfiguration {
 
     @Bean
     public GradleExecutableFinder gradleExecutableFinder() {
-        return new GradleExecutableFinder(executableManager, detectConfiguration);
+        return new GradleExecutableFinder(executableFinder, detectConfiguration);
     }
 
     @Bean
@@ -307,7 +307,7 @@ public class BomToolBeanConfiguration {
 
     @Bean
     public MavenExecutableFinder mavenExecutableFinder() {
-        return new MavenExecutableFinder(executableManager, detectConfiguration);
+        return new MavenExecutableFinder(executableFinder, detectConfiguration);
     }
 
     @Bean
@@ -332,7 +332,7 @@ public class BomToolBeanConfiguration {
 
     @Bean
     public NpmExecutableFinder npmExecutableFinder() {
-        return new NpmExecutableFinder(directoryManager, executableManager, executableRunner, detectConfiguration);
+        return new NpmExecutableFinder(directoryManager, executableFinder, executableRunner, detectConfiguration);
     }
 
     @Bean
@@ -347,7 +347,7 @@ public class BomToolBeanConfiguration {
 
     @Bean
     public NugetInspectorManager nugetInspectorManager() {
-        return new NugetInspectorManager(directoryManager, executableManager, executableRunner, detectConfiguration, airGapManager);
+        return new NugetInspectorManager(directoryManager, executableFinder, executableRunner, detectConfiguration, airGapManager);
     }
 
     @Bean
@@ -397,7 +397,7 @@ public class BomToolBeanConfiguration {
 
     @Bean
     public PythonExecutableFinder pythonExecutableFinder() {
-        return new PythonExecutableFinder(executableManager, detectConfiguration);
+        return new PythonExecutableFinder(executableFinder, detectConfiguration);
     }
 
     @Bean
@@ -432,7 +432,7 @@ public class BomToolBeanConfiguration {
 
     @Bean
     public BitbakeExtractor bitbakeExtractor() {
-        return new BitbakeExtractor(executableManager, executableRunner, detectConfiguration, directoryManager, detectFileFinder, graphParserTransformer(), bitbakeListTasksParser());
+        return new BitbakeExtractor(executableFinder, executableRunner, detectConfiguration, directoryManager, detectFileFinder, graphParserTransformer(), bitbakeListTasksParser());
     }
 
     @Bean
@@ -465,13 +465,13 @@ public class BomToolBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public CondaCliBomTool condaBomTool(final BomToolEnvironment environment) {
-        return new CondaCliBomTool(environment, detectFileFinder, standardExecutableFinder, condaCliExtractor());
+        return new CondaCliBomTool(environment, detectFileFinder, cacheableExecutableFinder, condaCliExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public CpanCliBomTool cpanCliBomTool(final BomToolEnvironment environment) {
-        return new CpanCliBomTool(environment, detectFileFinder, standardExecutableFinder, cpanCliExtractor());
+        return new CpanCliBomTool(environment, detectFileFinder, cacheableExecutableFinder, cpanCliExtractor());
     }
 
     @Bean
@@ -483,13 +483,13 @@ public class BomToolBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GoCliBomTool goCliBomTool(final BomToolEnvironment environment) {
-        return new GoCliBomTool(environment, detectFileFinder, standardExecutableFinder, goInspectorManager(), goDepExtractor());
+        return new GoCliBomTool(environment, detectFileFinder, cacheableExecutableFinder, goInspectorManager(), goDepExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GoLockBomTool goLockBomTool(final BomToolEnvironment environment) {
-        return new GoLockBomTool(environment, detectFileFinder, standardExecutableFinder, goInspectorManager(), goDepExtractor());
+        return new GoLockBomTool(environment, detectFileFinder, cacheableExecutableFinder, goInspectorManager(), goDepExtractor());
     }
 
     @Bean
@@ -555,7 +555,7 @@ public class BomToolBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public PearCliBomTool pearCliBomTool(final BomToolEnvironment environment) {
-        return new PearCliBomTool(environment, detectFileFinder, standardExecutableFinder, pearCliExtractor());
+        return new PearCliBomTool(environment, detectFileFinder, cacheableExecutableFinder, pearCliExtractor());
     }
 
     @Bean
@@ -581,7 +581,7 @@ public class BomToolBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public RebarBomTool rebarBomTool(final BomToolEnvironment environment) {
-        return new RebarBomTool(environment, detectFileFinder, standardExecutableFinder, rebarExtractor());
+        return new RebarBomTool(environment, detectFileFinder, cacheableExecutableFinder, rebarExtractor());
     }
 
     @Bean
@@ -593,6 +593,6 @@ public class BomToolBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public YarnLockBomTool yarnLockBomTool(final BomToolEnvironment environment) {
-        return new YarnLockBomTool(environment, detectFileFinder, standardExecutableFinder, yarnLockExtractor());
+        return new YarnLockBomTool(environment, detectFileFinder, cacheableExecutableFinder, yarnLockExtractor());
     }
 }

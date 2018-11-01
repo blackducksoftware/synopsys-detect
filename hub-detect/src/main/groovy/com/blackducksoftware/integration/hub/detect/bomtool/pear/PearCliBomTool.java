@@ -31,9 +31,9 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
@@ -44,15 +44,15 @@ public class PearCliBomTool extends BomTool {
     public static final String PACKAGE_XML_FILENAME = "package.xml";
 
     private final DetectFileFinder fileFinder;
-    private final StandardExecutableFinder standardExecutableFinder;
+    private final CacheableExecutableFinder cacheableExecutableFinder;
     private final PearCliExtractor pearCliExtractor;
 
     private File pearExe;
 
-    public PearCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final PearCliExtractor pearCliExtractor) {
+    public PearCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final CacheableExecutableFinder cacheableExecutableFinder, final PearCliExtractor pearCliExtractor) {
         super(environment, "Pear Cli", BomToolGroupType.PEAR, BomToolType.PEAR_CLI);
         this.fileFinder = fileFinder;
-        this.standardExecutableFinder = standardExecutableFinder;
+        this.cacheableExecutableFinder = cacheableExecutableFinder;
         this.pearCliExtractor = pearCliExtractor;
     }
 
@@ -68,7 +68,7 @@ public class PearCliBomTool extends BomTool {
 
     @Override
     public BomToolResult extractable() throws BomToolException {
-        pearExe = standardExecutableFinder.getExecutable(StandardExecutableType.PEAR);
+        pearExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.PEAR);
 
         if (pearExe == null) {
             return new ExecutableNotFoundBomToolResult("pear");

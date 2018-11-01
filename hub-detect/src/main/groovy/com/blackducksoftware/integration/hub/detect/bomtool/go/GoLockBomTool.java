@@ -31,9 +31,9 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
@@ -46,17 +46,17 @@ public class GoLockBomTool extends BomTool {
 
     private final DetectFileFinder fileFinder;
     private final GoInspectorManager goInspectorManager;
-    private final StandardExecutableFinder standardExecutableFinder;
+    private final CacheableExecutableFinder cacheableExecutableFinder;
     private final GoDepExtractor goDepExtractor;
 
     private File goExe;
     private String goDepInspector;
 
-    public GoLockBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final GoInspectorManager goInspectorManager, final GoDepExtractor goDepExtractor) {
+    public GoLockBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final CacheableExecutableFinder cacheableExecutableFinder, final GoInspectorManager goInspectorManager, final GoDepExtractor goDepExtractor) {
         super(environment, "Go Lock", BomToolGroupType.GO_DEP, BomToolType.GO_LOCK);
         this.fileFinder = fileFinder;
         this.goInspectorManager = goInspectorManager;
-        this.standardExecutableFinder = standardExecutableFinder;
+        this.cacheableExecutableFinder = cacheableExecutableFinder;
         this.goDepExtractor = goDepExtractor;
     }
 
@@ -72,7 +72,7 @@ public class GoLockBomTool extends BomTool {
 
     @Override
     public BomToolResult extractable() throws BomToolException {
-        goExe = standardExecutableFinder.getExecutable(StandardExecutableType.GO);
+        goExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.GO);
         if (goExe == null) {
             return new ExecutableNotFoundBomToolResult("go");
         }

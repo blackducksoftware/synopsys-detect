@@ -29,14 +29,14 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 
 public class PythonExecutableFinder {
-    private final ExecutableManager executableManager;
+    private final ExecutableFinder executableFinder;
     private final DetectConfiguration detectConfiguration;
 
-    public PythonExecutableFinder(final ExecutableManager executableManager, final DetectConfiguration detectConfiguration) {
-        this.executableManager = executableManager;
+    public PythonExecutableFinder(final ExecutableFinder executableFinder, final DetectConfiguration detectConfiguration) {
+        this.executableFinder = executableFinder;
         this.detectConfiguration = detectConfiguration;
     }
 
@@ -69,7 +69,7 @@ public class PythonExecutableFinder {
                 executableType = python2ExecutableType;
             }
 
-            return executableManager.getExecutablePathOrOverride(executableType, true, environment.getDirectory(), overridePath);
+            return executableFinder.getExecutablePathOrOverride(executableType, true, environment.getDirectory(), overridePath);
         } catch (final Exception e) {
             throw new BomToolException(e);
         }

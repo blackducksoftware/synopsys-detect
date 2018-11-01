@@ -33,9 +33,9 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
@@ -46,17 +46,17 @@ public class YarnLockBomTool extends BomTool {
     private static final String YARN_LOCK_FILENAME = "yarn.lock";
 
     private final DetectFileFinder fileFinder;
-    private final StandardExecutableFinder standardExecutableFinder;
+    private final CacheableExecutableFinder cacheableExecutableFinder;
     private final YarnLockExtractor yarnLockExtractor;
 
     private File yarnlock;
     private String yarnExe = "";
 
-    public YarnLockBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final YarnLockExtractor yarnLockExtractor) {
+    public YarnLockBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final CacheableExecutableFinder cacheableExecutableFinder, final YarnLockExtractor yarnLockExtractor) {
         super(environment, "Yarn Lock", BomToolGroupType.YARN, BomToolType.YARN_LOCK);
         this.fileFinder = fileFinder;
         this.yarnLockExtractor = yarnLockExtractor;
-        this.standardExecutableFinder = standardExecutableFinder;
+        this.cacheableExecutableFinder = cacheableExecutableFinder;
     }
 
     @Override
@@ -71,7 +71,7 @@ public class YarnLockBomTool extends BomTool {
 
     @Override
     public BomToolResult extractable() throws BomToolException {
-        final File yarn = standardExecutableFinder.getExecutable(StandardExecutableType.YARN);
+        final File yarn = cacheableExecutableFinder.getExecutable(CacheableExecutableType.YARN);
         if (yarn != null) {
             yarnExe = yarn.toString();
         }

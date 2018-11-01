@@ -31,9 +31,9 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
@@ -44,16 +44,16 @@ public class RebarBomTool extends BomTool {
     public static final String REBAR_CONFIG = "rebar.config";
 
     private final DetectFileFinder fileFinder;
-    private final StandardExecutableFinder standardExecutableFinder;
+    private final CacheableExecutableFinder cacheableExecutableFinder;
     private final RebarExtractor rebarExtractor;
 
     private File rebarExe;
 
-    public RebarBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final RebarExtractor rebarExtractor) {
+    public RebarBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final CacheableExecutableFinder cacheableExecutableFinder, final RebarExtractor rebarExtractor) {
         super(environment, "Rebar Config", BomToolGroupType.HEX, BomToolType.REBAR);
         this.fileFinder = fileFinder;
         this.rebarExtractor = rebarExtractor;
-        this.standardExecutableFinder = standardExecutableFinder;
+        this.cacheableExecutableFinder = cacheableExecutableFinder;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class RebarBomTool extends BomTool {
 
     @Override
     public BomToolResult extractable() throws BomToolException {
-        rebarExe = standardExecutableFinder.getExecutable(StandardExecutableType.REBAR3);
+        rebarExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.REBAR3);
 
         if (rebarExe == null) {
             return new ExecutableNotFoundBomToolResult("rebar");

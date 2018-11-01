@@ -30,29 +30,29 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 
 public class GradleExecutableFinder {
-    private final ExecutableManager executableManager;
+    private final ExecutableFinder executableFinder;
     private final DetectConfiguration detectConfiguration;
 
     private String systemGradle = null;
     private boolean hasLookedForSystemGradle = false;
 
-    public GradleExecutableFinder(final ExecutableManager executableManager, final DetectConfiguration detectConfiguration) {
-        this.executableManager = executableManager;
+    public GradleExecutableFinder(final ExecutableFinder executableFinder, final DetectConfiguration detectConfiguration) {
+        this.executableFinder = executableFinder;
         this.detectConfiguration = detectConfiguration;
     }
 
     public String findGradle(final BomToolEnvironment environment) {
         String resolvedGradle = null;
         final String userProvidedGradlePath = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_PATH, PropertyAuthority.None);
-        final String gradlePath = executableManager.getExecutablePathOrOverride(ExecutableType.GRADLEW, false, environment.getDirectory(), userProvidedGradlePath);
+        final String gradlePath = executableFinder.getExecutablePathOrOverride(ExecutableType.GRADLEW, false, environment.getDirectory(), userProvidedGradlePath);
         if (StringUtils.isNotBlank(gradlePath)) {
             resolvedGradle = gradlePath;
         } else {
             if (!hasLookedForSystemGradle) {
-                systemGradle = executableManager.getExecutablePathOrOverride(ExecutableType.GRADLE, true, environment.getDirectory(), userProvidedGradlePath);
+                systemGradle = executableFinder.getExecutablePathOrOverride(ExecutableType.GRADLE, true, environment.getDirectory(), userProvidedGradlePath);
                 hasLookedForSystemGradle = true;
             }
             resolvedGradle = systemGradle;

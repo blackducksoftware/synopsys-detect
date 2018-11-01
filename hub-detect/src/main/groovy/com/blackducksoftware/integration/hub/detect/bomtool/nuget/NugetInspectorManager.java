@@ -41,7 +41,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -52,7 +52,7 @@ public class NugetInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorManager.class);
 
     private final DirectoryManager directoryManager;
-    private final ExecutableManager executableManager;
+    private final ExecutableFinder executableFinder;
     private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
     private final AirGapManager airGapManager;
@@ -61,10 +61,10 @@ public class NugetInspectorManager {
     private String resolvedNugetInspectorExecutable;
     private String resolvedInspectorVersion;
 
-    public NugetInspectorManager(final DirectoryManager directoryManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
+    public NugetInspectorManager(final DirectoryManager directoryManager, final ExecutableFinder executableFinder, final ExecutableRunner executableRunner,
         final DetectConfiguration detectConfiguration, final AirGapManager airGapManager) {
         this.directoryManager = directoryManager;
-        this.executableManager = executableManager;
+        this.executableFinder = executableFinder;
         this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
         this.airGapManager = airGapManager;
@@ -84,7 +84,7 @@ public class NugetInspectorManager {
     }
 
     public void install() throws DetectUserFriendlyException, ExecutableRunnerException, IOException {
-        final String nugetExecutable = executableManager
+        final String nugetExecutable = executableFinder
                                            .getExecutablePathOrOverride(ExecutableType.NUGET, true, directoryManager.getSourceDirectory(),
                                                detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_PATH, PropertyAuthority.None));
 
