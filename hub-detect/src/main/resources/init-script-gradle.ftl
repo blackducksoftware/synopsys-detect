@@ -15,6 +15,9 @@ initscript {
     println 'Running in online mode'
 </#if>
     repositories {
+        flatDir {
+            dirs '${gradleInspectorDirPath}'
+        }
 <#if airGapLibsPath??>
         flatDir {
             dirs '${airGapLibsPath}'
@@ -40,6 +43,12 @@ initscript {
     }
 
     dependencies {
+        new File('${gradleInspectorDirPath}').eachFile {
+            String fileName = it.name.find('.*\\.jar')?.replace('.jar', '')
+            if (fileName) {
+                classpath name: fileName
+            }
+        }
 <#if airGapLibsPath??>
         new File('${airGapLibsPath}').eachFile {
             String fileName = it.name.find('.*\\.jar')?.replace('.jar', '')

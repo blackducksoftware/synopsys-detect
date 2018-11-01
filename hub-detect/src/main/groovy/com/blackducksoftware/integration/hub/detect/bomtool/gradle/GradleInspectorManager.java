@@ -85,10 +85,11 @@ public class GradleInspectorManager {
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
             try {
+                final File inspectorDirectory = detectFileManager.getSharedDirectory(GRADLE_DIR_NAME);
                 String repoBaseUrl = deriveRepoBaseUrl();
                 final String resolvedVersion = resolveInspectorVersion(repoBaseUrl);
-                findOrDownloadJar(repoBaseUrl, resolvedVersion);
-                generatedGradleScriptPath = generateGradleScript(resolvedVersion);
+                findOrDownloadJar(inspectorDirectory, repoBaseUrl, resolvedVersion);
+                generatedGradleScriptPath = generateGradleScript(inspectorDirectory.getCanonicalPath(), resolvedVersion);
             } catch (final Exception e) {
                 throw new BomToolException(e);
             }
@@ -145,7 +146,7 @@ public class GradleInspectorManager {
         return mavenMetadataUrl;
     }
 
-    private String generateGradleScript(final String version) throws IOException, TemplateException {
+    private String generateGradleScript(String inspectorDirPath, final String version) throws IOException, TemplateException {
         final File generatedGradleScriptFile = detectFileManager.createSharedFile(GRADLE_DIR_NAME, GENERATED_GRADLE_SCRIPT_NAME);
         final Map<String, String> gradleScriptData = new HashMap<>();
         gradleScriptData.put("gradleInspectorVersion", version);
@@ -153,13 +154,13 @@ public class GradleInspectorManager {
         gradleScriptData.put("includedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_PROJECTS));
         gradleScriptData.put("excludedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS));
         gradleScriptData.put("includedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS));
-        addReposToGradleScriptData(gradleScriptData);
+        addReposToGradleScriptData(gradleScriptData, inspectorDirPath);
         populateGradleScriptWithData(generatedGradleScriptFile, gradleScriptData);
         logger.debug(String.format("Derived generatedGradleScriptFile path: %s", generatedGradleScriptFile.getCanonicalPath()));
         return generatedGradleScriptFile.getCanonicalPath();
     }
 
-    private void addReposToGradleScriptData(Map<String, String> gradleScriptData) {
+    private void addReposToGradleScriptData(Map<String, String> gradleScriptData, String inspectorDirPath) {
         try {
             final File gradleInspectorAirGapDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH));
             if (gradleInspectorAirGapDirectory.exists()) {
@@ -169,6 +170,7 @@ public class GradleInspectorManager {
         } catch (final Exception e) {
             logger.debug(String.format("Exception encountered when resolving air gap path for gradle, running in online mode instead: %s", e.getMessage()));
         }
+        gradleScriptData.put("gradleInspectorDirPath", inspectorDirPath);
         String jarRepoUrl = DEFAULT_GRADLE_INSPECTOR_REPO_URL;
         gradleScriptData.put("integrationRepositoryUrl", DEFAULT_GRADLE_INSPECTOR_REPO_URL);
         final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
@@ -184,10 +186,9 @@ public class GradleInspectorManager {
         }
     }
 
-    private File findOrDownloadJar(String repoBaseUrlWithTrailingSlash, String jarVersion) throws DetectUserFriendlyException {
+    private File findOrDownloadJar(File inspectorDirectory, String repoBaseUrlWithTrailingSlash, String jarVersion) throws DetectUserFriendlyException {
         logger.debug("Looking for / downloading gradle inspector jar file");
         final String jarFilename = getJarFilename(jarVersion);
-        final File inspectorDirectory = detectFileManager.getSharedDirectory(GRADLE_DIR_NAME);
         final File jarFile = new File(inspectorDirectory, jarFilename);
         if (jarFile.exists()) {
             logger.debug(String.format("Found previously-downloaded gradle inspector jar file %s", jarFile.getAbsolutePath()));
