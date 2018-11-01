@@ -23,6 +23,23 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
@@ -36,21 +53,10 @@ import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.request.Response;
 import com.synopsys.integration.util.ResourceUtil;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 public class GradleInspectorManager {
     private static final String DEFAULT_GRADLE_INSPECTOR_REPO_URL = "https://repo.blackducksoftware.com/artifactory/bds-integrations-release/";
@@ -73,7 +79,8 @@ public class GradleInspectorManager {
     private String generatedGradleScriptPath = null;
     private boolean hasResolvedInspector = false;
 
-    public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
+    public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility,
+        final MavenMetadataService mavenMetadataService) {
         this.detectFileManager = detectFileManager;
         this.configuration = configuration;
         this.detectConfiguration = detectConfiguration;

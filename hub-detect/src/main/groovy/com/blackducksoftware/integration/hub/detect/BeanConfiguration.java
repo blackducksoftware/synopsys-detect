@@ -23,10 +23,29 @@
  */
 package com.blackducksoftware.integration.hub.detect;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.ConfigurableEnvironment;
+
 import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeListTasksParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.GraphParserTransformer;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.*;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangLinuxPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CodeLocationAssembler;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependenciesListFileManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.DpkgPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.RpmPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaCliExtractor;
@@ -51,7 +70,11 @@ import com.blackducksoftware.integration.hub.detect.bomtool.hex.RebarExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenCliExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenCodeLocationPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.*;
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder;
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfileExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorInstaller;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager;
@@ -60,13 +83,22 @@ import com.blackducksoftware.integration.hub.detect.bomtool.packagist.ComposerLo
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearCliExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearDependencyFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.*;
+import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorTreeParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipenvExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipenvGraphParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.pip.PythonExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.GemlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCacheExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnListParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockParser;
-import com.blackducksoftware.integration.hub.detect.configuration.*;
+import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyMap;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
@@ -88,10 +120,18 @@ import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.*;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DetectRunManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticFileManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticLogManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.*;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.BdioUploader;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckBinaryScanner;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckSignatureScanner;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
@@ -116,18 +156,8 @@ import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.util.CleanupZipExpander;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
-import freemarker.template.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.ConfigurableEnvironment;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.util.ArrayList;
-import java.util.List;
+import freemarker.template.Configuration;
 
 @org.springframework.context.annotation.Configuration
 public class BeanConfiguration {
@@ -357,9 +387,9 @@ public class BeanConfiguration {
     @Bean
     public BomToolFactory bomToolFactory() throws ParserConfigurationException {
         return new BomToolFactory(detectConfiguration(), detectFileFinder(), standardExecutableFinder(), executableRunner(), bitbakeExtractor(), clangExtractor(), clangLinuxPackageManagers(), composerLockExtractor(), condaCliExtractor(),
-                cpanCliExtractor(), dockerExtractor(), dockerInspectorManager(), gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(),
-                mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(), npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(),
-                pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(), podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
+            cpanCliExtractor(), dockerExtractor(), dockerInspectorManager(), gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(),
+            mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(), npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(),
+            pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(), podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
     }
 
     @Bean

@@ -23,6 +23,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
@@ -35,15 +45,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.synopsys.integration.util.NameVersion;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 public class GradleInspectorExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -55,7 +56,7 @@ public class GradleInspectorExtractor {
     private final DetectConfiguration detectConfiguration;
 
     public GradleInspectorExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final DetectFileManager detectFileManager,
-            final GradleReportParser gradleReportParser, final DetectConfiguration detectConfiguration) {
+        final GradleReportParser gradleReportParser, final DetectConfiguration detectConfiguration) {
         this.executableRunner = executableRunner;
         this.detectFileFinder = detectFileFinder;
         this.detectFileManager = detectFileManager;
@@ -91,10 +92,10 @@ public class GradleInspectorExtractor {
                 String projectVersion = null;
                 if (codeLocationFiles != null) {
                     codeLocationFiles.stream()
-                            .map(codeLocationFile -> gradleReportParser.parseDependencies(bomToolType, codeLocationFile))
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
-                            .forEach(codeLocations::add);
+                        .map(codeLocationFile -> gradleReportParser.parseDependencies(bomToolType, codeLocationFile))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .forEach(codeLocations::add);
 
                     if (rootProjectMetadataFile != null) {
                         final Optional<NameVersion> projectNameVersion = gradleReportParser.parseRootProjectNameVersion(rootProjectMetadataFile);
