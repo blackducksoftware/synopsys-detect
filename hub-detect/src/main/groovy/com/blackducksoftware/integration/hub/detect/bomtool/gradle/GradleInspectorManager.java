@@ -88,14 +88,30 @@ public class GradleInspectorManager {
                 final File inspectorDirectory = detectFileManager.getSharedDirectory(GRADLE_DIR_NAME);
                 String repoBaseUrl = deriveRepoBaseUrl();
                 final String resolvedVersion = resolveInspectorVersion(repoBaseUrl);
-                findOrDownloadJar(inspectorDirectory, repoBaseUrl, resolvedVersion);
-                generatedGradleScriptPath = generateGradleScript(inspectorDirectory.getCanonicalPath(), resolvedVersion);
+                String gradleInspectorAirGapDirectoryPath = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH);
+                File gradleInspectorAirGapDirectory = deriveGradleAirGapDir(gradleInspectorAirGapDirectoryPath);
+                if (gradleInspectorAirGapDirectory == null) {
+                    findOrDownloadJar(inspectorDirectory, repoBaseUrl, resolvedVersion);
+                }
+                generatedGradleScriptPath = generateGradleScript(inspectorDirectory.getCanonicalPath(), gradleInspectorAirGapDirectory, resolvedVersion);
             } catch (final Exception e) {
                 throw new BomToolException(e);
             }
         }
         logger.debug(String.format("Derived generated gradle script path: %s", generatedGradleScriptPath));
         return generatedGradleScriptPath;
+    }
+
+    private File deriveGradleAirGapDir(String gradleInspectorAirGapDirectoryPath) {
+        File gradleInspectorAirGapDirectory = null;
+        if (StringUtils.isNotBlank(gradleInspectorAirGapDirectoryPath)) {
+            gradleInspectorAirGapDirectory = new File(gradleInspectorAirGapDirectoryPath);
+            if (!gradleInspectorAirGapDirectory.exists()) {
+                gradleInspectorAirGapDirectory = null;
+            }
+        }
+        logger.debug(String.format("gradleInspectorAirGapDirectory: %s", gradleInspectorAirGapDirectory));
+        return gradleInspectorAirGapDirectory;
     }
 
     private String resolveInspectorVersion(String repoBaseUrl) {
@@ -146,7 +162,7 @@ public class GradleInspectorManager {
         return mavenMetadataUrl;
     }
 
-    private String generateGradleScript(String inspectorDirPath, final String version) throws IOException, TemplateException {
+    private String generateGradleScript(String inspectorDirPath, File gradleInspectorAirGapDirectory, final String version) throws IOException, TemplateException {
         final File generatedGradleScriptFile = detectFileManager.createSharedFile(GRADLE_DIR_NAME, GENERATED_GRADLE_SCRIPT_NAME);
         final Map<String, String> gradleScriptData = new HashMap<>();
         gradleScriptData.put("gradleInspectorVersion", version);
@@ -154,23 +170,24 @@ public class GradleInspectorManager {
         gradleScriptData.put("includedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_PROJECTS));
         gradleScriptData.put("excludedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS));
         gradleScriptData.put("includedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS));
-        addReposToGradleScriptData(gradleScriptData, inspectorDirPath);
+        addReposToGradleScriptData(gradleInspectorAirGapDirectory, gradleScriptData, inspectorDirPath);
         populateGradleScriptWithData(generatedGradleScriptFile, gradleScriptData);
         logger.debug(String.format("Derived generatedGradleScriptFile path: %s", generatedGradleScriptFile.getCanonicalPath()));
         return generatedGradleScriptFile.getCanonicalPath();
     }
 
-    private void addReposToGradleScriptData(Map<String, String> gradleScriptData, String inspectorDirPath) {
+    private void addReposToGradleScriptData(File gradleInspectorAirGapDirectory, Map<String, String> gradleScriptData, String inspectorDirPath) {
         try {
-            final File gradleInspectorAirGapDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH));
-            if (gradleInspectorAirGapDirectory.exists()) {
+            if (gradleInspectorAirGapDirectory != null) {
                 gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(gradleInspectorAirGapDirectory.getCanonicalPath()));
                 return;
+            } else {
+                gradleScriptData.put("gradleInspectorDirPath", inspectorDirPath);
             }
         } catch (final Exception e) {
             logger.debug(String.format("Exception encountered when resolving air gap path for gradle, running in online mode instead: %s", e.getMessage()));
         }
-        gradleScriptData.put("gradleInspectorDirPath", inspectorDirPath);
+        // TODO: refactor? Split?
         String jarRepoUrl = DEFAULT_GRADLE_INSPECTOR_REPO_URL;
         gradleScriptData.put("integrationRepositoryUrl", DEFAULT_GRADLE_INSPECTOR_REPO_URL);
         final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
