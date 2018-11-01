@@ -27,6 +27,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
@@ -36,6 +39,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableMa
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 
 public class StandardExecutableFinder {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private DirectoryManager directoryManager;
 
     public enum StandardExecutableType {
@@ -76,6 +80,7 @@ public class StandardExecutableFinder {
         if (exe != null) {
             exeFile = new File(exe);
         }
+        logger.info("Resolved executable " + executableType.toString() + " with file: " + exeFile.getAbsolutePath());
         alreadyFound.put(executableType, exeFile);
         return exeFile;
     }

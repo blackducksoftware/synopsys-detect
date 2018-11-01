@@ -57,8 +57,10 @@ public class ExecutableManager {
     public String getExecutablePath(final ExecutableType executableType, final boolean searchSystemPath, final String path) {
         final File executable = getExecutable(executableType, searchSystemPath, path);
         if (executable != null) {
+            logger.info("Resolved executable " + executableType.toString() + " with file: " + executable.getAbsolutePath());
             return executable.getAbsolutePath();
         } else {
+            logger.warn("Unable to resolve executable " + executableType.toString());
             return null;
         }
     }
@@ -69,6 +71,7 @@ public class ExecutableManager {
 
     public String getExecutablePathOrOverride(final ExecutableType executableType, final boolean searchSystemPath, final String path, final String override) {
         if (StringUtils.isNotBlank(override)) {
+            logger.info("Resolved executable " + executableType.toString() + " with override: " + override);
             return override;
         } else {
             return getExecutablePath(executableType, searchSystemPath, path);
