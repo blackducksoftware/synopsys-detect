@@ -23,21 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.docker;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
@@ -52,6 +37,20 @@ import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.request.Response;
 import com.synopsys.integration.util.ResourceUtil;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public class DockerInspectorManager {
     private static final String IMAGE_INSPECTOR_FAMILY = "blackduck-imageinspector-ws";
@@ -85,8 +84,8 @@ public class DockerInspectorManager {
     public DockerInspectorInfo getDockerInspector() throws BomToolException {
         try {
             if (!hasResolvedInspector) {
-                resolvedInfo = install();
                 hasResolvedInspector = true;
+                resolvedInfo = install();
             }
             return resolvedInfo;
         } catch (final Exception e) {
@@ -182,7 +181,7 @@ public class DockerInspectorManager {
     private File findOrDownloadJar() throws DetectUserFriendlyException {
         logger.debug("Looking for / downloading docker inspector jar file");
         final String resolvedVersion = resolveInspectorVersion();
-        final String jarFilename = this.getJarFilename(resolvedVersion);
+        final String jarFilename = getJarFilename(resolvedVersion);
         final File inspectorDirectory = detectFileManager.getSharedDirectory(dockerSharedDirectoryName);
         final File jarFile = new File(inspectorDirectory, jarFilename);
         if (jarFile.exists()) {

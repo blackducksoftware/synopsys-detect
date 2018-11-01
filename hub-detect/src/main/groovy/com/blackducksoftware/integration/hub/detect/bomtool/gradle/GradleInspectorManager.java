@@ -24,15 +24,22 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationUtility;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
+import com.synopsys.integration.rest.request.Request;
+import com.synopsys.integration.rest.request.Response;
+import com.synopsys.integration.util.ResourceUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
@@ -40,10 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -51,7 +55,9 @@ import java.util.Optional;
 public class GradleInspectorManager {
     private static final String DEFAULT_GRADLE_INSPECTOR_REPO_URL = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/";
     private static final String VERSION_METADATA_XML_FILENAME = "maven-metadata.xml";
-    private static final String RELATIVE_PATH_TO_VERSION_METADATA = "com/blackducksoftware/integration/integration-gradle-inspector/" + VERSION_METADATA_XML_FILENAME;
+    private static final String GRADLE_INSPECTOR_PACKAGE_PATH = "com/blackducksoftware/integration/integration-gradle-inspector/";
+    private static final String RELATIVE_PATH_TO_VERSION_METADATA = GRADLE_INSPECTOR_PACKAGE_PATH + VERSION_METADATA_XML_FILENAME;
+    private static final String JAR_URL_PATTERN = "%s" + GRADLE_INSPECTOR_PACKAGE_PATH + "%s/%s";
 
     private static final String GRADLE_DIR_NAME = "gradle";
     private static final String GRADLE_SCRIPT_TEMPLATE_FILENAME = "init-script-gradle.ftl";
@@ -61,32 +67,37 @@ public class GradleInspectorManager {
     private final DetectFileManager detectFileManager;
     private final Configuration configuration;
     private final DetectConfiguration detectConfiguration;
+    private final DetectConfigurationUtility detectConfigurationUtility;
     private final MavenMetadataService mavenMetadataService;
 
     private String generatedGradleScriptPath = null;
     private boolean hasResolvedInspector = false;
 
-    public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DetectConfiguration detectConfiguration, final MavenMetadataService mavenMetadataService) {
+    public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
         this.detectFileManager = detectFileManager;
         this.configuration = configuration;
         this.detectConfiguration = detectConfiguration;
+        this.detectConfigurationUtility = detectConfigurationUtility;
         this.mavenMetadataService = mavenMetadataService;
     }
 
     public String getGradleInspector() throws BomToolException {
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
-            final String resolvedVersion = resolveInspectorVersion();
             try {
+                String repoBaseUrl = deriveRepoBaseUrl();
+                final String resolvedVersion = resolveInspectorVersion(repoBaseUrl);
+                findOrDownloadJar(repoBaseUrl, resolvedVersion);
                 generatedGradleScriptPath = generateGradleScript(resolvedVersion);
             } catch (final Exception e) {
                 throw new BomToolException(e);
             }
         }
+        logger.debug(String.format("Derived generated gradle script path: %s", generatedGradleScriptPath));
         return generatedGradleScriptPath;
     }
 
-    private String resolveInspectorVersion() {
+    private String resolveInspectorVersion(String repoBaseUrl) {
         final String versionRange = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION);
         String gradleInspectorVersion = null;
         try {
@@ -95,7 +106,7 @@ public class GradleInspectorManager {
             if (airGapMavenMetadataFile.exists()) {
                 xmlDocument = mavenMetadataService.fetchXmlDocumentFromFile(airGapMavenMetadataFile);
             } else {
-                final String mavenMetadataUrl = deriveMavenMetadataUrl();
+                final String mavenMetadataUrl = deriveMavenMetadataUrl(repoBaseUrl);
                 xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
             }
             final Optional<String> versionFromXML = mavenMetadataService.parseVersionFromXML(xmlDocument, versionRange);
@@ -108,21 +119,29 @@ public class GradleInspectorManager {
         } catch (final IntegrationException | SAXException | IOException | DetectUserFriendlyException e) {
             logger.warn(String.format("Exception encountered when resolving latest version of Gradle Inspector, skipping resolution: %s", e.getMessage()));
         }
+        logger.debug(String.format("Derived gradle inspector version: %s", gradleInspectorVersion));
         return gradleInspectorVersion;
     }
 
-    private String deriveMavenMetadataUrl() {
-        final String mavenMetadataUrl;
+    private String deriveRepoBaseUrl() {
+        final String repoBaseUrl;
         final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
         if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
             if (configuredGradleInspectorRepositoryUrl.endsWith("/")) {
-                mavenMetadataUrl = configuredGradleInspectorRepositoryUrl + RELATIVE_PATH_TO_VERSION_METADATA;
+                repoBaseUrl = configuredGradleInspectorRepositoryUrl;
             } else {
-                mavenMetadataUrl = configuredGradleInspectorRepositoryUrl + "/" + RELATIVE_PATH_TO_VERSION_METADATA;
+                repoBaseUrl = configuredGradleInspectorRepositoryUrl + "/";
             }
         } else {
-            mavenMetadataUrl = DEFAULT_GRADLE_INSPECTOR_REPO_URL + RELATIVE_PATH_TO_VERSION_METADATA;
+            repoBaseUrl = DEFAULT_GRADLE_INSPECTOR_REPO_URL;
         }
+        logger.debug(String.format("Derived gradle inspector jar repo base URL: %s", repoBaseUrl));
+        return repoBaseUrl;
+    }
+
+    private String deriveMavenMetadataUrl(String repoBaseUrl) {
+        String mavenMetadataUrl = repoBaseUrl + RELATIVE_PATH_TO_VERSION_METADATA;
+        logger.debug(String.format("Derived mavenMetadataUrl: %s", mavenMetadataUrl));
         return mavenMetadataUrl;
     }
 
@@ -136,6 +155,7 @@ public class GradleInspectorManager {
         gradleScriptData.put("includedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS));
         addReposToGradleScriptData(gradleScriptData);
         populateGradleScriptWithData(generatedGradleScriptFile, gradleScriptData);
+        logger.debug(String.format("Derived generatedGradleScriptFile path: %s", generatedGradleScriptFile.getCanonicalPath()));
         return generatedGradleScriptFile.getCanonicalPath();
     }
 
@@ -149,6 +169,7 @@ public class GradleInspectorManager {
         } catch (final Exception e) {
             logger.debug(String.format("Exception encountered when resolving air gap path for gradle, running in online mode instead: %s", e.getMessage()));
         }
+        String jarRepoUrl = DEFAULT_GRADLE_INSPECTOR_REPO_URL;
         gradleScriptData.put("integrationRepositoryUrl", DEFAULT_GRADLE_INSPECTOR_REPO_URL);
         final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
         if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
@@ -161,5 +182,43 @@ public class GradleInspectorManager {
         try (final Writer fileWriter = new FileWriter(generatedGradleScriptFile)) {
             gradleScriptTemplate.process(gradleScriptData, fileWriter);
         }
+    }
+
+    private File findOrDownloadJar(String repoBaseUrlWithTrailingSlash, String jarVersion) throws DetectUserFriendlyException {
+        logger.debug("Looking for / downloading gradle inspector jar file");
+        final String jarFilename = getJarFilename(jarVersion);
+        final File inspectorDirectory = detectFileManager.getSharedDirectory(GRADLE_DIR_NAME);
+        final File jarFile = new File(inspectorDirectory, jarFilename);
+        if (jarFile.exists()) {
+            logger.debug(String.format("Found previously-downloaded gradle inspector jar file %s", jarFile.getAbsolutePath()));
+        } else {
+            downloadJar(repoBaseUrlWithTrailingSlash, jarVersion, jarFile);
+        }
+        logger.debug(String.format("Found or downloaded jar: %s", jarFile.getAbsolutePath()));
+        return jarFile;
+    }
+
+    private void downloadJar(String repoBaseUrlWithTrailingSlash, final String jarVersion, final File jarFile) throws DetectUserFriendlyException {
+        final String gradleInspectorJarUrl = String.format(JAR_URL_PATTERN, repoBaseUrlWithTrailingSlash, jarVersion, jarFile.getName());
+        logger.debug(String.format("Downloading gradle inspector jar file from %s to %s", gradleInspectorJarUrl, jarFile.getAbsolutePath()));
+        final Request request = new Request.Builder().uri(gradleInspectorJarUrl).build();
+        Response response = null;
+        try (final UnauthenticatedRestConnection restConnection = detectConfigurationUtility.createUnauthenticatedRestConnection(gradleInspectorJarUrl)) {
+            response = restConnection.executeRequest(request);
+            final InputStream jarBytesInputStream = response.getContent();
+            jarFile.delete();
+            FileUtils.copyInputStreamToFile(jarBytesInputStream, jarFile);
+        } catch (IntegrationException | IOException e) {
+            throw new DetectUserFriendlyException(String.format("There was a problem retrieving the gradle inspector shell script from %s: %s", gradleInspectorJarUrl, e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+        } finally {
+            ResourceUtil.closeQuietly(response);
+        }
+        logger.debug(String.format("Downloaded gradle inspector jar: %s", jarFile.getAbsolutePath()));
+    }
+
+    private String getJarFilename(final String version) {
+        final String jarFilename = String.format("integration-gradle-inspector-%s.jar", version);
+        logger.debug(String.format("Derived jar filename: %s", jarFilename));
+        return jarFilename;
     }
 }
