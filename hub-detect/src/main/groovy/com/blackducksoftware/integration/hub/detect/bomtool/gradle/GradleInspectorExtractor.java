@@ -56,7 +56,7 @@ public class GradleInspectorExtractor {
     private final DetectConfiguration detectConfiguration;
 
     public GradleInspectorExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final DetectFileManager detectFileManager,
-            final GradleReportParser gradleReportParser, final DetectConfiguration detectConfiguration) {
+        final GradleReportParser gradleReportParser, final DetectConfiguration detectConfiguration) {
         this.executableRunner = executableRunner;
         this.detectFileFinder = detectFileFinder;
         this.detectFileManager = detectFileManager;
@@ -80,7 +80,6 @@ public class GradleInspectorExtractor {
             arguments.add(String.format("-DGRADLEEXTRACTIONDIR=%s", outputDirectory.getCanonicalPath()));
             arguments.add("--info");
 
-            // logger.info("using " + gradleInspectorManager.getInitScriptPath() + " as the path for the gradle init script");
             final Executable executable = new Executable(directory, gradleExe, arguments);
             final ExecutableOutput output = executableRunner.execute(executable);
 
@@ -93,10 +92,10 @@ public class GradleInspectorExtractor {
                 String projectVersion = null;
                 if (codeLocationFiles != null) {
                     codeLocationFiles.stream()
-                            .map(codeLocationFile -> gradleReportParser.parseDependencies(bomToolType, codeLocationFile))
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
-                            .forEach(codeLocations::add);
+                        .map(codeLocationFile -> gradleReportParser.parseDependencies(bomToolType, codeLocationFile))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .forEach(codeLocations::add);
 
                     if (rootProjectMetadataFile != null) {
                         final Optional<NameVersion> projectNameVersion = gradleReportParser.parseRootProjectNameVersion(rootProjectMetadataFile);

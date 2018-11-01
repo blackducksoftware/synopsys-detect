@@ -55,7 +55,7 @@ import com.synopsys.integration.util.ResourceUtil;
 
 public class DockerInspectorManager {
     private static final String IMAGE_INSPECTOR_FAMILY = "blackduck-imageinspector-ws";
-    private static final String ARTIFACTORY_URL_BASE = "https://test-repo.blackducksoftware.com:443/artifactory/bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector/";
+    private static final String ARTIFACTORY_URL_BASE = "https://repo.blackducksoftware.com/artifactory/bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector/";
     private static final String ARTIFACTORY_URL_METADATA = ARTIFACTORY_URL_BASE + "maven-metadata.xml";
     private static final String ARTIFACTORY_URL_JAR_PATTERN = ARTIFACTORY_URL_BASE + "%s/%s";
     private static final List<String> inspectorNames = Arrays.asList("ubuntu", "alpine", "centos");
@@ -74,7 +74,7 @@ public class DockerInspectorManager {
     private boolean hasResolvedInspector;
 
     public DockerInspectorManager(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder,
-            final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
+        final DetectConfiguration detectConfiguration, final DetectConfigurationUtility detectConfigurationUtility, final MavenMetadataService mavenMetadataService) {
         this.detectFileManager = detectFileManager;
         this.detectFileFinder = detectFileFinder;
         this.detectConfiguration = detectConfiguration;
@@ -85,8 +85,8 @@ public class DockerInspectorManager {
     public DockerInspectorInfo getDockerInspector() throws BomToolException {
         try {
             if (!hasResolvedInspector) {
-                resolvedInfo = install();
                 hasResolvedInspector = true;
+                resolvedInfo = install();
             }
             return resolvedInfo;
         } catch (final Exception e) {
@@ -182,7 +182,7 @@ public class DockerInspectorManager {
     private File findOrDownloadJar() throws DetectUserFriendlyException {
         logger.debug("Looking for / downloading docker inspector jar file");
         final String resolvedVersion = resolveInspectorVersion();
-        final String jarFilename = this.getJarFilename(resolvedVersion);
+        final String jarFilename = getJarFilename(resolvedVersion);
         final File inspectorDirectory = detectFileManager.getSharedDirectory(dockerSharedDirectoryName);
         final File jarFile = new File(inspectorDirectory, jarFilename);
         if (jarFile.exists()) {

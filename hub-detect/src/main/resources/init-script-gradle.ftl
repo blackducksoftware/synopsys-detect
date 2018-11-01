@@ -15,6 +15,11 @@ initscript {
     println 'Running in online mode'
 </#if>
     repositories {
+<#if gradleInspectorDirPath??>
+        flatDir {
+            dirs '${gradleInspectorDirPath}'
+        }
+</#if>
 <#if airGapLibsPath??>
         flatDir {
             dirs '${airGapLibsPath}'
@@ -22,16 +27,32 @@ initscript {
 <#elseif customRepositoryUrl??>
         mavenLocal()
         maven {
+            name 'SynopsysIntegrationRepository'
+            url '${integrationRepositoryUrl}'
+        }
+        maven {
             name 'UserDefinedRepository'
             url '${customRepositoryUrl}'
         }
 <#else>
         mavenLocal()
+        maven {
+            name 'SynopsysIntegrationRepository'
+            url '${integrationRepositoryUrl}'
+        }
         mavenCentral()
 </#if>
     }
 
     dependencies {
+<#if gradleInspectorDirPath??>
+        new File('${gradleInspectorDirPath}').eachFile {
+            String fileName = it.name.find('.*\\.jar')?.replace('.jar', '')
+            if (fileName) {
+                classpath name: fileName
+            }
+        }
+</#if>
 <#if airGapLibsPath??>
         new File('${airGapLibsPath}').eachFile {
             String fileName = it.name.find('.*\\.jar')?.replace('.jar', '')
