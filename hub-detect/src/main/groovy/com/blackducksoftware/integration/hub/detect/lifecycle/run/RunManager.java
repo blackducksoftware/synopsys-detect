@@ -60,6 +60,7 @@ public class RunManager {
     }
 
     public void run() throws DetectUserFriendlyException, InterruptedException, IntegrationException {
+        //TODO: Better way for run manager to get dependencies so he can be tested. (And better ways of creating his objects)
         PhoneHomeManager phoneHomeManager = detectContext.getBean(PhoneHomeManager.class);
         DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
         DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
@@ -86,6 +87,7 @@ public class RunManager {
             runResult.addToolNameVersionIfPresent(DetectTool.DOCKER, dockerToolResult.dockerProjectNameVersion);
             runResult.addDetectCodeLocations(dockerToolResult.dockerCodeLocations);
             runResult.addDockerFile(dockerToolResult.dockerTar);
+            logger.info("Docker tool has finished.");
         }
 
         if (runOptions.isBomToolsEnabled()) {
@@ -97,6 +99,7 @@ public class RunManager {
             DetectorToolResult detectorToolResult = detectorTool.performBomTools(searchOptions, projectBomTool);
             runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
             runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);
+            logger.info("Detector tool has finished.");
         }
 
         logger.info("Completed code location tools.");
@@ -124,6 +127,8 @@ public class RunManager {
             }
         }
 
+        logger.info("Completed project and version actions.");
+
         logger.info("Creating BDIO files.");
         BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new IntegrationEscapeUtil(), codeLocationNameManager, detectConfiguration, bdioCodeLocationCreator, directoryManager);
         BdioResult bdioResult = bdioManager.createBdioFiles(runOptions.getAggregateName(), projectNameVersion, runResult.getDetectCodeLocations());
@@ -147,24 +152,30 @@ public class RunManager {
             BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
             BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
             blackDuckSignatureScannerTool.runScanTool(projectNameVersion, runResult.getDockerTar());
+            logger.info("Signature scanner tool has finished.");
         }
 
         if (runOptions.isBinScanEnabled() && hubServiceManager.isPresent()) {
             logger.info("Will run the binary scanner tool.");
             BlackDuckBinaryScanner blackDuckBinaryScanner = new BlackDuckBinaryScanner(codeLocationNameManager, detectConfiguration, hubServiceManager.get());
             blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
+            logger.info("Binary scanner tool has finished.");
         }
 
         if (runOptions.isSwipEnabled()) {
             logger.info("Will run the swip tool.");
             SwipCliManager swipCliManager = new SwipCliManager(directoryManager, new ExecutableRunner(), connectionManager);
             swipCliManager.runSwip(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
+            logger.info("Swip tool has finished.");
         }
 
         if (runOptions.isOnline() && hubServiceManager.isPresent() && projectView.isPresent()) {
-            logger.info("Will perform hub actions.");
+            logger.info("Will perform Black Duck actions.");
             HubManager hubManager = new HubManager(codeLocationNameManager, detectConfiguration, hubServiceManager.get(), new PolicyChecker(detectConfiguration));
             hubManager.performPostHubActions(projectNameVersion, projectView.get());
+            logger.info("Black Duck actions have finished.");
         }
+
+        logger.info("All tools have finished.");
     }
 }

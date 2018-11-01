@@ -26,17 +26,19 @@ public class DockerTool {
     }
 
     public DockerToolResult run() throws BomToolException {
+        logger.info("Preparing to run Docker.");
         DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
 
         BomToolEnvironment bomToolEnvironment = new BomToolEnvironment(directoryManager.getSourceDirectory(), Collections.emptySet(), 0, null, false);
         DockerBomTool dockerBomTool = detectContext.getBean(DockerBomTool.class, bomToolEnvironment);
 
-        logger.info("Will run the docker tool.");
-
+        logger.info("Checking it applies.");
         BomToolResult applicableResult = dockerBomTool.applicable();
         if (applicableResult.getPassed()) {
+            logger.info("Checking it is extractable.");
             BomToolResult extractableResult = dockerBomTool.extractable();
             if (extractableResult.getPassed()) {
+                logger.info("Performing the extraction.");
                 ExtractionId extractionId = new ExtractionId(BomToolGroupType.DOCKER, "docker");
                 Extraction extractResult = dockerBomTool.extract(extractionId);
 
