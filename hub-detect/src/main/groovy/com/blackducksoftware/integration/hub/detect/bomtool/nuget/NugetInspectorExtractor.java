@@ -73,7 +73,6 @@ public class NugetInspectorExtractor {
 
     public Extraction extract(final BomToolType bomToolType, final File directory, String inspectorExe, final ExtractionId extractionId) {
         try {
-            inspectorExe = null;
             final File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
 
             final List<String> options = new ArrayList<>(Arrays.asList(
