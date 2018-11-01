@@ -13,11 +13,8 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.synopsys.integration.blackduck.api.generated.component.ProjectRequest;
-import com.synopsys.integration.blackduck.api.generated.component.ProjectVersionRequest;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
-import com.synopsys.integration.blackduck.exception.DoesNotExistException;
 import com.synopsys.integration.blackduck.service.HubService;
 import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.model.ProjectRequestBuilder;
@@ -39,49 +36,10 @@ public class DetectProjectService {
     public Optional<ProjectVersionView> createOrUpdateHubProject(NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         final ProjectService projectService = hubServiceManager.createProjectService();
         final HubService hubService = hubServiceManager.createHubService();
-        final ProjectVersionView projectVersionView = ensureProjectVersionExists(projectNameVersion, projectService, hubService);
-        return Optional.ofNullable(projectVersionView);
-    }
-
-    private ProjectVersionView getProjectVersionAndUpdateOrCreateIfNeeded(final ProjectRequest projectRequest, final ProjectService projectService, final HubService hubService, final boolean forceUpdate) throws IntegrationException {
-        ProjectView project = null;
-        ProjectVersionView projectVersion = null;
-        boolean shouldUpdateProject = true;
-        try {
-            logger.debug("Checking for project.");
-            project = projectService.getProjectByName(projectRequest.name);
-        } catch (final DoesNotExistException e) {
-            logger.debug("Creating project.");
-            final String projectURL = projectService.createHubProject(projectRequest);
-            project = hubService.getResponse(projectURL, ProjectView.class);
-            shouldUpdateProject = false;
-        }
-
-        if (forceUpdate && shouldUpdateProject) {
-            logger.debug("Updating project.");
-            final ProjectVersionRequest cachedRequest = projectRequest.versionRequest;
-            projectRequest.versionRequest = null;
-            projectService.updateProjectAndVersion(project, projectRequest);
-            projectRequest.versionRequest = cachedRequest;
-        }
-
-        boolean shouldUpdateVersion = true;
-        try {
-            logger.debug("Checking for version.");
-            projectVersion = projectService.getProjectVersion(project, projectRequest.versionRequest.versionName);
-        } catch (final DoesNotExistException e) {
-            logger.debug("Creating version.");
-            final String versionURL = projectService.createHubVersion(project, projectRequest.versionRequest);
-            projectVersion = hubService.getResponse(versionURL, ProjectVersionView.class);
-            shouldUpdateVersion = false;
-        }
-
-        if (forceUpdate && shouldUpdateVersion) {
-            logger.debug("Updating version.");
-            projectService.updateProjectAndVersion(project, projectRequest);
-        }
-
-        return projectVersion;
+        final ProjectRequest projectRequest = createProjectRequest(projectNameVersion, projectService, hubService);
+        final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
+        ProjectVersionWrapper projectVersionViewWrapper = projectService.syncProjectAndVersion(projectRequest, forceUpdate);
+        return Optional.ofNullable(projectVersionViewWrapper.getProjectVersionView());
     }
 
     public ProjectRequest createProjectRequest(final NameVersion projectNameVersion, final ProjectService projectService, final HubService hubService) throws DetectUserFriendlyException {
@@ -105,14 +63,6 @@ public class DetectProjectService {
         }
 
         return projectRequestBuilder.build();
-    }
-
-    public ProjectVersionView ensureProjectVersionExists(NameVersion projectNameVersion, final ProjectService projectService, final HubService hubService) throws IntegrationException, DetectUserFriendlyException {
-        final ProjectRequest projectRequest = createProjectRequest(projectNameVersion, projectService, hubService);
-
-        final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
-
-        return getProjectVersionAndUpdateOrCreateIfNeeded(projectRequest, projectService, hubService, forceUpdate);
     }
 
     private List<ProjectCloneCategoriesType> convertClonePropertyToEnum(final String[] cloneCategories) {
