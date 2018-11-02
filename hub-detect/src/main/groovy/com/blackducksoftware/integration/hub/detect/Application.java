@@ -123,7 +123,7 @@ public class Application implements ApplicationRunner {
             ShutdownManager shutdownManager = new ShutdownManager(statusManager, exitCodeManager, phoneHomeManager, directoryManager, detectConfiguration, reportManager, diagnosticManager);
             try {
                 logger.info("Detect shutdown begin.");
-                ExitCodeType exitCodeType = shutdownManager.shutdown();
+                ExitCodeType exitCodeType = shutdownManager.shutdown(runResult);
                 exitCodeManager.requestExitCode(exitCodeType);
                 logger.info("Detect shutdown completed.");
             } catch (final Exception e) {

@@ -73,10 +73,10 @@ public class ShutdownManager {
         if (runResultOptional.isPresent()) {
             detectorTypes.addAll(runResultOptional.get().getApplicableDetectors());
         }
-            
+
         String requiredDetectors = detectConfiguration.getProperty(DetectProperty.DETECT_REQUIRED_DETECTOR_TYPES, PropertyAuthority.None);
         RequiredDetectorChecker requiredDetectorChecker = new RequiredDetectorChecker();
-        requiredDetectorChecker.checkForMissingDetectors(requiredDetectors, );
+        requiredDetectorChecker.checkForMissingDetectors(requiredDetectors, detectorTypes);
 
         boolean printOutput = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT, PropertyAuthority.None);
 
