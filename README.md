@@ -25,4 +25,4 @@ powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://b
 
 ## Documentation
 
-All documentation is located on our public [Black Duck Confluence](https://blackducksoftware.atlassian.net/wiki/spaces/INTDOCS/pages/49131875/Hub+Detect)
+All documentation is located on our public [Confluence](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/622633/Hub+Detect)
