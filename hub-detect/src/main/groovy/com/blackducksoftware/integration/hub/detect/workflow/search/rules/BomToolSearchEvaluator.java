@@ -5,10 +5,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
@@ -25,27 +24,28 @@ public class BomToolSearchEvaluator {
 
     public List<BomToolEvaluation> evaluate(BomToolSearchRuleSet rules, EventSystem eventSystem) {
         final List<BomToolEvaluation> evaluations = new ArrayList<>();
-        final List<BomTool> appliedSoFar = new ArrayList<>();
+        final List<Detector> appliedSoFar = new ArrayList<>();
         for (final BomToolSearchRule searchRule : rules.getOrderedBomToolRules()) {
-            final BomTool bomTool = searchRule.getBomTool();
-            final BomToolEvaluation evaluation = new BomToolEvaluation(bomTool, rules.getEnvironment());
+            final Detector detector = searchRule.getDetector();
+            final BomToolEvaluation evaluation = new BomToolEvaluation(detector, rules.getEnvironment());
             evaluations.add(evaluation);
             evaluation.setSearchable(searchable(searchRule, appliedSoFar, rules.getEnvironment()));
             if (evaluation.isSearchable()) {
-                eventSystem.publishEvent(Event.ApplicableStarted, bomTool);
-                evaluation.setApplicable(bomTool.applicable());
-                eventSystem.publishEvent(Event.ApplicableEnded, bomTool);
+                eventSystem.publishEvent(Event.ApplicableStarted, detector);
+                evaluation.setApplicable(detector.applicable());
+                eventSystem.publishEvent(Event.ApplicableEnded, detector);
                 if (evaluation.isApplicable()) {
-                    appliedSoFar.add(bomTool);
+                    appliedSoFar.add(detector);
                 }
             }
         }
         return evaluations;
     }
 
-    public BomToolResult searchable(final BomToolSearchRule searchRules, final List<BomTool> appliedSoFar, BomToolEnvironment environment) {
-        final BomToolGroupType bomToolGroupType = searchRules.getBomTool().getBomToolGroupType();
-        if (!environment.getBomToolFilter().shouldInclude(bomToolGroupType.toString())) {
+    public BomToolResult searchable(final BomToolSearchRule searchRules, final List<Detector> appliedSoFar, DetectorEnvironment environment) {
+        Detector detector = searchRules.getDetector();
+        final DetectorType detectorType = detector.getDetectorType();
+        if (!environment.getBomToolFilter().shouldInclude(detectorType.toString())) {
             return new BomToolExcludedBomToolResult();
         }
 
@@ -54,20 +54,19 @@ public class BomToolSearchEvaluator {
             return new MaxDepthExceededBomToolResult(environment.getDepth(), maxDepth);
         }
 
-        final Set<BomTool> yielded = appliedSoFar.stream()
-                                         .filter(it -> searchRules.getYieldsTo().contains(it.getBomToolType()))
-                                         .collect(Collectors.toSet());
+        final Set<Detector> yieldTo = appliedSoFar.stream()
+                                          .filter(it -> searchRules.getYieldsTo().contains(it))
+                                          .collect(Collectors.toSet());
 
-        if (yielded.size() > 0) {
-            return new YieldedBomToolResult(yielded);
+        if (yieldTo.size() > 0) {
+            return new YieldedBomToolResult(yieldTo);
         }
 
-        final BomToolType bomToolType = searchRules.getBomTool().getBomToolType();
         final boolean nestable = searchRules.isNestable();
         if (environment.getForceNestedSearch()) {
             return new ForcedNestedPassedBomToolResult();
         } else if (nestable) {
-            if (environment.getAppliedToParent().contains(bomToolType)) {
+            if (environment.getAppliedToParent().stream().anyMatch(applied -> applied.isSame(detector))) {
                 return new NotSelfNestableBomToolResult();
             }
         } else if (!nestable && environment.getAppliedToParent().size() > 0) {

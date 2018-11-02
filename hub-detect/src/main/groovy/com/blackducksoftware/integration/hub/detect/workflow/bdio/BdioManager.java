@@ -154,7 +154,7 @@ public class BdioManager {
         }
         final ExternalId original = codeLocation.getExternalId();
         final String sourcePath = codeLocation.getSourcePath();
-        final String bomToolType = codeLocation.getBomToolGroupType().toString();
+        final String bomToolType = codeLocation.getDetectorType().toString();
         final String relativePath = FileNameUtils.relativize(directoryManager.getSourceDirectory().getAbsolutePath(), sourcePath);
         final List<String> externalIdPieces = new ArrayList<>();
         externalIdPieces.addAll(Arrays.asList(original.getExternalIdPieces()));

@@ -27,24 +27,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 
 public class CodeLocationReporter {
     public void writeCodeLocationReport(final ReportWriter writer, final ReportWriter writer2, final List<BomToolEvaluation> bomToolEvaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final List<BomToolEvaluation> succesfullBomToolEvaluations = bomToolEvaluations.stream()
-                .filter(it -> it.wasExtractionSuccessful())
-                .collect(Collectors.toList());
+                                                                         .filter(it -> it.wasExtractionSuccessful())
+                                                                         .collect(Collectors.toList());
 
         final List<DetectCodeLocation> codeLocationsToCount = succesfullBomToolEvaluations.stream()
-                .flatMap(it -> it.getExtraction().codeLocations.stream())
-                .collect(Collectors.toList());
+                                                                  .flatMap(it -> it.getExtraction().codeLocations.stream())
+                                                                  .collect(Collectors.toList());
 
         final CodeLocationDependencyCounter counter = new CodeLocationDependencyCounter();
         final Map<DetectCodeLocation, Integer> dependencyCounts = counter.countCodeLocations(codeLocationsToCount);
-        final Map<BomToolGroupType, Integer> dependencyAggregates = counter.aggregateCountsByGroup(dependencyCounts);
+        final Map<DetectorType, Integer> dependencyAggregates = counter.aggregateCountsByGroup(dependencyCounts);
 
         succesfullBomToolEvaluations.forEach(it -> writeBomToolEvaluationDetails(writer, it, dependencyCounts, codeLocationNameMap));
         writeBomToolCounts(writer2, dependencyAggregates);
@@ -63,8 +63,7 @@ public class CodeLocationReporter {
         writer.writeLine("Name : " + codeLocationName);
         writer.writeLine("Directory : " + codeLocation.getSourcePath());
         writer.writeLine("Extraction : " + extractionId);
-        writer.writeLine("Bom DetectTool : " + codeLocation.getBomToolType());
-        writer.writeLine("Bom DetectTool Group : " + codeLocation.getBomToolGroupType());
+        writer.writeLine("Bom DetectTool Group : " + codeLocation.getDetectorType());
 
         final DependencyGraph graph = codeLocation.getDependencyGraph();
 
@@ -73,8 +72,8 @@ public class CodeLocationReporter {
 
     }
 
-    private void writeBomToolCounts(final ReportWriter writer, final Map<BomToolGroupType, Integer> dependencyCounts) {
-        for (final BomToolGroupType group : dependencyCounts.keySet()) {
+    private void writeBomToolCounts(final ReportWriter writer, final Map<DetectorType, Integer> dependencyCounts) {
+        for (final DetectorType group : dependencyCounts.keySet()) {
             final Integer count = dependencyCounts.get(group);
 
             writer.writeLine(group.toString() + " : " + count);

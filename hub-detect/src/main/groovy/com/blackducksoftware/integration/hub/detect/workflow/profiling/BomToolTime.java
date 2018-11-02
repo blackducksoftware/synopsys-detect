@@ -23,22 +23,22 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.profiling;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
 
 public class BomToolTime {
     private final long ms;
-    private final BomTool bomTool;
+    private final Detector detector;
 
-    public BomToolTime(final BomTool bomTool, final long ms) {
+    public BomToolTime(final Detector detector, final long ms) {
         this.ms = ms;
-        this.bomTool = bomTool;
+        this.detector = detector;
     }
 
     public long getMs() {
         return ms;
     }
 
-    public BomTool getBomTool() {
-        return bomTool;
+    public Detector getDetector() {
+        return detector;
     }
 }

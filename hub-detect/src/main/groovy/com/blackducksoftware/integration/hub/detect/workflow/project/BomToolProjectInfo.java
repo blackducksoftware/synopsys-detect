@@ -23,21 +23,21 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.project;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
 public class BomToolProjectInfo {
-    private final BomToolGroupType bomToolType;
+    private final DetectorType bomToolType;
     private final int depth;
     private final NameVersion nameVersion;
 
-    public BomToolProjectInfo(final BomToolGroupType bomToolType, final int depth, final NameVersion nameVersion) {
+    public BomToolProjectInfo(final DetectorType bomToolType, final int depth, final NameVersion nameVersion) {
         this.bomToolType = bomToolType;
         this.nameVersion = nameVersion;
         this.depth = depth;
     }
 
-    public BomToolGroupType getBomToolType() {
+    public DetectorType getBomToolType() {
         return bomToolType;
     }
 

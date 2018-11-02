@@ -26,15 +26,15 @@ package com.blackducksoftware.integration.hub.detect.workflow.extraction;
 import java.util.List;
 import java.util.Set;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class PreparationResult {
-    private final Set<BomToolGroupType> failedBomToolGroups;
-    private final Set<BomToolGroupType> successfulBomToolGroups;
+    private final Set<DetectorType> failedBomToolGroups;
+    private final Set<DetectorType> successfulBomToolGroups;
     private List<BomToolEvaluation> bomToolEvaluations;
 
-    public PreparationResult(final Set<BomToolGroupType> successfulBomToolGroups, final Set<BomToolGroupType> failedBomToolGroups,
+    public PreparationResult(final Set<DetectorType> successfulBomToolGroups, final Set<DetectorType> failedBomToolGroups,
         final List<BomToolEvaluation> bomToolEvaluations) {
         this.failedBomToolGroups = failedBomToolGroups;
         this.successfulBomToolGroups = successfulBomToolGroups;
@@ -45,11 +45,11 @@ public class PreparationResult {
         return true;
     }
 
-    public Set<BomToolGroupType> getSuccessfulBomToolTypes() {
+    public Set<DetectorType> getSuccessfulBomToolTypes() {
         return successfulBomToolGroups;
     }
 
-    public Set<BomToolGroupType> getFailedBomToolTypes() {
+    public Set<DetectorType> getFailedBomToolTypes() {
         return failedBomToolGroups;
     }
 

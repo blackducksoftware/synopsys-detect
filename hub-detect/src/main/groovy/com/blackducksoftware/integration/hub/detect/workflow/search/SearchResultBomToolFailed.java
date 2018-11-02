@@ -28,18 +28,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class SearchResultBomToolFailed extends SearchResult {
-    private final BomToolException exception;
+    private final DetectorException exception;
 
-    public SearchResultBomToolFailed(final BomToolException exception) {
+    public SearchResultBomToolFailed(final DetectorException exception) {
         this.exception = exception;
     }
 
-    public BomToolException getException() {
+    public DetectorException getException() {
         return exception;
     }
 
@@ -49,7 +49,7 @@ public class SearchResultBomToolFailed extends SearchResult {
     }
 
     @Override
-    public Set<BomToolGroupType> getApplicableBomTools() {
+    public Set<DetectorType> getApplicableBomTools() {
         return new HashSet<>();
     }
 

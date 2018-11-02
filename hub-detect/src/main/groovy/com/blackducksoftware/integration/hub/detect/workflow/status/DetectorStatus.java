@@ -23,10 +23,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.status;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 
 public class DetectorStatus extends Status {
-    public DetectorStatus(final BomToolGroupType bomToolGroupType, final StatusType statusType) {
-        super(bomToolGroupType.toString(), statusType);
+    public DetectorStatus(final DetectorType detectorType, final StatusType statusType) {
+        super(detectorType.toString(), statusType);
     }
 }

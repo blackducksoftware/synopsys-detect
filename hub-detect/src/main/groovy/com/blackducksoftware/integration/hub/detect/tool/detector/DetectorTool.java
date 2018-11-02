@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFactory;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
@@ -30,11 +30,11 @@ public class DetectorTool {
 
     public DetectorToolResult performBomTools(SearchOptions searchOptions, String projectBomTool) {
         logger.info("Preparing to initialize bom tools.");
-        BomToolFactory bomToolFactory = detectContext.getBean(BomToolFactory.class);
+        DetectorFactory detectorFactory = detectContext.getBean(DetectorFactory.class);
         EventSystem eventSystem = detectContext.getBean(EventSystem.class);
 
         logger.info("Building bom tool system.");
-        BomToolSearchProvider bomToolSearchProvider = new BomToolSearchProvider(bomToolFactory);
+        BomToolSearchProvider bomToolSearchProvider = new BomToolSearchProvider(detectorFactory);
         BomToolSearchEvaluator bomToolSearchEvaluator = new BomToolSearchEvaluator();
 
         SearchManager searchManager = new SearchManager(searchOptions, bomToolSearchProvider, bomToolSearchEvaluator, eventSystem);

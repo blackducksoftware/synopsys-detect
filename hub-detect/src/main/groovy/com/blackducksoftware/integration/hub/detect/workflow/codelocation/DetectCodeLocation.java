@@ -23,30 +23,26 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.codelocation;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 
 public class DetectCodeLocation {
-    private final BomToolGroupType bomToolGroupType;
-    private final BomToolType bomToolType;
+    private final DetectorType detectorType;
     private final String sourcePath;
     private final String dockerImage;
     private final ExternalId externalId;
     private final DependencyGraph dependencyGraph;
 
     public static class Builder {
-        private final BomToolGroupType bomToolGroupType;
-        private final BomToolType bomToolType;
+        private final DetectorType detectorType;
         private final String sourcePath;
         private String dockerImage;
         private final ExternalId externalId;
         private final DependencyGraph dependencyGraph;
 
-        public Builder(final BomToolGroupType bomToolGroupType, final BomToolType bomToolType, final String sourcePath, final ExternalId externalId, final DependencyGraph dependencyGraph) {
-            this.bomToolGroupType = bomToolGroupType;
-            this.bomToolType = bomToolType;
+        public Builder(final DetectorType detectorType, final String sourcePath, final ExternalId externalId, final DependencyGraph dependencyGraph) {
+            this.detectorType = detectorType;
             this.sourcePath = sourcePath;
             this.externalId = externalId;
             this.dependencyGraph = dependencyGraph;
@@ -63,20 +59,15 @@ public class DetectCodeLocation {
     }
 
     private DetectCodeLocation(final Builder builder) {
-        this.bomToolGroupType = builder.bomToolGroupType;
-        this.bomToolType = builder.bomToolType;
+        this.detectorType = builder.detectorType;
         this.sourcePath = builder.sourcePath;
         this.dockerImage = builder.dockerImage;
         this.externalId = builder.externalId;
         this.dependencyGraph = builder.dependencyGraph;
     }
 
-    public BomToolGroupType getBomToolGroupType() {
-        return bomToolGroupType;
-    }
-
-    public BomToolType getBomToolType() {
-        return bomToolType;
+    public DetectorType getDetectorType() {
+        return detectorType;
     }
 
     public String getSourcePath() {

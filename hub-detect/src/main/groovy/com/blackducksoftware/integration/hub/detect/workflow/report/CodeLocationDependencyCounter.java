@@ -30,16 +30,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 
 public class CodeLocationDependencyCounter {
-    public Map<BomToolGroupType, Integer> aggregateCountsByGroup(final Map<DetectCodeLocation, Integer> codeLocations) {
-        final Map<BomToolGroupType, Integer> dependencyCounts = new HashMap<>();
+    public Map<DetectorType, Integer> aggregateCountsByGroup(final Map<DetectCodeLocation, Integer> codeLocations) {
+        final Map<DetectorType, Integer> dependencyCounts = new HashMap<>();
         for (final Entry<DetectCodeLocation, Integer> countEntry : codeLocations.entrySet()) {
-            final BomToolGroupType group = countEntry.getKey().getBomToolGroupType();
+            final DetectorType group = countEntry.getKey().getDetectorType();
             if (!dependencyCounts.containsKey(group)) {
                 dependencyCounts.put(group, 0);
             }

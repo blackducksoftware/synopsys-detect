@@ -28,46 +28,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 
 public class BomToolSearchRuleSetBuilder {
-    private final List<BomTool> desiredBomToolOrder = new ArrayList<>();
-    private final Map<BomTool, BomToolSearchRuleBuilder> builderMap = new HashMap<>();
+    private final List<Detector> desiredDetectorOrder = new ArrayList<>();
+    private final Map<Detector, BomToolSearchRuleBuilder> builderMap = new HashMap<>();
     private final List<BomToolYieldBuilder> yieldBuilders = new ArrayList<>();
-    private final BomToolEnvironment environment;
+    private final DetectorEnvironment environment;
 
-    public BomToolSearchRuleSetBuilder(final BomToolEnvironment environment) {
+    public BomToolSearchRuleSetBuilder(final DetectorEnvironment environment) {
         this.environment = environment;
     }
 
-    public BomToolSearchRuleBuilder addBomTool(final BomTool bomTool) {
-        final BomToolSearchRuleBuilder builder = new BomToolSearchRuleBuilder(bomTool);
-        desiredBomToolOrder.add(bomTool);
-        builderMap.put(bomTool, builder);
+    public BomToolSearchRuleBuilder addBomTool(final Detector detector) {
+        final BomToolSearchRuleBuilder builder = new BomToolSearchRuleBuilder(detector);
+        desiredDetectorOrder.add(detector);
+        builderMap.put(detector, builder);
         return builder;
     }
 
-    public BomToolYieldBuilder yield(final BomToolType bomToolType) {
+    public BomToolYieldBuilder yield(final Detector bomToolType) {
         final BomToolYieldBuilder builder = new BomToolYieldBuilder(bomToolType);
-        yieldBuilders.add(builder);
-        return builder;
-    }
-
-    public BomToolYieldBuilder yield(final BomTool yielder) {
-        final BomToolYieldBuilder builder = new BomToolYieldBuilder(yielder.getBomToolType());
         yieldBuilders.add(builder);
         return builder;
     }
 
     public BomToolSearchRuleSet build() {
         final List<BomToolSearchRule> bomToolRules = new ArrayList<>();
-        for (final BomTool bomTool : desiredBomToolOrder) {
-            final BomToolSearchRuleBuilder builder = builderMap.get(bomTool);
+        for (final Detector detector : desiredDetectorOrder) {
+            final BomToolSearchRuleBuilder builder = builderMap.get(detector);
             for (final BomToolYieldBuilder yieldBuilder : yieldBuilders) {
-                if (yieldBuilder.getYieldingBomToolType() == bomTool.getBomToolType()) {
-                    builder.yield(yieldBuilder.getYieldingToBomToolType());
+                if (yieldBuilder.getYieldingDetector() == detector) {
+                    builder.yield(yieldBuilder.getYieldingToDetector());
                 }
             }
             bomToolRules.add(builder.build());

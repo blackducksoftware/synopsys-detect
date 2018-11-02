@@ -37,10 +37,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
@@ -68,7 +68,7 @@ public class BdioCodeLocationCreator {
     }
 
     public BdioCodeLocationResult createFromDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations, NameVersion projectNameVersion) {
-        final Set<BomToolGroupType> failedBomToolGroups = new HashSet<>();
+        final Set<DetectorType> failedBomToolGroups = new HashSet<>();
 
         final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.None);
         final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.None);
@@ -103,9 +103,9 @@ public class BdioCodeLocationCreator {
         return result;
     }
 
-    private Set<BomToolGroupType> getBomToolGroupTypes(final List<BdioCodeLocation> bdioCodeLocations) {
+    private Set<DetectorType> getBomToolGroupTypes(final List<BdioCodeLocation> bdioCodeLocations) {
         return bdioCodeLocations.stream()
-                   .map(it -> it.codeLocation.getBomToolGroupType())
+                   .map(it -> it.codeLocation.getDetectorType())
                    .collect(Collectors.toSet());
     }
 
@@ -211,14 +211,14 @@ public class BdioCodeLocationCreator {
     }
 
     private DetectCodeLocation copyCodeLocation(final DetectCodeLocation codeLocation, final DependencyGraph newGraph) {
-        final DetectCodeLocation.Builder builder = new DetectCodeLocation.Builder(codeLocation.getBomToolGroupType(), codeLocation.getBomToolType(), codeLocation.getSourcePath(), codeLocation.getExternalId(), newGraph);
+        final DetectCodeLocation.Builder builder = new DetectCodeLocation.Builder(codeLocation.getDetectorType(), codeLocation.getSourcePath(), codeLocation.getExternalId(), newGraph);
         builder.dockerImage(codeLocation.getDockerImage());
         final DetectCodeLocation copy = builder.build();
         return copy;
     }
 
     private boolean shouldCombine(final Logger logger, final DetectCodeLocation codeLocationLeft, final DetectCodeLocation codeLocationRight) {
-        if (codeLocationLeft.getBomToolType() != codeLocationRight.getBomToolType()) {
+        if (codeLocationLeft.getDetectorType() != codeLocationRight.getDetectorType()) {
             logger.error("Cannot combine code locations with different bom tool types.");
             return false;
         }

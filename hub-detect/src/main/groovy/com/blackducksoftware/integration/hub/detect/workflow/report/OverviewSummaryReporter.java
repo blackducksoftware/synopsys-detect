@@ -62,6 +62,6 @@ public class OverviewSummaryReporter {
     }
 
     private void printEvaluations(final ReportWriter writer, final String prefix, final List<BomToolEvaluation> evaluations) {
-        writer.writeLine(prefix + evaluations.stream().map(it -> it.getBomTool().getDescriptiveName()).sorted().collect(Collectors.joining(", ")));
+        writer.writeLine(prefix + evaluations.stream().map(it -> it.getDetector().getDescriptiveName()).sorted().collect(Collectors.joining(", ")));
     }
 }

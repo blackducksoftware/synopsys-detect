@@ -23,31 +23,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.rules;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolExcludedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ForcedNestedPassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.MaxDepthExceededBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.NotNestableBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.NotSelfNestableBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.YieldedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 
 public class BomToolSearchRuleSet {
     private final List<BomToolSearchRule> orderedBomToolRules;
-    private final BomToolEnvironment environment;
+    private final DetectorEnvironment environment;
 
-    public BomToolSearchRuleSet(final List<BomToolSearchRule> orderedBomToolRules, final BomToolEnvironment environment) {
+    public BomToolSearchRuleSet(final List<BomToolSearchRule> orderedBomToolRules, final DetectorEnvironment environment) {
         this.orderedBomToolRules = orderedBomToolRules;
         this.environment = environment;
     }
@@ -56,7 +40,7 @@ public class BomToolSearchRuleSet {
         return orderedBomToolRules;
     }
 
-    public BomToolEnvironment getEnvironment() {
+    public DetectorEnvironment getEnvironment() {
         return environment;
     }
 }

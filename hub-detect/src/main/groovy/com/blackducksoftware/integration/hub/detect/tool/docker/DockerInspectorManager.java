@@ -38,11 +38,11 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
@@ -86,7 +86,7 @@ public class DockerInspectorManager {
         this.mavenMetadataService = mavenMetadataService;
     }
 
-    public DockerInspectorInfo getDockerInspector() throws BomToolException {
+    public DockerInspectorInfo getDockerInspector() throws DetectorException {
         try {
             if (!hasResolvedInspector) {
                 hasResolvedInspector = true;
@@ -94,7 +94,7 @@ public class DockerInspectorManager {
             }
             return resolvedInfo;
         } catch (final Exception e) {
-            throw new BomToolException(e);
+            throw new DetectorException(e);
         }
     }
 

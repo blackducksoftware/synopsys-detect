@@ -50,7 +50,7 @@ public class ProfilingReporter {
         final Map<String, Long> aggregated = new HashMap<>();
 
         for (final BomToolTime bomToolTime : timings) {
-            final String name = bomToolTime.getBomTool().getDescriptiveName();
+            final String name = bomToolTime.getDetector().getDescriptiveName();
             if (!aggregated.containsKey(name)) {
                 aggregated.put(name, 0L);
             }
@@ -65,7 +65,7 @@ public class ProfilingReporter {
     private void writeReport(final ReportWriter writer, final List<BomToolTime> timings) {
 
         for (final BomToolTime bomToolTime : timings) {
-            writer.writeLine("\t" + padToLength(bomToolTime.getBomTool().getDescriptiveName(), 30) + "\t" + bomToolTime.getMs());
+            writer.writeLine("\t" + padToLength(bomToolTime.getDetector().getDescriptiveName(), 30) + "\t" + bomToolTime.getMs());
         }
 
     }

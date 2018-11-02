@@ -30,10 +30,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
@@ -66,13 +66,13 @@ public class CacheableExecutableFinder {
         this.detectConfiguration = detectConfiguration;
     }
 
-    public File getExecutable(final CacheableExecutableType executableType) throws BomToolException {
+    public File getExecutable(final CacheableExecutableType executableType) throws DetectorException {
         if (alreadyFound.containsKey(executableType)) {
             return alreadyFound.get(executableType);
         }
         final StandardExecutableInfo info = createInfo(executableType);
         if (info == null) {
-            throw new BomToolException("Unknown executable type: " + executableType.toString());
+            throw new DetectorException("Unknown executable type: " + executableType.toString());
         }
 
         final String exe = executableFinder.getExecutablePathOrOverride(info.detectExecutableType, true, directoryManager.getSourceDirectory(), info.override);

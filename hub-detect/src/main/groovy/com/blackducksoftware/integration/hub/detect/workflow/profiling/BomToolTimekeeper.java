@@ -30,36 +30,36 @@ import java.util.Map;
 
 import org.apache.commons.lang3.time.StopWatch;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
 
 public class BomToolTimekeeper {
 
-    private final Map<BomTool, StopWatch> bomToolMap = new HashMap<>();
+    private final Map<Detector, StopWatch> bomToolMap = new HashMap<>();
 
-    private StopWatch getStopWatch(final BomTool bomTool) {
-        if (bomToolMap.containsKey(bomTool)) {
-            return bomToolMap.get(bomTool);
+    private StopWatch getStopWatch(final Detector detector) {
+        if (bomToolMap.containsKey(detector)) {
+            return bomToolMap.get(detector);
         } else {
             final StopWatch sw = new StopWatch();
-            bomToolMap.put(bomTool, sw);
+            bomToolMap.put(detector, sw);
             return sw;
         }
     }
 
-    public void started(final BomTool bomTool) {
-        getStopWatch(bomTool).start();
+    public void started(final Detector detector) {
+        getStopWatch(detector).start();
     }
 
-    public void ended(final BomTool bomTool) {
-        getStopWatch(bomTool).stop();
+    public void ended(final Detector detector) {
+        getStopWatch(detector).stop();
     }
 
     public List<BomToolTime> getTimings() {
         final List<BomToolTime> bomToolTimings = new ArrayList<>();
-        for (final BomTool bomTool : bomToolMap.keySet()) {
-            final StopWatch sw = bomToolMap.get(bomTool);
+        for (final Detector detector : bomToolMap.keySet()) {
+            final StopWatch sw = bomToolMap.get(detector);
             final long ms = sw.getTime();
-            final BomToolTime bomToolTime = new BomToolTime(bomTool, ms);
+            final BomToolTime bomToolTime = new BomToolTime(detector, ms);
             bomToolTimings.add(bomToolTime);
         }
         return bomToolTimings;

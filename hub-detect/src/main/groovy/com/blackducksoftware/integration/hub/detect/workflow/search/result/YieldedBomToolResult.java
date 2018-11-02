@@ -27,18 +27,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
 
 public class YieldedBomToolResult extends FailedBomToolResult {
-    private final Set<BomTool> yieldedTo;
+    private final Set<Detector> yieldedTo;
 
-    public YieldedBomToolResult(final BomTool yielded) {
+    public YieldedBomToolResult(final Detector yielded) {
         yieldedTo = new HashSet<>();
         yieldedTo.add(yielded);
     }
 
-    public YieldedBomToolResult(final Set<BomTool> yieldedTo) {
+    public YieldedBomToolResult(final Set<Detector> yieldedTo) {
         this.yieldedTo = yieldedTo;
     }
 

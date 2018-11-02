@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
@@ -54,17 +54,17 @@ public class BomToolManager {
         detectorToolResult.evaluatedBomTools = bomToolEvaluations;
         detectorToolResult.bomToolCodeLocations = extractionResult.getDetectCodeLocations();
 
-        detectorToolResult.failedBomToolGroupTypes.addAll(preparationResult.getFailedBomToolTypes());
-        detectorToolResult.failedBomToolGroupTypes.addAll(extractionResult.getFailedBomToolTypes());
+        detectorToolResult.failedDetectorTypes.addAll(preparationResult.getFailedBomToolTypes());
+        detectorToolResult.failedDetectorTypes.addAll(extractionResult.getFailedBomToolTypes());
 
-        detectorToolResult.succesfullBomToolGroupTypes.addAll(preparationResult.getSuccessfulBomToolTypes());
-        detectorToolResult.succesfullBomToolGroupTypes.addAll(extractionResult.getSuccessfulBomToolTypes());
-        detectorToolResult.succesfullBomToolGroupTypes.removeIf(it -> detectorToolResult.failedBomToolGroupTypes.contains(it));
+        detectorToolResult.succesfullDetectorTypes.addAll(preparationResult.getSuccessfulBomToolTypes());
+        detectorToolResult.succesfullDetectorTypes.addAll(extractionResult.getSuccessfulBomToolTypes());
+        detectorToolResult.succesfullDetectorTypes.removeIf(it -> detectorToolResult.failedDetectorTypes.contains(it));
 
         //post status
-        Map<BomToolGroupType, StatusType> bomToolStatus = new HashMap<>();
-        detectorToolResult.succesfullBomToolGroupTypes.forEach(it -> bomToolStatus.put(it, StatusType.SUCCESS));
-        detectorToolResult.failedBomToolGroupTypes.forEach(it -> bomToolStatus.put(it, StatusType.FAILURE));
+        Map<DetectorType, StatusType> bomToolStatus = new HashMap<>();
+        detectorToolResult.succesfullDetectorTypes.forEach(it -> bomToolStatus.put(it, StatusType.SUCCESS));
+        detectorToolResult.failedDetectorTypes.forEach(it -> bomToolStatus.put(it, StatusType.FAILURE));
         bomToolStatus.forEach((bomTool, status) -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(bomTool, status)));
 
         return detectorToolResult;

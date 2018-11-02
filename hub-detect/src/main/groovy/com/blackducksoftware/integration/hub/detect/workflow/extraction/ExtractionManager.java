@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
+import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.workflow.report.InfoLogReportWriter;
@@ -54,21 +54,21 @@ public class ExtractionManager {
             logger.info(String.format("Extracting %d of %d (%s%%)", i + 1, extractable.size(), progress));
             logger.info(ReportConstants.SEPERATOR);
 
-            final ExtractionId extractionId = new ExtractionId(bomToolEvaluation.getBomTool().getBomToolGroupType(), Integer.toString(i));
+            final ExtractionId extractionId = new ExtractionId(bomToolEvaluation.getDetector().getDetectorType(), Integer.toString(i));
             bomToolEvaluation.setExtractionId(extractionId);
 
             extract(extractable.get(i));
         }
 
-        final Set<BomToolGroupType> succesfulBomToolGroups = extractable.stream()
-                                                                 .filter(it -> it.wasExtractionSuccessful())
-                                                                 .map(it -> it.getBomTool().getBomToolGroupType())
-                                                                 .collect(Collectors.toSet());
+        final Set<DetectorType> succesfulBomToolGroups = extractable.stream()
+                                                             .filter(it -> it.wasExtractionSuccessful())
+                                                             .map(it -> it.getDetector().getDetectorType())
+                                                             .collect(Collectors.toSet());
 
-        final Set<BomToolGroupType> failedBomToolGroups = extractable.stream()
-                                                              .filter(it -> !it.wasExtractionSuccessful())
-                                                              .map(it -> it.getBomTool().getBomToolGroupType())
-                                                              .collect(Collectors.toSet());
+        final Set<DetectorType> failedBomToolGroups = extractable.stream()
+                                                          .filter(it -> !it.wasExtractionSuccessful())
+                                                          .map(it -> it.getDetector().getDetectorType())
+                                                          .collect(Collectors.toSet());
 
         final List<DetectCodeLocation> codeLocations = extractable.stream()
                                                            .filter(it -> it.wasExtractionSuccessful())
@@ -80,13 +80,13 @@ public class ExtractionManager {
 
     private void extract(final BomToolEvaluation result) { //TODO: Replace reporting.
 
-        logger.info("Starting extraction: " + result.getBomTool().getBomToolGroupType() + " - " + result.getBomTool().getName());
+        logger.info("Starting extraction: " + result.getDetector().getDetectorType() + " - " + result.getDetector().getName());
         logger.info("Identifier: " + result.getExtractionId().toUniqueString());
-        ObjectPrinter.printObjectPrivate(new InfoLogReportWriter(), result.getBomTool());
+        ObjectPrinter.printObjectPrivate(new InfoLogReportWriter(), result.getDetector());
         logger.info(ReportConstants.SEPERATOR);
 
         try {
-            result.setExtraction(result.getBomTool().extract(result.getExtractionId()));
+            result.setExtraction(result.getDetector().extract(result.getExtractionId()));
         } catch (final Exception e) {
             result.setExtraction(new Extraction.Builder().exception(e).build());
         }

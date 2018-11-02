@@ -27,14 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 
 public class BdioCodeLocationResult {
     private final List<BdioCodeLocation> bdioCodeLocations;
     private final Map<DetectCodeLocation, String> codeLocationNames;
-    private final Set<BomToolGroupType> failedBomToolGroups;
+    private final Set<DetectorType> failedBomToolGroups;
 
-    public BdioCodeLocationResult(final List<BdioCodeLocation> bdioCodeLocations, final Set<BomToolGroupType> failedBomToolGroups, final Map<DetectCodeLocation, String> codeLocationNames) {
+    public BdioCodeLocationResult(final List<BdioCodeLocation> bdioCodeLocations, final Set<DetectorType> failedBomToolGroups, final Map<DetectCodeLocation, String> codeLocationNames) {
         this.bdioCodeLocations = bdioCodeLocations;
         this.failedBomToolGroups = failedBomToolGroups;
         this.codeLocationNames = codeLocationNames;
@@ -48,7 +48,7 @@ public class BdioCodeLocationResult {
         return bdioCodeLocations;
     }
 
-    public Set<BomToolGroupType> getFailedBomToolGroupTypes() {
+    public Set<DetectorType> getFailedBomToolGroupTypes() {
         return failedBomToolGroups;
     }
 }

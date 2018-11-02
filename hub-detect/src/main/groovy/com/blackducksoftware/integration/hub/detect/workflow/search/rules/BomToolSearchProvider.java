@@ -23,46 +23,49 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.rules;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
 
 public class BomToolSearchProvider {
-    private final BomToolFactory bomToolFactory;
+    private final DetectorFactory detectorFactory;
 
-    public BomToolSearchProvider(final BomToolFactory bomToolFactory) {
-        this.bomToolFactory = bomToolFactory;
+    public BomToolSearchProvider(final DetectorFactory detectorFactory) {
+        this.detectorFactory = detectorFactory;
     }
 
-    public BomToolSearchRuleSet createBomToolSearchRuleSet(final BomToolEnvironment environment) {
+    public BomToolSearchRuleSet createBomToolSearchRuleSet(final DetectorEnvironment environment) {
         final BomToolSearchRuleSetBuilder searchRuleSet = new BomToolSearchRuleSetBuilder(environment);
 
-        searchRuleSet.addBomTool(bomToolFactory.createBitbakeBomTool(environment)).defaultNotNested();
+        searchRuleSet.addBomTool(detectorFactory.createBitbakeBomTool(environment)).defaultNotNested();
 
-        searchRuleSet.addBomTool(bomToolFactory.createPodLockBomTool(environment)).defaultNested();
-        searchRuleSet.addBomTool(bomToolFactory.createCondaBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(bomToolFactory.createCpanCliBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(bomToolFactory.createPackratLockBomTool(environment)).defaultNotNested();
+        searchRuleSet.addBomTool(detectorFactory.createPodLockBomTool(environment)).defaultNested();
+        searchRuleSet.addBomTool(detectorFactory.createCondaBomTool(environment)).defaultNotNested();
+        searchRuleSet.addBomTool(detectorFactory.createCpanCliBomTool(environment)).defaultNotNested();
+        searchRuleSet.addBomTool(detectorFactory.createPackratLockBomTool(environment)).defaultNotNested();
 
-        searchRuleSet.addBomTool(bomToolFactory.createGoCliBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(bomToolFactory.createGoLockBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(bomToolFactory.createGoVndrBomTool(environment)).defaultNotNested();
+        Detector goCli = detectorFactory.createGoCliBomTool(environment);
+        Detector goLock = detectorFactory.createGoLockBomTool(environment);
+        Detector goVnd = detectorFactory.createGoVndrBomTool(environment);
+        searchRuleSet.addBomTool(goCli).defaultNotNested();
+        searchRuleSet.addBomTool(goLock).defaultNotNested();
+        searchRuleSet.addBomTool(goVnd).defaultNotNested();
 
-        searchRuleSet.yield(BomToolType.GO_CLI).to(BomToolType.GO_LOCK);
-        searchRuleSet.yield(BomToolType.GO_CLI).to(BomToolType.GO_VNDR);
+        searchRuleSet.yield(goCli).to(goLock);
+        searchRuleSet.yield(goCli).to(goVnd);
 
-        searchRuleSet.addBomTool(bomToolFactory.createGradleInspectorBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(bomToolFactory.createRebarBomTool(environment)).defaultNotNested();
+        searchRuleSet.addBomTool(detectorFactory.createGradleInspectorBomTool(environment)).defaultNotNested();
+        searchRuleSet.addBomTool(detectorFactory.createRebarBomTool(environment)).defaultNotNested();
 
-        searchRuleSet.addBomTool(bomToolFactory.createMavenPomBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(bomToolFactory.createMavenPomWrapperBomTool(environment)).defaultNotNested();
+        searchRuleSet.addBomTool(detectorFactory.createMavenPomBomTool(environment)).defaultNotNested();
+        searchRuleSet.addBomTool(detectorFactory.createMavenPomWrapperBomTool(environment)).defaultNotNested();
 
-        searchRuleSet.addBomTool(bomToolFactory.createYarnLockBomTool(environment)).defaultNested();
+        Detector yarnLock = detectorFactory.createYarnLockBomTool(environment);
+        searchRuleSet.addBomTool(yarnLock).defaultNested();
 
-        BomTool npmPackageLock = bomToolFactory.createNpmPackageLockBomTool(environment);
-        BomTool npmShrinkwrap = bomToolFactory.createNpmShrinkwrapBomTool(environment);
-        BomTool npmCli = bomToolFactory.createNpmCliBomTool(environment);
+        Detector npmPackageLock = detectorFactory.createNpmPackageLockBomTool(environment);
+        Detector npmShrinkwrap = detectorFactory.createNpmShrinkwrapBomTool(environment);
+        Detector npmCli = detectorFactory.createNpmCliBomTool(environment);
 
         searchRuleSet.addBomTool(npmPackageLock).defaultNested();
         searchRuleSet.addBomTool(npmShrinkwrap).defaultNested();
@@ -72,27 +75,31 @@ public class BomToolSearchProvider {
         searchRuleSet.yield(npmCli).to(npmPackageLock);
         searchRuleSet.yield(npmCli).to(npmShrinkwrap);
 
-        searchRuleSet.yield(BomToolType.NPM_CLI).to(BomToolType.YARN_LOCK);
-        searchRuleSet.yield(BomToolType.NPM_PACKAGELOCK).to(BomToolType.YARN_LOCK);
-        searchRuleSet.yield(BomToolType.NPM_SHRINKWRAP).to(BomToolType.YARN_LOCK);
+        searchRuleSet.yield(npmCli).to(yarnLock);
+        searchRuleSet.yield(npmPackageLock).to(yarnLock);
+        searchRuleSet.yield(npmShrinkwrap).to(yarnLock);
 
-        searchRuleSet.addBomTool(bomToolFactory.createNugetSolutionBomTool(environment)).defaultNested();
-        searchRuleSet.addBomTool(bomToolFactory.createNugetProjectBomTool(environment)).defaultNotNested();
+        Detector nugetSolution = detectorFactory.createNugetSolutionBomTool(environment);
+        Detector nugetProject = detectorFactory.createNugetProjectBomTool(environment);
+        searchRuleSet.addBomTool(nugetSolution).defaultNested();
+        searchRuleSet.addBomTool(nugetProject).defaultNotNested();
 
-        searchRuleSet.yield(BomToolType.NUGET_PROJECT_INSPECTOR).to(BomToolType.NUGET_SOLUTION_INSPECTOR);
+        searchRuleSet.yield(nugetProject).to(nugetSolution);
 
-        searchRuleSet.addBomTool(bomToolFactory.createComposerLockBomTool(environment)).defaultNotNested();
+        searchRuleSet.addBomTool(detectorFactory.createComposerLockBomTool(environment)).defaultNotNested();
 
-        searchRuleSet.addBomTool(bomToolFactory.createPipenvBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(bomToolFactory.createPipInspectorBomTool(environment)).defaultNotNested();
+        Detector pipEnv = detectorFactory.createPipenvBomTool(environment);
+        Detector pipInspector = detectorFactory.createPipInspectorBomTool(environment);
+        searchRuleSet.addBomTool(pipEnv).defaultNotNested();
+        searchRuleSet.addBomTool(pipInspector).defaultNotNested();
 
-        searchRuleSet.yield(BomToolType.PIP_INSPECTOR).to(BomToolType.PIP_ENV);
+        searchRuleSet.yield(pipInspector).to(pipEnv);
 
-        searchRuleSet.addBomTool(bomToolFactory.createGemlockBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(bomToolFactory.createSbtResolutionCacheBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(bomToolFactory.createPearCliBomTool(environment)).defaultNotNested();
+        searchRuleSet.addBomTool(detectorFactory.createGemlockBomTool(environment)).defaultNotNested();
+        searchRuleSet.addBomTool(detectorFactory.createSbtResolutionCacheBomTool(environment)).defaultNotNested();
+        searchRuleSet.addBomTool(detectorFactory.createPearCliBomTool(environment)).defaultNotNested();
 
-        searchRuleSet.addBomTool(bomToolFactory.createClangBomTool(environment)).defaultNested();
+        searchRuleSet.addBomTool(detectorFactory.createClangBomTool(environment)).defaultNested();
 
         return searchRuleSet.build();
     }

@@ -25,12 +25,12 @@ package com.blackducksoftware.integration.hub.detect.workflow.project.decisions;
 
 import org.slf4j.Logger;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 
 public class TooManyPreferredBomToolsFoundDecision extends NameVersionDecision {
-    private final BomToolGroupType bomToolType;
+    private final DetectorType bomToolType;
 
-    public TooManyPreferredBomToolsFoundDecision(final BomToolGroupType bomToolType) {
+    public TooManyPreferredBomToolsFoundDecision(final DetectorType bomToolType) {
         this.bomToolType = bomToolType;
     }
 

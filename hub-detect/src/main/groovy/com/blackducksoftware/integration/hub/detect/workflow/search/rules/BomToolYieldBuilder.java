@@ -23,33 +23,27 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.rules;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
 
 public class BomToolYieldBuilder {
 
-    private final BomToolType yieldingBomToolType;
-    private BomToolType yieldingToBomToolType;
+    private final Detector yieldingDetector;
+    private Detector yieldingToDetector;
 
-    public BomToolYieldBuilder(final BomToolType yieldingBomToolType) {
-        this.yieldingBomToolType = yieldingBomToolType;
+    public BomToolYieldBuilder(final Detector yieldingDetector) {
+        this.yieldingDetector = yieldingDetector;
     }
 
-    public BomToolYieldBuilder to(final BomToolType bomToolType) {
-        this.yieldingToBomToolType = bomToolType;
+    public BomToolYieldBuilder to(final Detector Detector) {
+        this.yieldingToDetector = Detector;
         return this;
     }
 
-    public BomToolYieldBuilder to(final BomTool bomTool) {
-        this.yieldingToBomToolType = bomTool.getBomToolType();
-        return this;
+    public Detector getYieldingDetector() {
+        return yieldingDetector;
     }
 
-    public BomToolType getYieldingBomToolType() {
-        return yieldingBomToolType;
-    }
-
-    public BomToolType getYieldingToBomToolType() {
-        return yieldingToBomToolType;
+    public Detector getYieldingToDetector() {
+        return yieldingToDetector;
     }
 }

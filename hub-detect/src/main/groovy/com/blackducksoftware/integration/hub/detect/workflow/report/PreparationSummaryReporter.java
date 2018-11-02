@@ -42,13 +42,13 @@ public class PreparationSummaryReporter {
             writer.writeLine(data.getDirectory());
             if (data.getReady().size() > 0) {
                 writer.writeLine("\t READY: " + data.getReady().stream()
-                                                    .map(it -> it.getBomTool().getDescriptiveName())
+                                                    .map(it -> it.getDetector().getDescriptiveName())
                                                     .sorted()
                                                     .collect(Collectors.joining(", ")));
             }
             if (data.getFailed().size() > 0) {
                 data.getFailed().stream()
-                    .map(it -> "\tFAILED: " + it.getBomTool().getDescriptiveName() + " - " + it.getExtractabilityMessage())
+                    .map(it -> "\tFAILED: " + it.getDetector().getDescriptiveName() + " - " + it.getExtractabilityMessage())
                     .sorted()
                     .forEach(writer::writeLine);
             }

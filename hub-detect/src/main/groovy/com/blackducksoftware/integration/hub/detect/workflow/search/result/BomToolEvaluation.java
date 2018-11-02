@@ -25,17 +25,17 @@ package com.blackducksoftware.integration.hub.detect.workflow.search.result;
 
 import java.util.Optional;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
+import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction.ExtractionResultType;
 
 public class BomToolEvaluation {
     public static final String NO_MESSAGE = "Unknown";
 
-    private final BomTool bomTool;
-    private final BomToolEnvironment environment;
+    private final Detector detector;
+    private final DetectorEnvironment environment;
 
     private BomToolResult searchable;
     private BomToolResult applicable;
@@ -44,8 +44,8 @@ public class BomToolEvaluation {
     private ExtractionId extractionId;
     private Extraction extraction;
 
-    public BomToolEvaluation(final BomTool bomTool, final BomToolEnvironment environment) {
-        this.bomTool = bomTool;
+    public BomToolEvaluation(final Detector detector, final DetectorEnvironment environment) {
+        this.detector = detector;
         this.environment = environment;
     }
 
@@ -69,11 +69,11 @@ public class BomToolEvaluation {
         return isExtractable() && this.extraction != null && this.extraction.result == ExtractionResultType.SUCCESS;
     }
 
-    public BomTool getBomTool() {
-        return bomTool;
+    public Detector getDetector() {
+        return detector;
     }
 
-    public BomToolEnvironment getEnvironment() {
+    public DetectorEnvironment getEnvironment() {
         return environment;
     }
 

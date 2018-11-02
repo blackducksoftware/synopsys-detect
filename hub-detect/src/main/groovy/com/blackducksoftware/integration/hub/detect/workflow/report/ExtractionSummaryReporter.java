@@ -57,7 +57,7 @@ public class ExtractionSummaryReporter {
 
     private void writeEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final List<BomToolEvaluation> evaluations) {
         if (evaluations.size() > 0) {
-            writer.writeLine(prefix + evaluations.stream().map(evaluation -> evaluation.getBomTool().getDescriptiveName()).collect(Collectors.joining(", ")));
+            writer.writeLine(prefix + evaluations.stream().map(evaluation -> evaluation.getDetector().getDescriptiveName()).collect(Collectors.joining(", ")));
         }
     }
 

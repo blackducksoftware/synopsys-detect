@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
@@ -75,7 +75,7 @@ public class CodeLocationNameGeneratorTest {
 
         final String prefix = "";
         final String suffix = "";
-        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, externalId, BomToolGroupType.NPM, prefix, suffix);
+        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, externalId, DetectorType.NPM, prefix, suffix);
 
         assertEquals(expected, actual);
     }
@@ -93,7 +93,7 @@ public class CodeLocationNameGeneratorTest {
         final String codeLocationPath = "/Users/ekerwin/Documents/source/integration/hub-common-rest/hub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-rest";
         final String prefix = "";
         final String suffix = "";
-        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, externalId, BomToolGroupType.NPM, prefix, suffix);
+        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, externalId, DetectorType.NPM, prefix, suffix);
 
         assertEquals(expected, actual);
     }

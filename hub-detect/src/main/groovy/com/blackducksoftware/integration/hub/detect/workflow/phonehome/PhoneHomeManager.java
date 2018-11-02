@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
@@ -70,18 +70,18 @@ public abstract class PhoneHomeManager {
         safelyPhoneHome(new HashMap<>());
     }
 
-    public void startPhoneHome(final Set<BomToolGroupType> applicableBomToolTypes) {
+    public void startPhoneHome(final Set<DetectorType> applicableBomToolTypes) {
         final Map<String, String> metadata = new HashMap<>();
         if (applicableBomToolTypes != null) {
             final String applicableBomToolsString = applicableBomToolTypes.stream()
-                                                        .map(BomToolGroupType::toString)
+                                                        .map(DetectorType::toString)
                                                         .collect(Collectors.joining(","));
             metadata.put("bomToolTypes", applicableBomToolsString);
         }
         safelyPhoneHome(metadata);
     }
 
-    public void startPhoneHome(final Map<BomToolGroupType, Long> applicableBomToolTimes) {
+    public void startPhoneHome(final Map<DetectorType, Long> applicableBomToolTimes) {
         final Map<String, String> metadata = new HashMap<>();
         if (applicableBomToolTimes != null) {
             final String applicableBomToolsString = applicableBomToolTimes.keySet().stream()

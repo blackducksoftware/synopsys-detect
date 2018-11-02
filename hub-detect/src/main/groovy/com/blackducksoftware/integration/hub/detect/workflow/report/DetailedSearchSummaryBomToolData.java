@@ -23,19 +23,19 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.report;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
 
 public class DetailedSearchSummaryBomToolData {
-    private final BomTool bomTool;
+    private final Detector detector;
     private final String reason;
 
-    public DetailedSearchSummaryBomToolData(final BomTool bomTool, final String reason) {
-        this.bomTool = bomTool;
+    public DetailedSearchSummaryBomToolData(final Detector detector, final String reason) {
+        this.detector = detector;
         this.reason = reason;
     }
 
-    public BomTool getBomTool() {
-        return bomTool;
+    public Detector getDetector() {
+        return detector;
     }
 
     public String getReason() {

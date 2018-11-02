@@ -37,8 +37,8 @@ public class DetailedSearchSummarizer extends BomToolEvaluationSummarizer {
         final Map<File, List<BomToolEvaluation>> byDirectory = groupByDirectory(bomToolEvaluations);
         final List<DetailedSearchSummaryData> data = createSummaries(byDirectory);
         final List<DetailedSearchSummaryData> sorted = data.stream()
-                .sorted((o1, o2) -> filesystemCompare(o1.getDirectory(), o2.getDirectory()))
-                .collect(Collectors.toList());
+                                                           .sorted((o1, o2) -> filesystemCompare(o1.getDirectory(), o2.getDirectory()))
+                                                           .collect(Collectors.toList());
         return sorted;
     }
 
@@ -59,13 +59,13 @@ public class DetailedSearchSummarizer extends BomToolEvaluationSummarizer {
         for (final BomToolEvaluation evaluation : evaluations) {
             if (evaluation.isApplicable()) {
                 final String reason = "Search: " + evaluation.getSearchabilityMessage() + " Applicable: " + evaluation.getApplicabilityMessage();
-                applicable.add(new DetailedSearchSummaryBomToolData(evaluation.getBomTool(), reason));
+                applicable.add(new DetailedSearchSummaryBomToolData(evaluation.getDetector(), reason));
             } else if (evaluation.isSearchable()) {
                 final String reason = evaluation.getApplicabilityMessage();
-                notApplicable.add(new DetailedSearchSummaryBomToolData(evaluation.getBomTool(), reason));
+                notApplicable.add(new DetailedSearchSummaryBomToolData(evaluation.getDetector(), reason));
             } else {
                 final String reason = evaluation.getSearchabilityMessage();
-                notSearchable.add(new DetailedSearchSummaryBomToolData(evaluation.getBomTool(), reason));
+                notSearchable.add(new DetailedSearchSummaryBomToolData(evaluation.getDetector(), reason));
             }
         }
 

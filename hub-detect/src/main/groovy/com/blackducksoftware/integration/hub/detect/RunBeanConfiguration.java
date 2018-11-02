@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
-import com.blackducksoftware.integration.hub.detect.tool.docker.DockerBomTool;
+import com.blackducksoftware.integration.hub.detect.tool.docker.DockerDetector;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerExtractor;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerInspectorManager;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerProperties;
@@ -144,14 +144,14 @@ public class RunBeanConfiguration {
 
     @Lazy
     @Bean
-    public DockerBomTool dockerBomTool(BomToolEnvironment bomToolEnvironment) {
+    public DockerDetector dockerBomTool(DetectorEnvironment detectorEnvironment) {
         DockerProperties dockerProperties = new DockerProperties(detectConfiguration);
 
         final String tar = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_TAR, PropertyAuthority.None);
         final String image = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE, PropertyAuthority.None);
         final boolean dockerRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED, PropertyAuthority.None);
 
-        return new DockerBomTool(bomToolEnvironment, directoryManager, dockerInspectorManager(), standardExecutableFinder(), dockerRequired, tar, image, dockerExtractor(dockerProperties));
+        return new DockerDetector(detectorEnvironment, directoryManager, dockerInspectorManager(), standardExecutableFinder(), dockerRequired, tar, image, dockerExtractor(dockerProperties));
     }
 
     @Lazy

@@ -26,7 +26,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.search;
 import java.util.List;
 import java.util.Set;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public abstract class SearchResult {
@@ -34,7 +34,8 @@ public abstract class SearchResult {
     }
 
     public abstract List<BomToolEvaluation> getBomToolEvaluations();
-    public abstract Set<BomToolGroupType> getApplicableBomTools();
+
+    public abstract Set<DetectorType> getApplicableBomTools();
 
     public abstract boolean getSuccess();
 

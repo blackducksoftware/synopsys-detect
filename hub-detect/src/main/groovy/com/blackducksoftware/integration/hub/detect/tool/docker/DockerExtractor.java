@@ -37,8 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -79,7 +78,7 @@ public class DockerExtractor {
         this.gson = gson;
     }
 
-    public Extraction extract(final BomToolType bomToolType, final File directory, final File outputDirectory, final File bashExe, final File javaExe, final String image, final String tar,
+    public Extraction extract(final File directory, final File outputDirectory, final File bashExe, final File javaExe, final String image, final String tar,
         final DockerInspectorInfo dockerInspectorInfo) {
         try {
             String imageArgument = null;
@@ -96,7 +95,7 @@ public class DockerExtractor {
             if (StringUtils.isBlank(imageArgument) || StringUtils.isBlank(imagePiece)) {
                 return new Extraction.Builder().failure("No docker image found.").build();
             } else {
-                return executeDocker(bomToolType, outputDirectory, imageArgument, imagePiece, tar, directory, javaExe, bashExe, dockerInspectorInfo);
+                return executeDocker(outputDirectory, imageArgument, imagePiece, tar, directory, javaExe, bashExe, dockerInspectorInfo);
             }
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
@@ -120,7 +119,7 @@ public class DockerExtractor {
         }
     }
 
-    private Extraction executeDocker(final BomToolType bomToolType, File outputDirectory, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File javaExe,
+    private Extraction executeDocker(File outputDirectory, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File javaExe,
         final File bashExe,
         final DockerInspectorInfo dockerInspectorInfo)
         throws IOException, ExecutableRunnerException {
@@ -155,12 +154,12 @@ public class DockerExtractor {
             }
         }
 
-        Extraction.Builder extractionBuilder = findCodeLocations(bomToolType, outputDirectory, directory, imagePiece);
+        Extraction.Builder extractionBuilder = findCodeLocations(outputDirectory, directory, imagePiece);
         extractionBuilder.metaData(DOCKER_TAR_META_DATA_KEY, scanFile);
         return extractionBuilder.build();
     }
 
-    private Extraction.Builder findCodeLocations(final BomToolType bomToolType, final File directoryToSearch, final File directory, final String imageName) {
+    private Extraction.Builder findCodeLocations(final File directoryToSearch, final File directory, final String imageName) {
         final File bdioFile = detectFileFinder.findFile(directoryToSearch, DEPENDENCIES_PATTERN);
         if (bdioFile != null) {
             SimpleBdioDocument simpleBdioDocument = null;
@@ -181,7 +180,7 @@ public class DockerExtractor {
                 final String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId;
                 final ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath);
 
-                final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.DOCKER, bomToolType, directory.toString(), projectExternalId, dependencyGraph).dockerImage(imageName).build();
+                final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectorType.DOCKER, directory.toString(), projectExternalId, dependencyGraph).dockerImage(imageName).build();
 
                 return new Extraction.Builder().success(detectCodeLocation).projectName(projectName).projectVersion(projectVersionName);
             }

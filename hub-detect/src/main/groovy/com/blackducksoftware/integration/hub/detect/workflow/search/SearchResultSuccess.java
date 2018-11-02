@@ -26,14 +26,14 @@ package com.blackducksoftware.integration.hub.detect.workflow.search;
 import java.util.List;
 import java.util.Set;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
 
 public class SearchResultSuccess extends SearchResult {
     List<BomToolEvaluation> bomToolEvaluations;
-    Set<BomToolGroupType> applicableBomTools;
+    Set<DetectorType> applicableBomTools;
 
-    public SearchResultSuccess(final List<BomToolEvaluation> bomToolEvaluations, Set<BomToolGroupType> applicableBomTools) {
+    public SearchResultSuccess(final List<BomToolEvaluation> bomToolEvaluations, Set<DetectorType> applicableBomTools) {
         this.bomToolEvaluations = bomToolEvaluations;
         this.applicableBomTools = applicableBomTools;
     }
@@ -44,7 +44,7 @@ public class SearchResultSuccess extends SearchResult {
     }
 
     @Override
-    public Set<BomToolGroupType> getApplicableBomTools() {
+    public Set<DetectorType> getApplicableBomTools() {
         return applicableBomTools;
     }
 

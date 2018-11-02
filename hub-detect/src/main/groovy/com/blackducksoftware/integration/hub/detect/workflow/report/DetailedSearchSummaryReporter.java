@@ -57,7 +57,7 @@ public class DetailedSearchSummaryReporter {
     private List<String> printDetails(final ReportWriter writer, final String prefix, final List<DetailedSearchSummaryBomToolData> details) {
         final List<String> toPrint = new ArrayList<>();
         for (final DetailedSearchSummaryBomToolData detail : details) {
-            toPrint.add(prefix + detail.getBomTool().getDescriptiveName() + ": " + detail.getReason());
+            toPrint.add(prefix + detail.getDetector().getDescriptiveName() + ": " + detail.getReason());
         }
         return toPrint;
     }

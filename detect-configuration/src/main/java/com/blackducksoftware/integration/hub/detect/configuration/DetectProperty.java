@@ -902,7 +902,7 @@ public enum DetectProperty {
 
     public final class PropertyConstants {
         @Deprecated
-        public static final String GROUP_BOMTOOL = "bomtool";
+        public static final String GROUP_BOMTOOL = "detector";
         @Deprecated
         public static final String GROUP_HUB_CONFIGURATION = "hub configuration";
 

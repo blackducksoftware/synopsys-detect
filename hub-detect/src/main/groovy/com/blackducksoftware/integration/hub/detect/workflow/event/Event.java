@@ -2,7 +2,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.event;
 
 import java.io.File;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocationResult;
@@ -19,10 +19,10 @@ public class Event {
     public static EventType<ExtractionResult> ExtractionsCompleted = new EventType(ExtractionResult.class);
     public static EventType<DetectorToolResult> BomToolsComplete = new EventType(DetectorToolResult.class);
     public static EventType<BomToolAggregateTimings> BomToolsProfiled = new EventType(BomToolAggregateTimings.class);
-    public static EventType<BomTool> ApplicableStarted = new EventType(BomTool.class);
-    public static EventType<BomTool> ApplicableEnded = new EventType(BomTool.class);
-    public static EventType<BomTool> ExtractableStarted = new EventType(BomTool.class);
-    public static EventType<BomTool> ExtractableEnded = new EventType(BomTool.class);
+    public static EventType<Detector> ApplicableStarted = new EventType(Detector.class);
+    public static EventType<Detector> ApplicableEnded = new EventType(Detector.class);
+    public static EventType<Detector> ExtractableStarted = new EventType(Detector.class);
+    public static EventType<Detector> ExtractableEnded = new EventType(Detector.class);
     public static EventType<BomToolEvaluation> ExtractionStarted = new EventType(BomToolEvaluation.class);
     public static EventType<BomToolEvaluation> ExtractionEnded = new EventType(BomToolEvaluation.class);
     public static EventType<BdioCodeLocationResult> CodeLocationsCalculated = new EventType(BdioCodeLocationResult.class);

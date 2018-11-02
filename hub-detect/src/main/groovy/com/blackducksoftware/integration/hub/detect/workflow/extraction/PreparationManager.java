@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
@@ -19,13 +19,13 @@ public class PreparationManager {
 
     private void prepare(final BomToolEvaluation result) {
         if (result.isApplicable()) {
-            eventSystem.publishEvent(Event.ExtractableStarted, result.getBomTool());
+            eventSystem.publishEvent(Event.ExtractableStarted, result.getDetector());
             try {
-                result.setExtractable(result.getBomTool().extractable());
+                result.setExtractable(result.getDetector().extractable());
             } catch (final Exception e) {
                 result.setExtractable(new ExceptionBomToolResult(e));
             }
-            eventSystem.publishEvent(Event.ExtractableEnded, result.getBomTool());
+            eventSystem.publishEvent(Event.ExtractableEnded, result.getDetector());
         }
     }
 
@@ -34,17 +34,17 @@ public class PreparationManager {
             prepare(result);
         }
 
-        final Set<BomToolGroupType> succesfulBomToolGroups = results.stream()
-                                                                 .filter(it -> it.isApplicable())
-                                                                 .filter(it -> it.isExtractable())
-                                                                 .map(it -> it.getBomTool().getBomToolGroupType())
-                                                                 .collect(Collectors.toSet());
+        final Set<DetectorType> succesfulBomToolGroups = results.stream()
+                                                             .filter(it -> it.isApplicable())
+                                                             .filter(it -> it.isExtractable())
+                                                             .map(it -> it.getDetector().getDetectorType())
+                                                             .collect(Collectors.toSet());
 
-        final Set<BomToolGroupType> failedBomToolGroups = results.stream()
-                                                              .filter(it -> it.isApplicable())
-                                                              .filter(it -> !it.isExtractable())
-                                                              .map(it -> it.getBomTool().getBomToolGroupType())
-                                                              .collect(Collectors.toSet());
+        final Set<DetectorType> failedBomToolGroups = results.stream()
+                                                          .filter(it -> it.isApplicable())
+                                                          .filter(it -> !it.isExtractable())
+                                                          .map(it -> it.getDetector().getDetectorType())
+                                                          .collect(Collectors.toSet());
 
         return new PreparationResult(succesfulBomToolGroups, failedBomToolGroups, results);
     }

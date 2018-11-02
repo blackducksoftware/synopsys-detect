@@ -39,10 +39,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
@@ -51,14 +51,14 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToo
 public class BomToolFinder {
     private final Logger logger = LoggerFactory.getLogger(BomToolFinder.class);
 
-    public List<BomToolEvaluation> findApplicableBomTools(final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
+    public List<BomToolEvaluation> findApplicableBomTools(final File initialDirectory, final BomToolFinderOptions options) throws DetectorException, DetectUserFriendlyException {
         final List<File> subDirectories = new ArrayList<>();
         subDirectories.add(initialDirectory);
-        return findApplicableBomTools(subDirectories, new HashSet<BomToolType>(), 0, options);
+        return findApplicableBomTools(subDirectories, new HashSet<Detector>(), 0, options);
     }
 
-    private List<BomToolEvaluation> findApplicableBomTools(final List<File> directoriesToSearch, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options)
-        throws BomToolException, DetectUserFriendlyException {
+    private List<BomToolEvaluation> findApplicableBomTools(final List<File> directoriesToSearch, final Set<Detector> appliedBefore, final int depth, final BomToolFinderOptions options)
+        throws DetectorException, DetectUserFriendlyException {
 
         final List<BomToolEvaluation> results = new ArrayList<>();
 
@@ -78,20 +78,20 @@ public class BomToolFinder {
 
             logger.info("Searching directory: " + directory.getPath());
 
-            final Set<BomToolGroupType> applicableTypes = new HashSet<>();
-            final Set<BomToolType> applied = new HashSet<>();
+            final Set<DetectorType> applicableTypes = new HashSet<>();
+            final Set<Detector> applied = new HashSet<>();
             final List<BomToolEvaluation> evaluations = processDirectory(directory, appliedBefore, depth, options);
             results.addAll(evaluations);
 
-            final List<BomToolType> appliedBomTools = evaluations.stream()
-                                                          .filter(it -> it.isApplicable())
-                                                          .map(it -> it.getBomTool().getBomToolType())
-                                                          .collect(Collectors.toList());
+            final List<Detector> appliedBomTools = evaluations.stream()
+                                                       .filter(it -> it.isApplicable())
+                                                       .map(it -> it.getDetector())
+                                                       .collect(Collectors.toList());
 
             applied.addAll(appliedBomTools);
 
             // TODO: Used to have a remaining bom tools and would bail early here, not sure how to go about that?
-            final Set<BomToolType> everApplied = new HashSet<>();
+            final Set<Detector> everApplied = new HashSet<>();
             everApplied.addAll(applied);
             everApplied.addAll(appliedBefore);
             final List<File> subdirectories = getSubDirectories(directory, options.getExcludedDirectories());
@@ -104,8 +104,8 @@ public class BomToolFinder {
         return results;
     }
 
-    private List<BomToolEvaluation> processDirectory(final File directory, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options) {
-        final BomToolEnvironment environment = new BomToolEnvironment(directory, appliedBefore, depth, options.getBomToolFilter(), options.getForceNestedSearch());
+    private List<BomToolEvaluation> processDirectory(final File directory, final Set<Detector> appliedBefore, final int depth, final BomToolFinderOptions options) {
+        final DetectorEnvironment environment = new DetectorEnvironment(directory, appliedBefore, depth, options.getBomToolFilter(), options.getForceNestedSearch());
         final BomToolSearchRuleSet bomToolSet = options.getBomToolSearchProvider().createBomToolSearchRuleSet(environment);
         final List<BomToolEvaluation> evaluations = options.getBomToolSearchEvaluator().evaluate(bomToolSet, options.getEventSystem());
         return evaluations;

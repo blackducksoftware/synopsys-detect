@@ -34,91 +34,91 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.BitbakeListTasksParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.bitbake.GraphParserTransformer;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.ClangLinuxPackageManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.CodeLocationAssembler;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependenciesListFileManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.DpkgPackageManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.RpmPackageManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaCliBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaCliExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaListParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.cpan.CpanCliBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.cpan.CpanCliExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.cpan.CpanListParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratLockBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratLockExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratPackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.DepPackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.GoCliBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.GoDepExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.GoInspectorManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.GoLockBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.GoVndrBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.GoVndrExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleReportParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.hex.Rebar3TreeParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.hex.RebarBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.hex.RebarExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenCliExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenCodeLocationPackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenPomBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenPomWrapperBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfileExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmPackageLockBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmShrinkwrapBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetProjectBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetSolutionBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.packagist.ComposerLockBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.packagist.ComposerLockExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearCliBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearCliExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorTreeParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipenvBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipenvExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipenvGraphParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.PythonExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.GemlockBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.GemlockExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCacheBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCacheExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnListParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockParser;
 import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
+import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeDetector;
+import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeListTasksParser;
+import com.blackducksoftware.integration.hub.detect.detector.bitbake.GraphParserTransformer;
+import com.blackducksoftware.integration.hub.detect.detector.clang.ApkPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.ClangDetector;
+import com.blackducksoftware.integration.hub.detect.detector.clang.ClangExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.clang.ClangLinuxPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.CodeLocationAssembler;
+import com.blackducksoftware.integration.hub.detect.detector.clang.DependenciesListFileManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.DpkgPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.RpmPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockDetector;
+import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockParser;
+import com.blackducksoftware.integration.hub.detect.detector.conda.CondaCliDetector;
+import com.blackducksoftware.integration.hub.detect.detector.conda.CondaCliExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.conda.CondaListParser;
+import com.blackducksoftware.integration.hub.detect.detector.cpan.CpanCliDetector;
+import com.blackducksoftware.integration.hub.detect.detector.cpan.CpanCliExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.cpan.CpanListParser;
+import com.blackducksoftware.integration.hub.detect.detector.cran.PackratLockDetector;
+import com.blackducksoftware.integration.hub.detect.detector.cran.PackratLockExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.cran.PackratPackager;
+import com.blackducksoftware.integration.hub.detect.detector.go.DepPackager;
+import com.blackducksoftware.integration.hub.detect.detector.go.GoCliDetector;
+import com.blackducksoftware.integration.hub.detect.detector.go.GoDepExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.go.GoInspectorManager;
+import com.blackducksoftware.integration.hub.detect.detector.go.GoLockDetector;
+import com.blackducksoftware.integration.hub.detect.detector.go.GoVndrDetector;
+import com.blackducksoftware.integration.hub.detect.detector.go.GoVndrExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.gradle.GradleExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.detector.gradle.GradleInspectorDetector;
+import com.blackducksoftware.integration.hub.detect.detector.gradle.GradleInspectorExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.gradle.GradleInspectorManager;
+import com.blackducksoftware.integration.hub.detect.detector.gradle.GradleReportParser;
+import com.blackducksoftware.integration.hub.detect.detector.hex.Rebar3TreeParser;
+import com.blackducksoftware.integration.hub.detect.detector.hex.RebarDetector;
+import com.blackducksoftware.integration.hub.detect.detector.hex.RebarExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.maven.MavenCliExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.maven.MavenCodeLocationPackager;
+import com.blackducksoftware.integration.hub.detect.detector.maven.MavenExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.detector.maven.MavenPomDetector;
+import com.blackducksoftware.integration.hub.detect.detector.maven.MavenPomWrapperDetector;
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmCliDetector;
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmCliExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmCliParser;
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmLockfileExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmLockfilePackager;
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmPackageLockDetector;
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmShrinkwrapDetector;
+import com.blackducksoftware.integration.hub.detect.detector.nuget.NugetInspectorExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.nuget.NugetInspectorManager;
+import com.blackducksoftware.integration.hub.detect.detector.nuget.NugetInspectorPackager;
+import com.blackducksoftware.integration.hub.detect.detector.nuget.NugetProjectDetector;
+import com.blackducksoftware.integration.hub.detect.detector.nuget.NugetSolutionDetector;
+import com.blackducksoftware.integration.hub.detect.detector.packagist.ComposerLockDetector;
+import com.blackducksoftware.integration.hub.detect.detector.packagist.ComposerLockExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.packagist.PackagistParser;
+import com.blackducksoftware.integration.hub.detect.detector.pear.PearCliDetector;
+import com.blackducksoftware.integration.hub.detect.detector.pear.PearCliExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.pear.PearParser;
+import com.blackducksoftware.integration.hub.detect.detector.pip.PipInspectorDetector;
+import com.blackducksoftware.integration.hub.detect.detector.pip.PipInspectorExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.pip.PipInspectorManager;
+import com.blackducksoftware.integration.hub.detect.detector.pip.PipInspectorTreeParser;
+import com.blackducksoftware.integration.hub.detect.detector.pip.PipenvDetector;
+import com.blackducksoftware.integration.hub.detect.detector.pip.PipenvExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.pip.PipenvGraphParser;
+import com.blackducksoftware.integration.hub.detect.detector.pip.PythonExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.detector.rubygems.GemlockDetector;
+import com.blackducksoftware.integration.hub.detect.detector.rubygems.GemlockExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.sbt.SbtResolutionCacheDetector;
+import com.blackducksoftware.integration.hub.detect.detector.sbt.SbtResolutionCacheExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnListParser;
+import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockDetector;
+import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockParser;
 import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -165,16 +165,16 @@ public class BomToolBeanConfiguration {
     @Autowired
     public CacheableExecutableFinder cacheableExecutableFinder;
 
-    //BomToolFactory
+    //DetectorFactory
     //This is the ONLY class that should be taken from the Configuration manually.
-    //Bom tools should be accessed using the BomToolFactory which will create them through Spring.
+    //Bom tools should be accessed using the DetectorFactory which will create them through Spring.
 
     @Bean
-    public BomToolFactory bomToolFactory() {
-        return new BomToolFactory();
+    public DetectorFactory bomToolFactory() {
+        return new DetectorFactory();
     }
 
-    //BomTool-Only Dependencies
+    //Detector-Only Dependencies
     //All bom tool support classes. These are classes not actually used outside of the bom tools but are necessary for some bom tools.
 
     @Bean
@@ -441,158 +441,158 @@ public class BomToolBeanConfiguration {
     }
 
     //BomTools
-    //Should be scoped to Prototype so a new BomTool is created every time one is needed.
-    //Should only be accessed through the BomToolFactory.
+    //Should be scoped to Prototype so a new Detector is created every time one is needed.
+    //Should only be accessed through the DetectorFactory.
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public BitbakeBomTool bitbakeBomTool(final BomToolEnvironment environment) {
-        return new BitbakeBomTool(environment, detectFileFinder, detectConfiguration, bitbakeExtractor());
+    public BitbakeDetector bitbakeBomTool(final DetectorEnvironment environment) {
+        return new BitbakeDetector(environment, detectFileFinder, detectConfiguration, bitbakeExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public ClangBomTool clangBomTool(final BomToolEnvironment environment) {
-        return new ClangBomTool(environment, executableRunner, detectFileFinder, clangLinuxPackageManagers(), clangExtractor());
+    public ClangDetector clangBomTool(final DetectorEnvironment environment) {
+        return new ClangDetector(environment, executableRunner, detectFileFinder, clangLinuxPackageManagers(), clangExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public ComposerLockBomTool composerLockBomTool(final BomToolEnvironment environment) {
-        return new ComposerLockBomTool(environment, detectFileFinder, composerLockExtractor());
+    public ComposerLockDetector composerLockBomTool(final DetectorEnvironment environment) {
+        return new ComposerLockDetector(environment, detectFileFinder, composerLockExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public CondaCliBomTool condaBomTool(final BomToolEnvironment environment) {
-        return new CondaCliBomTool(environment, detectFileFinder, cacheableExecutableFinder, condaCliExtractor());
+    public CondaCliDetector condaBomTool(final DetectorEnvironment environment) {
+        return new CondaCliDetector(environment, detectFileFinder, cacheableExecutableFinder, condaCliExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public CpanCliBomTool cpanCliBomTool(final BomToolEnvironment environment) {
-        return new CpanCliBomTool(environment, detectFileFinder, cacheableExecutableFinder, cpanCliExtractor());
+    public CpanCliDetector cpanCliBomTool(final DetectorEnvironment environment) {
+        return new CpanCliDetector(environment, detectFileFinder, cacheableExecutableFinder, cpanCliExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public GemlockBomTool gemlockBomTool(final BomToolEnvironment environment) {
-        return new GemlockBomTool(environment, detectFileFinder, gemlockExtractor());
+    public GemlockDetector gemlockBomTool(final DetectorEnvironment environment) {
+        return new GemlockDetector(environment, detectFileFinder, gemlockExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public GoCliBomTool goCliBomTool(final BomToolEnvironment environment) {
-        return new GoCliBomTool(environment, detectFileFinder, cacheableExecutableFinder, goInspectorManager(), goDepExtractor());
+    public GoCliDetector goCliBomTool(final DetectorEnvironment environment) {
+        return new GoCliDetector(environment, detectFileFinder, cacheableExecutableFinder, goInspectorManager(), goDepExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public GoLockBomTool goLockBomTool(final BomToolEnvironment environment) {
-        return new GoLockBomTool(environment, detectFileFinder, cacheableExecutableFinder, goInspectorManager(), goDepExtractor());
+    public GoLockDetector goLockBomTool(final DetectorEnvironment environment) {
+        return new GoLockDetector(environment, detectFileFinder, cacheableExecutableFinder, goInspectorManager(), goDepExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public GoVndrBomTool goVndrBomTool(final BomToolEnvironment environment) {
-        return new GoVndrBomTool(environment, detectFileFinder, goVndrExtractor());
+    public GoVndrDetector goVndrBomTool(final DetectorEnvironment environment) {
+        return new GoVndrDetector(environment, detectFileFinder, goVndrExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public GradleInspectorBomTool gradleInspectorBomTool(final BomToolEnvironment environment) throws ParserConfigurationException {
-        return new GradleInspectorBomTool(environment, detectFileFinder, gradleExecutableFinder(), gradleInspectorManager(), gradleInspectorExtractor());
+    public GradleInspectorDetector gradleInspectorBomTool(final DetectorEnvironment environment) throws ParserConfigurationException {
+        return new GradleInspectorDetector(environment, detectFileFinder, gradleExecutableFinder(), gradleInspectorManager(), gradleInspectorExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public MavenPomBomTool mavenPomBomTool(final BomToolEnvironment environment) {
-        return new MavenPomBomTool(environment, detectFileFinder, mavenExecutableFinder(), mavenCliExtractor());
+    public MavenPomDetector mavenPomBomTool(final DetectorEnvironment environment) {
+        return new MavenPomDetector(environment, detectFileFinder, mavenExecutableFinder(), mavenCliExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public MavenPomWrapperBomTool mavenPomWrapperBomTool(final BomToolEnvironment environment) {
-        return new MavenPomWrapperBomTool(environment, detectFileFinder, mavenExecutableFinder(), mavenCliExtractor());
+    public MavenPomWrapperDetector mavenPomWrapperBomTool(final DetectorEnvironment environment) {
+        return new MavenPomWrapperDetector(environment, detectFileFinder, mavenExecutableFinder(), mavenCliExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public NpmCliBomTool npmCliBomTool(final BomToolEnvironment environment) {
-        return new NpmCliBomTool(environment, detectFileFinder, npmExecutableFinder(), npmCliExtractor());
+    public NpmCliDetector npmCliBomTool(final DetectorEnvironment environment) {
+        return new NpmCliDetector(environment, detectFileFinder, npmExecutableFinder(), npmCliExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public NpmPackageLockBomTool npmPackageLockBomTool(final BomToolEnvironment environment) {
-        return new NpmPackageLockBomTool(environment, detectFileFinder, npmLockfileExtractor());
+    public NpmPackageLockDetector npmPackageLockBomTool(final DetectorEnvironment environment) {
+        return new NpmPackageLockDetector(environment, detectFileFinder, npmLockfileExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public NugetProjectBomTool nugetProjectBomTool(final BomToolEnvironment environment) {
-        return new NugetProjectBomTool(environment, detectFileFinder, nugetInspectorManager(), nugetInspectorExtractor());
+    public NugetProjectDetector nugetProjectBomTool(final DetectorEnvironment environment) {
+        return new NugetProjectDetector(environment, detectFileFinder, nugetInspectorManager(), nugetInspectorExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public NpmShrinkwrapBomTool npmShrinkwrapBomTool(final BomToolEnvironment environment) {
-        return new NpmShrinkwrapBomTool(environment, detectFileFinder, npmLockfileExtractor());
+    public NpmShrinkwrapDetector npmShrinkwrapBomTool(final DetectorEnvironment environment) {
+        return new NpmShrinkwrapDetector(environment, detectFileFinder, npmLockfileExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public NugetSolutionBomTool nugetSolutionBomTool(final BomToolEnvironment environment) {
-        return new NugetSolutionBomTool(environment, detectFileFinder, nugetInspectorManager(), nugetInspectorExtractor());
+    public NugetSolutionDetector nugetSolutionBomTool(final DetectorEnvironment environment) {
+        return new NugetSolutionDetector(environment, detectFileFinder, nugetInspectorManager(), nugetInspectorExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public PackratLockBomTool packratLockBomTool(final BomToolEnvironment environment) {
-        return new PackratLockBomTool(environment, detectFileFinder, packratLockExtractor());
+    public PackratLockDetector packratLockBomTool(final DetectorEnvironment environment) {
+        return new PackratLockDetector(environment, detectFileFinder, packratLockExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public PearCliBomTool pearCliBomTool(final BomToolEnvironment environment) {
-        return new PearCliBomTool(environment, detectFileFinder, cacheableExecutableFinder, pearCliExtractor());
+    public PearCliDetector pearCliBomTool(final DetectorEnvironment environment) {
+        return new PearCliDetector(environment, detectFileFinder, cacheableExecutableFinder, pearCliExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public PipenvBomTool pipenvBomTool(final BomToolEnvironment environment) {
-        return new PipenvBomTool(environment, detectFileFinder, pythonExecutableFinder(), pipenvExtractor());
+    public PipenvDetector pipenvBomTool(final DetectorEnvironment environment) {
+        return new PipenvDetector(environment, detectFileFinder, pythonExecutableFinder(), pipenvExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public PipInspectorBomTool pipInspectorBomTool(final BomToolEnvironment environment) {
+    public PipInspectorDetector pipInspectorBomTool(final DetectorEnvironment environment) {
         //final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None);
-        return new PipInspectorBomTool(environment, detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None), detectFileFinder, pythonExecutableFinder(), pipInspectorManager(),
+        return new PipInspectorDetector(environment, detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None), detectFileFinder, pythonExecutableFinder(), pipInspectorManager(),
             pipInspectorExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public PodlockBomTool podLockBomTool(final BomToolEnvironment environment) {
-        return new PodlockBomTool(environment, detectFileFinder, podlockExtractor());
+    public PodlockDetector podLockBomTool(final DetectorEnvironment environment) {
+        return new PodlockDetector(environment, detectFileFinder, podlockExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public RebarBomTool rebarBomTool(final BomToolEnvironment environment) {
-        return new RebarBomTool(environment, detectFileFinder, cacheableExecutableFinder, rebarExtractor());
+    public RebarDetector rebarBomTool(final DetectorEnvironment environment) {
+        return new RebarDetector(environment, detectFileFinder, cacheableExecutableFinder, rebarExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public SbtResolutionCacheBomTool sbtResolutionCacheBomTool(final BomToolEnvironment environment) {
-        return new SbtResolutionCacheBomTool(environment, detectFileFinder, sbtResolutionCacheExtractor());
+    public SbtResolutionCacheDetector sbtResolutionCacheBomTool(final DetectorEnvironment environment) {
+        return new SbtResolutionCacheDetector(environment, detectFileFinder, sbtResolutionCacheExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public YarnLockBomTool yarnLockBomTool(final BomToolEnvironment environment) {
-        return new YarnLockBomTool(environment, detectFileFinder, cacheableExecutableFinder, yarnLockExtractor());
+    public YarnLockDetector yarnLockBomTool(final DetectorEnvironment environment) {
+        return new YarnLockDetector(environment, detectFileFinder, cacheableExecutableFinder, yarnLockExtractor());
     }
 }

@@ -26,17 +26,16 @@ package com.blackducksoftware.integration.hub.detect.workflow.search.rules;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
 
 public class BomToolSearchRuleBuilder {
-    private final BomTool bomTool;
+    private final Detector detector;
     private int maxDepth;
     private boolean nestable;
-    private final List<BomToolType> yieldsTo;
+    private final List<Detector> yieldsTo;
 
-    public BomToolSearchRuleBuilder(final BomTool bomTool) {
-        this.bomTool = bomTool;
+    public BomToolSearchRuleBuilder(final Detector detector) {
+        this.detector = detector;
         yieldsTo = new ArrayList<>();
     }
 
@@ -60,12 +59,12 @@ public class BomToolSearchRuleBuilder {
         return this;
     }
 
-    public BomToolSearchRuleBuilder yield(final BomToolType type) {
+    public BomToolSearchRuleBuilder yield(final Detector type) {
         this.yieldsTo.add(type);
         return this;
     }
 
     public BomToolSearchRule build() {
-        return new BomToolSearchRule(bomTool, maxDepth, nestable, yieldsTo);
+        return new BomToolSearchRule(detector, maxDepth, nestable, yieldsTo);
     }
 }

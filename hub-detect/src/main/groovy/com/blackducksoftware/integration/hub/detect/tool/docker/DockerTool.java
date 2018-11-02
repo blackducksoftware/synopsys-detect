@@ -7,10 +7,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
+import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
@@ -25,12 +25,12 @@ public class DockerTool {
         this.detectContext = detectContext;
     }
 
-    public DockerToolResult run() throws BomToolException {
+    public DockerToolResult run() throws DetectorException {
         logger.info("Preparing to run Docker.");
         DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
 
-        BomToolEnvironment bomToolEnvironment = new BomToolEnvironment(directoryManager.getSourceDirectory(), Collections.emptySet(), 0, null, false);
-        DockerBomTool dockerBomTool = detectContext.getBean(DockerBomTool.class, bomToolEnvironment);
+        DetectorEnvironment detectorEnvironment = new DetectorEnvironment(directoryManager.getSourceDirectory(), Collections.emptySet(), 0, null, false);
+        DockerDetector dockerBomTool = detectContext.getBean(DockerDetector.class, detectorEnvironment);
 
         logger.info("Checking it applies.");
         BomToolResult applicableResult = dockerBomTool.applicable();
@@ -39,7 +39,7 @@ public class DockerTool {
             BomToolResult extractableResult = dockerBomTool.extractable();
             if (extractableResult.getPassed()) {
                 logger.info("Performing the extraction.");
-                ExtractionId extractionId = new ExtractionId(BomToolGroupType.DOCKER, "docker");
+                ExtractionId extractionId = new ExtractionId(DetectorType.DOCKER, "docker");
                 Extraction extractResult = dockerBomTool.extract(extractionId);
 
                 DockerToolResult dockerToolResult = new DockerToolResult();

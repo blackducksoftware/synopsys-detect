@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolException;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
@@ -63,16 +63,16 @@ public class SearchManager {
             logger.info("Starting search for bom tools.");
             final BomToolFinder bomToolTreeWalker = new BomToolFinder();
             searchResults = bomToolTreeWalker.findApplicableBomTools(searchOptions.searchPath, findOptions);
-        } catch (final BomToolException e) {
+        } catch (final DetectorException e) {
             return new SearchResultBomToolFailed(e);
         } catch (DetectUserFriendlyException e) {
             e.printStackTrace();
         }
 
-        final Set<BomToolGroupType> applicableBomTools = searchResults.stream()
-                                                             .filter(it -> it.isApplicable())
-                                                             .map(it -> it.getBomTool().getBomToolGroupType())
-                                                             .collect(Collectors.toSet());
+        final Set<DetectorType> applicableBomTools = searchResults.stream()
+                                                         .filter(it -> it.isApplicable())
+                                                         .map(it -> it.getDetector().getDetectorType())
+                                                         .collect(Collectors.toSet());
 
         return new SearchResultSuccess(searchResults, applicableBomTools);
     }

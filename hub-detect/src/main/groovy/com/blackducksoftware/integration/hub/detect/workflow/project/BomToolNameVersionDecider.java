@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.ArbitraryNameVersionDecision;
 import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.NameVersionDecision;
 import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.PreferredBomToolDecision;
@@ -46,19 +46,19 @@ import com.synopsys.integration.util.NameVersion;
 public class BomToolNameVersionDecider {
     private final Logger logger = LoggerFactory.getLogger(BomToolNameVersionDecider.class);
 
-    public Optional<NameVersion> decideProjectNameVersion(final List<BomToolProjectInfo> projectNamePossibilities, final BomToolGroupType preferredBomToolType) {
+    public Optional<NameVersion> decideProjectNameVersion(final List<BomToolProjectInfo> projectNamePossibilities, final DetectorType preferredBomToolType) {
         final NameVersionDecision nameVersionDecision = decideProjectNameVersionFromBomTool(projectNamePossibilities, preferredBomToolType);
         nameVersionDecision.printDescription(logger);
         return nameVersionDecision.getChosenNameVersion();
     }
 
-    private NameVersionDecision decideProjectNameVersionFromBomTool(final List<BomToolProjectInfo> projectNamePossibilities, final BomToolGroupType preferredBomToolType) {
+    private NameVersionDecision decideProjectNameVersionFromBomTool(final List<BomToolProjectInfo> projectNamePossibilities, final DetectorType preferredBomToolType) {
         final NameVersionDecision decision;
 
         if (preferredBomToolType != null) {
             final List<BomToolProjectInfo> possiblePreferred = projectNamePossibilities.stream()
-                    .filter(it -> it.getBomToolType() == preferredBomToolType)
-                    .collect(Collectors.toList());
+                                                                   .filter(it -> it.getBomToolType() == preferredBomToolType)
+                                                                   .collect(Collectors.toList());
 
             final List<BomToolProjectInfo> lowestDepthPossibilities = projectNamesAtLowestDepth(possiblePreferred);
 
@@ -72,16 +72,16 @@ public class BomToolNameVersionDecider {
         } else {
             final List<BomToolProjectInfo> lowestDepthPossibilities = projectNamesAtLowestDepth(projectNamePossibilities);
 
-            final Map<BomToolGroupType, Long> lowestDepthTypeCounts = lowestDepthPossibilities.stream()
-                    .collect(Collectors.groupingBy(it -> it.getBomToolType(), Collectors.counting()));
+            final Map<DetectorType, Long> lowestDepthTypeCounts = lowestDepthPossibilities.stream()
+                                                                      .collect(Collectors.groupingBy(it -> it.getBomToolType(), Collectors.counting()));
 
-            final List<BomToolGroupType> singleInstanceLowestDepthBomTools = lowestDepthTypeCounts.entrySet().stream()
-                    .filter(it -> it.getValue() == 1)
-                    .map(it -> it.getKey())
-                    .collect(Collectors.toList());
+            final List<DetectorType> singleInstanceLowestDepthBomTools = lowestDepthTypeCounts.entrySet().stream()
+                                                                             .filter(it -> it.getValue() == 1)
+                                                                             .map(it -> it.getKey())
+                                                                             .collect(Collectors.toList());
 
             if (singleInstanceLowestDepthBomTools.size() == 1) {
-                final BomToolGroupType type = singleInstanceLowestDepthBomTools.get(0);
+                final DetectorType type = singleInstanceLowestDepthBomTools.get(0);
                 final Optional<BomToolProjectInfo> chosen = lowestDepthPossibilities.stream().filter(it -> it.getBomToolType() == type).findFirst();
 
                 if (chosen.isPresent()) {
@@ -99,14 +99,14 @@ public class BomToolNameVersionDecider {
         return decision;
     }
 
-    private NameVersionDecision decideProjectNameVersionArbitrarily(final List<BomToolProjectInfo> possibilities, final List<BomToolGroupType> bomToolOptions) {
+    private NameVersionDecision decideProjectNameVersionArbitrarily(final List<BomToolProjectInfo> possibilities, final List<DetectorType> bomToolOptions) {
         final List<BomToolProjectInfo> arbitraryOptions = possibilities.stream()
-                .filter(it -> bomToolOptions.contains(it.getBomToolType()))
-                .collect(Collectors.toList());
+                                                              .filter(it -> bomToolOptions.contains(it.getBomToolType()))
+                                                              .collect(Collectors.toList());
 
         final Optional<BomToolProjectInfo> chosen = arbitraryOptions.stream()
-                .sorted((o1, o2) -> o1.getNameVersion().getName().compareTo(o2.getNameVersion().getName()))
-                .findFirst();
+                                                        .sorted((o1, o2) -> o1.getNameVersion().getName().compareTo(o2.getNameVersion().getName()))
+                                                        .findFirst();
 
         if (chosen.isPresent()) {
             return new ArbitraryNameVersionDecision(chosen.get(), arbitraryOptions);
@@ -121,8 +121,8 @@ public class BomToolNameVersionDecider {
 
         if (bomToolProjectInfoAtLowestDepth.isPresent()) {
             lowestDepthPossibilities = projectNamePossibilities.stream()
-                    .filter(it -> it.getDepth() == bomToolProjectInfoAtLowestDepth.get().getDepth())
-                    .collect(Collectors.toList());
+                                           .filter(it -> it.getDepth() == bomToolProjectInfoAtLowestDepth.get().getDepth())
+                                           .collect(Collectors.toList());
         }
 
         return lowestDepthPossibilities;

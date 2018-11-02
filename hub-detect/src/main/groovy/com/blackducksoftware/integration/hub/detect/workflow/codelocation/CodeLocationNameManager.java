@@ -28,10 +28,10 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
 public class CodeLocationNameManager {
@@ -60,16 +60,16 @@ public class CodeLocationNameManager {
 
     public String createCodeLocationName(final DetectCodeLocation detectCodeLocation, final String detectSourcePath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String codeLocationName;
-        if (useCodeLocationOverride() && BomToolGroupType.DOCKER.equals(detectCodeLocation.getBomToolGroupType())) {
+        if (useCodeLocationOverride() && DetectorType.DOCKER.equals(detectCodeLocation.getDetectorType())) {
             codeLocationName = getNextCodeLocationOverrideName(CodeLocationType.DOCKER);
         } else if (useCodeLocationOverride()) {
             codeLocationName = getNextCodeLocationOverrideName(CodeLocationType.BOM);
-        } else if (BomToolGroupType.DOCKER.equals(detectCodeLocation.getBomToolGroupType())) {
+        } else if (DetectorType.DOCKER.equals(detectCodeLocation.getDetectorType())) {
             codeLocationName = codeLocationNameGenerator
-                                   .createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix,
+                                   .createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getDetectorType(), prefix,
                                        suffix);
         } else {
-            codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
+            codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getDetectorType(), prefix, suffix);
         }
         codeLocationNames.add(codeLocationName);
         return codeLocationName;
