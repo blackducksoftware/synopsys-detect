@@ -31,20 +31,20 @@ import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction.ExtractionResultType;
 
-public class BomToolEvaluation {
+public class DetectorEvaluation {
     public static final String NO_MESSAGE = "Unknown";
 
     private final Detector detector;
     private final DetectorEnvironment environment;
 
-    private BomToolResult searchable;
-    private BomToolResult applicable;
-    private BomToolResult extractable;
+    private DetectorResult searchable;
+    private DetectorResult applicable;
+    private DetectorResult extractable;
 
     private ExtractionId extractionId;
     private Extraction extraction;
 
-    public BomToolEvaluation(final Detector detector, final DetectorEnvironment environment) {
+    public DetectorEvaluation(final Detector detector, final DetectorEnvironment environment) {
         this.detector = detector;
         this.environment = environment;
     }
@@ -77,7 +77,7 @@ public class BomToolEvaluation {
         return environment;
     }
 
-    public void setSearchable(final BomToolResult searchable) {
+    public void setSearchable(final DetectorResult searchable) {
         this.searchable = searchable;
     }
 
@@ -89,7 +89,7 @@ public class BomToolEvaluation {
         return getBomToolResultDescription(searchable).orElse(NO_MESSAGE);
     }
 
-    public void setApplicable(final BomToolResult applicable) {
+    public void setApplicable(final DetectorResult applicable) {
         this.applicable = applicable;
     }
 
@@ -101,7 +101,7 @@ public class BomToolEvaluation {
         return getBomToolResultDescription(applicable).orElse(NO_MESSAGE);
     }
 
-    public void setExtractable(final BomToolResult extractable) {
+    public void setExtractable(final DetectorResult extractable) {
         this.extractable = extractable;
     }
 
@@ -113,11 +113,11 @@ public class BomToolEvaluation {
         return getBomToolResultDescription(extractable).orElse(NO_MESSAGE);
     }
 
-    private Optional<String> getBomToolResultDescription(final BomToolResult bomToolResult) {
+    private Optional<String> getBomToolResultDescription(final DetectorResult detectorResult) {
         String description = null;
 
-        if (bomToolResult != null) {
-            description = bomToolResult.toDescription();
+        if (detectorResult != null) {
+            description = detectorResult.toDescription();
         }
 
         return Optional.ofNullable(description);

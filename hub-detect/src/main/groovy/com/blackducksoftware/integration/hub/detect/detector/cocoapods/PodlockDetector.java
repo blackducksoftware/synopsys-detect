@@ -31,9 +31,9 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class PodlockDetector extends Detector {
     private static final String PODFILE_LOCK_FILENAME = "Podfile.lock";
@@ -50,18 +50,18 @@ public class PodlockDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         foundPodlock = fileFinder.findFile(environment.getDirectory(), PODFILE_LOCK_FILENAME);
         if (foundPodlock == null) {
-            return new FileNotFoundBomToolResult(PODFILE_LOCK_FILENAME);
+            return new FileNotFoundDetectorResult(PODFILE_LOCK_FILENAME);
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() {
-        return new PassedBomToolResult();
+    public DetectorResult extractable() {
+        return new PassedDetectorResult();
     }
 
     @Override

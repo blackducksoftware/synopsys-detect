@@ -23,16 +23,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.result;
 
+public class ExceptionDetectorResult extends FailedDetectorResult {
+    private final Exception exception;
 
-public class ExecutableNotFoundBomToolResult extends FailedBomToolResult {
-    private final String executableName;
-
-    public ExecutableNotFoundBomToolResult(final String executableName) {
-        this.executableName = executableName;
+    public ExceptionDetectorResult(final Exception exception) {
+        this.exception = exception;
     }
 
     @Override
     public String toDescription() {
-        return "No " + executableName + " executable was found.";
+        return "Exception occured: " + exception.getMessage();
     }
 }

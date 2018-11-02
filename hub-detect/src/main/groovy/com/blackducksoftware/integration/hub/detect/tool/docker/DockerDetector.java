@@ -36,11 +36,11 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Cacheabl
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientDetectorResult;
 
 public class DockerDetector extends Detector {
     private final DirectoryManager directoryManager;
@@ -72,42 +72,42 @@ public class DockerDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         image = suppliedDockerImage;
         tar = suppliedDockerTar;
 
         if (StringUtils.isBlank(image) && StringUtils.isBlank(tar)) {
-            return new PropertyInsufficientBomToolResult();
+            return new PropertyInsufficientDetectorResult();
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() throws DetectorException {
+    public DetectorResult extractable() throws DetectorException {
         javaExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.JAVA);
         if (javaExe == null) {
-            return new ExecutableNotFoundBomToolResult("java");
+            return new ExecutableNotFoundDetectorResult("java");
         }
 
         bashExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.BASH);
         if (bashExe == null) {
-            return new ExecutableNotFoundBomToolResult("bash");
+            return new ExecutableNotFoundDetectorResult("bash");
         }
 
         dockerExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.DOCKER);
         if (dockerExe == null) {
             if (dockerPathRequired) {
-                return new ExecutableNotFoundBomToolResult("docker");
+                return new ExecutableNotFoundDetectorResult("docker");
             }
         }
 
         dockerInspectorInfo = dockerInspectorManager.getDockerInspector();
         if (dockerInspectorInfo == null) {
-            return new InspectorNotFoundBomToolResult("docker");
+            return new InspectorNotFoundDetectorResult("docker");
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override

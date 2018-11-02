@@ -37,7 +37,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 import com.blackducksoftware.integration.hub.detect.workflow.report.InfoLogReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ObjectPrinter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportConstants;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -45,17 +45,17 @@ public class ExtractionManager {
     public ExtractionManager() {
     }
 
-    public ExtractionResult performExtractions(final List<BomToolEvaluation> results) {
-        final List<BomToolEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
+    public ExtractionResult performExtractions(final List<DetectorEvaluation> results) {
+        final List<DetectorEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
 
         for (int i = 0; i < extractable.size(); i++) {
-            final BomToolEvaluation bomToolEvaluation = extractable.get(i);
+            final DetectorEvaluation detectorEvaluation = extractable.get(i);
             final String progress = Integer.toString((int) Math.floor((i * 100.0f) / extractable.size()));
             logger.info(String.format("Extracting %d of %d (%s%%)", i + 1, extractable.size(), progress));
             logger.info(ReportConstants.SEPERATOR);
 
-            final ExtractionId extractionId = new ExtractionId(bomToolEvaluation.getDetector().getDetectorType(), Integer.toString(i));
-            bomToolEvaluation.setExtractionId(extractionId);
+            final ExtractionId extractionId = new ExtractionId(detectorEvaluation.getDetector().getDetectorType(), Integer.toString(i));
+            detectorEvaluation.setExtractionId(extractionId);
 
             extract(extractable.get(i));
         }
@@ -78,7 +78,7 @@ public class ExtractionManager {
         return new ExtractionResult(codeLocations, succesfulBomToolGroups, failedBomToolGroups);
     }
 
-    private void extract(final BomToolEvaluation result) { //TODO: Replace reporting.
+    private void extract(final DetectorEvaluation result) { //TODO: Replace reporting.
 
         logger.info("Starting extraction: " + result.getDetector().getDetectorType() + " - " + result.getDetector().getName());
         logger.info("Identifier: " + result.getExtractionId().toUniqueString());

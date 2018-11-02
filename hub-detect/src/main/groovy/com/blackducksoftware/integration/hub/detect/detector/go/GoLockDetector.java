@@ -34,11 +34,11 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Cacheabl
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class GoLockDetector extends Detector {
     public static final String GOPKG_LOCK_FILENAME = "Gopkg.lock";
@@ -61,28 +61,28 @@ public class GoLockDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         final File lock = fileFinder.findFile(environment.getDirectory(), GOPKG_LOCK_FILENAME);
         if (lock == null) {
-            return new FileNotFoundBomToolResult(GOPKG_LOCK_FILENAME);
+            return new FileNotFoundDetectorResult(GOPKG_LOCK_FILENAME);
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() throws DetectorException {
+    public DetectorResult extractable() throws DetectorException {
         goExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.GO);
         if (goExe == null) {
-            return new ExecutableNotFoundBomToolResult("go");
+            return new ExecutableNotFoundDetectorResult("go");
         }
 
         goDepInspector = goInspectorManager.evaluate();
         if (goDepInspector == null) {
-            return new InspectorNotFoundBomToolResult("go");
+            return new InspectorNotFoundDetectorResult("go");
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override

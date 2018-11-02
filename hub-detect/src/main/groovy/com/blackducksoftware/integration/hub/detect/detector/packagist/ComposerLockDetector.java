@@ -31,9 +31,9 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class ComposerLockDetector extends Detector {
     public static final String COMPOSER_LOCK = "composer.lock";
@@ -52,23 +52,23 @@ public class ComposerLockDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         composerLock = fileFinder.findFile(environment.getDirectory(), COMPOSER_LOCK);
         if (composerLock == null) {
-            return new FileNotFoundBomToolResult(COMPOSER_LOCK);
+            return new FileNotFoundDetectorResult(COMPOSER_LOCK);
         }
 
         composerJson = fileFinder.findFile(environment.getDirectory(), COMPOSER_JSON);
         if (composerJson == null) {
-            return new FileNotFoundBomToolResult(COMPOSER_JSON);
+            return new FileNotFoundDetectorResult(COMPOSER_JSON);
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() {
-        return new PassedBomToolResult();
+    public DetectorResult extractable() {
+        return new PassedDetectorResult();
     }
 
     @Override

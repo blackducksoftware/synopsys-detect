@@ -32,10 +32,10 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FilesNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FilesNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class PipenvDetector extends Detector {
     public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
@@ -60,33 +60,33 @@ public class PipenvDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         pipfile = fileFinder.findFile(environment.getDirectory(), PIPFILE_FILE_NAME);
         pipfileDotLock = fileFinder.findFile(environment.getDirectory(), PIPFILE_DOT_LOCK_FILE_NAME);
 
         if (pipfile != null || pipfileDotLock != null) {
-            return new PassedBomToolResult();
+            return new PassedDetectorResult();
         } else {
-            return new FilesNotFoundBomToolResult(PIPFILE_FILE_NAME, PIPFILE_DOT_LOCK_FILE_NAME);
+            return new FilesNotFoundDetectorResult(PIPFILE_FILE_NAME, PIPFILE_DOT_LOCK_FILE_NAME);
         }
 
     }
 
     @Override
-    public BomToolResult extractable() throws DetectorException {
+    public DetectorResult extractable() throws DetectorException {
         pythonExe = pythonExecutableFinder.findPython(environment);
         if (pythonExe == null) {
-            return new ExecutableNotFoundBomToolResult("python");
+            return new ExecutableNotFoundDetectorResult("python");
         }
 
         pipenvExe = pythonExecutableFinder.findPipenv(environment);
         if (pipenvExe == null) {
-            return new ExecutableNotFoundBomToolResult("pipenv");
+            return new ExecutableNotFoundDetectorResult("pipenv");
         }
 
         setupFile = fileFinder.findFile(environment.getDirectory(), SETUPTOOLS_DEFAULT_FILE_NAME);
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override

@@ -27,18 +27,18 @@ import java.util.List;
 import java.util.Set;
 
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class PreparationResult {
     private final Set<DetectorType> failedBomToolGroups;
     private final Set<DetectorType> successfulBomToolGroups;
-    private List<BomToolEvaluation> bomToolEvaluations;
+    private List<DetectorEvaluation> detectorEvaluations;
 
     public PreparationResult(final Set<DetectorType> successfulBomToolGroups, final Set<DetectorType> failedBomToolGroups,
-        final List<BomToolEvaluation> bomToolEvaluations) {
+        final List<DetectorEvaluation> detectorEvaluations) {
         this.failedBomToolGroups = failedBomToolGroups;
         this.successfulBomToolGroups = successfulBomToolGroups;
-        this.bomToolEvaluations = bomToolEvaluations;
+        this.detectorEvaluations = detectorEvaluations;
     }
 
     public boolean getSuccess() {
@@ -53,7 +53,7 @@ public class PreparationResult {
         return failedBomToolGroups;
     }
 
-    public List<BomToolEvaluation> getBomToolEvaluations() {
-        return bomToolEvaluations;
+    public List<DetectorEvaluation> getDetectorEvaluations() {
+        return detectorEvaluations;
     }
 }

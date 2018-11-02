@@ -28,11 +28,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class ExtractionSummaryReporter {
 
-    public void writeSummary(ReportWriter writer, final List<BomToolEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+    public void writeSummary(ReportWriter writer, final List<DetectorEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final ExtractionSummarizer summarizer = new ExtractionSummarizer();
 
         final List<ExtractionSummaryData> summaries = summarizer.summarize(results, codeLocationNameMap);
@@ -55,7 +55,7 @@ public class ExtractionSummaryReporter {
         ReporterUtils.printFooter(writer);
     }
 
-    private void writeEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final List<BomToolEvaluation> evaluations) {
+    private void writeEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final List<DetectorEvaluation> evaluations) {
         if (evaluations.size() > 0) {
             writer.writeLine(prefix + evaluations.stream().map(evaluation -> evaluation.getDetector().getDescriptiveName()).collect(Collectors.joining(", ")));
         }

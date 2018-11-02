@@ -31,9 +31,9 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class GoVndrDetector extends Detector {
     public static final String VNDR_CONF_FILENAME = "vendor.conf";
@@ -50,18 +50,18 @@ public class GoVndrDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         vndrConfig = fileFinder.findFile(environment.getDirectory(), VNDR_CONF_FILENAME);
         if (vndrConfig == null) {
-            return new FileNotFoundBomToolResult(VNDR_CONF_FILENAME);
+            return new FileNotFoundDetectorResult(VNDR_CONF_FILENAME);
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() {
-        return new PassedBomToolResult();
+    public DetectorResult extractable() {
+        return new PassedDetectorResult();
     }
 
     @Override

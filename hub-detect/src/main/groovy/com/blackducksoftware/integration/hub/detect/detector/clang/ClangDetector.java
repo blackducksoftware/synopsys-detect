@@ -34,10 +34,10 @@ import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class ClangDetector extends Detector {
@@ -59,22 +59,22 @@ public class ClangDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         jsonCompilationDatabaseFile = fileFinder.findFile(environment.getDirectory(), JSON_COMPILATION_DATABASE_FILENAME);
         if (jsonCompilationDatabaseFile == null) {
-            return new FileNotFoundBomToolResult(JSON_COMPILATION_DATABASE_FILENAME);
+            return new FileNotFoundDetectorResult(JSON_COMPILATION_DATABASE_FILENAME);
         }
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() throws DetectorException {
+    public DetectorResult extractable() throws DetectorException {
         try {
             selectedPkgMgr = findPkgMgr(environment.getDirectory());
         } catch (final IntegrationException e) {
-            return new ExecutableNotFoundBomToolResult("supported Linux package manager");
+            return new ExecutableNotFoundDetectorResult("supported Linux package manager");
         }
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override

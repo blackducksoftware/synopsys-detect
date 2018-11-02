@@ -90,7 +90,7 @@ public class BdioManager {
             final List<File> createdBdioFiles = createBdioFiles(codeLocationResult.getBdioCodeLocations(), projectNameVersion);
 
             return new BdioResult(codeLocationResult.getBdioCodeLocations(), createdBdioFiles);
-            //reportManager.codeLocationsCompleted(searchResult.getBomToolEvaluations(), codeLocationResult.getCodeLocationNames());
+            //reportManager.codeLocationsCompleted(searchResult.getDetectorEvaluations(), codeLocationResult.getCodeLocationNames());
         } else {
             logger.info("Creating aggregate bdio file.");
             final File aggregateBdioFile = createAggregateBdioFile(codeLocations, projectNameVersion);

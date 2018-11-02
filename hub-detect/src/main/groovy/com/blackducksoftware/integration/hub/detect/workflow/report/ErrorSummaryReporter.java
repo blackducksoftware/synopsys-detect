@@ -25,11 +25,11 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class ErrorSummaryReporter {
 
-    public void writeSummary(ReportWriter writer, final List<BomToolEvaluation> results) {
+    public void writeSummary(ReportWriter writer, final List<DetectorEvaluation> results) {
         final ErrorSummarizer summarizer = new ErrorSummarizer();
 
         final List<ErrorSummaryData> summaries = summarizer.summarize(results);

@@ -23,15 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.result;
 
-public class InspectorNotFoundBomToolResult extends FailedBomToolResult {
-    private final String inspectorName;
-
-    public InspectorNotFoundBomToolResult(final String inspectorName) {
-        this.inspectorName = inspectorName;
-    }
-
+public class PropertyInsufficientDetectorResult extends FailedDetectorResult {
     @Override
     public String toDescription() {
-        return "No " + inspectorName + " inspector was found.";
+        return "The properties are insufficient to run.";
     }
 }

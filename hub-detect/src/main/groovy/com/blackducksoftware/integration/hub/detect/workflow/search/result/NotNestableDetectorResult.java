@@ -23,9 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.result;
 
-public class PropertyInsufficientBomToolResult extends FailedBomToolResult {
+public class NotNestableDetectorResult extends FailedDetectorResult {
     @Override
     public String toDescription() {
-        return "The properties are insufficient to run.";
+        return "Not nestable and a bom tool already applied in parent directory.";
     }
 }

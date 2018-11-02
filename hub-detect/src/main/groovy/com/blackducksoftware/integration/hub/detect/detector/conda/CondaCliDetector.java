@@ -34,10 +34,10 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Cacheabl
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class CondaCliDetector extends Detector {
     public static final String ENVIRONEMNT_YML = "environment.yml";
@@ -56,24 +56,24 @@ public class CondaCliDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         final File ymlFile = fileFinder.findFile(environment.getDirectory(), ENVIRONEMNT_YML);
         if (ymlFile == null) {
-            return new FileNotFoundBomToolResult(ENVIRONEMNT_YML);
+            return new FileNotFoundDetectorResult(ENVIRONEMNT_YML);
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() throws DetectorException {
+    public DetectorResult extractable() throws DetectorException {
         condaExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.CONDA);
 
         if (condaExe == null) {
-            return new ExecutableNotFoundBomToolResult("conda");
+            return new ExecutableNotFoundDetectorResult("conda");
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override

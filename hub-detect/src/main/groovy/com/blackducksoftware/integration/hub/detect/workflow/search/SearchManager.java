@@ -35,33 +35,33 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchEvaluator;
-import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.rules.DetectorSearchEvaluator;
+import com.blackducksoftware.integration.hub.detect.workflow.search.rules.DetectorSearchProvider;
 
 public class SearchManager {
     private final Logger logger = LoggerFactory.getLogger(SearchManager.class);
 
     private final SearchOptions searchOptions;
-    private final BomToolSearchProvider bomToolSearchProvider;
-    private final BomToolSearchEvaluator bomToolSearchEvaluator;
+    private final DetectorSearchProvider detectorSearchProvider;
+    private final DetectorSearchEvaluator detectorSearchEvaluator;
     private final EventSystem eventSystem;
 
-    public SearchManager(final SearchOptions searchOptions, final BomToolSearchProvider bomToolSearchProvider, final BomToolSearchEvaluator bomToolSearchEvaluator, EventSystem eventSystem) { //TODO: replace bom tool profiling
+    public SearchManager(final SearchOptions searchOptions, final DetectorSearchProvider detectorSearchProvider, final DetectorSearchEvaluator detectorSearchEvaluator, EventSystem eventSystem) { //TODO: replace bom tool profiling
         this.searchOptions = searchOptions;
-        this.bomToolSearchProvider = bomToolSearchProvider;
-        this.bomToolSearchEvaluator = bomToolSearchEvaluator;
+        this.detectorSearchProvider = detectorSearchProvider;
+        this.detectorSearchEvaluator = detectorSearchEvaluator;
         this.eventSystem = eventSystem;
     }
 
     public SearchResult performSearch() {
-        List<BomToolEvaluation> searchResults = new ArrayList<>();
+        List<DetectorEvaluation> searchResults = new ArrayList<>();
         try {
-            final BomToolFinderOptions findOptions = new BomToolFinderOptions(searchOptions.excludedDirectories, searchOptions.forceNestedSearch, searchOptions.maxDepth, searchOptions.bomToolFilter, bomToolSearchProvider,
-                bomToolSearchEvaluator, eventSystem);
+            final DetectorFinderOptions findOptions = new DetectorFinderOptions(searchOptions.excludedDirectories, searchOptions.forceNestedSearch, searchOptions.maxDepth, searchOptions.bomToolFilter, detectorSearchProvider,
+                detectorSearchEvaluator, eventSystem);
 
             logger.info("Starting search for bom tools.");
-            final BomToolFinder bomToolTreeWalker = new BomToolFinder();
+            final DetectorFinder bomToolTreeWalker = new DetectorFinder();
             searchResults = bomToolTreeWalker.findApplicableBomTools(searchOptions.searchPath, findOptions);
         } catch (final DetectorException e) {
             return new SearchResultBomToolFailed(e);

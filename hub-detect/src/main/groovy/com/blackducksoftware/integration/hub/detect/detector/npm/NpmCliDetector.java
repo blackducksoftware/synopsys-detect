@@ -32,11 +32,11 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.NpmRunInstallBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.NpmRunInstallDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class NpmCliDetector extends Detector {
     public static final String NODE_MODULES = "node_modules";
@@ -56,29 +56,29 @@ public class NpmCliDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         final File packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
         if (packageJson == null) {
-            return new FileNotFoundBomToolResult(PACKAGE_JSON);
+            return new FileNotFoundDetectorResult(PACKAGE_JSON);
         }
 
         addRelevantDiagnosticFile(packageJson);
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() throws DetectorException {
+    public DetectorResult extractable() throws DetectorException {
         final File nodeModules = fileFinder.findFile(environment.getDirectory(), NODE_MODULES);
         if (nodeModules == null) {
-            return new NpmRunInstallBomToolResult(environment.getDirectory().getAbsolutePath());
+            return new NpmRunInstallDetectorResult(environment.getDirectory().getAbsolutePath());
         }
 
         npmExe = npmExecutableFinder.findNpm(environment);
         if (npmExe == null) {
-            return new ExecutableNotFoundBomToolResult("npm");
+            return new ExecutableNotFoundDetectorResult("npm");
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override

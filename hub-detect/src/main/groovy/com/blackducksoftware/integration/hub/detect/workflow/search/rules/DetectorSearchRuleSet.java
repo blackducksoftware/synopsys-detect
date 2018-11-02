@@ -21,16 +21,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.search.result;
+package com.blackducksoftware.integration.hub.detect.workflow.search.rules;
 
-public class FailedBomToolResult extends BomToolResult {
-    @Override
-    public boolean getPassed() {
-        return false;
+import java.util.List;
+
+import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
+
+public class DetectorSearchRuleSet {
+    private final List<DetectorSearchRule> orderedBomToolRules;
+    private final DetectorEnvironment environment;
+
+    public DetectorSearchRuleSet(final List<DetectorSearchRule> orderedBomToolRules, final DetectorEnvironment environment) {
+        this.orderedBomToolRules = orderedBomToolRules;
+        this.environment = environment;
     }
 
-    @Override
-    public String toDescription() {
-        return "Passed.";
+    public List<DetectorSearchRule> getOrderedBomToolRules() {
+        return orderedBomToolRules;
+    }
+
+    public DetectorEnvironment getEnvironment() {
+        return environment;
     }
 }

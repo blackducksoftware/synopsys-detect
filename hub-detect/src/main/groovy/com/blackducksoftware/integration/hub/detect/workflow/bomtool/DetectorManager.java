@@ -15,43 +15,43 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Preparat
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectorStatus;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 
-public class BomToolManager {
+public class DetectorManager {
 
     SearchManager searchManager;
     PreparationManager preparationManager;
     ExtractionManager extractionManager;
     EventSystem eventSystem;
 
-    public BomToolManager(SearchManager searchManager, ExtractionManager extractionManager, PreparationManager preparationManager, EventSystem eventSystem) {
+    public DetectorManager(SearchManager searchManager, ExtractionManager extractionManager, PreparationManager preparationManager, EventSystem eventSystem) {
         this.searchManager = searchManager;
         this.extractionManager = extractionManager;
         this.preparationManager = preparationManager;
         this.eventSystem = eventSystem;
     }
 
-    public DetectorToolResult runBomTools() {
-        List<BomToolEvaluation> bomToolEvaluations = new ArrayList<>();
+    public DetectorToolResult runDetectors() {
+        List<DetectorEvaluation> detectorEvaluations = new ArrayList<>();
 
         //search
         SearchResult searchResult = searchManager.performSearch();
         eventSystem.publishEvent(Event.SearchCompleted, searchResult);
-        bomToolEvaluations.addAll(searchResult.getBomToolEvaluations());
+        detectorEvaluations.addAll(searchResult.getDetectorEvaluations());
 
         //prepare
-        PreparationResult preparationResult = preparationManager.prepareExtractions(bomToolEvaluations);
+        PreparationResult preparationResult = preparationManager.prepareExtractions(detectorEvaluations);
         eventSystem.publishEvent(Event.PreparationsCompleted, preparationResult);
 
         //extract
-        ExtractionResult extractionResult = extractionManager.performExtractions(bomToolEvaluations);
+        ExtractionResult extractionResult = extractionManager.performExtractions(detectorEvaluations);
         eventSystem.publishEvent(Event.ExtractionsCompleted, extractionResult);
 
         //create results
         DetectorToolResult detectorToolResult = new DetectorToolResult();
-        detectorToolResult.evaluatedBomTools = bomToolEvaluations;
+        detectorToolResult.evaluatedBomTools = detectorEvaluations;
         detectorToolResult.bomToolCodeLocations = extractionResult.getDetectCodeLocations();
 
         detectorToolResult.failedDetectorTypes.addAll(preparationResult.getFailedBomToolTypes());

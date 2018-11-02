@@ -14,7 +14,7 @@ import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
 
 public class DockerTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -33,10 +33,10 @@ public class DockerTool {
         DockerDetector dockerBomTool = detectContext.getBean(DockerDetector.class, detectorEnvironment);
 
         logger.info("Checking it applies.");
-        BomToolResult applicableResult = dockerBomTool.applicable();
+        DetectorResult applicableResult = dockerBomTool.applicable();
         if (applicableResult.getPassed()) {
             logger.info("Checking it is extractable.");
-            BomToolResult extractableResult = dockerBomTool.extractable();
+            DetectorResult extractableResult = dockerBomTool.extractable();
             if (extractableResult.getPassed()) {
                 logger.info("Performing the extraction.");
                 ExtractionId extractionId = new ExtractionId(DetectorType.DOCKER, "docker");

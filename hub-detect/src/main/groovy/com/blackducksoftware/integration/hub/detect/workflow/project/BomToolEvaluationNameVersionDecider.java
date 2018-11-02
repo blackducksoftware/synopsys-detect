@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 import com.synopsys.integration.util.NameVersion;
 
 public class BomToolEvaluationNameVersionDecider {
@@ -21,7 +21,7 @@ public class BomToolEvaluationNameVersionDecider {
         this.bomToolNameVersionDecider = bomToolNameVersionDecider;
     }
 
-    public Optional<NameVersion> decideSuggestion(final List<BomToolEvaluation> bomToolEvaluations, String projectBomTool) {
+    public Optional<NameVersion> decideSuggestion(final List<DetectorEvaluation> detectorEvaluations, String projectBomTool) {
         DetectorType preferredBomToolType = null;
         if (StringUtils.isNotBlank(projectBomTool)) {
             final String projectBomToolFixed = projectBomTool.toUpperCase();
@@ -32,12 +32,12 @@ public class BomToolEvaluationNameVersionDecider {
             }
         }
 
-        final List<BomToolProjectInfo> allBomToolProjectInfo = transformIntoProjectInfo(bomToolEvaluations);
+        final List<BomToolProjectInfo> allBomToolProjectInfo = transformIntoProjectInfo(detectorEvaluations);
         return bomToolNameVersionDecider.decideProjectNameVersion(allBomToolProjectInfo, preferredBomToolType);
     }
 
-    private List<BomToolProjectInfo> transformIntoProjectInfo(final List<BomToolEvaluation> bomToolEvaluations) {
-        return bomToolEvaluations.stream()
+    private List<BomToolProjectInfo> transformIntoProjectInfo(final List<DetectorEvaluation> detectorEvaluations) {
+        return detectorEvaluations.stream()
                    .filter(it -> it.wasExtractionSuccessful())
                    .filter(it -> it.getExtraction().projectName != null)
                    .map(it -> {

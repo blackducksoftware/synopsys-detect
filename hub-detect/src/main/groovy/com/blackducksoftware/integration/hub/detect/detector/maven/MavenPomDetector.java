@@ -31,10 +31,10 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class MavenPomDetector extends Detector {
     public static final String POM_FILENAME = "pom.xml";
@@ -53,24 +53,24 @@ public class MavenPomDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         final File pom = fileFinder.findFile(environment.getDirectory(), POM_FILENAME);
         if (pom == null) {
-            return new FileNotFoundBomToolResult(POM_FILENAME);
+            return new FileNotFoundDetectorResult(POM_FILENAME);
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() {
+    public DetectorResult extractable() {
         mavenExe = mavenExecutableFinder.findMaven(environment);
 
         if (mavenExe == null) {
-            return new ExecutableNotFoundBomToolResult("mvn");
+            return new ExecutableNotFoundDetectorResult("mvn");
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override

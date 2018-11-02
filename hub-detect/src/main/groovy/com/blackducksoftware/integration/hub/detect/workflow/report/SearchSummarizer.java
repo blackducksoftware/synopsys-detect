@@ -30,11 +30,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.detector.Detector;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class SearchSummarizer extends BomToolEvaluationSummarizer {
-    public List<SearchSummaryData> summarize(final List<BomToolEvaluation> bomToolEvaluations) {
-        final Map<File, List<BomToolEvaluation>> byDirectory = groupByDirectory(bomToolEvaluations);
+    public List<SearchSummaryData> summarize(final List<DetectorEvaluation> detectorEvaluations) {
+        final Map<File, List<DetectorEvaluation>> byDirectory = groupByDirectory(detectorEvaluations);
         final List<SearchSummaryData> data = createSummaries(byDirectory);
         final List<SearchSummaryData> sorted = data.stream()
                                                    .sorted((o1, o2) -> filesystemCompare(o1.getDirectory(), o2.getDirectory()))
@@ -42,7 +42,7 @@ public class SearchSummarizer extends BomToolEvaluationSummarizer {
         return sorted;
     }
 
-    private List<SearchSummaryData> createSummaries(final Map<File, List<BomToolEvaluation>> byDirectory) {
+    private List<SearchSummaryData> createSummaries(final Map<File, List<DetectorEvaluation>> byDirectory) {
         return byDirectory.entrySet().stream()
                    .map(it -> createData(it.getKey().toString(), it.getValue()))
                    .filter(Optional::isPresent)
@@ -50,7 +50,7 @@ public class SearchSummarizer extends BomToolEvaluationSummarizer {
                    .collect(Collectors.toList());
     }
 
-    private Optional<SearchSummaryData> createData(final String directory, final List<BomToolEvaluation> evaluations) {
+    private Optional<SearchSummaryData> createData(final String directory, final List<DetectorEvaluation> evaluations) {
         final List<Detector> applicable = evaluations.stream()
                                               .filter(it -> it.isApplicable())
                                               .map(it -> it.getDetector())

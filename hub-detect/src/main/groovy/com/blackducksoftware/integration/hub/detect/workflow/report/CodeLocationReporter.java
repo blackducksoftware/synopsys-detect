@@ -29,16 +29,16 @@ import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 
 public class CodeLocationReporter {
-    public void writeCodeLocationReport(final ReportWriter writer, final ReportWriter writer2, final List<BomToolEvaluation> bomToolEvaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        final List<BomToolEvaluation> succesfullBomToolEvaluations = bomToolEvaluations.stream()
-                                                                         .filter(it -> it.wasExtractionSuccessful())
-                                                                         .collect(Collectors.toList());
+    public void writeCodeLocationReport(final ReportWriter writer, final ReportWriter writer2, final List<DetectorEvaluation> detectorEvaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+        final List<DetectorEvaluation> succesfullDetectorEvaluations = detectorEvaluations.stream()
+                                                                           .filter(it -> it.wasExtractionSuccessful())
+                                                                           .collect(Collectors.toList());
 
-        final List<DetectCodeLocation> codeLocationsToCount = succesfullBomToolEvaluations.stream()
+        final List<DetectCodeLocation> codeLocationsToCount = succesfullDetectorEvaluations.stream()
                                                                   .flatMap(it -> it.getExtraction().codeLocations.stream())
                                                                   .collect(Collectors.toList());
 
@@ -46,12 +46,12 @@ public class CodeLocationReporter {
         final Map<DetectCodeLocation, Integer> dependencyCounts = counter.countCodeLocations(codeLocationsToCount);
         final Map<DetectorType, Integer> dependencyAggregates = counter.aggregateCountsByGroup(dependencyCounts);
 
-        succesfullBomToolEvaluations.forEach(it -> writeBomToolEvaluationDetails(writer, it, dependencyCounts, codeLocationNameMap));
+        succesfullDetectorEvaluations.forEach(it -> writeBomToolEvaluationDetails(writer, it, dependencyCounts, codeLocationNameMap));
         writeBomToolCounts(writer2, dependencyAggregates);
 
     }
 
-    private void writeBomToolEvaluationDetails(final ReportWriter writer, final BomToolEvaluation evaluation, final Map<DetectCodeLocation, Integer> dependencyCounts, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+    private void writeBomToolEvaluationDetails(final ReportWriter writer, final DetectorEvaluation evaluation, final Map<DetectCodeLocation, Integer> dependencyCounts, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         for (final DetectCodeLocation codeLocation : evaluation.getExtraction().codeLocations) {
             writeCodeLocationDetails(writer, codeLocation, dependencyCounts.get(codeLocation), codeLocationNameMap.get(codeLocation), evaluation.getExtractionId().toUniqueString());
         }

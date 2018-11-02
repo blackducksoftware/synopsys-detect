@@ -25,16 +25,17 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class OverviewSummaryData {
     private final String directory;
-    private final List<BomToolEvaluation> applicable;
-    private final List<BomToolEvaluation> extractable;
-    private final List<BomToolEvaluation> extractionSuccess;
-    private final List<BomToolEvaluation> extractionFailure;
+    private final List<DetectorEvaluation> applicable;
+    private final List<DetectorEvaluation> extractable;
+    private final List<DetectorEvaluation> extractionSuccess;
+    private final List<DetectorEvaluation> extractionFailure;
 
-    public OverviewSummaryData(final String directory, final List<BomToolEvaluation> applicable, final List<BomToolEvaluation> extractable, final List<BomToolEvaluation> extractionSuccess, final List<BomToolEvaluation> extractionFailure) {
+    public OverviewSummaryData(final String directory, final List<DetectorEvaluation> applicable, final List<DetectorEvaluation> extractable, final List<DetectorEvaluation> extractionSuccess,
+        final List<DetectorEvaluation> extractionFailure) {
         this.directory = directory;
         this.applicable = applicable;
         this.extractable = extractable;
@@ -42,19 +43,19 @@ public class OverviewSummaryData {
         this.extractionFailure = extractionFailure;
     }
 
-    public List<BomToolEvaluation> getApplicable() {
+    public List<DetectorEvaluation> getApplicable() {
         return applicable;
     }
 
-    public List<BomToolEvaluation> getExtractable() {
+    public List<DetectorEvaluation> getExtractable() {
         return extractable;
     }
 
-    public List<BomToolEvaluation> getExtractionSuccess() {
+    public List<DetectorEvaluation> getExtractionSuccess() {
         return extractionSuccess;
     }
 
-    public List<BomToolEvaluation> getExtractionFailure() {
+    public List<DetectorEvaluation> getExtractionFailure() {
         return extractionFailure;
     }
 

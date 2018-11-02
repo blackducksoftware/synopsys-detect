@@ -13,8 +13,8 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertySource;
 import com.blackducksoftware.integration.hub.detect.detector.Detector;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
-import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
-import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchRuleSet;
+import com.blackducksoftware.integration.hub.detect.workflow.search.rules.DetectorSearchProvider;
+import com.blackducksoftware.integration.hub.detect.workflow.search.rules.DetectorSearchRuleSet;
 
 public class DetectorFactoryTest {
 
@@ -33,12 +33,12 @@ public class DetectorFactoryTest {
 
     @Test
     public void testNewBomToolsCreatedEveryTime() {
-        BomToolSearchProvider provider = runContext.getBean(BomToolSearchProvider.class);
+        DetectorSearchProvider provider = runContext.getBean(DetectorSearchProvider.class);
 
         DetectorEnvironment mockEnv = Mockito.mock(DetectorEnvironment.class);
 
-        BomToolSearchRuleSet ruleSet1 = provider.createBomToolSearchRuleSet(mockEnv);
-        BomToolSearchRuleSet ruleSet2 = provider.createBomToolSearchRuleSet(mockEnv);
+        DetectorSearchRuleSet ruleSet1 = provider.createBomToolSearchRuleSet(mockEnv);
+        DetectorSearchRuleSet ruleSet2 = provider.createBomToolSearchRuleSet(mockEnv);
 
         Detector detector1 = ruleSet1.getOrderedBomToolRules().get(0).getDetector();
         Detector detector2 = ruleSet2.getOrderedBomToolRules().get(0).getDetector();

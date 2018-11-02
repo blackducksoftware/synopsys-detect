@@ -26,11 +26,11 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class SearchSummaryReporter {
 
-    public void print(ReportWriter writer, final List<BomToolEvaluation> results) {
+    public void print(ReportWriter writer, final List<DetectorEvaluation> results) {
         final SearchSummarizer searchSummarizer = new SearchSummarizer();
         final List<SearchSummaryData> summaryData = searchSummarizer.summarize(results);
 

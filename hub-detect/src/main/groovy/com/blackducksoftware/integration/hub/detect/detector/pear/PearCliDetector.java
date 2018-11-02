@@ -34,10 +34,10 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Cacheabl
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class PearCliDetector extends Detector {
     public static final String PACKAGE_XML_FILENAME = "package.xml";
@@ -56,24 +56,24 @@ public class PearCliDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         final File packageDotXml = fileFinder.findFile(environment.getDirectory(), PACKAGE_XML_FILENAME);
         if (packageDotXml == null) {
-            return new FileNotFoundBomToolResult(PACKAGE_XML_FILENAME);
+            return new FileNotFoundDetectorResult(PACKAGE_XML_FILENAME);
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() throws DetectorException {
+    public DetectorResult extractable() throws DetectorException {
         pearExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.PEAR);
 
         if (pearExe == null) {
-            return new ExecutableNotFoundBomToolResult("pear");
+            return new ExecutableNotFoundDetectorResult("pear");
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override

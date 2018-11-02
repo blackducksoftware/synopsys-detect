@@ -10,7 +10,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolAggregateTimings;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
 
 public class Event {
@@ -23,8 +23,8 @@ public class Event {
     public static EventType<Detector> ApplicableEnded = new EventType(Detector.class);
     public static EventType<Detector> ExtractableStarted = new EventType(Detector.class);
     public static EventType<Detector> ExtractableEnded = new EventType(Detector.class);
-    public static EventType<BomToolEvaluation> ExtractionStarted = new EventType(BomToolEvaluation.class);
-    public static EventType<BomToolEvaluation> ExtractionEnded = new EventType(BomToolEvaluation.class);
+    public static EventType<DetectorEvaluation> ExtractionStarted = new EventType(DetectorEvaluation.class);
+    public static EventType<DetectorEvaluation> ExtractionEnded = new EventType(DetectorEvaluation.class);
     public static EventType<BdioCodeLocationResult> CodeLocationsCalculated = new EventType(BdioCodeLocationResult.class);
     public static EventType<ExitCodeRequest> ExitCode = new EventType(ExitCodeRequest.class);
     public static EventType<Status> StatusSummary = new EventType(Status.class);

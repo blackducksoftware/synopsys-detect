@@ -34,10 +34,10 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Cacheabl
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class RebarDetector extends Detector {
     public static final String REBAR_CONFIG = "rebar.config";
@@ -56,24 +56,24 @@ public class RebarDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         final File rebar = fileFinder.findFile(environment.getDirectory(), REBAR_CONFIG);
         if (rebar == null) {
-            return new FileNotFoundBomToolResult(REBAR_CONFIG);
+            return new FileNotFoundDetectorResult(REBAR_CONFIG);
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() throws DetectorException {
+    public DetectorResult extractable() throws DetectorException {
         rebarExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.REBAR3);
 
         if (rebarExe == null) {
-            return new ExecutableNotFoundBomToolResult("rebar");
+            return new ExecutableNotFoundDetectorResult("rebar");
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override

@@ -30,11 +30,11 @@ import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction.ExtractionResultType;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class ErrorSummarizer extends BomToolEvaluationSummarizer {
-    public List<ErrorSummaryData> summarize(final List<BomToolEvaluation> results) {
-        final Map<File, List<BomToolEvaluation>> byDirectory = groupByDirectory(results);
+    public List<ErrorSummaryData> summarize(final List<DetectorEvaluation> results) {
+        final Map<File, List<DetectorEvaluation>> byDirectory = groupByDirectory(results);
 
         final List<ErrorSummaryData> data = createSummaries(byDirectory);
 
@@ -45,23 +45,23 @@ public class ErrorSummarizer extends BomToolEvaluationSummarizer {
         return sorted;
     }
 
-    private List<ErrorSummaryData> createSummaries(final Map<File, List<BomToolEvaluation>> byDirectory) {
+    private List<ErrorSummaryData> createSummaries(final Map<File, List<DetectorEvaluation>> byDirectory) {
         return byDirectory.entrySet().stream()
                    .map(it -> createData(it.getKey().toString(), it.getValue()))
                    .collect(Collectors.toList());
 
     }
 
-    private ErrorSummaryData createData(final String directory, final List<BomToolEvaluation> evaluations) {
+    private ErrorSummaryData createData(final String directory, final List<DetectorEvaluation> evaluations) {
 
         final List<ErrorSummaryBomToolError> notExtractable = evaluations.stream()
                                                                   .filter(it -> it.isApplicable() && !it.isExtractable())
                                                                   .map(it -> new ErrorSummaryBomToolError(it.getDetector().getDescriptiveName(), it.getExtractabilityMessage()))
                                                                   .collect(Collectors.toList());
 
-        final List<BomToolEvaluation> extractions = evaluations.stream()
-                                                        .filter(it -> it.getExtraction() != null)
-                                                        .collect(Collectors.toList());
+        final List<DetectorEvaluation> extractions = evaluations.stream()
+                                                         .filter(it -> it.getExtraction() != null)
+                                                         .collect(Collectors.toList());
 
         final List<ErrorSummaryBomToolError> failure = extractions.stream()
                                                            .filter(it -> it.getExtraction().result == ExtractionResultType.FAILURE)

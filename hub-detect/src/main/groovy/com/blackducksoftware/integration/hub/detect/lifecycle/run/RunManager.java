@@ -94,7 +94,7 @@ public class RunManager {
             SearchOptions searchOptions = detectConfigurationFactory.createSearchOptions(directoryManager.getSourceDirectory());
             DetectorTool detectorTool = new DetectorTool(detectContext);
 
-            DetectorToolResult detectorToolResult = detectorTool.performBomTools(searchOptions, projectBomTool);
+            DetectorToolResult detectorToolResult = detectorTool.performDetectors(searchOptions, projectBomTool);
             runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
             runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);
             logger.info("Detector tool has finished.");

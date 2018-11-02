@@ -30,11 +30,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class DetailedSearchSummarizer extends BomToolEvaluationSummarizer {
-    public List<DetailedSearchSummaryData> summarize(final List<BomToolEvaluation> bomToolEvaluations) {
-        final Map<File, List<BomToolEvaluation>> byDirectory = groupByDirectory(bomToolEvaluations);
+    public List<DetailedSearchSummaryData> summarize(final List<DetectorEvaluation> detectorEvaluations) {
+        final Map<File, List<DetectorEvaluation>> byDirectory = groupByDirectory(detectorEvaluations);
         final List<DetailedSearchSummaryData> data = createSummaries(byDirectory);
         final List<DetailedSearchSummaryData> sorted = data.stream()
                                                            .sorted((o1, o2) -> filesystemCompare(o1.getDirectory(), o2.getDirectory()))
@@ -42,21 +42,21 @@ public class DetailedSearchSummarizer extends BomToolEvaluationSummarizer {
         return sorted;
     }
 
-    private List<DetailedSearchSummaryData> createSummaries(final Map<File, List<BomToolEvaluation>> byDirectory) {
+    private List<DetailedSearchSummaryData> createSummaries(final Map<File, List<DetectorEvaluation>> byDirectory) {
         final List<DetailedSearchSummaryData> datas = new ArrayList<>();
-        for (final Entry<File, List<BomToolEvaluation>> entry : byDirectory.entrySet()) {
+        for (final Entry<File, List<DetectorEvaluation>> entry : byDirectory.entrySet()) {
             final DetailedSearchSummaryData data = createData(entry.getKey().toString(), entry.getValue());
             datas.add(data);
         }
         return datas;
     }
 
-    private DetailedSearchSummaryData createData(final String directory, final List<BomToolEvaluation> evaluations) {
+    private DetailedSearchSummaryData createData(final String directory, final List<DetectorEvaluation> evaluations) {
         final List<DetailedSearchSummaryBomToolData> applicable = new ArrayList<>();
         final List<DetailedSearchSummaryBomToolData> notApplicable = new ArrayList<>();
         final List<DetailedSearchSummaryBomToolData> notSearchable = new ArrayList<>();
 
-        for (final BomToolEvaluation evaluation : evaluations) {
+        for (final DetectorEvaluation evaluation : evaluations) {
             if (evaluation.isApplicable()) {
                 final String reason = "Search: " + evaluation.getSearchabilityMessage() + " Applicable: " + evaluation.getApplicabilityMessage();
                 applicable.add(new DetailedSearchSummaryBomToolData(evaluation.getDetector(), reason));

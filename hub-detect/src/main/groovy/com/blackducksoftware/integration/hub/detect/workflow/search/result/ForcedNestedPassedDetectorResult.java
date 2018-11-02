@@ -23,15 +23,14 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.result;
 
-public class ExceptionBomToolResult extends FailedBomToolResult {
-    private final Exception exception;
-
-    public ExceptionBomToolResult(final Exception exception) {
-        this.exception = exception;
+public class ForcedNestedPassedDetectorResult extends DetectorResult {
+    @Override
+    public boolean getPassed() {
+        return true;
     }
 
     @Override
     public String toDescription() {
-        return "Exception occured: " + exception.getMessage();
+        return "Forced to pass because nested forced by user.";
     }
 }

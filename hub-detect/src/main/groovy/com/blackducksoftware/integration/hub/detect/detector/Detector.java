@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
 
 public abstract class Detector {
     protected DetectorEnvironment environment;
@@ -44,12 +44,12 @@ public abstract class Detector {
     /*
      * Applicable should be light-weight and should never throw an exception. Look for files, check properties, short and sweet.
      */
-    public abstract BomToolResult applicable();
+    public abstract DetectorResult applicable();
 
     /*
      * Extractable may be as heavy as needed, and may (and sometimes should) fail. Make web requests, install inspectors or run executables.
      */
-    public abstract BomToolResult extractable() throws DetectorException;
+    public abstract DetectorResult extractable() throws DetectorException;
 
     /*
      * Perform the extraction and try not to throw an exception. Instead return an extraction built with an exception.

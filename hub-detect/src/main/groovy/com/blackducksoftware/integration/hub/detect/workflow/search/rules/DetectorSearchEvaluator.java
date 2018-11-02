@@ -10,24 +10,24 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolExcludedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ForcedNestedPassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.MaxDepthExceededBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.NotNestableBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.NotSelfNestableBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.YieldedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExcludedDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ForcedNestedPassedDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.MaxDepthExceededDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.NotNestableDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.NotSelfNestableDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.YieldedDetectorResult;
 
-public class BomToolSearchEvaluator {
+public class DetectorSearchEvaluator {
 
-    public List<BomToolEvaluation> evaluate(BomToolSearchRuleSet rules, EventSystem eventSystem) {
-        final List<BomToolEvaluation> evaluations = new ArrayList<>();
+    public List<DetectorEvaluation> evaluate(DetectorSearchRuleSet rules, EventSystem eventSystem) {
+        final List<DetectorEvaluation> evaluations = new ArrayList<>();
         final List<Detector> appliedSoFar = new ArrayList<>();
-        for (final BomToolSearchRule searchRule : rules.getOrderedBomToolRules()) {
+        for (final DetectorSearchRule searchRule : rules.getOrderedBomToolRules()) {
             final Detector detector = searchRule.getDetector();
-            final BomToolEvaluation evaluation = new BomToolEvaluation(detector, rules.getEnvironment());
+            final DetectorEvaluation evaluation = new DetectorEvaluation(detector, rules.getEnvironment());
             evaluations.add(evaluation);
             evaluation.setSearchable(searchable(searchRule, appliedSoFar, rules.getEnvironment()));
             if (evaluation.isSearchable()) {
@@ -42,16 +42,16 @@ public class BomToolSearchEvaluator {
         return evaluations;
     }
 
-    public BomToolResult searchable(final BomToolSearchRule searchRules, final List<Detector> appliedSoFar, DetectorEnvironment environment) {
+    public DetectorResult searchable(final DetectorSearchRule searchRules, final List<Detector> appliedSoFar, DetectorEnvironment environment) {
         Detector detector = searchRules.getDetector();
         final DetectorType detectorType = detector.getDetectorType();
         if (!environment.getBomToolFilter().shouldInclude(detectorType.toString())) {
-            return new BomToolExcludedBomToolResult();
+            return new ExcludedDetectorResult();
         }
 
         final int maxDepth = searchRules.getMaxDepth();
         if (environment.getDepth() > maxDepth) {
-            return new MaxDepthExceededBomToolResult(environment.getDepth(), maxDepth);
+            return new MaxDepthExceededDetectorResult(environment.getDepth(), maxDepth);
         }
 
         final Set<Detector> yieldTo = appliedSoFar.stream()
@@ -59,20 +59,20 @@ public class BomToolSearchEvaluator {
                                           .collect(Collectors.toSet());
 
         if (yieldTo.size() > 0) {
-            return new YieldedBomToolResult(yieldTo);
+            return new YieldedDetectorResult(yieldTo);
         }
 
         final boolean nestable = searchRules.isNestable();
         if (environment.getForceNestedSearch()) {
-            return new ForcedNestedPassedBomToolResult();
+            return new ForcedNestedPassedDetectorResult();
         } else if (nestable) {
             if (environment.getAppliedToParent().stream().anyMatch(applied -> applied.isSame(detector))) {
-                return new NotSelfNestableBomToolResult();
+                return new NotSelfNestableDetectorResult();
             }
         } else if (!nestable && environment.getAppliedToParent().size() > 0) {
-            return new NotNestableBomToolResult();
+            return new NotNestableDetectorResult();
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 }

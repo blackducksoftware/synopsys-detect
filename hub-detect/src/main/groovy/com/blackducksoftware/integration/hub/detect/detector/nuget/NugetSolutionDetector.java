@@ -30,10 +30,10 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FilesNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FilesNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class NugetSolutionDetector extends Detector {
     static final String[] SUPPORTED_SOLUTION_PATTERNS = new String[] { "*.sln" };
@@ -52,24 +52,24 @@ public class NugetSolutionDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         for (final String filepattern : SUPPORTED_SOLUTION_PATTERNS) {
             if (fileFinder.findFile(environment.getDirectory(), filepattern) != null) {
-                return new PassedBomToolResult();
+                return new PassedDetectorResult();
             }
         }
-        return new FilesNotFoundBomToolResult(SUPPORTED_SOLUTION_PATTERNS);
+        return new FilesNotFoundDetectorResult(SUPPORTED_SOLUTION_PATTERNS);
     }
 
     @Override
-    public BomToolResult extractable() throws DetectorException {
+    public DetectorResult extractable() throws DetectorException {
         inspectorExe = nugetInspectorManager.findNugetInspector();
 
         if (inspectorExe == null) {
-            return new InspectorNotFoundBomToolResult("nuget");
+            return new InspectorNotFoundDetectorResult("nuget");
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override

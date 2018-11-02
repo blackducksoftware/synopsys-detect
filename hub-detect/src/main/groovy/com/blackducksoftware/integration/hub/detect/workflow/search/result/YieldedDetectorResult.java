@@ -23,15 +23,27 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.result;
 
-public class NpmRunInstallBomToolResult extends FailedBomToolResult {
-    private final String directoryPath;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-    public NpmRunInstallBomToolResult(final String directoryPath) {
-        this.directoryPath = directoryPath;
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
+
+public class YieldedDetectorResult extends FailedDetectorResult {
+    private final Set<Detector> yieldedTo;
+
+    public YieldedDetectorResult(final Detector yielded) {
+        yieldedTo = new HashSet<>();
+        yieldedTo.add(yielded);
+    }
+
+    public YieldedDetectorResult(final Set<Detector> yieldedTo) {
+        this.yieldedTo = yieldedTo;
     }
 
     @Override
     public String toDescription() {
-        return String.format("A package.json was located in %s, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.", directoryPath);
+        final String yielded = yieldedTo.stream().map(it -> it.getDescriptiveName()).collect(Collectors.joining(", "));
+        return "Yielded to bom tools: " + yielded;
     }
 }

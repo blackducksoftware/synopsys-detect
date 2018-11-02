@@ -23,15 +23,14 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.result;
 
-public class FileNotFoundBomToolResult extends FailedBomToolResult {
-    private final String pattern;
-
-    public FileNotFoundBomToolResult(final String pattern) {
-        this.pattern = pattern;
+public class PassedDetectorResult extends DetectorResult {
+    @Override
+    public boolean getPassed() {
+        return true;
     }
 
     @Override
     public String toDescription() {
-        return "No file was found with pattern: " + pattern;
+        return "Passed.";
     }
 }

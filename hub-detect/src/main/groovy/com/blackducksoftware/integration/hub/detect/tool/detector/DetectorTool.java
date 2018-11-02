@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolManager;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.DetectorManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
@@ -16,8 +16,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolEval
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchOptions;
-import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchEvaluator;
-import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
+import com.blackducksoftware.integration.hub.detect.workflow.search.rules.DetectorSearchEvaluator;
+import com.blackducksoftware.integration.hub.detect.workflow.search.rules.DetectorSearchProvider;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorTool {
@@ -28,22 +28,22 @@ public class DetectorTool {
         this.detectContext = detectContext;
     }
 
-    public DetectorToolResult performBomTools(SearchOptions searchOptions, String projectBomTool) {
-        logger.info("Preparing to initialize bom tools.");
+    public DetectorToolResult performDetectors(SearchOptions searchOptions, String projectBomTool) {
+        logger.info("Preparing to initialize detectors.");
         DetectorFactory detectorFactory = detectContext.getBean(DetectorFactory.class);
         EventSystem eventSystem = detectContext.getBean(EventSystem.class);
 
-        logger.info("Building bom tool system.");
-        BomToolSearchProvider bomToolSearchProvider = new BomToolSearchProvider(detectorFactory);
-        BomToolSearchEvaluator bomToolSearchEvaluator = new BomToolSearchEvaluator();
+        logger.info("Building detector system.");
+        DetectorSearchProvider detectorSearchProvider = new DetectorSearchProvider(detectorFactory);
+        DetectorSearchEvaluator detectorSearchEvaluator = new DetectorSearchEvaluator();
 
-        SearchManager searchManager = new SearchManager(searchOptions, bomToolSearchProvider, bomToolSearchEvaluator, eventSystem);
+        SearchManager searchManager = new SearchManager(searchOptions, detectorSearchProvider, detectorSearchEvaluator, eventSystem);
         PreparationManager preparationManager = new PreparationManager(eventSystem);
         ExtractionManager extractionManager = new ExtractionManager();
 
-        BomToolManager bomToolManager = new BomToolManager(searchManager, extractionManager, preparationManager, eventSystem);
+        DetectorManager detectorManager = new DetectorManager(searchManager, extractionManager, preparationManager, eventSystem);
         logger.info("Running bom tools.");
-        DetectorToolResult detectorToolResult = bomToolManager.runBomTools();
+        DetectorToolResult detectorToolResult = detectorManager.runDetectors();
         logger.info("Finished running bom tools.");
         eventSystem.publishEvent(Event.BomToolsComplete, detectorToolResult);
 

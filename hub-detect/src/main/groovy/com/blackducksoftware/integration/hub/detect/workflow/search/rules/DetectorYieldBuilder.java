@@ -21,20 +21,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.search.result;
+package com.blackducksoftware.integration.hub.detect.workflow.search.rules;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
 
-public class FilesNotFoundBomToolResult extends FailedBomToolResult {
-    private final String[] patterns;
+public class DetectorYieldBuilder {
 
-    public FilesNotFoundBomToolResult(final String... patterns) {
-        this.patterns = patterns;
+    private final Detector yieldingDetector;
+    private Detector yieldingToDetector;
+
+    public DetectorYieldBuilder(final Detector yieldingDetector) {
+        this.yieldingDetector = yieldingDetector;
     }
 
-    @Override
-    public String toDescription() {
-        return "No files were found with any of the patterns: " + Arrays.asList(patterns).stream().collect(Collectors.joining(","));
+    public DetectorYieldBuilder to(final Detector Detector) {
+        this.yieldingToDetector = Detector;
+        return this;
+    }
+
+    public Detector getYieldingDetector() {
+        return yieldingDetector;
+    }
+
+    public Detector getYieldingToDetector() {
+        return yieldingToDetector;
     }
 }

@@ -23,27 +23,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.result;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+public class FileNotFoundDetectorResult extends FailedDetectorResult {
+    private final String pattern;
 
-import com.blackducksoftware.integration.hub.detect.detector.Detector;
-
-public class YieldedBomToolResult extends FailedBomToolResult {
-    private final Set<Detector> yieldedTo;
-
-    public YieldedBomToolResult(final Detector yielded) {
-        yieldedTo = new HashSet<>();
-        yieldedTo.add(yielded);
-    }
-
-    public YieldedBomToolResult(final Set<Detector> yieldedTo) {
-        this.yieldedTo = yieldedTo;
+    public FileNotFoundDetectorResult(final String pattern) {
+        this.pattern = pattern;
     }
 
     @Override
     public String toDescription() {
-        final String yielded = yieldedTo.stream().map(it -> it.getDescriptiveName()).collect(Collectors.joining(", "));
-        return "Yielded to bom tools: " + yielded;
+        return "No file was found with pattern: " + pattern;
     }
 }

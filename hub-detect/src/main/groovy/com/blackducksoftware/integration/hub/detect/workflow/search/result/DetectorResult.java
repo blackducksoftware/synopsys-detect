@@ -23,9 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.result;
 
-public class BomToolExcludedBomToolResult extends FailedBomToolResult {
-    @Override
-    public String toDescription() {
-        return "Bom tool type was excluded.";
-    }
+public abstract class DetectorResult {
+    public abstract boolean getPassed();
+
+    public abstract String toDescription();
 }

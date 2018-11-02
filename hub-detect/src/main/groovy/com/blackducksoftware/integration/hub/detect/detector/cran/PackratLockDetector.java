@@ -31,9 +31,9 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class PackratLockDetector extends Detector {
     public static final String PACKRATLOCK_FILE_NAME = "packrat.lock";
@@ -50,18 +50,18 @@ public class PackratLockDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         packratlock = fileFinder.findFile(environment.getDirectory(), PACKRATLOCK_FILE_NAME);
         if (packratlock == null) {
-            return new FileNotFoundBomToolResult(PACKRATLOCK_FILE_NAME);
+            return new FileNotFoundDetectorResult(PACKRATLOCK_FILE_NAME);
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() {
-        return new PassedBomToolResult();
+    public DetectorResult extractable() {
+        return new PassedDetectorResult();
     }
 
     @Override

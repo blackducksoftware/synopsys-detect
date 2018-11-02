@@ -36,11 +36,11 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class PipInspectorDetector extends Detector {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -67,7 +67,7 @@ public class PipInspectorDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         setupFile = fileFinder.findFile(environment.getDirectory(), SETUPTOOLS_DEFAULT_FILE_NAME);
         final boolean hasSetups = setupFile != null;
         final boolean hasRequirements = requirementFilePath != null && StringUtils.isNotBlank(requirementFilePath);
@@ -75,31 +75,31 @@ public class PipInspectorDetector extends Detector {
             logger.warn("------------------------------------------------------------------------------------------------------");
             logger.warn("The Pip inspector has been deprecated. Please use pipenv and the Pipenv Graph inspector in the future.");
             logger.warn("------------------------------------------------------------------------------------------------------");
-            return new PassedBomToolResult();
+            return new PassedDetectorResult();
         } else {
-            return new FileNotFoundBomToolResult(SETUPTOOLS_DEFAULT_FILE_NAME);
+            return new FileNotFoundDetectorResult(SETUPTOOLS_DEFAULT_FILE_NAME);
         }
 
     }
 
     @Override
-    public BomToolResult extractable() throws DetectorException {
+    public DetectorResult extractable() throws DetectorException {
         pythonExe = pythonExecutableFinder.findPython(environment);
         if (pythonExe == null) {
-            return new ExecutableNotFoundBomToolResult("python");
+            return new ExecutableNotFoundDetectorResult("python");
         }
 
         final String pipExe = pythonExecutableFinder.findPip(environment);
         if (pipExe == null) {
-            return new ExecutableNotFoundBomToolResult("pip");
+            return new ExecutableNotFoundDetectorResult("pip");
         }
 
         pipInspector = pipInspectorManager.findPipInspector(environment);
         if (pipInspector == null) {
-            return new InspectorNotFoundBomToolResult("pip");
+            return new InspectorNotFoundDetectorResult("pip");
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override

@@ -27,13 +27,13 @@ import java.util.List;
 import java.util.Set;
 
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public abstract class SearchResult {
     public SearchResult() {
     }
 
-    public abstract List<BomToolEvaluation> getBomToolEvaluations();
+    public abstract List<DetectorEvaluation> getDetectorEvaluations();
 
     public abstract Set<DetectorType> getApplicableBomTools();
 

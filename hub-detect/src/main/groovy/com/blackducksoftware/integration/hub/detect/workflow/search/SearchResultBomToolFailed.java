@@ -30,7 +30,7 @@ import java.util.Set;
 
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class SearchResultBomToolFailed extends SearchResult {
     private final DetectorException exception;
@@ -44,7 +44,7 @@ public class SearchResultBomToolFailed extends SearchResult {
     }
 
     @Override
-    public List<BomToolEvaluation> getBomToolEvaluations() {
+    public List<DetectorEvaluation> getDetectorEvaluations() {
         return new ArrayList<>();
     }
 

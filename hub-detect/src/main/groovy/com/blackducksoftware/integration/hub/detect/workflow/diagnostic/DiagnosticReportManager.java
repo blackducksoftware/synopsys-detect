@@ -43,7 +43,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.report.OverviewSumm
 import com.blackducksoftware.integration.hub.detect.workflow.report.ProfilingReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.SearchSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class DiagnosticReportManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -101,41 +101,41 @@ public class DiagnosticReportManager {
         closeReportWriters();
     }
 
-    private List<BomToolEvaluation> completedBomToolEvaluations = null;
+    private List<DetectorEvaluation> completedDetectorEvaluations = null;
 
-    public void completedBomToolEvaluations(final List<BomToolEvaluation> bomToolEvaluations) {
-        completedBomToolEvaluations = bomToolEvaluations;
+    public void completedBomToolEvaluations(final List<DetectorEvaluation> detectorEvaluations) {
+        completedDetectorEvaluations = detectorEvaluations;
         try {
             final SearchSummaryReporter searchReporter = new SearchSummaryReporter();
-            searchReporter.print(getReportWriter(ReportTypes.SEARCH), bomToolEvaluations);
+            searchReporter.print(getReportWriter(ReportTypes.SEARCH), detectorEvaluations);
         } catch (final Exception e) {
             logger.error("Failed to write search report.", e);
         }
 
         try {
             final DetailedSearchSummaryReporter searchReporter = new DetailedSearchSummaryReporter();
-            searchReporter.print(getReportWriter(ReportTypes.SEARCH_DETAILED), bomToolEvaluations);
+            searchReporter.print(getReportWriter(ReportTypes.SEARCH_DETAILED), detectorEvaluations);
         } catch (final Exception e) {
             logger.error("Failed to write detailed search report.", e);
         }
 
         try {
             final OverviewSummaryReporter overviewSummaryReporter = new OverviewSummaryReporter();
-            overviewSummaryReporter.writeReport(getReportWriter(ReportTypes.BOM_TOOL), bomToolEvaluations);
+            overviewSummaryReporter.writeReport(getReportWriter(ReportTypes.BOM_TOOL), detectorEvaluations);
         } catch (final Exception e) {
             logger.error("Failed to write bom tool report.", e);
         }
     }
 
     public void completedCodeLocations(final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        if (completedBomToolEvaluations == null)
+        if (completedDetectorEvaluations == null)
             return;
 
         try {
             final ReportWriter clWriter = getReportWriter(ReportTypes.CODE_LOCATIONS);
             final ReportWriter dcWriter = getReportWriter(ReportTypes.DEPENDENCY_COUNTS);
             final CodeLocationReporter clReporter = new CodeLocationReporter();
-            clReporter.writeCodeLocationReport(clWriter, dcWriter, completedBomToolEvaluations, codeLocationNameMap);
+            clReporter.writeCodeLocationReport(clWriter, dcWriter, completedDetectorEvaluations, codeLocationNameMap);
         } catch (final Exception e) {
             logger.error("Failed to write code location report.", e);
         }

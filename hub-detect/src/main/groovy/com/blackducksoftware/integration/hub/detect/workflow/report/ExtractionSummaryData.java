@@ -25,17 +25,17 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class ExtractionSummaryData {
     private final String directory;
 
-    private final List<BomToolEvaluation> success;
-    private final List<BomToolEvaluation> failed;
-    private final List<BomToolEvaluation> exception;
+    private final List<DetectorEvaluation> success;
+    private final List<DetectorEvaluation> failed;
+    private final List<DetectorEvaluation> exception;
     private final List<String> codeLocationNames;
 
-    public ExtractionSummaryData(final String directory, final List<BomToolEvaluation> success, final List<BomToolEvaluation> failed, final List<BomToolEvaluation> exception, final List<String> codeLocationNames) {
+    public ExtractionSummaryData(final String directory, final List<DetectorEvaluation> success, final List<DetectorEvaluation> failed, final List<DetectorEvaluation> exception, final List<String> codeLocationNames) {
         this.directory = directory;
         this.success = success;
         this.failed = failed;
@@ -47,15 +47,15 @@ public class ExtractionSummaryData {
         return directory;
     }
 
-    public List<BomToolEvaluation> getSuccess() {
+    public List<DetectorEvaluation> getSuccess() {
         return success;
     }
 
-    public List<BomToolEvaluation> getFailed() {
+    public List<DetectorEvaluation> getFailed() {
         return failed;
     }
 
-    public List<BomToolEvaluation> getException() {
+    public List<DetectorEvaluation> getException() {
         return exception;
     }
 

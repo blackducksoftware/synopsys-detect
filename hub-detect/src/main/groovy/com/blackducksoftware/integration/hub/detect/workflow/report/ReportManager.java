@@ -30,7 +30,7 @@ import java.util.Map;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class ReportManager {
     // all entry points to reporting
@@ -57,35 +57,35 @@ public class ReportManager {
         this.searchSummaryReporter = searchSummaryReporter;
         this.errorSummaryReporter = errorSummaryReporter;
 
-        eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event.getBomToolEvaluations()));
-        eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event.getBomToolEvaluations()));
+        eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event.getDetectorEvaluations()));
+        eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event.getDetectorEvaluations()));
         eventSystem.registerListener(Event.BomToolsComplete, event -> bomToolsComplete(event.evaluatedBomTools));
         eventSystem.registerListener(Event.CodeLocationsCalculated, event -> codeLocationsCompleted(event.getCodeLocationNames()));
 
     }
 
     // Reports
-    public void searchCompleted(final List<BomToolEvaluation> bomToolEvaluations) {
-        searchSummaryReporter.print(logWriter, bomToolEvaluations);
+    public void searchCompleted(final List<DetectorEvaluation> detectorEvaluations) {
+        searchSummaryReporter.print(logWriter, detectorEvaluations);
         final DetailedSearchSummaryReporter detailedSearchSummaryReporter = new DetailedSearchSummaryReporter();
-        detailedSearchSummaryReporter.print(debugLogWriter, bomToolEvaluations);
+        detailedSearchSummaryReporter.print(debugLogWriter, detectorEvaluations);
     }
 
-    public void preparationsCompleted(final List<BomToolEvaluation> bomToolEvaluations) {
-        preparationSummaryReporter.write(logWriter, bomToolEvaluations);
+    public void preparationsCompleted(final List<DetectorEvaluation> detectorEvaluations) {
+        preparationSummaryReporter.write(logWriter, detectorEvaluations);
     }
 
-    private List<BomToolEvaluation> completedBomToolEvaluations = new ArrayList<>();
+    private List<DetectorEvaluation> completedDetectorEvaluations = new ArrayList<>();
 
-    public void bomToolsComplete(final List<BomToolEvaluation> bomToolEvaluations) {
-        completedBomToolEvaluations.addAll(bomToolEvaluations);
+    public void bomToolsComplete(final List<DetectorEvaluation> detectorEvaluations) {
+        completedDetectorEvaluations.addAll(detectorEvaluations);
     }
 
     public void codeLocationsCompleted(final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        extractionSummaryReporter.writeSummary(logWriter, completedBomToolEvaluations, codeLocationNameMap);
+        extractionSummaryReporter.writeSummary(logWriter, completedDetectorEvaluations, codeLocationNameMap);
     }
 
     public void printDetectorIssues() {
-        errorSummaryReporter.writeSummary(logWriter, completedBomToolEvaluations);
+        errorSummaryReporter.writeSummary(logWriter, completedDetectorEvaluations);
     }
 }

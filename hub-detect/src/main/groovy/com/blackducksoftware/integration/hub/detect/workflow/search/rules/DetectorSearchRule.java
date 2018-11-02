@@ -21,11 +21,38 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.search.result;
+package com.blackducksoftware.integration.hub.detect.workflow.search.rules;
 
-public class NotNestableBomToolResult extends FailedBomToolResult {
-    @Override
-    public String toDescription() {
-        return "Not nestable and a bom tool already applied in parent directory.";
+import java.util.List;
+
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
+
+public class DetectorSearchRule {
+    private final Detector detector;
+    private final int maxDepth;
+    private final boolean nestable;
+    private final List<Detector> yieldsTo;
+
+    public DetectorSearchRule(final Detector detector, final int maxDepth, final boolean nestable, final List<Detector> yieldsTo) {
+        this.detector = detector;
+        this.maxDepth = maxDepth;
+        this.nestable = nestable;
+        this.yieldsTo = yieldsTo;
+    }
+
+    public Detector getDetector() {
+        return detector;
+    }
+
+    public int getMaxDepth() {
+        return maxDepth;
+    }
+
+    public boolean isNestable() {
+        return nestable;
+    }
+
+    public List<Detector> getYieldsTo() {
+        return yieldsTo;
     }
 }

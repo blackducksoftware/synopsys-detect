@@ -27,20 +27,20 @@ import java.util.List;
 import java.util.Set;
 
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class SearchResultSuccess extends SearchResult {
-    List<BomToolEvaluation> bomToolEvaluations;
+    List<DetectorEvaluation> detectorEvaluations;
     Set<DetectorType> applicableBomTools;
 
-    public SearchResultSuccess(final List<BomToolEvaluation> bomToolEvaluations, Set<DetectorType> applicableBomTools) {
-        this.bomToolEvaluations = bomToolEvaluations;
+    public SearchResultSuccess(final List<DetectorEvaluation> detectorEvaluations, Set<DetectorType> applicableBomTools) {
+        this.detectorEvaluations = detectorEvaluations;
         this.applicableBomTools = applicableBomTools;
     }
 
     @Override
-    public List<BomToolEvaluation> getBomToolEvaluations() {
-        return bomToolEvaluations;
+    public List<DetectorEvaluation> getDetectorEvaluations() {
+        return detectorEvaluations;
     }
 
     @Override

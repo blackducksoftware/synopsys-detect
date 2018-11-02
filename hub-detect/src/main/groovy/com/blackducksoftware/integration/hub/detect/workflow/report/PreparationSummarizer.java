@@ -29,41 +29,41 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class PreparationSummarizer extends BomToolEvaluationSummarizer {
-    public List<PreparationSummaryData> summarize(final List<BomToolEvaluation> results) {
-        final Map<File, List<BomToolEvaluation>> byDirectory = groupByDirectory(results);
+    public List<PreparationSummaryData> summarize(final List<DetectorEvaluation> results) {
+        final Map<File, List<DetectorEvaluation>> byDirectory = groupByDirectory(results);
 
         final List<PreparationSummaryData> data = summarizeDirectory(byDirectory);
 
         final List<PreparationSummaryData> sorted = data.stream()
-                .sorted((o1, o2) -> filesystemCompare(o1.getDirectory(), o2.getDirectory()))
-                .collect(Collectors.toList());
+                                                        .sorted((o1, o2) -> filesystemCompare(o1.getDirectory(), o2.getDirectory()))
+                                                        .collect(Collectors.toList());
 
         return sorted;
     }
 
-    private List<PreparationSummaryData> summarizeDirectory(final Map<File, List<BomToolEvaluation>> byDirectory) {
+    private List<PreparationSummaryData> summarizeDirectory(final Map<File, List<DetectorEvaluation>> byDirectory) {
         return byDirectory.entrySet().stream()
-                .map(it -> createData(it.getKey().toString(), it.getValue()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+                   .map(it -> createData(it.getKey().toString(), it.getValue()))
+                   .filter(Optional::isPresent)
+                   .map(Optional::get)
+                   .collect(Collectors.toList());
     }
 
-    private Optional<PreparationSummaryData> createData(final String directory, final List<BomToolEvaluation> evaluations) {
-        final List<BomToolEvaluation> applicable = evaluations.stream()
-                .filter(it -> it.isApplicable())
-                .collect(Collectors.toList());
+    private Optional<PreparationSummaryData> createData(final String directory, final List<DetectorEvaluation> evaluations) {
+        final List<DetectorEvaluation> applicable = evaluations.stream()
+                                                        .filter(it -> it.isApplicable())
+                                                        .collect(Collectors.toList());
 
-        final List<BomToolEvaluation> ready = applicable.stream()
-                .filter(it -> it.isExtractable())
-                .collect(Collectors.toList());
+        final List<DetectorEvaluation> ready = applicable.stream()
+                                                   .filter(it -> it.isExtractable())
+                                                   .collect(Collectors.toList());
 
-        final List<BomToolEvaluation> failed = applicable.stream()
-                .filter(it -> !it.isExtractable())
-                .collect(Collectors.toList());
+        final List<DetectorEvaluation> failed = applicable.stream()
+                                                    .filter(it -> !it.isExtractable())
+                                                    .collect(Collectors.toList());
 
         if (ready.size() > 0 || failed.size() > 0) {
             final PreparationSummaryData data = new PreparationSummaryData(directory, ready, failed);

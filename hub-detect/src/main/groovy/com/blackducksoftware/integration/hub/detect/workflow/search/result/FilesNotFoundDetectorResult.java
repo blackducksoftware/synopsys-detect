@@ -23,14 +23,18 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.result;
 
-public class PassedBomToolResult extends BomToolResult {
-    @Override
-    public boolean getPassed() {
-        return true;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+public class FilesNotFoundDetectorResult extends FailedDetectorResult {
+    private final String[] patterns;
+
+    public FilesNotFoundDetectorResult(final String... patterns) {
+        this.patterns = patterns;
     }
 
     @Override
     public String toDescription() {
-        return "Passed.";
+        return "No files were found with any of the patterns: " + Arrays.asList(patterns).stream().collect(Collectors.joining(","));
     }
 }

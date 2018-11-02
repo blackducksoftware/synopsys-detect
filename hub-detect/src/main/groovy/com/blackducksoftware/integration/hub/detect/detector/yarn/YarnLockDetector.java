@@ -36,10 +36,10 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Cacheabl
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class YarnLockDetector extends Detector {
     private static final String YARN_LOCK_FILENAME = "yarn.lock";
@@ -59,27 +59,27 @@ public class YarnLockDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         yarnlock = fileFinder.findFile(environment.getDirectory(), YARN_LOCK_FILENAME);
         if (yarnlock == null) {
-            return new FileNotFoundBomToolResult(YARN_LOCK_FILENAME);
+            return new FileNotFoundDetectorResult(YARN_LOCK_FILENAME);
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() throws DetectorException {
+    public DetectorResult extractable() throws DetectorException {
         final File yarn = cacheableExecutableFinder.getExecutable(CacheableExecutableType.YARN);
         if (yarn != null) {
             yarnExe = yarn.toString();
         }
 
         if (StringUtils.isBlank(yarnExe)) {
-            return new ExecutableNotFoundBomToolResult("yarn");
+            return new ExecutableNotFoundDetectorResult("yarn");
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override

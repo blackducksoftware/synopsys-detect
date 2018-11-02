@@ -29,12 +29,12 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public abstract class BomToolEvaluationSummarizer {
-    protected Map<File, List<BomToolEvaluation>> groupByDirectory(final List<BomToolEvaluation> results) {
+    protected Map<File, List<DetectorEvaluation>> groupByDirectory(final List<DetectorEvaluation> results) {
         return results.stream()
-                .collect(Collectors.groupingBy(item -> item.getEnvironment().getDirectory()));
+                   .collect(Collectors.groupingBy(item -> item.getEnvironment().getDirectory()));
     }
 
     protected int filesystemCompare(final String left, final String right) {

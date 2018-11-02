@@ -34,10 +34,10 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Cacheabl
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class CpanCliDetector extends Detector {
     public static final String MAKEFILE = "Makefile.PL";
@@ -57,21 +57,21 @@ public class CpanCliDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         final File makeFile = fileFinder.findFile(environment.getDirectory(), MAKEFILE);
         if (makeFile == null) {
-            return new FileNotFoundBomToolResult(MAKEFILE);
+            return new FileNotFoundDetectorResult(MAKEFILE);
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() throws DetectorException {
+    public DetectorResult extractable() throws DetectorException {
         final File cpan = cacheableExecutableFinder.getExecutable(CacheableExecutableType.CPAN);
 
         if (cpan == null) {
-            return new ExecutableNotFoundBomToolResult("cpan");
+            return new ExecutableNotFoundDetectorResult("cpan");
         } else {
             cpanExe = cpan;
         }
@@ -79,12 +79,12 @@ public class CpanCliDetector extends Detector {
         final File cpanm = cacheableExecutableFinder.getExecutable(CacheableExecutableType.CPANM);
 
         if (cpanm == null) {
-            return new ExecutableNotFoundBomToolResult("cpanm");
+            return new ExecutableNotFoundDetectorResult("cpanm");
         } else {
             cpanmExe = cpanm;
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override

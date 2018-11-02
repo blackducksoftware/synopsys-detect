@@ -1,5 +1,5 @@
 /**
- * hub-detect
+ * detect-configuration
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,19 +21,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.search.result;
+package com.blackducksoftware.integration.hub.detect.configuration;
 
-public class MaxDepthExceededBomToolResult extends FailedBomToolResult {
-    private final int depth;
-    private final int maxDepth;
+public enum DetectorSearchExcludedDirectories {
+    BIN("bin"),
+    BUILD("build"),
+    DOT_GIT(".git"),
+    DOT_GRADLE(".gradle"),
+    NODE_MODULES("node_modules"),
+    OUT("out"),
+    PACKAGES("packages"),
+    TARGET("target");
 
-    public MaxDepthExceededBomToolResult(final int depth, final int maxDepth) {
-        this.depth = depth;
-        this.maxDepth = maxDepth;
+    public static final String DIRECTORY_NAMES = "bin, build, .git, .gradle, node_modules, out, packages, target";
+
+    private final String directoryName;
+
+    private DetectorSearchExcludedDirectories(final String directoryName) {
+        this.directoryName = directoryName;
     }
 
-    @Override
-    public String toDescription() {
-        return "Max depth of " + maxDepth + " exceeded by " + depth;
+    public String getDirectoryName() {
+        return directoryName;
     }
+
 }

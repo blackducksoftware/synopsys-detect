@@ -23,9 +23,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.result;
 
-public class NotSelfNestableBomToolResult extends FailedBomToolResult {
+public class ExecutableNotFoundDetectorResult extends FailedDetectorResult {
+    private final String executableName;
+
+    public ExecutableNotFoundDetectorResult(final String executableName) {
+        this.executableName = executableName;
+    }
+
     @Override
     public String toDescription() {
-        return "Nestable but this bom tool already applied in a parent directory.";
+        return "No " + executableName + " executable was found.";
     }
 }

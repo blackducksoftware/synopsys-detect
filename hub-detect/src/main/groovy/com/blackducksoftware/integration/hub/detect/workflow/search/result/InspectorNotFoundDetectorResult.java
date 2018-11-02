@@ -23,14 +23,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.result;
 
-public class ForcedNestedPassedBomToolResult extends BomToolResult {
-    @Override
-    public boolean getPassed() {
-        return true;
+public class InspectorNotFoundDetectorResult extends FailedDetectorResult {
+    private final String inspectorName;
+
+    public InspectorNotFoundDetectorResult(final String inspectorName) {
+        this.inspectorName = inspectorName;
     }
 
     @Override
     public String toDescription() {
-        return "Forced to pass because nested forced by user.";
+        return "No " + inspectorName + " inspector was found.";
     }
 }

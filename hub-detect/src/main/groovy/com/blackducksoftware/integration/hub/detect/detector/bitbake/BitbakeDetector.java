@@ -35,10 +35,10 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientDetectorResult;
 import com.synopsys.integration.hub.bdio.model.Forge;
 
 public class BitbakeDetector extends Detector {
@@ -58,23 +58,23 @@ public class BitbakeDetector extends Detector {
     }
 
     @Override
-    public BomToolResult applicable() {
+    public DetectorResult applicable() {
         foundBuildEnvScript = detectFileFinder.findFile(environment.getDirectory(), detectConfiguration.getProperty(DetectProperty.DETECT_INIT_BUILD_ENV_NAME, PropertyAuthority.None));
         if (foundBuildEnvScript == null) {
-            return new FileNotFoundBomToolResult(DetectProperty.DETECT_INIT_BUILD_ENV_NAME.getDefaultValue());
+            return new FileNotFoundDetectorResult(DetectProperty.DETECT_INIT_BUILD_ENV_NAME.getDefaultValue());
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override
-    public BomToolResult extractable() {
+    public DetectorResult extractable() {
         final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES, PropertyAuthority.None);
         if (packageNames == null || packageNames.length == 0) {
-            return new PropertyInsufficientBomToolResult();
+            return new PropertyInsufficientDetectorResult();
         }
 
-        return new PassedBomToolResult();
+        return new PassedDetectorResult();
     }
 
     @Override

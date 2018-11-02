@@ -137,7 +137,7 @@ public class DetectConfigurationManager {
             bomToolSearchDirectoryExclusions.add(exclusion);
         }
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS, PropertyAuthority.None)) {
-            final List<String> defaultExcludedNames = Arrays.stream(BomToolSearchExcludedDirectories.values()).map(BomToolSearchExcludedDirectories::getDirectoryName).collect(Collectors.toList());
+            final List<String> defaultExcludedNames = Arrays.stream(DetectorSearchExcludedDirectories.values()).map(DetectorSearchExcludedDirectories::getDirectoryName).collect(Collectors.toList());
             bomToolSearchDirectoryExclusions.addAll(defaultExcludedNames);
         }
     }

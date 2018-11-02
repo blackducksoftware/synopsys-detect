@@ -8,7 +8,7 @@ import java.util.Set;
 
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorToolResult {
@@ -18,6 +18,6 @@ public class DetectorToolResult {
     public Set<DetectorType> failedDetectorTypes = new HashSet<>();
     public Set<DetectorType> succesfullDetectorTypes = new HashSet<>();
 
-    public List<BomToolEvaluation> evaluatedBomTools = new ArrayList<>();
+    public List<DetectorEvaluation> evaluatedBomTools = new ArrayList<>();
 
 }

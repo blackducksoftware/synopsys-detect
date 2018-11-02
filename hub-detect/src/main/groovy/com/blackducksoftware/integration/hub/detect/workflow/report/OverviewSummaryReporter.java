@@ -26,10 +26,10 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class OverviewSummaryReporter {
-    public void writeReport(final ReportWriter writer, final List<BomToolEvaluation> results) {
+    public void writeReport(final ReportWriter writer, final List<DetectorEvaluation> results) {
         final OverviewSummarizer summarizer = new OverviewSummarizer();
 
         final List<OverviewSummaryData> summaries = summarizer.summarize(results);
@@ -61,7 +61,7 @@ public class OverviewSummaryReporter {
         writer.writeLine("");
     }
 
-    private void printEvaluations(final ReportWriter writer, final String prefix, final List<BomToolEvaluation> evaluations) {
+    private void printEvaluations(final ReportWriter writer, final String prefix, final List<DetectorEvaluation> evaluations) {
         writer.writeLine(prefix + evaluations.stream().map(it -> it.getDetector().getDescriptiveName()).sorted().collect(Collectors.joining(", ")));
     }
 }

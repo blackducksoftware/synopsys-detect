@@ -25,15 +25,15 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class PreparationSummaryData {
     private final String directory;
 
-    private final List<BomToolEvaluation> ready;
-    private final List<BomToolEvaluation> failed;
+    private final List<DetectorEvaluation> ready;
+    private final List<DetectorEvaluation> failed;
 
-    public PreparationSummaryData(final String directory, final List<BomToolEvaluation> ready, final List<BomToolEvaluation> failed) {
+    public PreparationSummaryData(final String directory, final List<DetectorEvaluation> ready, final List<DetectorEvaluation> failed) {
         this.directory = directory;
         this.ready = ready;
         this.failed = failed;
@@ -43,11 +43,11 @@ public class PreparationSummaryData {
         return directory;
     }
 
-    public List<BomToolEvaluation> getReady() {
+    public List<DetectorEvaluation> getReady() {
         return ready;
     }
 
-    public List<BomToolEvaluation> getFailed() {
+    public List<DetectorEvaluation> getFailed() {
         return failed;
     }
 }
