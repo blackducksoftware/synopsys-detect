@@ -45,8 +45,6 @@ import com.synopsys.detect.doctor.logparser.DetectLogParser;
 import com.synopsys.detect.doctor.logparser.LoggedDetectExtraction;
 import com.synopsys.detect.doctor.logparser.LoggedDetectProperty;
 
-import ch.qos.logback.core.db.dialect.PostgreSQLDialect;
-
 @SpringBootApplication
 public class BomToolApplication implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(BomToolApplication.class);

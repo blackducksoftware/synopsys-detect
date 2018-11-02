@@ -7,8 +7,6 @@ test {
 }
 
 dependencies {
-    compile project(":detect-configuration")
     compile project(":hub-detect")
 }
 
-springBoot { mainClassName = 'com.blackducksoftware.integration.hub.detect.BomToolApplication' }

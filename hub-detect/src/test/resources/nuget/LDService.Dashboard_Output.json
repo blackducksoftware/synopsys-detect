@@ -1,6 +1,6 @@
 [
   {
-    "bomToolType": "NUGET",
+    "detectorType": "NUGET",
     "sourcePath": "LDService.Dashboard.csproj",
     "bomToolProjectName": "LDService.Dashboard",
     "bomToolProjectVersionName": "1.0.0.0",

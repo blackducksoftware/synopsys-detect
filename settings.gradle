@@ -1,6 +1,5 @@
 include "hub-detect"
 include "detect-configuration"
-include "detect-doctor"
 
 rootProject.name = 'detect'
 rootProject.children.each { 

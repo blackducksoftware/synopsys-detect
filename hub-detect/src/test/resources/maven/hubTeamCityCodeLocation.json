@@ -1,6 +1,5 @@
 {
-  "bomToolGroupType": "MAVEN",
-  "bomToolType": "MAVEN_POM_CLI",
+  "detectorType": "MAVEN",
   "sourcePath": "/test/path/hub-teamcity",
   "externalId": {
     "forge": {

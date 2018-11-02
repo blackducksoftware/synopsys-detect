@@ -130,6 +130,7 @@ public class ClangExtractorTest {
 
     @Test
     public void testJsonWithArgumentsNotCommand() throws ExecutableRunnerException {
+        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         final String[] argsHello = { "gcc", "hello_world.cpp" };
         final CompileCommand compileCommandWrapperHelloWorld = createCompileCommand("src/test/resources/clang/source/hello_world.cpp", null, argsHello);
