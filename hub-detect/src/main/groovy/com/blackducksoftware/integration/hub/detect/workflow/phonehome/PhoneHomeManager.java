@@ -62,18 +62,18 @@ public abstract class PhoneHomeManager {
 
     public void startPhoneHome() {
         // hub-detect will attempt to phone home twice - once upon startup and
-        // once upon getting all the bom tool metadata.
+        // once upon getting all the detector metadata.
         //
-        // We would prefer to always wait for all the bom tool metadata, but
+        // We would prefer to always wait for all the detector metadata, but
         // sometimes there is not enough time to complete a phone home before
         // hub-detect exits (if the scanner is disabled, for example).
         safelyPhoneHome(new HashMap<>());
     }
 
-    public void startPhoneHome(final Set<DetectorType> applicableBomToolTypes) {
+    public void startPhoneHome(final Set<DetectorType> applicableDetectorTypes) {
         final Map<String, String> metadata = new HashMap<>();
-        if (applicableBomToolTypes != null) {
-            final String applicableBomToolsString = applicableBomToolTypes.stream()
+        if (applicableDetectorTypes != null) {
+            final String applicableBomToolsString = applicableDetectorTypes.stream()
                                                         .map(DetectorType::toString)
                                                         .collect(Collectors.joining(","));
             metadata.put("bomToolTypes", applicableBomToolsString);
@@ -81,11 +81,11 @@ public abstract class PhoneHomeManager {
         safelyPhoneHome(metadata);
     }
 
-    public void startPhoneHome(final Map<DetectorType, Long> applicableBomToolTimes) {
+    public void startPhoneHome(final Map<DetectorType, Long> applicableDetectorTimes) {
         final Map<String, String> metadata = new HashMap<>();
-        if (applicableBomToolTimes != null) {
-            final String applicableBomToolsString = applicableBomToolTimes.keySet().stream()
-                                                        .map(it -> String.format("%s:%s", it.toString(), applicableBomToolTimes.get(it)))
+        if (applicableDetectorTimes != null) {
+            final String applicableBomToolsString = applicableDetectorTimes.keySet().stream()
+                                                        .map(it -> String.format("%s:%s", it.toString(), applicableDetectorTimes.get(it)))
                                                         .collect(Collectors.joining(","));
             metadata.put("bomToolTypes", applicableBomToolsString);
         }

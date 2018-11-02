@@ -136,7 +136,7 @@ import freemarker.template.Configuration;
 //This configuration is NOT loaded when the application starts, but only manually when a DetectRun is needed.
 //Spring scanning should not be invoked as this should not be loaded during boot.
 @org.springframework.context.annotation.Configuration
-public class BomToolBeanConfiguration {
+public class DetectorBeanConfiguration {
     //Provided Dependencies
     @Autowired
     public Gson gson;
@@ -167,15 +167,15 @@ public class BomToolBeanConfiguration {
 
     //DetectorFactory
     //This is the ONLY class that should be taken from the Configuration manually.
-    //Bom tools should be accessed using the DetectorFactory which will create them through Spring.
+    //Detectors should be accessed using the DetectorFactory which will create them through Spring.
 
     @Bean
-    public DetectorFactory bomToolFactory() {
+    public DetectorFactory detectorFactory() {
         return new DetectorFactory();
     }
 
     //Detector-Only Dependencies
-    //All bom tool support classes. These are classes not actually used outside of the bom tools but are necessary for some bom tools.
+    //All detector support classes. These are classes not actually used outside of the bom tools but are necessary for some bom tools.
 
     @Bean
     public DependenciesListFileManager clangDependenciesListFileParser() {

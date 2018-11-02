@@ -27,24 +27,24 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 
-import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolProjectInfo;
+import com.blackducksoftware.integration.hub.detect.workflow.project.DetectorProjectInfo;
 import com.synopsys.integration.util.NameVersion;
 
 public class UniqueBomToolDecision extends NameVersionDecision {
-    private final BomToolProjectInfo chosenBomToolProjectInfo;
+    private final DetectorProjectInfo chosenDetectorProjectInfo;
 
-    public UniqueBomToolDecision(final BomToolProjectInfo chosenBomToolProjectInfo) {
-        this.chosenBomToolProjectInfo = chosenBomToolProjectInfo;
+    public UniqueBomToolDecision(final DetectorProjectInfo chosenDetectorProjectInfo) {
+        this.chosenDetectorProjectInfo = chosenDetectorProjectInfo;
     }
 
     @Override
     public Optional<NameVersion> getChosenNameVersion() {
-        return Optional.of(chosenBomToolProjectInfo.getNameVersion());
+        return Optional.of(chosenDetectorProjectInfo.getNameVersion());
     }
 
     @Override
     public void printDescription(final Logger logger) {
-        logger.info("Exactly one unique bom tool was found. Using " + chosenBomToolProjectInfo.getBomToolType().toString() + " found at depth " + Integer.toString(chosenBomToolProjectInfo.getDepth()) + " as project info.");
+        logger.info("Exactly one unique bom tool was found. Using " + chosenDetectorProjectInfo.getDetectorType().toString() + " found at depth " + Integer.toString(chosenDetectorProjectInfo.getDepth()) + " as project info.");
     }
 
 }

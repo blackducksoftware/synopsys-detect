@@ -58,7 +58,7 @@ public class RunManager {
         this.detectContext = detectContext;
     }
 
-    public void run() throws DetectUserFriendlyException, InterruptedException, IntegrationException {
+    public RunResult run() throws DetectUserFriendlyException, InterruptedException, IntegrationException {
         //TODO: Better way for run manager to get dependencies so he can be tested. (And better ways of creating his objects)
         PhoneHomeManager phoneHomeManager = detectContext.getBean(PhoneHomeManager.class);
         DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
@@ -97,6 +97,7 @@ public class RunManager {
             DetectorToolResult detectorToolResult = detectorTool.performDetectors(searchOptions, projectBomTool);
             runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
             runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);
+            runResult.addApplicableDetectors(detectorToolResult.applicableDetectorTypes);
             logger.info("Detector tool has finished.");
         }
 
@@ -175,5 +176,7 @@ public class RunManager {
         }
 
         logger.info("All tools have finished.");
+
+        return runResult;
     }
 }

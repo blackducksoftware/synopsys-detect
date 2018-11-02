@@ -47,7 +47,7 @@ public class SearchManager {
     private final DetectorSearchEvaluator detectorSearchEvaluator;
     private final EventSystem eventSystem;
 
-    public SearchManager(final SearchOptions searchOptions, final DetectorSearchProvider detectorSearchProvider, final DetectorSearchEvaluator detectorSearchEvaluator, EventSystem eventSystem) { //TODO: replace bom tool profiling
+    public SearchManager(final SearchOptions searchOptions, final DetectorSearchProvider detectorSearchProvider, final DetectorSearchEvaluator detectorSearchEvaluator, EventSystem eventSystem) {
         this.searchOptions = searchOptions;
         this.detectorSearchProvider = detectorSearchProvider;
         this.detectorSearchEvaluator = detectorSearchEvaluator;

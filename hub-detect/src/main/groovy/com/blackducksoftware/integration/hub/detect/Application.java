@@ -23,6 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect;
 
+import java.util.Optional;
+
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,7 @@ import com.blackducksoftware.integration.hub.detect.lifecycle.boot.BootFactory;
 import com.blackducksoftware.integration.hub.detect.lifecycle.boot.BootManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.boot.BootResult;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunManager;
+import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ShutdownManager;
@@ -91,6 +94,7 @@ public class Application implements ApplicationRunner {
         DetectContext detectContext = new DetectContext(detectRun);
 
         BootResult bootResult = null;
+        Optional<RunResult> runResult = Optional.empty();
         try {
             logger.info("Detect boot begin.");
             BootManager bootManager = new BootManager(new BootFactory());
@@ -105,7 +109,7 @@ public class Application implements ApplicationRunner {
             RunManager runManager = new RunManager(detectContext);
             try {
                 logger.info("Detect run begin.");
-                runManager.run();
+                runResult = Optional.ofNullable(runManager.run());
                 logger.info("Detect run completed.");
             } catch (final Exception e) {
                 exitCodeManager.requestExitCode(e);

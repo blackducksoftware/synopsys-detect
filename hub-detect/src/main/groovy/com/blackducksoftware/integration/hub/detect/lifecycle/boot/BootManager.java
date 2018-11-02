@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-import com.blackducksoftware.integration.hub.detect.BomToolBeanConfiguration;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.DetectInfoUtility;
+import com.blackducksoftware.integration.hub.detect.DetectorBeanConfiguration;
 import com.blackducksoftware.integration.hub.detect.RunBeanConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
@@ -150,7 +150,7 @@ public class BootManager {
         detectContext.registerBean(configuration);
 
         detectContext.registerConfiguration(RunBeanConfiguration.class);
-        detectContext.registerConfiguration(BomToolBeanConfiguration.class);
+        detectContext.registerConfiguration(DetectorBeanConfiguration.class);
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
         BootResult result = new BootResult();

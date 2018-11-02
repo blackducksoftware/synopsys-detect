@@ -1,5 +1,9 @@
 package com.blackducksoftware.integration.hub.detect.lifecycle.shutdown;
 
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +11,10 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.RequiredDetectorChecker;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
@@ -36,7 +43,7 @@ public class ShutdownManager {
         this.diagnosticManager = diagnosticManager;
     }
 
-    public ExitCodeType shutdown() {
+    public ExitCodeType shutdown(Optional<RunResult> runResultOptional) {
         try {
             logger.debug("Ending phone home.");
             phoneHomeManager.endPhoneHome();
@@ -61,6 +68,15 @@ public class ShutdownManager {
         } catch (final Exception e) {
             logger.debug(String.format("Error trying cleanup the run directory: %s", e.getMessage()));
         }
+
+        Set<DetectorType> detectorTypes = new HashSet<>();
+        if (runResultOptional.isPresent()) {
+            detectorTypes.addAll(runResultOptional.get().getApplicableDetectors());
+        }
+            
+        String requiredDetectors = detectConfiguration.getProperty(DetectProperty.DETECT_REQUIRED_DETECTOR_TYPES, PropertyAuthority.None);
+        RequiredDetectorChecker requiredDetectorChecker = new RequiredDetectorChecker();
+        requiredDetectorChecker.checkForMissingDetectors(requiredDetectors, );
 
         boolean printOutput = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT, PropertyAuthority.None);
 

@@ -15,6 +15,7 @@ public class DetectorToolResult {
     public Optional<NameVersion> bomToolProjectNameVersion;
     public List<DetectCodeLocation> bomToolCodeLocations;
 
+    public Set<DetectorType> applicableDetectorTypes = new HashSet<>();
     public Set<DetectorType> failedDetectorTypes = new HashSet<>();
     public Set<DetectorType> succesfullDetectorTypes = new HashSet<>();
 

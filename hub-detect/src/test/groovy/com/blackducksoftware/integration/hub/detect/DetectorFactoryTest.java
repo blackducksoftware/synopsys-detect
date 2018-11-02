@@ -27,7 +27,7 @@ public class DetectorFactoryTest {
 
         runContext = new AnnotationConfigApplicationContext();
         runContext.setDisplayName("Detect Run Test");
-        runContext.register(BomToolBeanConfiguration.class);
+        runContext.register(DetectorBeanConfiguration.class);
         runContext.refresh();
     }
 

@@ -90,7 +90,7 @@ public class DetectorFinder {
 
             applied.addAll(appliedBomTools);
 
-            // TODO: Used to have a remaining bom tools and would bail early here, not sure how to go about that?
+            // TODO: Used to have a remaining detectors and would bail early here, not sure how to go about that?
             final Set<Detector> everApplied = new HashSet<>();
             everApplied.addAll(applied);
             everApplied.addAll(appliedBefore);

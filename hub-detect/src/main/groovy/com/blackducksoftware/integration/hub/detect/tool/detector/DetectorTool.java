@@ -12,8 +12,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationManager;
-import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolEvaluationNameVersionDecider;
-import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
+import com.blackducksoftware.integration.hub.detect.workflow.project.DetectorEvaluationNameVersionDecider;
+import com.blackducksoftware.integration.hub.detect.workflow.project.DetectorNameVersionDecider;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.DetectorSearchEvaluator;
@@ -42,13 +42,13 @@ public class DetectorTool {
         ExtractionManager extractionManager = new ExtractionManager();
 
         DetectorManager detectorManager = new DetectorManager(searchManager, extractionManager, preparationManager, eventSystem);
-        logger.info("Running bom tools.");
+        logger.info("Running detectors.");
         DetectorToolResult detectorToolResult = detectorManager.runDetectors();
-        logger.info("Finished running bom tools.");
+        logger.info("Finished running detectors.");
         eventSystem.publishEvent(Event.BomToolsComplete, detectorToolResult);
 
-        BomToolEvaluationNameVersionDecider bomToolEvaluationNameVersionDecider = new BomToolEvaluationNameVersionDecider(new BomToolNameVersionDecider());
-        Optional<NameVersion> bomToolNameVersion = bomToolEvaluationNameVersionDecider.decideSuggestion(detectorToolResult.evaluatedBomTools, projectBomTool);
+        DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
+        Optional<NameVersion> bomToolNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorToolResult.evaluatedBomTools, projectBomTool);
         detectorToolResult.bomToolProjectNameVersion = bomToolNameVersion;
 
         return detectorToolResult;

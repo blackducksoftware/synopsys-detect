@@ -35,33 +35,33 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 public class RequiredDetectorChecker {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public class RequiredBomToolResult {
-        public RequiredBomToolResult(final Set<DetectorType> missingBomTools) {
-            this.missingBomTools = missingBomTools;
+    public class RequiredDetectorResult {
+        public RequiredDetectorResult(final Set<DetectorType> missingDetectors) {
+            this.missingDetectors = missingDetectors;
         }
 
-        public boolean wereBomToolsMissing() {
-            return missingBomTools.size() > 0;
+        public boolean wereDetectorsMissing() {
+            return missingDetectors.size() > 0;
         }
 
-        public Set<DetectorType> getMissingBomTools() {
-            return missingBomTools;
+        public Set<DetectorType> getMissingDetectors() {
+            return missingDetectors;
         }
 
-        private final Set<DetectorType> missingBomTools;
+        private final Set<DetectorType> missingDetectors;
     }
 
-    public RequiredBomToolResult checkForMissingBomTools(final String requiredBomToolString, final Set<DetectorType> applicableBomTools) {
-        final Set<DetectorType> required = parseRequiredBomTools(requiredBomToolString);
+    public RequiredDetectorResult checkForMissingDetectors(final String requiredDetectorsString, final Set<DetectorType> applicableDetectors) {
+        final Set<DetectorType> required = parseRequiredDetectors(requiredDetectorsString);
 
-        final Set<DetectorType> missingBomTools = required.stream()
-                                                      .filter(it -> !applicableBomTools.contains(it))
-                                                      .collect(Collectors.toSet());
+        final Set<DetectorType> missingDetectors = required.stream()
+                                                       .filter(it -> !applicableDetectors.contains(it))
+                                                       .collect(Collectors.toSet());
 
-        return new RequiredBomToolResult(missingBomTools);
+        return new RequiredDetectorResult(missingDetectors);
     }
 
-    private Set<DetectorType> parseRequiredBomTools(final String rawRequiredTypeString) {
+    private Set<DetectorType> parseRequiredDetectors(final String rawRequiredTypeString) {
         final Set<DetectorType> required = new HashSet<>();
         final String[] rawRequiredTypes = rawRequiredTypeString.split(",");
         for (final String rawType : rawRequiredTypes) {
@@ -69,7 +69,7 @@ public class RequiredDetectorChecker {
                 final DetectorType type = DetectorType.valueOf(rawType.toUpperCase());
                 required.add(type);
             } catch (IllegalArgumentException e) {
-                logger.error("Unable to parse bom tool type: " + rawType);
+                logger.error("Unable to parse detector type: " + rawType);
             }
         }
         return required;

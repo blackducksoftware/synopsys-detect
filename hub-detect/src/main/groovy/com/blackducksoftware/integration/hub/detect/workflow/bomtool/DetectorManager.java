@@ -53,6 +53,7 @@ public class DetectorManager {
         DetectorToolResult detectorToolResult = new DetectorToolResult();
         detectorToolResult.evaluatedBomTools = detectorEvaluations;
         detectorToolResult.bomToolCodeLocations = extractionResult.getDetectCodeLocations();
+        detectorToolResult.applicableDetectorTypes = searchResult.getApplicableBomTools();
 
         detectorToolResult.failedDetectorTypes.addAll(preparationResult.getFailedBomToolTypes());
         detectorToolResult.failedDetectorTypes.addAll(extractionResult.getFailedBomToolTypes());
