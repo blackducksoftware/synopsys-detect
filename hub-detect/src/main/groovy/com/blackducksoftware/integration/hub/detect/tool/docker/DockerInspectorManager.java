@@ -208,7 +208,7 @@ public class DockerInspectorManager {
             jarFile.delete();
             FileUtils.copyInputStreamToFile(jarBytesInputStream, jarFile);
         } catch (IntegrationException | IOException e) {
-            throw new DetectUserFriendlyException(String.format("There was a problem retrieving the docker inspector shell script from %s: %s", hubDockerInspectorJarUrl, e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+            throw new DetectUserFriendlyException(String.format("There was a problem retrieving the docker inspector jar file from %s: %s", hubDockerInspectorJarUrl, e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         } finally {
             ResourceUtil.closeQuietly(response);
         }
