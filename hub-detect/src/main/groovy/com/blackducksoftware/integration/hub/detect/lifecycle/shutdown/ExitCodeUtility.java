@@ -20,7 +20,7 @@ public class ExitCodeUtility {
             final DetectUserFriendlyException friendlyException = (DetectUserFriendlyException) e;
             exceptionExitCodeType = friendlyException.getExitCodeType();
         } else if (e instanceof IntegrationException) {
-            logger.error("An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Hub Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg");
+            logger.error("An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg");
             logger.debug(e.getMessage(), e);
             exceptionExitCodeType = ExitCodeType.FAILURE_GENERAL_ERROR;
         } else {

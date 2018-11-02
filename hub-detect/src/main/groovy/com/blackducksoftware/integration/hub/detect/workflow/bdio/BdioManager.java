@@ -190,7 +190,7 @@ public class BdioManager {
         final SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectNameVersion.getName(), projectNameVersion.getVersion(), projectExternalId, dependencyGraph);
 
         final String hubDetectVersion = detectInfo.getDetectVersion();
-        final SpdxCreator hubDetectCreator = SpdxCreator.createToolSpdxCreator("HubDetect", hubDetectVersion);
+        final SpdxCreator hubDetectCreator = SpdxCreator.createToolSpdxCreator("Detect", hubDetectVersion);
         simpleBdioDocument.billOfMaterials.creationInfo.setPrimarySpdxCreator(hubDetectCreator);
 
         return simpleBdioDocument;
