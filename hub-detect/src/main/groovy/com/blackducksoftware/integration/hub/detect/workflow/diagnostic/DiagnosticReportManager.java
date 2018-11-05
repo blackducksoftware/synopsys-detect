@@ -91,7 +91,7 @@ public class DiagnosticReportManager {
         this.bomToolProfiler = bomToolProfiler;
         createReports();
 
-        eventSystem.registerListener(Event.BomToolsComplete, event -> completedBomToolEvaluations(event.evaluatedBomTools));
+        eventSystem.registerListener(Event.BomToolsComplete, event -> completedBomToolEvaluations(event.evaluatedDetectors));
         eventSystem.registerListener(Event.CodeLocationsCalculated, event -> completedCodeLocations(event.getCodeLocationNames()));
     }
 

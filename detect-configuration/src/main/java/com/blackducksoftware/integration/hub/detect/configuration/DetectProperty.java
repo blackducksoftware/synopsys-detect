@@ -77,7 +77,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_LOGGING)
     @HelpDescription("If true, the default behavior of printing your configuration properties at startup will be suppressed.")
-    DETECT_SUPPRESS_CONFIGURATION_OUTPUT("detect.suppress.configuration.output", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.BootManager, "false"),
+    DETECT_SUPPRESS_CONFIGURATION_OUTPUT("detect.suppress.configuration.output", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_LOGGING)
     @HelpDescription("If true, the default behavior of printing the Detect Results will be suppressed.")
@@ -281,9 +281,14 @@ public enum DetectProperty {
     DETECT_PROJECT_TOOL("detect.project.tool", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "DETECTOR,DOCKER"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
-    @HelpDescription("The tools detect should run in a comma-separated list. The default of AUTO will try to automatically determine which tools to run based on your property configuration.")
-    @AcceptableValues(value = { "AUTO", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "SWIP_CLI", "DOCKER" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
-    DETECT_TOOLS("detect.tools", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "AUTO"),
+    @HelpDescription("The tools detect should allow in a comma-separated list. Included and not excluded tools will be allowed to run if all criteria of the tool is met. Exclusion rules always win.")
+    @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "SWIP_CLI" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
+    DETECT_TOOLS("detect.tools", "5.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
+
+    @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
+    @HelpDescription("The tools detect should not allow in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.")
+    @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "SWIP_CLI" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
+    DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.project.detector in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
@@ -314,12 +319,6 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_DETECTOR, additional = { GROUP_DETECTOR })
     @HelpDescription("If set, detect will fail if it does not find the detector types supplied here.")
     DETECT_REQUIRED_DETECTOR_TYPES("detect.required.detector.types", "4.3.0", PropertyType.STRING, PropertyAuthority.None),
-
-    @Deprecated
-    @DetectDeprecation(description = "This property is changing. Please use --detect.tools in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_BOMTOOL, additional = { GROUP_BOMTOOL })
-    @HelpDescription("If true, detect will not perform any bom tool work.")
-    DETECT_BOM_TOOLS_DISABLED("detect.bom.tools.disabled", "5.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.detector.search.continue in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
@@ -358,11 +357,11 @@ public enum DetectProperty {
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.excluded.detector.types in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_BOMTOOL, additional = { SEARCH_GROUP_SEARCH })
-    @HelpDescription("By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. If you want to exclude all tools, specify \"ALL\". Exclusion rules always win.")
+    @HelpDescription("By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify \"ALL\". Exclusion rules always win.")
     DETECT_EXCLUDED_BOM_TOOL_TYPES("detect.excluded.bom.tool.types", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_SEARCH })
-    @HelpDescription("By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. If you want to exclude all tools, specify \"ALL\". Exclusion rules always win.")
+    @HelpDescription("By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify \"ALL\". Exclusion rules always win.")
     DETECT_EXCLUDED_DETECTOR_TYPES("detect.excluded.detector.types", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
@@ -749,6 +748,8 @@ public enum DetectProperty {
     @HelpDescription("The path of a binary file to scan.")
     DETECT_BINARY_SCAN_FILE("detect.binary.scan.file.path", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.tools in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SWIP)
     @HelpDescription("Set to false to disable the Synopsys Swip Tool.")
     DETECT_SWIP_ENABLED("detect.swip.enabled", "4.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),

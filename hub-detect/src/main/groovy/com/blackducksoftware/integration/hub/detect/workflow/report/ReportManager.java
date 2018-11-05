@@ -59,7 +59,7 @@ public class ReportManager {
 
         eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event.getDetectorEvaluations()));
         eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event.getDetectorEvaluations()));
-        eventSystem.registerListener(Event.BomToolsComplete, event -> bomToolsComplete(event.evaluatedBomTools));
+        eventSystem.registerListener(Event.BomToolsComplete, event -> bomToolsComplete(event.evaluatedDetectors));
         eventSystem.registerListener(Event.CodeLocationsCalculated, event -> codeLocationsCompleted(event.getCodeLocationNames()));
 
     }

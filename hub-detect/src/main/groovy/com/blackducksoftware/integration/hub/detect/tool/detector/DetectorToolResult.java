@@ -42,6 +42,6 @@ public class DetectorToolResult {
     public Set<DetectorType> failedDetectorTypes = new HashSet<>();
     public Set<DetectorType> succesfullDetectorTypes = new HashSet<>();
 
-    public List<DetectorEvaluation> evaluatedBomTools = new ArrayList<>();
+    public List<DetectorEvaluation> evaluatedDetectors = new ArrayList<>();
 
 }

@@ -23,39 +23,25 @@
  */
 package com.blackducksoftware.integration.hub.detect.lifecycle.run;
 
+import com.blackducksoftware.integration.hub.detect.workflow.DetectToolFilter;
+import com.synopsys.integration.util.ExcludedIncludedFilter;
+
 public class RunOptions {
-    private final boolean bomToolsEnabled;
-    private final boolean sigScanEnabled;
-    private final boolean binScanEnabled;
     private final boolean isOnline;
     private final boolean unmapCodeLocations;
-    private final boolean swipEnabled;
     private final String aggregateName;
     private final String preferredTools;
+    private final DetectToolFilter detectToolFilter;
 
-    public RunOptions(final boolean bomToolsEnabled, final boolean sigScanEnabled, final boolean binScanEnabled, final boolean isOnline, final boolean unmapCodeLocations, final boolean swipEnabled, final String aggregateName,
-        final String preferredTools) {
-        this.bomToolsEnabled = bomToolsEnabled;
-        this.sigScanEnabled = sigScanEnabled;
-        this.binScanEnabled = binScanEnabled;
+    public RunOptions(final boolean isOnline, final boolean unmapCodeLocations, final String aggregateName,
+        final String preferredTools, final DetectToolFilter detectToolFilter) {
         this.isOnline = isOnline;
         this.unmapCodeLocations = unmapCodeLocations;
-        this.swipEnabled = swipEnabled;
         this.aggregateName = aggregateName;
         this.preferredTools = preferredTools;
+        this.detectToolFilter = detectToolFilter;
     }
 
-    public boolean isBomToolsEnabled() {
-        return bomToolsEnabled;
-    }
-
-    public boolean isSigScanEnabled() {
-        return sigScanEnabled;
-    }
-
-    public boolean isBinScanEnabled() {
-        return binScanEnabled;
-    }
 
     public boolean isOnline() {
         return isOnline;
@@ -65,15 +51,15 @@ public class RunOptions {
         return unmapCodeLocations;
     }
 
-    public boolean isSwipEnabled() {
-        return swipEnabled;
-    }
-
     public String getAggregateName() {
         return aggregateName;
     }
 
     public String getPreferredTools() {
         return preferredTools;
+    }
+
+    public DetectToolFilter getDetectToolFilter() {
+        return detectToolFilter;
     }
 }
