@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.DetectorManager;
+import com.blackducksoftware.integration.hub.detect.workflow.detector.DetectorManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
@@ -71,7 +71,7 @@ public class DetectorTool {
         eventSystem.publishEvent(Event.BomToolsComplete, detectorToolResult);
 
         DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
-        Optional<NameVersion> bomToolNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorToolResult.evaluatedBomTools, projectBomTool);
+        Optional<NameVersion> bomToolNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorToolResult.evaluatedDetectors, projectBomTool);
         detectorToolResult.bomToolProjectNameVersion = bomToolNameVersion;
 
         return detectorToolResult;

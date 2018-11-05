@@ -47,6 +47,7 @@ import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackD
 import com.blackducksoftware.integration.hub.detect.tool.swip.SwipCliManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
+import com.blackducksoftware.integration.hub.detect.workflow.DetectToolFilter;
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocationCreator;
@@ -99,20 +100,22 @@ public class RunManager {
         RunResult runResult = new RunResult();
         RunOptions runOptions = detectConfigurationFactory.createRunOptions();
 
-        DockerOptions dockerOptions = DockerOptions.fromConfiguration(detectConfiguration);
-        if (dockerOptions.hasDockerImageOrTag()) {
-            logger.info("Will run the docker tool.");
+        DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
+
+        if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
+            logger.info("Will include the docker tool.");
+            DockerOptions dockerOptions = DockerOptions.fromConfiguration(detectConfiguration);
             DockerTool dockerTool = new DockerTool(detectContext);
 
             DockerToolResult dockerToolResult = dockerTool.run();
             runResult.addToolNameVersionIfPresent(DetectTool.DOCKER, dockerToolResult.dockerProjectNameVersion);
             runResult.addDetectCodeLocations(dockerToolResult.dockerCodeLocations);
             runResult.addDockerFile(dockerToolResult.dockerTar);
-            logger.info("Docker tool has finished.");
+            logger.info("Docker actions finished.");
         }
 
-        if (runOptions.isBomToolsEnabled()) {
-            logger.info("Will run the detector tool.");
+        if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
+            logger.info("Will include the detector tool.");
             String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_BOM_TOOL, PropertyAuthority.None);
             SearchOptions searchOptions = detectConfigurationFactory.createSearchOptions(directoryManager.getSourceDirectory());
             DetectorTool detectorTool = new DetectorTool(detectContext);
@@ -121,7 +124,7 @@ public class RunManager {
             runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
             runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);
             runResult.addApplicableDetectors(detectorToolResult.applicableDetectorTypes);
-            logger.info("Detector tool has finished.");
+            logger.info("Detector actions finished.");
         }
 
         logger.info("Completed code location tools.");
@@ -169,26 +172,28 @@ public class RunManager {
 
         logger.info("Completed Detect Code Location processing.");
 
-        if (runOptions.isSigScanEnabled()) {
-            logger.info("Will run the signature scanner tool.");
+        if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
+            logger.info("Will include the signature scanner tool.");
             BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
             BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
             blackDuckSignatureScannerTool.runScanTool(projectNameVersion, runResult.getDockerTar());
-            logger.info("Signature scanner tool has finished.");
+            logger.info("Signature scanner actions finished.");
         }
 
-        if (runOptions.isBinScanEnabled() && hubServiceManager.isPresent()) {
-            logger.info("Will run the binary scanner tool.");
-            BlackDuckBinaryScanner blackDuckBinaryScanner = new BlackDuckBinaryScanner(codeLocationNameManager, detectConfiguration, hubServiceManager.get());
-            blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
-            logger.info("Binary scanner tool has finished.");
+        if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
+            logger.info("Will include the binary scanner tool.");
+             if (hubServiceManager.isPresent()) {
+                 BlackDuckBinaryScanner blackDuckBinaryScanner = new BlackDuckBinaryScanner(codeLocationNameManager, detectConfiguration, hubServiceManager.get());
+                 blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
+             }
+            logger.info("Binary scanner actions finished.");
         }
 
-        if (runOptions.isSwipEnabled()) {
-            logger.info("Will run the swip tool.");
+        if (detectToolFilter.shouldInclude(DetectTool.SWIP_CLI)) {
+            logger.info("Will include the swip tool.");
             SwipCliManager swipCliManager = new SwipCliManager(directoryManager, new ExecutableRunner(), connectionManager);
             swipCliManager.runSwip(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
-            logger.info("Swip tool has finished.");
+            logger.info("Swip actions finished.");
         }
 
         if (runOptions.isOnline() && hubServiceManager.isPresent() && projectView.isPresent()) {

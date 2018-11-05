@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
+package com.blackducksoftware.integration.hub.detect.workflow.detector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,7 +74,7 @@ public class DetectorManager {
 
         //create results
         DetectorToolResult detectorToolResult = new DetectorToolResult();
-        detectorToolResult.evaluatedBomTools = detectorEvaluations;
+        detectorToolResult.evaluatedDetectors = detectorEvaluations;
         detectorToolResult.bomToolCodeLocations = extractionResult.getDetectCodeLocations();
         detectorToolResult.applicableDetectorTypes = searchResult.getApplicableBomTools();
 
@@ -86,10 +86,10 @@ public class DetectorManager {
         detectorToolResult.succesfullDetectorTypes.removeIf(it -> detectorToolResult.failedDetectorTypes.contains(it));
 
         //post status
-        Map<DetectorType, StatusType> bomToolStatus = new HashMap<>();
-        detectorToolResult.succesfullDetectorTypes.forEach(it -> bomToolStatus.put(it, StatusType.SUCCESS));
-        detectorToolResult.failedDetectorTypes.forEach(it -> bomToolStatus.put(it, StatusType.FAILURE));
-        bomToolStatus.forEach((bomTool, status) -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(bomTool, status)));
+        Map<DetectorType, StatusType> detectorStatus = new HashMap<>();
+        detectorToolResult.succesfullDetectorTypes.forEach(it -> detectorStatus.put(it, StatusType.SUCCESS));
+        detectorToolResult.failedDetectorTypes.forEach(it -> detectorStatus.put(it, StatusType.FAILURE));
+        detectorStatus.forEach((detector, status) -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(detector, status)));
 
         return detectorToolResult;
     }

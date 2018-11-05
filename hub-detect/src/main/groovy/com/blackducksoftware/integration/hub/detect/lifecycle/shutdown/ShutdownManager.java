@@ -26,6 +26,7 @@ package com.blackducksoftware.integration.hub.detect.lifecycle.shutdown;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthor
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
-import com.blackducksoftware.integration.hub.detect.workflow.bomtool.RequiredDetectorChecker;
+import com.blackducksoftware.integration.hub.detect.workflow.detector.RequiredDetectorChecker;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
@@ -97,10 +98,6 @@ public class ShutdownManager {
             detectorTypes.addAll(runResultOptional.get().getApplicableDetectors());
         }
 
-        String requiredDetectors = detectConfiguration.getProperty(DetectProperty.DETECT_REQUIRED_DETECTOR_TYPES, PropertyAuthority.None);
-        RequiredDetectorChecker requiredDetectorChecker = new RequiredDetectorChecker();
-        requiredDetectorChecker.checkForMissingDetectors(requiredDetectors, detectorTypes);
-
         boolean printOutput = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT, PropertyAuthority.None);
 
         ExitCodeType detectExitCode = exitCodeManager.getWinningExitCode();
@@ -108,6 +105,16 @@ public class ShutdownManager {
             reportManager.printDetectorIssues();
             detectStatusManager.logDetectResults(new Slf4jIntLogger(logger), detectExitCode);
         }
+
+        String requiredDetectors = detectConfiguration.getProperty(DetectProperty.DETECT_REQUIRED_DETECTOR_TYPES, PropertyAuthority.None);
+        RequiredDetectorChecker requiredDetectorChecker = new RequiredDetectorChecker();
+        RequiredDetectorChecker.RequiredDetectorResult requiredDetectorResult =  requiredDetectorChecker.checkForMissingDetectors(requiredDetectors, detectorTypes);
+        if (requiredDetectorResult.wereDetectorsMissing()){
+            String missingDetectors = requiredDetectorResult.getMissingDetectors().stream().map(it -> it.toString()).collect(Collectors.joining(","));
+            logger.error("One or more required detector types were not found: " + missingDetectors);
+            exitCodeManager.requestExitCode(ExitCodeType.FAILURE_DETECTOR_REQUIRED);
+        }
+
 
         return detectExitCode;
     }

@@ -23,9 +23,12 @@
  */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
+//Property Authority represents the Source of Truth for this property.
+//Meaning, if you are not this Authority you should not ask for this property, or you will NOT get the Actual Value.
+//Only the Property Authority knows the Actual Value of this property in detect, you should ask the Authority for the Value (more likely call the associated getter)
+//An Authority of None indicates that this value will never change outside of configuration and is 'Safe' for anyone to ask for the Actual Value.
 public enum PropertyAuthority {
-    None, //anyone can access this property
+    None,
     DirectoryManager,
-    BootManager,
     AirGapManager;
 }
