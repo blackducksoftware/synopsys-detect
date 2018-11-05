@@ -396,7 +396,7 @@ public enum DetectProperty {
     DETECT_PROJECT_VERSION_NOTES("detect.project.version.notes", "3.1.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
-    @HelpDescription("If a hub project tier is specified, your project will be created with this tier.")
+    @HelpDescription("If a Black Duck project tier is specified, your project will be created with this tier.")
     @AcceptableValues(value = { "1", "2", "3", "4", "5" }, caseSensitive = false, strict = false)
     DETECT_PROJECT_TIER("detect.project.tier", "3.1.0", PropertyType.INTEGER, PropertyAuthority.None),
 
@@ -427,7 +427,7 @@ public enum DetectProperty {
     DETECT_PROJECT_CLONE_CATEGORIES("detect.project.clone.categories", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "COMPONENT_DATA,VULN_DATA"),
 
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
-    @HelpDescription("The name of the project version to clone this project version from. Respects the Clone Categories as set on the hub.")
+    @HelpDescription("The name of the project version to clone this project version from. Respects the Clone Categories as set on the Black Duck server.")
     DETECT_CLONE_PROJECT_VERSION_NAME("detect.clone.project.version.name", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
@@ -670,7 +670,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Comma separated list of file name patterns to exclude from the signature scan.")
-    @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.hub.signature.scanner.exclusion.patterns")
+    @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.blackduck.signature.scanner.exclusion.name.patterns", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "node_modules"),
 
     @Deprecated

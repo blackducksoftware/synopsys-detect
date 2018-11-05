@@ -116,17 +116,17 @@ public class DetectConfigurationManager {
         if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, PropertyAuthority.None)) &&
                 StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, PropertyAuthority.None))) {
             throw new DetectUserFriendlyException(
-                "You have provided both a hub signature scanner url AND a local hub signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
+                "You have provided both a Black Duck signature scanner url AND a local Black Duck signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
                 ExitCodeType.FAILURE_GENERAL_ERROR);
         }
         final Boolean originalOfflineMode = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
         hubOfflineMode = originalOfflineMode;
         if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, PropertyAuthority.None))) {
-            logger.info("A hub signature scanner url was provided, which requires hub offline mode. Setting hub offline mode to true.");
+            logger.info("A Black Duck signature scanner url was provided, which requires Black Duck offline mode. Setting Black Duck offline mode to true.");
             hubOfflineMode = true;
         }
         if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, PropertyAuthority.None))) {
-            logger.info("A local hub signature scanner path was provided, which requires hub offline mode. Setting hub offline mode to true.");
+            logger.info("A local Black Duck signature scanner path was provided, which requires Black Duck offline mode. Setting Black Duck offline mode to true.");
             hubOfflineMode = true;
         }
     }

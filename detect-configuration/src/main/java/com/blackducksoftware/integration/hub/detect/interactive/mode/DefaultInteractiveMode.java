@@ -48,7 +48,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
             while (!connected && !skipConnectionTest) {
                 setPropertyFromQuestion(DetectProperty.BLACKDUCK_URL, "What is the Black Duck instance url?");
 
-                println("You can now configure Black Duck with either an API token -OR- a username and password. The API token must already exist on the hub, but it is the preferred approach to configure your connection.");
+                println("You can now configure Black Duck with either an API token -OR- a username and password. The API token must already exist on the Black Duck server, but it is the preferred approach to configure your connection.");
                 final Boolean useApiToken = askYesOrNo("Would you like to use an existing API token?");
                 if (useApiToken) {
                     setPropertyFromQuestion(DetectProperty.BLACKDUCK_API_TOKEN, "What is the API token?");
@@ -66,8 +66,8 @@ public class DefaultInteractiveMode extends InteractiveMode {
                 if (useProxy) {
                     setPropertyFromQuestion(DetectProperty.BLACKDUCK_PROXY_HOST, "What is the proxy host?");
                     setPropertyFromQuestion(DetectProperty.BLACKDUCK_PROXY_PORT, "What is the proxy port?");
-                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_PROXY_USERNAME, "What is the hub username?");
-                    final Boolean setHubPassword = askYesOrNoWithMessage("Would you like to set the hub password?",
+                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_PROXY_USERNAME, "What is the Black Duck username?");
+                    final Boolean setHubPassword = askYesOrNoWithMessage("Would you like to set the Black Duck password?",
                             "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_PROXY_PASSWORD.");
                     if (setHubPassword) {
                         setPropertyFromSecretQuestion(DetectProperty.BLACKDUCK_PROXY_PASSWORD, "What is the proxy password?");
@@ -118,7 +118,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
         if (!scan) {
             setProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, "true");
         } else if (scan && connectToHub) {
-            final Boolean upload = askYesOrNo("Would you like to upload CLI scan results to the hub?");
+            final Boolean upload = askYesOrNo("Would you like to upload CLI scan results to the Black Duck server?");
             if (!upload) {
                 setProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, "true");
             }
