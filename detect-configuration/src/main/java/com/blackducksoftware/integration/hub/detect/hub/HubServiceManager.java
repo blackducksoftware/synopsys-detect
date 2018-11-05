@@ -84,7 +84,7 @@ public class HubServiceManager {
             hubServerConfig = createHubServerConfig(slf4jIntLogger);
             hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig);
         } catch (IllegalStateException | EncryptionException e) {
-            throw new DetectUserFriendlyException(String.format("Not able to process Hub connection: %s", e.getMessage()), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
+            throw new DetectUserFriendlyException(String.format("Not able to process Black Duck connection: %s", e.getMessage()), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
         }
         final HubService hubService = createHubService();
         final CurrentVersionView currentVersion = hubService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
@@ -96,20 +96,20 @@ public class HubServiceManager {
             assertHubConnection(intLogger);
             return true;
         } catch (final IntegrationException e) {
-            intLogger.error(String.format("Could not reach the Hub server or the credentials were invalid: %s", e.getMessage()), e);
+            intLogger.error(String.format("Could not reach the Black Duck server or the credentials were invalid: %s", e.getMessage()), e);
         }
         return false;
     }
 
     public void assertHubConnection(final IntLogger intLogger) throws IntegrationException {
-        logger.info("Attempting connection to the Hub");
+        logger.info("Attempting connection to the Black Duck server");
         RestConnection connection = null;
 
         try {
             final HubServerConfig hubServerConfig = createHubServerConfig(intLogger);
             connection = hubServerConfig.createRestConnection(intLogger);
             connection.connect();
-            logger.info("Connection to the Hub was successful");
+            logger.info("Connection to the Black Duck server was successful");
         } catch (final IllegalStateException e) {
             throw new IntegrationException(e.getMessage(), e);
         } finally {

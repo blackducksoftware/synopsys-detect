@@ -41,12 +41,12 @@ public class DefaultInteractiveMode extends InteractiveMode {
     public void configure() {
         printWelcome();
 
-        final Boolean connectToHub = askYesOrNo("Would you like to connect to a Black Duck Instance?");
+        final Boolean connectToHub = askYesOrNo("Would you like to connect to a Black Duck server?");
         if (connectToHub == true) {
             boolean connected = false;
             boolean skipConnectionTest = false;
             while (!connected && !skipConnectionTest) {
-                setPropertyFromQuestion(DetectProperty.BLACKDUCK_URL, "What is the Black Duck instance url?");
+                setPropertyFromQuestion(DetectProperty.BLACKDUCK_URL, "What is the Black Duck server url?");
 
                 println("You can now configure Black Duck with either an API token -OR- a username and password. The API token must already exist on the Black Duck server, but it is the preferred approach to configure your connection.");
                 final Boolean useApiToken = askYesOrNo("Would you like to use an existing API token?");
