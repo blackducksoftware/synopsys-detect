@@ -32,12 +32,12 @@ import org.apache.commons.lang3.StringUtils;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
@@ -82,7 +82,7 @@ public class CondaCliExtractor {
 
             final DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText);
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.ANACONDA, directory.toString());
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectorType.CONDA, directory.toString(), externalId, dependencyGraph).build();
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.CONDA, directory.toString(), externalId, dependencyGraph).build();
 
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {

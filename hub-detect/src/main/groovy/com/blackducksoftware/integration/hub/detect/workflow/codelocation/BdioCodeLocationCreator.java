@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
+import com.blackducksoftware.integration.hub.detect.util.DetectEnumUtil;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
@@ -85,7 +87,7 @@ public class BdioCodeLocationCreator {
         for (final String name : bdioByCodeLocationName.keySet()) {
             if (bdioByCodeLocationName.get(name).size() > 1) {
                 logger.error("Multiple code locations were generated with the name: " + name);
-                failedBomToolGroups.addAll(getBomToolGroupTypes(bdioByCodeLocationName.get(name)));
+                failedBomToolGroups.addAll(getDetectorTypes(bdioByCodeLocationName.get(name)));
             }
         }
 
@@ -94,7 +96,7 @@ public class BdioCodeLocationCreator {
         for (final String name : bdioByBdioName.keySet()) {
             if (bdioByBdioName.get(name).size() > 1) {
                 logger.error("Multiple bdio names were generated with the name: " + name);
-                failedBomToolGroups.addAll(getBomToolGroupTypes(bdioByBdioName.get(name)));
+                failedBomToolGroups.addAll(getDetectorTypes(bdioByBdioName.get(name)));
             }
         }
 
@@ -103,9 +105,17 @@ public class BdioCodeLocationCreator {
         return result;
     }
 
-    private Set<DetectorType> getBomToolGroupTypes(final List<BdioCodeLocation> bdioCodeLocations) {
+    /**
+     * Attempts to map the given Code Location Types to Detector Types with EnumUtils.
+     * @param bdioCodeLocations the final bdio code locations
+     * @return the set of detector types
+     */
+    private Set<DetectorType> getDetectorTypes(final List<BdioCodeLocation> bdioCodeLocations) {
         return bdioCodeLocations.stream()
-                   .map(it -> it.codeLocation.getDetectorType())
+                   .map(bdioCodeLocation -> bdioCodeLocation.codeLocation.getCodeLocationType().toString())
+                   .map(codeLocationType -> DetectEnumUtil.getValueOf(DetectorType.class, codeLocationType))
+                   .filter(Optional::isPresent)
+                   .map(Optional::get)
                    .collect(Collectors.toSet());
     }
 
@@ -211,15 +221,15 @@ public class BdioCodeLocationCreator {
     }
 
     private DetectCodeLocation copyCodeLocation(final DetectCodeLocation codeLocation, final DependencyGraph newGraph) {
-        final DetectCodeLocation.Builder builder = new DetectCodeLocation.Builder(codeLocation.getDetectorType(), codeLocation.getSourcePath(), codeLocation.getExternalId(), newGraph);
+        final DetectCodeLocation.Builder builder = new DetectCodeLocation.Builder(codeLocation.getCodeLocationType(), codeLocation.getSourcePath(), codeLocation.getExternalId(), newGraph);
         builder.dockerImage(codeLocation.getDockerImage());
         final DetectCodeLocation copy = builder.build();
         return copy;
     }
 
     private boolean shouldCombine(final Logger logger, final DetectCodeLocation codeLocationLeft, final DetectCodeLocation codeLocationRight) {
-        if (codeLocationLeft.getDetectorType() != codeLocationRight.getDetectorType()) {
-            logger.error("Cannot combine code locations with different detector types.");
+        if (codeLocationLeft.getCodeLocationType() != codeLocationRight.getCodeLocationType()) {
+            logger.error("Cannot combine code locations with different types.");
             return false;
         }
 

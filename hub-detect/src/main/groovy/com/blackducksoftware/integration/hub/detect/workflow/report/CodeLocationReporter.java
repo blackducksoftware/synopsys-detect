@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 
@@ -44,7 +44,7 @@ public class CodeLocationReporter {
 
         final CodeLocationDependencyCounter counter = new CodeLocationDependencyCounter();
         final Map<DetectCodeLocation, Integer> dependencyCounts = counter.countCodeLocations(codeLocationsToCount);
-        final Map<DetectorType, Integer> dependencyAggregates = counter.aggregateCountsByGroup(dependencyCounts);
+        final Map<DetectCodeLocationType, Integer> dependencyAggregates = counter.aggregateCountsByGroup(dependencyCounts);
 
         succesfullDetectorEvaluations.forEach(it -> writeBomToolEvaluationDetails(writer, it, dependencyCounts, codeLocationNameMap));
         writeBomToolCounts(writer2, dependencyAggregates);
@@ -63,7 +63,7 @@ public class CodeLocationReporter {
         writer.writeLine("Name : " + codeLocationName);
         writer.writeLine("Directory : " + codeLocation.getSourcePath());
         writer.writeLine("Extraction : " + extractionId);
-        writer.writeLine("Bom DetectTool Group : " + codeLocation.getDetectorType());
+        writer.writeLine("Detect Code Location Type : " + codeLocation.getCodeLocationType());
 
         final DependencyGraph graph = codeLocation.getDependencyGraph();
 
@@ -72,8 +72,8 @@ public class CodeLocationReporter {
 
     }
 
-    private void writeBomToolCounts(final ReportWriter writer, final Map<DetectorType, Integer> dependencyCounts) {
-        for (final DetectorType group : dependencyCounts.keySet()) {
+    private void writeBomToolCounts(final ReportWriter writer, final Map<DetectCodeLocationType, Integer> dependencyCounts) {
+        for (final DetectCodeLocationType group : dependencyCounts.keySet()) {
             final Integer count = dependencyCounts.get(group);
 
             writer.writeLine(group.toString() + " : " + count);

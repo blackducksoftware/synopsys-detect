@@ -33,11 +33,11 @@ import java.util.Optional;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.nuget.model.NugetContainer;
 import com.blackducksoftware.integration.hub.detect.detector.nuget.model.NugetContainerType;
 import com.blackducksoftware.integration.hub.detect.detector.nuget.model.NugetInspection;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.google.gson.Gson;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 import com.synopsys.integration.hub.bdio.model.Forge;
@@ -92,7 +92,7 @@ public class NugetInspectorPackager {
                 if (StringUtils.isBlank(projectVersionName)) {
                     projectVersionName = container.version;
                 }
-                final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectorType.NUGET, sourcePath, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)
+                final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.NUGET, sourcePath, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)
                                                             .build();
                 codeLocations.add(codeLocation);
             }
@@ -105,7 +105,7 @@ public class NugetInspectorPackager {
             builder.addPackageSets(nugetContainer.packages);
             final DependencyGraph children = builder.createDependencyGraph(nugetContainer.dependencies);
 
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectorType.NUGET, sourcePath, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.NUGET, sourcePath, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)
                                                         .build();
             parseResult = new NugetParseResult(projectName, projectVersionName, codeLocation);
         } else {

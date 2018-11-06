@@ -35,9 +35,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.util.DependencyHistory;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.hub.bdio.model.dependency.Dependency;
@@ -131,7 +131,7 @@ public class GradleReportParser {
             }
 
             final ExternalId id = externalIdFactory.createMavenExternalId(projectGroup, projectName, projectVersionName);
-            codeLocation = new DetectCodeLocation.Builder(DetectorType.GRADLE, projectSourcePath, id, graph).build();
+            codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.GRADLE, projectSourcePath, id, graph).build();
         } catch (final IOException e) {
             codeLocation = null;
         }

@@ -27,10 +27,8 @@ import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.blackducksoftware.integration.hub.detect.detector.Detector;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
@@ -42,7 +40,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Inspe
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientDetectorResult;
 
-public class DockerDetector extends Detector {
+public class DockerDetector {
+    private final DetectorEnvironment environment;
     private final DirectoryManager directoryManager;
     private final DockerInspectorManager dockerInspectorManager;
     private final CacheableExecutableFinder cacheableExecutableFinder;
@@ -61,7 +60,7 @@ public class DockerDetector extends Detector {
     public DockerDetector(final DetectorEnvironment environment, final DirectoryManager directoryManager, final DockerInspectorManager dockerInspectorManager,
         final CacheableExecutableFinder cacheableExecutableFinder, final boolean dockerPathRequired, final String suppliedDockerImage,
         final String suppliedDockerTar, final DockerExtractor dockerExtractor) {
-        super(environment, "Docker", DetectorType.DOCKER);
+        this.environment = environment;
         this.directoryManager = directoryManager;
         this.cacheableExecutableFinder = cacheableExecutableFinder;
         this.dockerExtractor = dockerExtractor;
@@ -71,7 +70,6 @@ public class DockerDetector extends Detector {
         this.suppliedDockerTar = suppliedDockerTar;
     }
 
-    @Override
     public DetectorResult applicable() {
         image = suppliedDockerImage;
         tar = suppliedDockerTar;
@@ -83,7 +81,6 @@ public class DockerDetector extends Detector {
         return new PassedDetectorResult();
     }
 
-    @Override
     public DetectorResult extractable() throws DetectorException {
         javaExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.JAVA);
         if (javaExe == null) {
@@ -110,7 +107,6 @@ public class DockerDetector extends Detector {
         return new PassedDetectorResult();
     }
 
-    @Override
     public Extraction extract(final ExtractionId extractionId) {
         File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
         return dockerExtractor.extract(environment.getDirectory(), outputDirectory, bashExe, javaExe, image, tar, dockerInspectorInfo);

@@ -1,6 +1,6 @@
 [
   {
-    "detectorType": "NUGET",
+    "codeLocationType": "NUGET",
     "sourcePath": "Tests\\LDService.Persistence.Tests\\LDService.Persistence.Tests.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
@@ -81,7 +81,7 @@
     ]
   },
   {
-    "detectorType": "NUGET",
+    "codeLocationType": "NUGET",
     "sourcePath": "Tests\\LDService.SyncService.Tests\\LDService.SyncService.Tests.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
@@ -545,7 +545,7 @@
     ]
   },
   {
-    "detectorType": "NUGET",
+    "codeLocationType": "NUGET",
     "sourcePath": "Tests\\LDService.Tests.Common\\LDService.Tests.Common.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
@@ -560,7 +560,7 @@
     "dependencies": []
   },
   {
-    "detectorType": "NUGET",
+    "codeLocationType": "NUGET",
     "sourcePath": "LDService.Common\\LDService.Common.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
@@ -798,7 +798,7 @@
     ]
   },
   {
-    "detectorType": "NUGET",
+    "codeLocationType": "NUGET",
     "sourcePath": "LDService.Dashboard\\LDService.Dashboard.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
@@ -1102,7 +1102,7 @@
     ]
   },
   {
-    "detectorType": "NUGET",
+    "codeLocationType": "NUGET",
     "sourcePath": "LDService.SyncService\\LDService.SyncService.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
@@ -1659,7 +1659,7 @@
     ]
   },
   {
-    "detectorType": "NUGET",
+    "codeLocationType": "NUGET",
     "sourcePath": "LDService.Persistence\\LDService.Persistence.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
@@ -1727,7 +1727,7 @@
     ]
   },
   {
-    "detectorType": "NUGET",
+    "codeLocationType": "NUGET",
     "sourcePath": "Installer\\LDService.Setup\\LDServiceSetup.wixproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
@@ -1742,7 +1742,7 @@
     "dependencies": []
   },
   {
-    "detectorType": "NUGET",
+    "codeLocationType": "NUGET",
     "sourcePath": "Installer\\LDService.SetupX64\\LDServiceSetupX64.wixproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
@@ -1757,7 +1757,7 @@
     "dependencies": []
   },
   {
-    "detectorType": "NUGET",
+    "codeLocationType": "NUGET",
     "sourcePath": "Installer\\LDService.Bootstrapper\\LDService.Bootstrapper.wixproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
@@ -1772,7 +1772,7 @@
     "dependencies": []
   },
   {
-    "detectorType": "NUGET",
+    "codeLocationType": "NUGET",
     "sourcePath": "Installer\\LDService.InstallerUI\\LDService.InstallerUI.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
@@ -1970,7 +1970,7 @@
     ]
   },
   {
-    "detectorType": "NUGET",
+    "codeLocationType": "NUGET",
     "sourcePath": "Tests\\LDService.Common.Tests\\LDService.Common.Tests.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
@@ -2038,7 +2038,7 @@
     ]
   },
   {
-    "detectorType": "NUGET",
+    "codeLocationType": "NUGET",
     "sourcePath": "ndMirror.AddPrivilege\\ndMirror.AddPrivilege.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",

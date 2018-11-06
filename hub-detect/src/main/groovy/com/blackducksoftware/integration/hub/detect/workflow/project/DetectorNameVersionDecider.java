@@ -47,12 +47,12 @@ public class DetectorNameVersionDecider {
     private final Logger logger = LoggerFactory.getLogger(DetectorNameVersionDecider.class);
 
     public Optional<NameVersion> decideProjectNameVersion(final List<DetectorProjectInfo> projectNamePossibilities, final DetectorType preferredBomToolType) {
-        final NameVersionDecision nameVersionDecision = decideProjectNameVersionFromBomTool(projectNamePossibilities, preferredBomToolType);
+        final NameVersionDecision nameVersionDecision = decideProjectNameVersionFromDetector(projectNamePossibilities, preferredBomToolType);
         nameVersionDecision.printDescription(logger);
         return nameVersionDecision.getChosenNameVersion();
     }
 
-    private NameVersionDecision decideProjectNameVersionFromBomTool(final List<DetectorProjectInfo> projectNamePossibilities, final DetectorType preferredBomToolType) {
+    private NameVersionDecision decideProjectNameVersionFromDetector(final List<DetectorProjectInfo> projectNamePossibilities, final DetectorType preferredBomToolType) {
         final NameVersionDecision decision;
 
         if (preferredBomToolType != null) {

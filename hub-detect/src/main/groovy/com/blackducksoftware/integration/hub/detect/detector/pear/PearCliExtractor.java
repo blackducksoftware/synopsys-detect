@@ -25,11 +25,11 @@ package com.blackducksoftware.integration.hub.detect.detector.pear;
 
 import java.io.File;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
@@ -64,7 +64,7 @@ public class PearCliExtractor {
 
             final PearParseResult result = pearParser.parse(packageFile, pearListing, pearDependencies);
             final ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.PEAR, result.name, result.version);
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectorType.PEAR, directory.toString(), id, result.dependencyGraph).build();
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.PEAR, directory.toString(), id, result.dependencyGraph).build();
 
             return new Extraction.Builder().success(detectCodeLocation).projectName(result.name).projectVersion(result.version).build();
         } catch (final Exception e) {

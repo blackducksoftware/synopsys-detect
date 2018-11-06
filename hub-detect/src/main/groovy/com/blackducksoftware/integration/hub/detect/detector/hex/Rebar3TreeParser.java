@@ -29,9 +29,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.util.DependencyHistory;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.hub.bdio.model.Forge;
@@ -93,7 +93,7 @@ public class Rebar3TreeParser {
         }
 
         final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.HEX, project.name, project.version);
-        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectorType.HEX, sourcePath, externalId, graph).build();
+        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.HEX, sourcePath, externalId, graph).build();
         return new RebarParseResult(project.name, project.version, codeLocation);
     }
 

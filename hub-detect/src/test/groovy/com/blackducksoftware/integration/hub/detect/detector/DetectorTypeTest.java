@@ -8,7 +8,7 @@ import org.junit.Test;
 public class DetectorTypeTest {
     @Test
     public void testFoundName() {
-        assertTrue(DetectorType.POSSIBLE_NAMES.contains(DetectorType.CARTHAGE.name()));
+        assertTrue(DetectorType.POSSIBLE_NAMES.contains(DetectorType.COCOAPODS.name()));
     }
 
     @Test

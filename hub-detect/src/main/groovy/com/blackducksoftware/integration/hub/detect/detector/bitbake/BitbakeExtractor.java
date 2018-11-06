@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -46,6 +45,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
@@ -101,7 +101,7 @@ public class BitbakeExtractor {
                 final GraphParser graphParser = new GraphParser(recipeDependsInputStream);
                 final DependencyGraph dependencyGraph = graphParserTransformer.transform(graphParser, targetArchitecture);
                 final ExternalId externalId = new ExternalId(BitbakeDetector.YOCTO_FORGE);
-                final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectorType.BITBAKE, sourcePath, externalId, dependencyGraph).build();
+                final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.BITBAKE, sourcePath, externalId, dependencyGraph).build();
 
                 detectCodeLocations.add(detectCodeLocation);
             } catch (final IOException | IntegrationException e) {

@@ -30,9 +30,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.util.DependencyHistory;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.hub.bdio.model.Forge;
@@ -94,7 +94,7 @@ public class PipInspectorTreeParser {
         }
 
         if (project != null) {
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectorType.PIP, sourcePath, project.externalId, graph).build();
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.PIP, sourcePath, project.externalId, graph).build();
             parseResult = new PipParseResult(project.name, project.version, codeLocation);
         }
 

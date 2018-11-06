@@ -42,7 +42,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.ExclusionPatternDetector;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.ExclusionPatternCreator;
 import com.blackducksoftware.integration.hub.detect.workflow.status.SignatureScanStatus;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 import com.synopsys.integration.blackduck.signaturescanner.ScanJob;
@@ -188,12 +188,12 @@ public abstract class BlackDuckSignatureScanner {
         try {
             final File target = new File(path);
             final String targetPath = target.getCanonicalPath();
-            final ExclusionPatternDetector exclusionPatternDetector = new ExclusionPatternDetector(detectFileFinder, target);
+            final ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(detectFileFinder, target);
 
             final String maxDepthHitMsg = String.format("Maximum depth %d hit while traversing source tree to generate signature scanner exclusion patterns. To search deeper, adjust the value of property %s",
                 maxDepth, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH.getPropertyName());
 
-            final Set<String> scanExclusionPatterns = exclusionPatternDetector.determineExclusionPatterns(maxDepthHitMsg, maxDepth, hubSignatureScannerExclusionNamePatterns);
+            final Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepthHitMsg, maxDepth, hubSignatureScannerExclusionNamePatterns);
             if (null != providedExclusionPatterns) {
                 for (final String providedExclusionPattern : providedExclusionPatterns) {
                     scanExclusionPatterns.add(providedExclusionPattern);

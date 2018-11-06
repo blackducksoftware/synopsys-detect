@@ -27,8 +27,8 @@ import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.google.gson.Gson;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 import com.synopsys.integration.hub.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
@@ -78,7 +78,7 @@ public class NpmLockfilePackager {
         logger.info("Finished processing.");
         final DependencyGraph graph = lazyBuilder.build();
         final ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPM, npmProject.name, npmProject.version);
-        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectorType.NPM, sourcePath, projectId, graph).build();
+        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.NPM, sourcePath, projectId, graph).build();
         return new NpmParseResult(npmProject.name, npmProject.version, codeLocation);
     }
 

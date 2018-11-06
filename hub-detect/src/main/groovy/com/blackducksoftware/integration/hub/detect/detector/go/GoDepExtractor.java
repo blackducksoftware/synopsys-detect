@@ -25,8 +25,8 @@ package com.blackducksoftware.integration.hub.detect.detector.go;
 
 import java.io.File;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 import com.synopsys.integration.hub.bdio.graph.MutableMapDependencyGraph;
@@ -51,7 +51,7 @@ public class GoDepExtractor {
             }
 
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString());
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectorType.GO_DEP, directory.toString(), externalId, graph).build();
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.GO_DEP, directory.toString(), externalId, graph).build();
 
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {

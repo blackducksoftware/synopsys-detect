@@ -28,8 +28,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
@@ -61,7 +61,7 @@ public class PackratLockExtractor {
             final List<String> packratLockText = Files.readAllLines(packratlock.toPath(), StandardCharsets.UTF_8);
             final DependencyGraph dependencyGraph = packratPackager.extractProjectDependencies(packratLockText);
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CRAN, directory.toString());
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectorType.CRAN, directory.toString(), externalId, dependencyGraph).build();
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.CRAN, directory.toString(), externalId, dependencyGraph).build();
             return new Extraction.Builder().success(codeLocation).projectName(projectName).projectVersion(projectVersion).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

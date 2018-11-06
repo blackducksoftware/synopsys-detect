@@ -32,7 +32,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 
@@ -46,15 +45,15 @@ public class CodeLocationNameGenerator {
         this.detectFileFinder = detectFileFinder;
     }
 
-    public String createBomCodeLocationName(final String detectSourcePath, final String sourcePath, final ExternalId externalId, final DetectorType bomToolType, final String prefix, final String suffix) {
+    public String createBomCodeLocationName(final String detectSourcePath, final String sourcePath, final ExternalId externalId, final DetectCodeLocationType detectCodeLocationType, final String prefix, final String suffix) {
         final String pathPiece = FileNameUtils.relativize(detectSourcePath, sourcePath);
 
         final List<String> pieces = Arrays.asList(externalId.getExternalIdPieces());
         final String externalIdPiece = StringUtils.join(pieces, "/");
 
         // misc pieces
-        final String codeLocationTypeString = CodeLocationType.BOM.toString().toLowerCase();
-        final String bomToolTypeString = bomToolType.toString().toLowerCase();
+        final String codeLocationTypeString = CodeLocationNameType.BOM.toString().toLowerCase();
+        final String bomToolTypeString = detectCodeLocationType.toString().toLowerCase();
 
         final List<String> bomCodeLocationNamePieces = Arrays.asList(pathPiece, externalIdPiece);
         final List<String> bomCodeLocationEndPieces = Arrays.asList(bomToolTypeString, codeLocationTypeString);
@@ -62,10 +61,11 @@ public class CodeLocationNameGenerator {
         return createCodeLocationName(prefix, bomCodeLocationNamePieces, suffix, bomCodeLocationEndPieces);
     }
 
-    public String createDockerCodeLocationName(final String sourcePath, final String projectName, final String projectVersionName, final String dockerImage, final DetectorType bomToolType, final String prefix, final String suffix) {
+    public String createDockerCodeLocationName(final String sourcePath, final String projectName, final String projectVersionName, final String dockerImage, final DetectCodeLocationType detectCodeLocationType, final String prefix,
+        final String suffix) {
         final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(sourcePath);
-        final String codeLocationTypeString = CodeLocationType.DOCKER.toString().toLowerCase();
-        final String bomToolTypeString = bomToolType.toString().toLowerCase();
+        final String codeLocationTypeString = CodeLocationNameType.DOCKER.toString().toLowerCase();
+        final String bomToolTypeString = detectCodeLocationType.toString().toLowerCase();
 
         final List<String> dockerCodeLocationNamePieces = Arrays.asList(finalSourcePathPiece, projectName, projectVersionName, dockerImage);
         final List<String> dockerCodeLocationEndPieces = Arrays.asList(codeLocationTypeString, bomToolTypeString);
@@ -74,7 +74,7 @@ public class CodeLocationNameGenerator {
     }
 
     public String createDockerScanCodeLocationName(final String dockerTarFilename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
-        final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
+        final String codeLocationTypeString = CodeLocationNameType.SCAN.toString().toLowerCase();
 
         final List<String> fileCodeLocationNamePieces = Arrays.asList(dockerTarFilename, projectName, projectVersionName);
         final List<String> fileCodeLocationEndPieces = Arrays.asList(codeLocationTypeString);
@@ -84,7 +84,7 @@ public class CodeLocationNameGenerator {
 
     public String createScanCodeLocationName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String pathPiece = cleanScanTargetPath(scanTargetPath, sourcePath);
-        final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
+        final String codeLocationTypeString = CodeLocationNameType.SCAN.toString().toLowerCase();
 
         final List<String> fileCodeLocationNamePieces = Arrays.asList(pathPiece, projectName, projectVersionName);
         final List<String> fileCodeLocationEndPieces = Arrays.asList(codeLocationTypeString);
@@ -93,7 +93,7 @@ public class CodeLocationNameGenerator {
     }
 
     public String createBinaryScanCodeLocationName(final String filename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
-        final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
+        final String codeLocationTypeString = CodeLocationNameType.SCAN.toString().toLowerCase();
 
         final List<String> fileCodeLocationNamePieces = Arrays.asList(filename, projectName, projectVersionName);
         final List<String> fileCodeLocationEndPieces = Arrays.asList(codeLocationTypeString);

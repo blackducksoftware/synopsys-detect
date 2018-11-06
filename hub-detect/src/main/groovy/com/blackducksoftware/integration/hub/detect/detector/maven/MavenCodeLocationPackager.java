@@ -33,8 +33,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.hub.bdio.graph.MutableMapDependencyGraph;
@@ -161,7 +161,7 @@ public class MavenCodeLocationPackager {
             if (!sourcePath.endsWith(dependency.name)) {
                 codeLocationSourcePath += "/" + dependency.name;
             }
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectorType.MAVEN, codeLocationSourcePath, dependency.externalId, graph).build();
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.MAVEN, codeLocationSourcePath, dependency.externalId, graph).build();
             return new MavenParseResult(dependency.name, dependency.version, codeLocation);
         }
         return null;

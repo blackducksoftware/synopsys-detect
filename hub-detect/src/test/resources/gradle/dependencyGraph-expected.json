@@ -1,5 +1,5 @@
 {
-  "detectorType": "GRADLE",
+  "codeLocationType": "GRADLE",
   "sourcePath": "/Users/ekerwin/Documents/source/integration/hub-detect",
   "externalId": {
     "forge": {

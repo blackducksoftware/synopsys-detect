@@ -23,26 +23,25 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.codelocation;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 
 public class DetectCodeLocation {
-    private final DetectorType detectorType;
+    private final DetectCodeLocationType codeLocationType;
     private final String sourcePath;
     private final String dockerImage;
     private final ExternalId externalId;
     private final DependencyGraph dependencyGraph;
 
     public static class Builder {
-        private final DetectorType detectorType;
+        private final DetectCodeLocationType codeLocationType;
         private final String sourcePath;
         private String dockerImage;
         private final ExternalId externalId;
         private final DependencyGraph dependencyGraph;
 
-        public Builder(final DetectorType detectorType, final String sourcePath, final ExternalId externalId, final DependencyGraph dependencyGraph) {
-            this.detectorType = detectorType;
+        public Builder(final DetectCodeLocationType codeLocationType, final String sourcePath, final ExternalId externalId, final DependencyGraph dependencyGraph) {
+            this.codeLocationType = codeLocationType;
             this.sourcePath = sourcePath;
             this.externalId = externalId;
             this.dependencyGraph = dependencyGraph;
@@ -59,15 +58,15 @@ public class DetectCodeLocation {
     }
 
     private DetectCodeLocation(final Builder builder) {
-        this.detectorType = builder.detectorType;
+        this.codeLocationType = builder.codeLocationType;
         this.sourcePath = builder.sourcePath;
         this.dockerImage = builder.dockerImage;
         this.externalId = builder.externalId;
         this.dependencyGraph = builder.dependencyGraph;
     }
 
-    public DetectorType getDetectorType() {
-        return detectorType;
+    public DetectCodeLocationType getCodeLocationType() {
+        return codeLocationType;
     }
 
     public String getSourcePath() {

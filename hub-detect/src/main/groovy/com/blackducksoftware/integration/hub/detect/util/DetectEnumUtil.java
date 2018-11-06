@@ -21,23 +21,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector;
+package com.blackducksoftware.integration.hub.detect.util;
 
-public class ExtractionId {
-    private final String id;
-    private final String extractionType;
+import java.util.Optional;
 
-    public ExtractionId(final DetectorType detectorType, final String id) {
-        extractionType = detectorType.toString();
-        this.id = id;
-    }
-
-    public ExtractionId(final String extractionType, final String id) {
-        this.id = id;
-        this.extractionType = extractionType;
-    }
-
-    public String toUniqueString() {
-        return extractionType + "-" + id;
+public class DetectEnumUtil {
+    public static <T extends Enum<T>> Optional<T> getValueOf(Class<T> enumType, String name) {
+        try {
+            return Optional.of(Enum.valueOf(enumType, name));
+        } catch (IllegalArgumentException ex) {
+            return Optional.empty();
+        }
     }
 }
+

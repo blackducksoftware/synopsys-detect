@@ -21,23 +21,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector;
+package com.blackducksoftware.integration.hub.detect.workflow.codelocation;
 
-public class ExtractionId {
-    private final String id;
-    private final String extractionType;
+public enum CodeLocationNameType {
+    SCAN,
+    BOM,
+    DOCKER;
 
-    public ExtractionId(final DetectorType detectorType, final String id) {
-        extractionType = detectorType.toString();
-        this.id = id;
-    }
-
-    public ExtractionId(final String extractionType, final String id) {
-        this.id = id;
-        this.extractionType = extractionType;
-    }
-
-    public String toUniqueString() {
-        return extractionType + "-" + id;
-    }
 }

@@ -26,11 +26,11 @@ package com.blackducksoftware.integration.hub.detect.detector.cpan;
 import java.io.File;
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
@@ -63,7 +63,7 @@ public class CpanCliExtractor {
 
             final DependencyGraph dependencyGraph = cpanListParser.parse(listText, showdeps);
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CPAN, directory.toString());
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectorType.CPAN, directory.toString(), externalId, dependencyGraph).build();
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.CPAN, directory.toString(), externalId, dependencyGraph).build();
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

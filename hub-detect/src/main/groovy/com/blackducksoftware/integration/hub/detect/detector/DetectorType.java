@@ -29,12 +29,10 @@ import java.util.stream.Collectors;
 
 public enum DetectorType {
     BITBAKE,
-    CARTHAGE,
     COCOAPODS,
     CONDA,
     CPAN,
     CRAN,
-    DOCKER,
     GO_DEP,
     GO_VNDR,
     GRADLE,

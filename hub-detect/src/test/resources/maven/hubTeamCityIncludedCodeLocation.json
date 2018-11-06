@@ -1,5 +1,5 @@
 {
-  "detectorType": "MAVEN",
+  "codeLocationType": "MAVEN",
   "sourcePath": "/test/path/hub-teamcity-agent",
   "externalId": {
     "forge": {

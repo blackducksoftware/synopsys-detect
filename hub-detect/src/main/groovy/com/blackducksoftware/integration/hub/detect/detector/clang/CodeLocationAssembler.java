@@ -26,8 +26,8 @@ package com.blackducksoftware.integration.hub.detect.detector.clang;
 import java.io.File;
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.synopsys.integration.hub.bdio.SimpleBdioFactory;
 import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.hub.bdio.model.Forge;
@@ -45,7 +45,7 @@ public class CodeLocationAssembler {
     public DetectCodeLocation generateCodeLocation(final Forge defaultForge, final File rootDir, final List<Dependency> bdioComponents) {
         final MutableDependencyGraph dependencyGraph = populateGraph(bdioComponents);
         final ExternalId externalId = externalIdFactory.createPathExternalId(defaultForge, rootDir.toString());
-        return new DetectCodeLocation.Builder(DetectorType.CLANG, rootDir.toString(), externalId, dependencyGraph).build();
+        return new DetectCodeLocation.Builder(DetectCodeLocationType.CLANG, rootDir.toString(), externalId, dependencyGraph).build();
     }
 
     private MutableDependencyGraph populateGraph(final List<Dependency> bdioComponents) {

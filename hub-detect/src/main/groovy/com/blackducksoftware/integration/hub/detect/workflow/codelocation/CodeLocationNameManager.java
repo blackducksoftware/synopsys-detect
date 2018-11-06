@@ -31,7 +31,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
 public class CodeLocationNameManager {
@@ -50,7 +49,7 @@ public class CodeLocationNameManager {
         final String aggregateCodeLocationName;
         if (useCodeLocationOverride()) {
             // The aggregate is exclusively used for the bdio and not the scans
-            aggregateCodeLocationName = getNextCodeLocationOverrideName(CodeLocationType.BOM);
+            aggregateCodeLocationName = getNextCodeLocationOverrideName(CodeLocationNameType.BOM);
         } else {
             aggregateCodeLocationName = String.format("%s/%s Black Duck I/O Export", projectNameVersion.getName(), projectNameVersion.getVersion());
         }
@@ -60,16 +59,16 @@ public class CodeLocationNameManager {
 
     public String createCodeLocationName(final DetectCodeLocation detectCodeLocation, final String detectSourcePath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String codeLocationName;
-        if (useCodeLocationOverride() && DetectorType.DOCKER.equals(detectCodeLocation.getDetectorType())) {
-            codeLocationName = getNextCodeLocationOverrideName(CodeLocationType.DOCKER);
+        if (useCodeLocationOverride() && DetectCodeLocationType.DOCKER.equals(detectCodeLocation.getCodeLocationType())) {
+            codeLocationName = getNextCodeLocationOverrideName(CodeLocationNameType.DOCKER);
         } else if (useCodeLocationOverride()) {
-            codeLocationName = getNextCodeLocationOverrideName(CodeLocationType.BOM);
-        } else if (DetectorType.DOCKER.equals(detectCodeLocation.getDetectorType())) {
+            codeLocationName = getNextCodeLocationOverrideName(CodeLocationNameType.BOM);
+        } else if (DetectCodeLocationType.DOCKER.equals(detectCodeLocation.getCodeLocationType())) {
             codeLocationName = codeLocationNameGenerator
-                                   .createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getDetectorType(), prefix,
+                                   .createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getCodeLocationType(), prefix,
                                        suffix);
         } else {
-            codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getDetectorType(), prefix, suffix);
+            codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getCodeLocationType(), prefix, suffix);
         }
         codeLocationNames.add(codeLocationName);
         return codeLocationName;
@@ -79,7 +78,7 @@ public class CodeLocationNameManager {
         final String scanCodeLocationName;
 
         if (useCodeLocationOverride()) {
-            scanCodeLocationName = getNextCodeLocationOverrideName(CodeLocationType.SCAN);
+            scanCodeLocationName = getNextCodeLocationOverrideName(CodeLocationNameType.SCAN);
         } else if (StringUtils.isNotBlank(dockerTarFilename)) {
             scanCodeLocationName = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTarFilename, projectName, projectVersionName, prefix, suffix);
         } else {
@@ -93,7 +92,7 @@ public class CodeLocationNameManager {
         final String scanCodeLocationName;
 
         if (useCodeLocationOverride()) {
-            scanCodeLocationName = getNextCodeLocationOverrideName(CodeLocationType.SCAN);
+            scanCodeLocationName = getNextCodeLocationOverrideName(CodeLocationNameType.SCAN);
         } else {
             scanCodeLocationName = codeLocationNameGenerator.createBinaryScanCodeLocationName(filename, projectName, projectVersionName, prefix, suffix);
         }
@@ -105,9 +104,9 @@ public class CodeLocationNameManager {
         return StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None));
     }
 
-    private String getNextCodeLocationOverrideName(final CodeLocationType codeLocationType) { // returns "override", then "override 2", then "override 3", etc
+    private String getNextCodeLocationOverrideName(final CodeLocationNameType codeLocationNameType) { // returns "override", then "override 2", then "override 3", etc
         givenCodeLocationOverrideCount++;
-        final String base = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None) + " " + codeLocationType.name();
+        final String base = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None) + " " + codeLocationNameType.name();
         if (givenCodeLocationOverrideCount == 1) {
             return base;
         } else {

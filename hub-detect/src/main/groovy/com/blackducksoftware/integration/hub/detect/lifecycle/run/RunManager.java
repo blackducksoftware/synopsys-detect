@@ -37,6 +37,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthor
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
+import com.blackducksoftware.integration.hub.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorToolResult;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerTool;
@@ -54,7 +55,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLo
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackDuckBinaryScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectBdioUploadService;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectCodeLocationUnmapService;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectService;
@@ -180,10 +180,10 @@ public class RunManager {
 
         if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
             logger.info("Will include the binary scanner tool.");
-             if (hubServiceManager.isPresent()) {
-                 BlackDuckBinaryScanner blackDuckBinaryScanner = new BlackDuckBinaryScanner(codeLocationNameManager, detectConfiguration, hubServiceManager.get());
-                 blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
-             }
+            if (hubServiceManager.isPresent()) {
+                BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(codeLocationNameManager, detectConfiguration, hubServiceManager.get());
+                blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
+            }
             logger.info("Binary scanner actions finished.");
         }
 

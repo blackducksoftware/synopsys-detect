@@ -33,8 +33,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.synopsys.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.hub.bdio.model.Forge;
 import com.synopsys.integration.hub.bdio.model.dependency.Dependency;
@@ -97,7 +97,7 @@ public class PipenvGraphParser {
 
         if (!dependencyGraph.getRootDependencyExternalIds().isEmpty()) {
             final ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, projectName, projectVersionName);
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectorType.PIP, sourcePath, projectExternalId, dependencyGraph).build();
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.PIP, sourcePath, projectExternalId, dependencyGraph).build();
             return new PipParseResult(projectName, projectVersionName, codeLocation);
         } else {
             return null;

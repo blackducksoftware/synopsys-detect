@@ -1,5 +1,5 @@
 {
-  "detectorType": "MAVEN",
+  "codeLocationType": "MAVEN",
   "sourcePath": "/test/path/sonar-stash-plugin",
   "externalId": {
     "forge": {

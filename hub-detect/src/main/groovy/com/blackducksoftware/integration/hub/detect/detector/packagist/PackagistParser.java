@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -91,7 +91,7 @@ public class PackagistParser {
         }
 
         final DependencyGraph graph = builder.build();
-        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectorType.PACKAGIST, sourcePath, projectExternalId, graph).build();
+        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.PACKAGIST, sourcePath, projectExternalId, graph).build();
 
         return new PackagistParseResult(projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocation);
     }

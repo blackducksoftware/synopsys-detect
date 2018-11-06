@@ -21,23 +21,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector;
+package com.blackducksoftware.integration.hub.detect.workflow.codelocation;
 
-public class ExtractionId {
-    private final String id;
-    private final String extractionType;
-
-    public ExtractionId(final DetectorType detectorType, final String id) {
-        extractionType = detectorType.toString();
-        this.id = id;
-    }
-
-    public ExtractionId(final String extractionType, final String id) {
-        this.id = id;
-        this.extractionType = extractionType;
-    }
-
-    public String toUniqueString() {
-        return extractionType + "-" + id;
-    }
+public enum DetectCodeLocationType {
+    BITBAKE,
+    COCOAPODS,
+    CONDA,
+    CPAN,
+    CRAN,
+    DOCKER,
+    GO_DEP,
+    GO_VNDR,
+    GRADLE,
+    HEX,
+    MAVEN,
+    NPM,
+    NUGET,
+    PACKAGIST,
+    PEAR,
+    PIP,
+    RUBYGEMS,
+    SBT,
+    YARN,
+    CLANG;
 }

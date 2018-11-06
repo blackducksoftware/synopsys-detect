@@ -31,8 +31,8 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
 import com.synopsys.integration.hub.bdio.model.Forge;
@@ -70,7 +70,7 @@ public class PodlockExtractor {
 
         final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, directory.toString());
 
-        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectorType.COCOAPODS, directory.toString(), externalId, dependencyGraph).build();
+        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.COCOAPODS, directory.toString(), externalId, dependencyGraph).build();
 
         return new Extraction.Builder().success(codeLocation).build();
     }
