@@ -39,7 +39,6 @@ import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorToolResult;
-import com.blackducksoftware.integration.hub.detect.tool.docker.DockerOptions;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerTool;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerToolResult;
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
@@ -104,7 +103,6 @@ public class RunManager {
 
         if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the docker tool.");
-            DockerOptions dockerOptions = DockerOptions.fromConfiguration(detectConfiguration);
             DockerTool dockerTool = new DockerTool(detectContext);
 
             DockerToolResult dockerToolResult = dockerTool.run();
@@ -155,7 +153,7 @@ public class RunManager {
         logger.info("Completed project and version actions.");
 
         logger.info("Processing Detect Code Locations.");
-        BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new IntegrationEscapeUtil(), codeLocationNameManager, detectConfiguration, bdioCodeLocationCreator, directoryManager);
+        BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new IntegrationEscapeUtil(), codeLocationNameManager, detectConfiguration, bdioCodeLocationCreator, directoryManager, eventSystem);
         BdioResult bdioResult = bdioManager.createBdioFiles(runOptions.getAggregateName(), projectNameVersion, runResult.getDetectCodeLocations());
 
         if (bdioResult.getBdioFiles().size() > 0) {

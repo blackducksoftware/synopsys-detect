@@ -70,7 +70,7 @@ public class DetectContext {
 
     private void checkLock() {
         if (this.lock) {
-            throw new RuntimeException("Cannot change context!");
+            throw new RuntimeException("Cannot change detect context, it has been finalized!");
         }
     }
 
