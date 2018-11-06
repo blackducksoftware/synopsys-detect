@@ -36,11 +36,11 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.ArbitraryNameVersionDecision;
 import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.NameVersionDecision;
-import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.PreferredBomToolDecision;
-import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.PreferredBomToolNotFoundDecision;
-import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.TooManyPreferredBomToolsFoundDecision;
-import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.UniqueBomToolDecision;
-import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.UniqueBomToolNotFoundDecision;
+import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.PreferredDetectorDecision;
+import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.PreferredDetectorNotFoundDecision;
+import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.TooManyPreferredDetectorTypesFoundDecision;
+import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.UniqueDetectorDecision;
+import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.UniqueDetectorNotFoundDecision;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorNameVersionDecider {
@@ -63,11 +63,11 @@ public class DetectorNameVersionDecider {
             final List<DetectorProjectInfo> lowestDepthPossibilities = projectNamesAtLowestDepth(possiblePreferred);
 
             if (lowestDepthPossibilities.size() == 0) {
-                decision = new PreferredBomToolNotFoundDecision(preferredBomToolType);
+                decision = new PreferredDetectorNotFoundDecision(preferredBomToolType);
             } else if (lowestDepthPossibilities.size() == 1) {
-                decision = new PreferredBomToolDecision(lowestDepthPossibilities.get(0));
+                decision = new PreferredDetectorDecision(lowestDepthPossibilities.get(0));
             } else {
-                decision = new TooManyPreferredBomToolsFoundDecision(preferredBomToolType);
+                decision = new TooManyPreferredDetectorTypesFoundDecision(preferredBomToolType);
             }
         } else {
             final List<DetectorProjectInfo> lowestDepthPossibilities = projectNamesAtLowestDepth(projectNamePossibilities);
@@ -85,14 +85,14 @@ public class DetectorNameVersionDecider {
                 final Optional<DetectorProjectInfo> chosen = lowestDepthPossibilities.stream().filter(it -> it.getDetectorType() == type).findFirst();
 
                 if (chosen.isPresent()) {
-                    decision = new UniqueBomToolDecision(chosen.get());
+                    decision = new UniqueDetectorDecision(chosen.get());
                 } else {
-                    decision = new UniqueBomToolNotFoundDecision();
+                    decision = new UniqueDetectorNotFoundDecision();
                 }
             } else if (singleInstanceLowestDepthBomTools.size() > 1) {
                 decision = decideProjectNameVersionArbitrarily(lowestDepthPossibilities, singleInstanceLowestDepthBomTools);
             } else {
-                decision = new UniqueBomToolNotFoundDecision();
+                decision = new UniqueDetectorNotFoundDecision();
             }
         }
 
@@ -111,7 +111,7 @@ public class DetectorNameVersionDecider {
         if (chosen.isPresent()) {
             return new ArbitraryNameVersionDecision(chosen.get(), arbitraryOptions);
         } else {
-            return new UniqueBomToolNotFoundDecision();
+            return new UniqueDetectorNotFoundDecision();
         }
     }
 

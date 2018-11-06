@@ -47,7 +47,7 @@ public class RunOptions {
         return isOnline;
     }
 
-    public boolean isUnmapCodeLocations() {
+    public boolean shouldUnmapCodeLocations() {
         return unmapCodeLocations;
     }
 

@@ -32,28 +32,28 @@ import com.blackducksoftware.integration.hub.detect.workflow.project.DetectorPro
 import com.synopsys.integration.util.NameVersion;
 
 public class ArbitraryNameVersionDecision extends NameVersionDecision {
-    private final DetectorProjectInfo chosenBomTool;
-    private final List<DetectorProjectInfo> otherBomTools;
+    private final DetectorProjectInfo chosenDetector;
+    private final List<DetectorProjectInfo> otherDetectors;
 
-    public ArbitraryNameVersionDecision(final DetectorProjectInfo chosenBomTool, final List<DetectorProjectInfo> otherBomTools) {
-        this.chosenBomTool = chosenBomTool;
-        this.otherBomTools = otherBomTools;
+    public ArbitraryNameVersionDecision(final DetectorProjectInfo chosenDetector, final List<DetectorProjectInfo> otherDetectors) {
+        this.chosenDetector = chosenDetector;
+        this.otherDetectors = otherDetectors;
     }
 
     @Override
     public Optional<NameVersion> getChosenNameVersion() {
-        return Optional.of(chosenBomTool.getNameVersion());
+        return Optional.of(chosenDetector.getNameVersion());
     }
 
     @Override
     public void printDescription(final Logger logger) {
-        logger.info("Multiple unique bom tool types were found.");
+        logger.info("Multiple unique detector types were found.");
         logger.info("The following project names were found: ");
-        for (final DetectorProjectInfo projectNamePossibility : otherBomTools) {
+        for (final DetectorProjectInfo projectNamePossibility : otherDetectors) {
             logger.info(projectNamePossibility.getDetectorType().toString() + ": " + projectNamePossibility.getNameVersion().getName());
         }
-        logger.info("Chose to use " + chosenBomTool.getDetectorType() + " at depth " + chosenBomTool.getDepth() + " for project name and version.");
-        logger.info("To specify a different bom tool type you can specify the project type override.");
+        logger.info("Chose to use " + chosenDetector.getDetectorType() + " at depth " + chosenDetector.getDepth() + " for project name and version.");
+        logger.info("To specify a different detector type you can specify the project type override.");
     }
 
 }

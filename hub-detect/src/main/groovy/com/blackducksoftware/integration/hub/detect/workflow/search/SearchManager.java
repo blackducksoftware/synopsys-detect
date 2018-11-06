@@ -60,7 +60,7 @@ public class SearchManager {
             final DetectorFinderOptions findOptions = new DetectorFinderOptions(searchOptions.excludedDirectories, searchOptions.forceNestedSearch, searchOptions.maxDepth, searchOptions.bomToolFilter, detectorSearchProvider,
                 detectorSearchEvaluator, eventSystem);
 
-            logger.info("Starting search for bom tools.");
+            logger.info("Starting search for detectors.");
             final DetectorFinder bomToolTreeWalker = new DetectorFinder();
             searchResults = bomToolTreeWalker.findApplicableBomTools(searchOptions.searchPath, findOptions);
         } catch (final DetectorException e) {

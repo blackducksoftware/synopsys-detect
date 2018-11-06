@@ -143,7 +143,7 @@ public class RunManager {
             DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
             DetectProjectService detectProjectService = new DetectProjectService(hubServiceManager.get(), options);
             projectView = detectProjectService.createOrUpdateHubProject(projectNameVersion);
-            if (projectView.isPresent() && runOptions.isUnmapCodeLocations()) {
+            if (projectView.isPresent() && runOptions.shouldUnmapCodeLocations()) {
                 logger.info("Unmapping code locations.");
                 DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(hubServiceManager.get().createHubService(), hubServiceManager.get().createCodeLocationService());
                 detectCodeLocationUnmapService.unmapCodeLocations(projectView.get());

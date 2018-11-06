@@ -44,6 +44,6 @@ public class YieldedDetectorResult extends FailedDetectorResult {
     @Override
     public String toDescription() {
         final String yielded = yieldedTo.stream().map(it -> it.getDescriptiveName()).collect(Collectors.joining(", "));
-        return "Yielded to bom tools: " + yielded;
+        return "Yielded to detectors: " + yielded;
     }
 }

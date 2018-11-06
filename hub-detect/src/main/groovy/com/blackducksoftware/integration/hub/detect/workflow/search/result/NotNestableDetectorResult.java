@@ -26,6 +26,6 @@ package com.blackducksoftware.integration.hub.detect.workflow.search.result;
 public class NotNestableDetectorResult extends FailedDetectorResult {
     @Override
     public String toDescription() {
-        return "Not nestable and a bom tool already applied in parent directory.";
+        return "Not nestable and a detector already applied in parent directory.";
     }
 }

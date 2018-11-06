@@ -219,7 +219,7 @@ public class BdioCodeLocationCreator {
 
     private boolean shouldCombine(final Logger logger, final DetectCodeLocation codeLocationLeft, final DetectCodeLocation codeLocationRight) {
         if (codeLocationLeft.getDetectorType() != codeLocationRight.getDetectorType()) {
-            logger.error("Cannot combine code locations with different bom tool types.");
+            logger.error("Cannot combine code locations with different detector types.");
             return false;
         }
 

@@ -51,12 +51,12 @@ public class DiagnosticReportManager {
     private final Map<ReportTypes, FileReportWriter> reportWriters = new HashMap<>();
 
     public enum ReportTypes {
-        SEARCH("search_report", "Search Result Report", "A breakdown of bom tool searching by directory."),
-        SEARCH_DETAILED("search_detailed_report", "Search Result Report", "A breakdown of bom tool searching by directory."),
-        BOM_TOOL("bom_tool_report", "Bom DetectTool Report", "A breakdown of bom tool's that were applicable and their preparation and extraction results."),
-        BOM_TOOL_PROFILE("bom_tool_profile_report", "Bom DetectTool Profile Report", "A breakdown of timing and profiling for all bom tools."),
+        SEARCH("search_report", "Search Result Report", "A breakdown of detector searching by directory."),
+        SEARCH_DETAILED("search_detailed_report", "Search Result Report", "A breakdown of detector searching by directory."),
+        BOM_TOOL("bom_tool_report", "Bom DetectTool Report", "A breakdown of detector's that were applicable and their preparation and extraction results."),
+        BOM_TOOL_PROFILE("bom_tool_profile_report", "Bom DetectTool Profile Report", "A breakdown of timing and profiling for all detectors."),
         CODE_LOCATIONS("code_location_report", "Code Location Report", "A breakdown of code locations created, their dependencies and status results."),
-        DEPENDENCY_COUNTS("dependency_counts_report", "Dependency Count Report", "A breakdown of how many dependencies each bom tool group generated in their graphs.");
+        DEPENDENCY_COUNTS("dependency_counts_report", "Dependency Count Report", "A breakdown of how many dependencies each detector group generated in their graphs.");
 
         String reportFileName;
         String reportTitle;
@@ -123,7 +123,7 @@ public class DiagnosticReportManager {
             final OverviewSummaryReporter overviewSummaryReporter = new OverviewSummaryReporter();
             overviewSummaryReporter.writeReport(getReportWriter(ReportTypes.BOM_TOOL), detectorEvaluations);
         } catch (final Exception e) {
-            logger.error("Failed to write bom tool report.", e);
+            logger.error("Failed to write detector report.", e);
         }
     }
 

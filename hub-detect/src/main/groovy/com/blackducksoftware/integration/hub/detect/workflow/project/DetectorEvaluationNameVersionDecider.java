@@ -49,7 +49,7 @@ public class DetectorEvaluationNameVersionDecider {
         if (StringUtils.isNotBlank(projectDetector)) {
             final String projectDetectorFixed = projectDetector.toUpperCase();
             if (!DetectorType.POSSIBLE_NAMES.contains(projectDetectorFixed)) {
-                logger.info("A valid preferred bom tool type was not provided, deciding project name automatically.");
+                logger.info("A valid preferred detector type was not provided, deciding project name automatically.");
             } else {
                 preferredDetectorType = DetectorType.valueOf(projectDetectorFixed);
             }

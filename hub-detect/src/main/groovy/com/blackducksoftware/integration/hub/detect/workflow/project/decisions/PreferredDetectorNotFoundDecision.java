@@ -21,11 +21,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.search.result;
+package com.blackducksoftware.integration.hub.detect.workflow.project.decisions;
 
-public class NotSelfNestableDetectorResult extends FailedDetectorResult {
-    @Override
-    public String toDescription() {
-        return "Nestable but this detector already applied in a parent directory.";
+import org.slf4j.Logger;
+
+import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
+
+public class PreferredDetectorNotFoundDecision extends NameVersionDecision {
+    private final DetectorType detectorType;
+
+    public PreferredDetectorNotFoundDecision(final DetectorType detectorType) {
+        this.detectorType = detectorType;
     }
+
+    @Override
+    public void printDescription(final Logger logger) {
+        logger.info("A detector of type " + detectorType.toString() + " was not found. Project info could not be found in a detector.");
+    }
+
 }

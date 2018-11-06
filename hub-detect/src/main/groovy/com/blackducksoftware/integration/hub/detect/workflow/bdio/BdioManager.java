@@ -81,13 +81,13 @@ public class BdioManager {
             final BdioCodeLocationResult codeLocationResult = bdioCodeLocationCreator.createFromDetectCodeLocations(codeLocations, projectNameVersion);
             codeLocationResult.getFailedBomToolGroupTypes().forEach(it -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(it, StatusType.FAILURE)));
 
-            logger.info("Creating BDIO files.");
+            logger.info("Creating BDIO files from code locations.");
             CodeLocationBdioCreator codeLocationBdioCreator = new CodeLocationBdioCreator(detectBdioWriter, simpleBdioFactory);
             final List<File> createdBdioFiles = codeLocationBdioCreator.createBdioFiles(directoryManager.getBdioOutputDirectory(), codeLocationResult.getBdioCodeLocations(), projectNameVersion);
 
             return new BdioResult(codeLocationResult.getBdioCodeLocations(), createdBdioFiles);
         } else {
-            logger.info("Creating aggregate bdio file.");
+            logger.info("Creating aggregate BDIO file.");
             AggregateBdioCreator aggregateBdioCreator = new AggregateBdioCreator(simpleBdioFactory, integrationEscapeUtil, codeLocationNameManager, detectConfiguration, detectBdioWriter);
             final File aggregateBdioFile = aggregateBdioCreator.createAggregateBdioFile(directoryManager.getSourceDirectory(), directoryManager.getBdioOutputDirectory(), codeLocations, projectNameVersion);
             return new BdioResult(new ArrayList<>(), Arrays.asList(aggregateBdioFile));

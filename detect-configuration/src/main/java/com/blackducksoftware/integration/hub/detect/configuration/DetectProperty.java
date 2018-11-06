@@ -293,7 +293,7 @@ public enum DetectProperty {
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.project.detector in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
-    @HelpDescription("The bom tool to choose when multiple bom tool types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.")
+    @HelpDescription("The detector to choose when multiple detector types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.")
     DETECT_PROJECT_BOM_TOOL("detect.project.bom.tool", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_SEARCH })
@@ -351,7 +351,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_SEARCH })
     @HelpDescription("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.")
-    @HelpDetailed("If true, these directories will be excluded from the bom tool search: " + DetectorSearchExcludedDirectories.DIRECTORY_NAMES)
+    @HelpDetailed("If true, these directories will be excluded from the detector search: " + DetectorSearchExcludedDirectories.DIRECTORY_NAMES)
     DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS("detect.detector.search.exclusion.defaults", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @Deprecated

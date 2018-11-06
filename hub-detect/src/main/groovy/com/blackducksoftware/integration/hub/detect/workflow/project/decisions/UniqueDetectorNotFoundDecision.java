@@ -21,11 +21,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.search.result;
+package com.blackducksoftware.integration.hub.detect.workflow.project.decisions;
 
-public class NotSelfNestableDetectorResult extends FailedDetectorResult {
+import org.slf4j.Logger;
+
+public class UniqueDetectorNotFoundDecision extends NameVersionDecision {
     @Override
-    public String toDescription() {
-        return "Nestable but this detector already applied in a parent directory.";
+    public void printDescription(final Logger logger) {
+        logger.info("No unique detector was found. Project info could not be found in a detector.");
     }
+
 }
