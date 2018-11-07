@@ -28,9 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.OverridableExcludedIncludedFilter;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
@@ -53,17 +50,17 @@ public class DetectConfigurationFactory {
 
     public RunOptions createRunOptions() {
         Optional<Boolean> sigScanDisabled = Optional.empty();
-        if (detectConfiguration.wasPropertyActuallySet(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED)){
+        if (detectConfiguration.wasPropertyActuallySet(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED)) {
             sigScanDisabled = Optional.of(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, PropertyAuthority.None));
         }
 
         Optional<Boolean> swipEnabled = Optional.empty();
-        if (detectConfiguration.wasPropertyActuallySet(DetectProperty.DETECT_SWIP_ENABLED)){
+        if (detectConfiguration.wasPropertyActuallySet(DetectProperty.DETECT_SWIP_ENABLED)) {
             swipEnabled = Optional.of(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SWIP_ENABLED, PropertyAuthority.None));
         }
         String includedTools = detectConfiguration.getProperty(DetectProperty.DETECT_TOOLS, PropertyAuthority.None);
         String excludedTools = detectConfiguration.getProperty(DetectProperty.DETECT_TOOLS_EXCLUDED, PropertyAuthority.None);
-        DetectToolFilter detectToolFilter = new DetectToolFilter(includedTools, excludedTools, sigScanDisabled, swipEnabled);
+        DetectToolFilter detectToolFilter = new DetectToolFilter(excludedTools, includedTools, sigScanDisabled, swipEnabled);
 
         boolean isOnline = !detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
         boolean unmapCodeLocations = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP, PropertyAuthority.None);
