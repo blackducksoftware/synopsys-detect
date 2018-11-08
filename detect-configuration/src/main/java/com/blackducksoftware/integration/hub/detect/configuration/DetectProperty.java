@@ -445,9 +445,18 @@ public enum DetectProperty {
     DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES("detect.policy.check.fail.on.severities", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE)
-    @HelpDescription("Version of the Gradle Inspector. Wildcards may be specified with *.")
-    @HelpDetailed("Wildcard versions will find the highest version that fits the pattern. For example 1.* will lock to major version 1 where 1.2.* will lock to major 1 and minor 2. Both versions 1.2.3 and 1.2.4 would fulfill both patterns and 1.2.4 would be chosen.")
-    DETECT_GRADLE_INSPECTOR_VERSION("detect.gradle.inspector.version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "0.*"),
+    @HelpDescription("The override version of the Gradle Inspector to use. By default, detect will try to automatically determine the correct gradle version.")
+    DETECT_GRADLE_INSPECTOR_VERSION("detect.gradle.inspector.version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
+
+    @HelpGroup(primary = GROUP_GRADLE)
+    @HelpDescription("The path to the directory containing the air gap dependencies for the gradle inspector")
+    DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH("detect.gradle.inspector.air.gap.path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
+
+    @Deprecated
+    @DetectDeprecation(description = "The gradle inspector can no longer be downloaded from a custom repository, please use Detect Air Gap instead.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
+    @HelpGroup(primary = GROUP_GRADLE)
+    @HelpDescription("The respository gradle should use to look for the gradle inspector dependencies")
+    DETECT_GRADLE_INSPECTOR_REPOSITORY_URL("detect.gradle.inspector.repository.url", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE)
     @HelpDescription("Gradle build command")
@@ -478,8 +487,8 @@ public enum DetectProperty {
     DETECT_NUGET_INSPECTOR_NAME("detect.nuget.inspector.name", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "IntegrationNugetInspector"),
 
     @HelpGroup(primary = GROUP_NUGET)
-    @HelpDescription("Version of the Nuget Inspector. Use 'latest' to specify the current latest version. In detect 5.0.0 wildcards will be supported.")
-    DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "latest"),
+    @HelpDescription("Version of the Nuget Inspector. By default detect will communicate with Artifactory.")
+    DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_NUGET)
     @HelpDescription("The names of the projects in a solution to exclude")
@@ -520,6 +529,10 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_NUGET)
     @HelpDescription("The path of the Nuget executable")
     DETECT_NUGET_PATH("detect.nuget.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_NUGET)
+    @HelpDescription("The path of the dotnet executable")
+    DETECT_DOTNET_PATH("detect.dotnet.path", "4.4.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PIP)
     @DetectDeprecation(description = "This property is being removed. Please use --detect.project.name in the future.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
@@ -592,8 +605,8 @@ public enum DetectProperty {
     DETECT_DOCKER_INSPECTOR_PATH("detect.docker.inspector.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DOCKER)
-    @HelpDescription("Version of the Docker Inspector to use")
-    DETECT_DOCKER_INSPECTOR_VERSION("detect.docker.inspector.version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "7.*"),
+    @HelpDescription("Version of the Docker Inspector to use. By default detect will attempt to automatically determine the version to use.")
+    DETECT_DOCKER_INSPECTOR_VERSION("detect.docker.inspector.version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_DOCKER)
     @HelpDescription("A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.")
@@ -830,10 +843,6 @@ public enum DetectProperty {
     @HelpDescription("The path to the directory containing the docker inspector script, jar, and images")
     DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH("detect.docker.inspector.air.gap.path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
 
-    @HelpGroup(primary = GROUP_GRADLE)
-    @HelpDescription("The path to the directory containing the air gap dependencies for the gradle inspector")
-    DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH("detect.gradle.inspector.air.gap.path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
-
     @HelpGroup(primary = GROUP_NUGET)
     @HelpDescription("The path to the directory containing the nuget inspector nupkg")
     DETECT_NUGET_INSPECTOR_AIR_GAP_PATH("detect.nuget.inspector.air.gap.path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
@@ -842,10 +851,6 @@ public enum DetectProperty {
     @HelpDescription("The source for nuget packages")
     @HelpDetailed("Set this to \"https://www.nuget.org/api/v2/\" if your are still using a nuget client expecting the v2 api")
     DETECT_NUGET_PACKAGES_REPO_URL("detect.nuget.packages.repo.url", "3.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "https://api.nuget.org/v3/index.json"),
-
-    @HelpGroup(primary = GROUP_GRADLE)
-    @HelpDescription("The respository gradle should use to look for the gradle inspector")
-    DETECT_GRADLE_INSPECTOR_REPOSITORY_URL("detect.gradle.inspector.repository.url", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_HEX)
     @HelpDescription("The path of the rebar3 executable")
@@ -920,6 +925,7 @@ public enum DetectProperty {
         public static final String GROUP_DOCKER = "docker";
         public static final String GROUP_GO = "go";
         public static final String GROUP_GRADLE = "gradle";
+        public static final String GROUP_ARTIFACTORY = "artifactory";
         public static final String GROUP_HEX = "hex";
         public static final String GROUP_MAVEN = "maven";
         public static final String GROUP_NPM = "npm";

@@ -42,9 +42,9 @@ import com.blackducksoftware.integration.hub.detect.tool.docker.DockerProperties
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.OfflineBlackDuckSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.OnlineBlackDuckSignatureScanner;
-import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
+import com.blackducksoftware.integration.hub.detect.workflow.ArtifactResolver;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocationCreator;
@@ -110,6 +110,11 @@ public class RunBeanConfiguration {
     }
 
     @Bean
+    public ArtifactResolver artifactResolver() {
+        return new ArtifactResolver(connectionManager(), gson);
+    }
+
+    @Bean
     public DetectConfigurationFactory detectConfigurationFactory() {
         return new DetectConfigurationFactory(detectConfiguration);
     }
@@ -146,11 +151,6 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public MavenMetadataService mavenMetadataService() {
-        return new MavenMetadataService(documentBuilder, connectionManager());
-    }
-
-    @Bean
     public BdioTransformer bdioTransformer() {
         return new BdioTransformer();
     }
@@ -162,7 +162,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public DockerInspectorManager dockerInspectorManager() {
-        return new DockerInspectorManager(directoryManager, airGapManager(), detectFileFinder(), detectConfiguration, connectionManager(), mavenMetadataService());
+        return new DockerInspectorManager(directoryManager, airGapManager(), detectFileFinder(), detectConfiguration, artifactResolver());
     }
 
     @Lazy

@@ -28,6 +28,7 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.detector.nuget.inspector.NugetInspector;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
@@ -42,7 +43,7 @@ public class NugetSolutionDetector extends Detector {
     private final NugetInspectorManager nugetInspectorManager;
     private final NugetInspectorExtractor nugetInspectorExtractor;
 
-    private String inspectorExe;
+    private NugetInspector inspector;
 
     public NugetSolutionDetector(final DetectorEnvironment environment, final DetectFileFinder fileFinder, final NugetInspectorManager nugetInspectorManager, final NugetInspectorExtractor nugetInspectorExtractor) {
         super(environment, "Solution", DetectorType.NUGET);
@@ -63,9 +64,9 @@ public class NugetSolutionDetector extends Detector {
 
     @Override
     public DetectorResult extractable() throws DetectorException {
-        inspectorExe = nugetInspectorManager.findNugetInspector();
+        inspector = nugetInspectorManager.findNugetInspector();
 
-        if (inspectorExe == null) {
+        if (inspector == null) {
             return new InspectorNotFoundDetectorResult("nuget");
         }
 
@@ -74,7 +75,7 @@ public class NugetSolutionDetector extends Detector {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return nugetInspectorExtractor.extract(environment.getDirectory(), inspectorExe, extractionId);
+        return nugetInspectorExtractor.extract(environment.getDirectory(), inspector, extractionId);
     }
 
 }

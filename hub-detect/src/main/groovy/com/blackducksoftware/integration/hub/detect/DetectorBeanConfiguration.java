@@ -119,9 +119,9 @@ import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnListParser
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockParser;
-import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
+import com.blackducksoftware.integration.hub.detect.workflow.ArtifactResolver;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
@@ -164,6 +164,10 @@ public class DetectorBeanConfiguration {
     public ConnectionManager connectionManager;
     @Autowired
     public CacheableExecutableFinder cacheableExecutableFinder;
+    @Autowired
+    public ArtifactResolver artifactResolver;
+    @Autowired
+    public DetectInfo detectInfo;
 
     //DetectorFactory
     //This is the ONLY class that should be taken from the Configuration manually.
@@ -241,11 +245,6 @@ public class DetectorBeanConfiguration {
     }
 
     @Bean
-    public MavenMetadataService mavenMetadataService() {
-        return new MavenMetadataService(documentBuilder, connectionManager);
-    }
-
-    @Bean
     public GoDepExtractor goDepExtractor() {
         return new GoDepExtractor(depPackager(), externalIdFactory);
     }
@@ -282,7 +281,7 @@ public class DetectorBeanConfiguration {
 
     @Bean
     public GradleInspectorManager gradleInspectorManager() throws ParserConfigurationException {
-        return new GradleInspectorManager(directoryManager, airGapManager, configuration, detectConfiguration, connectionManager, mavenMetadataService());
+        return new GradleInspectorManager(directoryManager, airGapManager, configuration, detectConfiguration, artifactResolver);
     }
 
     @Bean
@@ -347,7 +346,7 @@ public class DetectorBeanConfiguration {
 
     @Bean
     public NugetInspectorManager nugetInspectorManager() {
-        return new NugetInspectorManager(directoryManager, executableFinder, executableRunner, detectConfiguration, airGapManager);
+        return new NugetInspectorManager(directoryManager, executableFinder, detectConfiguration, airGapManager, artifactResolver, detectInfo, detectFileFinder);
     }
 
     @Bean

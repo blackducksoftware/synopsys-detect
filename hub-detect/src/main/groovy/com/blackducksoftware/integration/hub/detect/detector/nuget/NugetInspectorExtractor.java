@@ -40,7 +40,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
+import com.blackducksoftware.integration.hub.detect.detector.nuget.inspector.NugetInspector;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
@@ -70,7 +70,7 @@ public class NugetInspectorExtractor {
         this.detectConfiguration = detectConfiguration;
     }
 
-    public Extraction extract(final File directory, String inspectorExe, final ExtractionId extractionId) {
+    public Extraction extract(final File directory, NugetInspector inspector, final ExtractionId extractionId) {
         try {
             final File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
 
@@ -100,8 +100,7 @@ public class NugetInspectorExtractor {
                 options.add("-v");
             }
 
-            final Executable hubNugetInspectorExecutable = new Executable(directory, inspectorExe, options);
-            final ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable);
+            final ExecutableOutput executableOutput = inspector.execute(executableRunner, directory, options);
 
             if (executableOutput.getReturnCode() != 0) {
                 return new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", options), executableOutput.getReturnCode())).build();
