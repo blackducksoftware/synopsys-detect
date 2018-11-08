@@ -136,7 +136,7 @@ public class Application implements ApplicationRunner {
         logger.info(String.format("Detect duration: %s", DurationFormatUtils.formatPeriod(startTime, endTime, "HH'h' mm'm' ss's' SSS'ms'")));
 
         ExitCodeType finalExitCode = exitCodeManager.getWinningExitCode();
-        if (finalExitCode != ExitCodeType.SUCCESS && bootResult.bootType != null && bootResult.detectConfiguration != null && bootResult.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS, PropertyAuthority.None)) {
+        if (finalExitCode != ExitCodeType.SUCCESS && bootResult != null && bootResult.bootType != null && bootResult.detectConfiguration != null && bootResult.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS, PropertyAuthority.None)) {
             logger.warn(String.format("Forcing success: Exiting with exit code 0. Ignored exit code was %s.", finalExitCode.getExitCode()));
             System.exit(0);
         } else if (finalExitCode != ExitCodeType.SUCCESS) {
