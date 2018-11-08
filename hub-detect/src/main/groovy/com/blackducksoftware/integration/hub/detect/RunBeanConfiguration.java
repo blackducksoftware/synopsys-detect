@@ -174,7 +174,7 @@ public class RunBeanConfiguration {
         final String image = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE, PropertyAuthority.None);
         final boolean dockerRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED, PropertyAuthority.None);
 
-        return new DockerDetector(detectorEnvironment, directoryManager, dockerInspectorManager(), standardExecutableFinder(), dockerRequired, tar, image, dockerExtractor(dockerProperties));
+        return new DockerDetector(detectInfo, detectorEnvironment, directoryManager, dockerInspectorManager(), standardExecutableFinder(), dockerRequired, tar, image, dockerExtractor(dockerProperties));
     }
 
     @Lazy

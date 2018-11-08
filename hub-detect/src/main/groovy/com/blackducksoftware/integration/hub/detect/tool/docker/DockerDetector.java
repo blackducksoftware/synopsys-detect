@@ -26,10 +26,14 @@ package com.blackducksoftware.integration.hub.detect.tool.docker;
 import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
@@ -39,8 +43,11 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Execu
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.WrongOperatingSystemResult;
 
 public class DockerDetector {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final DetectInfo detectInfo;
     private final DetectorEnvironment environment;
     private final DirectoryManager directoryManager;
     private final DockerInspectorManager dockerInspectorManager;
@@ -57,9 +64,10 @@ public class DockerDetector {
     private String tar;
     private DockerInspectorInfo dockerInspectorInfo;
 
-    public DockerDetector(final DetectorEnvironment environment, final DirectoryManager directoryManager, final DockerInspectorManager dockerInspectorManager,
+    public DockerDetector(final DetectInfo detectInfo, final DetectorEnvironment environment, final DirectoryManager directoryManager, final DockerInspectorManager dockerInspectorManager,
         final CacheableExecutableFinder cacheableExecutableFinder, final boolean dockerPathRequired, final String suppliedDockerImage,
         final String suppliedDockerTar, final DockerExtractor dockerExtractor) {
+        this.detectInfo = detectInfo;
         this.environment = environment;
         this.directoryManager = directoryManager;
         this.cacheableExecutableFinder = cacheableExecutableFinder;
@@ -71,13 +79,15 @@ public class DockerDetector {
     }
 
     public DetectorResult applicable() {
+        if (detectInfo.getCurrentOs() == OperatingSystemType.WINDOWS) {
+            return new WrongOperatingSystemResult(detectInfo.getCurrentOs());
+        }
         image = suppliedDockerImage;
         tar = suppliedDockerTar;
 
         if (StringUtils.isBlank(image) && StringUtils.isBlank(tar)) {
             return new PropertyInsufficientDetectorResult();
         }
-
         return new PassedDetectorResult();
     }
 
