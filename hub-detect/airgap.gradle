@@ -1,10 +1,9 @@
-import java.io.File
-
 final String distributionsFolder = "${buildDir}/distributions"
 final String buildArtifactFolder = "${buildDir}/libs"
 final String airGapFolder = "${buildArtifactFolder}/packaged-inspectors"
 final String gradleAirGapPath = "${airGapFolder}/gradle"
-final String nugetAirGapPath = "${airGapFolder}/nuget"
+final String classicNugetAirGapPath = "${airGapFolder}/nuget_classic"
+final String dotnetNugetAirGapPath = "${airGapFolder}/nuget_dotnet"
 final String configAirGapPath = "${buildArtifactFolder}/config"
 final String dockerAirGapPath = "${airGapFolder}/docker"
 final String artifactoryIntegrationPath = "com/blackducksoftware/integration"
@@ -26,17 +25,69 @@ void fetchFile(File outputFile, String url) {
     if (!outputFile.getParentFile().exists()) {
         outputFile.getParentFile().mkdirs()
     }
-    new URL(url).withInputStream{ inputStream -> outputFile.withOutputStream{ it << inputStream }}
+    new URL(url).withInputStream { inputStream -> outputFile.withOutputStream { it << inputStream } }
+}
+
+def curlResponse(def curlArgs) {
+    new ByteArrayOutputStream().withStream { os ->
+        exec {
+            executable = 'curl'
+            args = curlArgs
+            standardOutput = os
+        }
+        return os.toString()
+    }
+}
+
+def findCurrentArtifact(def defaultCurlArgs, def url, def key) {
+    try {
+        println(url)
+        def artifactoryItems = getArtifactoryItems(url, key, defaultCurlArgs)
+
+        if (artifactoryItems != null && artifactoryItems.size() == 1) {
+            return artifactoryItems[0]
+        }
+    } catch (Exception e) {
+        println "Could not find the current artifact: ${e.message}"
+    }
+
+    return null
+}
+
+def getArtifactoryItems(String url, String key, def defaultCurlArgs) {
+    def artifactoryItems = []
+
+    def curlArgs = defaultCurlArgs + ['--header', 'X-Result-Detail: info', url]
+    def response = curlResponse(curlArgs)
+
+    def jsonResponse = new groovy.json.JsonSlurper().parseText(response)
+    return jsonResponse['properties'][key]
+}
+
+
+def defaultCurlArgs(String artifactoryCredentials) {
+    return ['--silent', '--insecure', '--header', 'Content-Type: application/json']
 }
 
 task downloadNugetInspector {
     doLast {
-        final def nugetInspectorUrl = 'https://www.nuget.org/api/v2/package/IntegrationNugetInspector/'
-        final def nugetInspectorFile = new File(nugetAirGapPath, 'integrationnugetinspector.nupkg')
-        fetchFile(nugetInspectorFile, nugetInspectorUrl)
+        final def dotnetNugetInspectorSearchUrl = 'https://repo.blackducksoftware.com/artifactory/api/storage/bds-integrations-nuget-release/BlackduckNugetInspector?properties=NUGET_INSPECTOR_LATEST'
+        final def classicNugetInspectorSearchUrl = 'https://repo.blackducksoftware.com/artifactory/api/storage/bds-integrations-nuget-release/IntegrationNugetInspector?properties=NUGET_INSPECTOR_LATEST'
+        final def dotnetNupkgUrl = findCurrentArtifact(defaultCurlArgs(), dotnetNugetInspectorSearchUrl, 'NUGET_INSPECTOR_LATEST')
+        final def classicNupkgUrl = findCurrentArtifact(defaultCurlArgs(), classicNugetInspectorSearchUrl, 'NUGET_INSPECTOR_LATEST')
+        println dotnetNupkgUrl
+        println classicNupkgUrl
+        final def classicInspectorFile = new File(classicNugetAirGapPath, 'IntegrationNugetInspector.nupkg')
+        final def dotnetInspectorFile = new File(dotnetNugetAirGapPath, 'BlackduckNugetInspector.nupkg')
+        fetchFile(classicInspectorFile, classicNupkgUrl)
+        fetchFile(dotnetInspectorFile, dotnetNupkgUrl)
         copy {
-            from zipTree(nugetInspectorFile)
-            into new File(nugetAirGapPath)
+            from zipTree(classicInspectorFile)
+            into new File(classicNugetAirGapPath)
+        }
+        copy {
+            from zipTree(dotnetInspectorFile)
+            into new File(dotnetNugetAirGapPath)
         }
     }
 }
@@ -82,7 +133,9 @@ File downloadDockerInspectorAirGapZip(String dockerAirGapPath, final String dock
     final String dockerInspectorAirGapZipUrl = "${dockerInspectorArtifactoryBaseUrl}/${dockerInspectorLatestVersion}/blackduck-docker-inspector-${dockerInspectorLatestVersion}-air-gap.zip"
     println "dockerInspectorAirGapZipUrl: ${dockerInspectorAirGapZipUrl}"
     final File dockerInspectorAirGapZipFile = new File(dockerAirGapPath, "blackduck-docker-inspector-${dockerInspectorLatestVersion}-air-gap.zip")
-    fetchFile(dockerInspectorAirGapZipFile, dockerInspectorAirGapZipUrl)
+    if (!dockerInspectorAirGapZipFile.exists()) {
+        fetchFile(dockerInspectorAirGapZipFile, dockerInspectorAirGapZipUrl)
+    }
     return dockerInspectorAirGapZipFile
 }
 
@@ -93,8 +146,8 @@ task downloadDockerInspector() {
         final String dockerInspectorLatestVersion = getLatestDockerInspectorVersion(dockerInspectorMetadataFile)
         final File dockerInspectorAirGapZipFile = downloadDockerInspectorAirGapZip(dockerAirGapPath, dockerInspectorArtifactoryBaseUrl, dockerInspectorLatestVersion)
         exec {
-        	workingDir "${dockerAirGapPath}"
-        	commandLine 'unzip', '-n', 'blackduck-docker-inspector-*-air-gap.zip'
+            workingDir "${dockerAirGapPath}"
+            commandLine 'unzip', '-n', 'blackduck-docker-inspector-*-air-gap.zip'
         }
         delete fileTree("${dockerAirGapPath}") {
             include 'blackduck-docker-inspector-*-air-gap.zip'
@@ -116,7 +169,7 @@ task publishAirGapZip() {
     dependsOn createAirGapZip
     doLast {
         exec {
-            commandLine 'curl', '--insecure','-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${project.ext.artifactoryUrl}/${project.ext.artifactoryRepo}/${artifactoryIntegrationPath}/${project.name}/${version}/${airGapZipName}", '-T', "${distributionsFolder}/${airGapZipName}", '-f'
+            commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${project.ext.artifactoryUrl}/${project.ext.artifactoryRepo}/${artifactoryIntegrationPath}/${project.name}/${version}/${airGapZipName}", '-T', "${distributionsFolder}/${airGapZipName}", '-f'
         }
     }
 }

@@ -41,7 +41,6 @@ public class DirectoryManager {
     private final Logger logger = LoggerFactory.getLogger(DirectoryManager.class);
 
     private enum OutputDirectory {
-        Shared("shared"),
         Runs("runs"),
         Tools("tools");
 
@@ -63,7 +62,8 @@ public class DirectoryManager {
         Relevant("relevant"),
         Scan("scan"),
         Docker("docker"),
-        Bdio("bdio");
+        Bdio("bdio"),
+        Shared("shared");
 
         private String directoryName;
 
@@ -186,7 +186,7 @@ public class DirectoryManager {
     }
 
     public File getSharedDirectory(final String name) { // shared across this invocation of detect (inspectors), returns 'shared/name'
-        final File newSharedFile = new File(getOutputDirectory(OutputDirectory.Shared), name);
+        final File newSharedFile = new File(getRunDirectory(RunDirectory.Shared), name);
         newSharedFile.mkdirs();
         return newSharedFile;
     }

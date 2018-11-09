@@ -24,66 +24,49 @@
 package com.blackducksoftware.integration.hub.detect.tool.docker;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
-import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
-import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.util.MavenMetadataService;
+import com.blackducksoftware.integration.hub.detect.workflow.ArtifactResolver;
+import com.blackducksoftware.integration.hub.detect.workflow.ArtifactoryConstants;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
-import com.synopsys.integration.rest.request.Request;
-import com.synopsys.integration.rest.request.Response;
-import com.synopsys.integration.util.ResourceUtil;
 
 public class DockerInspectorManager {
     private static final String IMAGE_INSPECTOR_FAMILY = "blackduck-imageinspector-ws";
-    private static final String ARTIFACTORY_URL_BASE = "https://repo.blackducksoftware.com/artifactory/bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector/";
-    private static final String ARTIFACTORY_URL_METADATA = ARTIFACTORY_URL_BASE + "maven-metadata.xml";
-    private static final String ARTIFACTORY_URL_JAR_PATTERN = ARTIFACTORY_URL_BASE + "%s/%s";
     private static final List<String> inspectorNames = Arrays.asList("ubuntu", "alpine", "centos");
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final String dockerSharedDirectoryName = "docker";
+    private final static String DOCKER_SHARED_DIRECTORY_NAME = "docker";
 
     private final DirectoryManager directoryManager;
     private final AirGapManager airGapManager;
     private final DetectFileFinder detectFileFinder;
     private final DetectConfiguration detectConfiguration;
-    private final ConnectionManager connectionManager;
-    private final MavenMetadataService mavenMetadataService;
+    private final ArtifactResolver artifactResolver;
 
     private DockerInspectorInfo resolvedInfo;
     private boolean hasResolvedInspector;
 
     public DockerInspectorManager(final DirectoryManager directoryManager, AirGapManager airGapManager, final DetectFileFinder detectFileFinder,
-        final DetectConfiguration detectConfiguration, final ConnectionManager connectionManager, final MavenMetadataService mavenMetadataService) {
+        final DetectConfiguration detectConfiguration, final ArtifactResolver artifactResolver) {
         this.directoryManager = directoryManager;
         this.airGapManager = airGapManager;
         this.detectFileFinder = detectFileFinder;
         this.detectConfiguration = detectConfiguration;
-        this.connectionManager = connectionManager;
-        this.mavenMetadataService = mavenMetadataService;
+        this.artifactResolver = artifactResolver;
     }
 
     public DockerInspectorInfo getDockerInspector() throws DetectorException {
@@ -98,7 +81,7 @@ public class DockerInspectorManager {
         }
     }
 
-    private DockerInspectorInfo install() throws DetectUserFriendlyException {
+    private DockerInspectorInfo install() throws DetectorException {
         DockerInspectorInfo dockerInspectorInfo = getInfoBasedOnConfiguredJar();
         if (dockerInspectorInfo != null) {
             return dockerInspectorInfo;
@@ -125,7 +108,7 @@ public class DockerInspectorManager {
         return info;
     }
 
-    private DockerInspectorInfo getInfoBasedOnDownloadedJar() throws DetectUserFriendlyException {
+    private DockerInspectorInfo getInfoBasedOnDownloadedJar() throws DetectorException {
         final File dockerInspectorJar = findOrDownloadJar();
         final DockerInspectorInfo info = getInfoBasedOnJar(dockerInspectorJar);
         return info;
@@ -148,11 +131,6 @@ public class DockerInspectorManager {
             airGapInspectorImageTarfiles.add(osImage);
         }
         return airGapInspectorImageTarfiles;
-    }
-
-    private String getJarFilename(final String version) {
-        final String jarFilename = String.format("blackduck-docker-inspector-%s.jar", version);
-        return jarFilename;
     }
 
     private File getConfiguredJar() {
@@ -183,53 +161,20 @@ public class DockerInspectorManager {
         }
     }
 
-    private File findOrDownloadJar() throws DetectUserFriendlyException {
-        logger.debug("Looking for / downloading docker inspector jar file");
-        final String resolvedVersion = resolveInspectorVersion();
-        final String jarFilename = getJarFilename(resolvedVersion);
-        final File inspectorDirectory = directoryManager.getSharedDirectory(dockerSharedDirectoryName);
-        final File jarFile = new File(inspectorDirectory, jarFilename);
-        if (jarFile.exists()) {
-            logger.debug(String.format("Found previously-downloaded docker inspector jar file %s", jarFile.getAbsolutePath()));
+    private File findOrDownloadJar() throws DetectorException {
+        String dockerVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION, PropertyAuthority.None);
+        Optional<String> location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.DOCKER_INSPECTOR_REPO, ArtifactoryConstants.DOCKER_INSPECTOR_PROPERTY, dockerVersion,
+            ArtifactoryConstants.DOCKER_INSPECTOR_VERSION_OVERRIDE);
+        if (location.isPresent()) {
+            File dockerDirectory = directoryManager.getSharedDirectory(DOCKER_SHARED_DIRECTORY_NAME);
+            Optional<File> jarFile = artifactResolver.downloadOrFindArtifact(dockerDirectory, location.get());
+            if (jarFile.isPresent()) {
+                return jarFile.get();
+            } else {
+                throw new DetectorException("Unable to download of find Docker jar from artifactory.");
+            }
         } else {
-            downloadJar(resolvedVersion, jarFile);
+            throw new DetectorException("Unable to find Docker version from artifactory.");
         }
-        return jarFile;
-    }
-
-    private void downloadJar(final String resolvedVersion, final File jarFile) throws DetectUserFriendlyException {
-        final String hubDockerInspectorJarUrl = String.format(ARTIFACTORY_URL_JAR_PATTERN, resolvedVersion, jarFile.getName());
-        logger.debug(String.format("Downloading docker inspector jar file from %s to %s", hubDockerInspectorJarUrl, jarFile.getAbsolutePath()));
-        final Request request = new Request.Builder().uri(hubDockerInspectorJarUrl).build();
-        Response response = null;
-        try (final UnauthenticatedRestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(hubDockerInspectorJarUrl)) {
-            response = restConnection.executeRequest(request);
-            final InputStream jarBytesInputStream = response.getContent();
-            jarFile.delete();
-            FileUtils.copyInputStreamToFile(jarBytesInputStream, jarFile);
-        } catch (IntegrationException | IOException e) {
-            throw new DetectUserFriendlyException(String.format("There was a problem retrieving the docker inspector jar file from %s: %s", hubDockerInspectorJarUrl, e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
-        } finally {
-            ResourceUtil.closeQuietly(response);
-        }
-        logger.debug(String.format("Downloaded docker inspector jar: %s", jarFile.getAbsolutePath()));
-    }
-
-    private String resolveInspectorVersion() throws DetectUserFriendlyException {
-        final String configuredVersionRangeSpec = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION, PropertyAuthority.None);
-        try {
-            return selectArtifactoryVersion(configuredVersionRangeSpec);
-        } catch (final Exception e) {
-            throw new DetectUserFriendlyException(String.format("Unable to find docker inspector version matching configured version range %s", configuredVersionRangeSpec), e, ExitCodeType.FAILURE_CONFIGURATION);
-        }
-    }
-
-    private String selectArtifactoryVersion(final String versionRange) throws IOException, DetectUserFriendlyException, SAXException, IntegrationException {
-        logger.trace(String.format("selectArtifactorVersion(): given version range: %s", versionRange));
-        final String mavenMetadataUrl = ARTIFACTORY_URL_METADATA;
-        final Document xmlDocument = mavenMetadataService.fetchXmlDocumentFromUrl(mavenMetadataUrl);
-        final Optional<String> version = mavenMetadataService.parseVersionFromXML(xmlDocument, versionRange);
-        logger.trace(String.format("selectArtifactorVersion(): parsed version: %s", version.get()));
-        return version.orElse(versionRange);
     }
 }
