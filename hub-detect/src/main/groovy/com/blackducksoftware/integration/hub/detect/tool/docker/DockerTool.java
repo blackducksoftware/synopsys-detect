@@ -30,14 +30,19 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
+import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 
 public class DockerTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -54,6 +59,7 @@ public class DockerTool {
 
         DetectorEnvironment detectorEnvironment = new DetectorEnvironment(directoryManager.getSourceDirectory(), Collections.emptySet(), 0, null, false);
         DockerDetector dockerBomTool = detectContext.getBean(DockerDetector.class, detectorEnvironment);
+        EventSystem eventSystem = detectContext.getBean(EventSystem.class);
 
         logger.info("Checking it applies.");
         DetectorResult applicableResult = dockerBomTool.applicable();
@@ -73,16 +79,23 @@ public class DockerTool {
                     dockerToolResult.dockerTar = Optional.of((File) dockerTar.get());
                 }
 
+                if (extractResult.result == Extraction.ExtractionResultType.SUCCESS) {
+                    eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.SUCCESS));
+                } else {
+                    eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
+                }
+
                 return dockerToolResult;
             } else {
                 logger.error("Docker was not extractable even though the tool attempted to run.");
-                logger.error(applicableResult.toDescription());
+                logger.error(extractableResult.toDescription());
+                eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
+                return DockerToolResult.failure(extractableResult.toDescription());
             }
         } else {
             logger.error("Docker was not applicable even though the tool attempted to run.");
             logger.error(applicableResult.toDescription());
+            return DockerToolResult.failure(applicableResult.toDescription());
         }
-
-        return new DockerToolResult();
     }
 }
