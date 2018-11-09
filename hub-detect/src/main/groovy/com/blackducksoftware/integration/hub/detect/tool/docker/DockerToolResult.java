@@ -35,4 +35,14 @@ public class DockerToolResult {
     public Optional<NameVersion> dockerProjectNameVersion = Optional.empty();
     public List<DetectCodeLocation> dockerCodeLocations = new ArrayList<>();
     public Optional<File> dockerTar = Optional.empty();
+
+    public boolean success;
+    public String errorMessage;
+
+    public static DockerToolResult failure(String message) {
+        DockerToolResult result = new DockerToolResult();
+        result.success = false;
+        result.errorMessage = message;
+        return result;
+    }
 }
