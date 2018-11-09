@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +66,9 @@ public class RequiredDetectorChecker {
         final Set<DetectorType> required = new HashSet<>();
         final String[] rawRequiredTypes = rawRequiredTypeString.split(",");
         for (final String rawType : rawRequiredTypes) {
+            if (StringUtils.isBlank(rawType))
+                continue;
+
             try {
                 final DetectorType type = DetectorType.valueOf(rawType.toUpperCase());
                 required.add(type);
