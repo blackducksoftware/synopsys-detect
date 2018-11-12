@@ -32,17 +32,29 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 import com.synopsys.integration.util.NameVersion;
 
 public class DockerToolResult {
+    public enum DockerToolResultType {
+        SUCCESS,
+        FAILURE,
+        SKIPPED
+    }
+
     public Optional<NameVersion> dockerProjectNameVersion = Optional.empty();
     public List<DetectCodeLocation> dockerCodeLocations = new ArrayList<>();
     public Optional<File> dockerTar = Optional.empty();
 
-    public boolean success;
+    public DockerToolResultType resultType = DockerToolResultType.SUCCESS;
     public String errorMessage;
 
     public static DockerToolResult failure(String message) {
         DockerToolResult result = new DockerToolResult();
-        result.success = false;
+        result.resultType = DockerToolResultType.FAILURE;
         result.errorMessage = message;
+        return result;
+    }
+
+    public static DockerToolResult skipped() {
+        DockerToolResult result = new DockerToolResult();
+        result.resultType = DockerToolResultType.SKIPPED;
         return result;
     }
 }

@@ -111,6 +111,10 @@ public class RunManager {
             runResult.addToolNameVersionIfPresent(DetectTool.DOCKER, dockerToolResult.dockerProjectNameVersion);
             runResult.addDetectCodeLocations(dockerToolResult.dockerCodeLocations);
             runResult.addDockerFile(dockerToolResult.dockerTar);
+
+            if (dockerToolResult.resultType == DockerToolResult.DockerToolResultType.FAILURE) {
+                eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, dockerToolResult.errorMessage));
+            }
             logger.info("Docker actions finished.");
         }
 
