@@ -35,8 +35,10 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorToolResult;
@@ -122,6 +124,10 @@ public class RunManager {
             runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
             runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);
             runResult.addApplicableDetectors(detectorToolResult.applicableDetectorTypes);
+
+            if (detectorToolResult.failedDetectorTypes.size() > 0) {
+                eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
+            }
             logger.info("Detector actions finished.");
         }
 
