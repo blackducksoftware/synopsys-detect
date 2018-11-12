@@ -98,23 +98,23 @@ public class ShutdownManager {
             detectorTypes.addAll(runResultOptional.get().getApplicableDetectors());
         }
 
-        boolean printOutput = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT, PropertyAuthority.None);
-
-        ExitCodeType detectExitCode = exitCodeManager.getWinningExitCode();
-        if (!printOutput) {
-            reportManager.printDetectorIssues();
-            detectStatusManager.logDetectResults(new Slf4jIntLogger(logger), detectExitCode);
-        }
-
+        //Check required
         String requiredDetectors = detectConfiguration.getProperty(DetectProperty.DETECT_REQUIRED_DETECTOR_TYPES, PropertyAuthority.None);
         RequiredDetectorChecker requiredDetectorChecker = new RequiredDetectorChecker();
-        RequiredDetectorChecker.RequiredDetectorResult requiredDetectorResult =  requiredDetectorChecker.checkForMissingDetectors(requiredDetectors, detectorTypes);
-        if (requiredDetectorResult.wereDetectorsMissing()){
+        RequiredDetectorChecker.RequiredDetectorResult requiredDetectorResult = requiredDetectorChecker.checkForMissingDetectors(requiredDetectors, detectorTypes);
+        if (requiredDetectorResult.wereDetectorsMissing()) {
             String missingDetectors = requiredDetectorResult.getMissingDetectors().stream().map(it -> it.toString()).collect(Collectors.joining(","));
             logger.error("One or more required detector types were not found: " + missingDetectors);
             exitCodeManager.requestExitCode(ExitCodeType.FAILURE_DETECTOR_REQUIRED);
         }
 
+        //Print status
+        boolean printOutput = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT, PropertyAuthority.None);
+        ExitCodeType detectExitCode = exitCodeManager.getWinningExitCode();
+        if (!printOutput) {
+            reportManager.printDetectorIssues();
+            detectStatusManager.logDetectResults(new Slf4jIntLogger(logger), detectExitCode);
+        }
 
         return detectExitCode;
     }
