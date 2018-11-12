@@ -50,13 +50,12 @@ public class CodeLocationBdioCreator {
 
     public List<File> createBdioFiles(File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, NameVersion projectNameVersion) throws DetectUserFriendlyException {
         final List<File> bdioFiles = new ArrayList<>();
-        String projectName = projectNameVersion.getName();
         for (final BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
             String codeLocationName = bdioCodeLocation.codeLocationName;
             ExternalId externalId = bdioCodeLocation.codeLocation.getExternalId();
             DependencyGraph dependencyGraph = bdioCodeLocation.codeLocation.getDependencyGraph();
 
-            final SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectName, externalId,  dependencyGraph);
+            final SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectNameVersion.getName(), projectNameVersion.getVersion(), externalId, dependencyGraph);
 
             final File outputFile = new File(bdioOutput, bdioCodeLocation.bdioName);
             detectBdioWriter.writeBdioFile(outputFile, simpleBdioDocument);
