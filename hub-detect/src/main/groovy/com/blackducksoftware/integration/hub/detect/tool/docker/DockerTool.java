@@ -95,7 +95,7 @@ public class DockerTool {
         } else {
             logger.info("Docker was not applicable even though the tool attempted to run.");
             logger.info(applicableResult.toDescription());
-            return DockerToolResult.failure(applicableResult.toDescription());
+            return DockerToolResult.skipped();
         }
     }
 }
