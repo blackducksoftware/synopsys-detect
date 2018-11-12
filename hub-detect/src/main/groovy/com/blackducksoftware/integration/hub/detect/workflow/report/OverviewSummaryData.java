@@ -23,43 +23,47 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.report;
 
-import java.util.List;
-
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
+import java.util.Map;
 
 public class OverviewSummaryData {
     private final String directory;
-    private final List<DetectorEvaluation> applicable;
-    private final List<DetectorEvaluation> extractable;
-    private final List<DetectorEvaluation> extractionSuccess;
-    private final List<DetectorEvaluation> extractionFailure;
+    private final String detectorName;
+    private final boolean wasExtractable;
+    private final boolean wasExtracted;
 
-    public OverviewSummaryData(final String directory, final List<DetectorEvaluation> applicable, final List<DetectorEvaluation> extractable, final List<DetectorEvaluation> extractionSuccess,
-        final List<DetectorEvaluation> extractionFailure) {
+    private Map<String, String> associatedData;
+    private String errorReason;
+
+    public OverviewSummaryData(final String directory, final String detectorName, final boolean wasExtractable, final boolean wasExtracted, final Map<String, String> associatedData, final String errorReason) {
         this.directory = directory;
-        this.applicable = applicable;
-        this.extractable = extractable;
-        this.extractionSuccess = extractionSuccess;
-        this.extractionFailure = extractionFailure;
-    }
-
-    public List<DetectorEvaluation> getApplicable() {
-        return applicable;
-    }
-
-    public List<DetectorEvaluation> getExtractable() {
-        return extractable;
-    }
-
-    public List<DetectorEvaluation> getExtractionSuccess() {
-        return extractionSuccess;
-    }
-
-    public List<DetectorEvaluation> getExtractionFailure() {
-        return extractionFailure;
+        this.detectorName = detectorName;
+        this.wasExtractable = wasExtractable;
+        this.wasExtracted = wasExtracted;
+        this.associatedData = associatedData;
+        this.errorReason = errorReason;
     }
 
     public String getDirectory() {
         return directory;
+    }
+
+    public String getDetectorName() {
+        return detectorName;
+    }
+
+    public boolean wasExtractable() {
+        return wasExtractable;
+    }
+
+    public String getErrorReason() {
+        return errorReason;
+    }
+
+    public Map<String, String> getAssociatedData() {
+        return associatedData;
+    }
+
+    public boolean wasExtracted() {
+        return wasExtracted;
     }
 }

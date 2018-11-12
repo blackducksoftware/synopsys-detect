@@ -32,7 +32,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
-public class ErrorSummarizer extends BomToolEvaluationSummarizer {
+public class ErrorSummarizer extends DetectorEvaluationSummarizer {
     public List<ErrorSummaryData> summarize(final List<DetectorEvaluation> results) {
         final Map<File, List<DetectorEvaluation>> byDirectory = groupByDirectory(results);
 

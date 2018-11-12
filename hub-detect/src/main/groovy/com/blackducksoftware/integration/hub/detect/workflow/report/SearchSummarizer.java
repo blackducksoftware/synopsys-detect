@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 import com.blackducksoftware.integration.hub.detect.detector.Detector;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
-public class SearchSummarizer extends BomToolEvaluationSummarizer {
+public class SearchSummarizer extends DetectorEvaluationSummarizer {
     public List<SearchSummaryData> summarize(final List<DetectorEvaluation> detectorEvaluations) {
         final Map<File, List<DetectorEvaluation>> byDirectory = groupByDirectory(detectorEvaluations);
         final List<SearchSummaryData> data = createSummaries(byDirectory);
