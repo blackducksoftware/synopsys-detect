@@ -62,11 +62,10 @@ public class DetectConfigurationFactory {
         String excludedTools = detectConfiguration.getProperty(DetectProperty.DETECT_TOOLS_EXCLUDED, PropertyAuthority.None);
         DetectToolFilter detectToolFilter = new DetectToolFilter(excludedTools, includedTools, sigScanDisabled, swipEnabled);
 
-        boolean isOnline = !detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
         boolean unmapCodeLocations = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP, PropertyAuthority.None);
         String aggregateName = detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME, PropertyAuthority.None);
         String preferredTools = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_TOOL, PropertyAuthority.None);
-        return new RunOptions(isOnline, unmapCodeLocations, aggregateName, preferredTools, detectToolFilter);
+        return new RunOptions(unmapCodeLocations, aggregateName, preferredTools, detectToolFilter);
     }
 
     public DirectoryOptions createDirectoryOptions() {

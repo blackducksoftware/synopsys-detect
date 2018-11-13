@@ -37,7 +37,10 @@ import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthor
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.view.ScanSummaryView;
@@ -59,15 +62,15 @@ public class HubManager {
     private final DetectConfiguration detectConfiguration;
     private final HubServiceManager hubServiceManager;
     private final PolicyChecker policyChecker;
-
-    private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
+    private final EventSystem eventSystem;
 
     public HubManager(final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final HubServiceManager hubServiceManager,
-        final PolicyChecker policyChecker) {
+        final PolicyChecker policyChecker, final EventSystem eventSystem) {
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
         this.hubServiceManager = hubServiceManager;
         this.policyChecker = policyChecker;
+        this.eventSystem = eventSystem;
     }
 
     public void performPostHubActions(final NameVersion projectNameVersion, final ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
@@ -88,8 +91,7 @@ public class HubManager {
                 final PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView);
                 logger.info(policyStatusDescription.getPolicyStatusMessage());
                 if (policyChecker.policyViolated(policyStatusDescription)) {
-                    exitCodeType = ExitCodeType.FAILURE_POLICY_VIOLATION;
-
+                    eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_POLICY_VIOLATION, policyStatusDescription.getPolicyStatusMessage()));
                 }
             }
 

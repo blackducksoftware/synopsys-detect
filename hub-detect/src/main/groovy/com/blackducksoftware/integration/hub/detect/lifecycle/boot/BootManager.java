@@ -58,6 +58,7 @@ import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManag
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
+import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
@@ -146,8 +147,12 @@ public class BootManager {
             return BootResult.exit();
         }
 
+        ConnectivityManager connectivityManager;
         if (!detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None)) {
             hubServiceManager.init();
+            connectivityManager = ConnectivityManager.online(hubServiceManager);
+        } else {
+            connectivityManager = ConnectivityManager.offline();
         }
 
         PhoneHomeManager phoneHomeManager = createPhoneHomeManager(detectInfo, detectConfiguration, hubServiceManager, eventSystem, gson);
@@ -165,7 +170,7 @@ public class BootManager {
         detectContext.registerBean(directoryManager);
         detectContext.registerBean(phoneHomeManager);
         detectContext.registerBean(diagnosticManager);
-        detectContext.registerBean(hubServiceManager);
+        detectContext.registerBean(connectivityManager);
 
         detectContext.registerBean(gson);
         detectContext.registerBean(jsonParser);

@@ -48,6 +48,7 @@ import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackD
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
 import com.blackducksoftware.integration.hub.detect.tool.swip.SwipCliManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
+import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectToolFilter;
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioManager;
@@ -94,7 +95,7 @@ public class RunManager {
         BdioCodeLocationCreator bdioCodeLocationCreator = detectContext.getBean(BdioCodeLocationCreator.class);
         ConnectionManager connectionManager = detectContext.getBean(ConnectionManager.class);
         DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
-        Optional<HubServiceManager> hubServiceManager = Optional.ofNullable(detectContext.getBean(HubServiceManager.class));
+        ConnectivityManager connectivityManager = detectContext.getBean(ConnectivityManager.class);
 
         phoneHomeManager.startPhoneHome();
 
@@ -148,14 +149,15 @@ public class RunManager {
 
         Optional<ProjectVersionView> projectView = Optional.empty();
 
-        if (runOptions.isOnline() && hubServiceManager.isPresent()) {
+        if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
+            HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
             logger.info("Getting or creating project.");
             DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
-            DetectProjectService detectProjectService = new DetectProjectService(hubServiceManager.get(), options);
+            DetectProjectService detectProjectService = new DetectProjectService(hubServiceManager, options);
             projectView = detectProjectService.createOrUpdateHubProject(projectNameVersion);
             if (projectView.isPresent() && runOptions.shouldUnmapCodeLocations()) {
                 logger.info("Unmapping code locations.");
-                DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(hubServiceManager.get().createHubService(), hubServiceManager.get().createCodeLocationService());
+                DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(hubServiceManager.createHubService(), hubServiceManager.createCodeLocationService());
                 detectCodeLocationUnmapService.unmapCodeLocations(projectView.get());
             }
         }
@@ -169,9 +171,10 @@ public class RunManager {
         if (bdioResult.getBdioFiles().size() > 0) {
             logger.info("Created " + bdioResult.getBdioFiles().size() + " BDIO files.");
             bdioResult.getBdioFiles().forEach(it -> eventSystem.publishEvent(Event.OutputFileOfInterest, it));
-            if (runOptions.isOnline() && hubServiceManager.isPresent()) {
+            if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
                 logger.info("Uploading BDIO files.");
-                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, hubServiceManager.get().createCodeLocationService());
+                HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
+                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, hubServiceManager.createCodeLocationService());
                 detectBdioUploadService.uploadBdioFiles(bdioResult.getBdioFiles());
             }
         } else {
@@ -190,8 +193,9 @@ public class RunManager {
 
         if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
             logger.info("Will include the binary scanner tool.");
-            if (hubServiceManager.isPresent()) {
-                BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(codeLocationNameManager, detectConfiguration, hubServiceManager.get());
+            if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
+                HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
+                BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(codeLocationNameManager, detectConfiguration, hubServiceManager);
                 blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
             }
             logger.info("Binary scanner actions finished.");
@@ -204,9 +208,11 @@ public class RunManager {
             logger.info("Swip actions finished.");
         }
 
-        if (runOptions.isOnline() && hubServiceManager.isPresent() && projectView.isPresent()) {
+        if (projectView.isPresent() && connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
+            HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
+
             logger.info("Will perform Black Duck actions.");
-            HubManager hubManager = new HubManager(codeLocationNameManager, detectConfiguration, hubServiceManager.get(), new PolicyChecker(detectConfiguration));
+            HubManager hubManager = new HubManager(codeLocationNameManager, detectConfiguration, hubServiceManager, new PolicyChecker(detectConfiguration), eventSystem);
             hubManager.performPostHubActions(projectNameVersion, projectView.get());
             logger.info("Black Duck actions have finished.");
         }
