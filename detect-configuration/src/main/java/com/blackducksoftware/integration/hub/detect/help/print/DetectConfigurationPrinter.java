@@ -23,27 +23,29 @@
  */
 package com.blackducksoftware.integration.hub.detect.help.print;
 
-import java.io.PrintStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 
 public class DetectConfigurationPrinter {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private List<DetectOption> sortOptions(final List<DetectOption> detectOptions) {
         return detectOptions.stream()
-                .sorted((o1, o2) -> o1.getDetectProperty().getPropertyName().compareTo(o2.getDetectProperty().getPropertyName()))
-                .collect(Collectors.toList());
+                   .sorted((o1, o2) -> o1.getDetectProperty().getPropertyName().compareTo(o2.getDetectProperty().getPropertyName()))
+                   .collect(Collectors.toList());
     }
 
-    public void print(final PrintStream printStream, final List<DetectOption> detectOptions) throws IllegalArgumentException, SecurityException {
-        printStream.println("");
-        printStream.println("Current property values:");
-        printStream.println("--property = value [notes]");
-        printStream.println(StringUtils.repeat("-", 60));
+    public void print(final List<DetectOption> detectOptions) throws IllegalArgumentException, SecurityException {
+        logger.info("");
+        logger.info("Current property values:");
+        logger.info("--property = value [notes]");
+        logger.info(StringUtils.repeat("-", 60));
 
         final List<DetectOption> sortedOptions = sortOptions(detectOptions);
 
@@ -85,33 +87,33 @@ public class DetectConfigurationPrinter {
                 if (option.getWarnings().size() > 0) {
                     text += "\t *** WARNING ***";
                 }
-                printStream.println(text);
+                logger.info(text);
             }
         }
-        printStream.println(StringUtils.repeat("-", 60));
-        printStream.println("");
+        logger.info(StringUtils.repeat("-", 60));
+        logger.info("");
 
     }
 
-    public void printWarnings(final PrintStream printStream, final List<DetectOption> detectOptions) {
+    public void printWarnings(final List<DetectOption> detectOptions) {
         final List<DetectOption> sortedOptions = sortOptions(detectOptions);
 
         final List<DetectOption> allWarnings = sortedOptions.stream().filter(it -> it.getWarnings().size() > 0).collect(Collectors.toList());
         if (allWarnings.size() > 0) {
-            printStream.println("");
-            printStream.println(StringUtils.repeat("*", 60));
+            logger.info("");
+            logger.info(StringUtils.repeat("*", 60));
             if (allWarnings.size() == 1) {
-                printStream.println("WARNING (" + allWarnings.size() + ")");
+                logger.info("WARNING (" + allWarnings.size() + ")");
             } else {
-                printStream.println("WARNINGS (" + allWarnings.size() + ")");
+                logger.info("WARNINGS (" + allWarnings.size() + ")");
             }
             for (final DetectOption option : allWarnings) {
                 for (final String warning : option.getWarnings()) {
-                    printStream.println(option.getDetectProperty().getPropertyName() + ": " + warning);
+                    logger.info(option.getDetectProperty().getPropertyName() + ": " + warning);
                 }
             }
-            printStream.println(StringUtils.repeat("*", 60));
-            printStream.println("");
+            logger.info(StringUtils.repeat("*", 60));
+            logger.info("");
         }
     }
 }
