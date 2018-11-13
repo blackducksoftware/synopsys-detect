@@ -104,12 +104,12 @@ public class BootManager {
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             printAppropriateHelp(options, detectArgumentState);
-            return BootResult.exit();
+            return BootResult.exit(detectConfiguration);
         }
 
         if (detectArgumentState.isHelpDocument()) {
             printHelpDocument(options, detectInfo, configuration);
-            return BootResult.exit();
+            return BootResult.exit(detectConfiguration);
         }
 
         printDetectInfo(detectInfo);
@@ -139,12 +139,12 @@ public class BootManager {
 
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
             hubServiceManager.assertHubConnection(new SilentLogger());
-            return BootResult.exit();
+            return BootResult.exit(detectConfiguration);
         }
 
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, PropertyAuthority.None) && !hubServiceManager.testHubConnection(new SilentLogger())) {
             logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
-            return BootResult.exit();
+            return BootResult.exit(detectConfiguration);
         }
 
         ConnectivityManager connectivityManager;
@@ -155,7 +155,7 @@ public class BootManager {
             connectivityManager = ConnectivityManager.offline();
         }
 
-        PhoneHomeManager phoneHomeManager = createPhoneHomeManager(detectInfo, detectConfiguration, hubServiceManager, eventSystem, gson);
+        PhoneHomeManager phoneHomeManager = createPhoneHomeManager(detectInfo, detectConfiguration, connectivityManager, eventSystem, gson);
 
         //lock the configuration, boot has completed.
         logger.debug("Configuration is now complete. No changes should occur to configuration.");
@@ -243,12 +243,10 @@ public class BootManager {
         return diagnosticManager;
     }
 
-    private PhoneHomeManager createPhoneHomeManager(DetectInfo detectInfo, DetectConfiguration detectConfiguration, HubServiceManager hubServiceManager, EventSystem eventSystem, Gson gson) {
-        boolean online = !detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
-
+    private PhoneHomeManager createPhoneHomeManager(DetectInfo detectInfo, DetectConfiguration detectConfiguration, ConnectivityManager connectivityManager, EventSystem eventSystem, Gson gson) {
         Map<String, String> additionalMetaData = detectConfiguration.getPhoneHomeProperties();
-        if (online) {
-            return new OnlinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem, hubServiceManager);
+        if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
+            return new OnlinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem, connectivityManager.getHubServiceManager().get());
         } else {
             return new OfflinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem);
         }

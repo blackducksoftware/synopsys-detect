@@ -44,7 +44,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManag
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectStatusManager;
-import com.synopsys.integration.log.Slf4jIntLogger;
 
 public class ShutdownManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -67,9 +66,10 @@ public class ShutdownManager {
         this.diagnosticManager = diagnosticManager;
     }
 
-    public ExitCodeType shutdown(Optional<RunResult> runResultOptional) {
+    public void shutdown(Optional<RunResult> runResultOptional) {
         try {
             logger.debug("Ending phone home.");
+
             phoneHomeManager.endPhoneHome();
         } catch (final Exception e) {
             logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
@@ -98,7 +98,7 @@ public class ShutdownManager {
             detectorTypes.addAll(runResultOptional.get().getApplicableDetectors());
         }
 
-        //Check required
+        //Check required detector types
         String requiredDetectors = detectConfiguration.getProperty(DetectProperty.DETECT_REQUIRED_DETECTOR_TYPES, PropertyAuthority.None);
         RequiredDetectorChecker requiredDetectorChecker = new RequiredDetectorChecker();
         RequiredDetectorChecker.RequiredDetectorResult requiredDetectorResult = requiredDetectorChecker.checkForMissingDetectors(requiredDetectors, detectorTypes);
@@ -107,15 +107,5 @@ public class ShutdownManager {
             logger.error("One or more required detector types were not found: " + missingDetectors);
             exitCodeManager.requestExitCode(ExitCodeType.FAILURE_DETECTOR_REQUIRED);
         }
-
-        //Print status
-        boolean printOutput = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT, PropertyAuthority.None);
-        ExitCodeType detectExitCode = exitCodeManager.getWinningExitCode();
-        if (!printOutput) {
-            reportManager.printDetectorIssues();
-            detectStatusManager.logDetectResults(new Slf4jIntLogger(logger), detectExitCode);
-        }
-
-        return detectExitCode;
     }
 }

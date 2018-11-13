@@ -34,9 +34,10 @@ public class BootResult {
         CONTINUE
     }
 
-    public static BootResult exit() {
+    public static BootResult exit(DetectConfiguration detectConfiguration) {
         BootResult result = new BootResult();
         result.bootType = BootType.EXIT;
+        result.detectConfiguration = detectConfiguration;
         return result;
     }
 }

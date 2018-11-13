@@ -54,6 +54,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManag
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectStatusManager;
+import com.synopsys.integration.log.Slf4jIntLogger;
 
 //@SpringBootApplication
 //@Configuration
@@ -101,7 +102,7 @@ public class Application implements ApplicationRunner {
             bootResult = bootManager.boot(detectRun, applicationArguments.getSourceArgs(), environment, eventSystem, detectContext);
             logger.info("Detect boot completed.");
         } catch (final Exception e) {
-            logger.info("Detect boot failed: ", e);
+            logger.error("Detect boot failed.");
             exitCodeManager.requestExitCode(e);
         }
         if (bootResult != null && bootResult.bootType == BootResult.BootType.CONTINUE) {
@@ -112,38 +113,52 @@ public class Application implements ApplicationRunner {
                 runResult = Optional.ofNullable(runManager.run());
                 logger.info("Detect run completed.");
             } catch (final Exception e) {
+                logger.error("Detect run failed.");
                 exitCodeManager.requestExitCode(e);
-                logger.error("Detect run failed: ", e);
             }
-        } else {
-            logger.info("Detect will NOT attempt to run.");
-        }
-        if (bootResult != null) {
-            logger.info("Detect will attempt to shutdown.");
-            DiagnosticManager diagnosticManager = detectContext.getBean(DiagnosticManager.class);
-            PhoneHomeManager phoneHomeManager = detectContext.getBean(PhoneHomeManager.class);
-            DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
-            DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
-            ShutdownManager shutdownManager = new ShutdownManager(statusManager, exitCodeManager, phoneHomeManager, directoryManager, detectConfiguration, reportManager, diagnosticManager);
             try {
+                logger.info("Detect will attempt to shutdown.");
+                DiagnosticManager diagnosticManager = detectContext.getBean(DiagnosticManager.class);
+                PhoneHomeManager phoneHomeManager = detectContext.getBean(PhoneHomeManager.class);
+                DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
+                DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
+                ShutdownManager shutdownManager = new ShutdownManager(statusManager, exitCodeManager, phoneHomeManager, directoryManager, detectConfiguration, reportManager, diagnosticManager);
                 logger.info("Detect shutdown begin.");
-                ExitCodeType exitCodeType = shutdownManager.shutdown(runResult);
-                exitCodeManager.requestExitCode(exitCodeType);
+                shutdownManager.shutdown(runResult);
                 logger.info("Detect shutdown completed.");
             } catch (final Exception e) {
+                logger.error("Detect shutdown failed.");
                 exitCodeManager.requestExitCode(e);
-                logger.warn("Detect shutdown failed. ");
-                logger.debug("Detect shutdown failed with exception: ", e);
             }
+        } else {
+            logger.debug("Detect will NOT attempt to run.");
         }
 
         logger.info("All detect actions completed.");
 
+        //Determine how detect should actually exit
+        boolean printOutput = true;
+        boolean shouldForceSuccess = false;
+        if (bootResult != null && bootResult.detectConfiguration != null) {
+            printOutput = !bootResult.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT, PropertyAuthority.None);
+            shouldForceSuccess = bootResult.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS, PropertyAuthority.None);
+        }
+
+        //Find the final (as requested) exit code
+        ExitCodeType finalExitCode = exitCodeManager.getWinningExitCode();
+
+        //Print detect's status
+        if (printOutput) {
+            reportManager.printDetectorIssues();
+            statusManager.logDetectResults(new Slf4jIntLogger(logger), finalExitCode);
+        }
+
+        //Print duration of run
         final long endTime = System.currentTimeMillis();
         logger.info(String.format("Detect duration: %s", DurationFormatUtils.formatPeriod(startTime, endTime, "HH'h' mm'm' ss's' SSS'ms'")));
 
-        ExitCodeType finalExitCode = exitCodeManager.getWinningExitCode();
-        if (finalExitCode != ExitCodeType.SUCCESS && bootResult.bootType != null && bootResult.detectConfiguration != null && bootResult.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS, PropertyAuthority.None)) {
+        //Exit with formal exit code
+        if (finalExitCode != ExitCodeType.SUCCESS && shouldForceSuccess) {
             logger.warn(String.format("Forcing success: Exiting with exit code 0. Ignored exit code was %s.", finalExitCode.getExitCode()));
             System.exit(0);
         } else if (finalExitCode != ExitCodeType.SUCCESS) {
