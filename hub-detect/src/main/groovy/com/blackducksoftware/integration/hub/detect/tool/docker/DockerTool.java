@@ -54,20 +54,20 @@ public class DockerTool {
     }
 
     public DockerToolResult run() throws DetectorException {
-        logger.info("Preparing to run Docker.");
+        logger.info("Preparing the Docker tool.");
         DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
 
         DetectorEnvironment detectorEnvironment = new DetectorEnvironment(directoryManager.getSourceDirectory(), Collections.emptySet(), 0, null, false);
         DockerDetector dockerBomTool = detectContext.getBean(DockerDetector.class, detectorEnvironment);
         EventSystem eventSystem = detectContext.getBean(EventSystem.class);
 
-        logger.info("Checking it applies.");
+        logger.info("Checking if Docker applies.");
         DetectorResult applicableResult = dockerBomTool.applicable();
         if (applicableResult.getPassed()) {
-            logger.info("Checking it is extractable.");
+            logger.info("Checking if Docker is extractable.");
             DetectorResult extractableResult = dockerBomTool.extractable();
             if (extractableResult.getPassed()) {
-                logger.info("Performing the extraction.");
+                logger.info("Performing the Docker extraction.");
                 ExtractionId extractionId = new ExtractionId(DetectCodeLocationType.DOCKER.toString(), "docker");
                 Extraction extractResult = dockerBomTool.extract(extractionId);
 
@@ -87,13 +87,13 @@ public class DockerTool {
 
                 return dockerToolResult;
             } else {
-                logger.error("Docker was not extractable even though the tool attempted to run.");
+                logger.error("Docker was not extractable.");
                 logger.error(extractableResult.toDescription());
                 eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
                 return DockerToolResult.failure(extractableResult.toDescription());
             }
         } else {
-            logger.info("Docker was not applicable even though the tool attempted to run.");
+            logger.info("Docker was not applicable, will not actually run Docker tool.");
             logger.info(applicableResult.toDescription());
             return DockerToolResult.skipped();
         }

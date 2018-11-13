@@ -48,6 +48,7 @@ import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackD
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
 import com.blackducksoftware.integration.hub.detect.tool.swip.SwipCliManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
+import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectToolFilter;
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioManager;
@@ -94,7 +95,7 @@ public class RunManager {
         BdioCodeLocationCreator bdioCodeLocationCreator = detectContext.getBean(BdioCodeLocationCreator.class);
         ConnectionManager connectionManager = detectContext.getBean(ConnectionManager.class);
         DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
-        Optional<HubServiceManager> hubServiceManager = Optional.ofNullable(detectContext.getBean(HubServiceManager.class));
+        ConnectivityManager connectivityManager = detectContext.getBean(ConnectivityManager.class);
 
         phoneHomeManager.startPhoneHome();
 
@@ -116,6 +117,8 @@ public class RunManager {
                 eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, dockerToolResult.errorMessage));
             }
             logger.info("Docker actions finished.");
+        } else {
+            logger.info("Docker tool will not be run.");
         }
 
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
@@ -133,6 +136,8 @@ public class RunManager {
                 eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
             }
             logger.info("Detector actions finished.");
+        } else {
+            logger.info("Detector tool will not be run.");
         }
 
         logger.info("Completed code location tools.");
@@ -148,16 +153,21 @@ public class RunManager {
 
         Optional<ProjectVersionView> projectView = Optional.empty();
 
-        if (runOptions.isOnline() && hubServiceManager.isPresent()) {
+        if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
+            HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
             logger.info("Getting or creating project.");
             DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
-            DetectProjectService detectProjectService = new DetectProjectService(hubServiceManager.get(), options);
+            DetectProjectService detectProjectService = new DetectProjectService(hubServiceManager, options);
             projectView = detectProjectService.createOrUpdateHubProject(projectNameVersion);
             if (projectView.isPresent() && runOptions.shouldUnmapCodeLocations()) {
                 logger.info("Unmapping code locations.");
-                DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(hubServiceManager.get().createHubService(), hubServiceManager.get().createCodeLocationService());
+                DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(hubServiceManager.createHubService(), hubServiceManager.createCodeLocationService());
                 detectCodeLocationUnmapService.unmapCodeLocations(projectView.get());
+            } else {
+                logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");
             }
+        } else {
+            logger.debug("Detect is not online, and will not create the project.");
         }
 
         logger.info("Completed project and version actions.");
@@ -169,9 +179,10 @@ public class RunManager {
         if (bdioResult.getBdioFiles().size() > 0) {
             logger.info("Created " + bdioResult.getBdioFiles().size() + " BDIO files.");
             bdioResult.getBdioFiles().forEach(it -> eventSystem.publishEvent(Event.OutputFileOfInterest, it));
-            if (runOptions.isOnline() && hubServiceManager.isPresent()) {
+            if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
                 logger.info("Uploading BDIO files.");
-                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, hubServiceManager.get().createCodeLocationService());
+                HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
+                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, hubServiceManager.createCodeLocationService());
                 detectBdioUploadService.uploadBdioFiles(bdioResult.getBdioFiles());
             }
         } else {
@@ -186,15 +197,20 @@ public class RunManager {
             BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
             blackDuckSignatureScannerTool.runScanTool(projectNameVersion, runResult.getDockerTar());
             logger.info("Signature scanner actions finished.");
+        } else {
+            logger.info("Singature scan tool will not be run.");
         }
 
         if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
             logger.info("Will include the binary scanner tool.");
-            if (hubServiceManager.isPresent()) {
-                BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(codeLocationNameManager, detectConfiguration, hubServiceManager.get());
+            if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
+                HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
+                BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(codeLocationNameManager, detectConfiguration, hubServiceManager);
                 blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
             }
             logger.info("Binary scanner actions finished.");
+        } else {
+            logger.info("Binary scan tool will not be run.");
         }
 
         if (detectToolFilter.shouldInclude(DetectTool.SWIP_CLI)) {
@@ -202,13 +218,19 @@ public class RunManager {
             SwipCliManager swipCliManager = new SwipCliManager(directoryManager, new ExecutableRunner(), connectionManager);
             swipCliManager.runSwip(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
             logger.info("Swip actions finished.");
+        } else {
+            logger.info("Swip CLI tool will not be run.");
         }
 
-        if (runOptions.isOnline() && hubServiceManager.isPresent() && projectView.isPresent()) {
-            logger.info("Will perform Black Duck actions.");
-            HubManager hubManager = new HubManager(codeLocationNameManager, detectConfiguration, hubServiceManager.get(), new PolicyChecker(detectConfiguration));
+        if (projectView.isPresent() && connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
+            HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
+
+            logger.info("Will perform Black Duck post actions.");
+            HubManager hubManager = new HubManager(codeLocationNameManager, detectConfiguration, hubServiceManager, new PolicyChecker(detectConfiguration), eventSystem);
             hubManager.performPostHubActions(projectNameVersion, projectView.get());
             logger.info("Black Duck actions have finished.");
+        } else {
+            logger.debug("Will not perform post actions: Detect is not online.");
         }
 
         logger.info("All tools have finished.");

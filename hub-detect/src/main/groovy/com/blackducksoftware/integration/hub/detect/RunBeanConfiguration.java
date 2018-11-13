@@ -34,7 +34,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerDetector;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerExtractor;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerInspectorManager;
@@ -45,6 +44,7 @@ import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.Online
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.ArtifactResolver;
+import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocationCreator;
@@ -82,7 +82,7 @@ public class RunBeanConfiguration {
     @Autowired
     public DiagnosticManager diagnosticManager;
     @Autowired
-    public HubServiceManager hubServiceManager;
+    public ConnectivityManager connectivityManager;
     @Autowired
     public EventSystem eventSystem;
     @Autowired
@@ -174,7 +174,7 @@ public class RunBeanConfiguration {
         final String image = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE, PropertyAuthority.None);
         final boolean dockerRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED, PropertyAuthority.None);
 
-        return new DockerDetector(detectInfo, detectorEnvironment, directoryManager, dockerInspectorManager(), standardExecutableFinder(), dockerRequired, tar, image, dockerExtractor(dockerProperties));
+        return new DockerDetector(detectInfo, detectorEnvironment, directoryManager, dockerInspectorManager(), standardExecutableFinder(), dockerRequired, image, tar, dockerExtractor(dockerProperties));
     }
 
     @Lazy

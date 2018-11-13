@@ -63,10 +63,16 @@ public class ProjectNameVersionDecider {
         Optional<DetectToolProjectInfo> chosenTool = decideToolProjectInfo(preferredDetectTools, detectToolProjectInfo);
         if (chosenTool.isPresent()) {
             if (!decidedProjectName.isPresent()) {
-                decidedProjectName = Optional.ofNullable(chosenTool.get().getSuggestedNameVersion().getName());
+                String suggestedName = chosenTool.get().getSuggestedNameVersion().getName();
+                if (StringUtils.isNotBlank(suggestedName)) {
+                    decidedProjectName = Optional.of(suggestedName);
+                }
             }
             if (!decidedProjectVersion.isPresent()) {
-                decidedProjectVersion = Optional.ofNullable(chosenTool.get().getSuggestedNameVersion().getVersion());
+                String suggestedVersion = chosenTool.get().getSuggestedNameVersion().getVersion();
+                if (StringUtils.isNotBlank(suggestedVersion)) {
+                    decidedProjectVersion = Optional.of(suggestedVersion);
+                }
             }
         }
 

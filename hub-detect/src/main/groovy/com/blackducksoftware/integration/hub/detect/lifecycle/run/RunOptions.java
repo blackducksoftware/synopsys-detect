@@ -24,27 +24,19 @@
 package com.blackducksoftware.integration.hub.detect.lifecycle.run;
 
 import com.blackducksoftware.integration.hub.detect.workflow.DetectToolFilter;
-import com.synopsys.integration.util.ExcludedIncludedFilter;
 
 public class RunOptions {
-    private final boolean isOnline;
     private final boolean unmapCodeLocations;
     private final String aggregateName;
     private final String preferredTools;
     private final DetectToolFilter detectToolFilter;
 
-    public RunOptions(final boolean isOnline, final boolean unmapCodeLocations, final String aggregateName,
+    public RunOptions(final boolean unmapCodeLocations, final String aggregateName,
         final String preferredTools, final DetectToolFilter detectToolFilter) {
-        this.isOnline = isOnline;
         this.unmapCodeLocations = unmapCodeLocations;
         this.aggregateName = aggregateName;
         this.preferredTools = preferredTools;
         this.detectToolFilter = detectToolFilter;
-    }
-
-
-    public boolean isOnline() {
-        return isOnline;
     }
 
     public boolean shouldUnmapCodeLocations() {
