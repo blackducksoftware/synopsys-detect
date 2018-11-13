@@ -117,6 +117,8 @@ public class RunManager {
                 eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, dockerToolResult.errorMessage));
             }
             logger.info("Docker actions finished.");
+        } else {
+            logger.info("Docker tool will not be run.");
         }
 
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
@@ -134,6 +136,8 @@ public class RunManager {
                 eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
             }
             logger.info("Detector actions finished.");
+        } else {
+            logger.info("Detector tool will not be run.");
         }
 
         logger.info("Completed code location tools.");
@@ -159,7 +163,11 @@ public class RunManager {
                 logger.info("Unmapping code locations.");
                 DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(hubServiceManager.createHubService(), hubServiceManager.createCodeLocationService());
                 detectCodeLocationUnmapService.unmapCodeLocations(projectView.get());
+            } else {
+                logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");
             }
+        } else {
+            logger.debug("Detect is not online, and will not create the project.");
         }
 
         logger.info("Completed project and version actions.");
@@ -189,6 +197,8 @@ public class RunManager {
             BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
             blackDuckSignatureScannerTool.runScanTool(projectNameVersion, runResult.getDockerTar());
             logger.info("Signature scanner actions finished.");
+        } else {
+            logger.info("Singature scan tool will not be run.");
         }
 
         if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
@@ -199,6 +209,8 @@ public class RunManager {
                 blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
             }
             logger.info("Binary scanner actions finished.");
+        } else {
+            logger.info("Binary scan tool will not be run.");
         }
 
         if (detectToolFilter.shouldInclude(DetectTool.SWIP_CLI)) {
@@ -206,15 +218,19 @@ public class RunManager {
             SwipCliManager swipCliManager = new SwipCliManager(directoryManager, new ExecutableRunner(), connectionManager);
             swipCliManager.runSwip(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
             logger.info("Swip actions finished.");
+        } else {
+            logger.info("Swip CLI tool will not be run.");
         }
 
         if (projectView.isPresent() && connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
             HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
 
-            logger.info("Will perform Black Duck actions.");
+            logger.info("Will perform Black Duck post actions.");
             HubManager hubManager = new HubManager(codeLocationNameManager, detectConfiguration, hubServiceManager, new PolicyChecker(detectConfiguration), eventSystem);
             hubManager.performPostHubActions(projectNameVersion, projectView.get());
             logger.info("Black Duck actions have finished.");
+        } else {
+            logger.debug("Will not perform post actions: Detect is not online.");
         }
 
         logger.info("All tools have finished.");

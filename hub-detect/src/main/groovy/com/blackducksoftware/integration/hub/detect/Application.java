@@ -113,9 +113,13 @@ public class Application implements ApplicationRunner {
                 logger.info("Detect run completed.");
             } catch (final Exception e) {
                 exitCodeManager.requestExitCode(e);
-                logger.info("Detect run failed: ", e);
+                logger.error("Detect run failed: ", e);
             }
-
+        } else {
+            logger.info("Detect will NOT attempt to run.");
+        }
+        if (bootResult != null) {
+            logger.info("Detect will attempt to shutdown.");
             DiagnosticManager diagnosticManager = detectContext.getBean(DiagnosticManager.class);
             PhoneHomeManager phoneHomeManager = detectContext.getBean(PhoneHomeManager.class);
             DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
@@ -128,9 +132,12 @@ public class Application implements ApplicationRunner {
                 logger.info("Detect shutdown completed.");
             } catch (final Exception e) {
                 exitCodeManager.requestExitCode(e);
-                logger.info("Detect shutdown failed: ", e);
+                logger.warn("Detect shutdown failed. ");
+                logger.debug("Detect shutdown failed with exception: ", e);
             }
         }
+
+        logger.info("All detect actions completed.");
 
         final long endTime = System.currentTimeMillis();
         logger.info(String.format("Detect duration: %s", DurationFormatUtils.formatPeriod(startTime, endTime, "HH'h' mm'm' ss's' SSS'ms'")));
