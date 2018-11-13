@@ -55,17 +55,18 @@ public class DetectorEvaluationNameVersionDecider {
             }
         }
 
-        final List<DetectorProjectInfo> allDetectorProjectInfo = transformIntoProjectInfo(detectorEvaluations);
-        return detectorNameVersionDecider.decideProjectNameVersion(allDetectorProjectInfo, preferredDetectorType);
+        final List<DetectorProjectInfo> detectorProjectInfo = transformIntoProjectInfo(detectorEvaluations);
+
+        return detectorNameVersionDecider.decideProjectNameVersion(detectorProjectInfo, preferredDetectorType);
     }
 
     private List<DetectorProjectInfo> transformIntoProjectInfo(final List<DetectorEvaluation> detectorEvaluations) {
         return detectorEvaluations.stream()
-                   .filter(it -> it.wasExtractionSuccessful())
-                   .filter(it -> it.getExtraction().projectName != null)
-                   .map(it -> {
-                       final NameVersion nameVersion = new NameVersion(it.getExtraction().projectName, it.getExtraction().projectVersion);
-                       final DetectorProjectInfo possibility = new DetectorProjectInfo(it.getDetector().getDetectorType(), it.getEnvironment().getDepth(), nameVersion);
+                   .filter(DetectorEvaluation::wasExtractionSuccessful)
+                   .filter(detectorEvaluation -> StringUtils.isNotBlank(detectorEvaluation.getExtraction().projectName))
+                   .map(detectorEvaluation -> {
+                       final NameVersion nameVersion = new NameVersion(detectorEvaluation.getExtraction().projectName, detectorEvaluation.getExtraction().projectVersion);
+                       final DetectorProjectInfo possibility = new DetectorProjectInfo(detectorEvaluation.getDetector().getDetectorType(), detectorEvaluation.getEnvironment().getDepth(), nameVersion);
                        return possibility;
                    })
                    .collect(Collectors.toList());

@@ -70,9 +70,12 @@ public class DetectorTool {
         logger.info("Finished running detectors.");
         eventSystem.publishEvent(Event.BomToolsComplete, detectorToolResult);
 
+        logger.info("Evaluating detectors for project info.");
+
         DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
         Optional<NameVersion> bomToolNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorToolResult.evaluatedDetectors, projectBomTool);
         detectorToolResult.bomToolProjectNameVersion = bomToolNameVersion;
+        logger.info("Finished evaluating detectors for project info.");
 
         return detectorToolResult;
     }
