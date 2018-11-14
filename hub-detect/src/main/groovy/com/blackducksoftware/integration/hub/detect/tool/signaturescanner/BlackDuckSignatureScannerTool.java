@@ -38,8 +38,8 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
+import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.synopsys.integration.blackduck.configuration.HubServerConfig;
 import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
@@ -62,11 +62,11 @@ public class BlackDuckSignatureScannerTool {
         DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
         DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         ConnectionManager connectionManager = detectContext.getBean(ConnectionManager.class);
-        Optional<HubServiceManager> hubServiceManager = Optional.ofNullable(detectContext.getBean(HubServiceManager.class));
+        ConnectivityManager connectivityManager = detectContext.getBean(ConnectivityManager.class);
 
         Optional<HubServerConfig> hubServerConfig = Optional.empty();
-        if (hubServiceManager.isPresent()) {
-            hubServerConfig = Optional.of(hubServiceManager.get().getHubServerConfig());
+        if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
+            hubServerConfig = Optional.of(connectivityManager.getHubServiceManager().get().getHubServerConfig());
         }
 
         logger.info("Will run the signature scanner tool.");
