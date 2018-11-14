@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +44,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManag
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
+import com.synopsys.integration.util.NameVersion;
 
 public class DockerTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -73,6 +75,9 @@ public class DockerTool {
 
                 DockerToolResult dockerToolResult = new DockerToolResult();
                 dockerToolResult.dockerCodeLocations = extractResult.codeLocations;
+                if (StringUtils.isNotBlank(extractResult.projectName) && StringUtils.isNotBlank(extractResult.projectVersion)) {
+                    dockerToolResult.dockerProjectNameVersion = Optional.of(new NameVersion(extractResult.projectName, extractResult.projectVersion));
+                }
 
                 Optional<Object> dockerTar = extractResult.getMetaDataValue(DockerExtractor.DOCKER_TAR_META_DATA_KEY);
                 if (dockerTar.isPresent()) {
