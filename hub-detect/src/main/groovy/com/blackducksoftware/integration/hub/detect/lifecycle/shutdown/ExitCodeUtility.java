@@ -60,7 +60,7 @@ public class ExitCodeUtility {
             }
             exceptionExitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
-        logger.debug("Exception", e);
+        logger.error(e.getMessage());
 
         return exceptionExitCodeType;
     }

@@ -97,7 +97,7 @@ public class BlackDuckSignatureScannerTool {
         if (hubServerConfig.isPresent()) {
             blackDuckSignatureScanner = detectContext.getBean(OnlineBlackDuckSignatureScanner.class, signatureScannerOptions, scanJobManager, hubServerConfig.get());
         } else {
-            blackDuckSignatureScanner = detectContext.getBean(OnlineBlackDuckSignatureScanner.class, signatureScannerOptions, scanJobManager);
+            blackDuckSignatureScanner = detectContext.getBean(OfflineBlackDuckSignatureScanner.class, signatureScannerOptions, scanJobManager);
         }
         try {
             blackDuckSignatureScanner.performScanActions(projectNameVersion, dockerTar.orElse(null)); //TODO: get docker tar file.
