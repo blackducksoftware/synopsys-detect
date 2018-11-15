@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.workflow.ArtifactoryConstants;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -76,7 +77,10 @@ public class GradleScriptCreator {
         gradleScriptData.put("includedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS, PropertyAuthority.None));
         final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL, PropertyAuthority.None);
         if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
+            logger.warn("Using a custom gradle repository will not be supported in the future.");
             gradleScriptData.put("customRepositoryUrl", configuredGradleInspectorRepositoryUrl);
+        } else {
+            gradleScriptData.put("customRepositoryUrl", ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO);
         }
 
         populateGradleScriptWithData(scriptFile, gradleScriptData);
