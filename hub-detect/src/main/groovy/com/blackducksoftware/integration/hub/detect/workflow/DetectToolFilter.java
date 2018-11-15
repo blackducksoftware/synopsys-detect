@@ -34,18 +34,18 @@ public class DetectToolFilter {
     private final Optional<Boolean> deprecatedSigScanDisabled;
     private final Optional<Boolean> deprecatedSwipEnabled;
 
-    public DetectToolFilter(String includedTools, String excludedTools, Optional<Boolean> deprecatedSigScanDisabled, Optional<Boolean> deprecatedSwipEnabled) {
-        this.excludedIncludedFilter = new ExcludedIncludedFilter(includedTools, excludedTools);
+    public DetectToolFilter(String excludedTools, String includedTools, Optional<Boolean> deprecatedSigScanDisabled, Optional<Boolean> deprecatedSwipEnabled) {
+        this.excludedIncludedFilter = new ExcludedIncludedFilter(excludedTools, includedTools);
 
         this.deprecatedSigScanDisabled = deprecatedSigScanDisabled;
         this.deprecatedSwipEnabled = deprecatedSwipEnabled;
     }
 
     public boolean shouldInclude(DetectTool detectTool) {
-        if (detectTool == DetectTool.SIGNATURE_SCAN && deprecatedSigScanDisabled.isPresent()){
+        if (detectTool == DetectTool.SIGNATURE_SCAN && deprecatedSigScanDisabled.isPresent()) {
             return !deprecatedSigScanDisabled.get();
-        }else if (detectTool == DetectTool.SWIP_CLI && deprecatedSwipEnabled.isPresent()){
-            return  deprecatedSwipEnabled.get();
+        } else if (detectTool == DetectTool.SWIP_CLI && deprecatedSwipEnabled.isPresent()) {
+            return deprecatedSwipEnabled.get();
         }
 
         return excludedIncludedFilter.shouldInclude(detectTool.name());
