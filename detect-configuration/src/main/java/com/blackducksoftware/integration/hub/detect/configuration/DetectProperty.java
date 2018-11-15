@@ -453,7 +453,7 @@ public enum DetectProperty {
     DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH("detect.gradle.inspector.air.gap.path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
 
     @Deprecated
-    @DetectDeprecation(description = "In the future, the gradle inspector will no longer be downloaded from a custom repository, please use Detect Air Gap instead.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
+    @DetectDeprecation(description = "In the future, the gradle inspector will no longer be downloaded from a custom repository, please use Detect Air Gap instead.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_GRADLE)
     @HelpDescription("The respository gradle should use to look for the gradle inspector dependencies")
     DETECT_GRADLE_INSPECTOR_REPOSITORY_URL("detect.gradle.inspector.repository.url", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
