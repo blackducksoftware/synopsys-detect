@@ -14,7 +14,10 @@ initscript {
         }
 <#else>
         mavenLocal()
-        mavenCentral()
+        maven {
+            name 'GradleInspectorRepository'
+            url '${customRepositoryUrl}'
+        }
 </#if>
     }
 
