@@ -43,22 +43,39 @@ test {
 }
 
 dependencies {
-    compile project(":detect-configuration")
+    implementation project(":detect-configuration")
 
-    compile 'com.synopsys.integration:swip-common:0.1.5'
+    implementation 'com.synopsys.integration:swip-common:0.1.5'
 
-    compile 'org.apache.maven.shared:maven-invoker:3.0.0'
-    compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
-    compile 'com.moandjiezana.toml:toml4j:0.7.1'
-    compile 'org.codehaus.groovy:groovy-all:2.4.12'
-    compile 'org.freemarker:freemarker:2.3.26-incubating'
-    compile 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
+    implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
+    implementation 'com.moandjiezana.toml:toml4j:0.7.1'
+    implementation 'org.codehaus.groovy:groovy-all:2.4.12'
+    implementation 'org.freemarker:freemarker:2.3.26-incubating'
+    implementation 'org.springframework.boot:spring-boot-starter'
 
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.5'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.5'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
 
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 springBoot { mainClassName = 'com.blackducksoftware.integration.hub.detect.Application' }
+
+if ("true" == project.findProperty('refresh.cache')) {
+    project.dependencies {
+        implementation 'com.blackducksoftware.integration:integration-gradle-inspector:0.6.0'
+    }
+
+    project.repositories.clear()
+    project.repositories {
+        maven {
+            url 'https://repo.blackducksoftware.com:443/artifactory/bds-integration-public-cache'
+            credentials {
+                username = project.ext.artifactoryDeployerUsername
+                password = project.ext.artifactoryDeployerPassword
+            }
+        }
+    }
+}
