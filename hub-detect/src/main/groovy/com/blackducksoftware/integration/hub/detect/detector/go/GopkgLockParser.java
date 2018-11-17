@@ -78,7 +78,7 @@ public class GopkgLockParser {
             dependencyName = dependencyName + "/" + parsedPackageName;
         }
         if (dependencyName.startsWith("golang.org/x/")) {
-            dependencyName = dependencyName.replaceAll("golang.org/x/", "");
+            dependencyName = dependencyName.replace("golang.org/x/", "");
         }
 
         return dependencyName;
