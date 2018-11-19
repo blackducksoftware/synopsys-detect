@@ -33,9 +33,14 @@ import java.util.Optional;
 import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
+import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
+import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.rest.connection.RestConnection;
 import com.synopsys.integration.swip.common.SwipDownloadUtility;
@@ -45,11 +50,13 @@ public class SwipCliManager {
     private final DirectoryManager directoryManager;
     private final ExecutableRunner executableRunner;
     private final ConnectionManager connectionManager;
+    private final EventSystem eventSystem;
 
-    public SwipCliManager(final DirectoryManager directoryManager, final ExecutableRunner executableRunner, ConnectionManager connectionManager) {
+    public SwipCliManager(EventSystem eventSystem, final DirectoryManager directoryManager, final ExecutableRunner executableRunner, ConnectionManager connectionManager) {
         this.directoryManager = directoryManager;
         this.executableRunner = executableRunner;
         this.connectionManager = connectionManager;
+        this.eventSystem = eventSystem;
     }
 
     public void runSwip(final IntLogger logger, File swipProjectDirectory) throws DetectUserFriendlyException {
@@ -72,8 +79,16 @@ public class SwipCliManager {
 
             Executable swipExecutable = new Executable(swipProjectDirectory, environmentVariables, swipCliPath.get(), arguments);
             try {
-                executableRunner.execute(swipExecutable);
+                ExecutableOutput output = executableRunner.execute(swipExecutable);
+                if (output.getReturnCode() == 0) {
+                    logger.error("Swip returned a non-zero exit code.");
+                    eventSystem.publishEvent(Event.StatusSummary, new Status("SWIP_CLI", StatusType.SUCCESS));
+                } else {
+                    eventSystem.publishEvent(Event.StatusSummary, new Status("SWIP_CLI", StatusType.FAILURE));
+                }
+
             } catch (ExecutableRunnerException e) {
+                eventSystem.publishEvent(Event.StatusSummary, new Status("SWIP_CLI", StatusType.FAILURE));
                 logger.error("Couldn't run the executable: " + e.getMessage());
             }
         } else {
