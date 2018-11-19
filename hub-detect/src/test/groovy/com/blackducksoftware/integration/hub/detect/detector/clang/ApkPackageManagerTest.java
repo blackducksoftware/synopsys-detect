@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.junit.Assume;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -19,8 +17,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class ApkPackageManagerTest {
     @Test
     public void test() throws ExecutableRunnerException {
-        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
-
         final StringBuilder sb = new StringBuilder();
         sb.append("garbage\n");
         sb.append("nonsense\n");
