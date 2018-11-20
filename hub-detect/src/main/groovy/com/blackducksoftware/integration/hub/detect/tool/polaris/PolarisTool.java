@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.tool.swip;
+package com.blackducksoftware.integration.hub.detect.tool.polaris;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,20 +46,20 @@ import com.synopsys.integration.rest.connection.RestConnection;
 import com.synopsys.integration.swip.common.SwipDownloadUtility;
 import com.synopsys.integration.util.CleanupZipExpander;
 
-public class SwipCliManager {
+public class PolarisTool {
     private final DirectoryManager directoryManager;
     private final ExecutableRunner executableRunner;
     private final ConnectionManager connectionManager;
     private final EventSystem eventSystem;
 
-    public SwipCliManager(EventSystem eventSystem, final DirectoryManager directoryManager, final ExecutableRunner executableRunner, ConnectionManager connectionManager) {
+    public PolarisTool(EventSystem eventSystem, final DirectoryManager directoryManager, final ExecutableRunner executableRunner, ConnectionManager connectionManager) {
         this.directoryManager = directoryManager;
         this.executableRunner = executableRunner;
         this.connectionManager = connectionManager;
         this.eventSystem = eventSystem;
     }
 
-    public void runSwip(final IntLogger logger, File swipProjectDirectory) throws DetectUserFriendlyException {
+    public void runPolaris(final IntLogger logger, File projectDirectory) throws DetectUserFriendlyException {
         RestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(SwipDownloadUtility.DEFAULT_SWIP_SERVER_URL);
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(logger);
         File toolsDirectory = directoryManager.getPermanentDirectory();
@@ -72,27 +72,27 @@ public class SwipCliManager {
             environmentVariables.put("COVERITY_UNSUPPORTED", "1");
             environmentVariables.put("SWIP_USER_INPUT_TIMEOUT_MINUTES", "1");
 
-            logger.info("Found swip cli: " + swipCliPath.get());
+            logger.info("Found polaris cli: " + swipCliPath.get());
             List<String> arguments = new ArrayList<>();
             arguments.add("analyze");
             arguments.add("-w");
 
-            Executable swipExecutable = new Executable(swipProjectDirectory, environmentVariables, swipCliPath.get(), arguments);
+            Executable swipExecutable = new Executable(projectDirectory, environmentVariables, swipCliPath.get(), arguments);
             try {
                 ExecutableOutput output = executableRunner.execute(swipExecutable);
                 if (output.getReturnCode() == 0) {
                     logger.error("Swip returned a non-zero exit code.");
-                    eventSystem.publishEvent(Event.StatusSummary, new Status("SWIP_CLI", StatusType.SUCCESS));
+                    eventSystem.publishEvent(Event.StatusSummary, new Status("POLARIS", StatusType.SUCCESS));
                 } else {
-                    eventSystem.publishEvent(Event.StatusSummary, new Status("SWIP_CLI", StatusType.FAILURE));
+                    eventSystem.publishEvent(Event.StatusSummary, new Status("POLARIS", StatusType.FAILURE));
                 }
 
             } catch (ExecutableRunnerException e) {
-                eventSystem.publishEvent(Event.StatusSummary, new Status("SWIP_CLI", StatusType.FAILURE));
+                eventSystem.publishEvent(Event.StatusSummary, new Status("POLARIS", StatusType.FAILURE));
                 logger.error("Couldn't run the executable: " + e.getMessage());
             }
         } else {
-            logger.error("Check the logs - the Swip CLI could not be found.");
+            logger.error("Check the logs - the Polaris CLI could not be found.");
         }
     }
 

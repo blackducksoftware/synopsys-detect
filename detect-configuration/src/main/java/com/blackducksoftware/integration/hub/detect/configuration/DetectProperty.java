@@ -44,12 +44,12 @@ import static com.blackducksoftware.integration.hub.detect.configuration.DetectP
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_PATHS;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_PEAR;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_PIP;
+import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_POLARIS;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_POLICY_CHECK;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_PROJECT_INFO;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_PYTHON;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_SBT;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_SIGNATURE_SCANNER;
-import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_SWIP;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_YARN;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_BLACKDUCK;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_DEBUG;
@@ -282,13 +282,13 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("The tools detect should allow in a comma-separated list. Included and not excluded tools will be allowed to run if all criteria of the tool is met. Exclusion rules always win.")
-    @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "SWIP_CLI", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
+    @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
     DETECT_TOOLS("detect.tools", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("The tools detect should not allow in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.")
-    @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "SWIP_CLI", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
-    DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "SWIP_CLI"),
+    @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
+    DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "POLARIS"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.project.detector in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
@@ -762,10 +762,10 @@ public enum DetectProperty {
     DETECT_BINARY_SCAN_FILE("detect.binary.scan.file.path", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
-    @DetectDeprecation(description = "This property is changing. Please use --detect.tools in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_SWIP)
-    @HelpDescription("Set to false to disable the Synopsys Swip Tool.")
-    DETECT_SWIP_ENABLED("detect.swip.enabled", "4.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    @DetectDeprecation(description = "This property is changing. Please use --detect.tools and POLARIS in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @HelpGroup(primary = GROUP_POLARIS)
+    @HelpDescription("Set to false to disable the Synopsys Polaris Tool.")
+    DETECT_SWIP_ENABLED("detect.polaris.enabled", "4.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PACKAGIST)
     @HelpDescription("Set this value to false if you would like to exclude your dev requires dependencies when ran")
@@ -939,7 +939,7 @@ public enum DetectProperty {
         public static final String GROUP_SBT = "sbt";
         public static final String GROUP_SIGNATURE_SCANNER = "signature scanner";
         public static final String GROUP_YARN = "yarn";
-        public static final String GROUP_SWIP = "swip";
+        public static final String GROUP_POLARIS = "polaris";
 
         @Deprecated
         public static final String SEARCH_GROUP_HUB = "hub";
