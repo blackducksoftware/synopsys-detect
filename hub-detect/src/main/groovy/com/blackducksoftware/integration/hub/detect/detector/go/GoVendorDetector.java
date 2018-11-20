@@ -1,3 +1,26 @@
+/**
+ * hub-detect
+ *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.blackducksoftware.integration.hub.detect.detector.go;
 
 import java.io.File;
@@ -33,17 +56,17 @@ public class GoVendorDetector extends Detector {
 
     @Override
     public DetectorResult applicable() {
-        vendorJson = fileFinder.findFile(environment.getDirectory(), VENDOR_JSON_FILENAME);
+        logger.info("*** GoVendorDetector.applicable() called");
+        File vendorDir  = fileFinder.findFile(environment.getDirectory(), VENDOR_JSON_DIRNAME);
+        if (vendorDir == null) {
+            logger.debug(String.format("Dir %s not found", VENDOR_JSON_DIRNAME));
+            return new FileNotFoundDetectorResult(VENDOR_JSON_FILENAME);
+        }
+        vendorJson = fileFinder.findFile(vendorDir, VENDOR_JSON_FILENAME);
         if (vendorJson == null) {
             logger.debug(String.format("File %s not found", VENDOR_JSON_FILENAME));
             return new FileNotFoundDetectorResult(VENDOR_JSON_FILENAME);
         }
-        File vendorJsonParentDir = vendorJson.getParentFile();
-        if (!VENDOR_JSON_DIRNAME.equalsIgnoreCase(vendorJsonParentDir.getName())) {
-            logger.debug(String.format("File %s found, but it was not under dir %s", VENDOR_JSON_FILENAME, VENDOR_JSON_DIRNAME));
-            return new FileNotFoundDetectorResult(VENDOR_JSON_FILENAME);
-        }
-
         logger.debug(String.format("%s/%s found", VENDOR_JSON_DIRNAME, VENDOR_JSON_FILENAME));
         return new PassedDetectorResult();
     }
