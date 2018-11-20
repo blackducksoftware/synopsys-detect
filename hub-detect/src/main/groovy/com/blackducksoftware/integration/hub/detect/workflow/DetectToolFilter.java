@@ -42,6 +42,7 @@ public class DetectToolFilter {
     }
 
     public boolean shouldInclude(DetectTool detectTool) {
+
         if (detectTool == DetectTool.SIGNATURE_SCAN && deprecatedSigScanDisabled.isPresent()) {
             return !deprecatedSigScanDisabled.get();
         } else if (detectTool == DetectTool.SWIP_CLI && deprecatedSwipEnabled.isPresent()) {

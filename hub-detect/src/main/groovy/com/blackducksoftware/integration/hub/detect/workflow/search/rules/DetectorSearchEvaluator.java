@@ -68,7 +68,7 @@ public class DetectorSearchEvaluator {
     public DetectorResult searchable(final DetectorSearchRule searchRules, final List<Detector> appliedSoFar, DetectorEnvironment environment) {
         Detector detector = searchRules.getDetector();
         final DetectorType detectorType = detector.getDetectorType();
-        if (!environment.getBomToolFilter().shouldInclude(detectorType.toString())) {
+        if (!environment.getDetectorFilter().shouldInclude(detectorType.toString())) {
             return new ExcludedDetectorResult();
         }
 

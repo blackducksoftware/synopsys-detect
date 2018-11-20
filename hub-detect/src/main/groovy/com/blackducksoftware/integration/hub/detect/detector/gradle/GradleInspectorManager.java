@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.detector.gradle;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,10 +35,12 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.workflow.ArtifactResolver;
 import com.blackducksoftware.integration.hub.detect.workflow.ArtifactoryConstants;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.exception.IntegrationException;
 
 import freemarker.template.Configuration;
 
@@ -74,6 +77,7 @@ public class GradleInspectorManager {
                 if (airGapPath == null) {
                     Optional<String> version = findVersion();
                     if (version.isPresent()) {
+                        logger.info("Resolved the gradle inspector version: " + version.get());
                         generatedGradleScriptPath = gradleScriptCreator.generateOnlineScript(generatedGradleScriptFile, version.get());
                     } else {
                         throw new DetectorException("Unable to find the gradle inspector version from artifactory.");
@@ -86,9 +90,15 @@ public class GradleInspectorManager {
             }
             if (generatedGradleScriptPath == null) {
                 throw new DetectorException("Unable to initialize the gradle inspector.");
+            } else {
+                logger.trace("Derived generated gradle script path: " + generatedGradleScriptPath);
             }
+        } else {
+            logger.debug("Already attempted to resolve the gradle inspector script, will not attempt again.");
         }
-        logger.trace(String.format("Derived generated gradle script path: %s", generatedGradleScriptPath));
+        if (StringUtils.isBlank(generatedGradleScriptPath)) {
+            throw new DetectorException("Unable to find or create the gradle inspector script.");
+        }
         return generatedGradleScriptPath;
     }
 
@@ -106,7 +116,7 @@ public class GradleInspectorManager {
         return gradleInspectorAirGapDirectory;
     }
 
-    private Optional<String> findVersion() {
+    private Optional<String> findVersion() throws IntegrationException, DetectUserFriendlyException, IOException {
         String gradleVersion = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION, PropertyAuthority.None);
         return artifactResolver.resolveArtifactVersion(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.GRADLE_INSPECTOR_REPO, ArtifactoryConstants.GRADLE_INSPECTOR_PROPERTY, gradleVersion);
     }

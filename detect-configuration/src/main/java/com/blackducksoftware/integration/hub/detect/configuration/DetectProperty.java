@@ -286,12 +286,12 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("The tools detect should allow in a comma-separated list. Included and not excluded tools will be allowed to run if all criteria of the tool is met. Exclusion rules always win.")
-    @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "SWIP_CLI" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
+    @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "SWIP_CLI", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
     DETECT_TOOLS("detect.tools", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("The tools detect should not allow in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.")
-    @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "SWIP_CLI" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
+    @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "SWIP_CLI", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
     DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "SWIP_CLI"),
 
     @Deprecated

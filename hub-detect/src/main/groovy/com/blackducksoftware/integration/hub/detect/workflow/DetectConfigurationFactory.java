@@ -28,12 +28,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import com.blackducksoftware.integration.hub.detect.OverridableExcludedIncludedFilter;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunOptions;
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
+import com.blackducksoftware.integration.hub.detect.util.filter.DetectOverrideableFilter;
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryOptions;
@@ -91,7 +91,7 @@ public class DetectConfigurationFactory {
         int maxDepth = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_DETECTOR_SEARCH_DEPTH, PropertyAuthority.None);
         String excluded = detectConfiguration.getProperty(DetectProperty.DETECT_EXCLUDED_DETECTOR_TYPES, PropertyAuthority.None).toUpperCase();
         String included = detectConfiguration.getProperty(DetectProperty.DETECT_INCLUDED_DETECTOR_TYPES, PropertyAuthority.None).toUpperCase();
-        OverridableExcludedIncludedFilter bomToolFilter = new OverridableExcludedIncludedFilter(excluded, included);
+        DetectOverrideableFilter bomToolFilter = new DetectOverrideableFilter(excluded, included);
         return new SearchOptions(directory, excludedDirectories, forceNestedSearch, maxDepth, bomToolFilter);
     }
 

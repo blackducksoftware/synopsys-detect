@@ -33,6 +33,8 @@ import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -43,6 +45,7 @@ import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.request.Response;
 
 public class ArtifactResolver {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ConnectionManager connectionManager;
     private final Gson gson;
 
@@ -61,13 +64,19 @@ public class ArtifactResolver {
      * @param overrideArtifactPattern The pattern to use when the override version is provided of the full artifact location.
      * @return the location of the artifact
      */
-    public Optional<String> resolveArtifactLocation(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey, final String overrideVersion, final String overrideArtifactPattern) {
+    public Optional<String> resolveArtifactLocation(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey, final String overrideVersion, final String overrideArtifactPattern)
+        throws IntegrationException, DetectUserFriendlyException, IOException {
         if (StringUtils.isNotBlank(overrideVersion) && StringUtils.isNotBlank(overrideArtifactPattern)) {
+            logger.info("An override version was provided, will resolve using the given version.");
             String repoUrl = artifactoryBaseUrl + repositoryUrl;
             String versionUrl = overrideArtifactPattern.replace(ArtifactoryConstants.VERSION_PLACEHOLDER, overrideVersion);
-            return Optional.of(repoUrl + versionUrl);
+            String artifactUrl = repoUrl + versionUrl;
+            logger.debug("Determined the artifact url is: " + artifactUrl);
+            return Optional.of(artifactUrl);
         } else {
+            logger.info("Will find version from artifactory.");
             String apiUrl = artifactoryBaseUrl + "api/storage/" + repositoryUrl;
+            logger.debug(String.format("Checking '%s' for property '%s'.", apiUrl, propertyKey));
             Optional<String> artifactUrl = downloadProperty(apiUrl, propertyKey);
             return artifactUrl;
         }
@@ -81,37 +90,44 @@ public class ArtifactResolver {
      * @param overrideVersion    The version to use, if provided, overrides the property tag.
      * @return the calculated version of the artifact
      */
-    public Optional<String> resolveArtifactVersion(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey, final String overrideVersion) {
+    public Optional<String> resolveArtifactVersion(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey, final String overrideVersion) throws IntegrationException, DetectUserFriendlyException, IOException {
         if (StringUtils.isNotBlank(overrideVersion)) {
+            logger.info("Resolved version from override: " + overrideVersion);
             return Optional.of(overrideVersion);
         } else {
+            logger.debug(String.format("Resolving artifact version from repository %s with property %s", repositoryUrl, propertyKey));
             String apiUrl = artifactoryBaseUrl + "api/storage/" + repositoryUrl;
-            Optional<String> artifactUrl = downloadProperty(apiUrl, propertyKey);
-            return artifactUrl;
+            Optional<String> artifactVersion = downloadProperty(apiUrl, propertyKey);
+            if (artifactVersion.isPresent()) {
+                logger.info("Resolved version online: " + artifactVersion.get());
+            } else {
+                logger.info("Failed to resolve version.");
+            }
+            return artifactVersion;
         }
     }
 
-    private Optional<String> downloadProperty(String apiUrl, String propertyKey) {
+    private Optional<String> downloadProperty(String apiUrl, String propertyKey) throws IntegrationException, DetectUserFriendlyException, IOException {
         String propertyUrl = apiUrl + "?properties=" + propertyKey;
+        logger.debug("Downloading property: " + propertyUrl);
         final Request request = new Request.Builder().uri(propertyUrl).build();
         try (final UnauthenticatedRestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(propertyUrl)) {
             try (final Response response = restConnection.executeRequest(request)) {
                 try (final InputStreamReader reader = new InputStreamReader(response.getContent())) {
+                    logger.debug("Downloaded property, attempting to parse response.");
                     Map json = gson.fromJson(reader, Map.class);
                     Map propertyMap = (Map) json.get("properties");
                     List propertyUrls = (List) propertyMap.get(propertyKey);
-                    return propertyUrls.stream().findFirst();
+                    Optional<String> foundProperty = propertyUrls.stream().findFirst();
+                    if (foundProperty.isPresent()) {
+                        logger.debug("Successfully parsed property: " + propertyUrls);
+                    } else {
+                        logger.debug("Failed to find property.");
+                    }
+                    return foundProperty;
                 }
             }
-        } catch (IntegrationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (DetectUserFriendlyException e) {
-            e.printStackTrace();
         }
-
-        return Optional.empty();
     }
 
     public String parseFileName(String source) {
@@ -120,35 +136,35 @@ public class ArtifactResolver {
         return filename;
     }
 
-    public Optional<File> downloadOrFindArtifact(File targetDir, String source) {
-        File fileTarget = new File(targetDir, parseFileName(source));
+    public File downloadOrFindArtifact(File targetDir, String source) throws IntegrationException, DetectUserFriendlyException, IOException {
+        logger.debug("Downloading or finding artifact.");
+        String fileName = parseFileName(source);
+        logger.debug("Determined filename would be: " + fileName);
+        File fileTarget = new File(targetDir, fileName);
+        logger.debug(String.format("Looking for artifact at '%s' or downloading from '%s'.", fileTarget.getAbsolutePath(), source));
         if (fileTarget.exists()) {
-            return Optional.of(fileTarget);
+            logger.debug("Artifact exists. Returning existing file.");
+            return fileTarget;
         } else {
+            logger.debug("Artifact does not exist. Will attempt to download it.");
             return downloadArtifact(fileTarget, source);
         }
     }
 
-    public Optional<File> downloadArtifact(File target, String source) {
+    public File downloadArtifact(File target, String source) throws DetectUserFriendlyException, IntegrationException, IOException {
+        logger.debug(String.format("Downloading for artifact to '%s' from '%s'.", target.getAbsolutePath(), source));
         final Request request = new Request.Builder().uri(source).build();
         try (final UnauthenticatedRestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(source)) {
             try (Response response = restConnection.executeRequest(request)) {
+                logger.debug("Deleting existing file.");
                 target.delete();
+                logger.debug("Writing to file.");
                 final InputStream jarBytesInputStream = response.getContent();
                 FileUtils.copyInputStreamToFile(jarBytesInputStream, target);
-                return Optional.of(target);
-            } catch (IntegrationException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                logger.debug("Successfully wrote response to file.");
+                return target;
             }
-        } catch (DetectUserFriendlyException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
-        return Optional.empty();
     }
 
 }

@@ -38,6 +38,10 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
+import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 import com.synopsys.integration.blackduck.service.BinaryScannerService;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -48,8 +52,9 @@ public class BlackDuckBinaryScannerTool {
     private final CodeLocationNameManager codeLocationNameManager;
     private DetectConfiguration detectConfiguration;
     private HubServiceManager hubServiceManager;
+    private EventSystem eventSystem;
 
-    public BlackDuckBinaryScannerTool(final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final HubServiceManager hubServiceManager) {
+    public BlackDuckBinaryScannerTool(EventSystem eventSystem, final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final HubServiceManager hubServiceManager) {
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
         this.hubServiceManager = hubServiceManager;
@@ -73,7 +78,9 @@ public class BlackDuckBinaryScannerTool {
             logger.info("Preparing to upload binary scan file: " + codeLocationName);
             binaryService.scanBinary(file, projectName, projectVersionName, codeLocationName);
             logger.info("Succesfully uploaded binary scan file: " + codeLocationName);
+            eventSystem.publishEvent(Event.StatusSummary, new Status("BINARY_SCAN", StatusType.SUCCESS));
         } catch (MalformedURLException | IntegrationException | URISyntaxException e) {
+            eventSystem.publishEvent(Event.StatusSummary, new Status("BINARY_SCAN", StatusType.FAILURE));
             throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
         }
     }

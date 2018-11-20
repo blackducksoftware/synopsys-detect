@@ -57,12 +57,14 @@ import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.FileManager;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.OfflinePhoneHomeManager;
@@ -123,6 +125,11 @@ public class BootManager {
         detectOptionManager.postConfigurationProcessedInit();
 
         logger.info("Configuration processed completely.");
+
+        if (detectOptionManager.checkForAnyFailureProperties()) {
+            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION));
+            return BootResult.exit(detectConfiguration);
+        }
 
         DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
         DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);

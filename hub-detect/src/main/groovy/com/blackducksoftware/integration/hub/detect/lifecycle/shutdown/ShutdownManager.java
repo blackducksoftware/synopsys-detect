@@ -23,9 +23,12 @@
  */
 package com.blackducksoftware.integration.hub.detect.lifecycle.shutdown;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -84,13 +87,20 @@ public class ShutdownManager {
 
         try {
             if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.None)) {
-                logger.info("Cleaning up directory: " + directoryManager.getRunHomeDirectory().getAbsolutePath());
-                FileUtils.deleteDirectory(directoryManager.getRunHomeDirectory());
+                logger.info("Detect will cleanup.");
+                boolean dryRun = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, PropertyAuthority.None);
+                if (dryRun) {
+                    logger.debug("Cleaning up some directory contents: " + directoryManager.getRunHomeDirectory().getAbsolutePath());
+                    cleanup(directoryManager.getRunHomeDirectory(), dryRunCleanupPredicate(directoryManager.getScanOutputDirectory()));
+                } else {
+                    logger.debug("Cleaning up entire directory: " + directoryManager.getRunHomeDirectory().getAbsolutePath());
+                    FileUtils.deleteDirectory(directoryManager.getRunHomeDirectory());
+                }
             } else {
                 logger.info("Skipping cleanup, it is disabled.");
             }
         } catch (final Exception e) {
-            logger.debug(String.format("Error trying cleanup the run directory: %s", e.getMessage()));
+            logger.debug(String.format("Error trying cleanup: %s", e.getMessage()));
         }
 
         Set<DetectorType> detectorTypes = new HashSet<>();
@@ -107,5 +117,29 @@ public class ShutdownManager {
             logger.error("One or more required detector types were not found: " + missingDetectors);
             exitCodeManager.requestExitCode(ExitCodeType.FAILURE_DETECTOR_REQUIRED);
         }
+    }
+
+    public void cleanup(File directory, Predicate<File> exceptPredicate) throws IOException {
+        IOException exception = null;
+        for (final File file : directory.listFiles()) {
+            try {
+                if (exceptPredicate.test(file)) {
+                    logger.debug("Skipping cleanup for: " + file.getAbsolutePath());
+                } else {
+                    logger.debug("Cleaning up: " + file.getAbsolutePath());
+                    FileUtils.forceDelete(file);
+                }
+            } catch (final IOException ioe) {
+                exception = ioe;
+            }
+        }
+
+        if (null != exception) {
+            throw exception;
+        }
+    }
+
+    public Predicate<File> dryRunCleanupPredicate(File scanDirectory) {
+        return (file) -> file.equals(scanDirectory);
     }
 }

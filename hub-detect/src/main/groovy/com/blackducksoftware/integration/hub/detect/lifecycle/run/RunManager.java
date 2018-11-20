@@ -205,7 +205,7 @@ public class RunManager {
             logger.info("Will include the binary scanner tool.");
             if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
                 HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
-                BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(codeLocationNameManager, detectConfiguration, hubServiceManager);
+                BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, detectConfiguration, hubServiceManager);
                 blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
             }
             logger.info("Binary scanner actions finished.");
@@ -215,7 +215,7 @@ public class RunManager {
 
         if (detectToolFilter.shouldInclude(DetectTool.SWIP_CLI)) {
             logger.info("Will include the swip tool.");
-            SwipCliManager swipCliManager = new SwipCliManager(directoryManager, new ExecutableRunner(), connectionManager);
+            SwipCliManager swipCliManager = new SwipCliManager(eventSystem, directoryManager, new ExecutableRunner(), connectionManager);
             swipCliManager.runSwip(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
             logger.info("Swip actions finished.");
         } else {

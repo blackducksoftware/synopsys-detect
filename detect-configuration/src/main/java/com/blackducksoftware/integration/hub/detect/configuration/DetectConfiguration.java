@@ -82,9 +82,11 @@ public class DetectConfiguration {
     }
 
     private void handleStandardProperty(final DetectProperty currentProperty) {
-        actuallySetValues.add(currentProperty);
         final String value = detectPropertySource.getDetectProperty(currentProperty);
         detectPropertyMap.setDetectProperty(currentProperty, value);
+        if (detectPropertySource.containsDetectProperty(currentProperty)) {
+            actuallySetValues.add(currentProperty);
+        }
     }
 
     private void handleDeprecatedProperty(final DetectProperty currentProperty, final DetectProperty overrideProperty) {

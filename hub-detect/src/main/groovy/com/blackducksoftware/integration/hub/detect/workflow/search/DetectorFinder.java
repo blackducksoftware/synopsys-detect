@@ -105,7 +105,7 @@ public class DetectorFinder {
     }
 
     private List<DetectorEvaluation> processDirectory(final File directory, final Set<Detector> appliedBefore, final int depth, final DetectorFinderOptions options) {
-        final DetectorEnvironment environment = new DetectorEnvironment(directory, appliedBefore, depth, options.getBomToolFilter(), options.getForceNestedSearch());
+        final DetectorEnvironment environment = new DetectorEnvironment(directory, appliedBefore, depth, options.getDetectorFilter(), options.getForceNestedSearch());
         final DetectorSearchRuleSet bomToolSet = options.getDetectorSearchProvider().createBomToolSearchRuleSet(environment);
         final List<DetectorEvaluation> evaluations = options.getDetectorSearchEvaluator().evaluate(bomToolSet, options.getEventSystem());
         return evaluations;
