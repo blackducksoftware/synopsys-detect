@@ -56,18 +56,17 @@ public class GoVendorDetector extends Detector {
 
     @Override
     public DetectorResult applicable() {
-        logger.info("*** GoVendorDetector.applicable() called");
         File vendorDir  = fileFinder.findFile(environment.getDirectory(), VENDOR_JSON_DIRNAME);
         if (vendorDir == null) {
-            logger.debug(String.format("Dir %s not found", VENDOR_JSON_DIRNAME));
+            logger.trace(String.format("Dir %s not found", VENDOR_JSON_DIRNAME));
             return new FileNotFoundDetectorResult(VENDOR_JSON_FILENAME);
         }
         vendorJson = fileFinder.findFile(vendorDir, VENDOR_JSON_FILENAME);
         if (vendorJson == null) {
-            logger.debug(String.format("File %s not found", VENDOR_JSON_FILENAME));
+            logger.trace(String.format("File %s not found", VENDOR_JSON_FILENAME));
             return new FileNotFoundDetectorResult(VENDOR_JSON_FILENAME);
         }
-        logger.debug(String.format("%s/%s found", VENDOR_JSON_DIRNAME, VENDOR_JSON_FILENAME));
+        logger.trace(String.format("%s/%s found", VENDOR_JSON_DIRNAME, VENDOR_JSON_FILENAME));
         return new PassedDetectorResult();
     }
 
