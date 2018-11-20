@@ -46,11 +46,11 @@ public class GoVendorJsonParser {
     public DependencyGraph parseVendorJson(final Gson gson, final String vendorJsonContents) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
         GoVendorJsonData vendorJsonData = gson.fromJson(vendorJsonContents, GoVendorJsonData.class);
-        logger.info(String.format("vendorJsonData: %s", vendorJsonData));
+        logger.trace(String.format("vendorJsonData: %s", vendorJsonData));
         for (GoVendorJsonPackageData pkg : vendorJsonData.getPackages()) {
             final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, pkg.getPath(), pkg.getRevision());
             final Dependency dependency = new Dependency(pkg.getPath(), pkg.getRevision(), dependencyExternalId);
-            logger.info(String.format("dependency: %s", dependency.externalId.toString()));
+            logger.trace(String.format("dependency: %s", dependency.externalId.toString()));
             graph.addChildToRoot(dependency);
         }
         return graph;
