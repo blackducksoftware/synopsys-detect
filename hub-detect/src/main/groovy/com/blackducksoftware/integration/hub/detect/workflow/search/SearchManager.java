@@ -57,7 +57,7 @@ public class SearchManager {
     public SearchResult performSearch() {
         List<DetectorEvaluation> searchResults = new ArrayList<>();
         try {
-            final DetectorFinderOptions findOptions = new DetectorFinderOptions(searchOptions.excludedDirectories, searchOptions.forceNestedSearch, searchOptions.maxDepth, searchOptions.bomToolFilter, detectorSearchProvider,
+            final DetectorFinderOptions findOptions = new DetectorFinderOptions(searchOptions.excludedDirectories, searchOptions.forceNestedSearch, searchOptions.maxDepth, searchOptions.detectorFilter, detectorSearchProvider,
                 detectorSearchEvaluator, eventSystem);
 
             logger.info("Starting search for detectors.");

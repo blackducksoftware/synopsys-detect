@@ -68,6 +68,7 @@ public class GradleScriptCreator {
 
     //You must provide EITHER an airGapLibs OR an inspectorVersion.
     private String generateGradleScript(File scriptFile, String airGapLibs, String inspectorVersion) throws IOException, TemplateException {
+        logger.debug("Generating the gradle script file.");
         final Map<String, String> gradleScriptData = new HashMap<>();
         gradleScriptData.put("airGapLibs", StringEscapeUtils.escapeJava(airGapLibs));
         gradleScriptData.put("gradleInspectorVersion", StringEscapeUtils.escapeJava(inspectorVersion));
@@ -76,15 +77,15 @@ public class GradleScriptCreator {
         gradleScriptData.put("excludedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS, PropertyAuthority.None));
         gradleScriptData.put("includedConfigurationNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS, PropertyAuthority.None));
         final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL, PropertyAuthority.None);
+        String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
         if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
             logger.warn("Using a custom gradle repository will not be supported in the future.");
-            gradleScriptData.put("customRepositoryUrl", configuredGradleInspectorRepositoryUrl);
-        } else {
-            gradleScriptData.put("customRepositoryUrl", ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO);
+            customRepository = configuredGradleInspectorRepositoryUrl;
         }
+        gradleScriptData.put("customRepositoryUrl", customRepository);
 
         populateGradleScriptWithData(scriptFile, gradleScriptData);
-        logger.trace(String.format("Derived generatedGradleScriptFile path: %s", scriptFile.getCanonicalPath()));
+        logger.trace(String.format("Successfully created gradle script: %s", scriptFile.getCanonicalPath()));
         return scriptFile.getCanonicalPath();
     }
 

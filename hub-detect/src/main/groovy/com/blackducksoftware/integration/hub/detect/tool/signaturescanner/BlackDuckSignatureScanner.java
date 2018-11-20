@@ -214,8 +214,9 @@ public abstract class BlackDuckSignatureScanner {
         scanJobBuilder.installDirectory(directoryManager.getPermanentDirectory());
         scanJobBuilder.outputDirectory(directoryManager.getScanOutputDirectory());
 
-        scanJobBuilder.cleanupOutput(signatureScannerOptions.getCleanupOutput());
         scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());
+        scanJobBuilder.cleanupOutput(signatureScannerOptions.getCleanupOutput());
+
         if (signatureScannerOptions.getSnippetMatching()) {
             scanJobBuilder.snippetMatching(SnippetMatching.SNIPPET_MATCHING);
         }

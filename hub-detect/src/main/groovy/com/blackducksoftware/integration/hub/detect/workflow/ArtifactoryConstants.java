@@ -29,7 +29,7 @@ public class ArtifactoryConstants {
 
     public static String GRADLE_INSPECTOR_REPO = "bds-integrations-release/com/blackducksoftware/integration/integration-gradle-inspector";
     public static String GRADLE_INSPECTOR_PROPERTY = "GRADLE_INSPECTOR_LATEST_0";
-    public static String GRADLE_INSPECTOR_MAVEN_REPO = "https://repo.blackducksoftware.com/artifactory/bds-integrations-release/";
+    public static String GRADLE_INSPECTOR_MAVEN_REPO = "https://repo.blackducksoftware.com/artifactory/bds-integration-public-cache/";
 
     public static String NUGET_INSPECTOR_REPO = "bds-integrations-nuget-release/BlackduckNugetInspector";
     public static String NUGET_INSPECTOR_PROPERTY = "NUGET_INSPECTOR_LATEST_0";

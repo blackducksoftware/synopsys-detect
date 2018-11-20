@@ -21,25 +21,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.search;
+package com.blackducksoftware.integration.hub.detect.util.filter;
 
-import java.io.File;
-import java.util.List;
-
-import com.blackducksoftware.integration.hub.detect.util.filter.DetectFilter;
-
-public class SearchOptions {
-    public File searchPath;
-    public final List<String> excludedDirectories;
-    public final boolean forceNestedSearch;
-    public final int maxDepth;
-    public final DetectFilter detectorFilter;
-
-    public SearchOptions(File searchPath, List<String> excludedDirectories, boolean forceNestedSearch, int maxDepth, DetectFilter detectorFilter) {
-        this.searchPath = searchPath;
-        this.excludedDirectories = excludedDirectories;
-        this.forceNestedSearch = forceNestedSearch;
-        this.maxDepth = maxDepth;
-        this.detectorFilter = detectorFilter;
-    }
+public interface DetectFilter {
+    boolean shouldInclude(String itemName);
 }

@@ -49,6 +49,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.ArtifactoryConstant
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class NugetInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorManager.class);
@@ -89,7 +90,7 @@ public class NugetInspectorManager {
         }
     }
 
-    public NugetInspector install() throws DetectUserFriendlyException, DetectorException, IOException {
+    public NugetInspector install() throws DetectUserFriendlyException, IntegrationException, IOException {
         //dotnet
         final String dotnetExecutable = executableFinder
                                             .getExecutablePathOrOverride(ExecutableType.DOTNET, true, directoryManager.getSourceDirectory(),
@@ -113,19 +114,25 @@ public class NugetInspectorManager {
             }
 
         } else {
+            logger.info("Determining the nuget inspector version.");
             File nugetDirectory = directoryManager.getSharedDirectory("nuget");
             //create the artifact
             String nugetInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_VERSION, PropertyAuthority.None);
             Optional<String> source;
             if (useDotnet) {
+                logger.info("Will attempt to resolve the dotnet inspector version.");
                 source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.NUGET_INSPECTOR_REPO, ArtifactoryConstants.NUGET_INSPECTOR_PROPERTY, nugetInspectorVersion,
                     ArtifactoryConstants.NUGET_INSPECTOR_VERSION_OVERRIDE);
+
             } else {
+                logger.info("Will attempt to resolve the classic inspector version.");
                 source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_REPO, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_PROPERTY, nugetInspectorVersion,
                     ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_VERSION_OVERRIDE);
             }
             if (source.isPresent()) {
+                logger.debug("Resolved the nuget inspector url: " + source.get());
                 String nupkgName = artifactResolver.parseFileName(source.get());
+                logger.debug("Parsed artifact name: " + nupkgName);
                 File nupkgFile = new File(nugetDirectory, nupkgName);
                 String inspectorFolderName = nupkgName.replace(".nupkg", "");
                 File inspectorFolder = new File(nugetDirectory, inspectorFolderName);
@@ -136,7 +143,7 @@ public class NugetInspectorManager {
                     DetectZipUtil.unzip(nupkgFile, inspectorFolder, Charset.defaultCharset());
                 }
                 if (inspectorFolder.exists()) {
-                    logger.info("Found nuget inspector folder.");
+                    logger.info("Found nuget inspector folder. Looking for inspector.");
                     if (useDotnet) {
                         return findDotnetCoreInspector(inspectorFolder, dotnetExecutable);
                     } else {

@@ -26,21 +26,21 @@ package com.blackducksoftware.integration.hub.detect.detector;
 import java.io.File;
 import java.util.Set;
 
-import com.synopsys.integration.util.ExcludedIncludedFilter;
+import com.blackducksoftware.integration.hub.detect.util.filter.DetectFilter;
 
 public class DetectorEnvironment {
 
     private final File directory;
     private final Set<Detector> appliedToParent;
     private final int depth;
-    private final ExcludedIncludedFilter bomToolFilter;
+    private final DetectFilter detectorFilter;
     private final boolean forceNestedSearch;
 
-    public DetectorEnvironment(final File directory, final Set<Detector> appliedToParent, final int depth, final ExcludedIncludedFilter bomToolFilter, final boolean forceNestedSearch) {
+    public DetectorEnvironment(final File directory, final Set<Detector> appliedToParent, final int depth, final DetectFilter detectorFilter, final boolean forceNestedSearch) {
         this.directory = directory;
         this.appliedToParent = appliedToParent;
         this.depth = depth;
-        this.bomToolFilter = bomToolFilter;
+        this.detectorFilter = detectorFilter;
         this.forceNestedSearch = forceNestedSearch;
     }
 
@@ -56,8 +56,8 @@ public class DetectorEnvironment {
         return depth;
     }
 
-    public ExcludedIncludedFilter getBomToolFilter() {
-        return bomToolFilter;
+    public DetectFilter getDetectorFilter() {
+        return detectorFilter;
     }
 
     public boolean getForceNestedSearch() {

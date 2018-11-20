@@ -25,27 +25,27 @@ package com.blackducksoftware.integration.hub.detect.workflow.search;
 
 import java.util.List;
 
+import com.blackducksoftware.integration.hub.detect.util.filter.DetectFilter;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.DetectorSearchEvaluator;
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.DetectorSearchProvider;
-import com.synopsys.integration.util.ExcludedIncludedFilter;
 
 public class DetectorFinderOptions {
 
     private final List<String> excludedDirectories;
     private final Boolean forceNestedSearch;
     private final int maximumDepth;
-    private final ExcludedIncludedFilter bomToolFilter;
+    private final DetectFilter detectorFilter;
     private final DetectorSearchProvider detectorSearchProvider;
     private final DetectorSearchEvaluator detectorSearchEvaluator;
     private final EventSystem eventSystem;
 
-    public DetectorFinderOptions(final List<String> excludedDirectories, final Boolean forceNestedSearch, final int maximumDepth, final ExcludedIncludedFilter bomToolFilter,
+    public DetectorFinderOptions(final List<String> excludedDirectories, final Boolean forceNestedSearch, final int maximumDepth, final DetectFilter detectorFilter,
         final DetectorSearchProvider detectorSearchProvider, final DetectorSearchEvaluator detectorSearchEvaluator, EventSystem eventSystem) {
         this.excludedDirectories = excludedDirectories;
         this.forceNestedSearch = forceNestedSearch;
         this.maximumDepth = maximumDepth;
-        this.bomToolFilter = bomToolFilter;
+        this.detectorFilter = detectorFilter;
         this.detectorSearchProvider = detectorSearchProvider;
         this.detectorSearchEvaluator = detectorSearchEvaluator;
         this.eventSystem = eventSystem;
@@ -59,8 +59,8 @@ public class DetectorFinderOptions {
         return forceNestedSearch;
     }
 
-    public ExcludedIncludedFilter getBomToolFilter() {
-        return bomToolFilter;
+    public DetectFilter getDetectorFilter() {
+        return detectorFilter;
     }
 
     public int getMaximumDepth() {
