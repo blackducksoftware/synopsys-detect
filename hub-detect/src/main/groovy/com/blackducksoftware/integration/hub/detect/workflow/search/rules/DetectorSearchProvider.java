@@ -49,19 +49,14 @@ public class DetectorSearchProvider {
         Detector goVnd = detectorFactory.createGoVndrBomTool(environment);
         Detector goVendor = detectorFactory.createGoVendorBomTool(environment);
 
-        // TODO what order???
-        searchRuleSet.addBomTool(goVendor).defaultNotNested();
-        searchRuleSet.addBomTool(goCli).defaultNotNested();
         searchRuleSet.addBomTool(goLock).defaultNotNested();
         searchRuleSet.addBomTool(goVnd).defaultNotNested();
-
-        // TODO what yields???
-        searchRuleSet.yield(goCli).to(goVendor);
-        searchRuleSet.yield(goLock).to(goVendor);
-        searchRuleSet.yield(goVnd).to(goVendor);
+        searchRuleSet.addBomTool(goVendor).defaultNotNested();
+        searchRuleSet.addBomTool(goCli).defaultNotNested();
 
         searchRuleSet.yield(goCli).to(goLock);
         searchRuleSet.yield(goCli).to(goVnd);
+        searchRuleSet.yield(goCli).to(goVendor);
 
         searchRuleSet.addBomTool(detectorFactory.createGradleInspectorBomTool(environment)).defaultNotNested();
         searchRuleSet.addBomTool(detectorFactory.createRebarBomTool(environment)).defaultNotNested();
