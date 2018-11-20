@@ -20,7 +20,7 @@ public class GoVendorExtractorTest {
         GoVendorExtractor extractor = new GoVendorExtractor(new Gson(), new ExternalIdFactory());
         Extraction extraction = extractor.extract(new File("src/test/resources/go"), new File("src/test/resources/go/vendor/vendor.json"));
         DependencyGraph graph = extraction.codeLocations.get(0).getDependencyGraph();
-        assertEquals(3, graph.getRootDependencies().size());
+        assertEquals(2, graph.getRootDependencies().size());
         boolean foundErrorsPkg = false;
         boolean foundMathPkg = false;
         for (Dependency dep : graph.getRootDependencies()) {

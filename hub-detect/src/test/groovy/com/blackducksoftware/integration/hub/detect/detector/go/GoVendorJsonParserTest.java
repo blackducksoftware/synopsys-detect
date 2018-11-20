@@ -24,7 +24,7 @@ public class GoVendorJsonParserTest {
         File vendorJsonFile = new File("src/test/resources/go/vendor/vendor.json");
         String vendorJsonContents = FileUtils.readFileToString(vendorJsonFile, StandardCharsets.UTF_8);
         DependencyGraph graph = parser.parseVendorJson(new Gson(), vendorJsonContents);
-        assertEquals(3, graph.getRootDependencies().size());
+        assertEquals(2, graph.getRootDependencies().size());
         boolean foundErrorsPkg = false;
         boolean foundMathPkg = false;
         for (Dependency dep : graph.getRootDependencies()) {
