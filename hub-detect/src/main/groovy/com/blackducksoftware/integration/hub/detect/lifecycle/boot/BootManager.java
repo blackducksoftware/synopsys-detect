@@ -126,11 +126,6 @@ public class BootManager {
 
         logger.info("Configuration processed completely.");
 
-        if (detectOptionManager.checkForAnyFailureProperties()) {
-            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION));
-            return BootResult.exit(detectConfiguration);
-        }
-
         DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
         DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
         FileManager fileManager = new FileManager(detectArgumentState.isDiagnostic(),
@@ -141,6 +136,11 @@ public class BootManager {
         printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT, PropertyAuthority.None), options);
 
         checkForInvalidOptions(detectOptionManager);
+
+        if (detectOptionManager.checkForAnyFailureProperties()) {
+            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION));
+            return BootResult.exit(detectConfiguration);
+        }
 
         HubServiceManager hubServiceManager = new HubServiceManager(detectConfiguration, new ConnectionManager(detectConfiguration), gson, jsonParser);
 
