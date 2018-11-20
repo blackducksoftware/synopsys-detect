@@ -35,6 +35,7 @@ public enum DetectorType {
     CRAN,
     GO_DEP,
     GO_VNDR,
+    GO_VENDOR,
     GRADLE,
     HEX,
     MAVEN,

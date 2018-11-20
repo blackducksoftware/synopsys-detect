@@ -69,6 +69,8 @@ import com.blackducksoftware.integration.hub.detect.detector.go.GoCliDetector;
 import com.blackducksoftware.integration.hub.detect.detector.go.GoDepExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.go.GoInspectorManager;
 import com.blackducksoftware.integration.hub.detect.detector.go.GoLockDetector;
+import com.blackducksoftware.integration.hub.detect.detector.go.GoVendorDetector;
+import com.blackducksoftware.integration.hub.detect.detector.go.GoVendorExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.go.GoVndrDetector;
 import com.blackducksoftware.integration.hub.detect.detector.go.GoVndrExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.gradle.GradleExecutableFinder;
@@ -257,6 +259,11 @@ public class DetectorBeanConfiguration {
     @Bean
     public GoVndrExtractor goVndrExtractor() {
         return new GoVndrExtractor(externalIdFactory);
+    }
+
+    @Bean
+    public GoVendorExtractor goVendorExtractor() {
+        return new GoVendorExtractor(gson, externalIdFactory);
     }
 
     @Bean
@@ -495,6 +502,12 @@ public class DetectorBeanConfiguration {
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GoVndrDetector goVndrBomTool(final DetectorEnvironment environment) {
         return new GoVndrDetector(environment, detectFileFinder, goVndrExtractor());
+    }
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public GoVendorDetector goVendorBomTool(final DetectorEnvironment environment) {
+        return new GoVendorDetector(environment, detectFileFinder, goVendorExtractor());
     }
 
     @Bean
