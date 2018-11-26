@@ -270,6 +270,7 @@ public class DetectOptionManager {
         if (atLeastOneDeprecatedFailure) {
             logger.error("Configuration is using deprecated properties. Please fix deprecation issues.");
             logger.error("To ignore these messages and force detect to exit with success supply --" + DetectProperty.DETECT_FORCE_SUCCESS.getPropertyName() + "=true");
+            logger.error("This will not force detect to run, but to pretend to have succeeded.");
             return true;
         }
         return false;
