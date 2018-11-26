@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.extraction;
+package com.blackducksoftware.integration.hub.detect.util.executable;
 
 import java.io.File;
 import java.util.HashMap;
@@ -35,7 +35,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 
 public class CacheableExecutableFinder {
@@ -68,6 +67,7 @@ public class CacheableExecutableFinder {
 
     public File getExecutable(final CacheableExecutableType executableType) throws DetectorException {
         if (alreadyFound.containsKey(executableType)) {
+            logger.debug("Already found executable, resolving with cached value.");
             return alreadyFound.get(executableType);
         }
         final StandardExecutableInfo info = createInfo(executableType);
@@ -80,7 +80,7 @@ public class CacheableExecutableFinder {
         if (exe != null) {
             exeFile = new File(exe);
         }
-        logger.info("Resolved executable " + executableType.toString() + " with file: " + exeFile.getAbsolutePath());
+        logger.debug("Cached executable " + executableType.toString() + " to: " + exeFile.getAbsolutePath());
         alreadyFound.put(executableType, exeFile);
         return exeFile;
     }
