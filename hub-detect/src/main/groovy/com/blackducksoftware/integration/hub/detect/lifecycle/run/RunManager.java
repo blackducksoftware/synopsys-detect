@@ -44,9 +44,9 @@ import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorToolResult;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerTool;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerToolResult;
+import com.blackducksoftware.integration.hub.detect.tool.polaris.PolarisTool;
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
-import com.blackducksoftware.integration.hub.detect.tool.swip.SwipCliManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
@@ -213,13 +213,13 @@ public class RunManager {
             logger.info("Binary scan tool will not be run.");
         }
 
-        if (detectToolFilter.shouldInclude(DetectTool.SWIP_CLI)) {
-            logger.info("Will include the swip tool.");
-            SwipCliManager swipCliManager = new SwipCliManager(eventSystem, directoryManager, new ExecutableRunner(), connectionManager);
-            swipCliManager.runSwip(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
-            logger.info("Swip actions finished.");
+        if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
+            logger.info("Will include the Polaris tool.");
+            PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, new ExecutableRunner(), connectionManager);
+            polarisTool.runPolaris(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
+            logger.info("Polaris actions finished.");
         } else {
-            logger.info("Swip CLI tool will not be run.");
+            logger.info("Polaris CLI tool will not be run.");
         }
 
         if (projectView.isPresent() && connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {

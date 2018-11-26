@@ -34,8 +34,8 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder.CacheableExecutableType;
+import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder.CacheableExecutableType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;

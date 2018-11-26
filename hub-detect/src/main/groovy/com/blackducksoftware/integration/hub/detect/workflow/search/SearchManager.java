@@ -54,7 +54,7 @@ public class SearchManager {
         this.eventSystem = eventSystem;
     }
 
-    public SearchResult performSearch() {
+    public SearchResult performSearch() throws DetectUserFriendlyException {
         List<DetectorEvaluation> searchResults = new ArrayList<>();
         try {
             final DetectorFinderOptions findOptions = new DetectorFinderOptions(searchOptions.excludedDirectories, searchOptions.forceNestedSearch, searchOptions.maxDepth, searchOptions.detectorFilter, detectorSearchProvider,
@@ -65,8 +65,6 @@ public class SearchManager {
             searchResults = bomToolTreeWalker.findApplicableBomTools(searchOptions.searchPath, findOptions);
         } catch (final DetectorException e) {
             return new SearchResultBomToolFailed(e);
-        } catch (DetectUserFriendlyException e) {
-            e.printStackTrace();
         }
 
         final Set<DetectorType> applicableBomTools = searchResults.stream()

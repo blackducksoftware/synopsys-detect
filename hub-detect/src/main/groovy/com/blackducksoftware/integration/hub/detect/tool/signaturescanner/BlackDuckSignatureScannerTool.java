@@ -70,7 +70,16 @@ public class BlackDuckSignatureScannerTool {
         }
 
         logger.info("Will run the signature scanner tool.");
-        final String localScannerInstallPath = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, PropertyAuthority.None);
+        final String offlineLocalScannerInstallPath = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, PropertyAuthority.None);
+        final String onlineLocalScannerInstallPath = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH, PropertyAuthority.None);
+
+        String localScannerInstallPath = "";
+        if (StringUtils.isNotBlank(offlineLocalScannerInstallPath)) {
+            localScannerInstallPath = offlineLocalScannerInstallPath;
+        } else if (StringUtils.isNotBlank(onlineLocalScannerInstallPath)) {
+            localScannerInstallPath = onlineLocalScannerInstallPath;
+        }
+
         final String userProvidedScannerInstallUrl = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, PropertyAuthority.None);
 
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
