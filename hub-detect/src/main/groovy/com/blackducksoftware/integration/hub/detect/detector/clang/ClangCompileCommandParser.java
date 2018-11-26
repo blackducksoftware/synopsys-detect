@@ -1,0 +1,116 @@
+/**
+ * hub-detect
+ *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package com.blackducksoftware.integration.hub.detect.detector.clang;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.text.StringTokenizer;
+import org.apache.commons.text.matcher.StringMatcherFactory;
+
+public class ClangCompileCommandParser {
+    private static final char SINGLE_QUOTE_CHAR = '\'';
+    private static final char DOUBLE_QUOTE_CHAR = '"';
+    private static final char TAB_CHAR = '\t';
+    private static final char SPACE_CHAR = ' ';
+    private static final String SPACE_CHAR_AS_STRING = " ";
+    private static final String TAB_CHAR_AS_STRING = "\t";
+    private static final String ESCAPE_SEQUENCE_FOR_SPACE_CHAR = "%20";
+    private static final String ESCAPE_SEQUENCE_FOR_TAB_CHAR = "%09";
+
+    public String getCompilerCommand(final String origCompileCommand) {
+        final String[] parts = origCompileCommand.trim().split("\\s+");
+        return parts[0];
+    }
+
+    public List<String> getCompilerArgsForGeneratingDepsMkFile(final String origCompileCommand, final String depsMkFilePath, final Map<String, String> optionOverrides) {
+        String quotesRemovedCompileCommand = escapeQuotedWhitespace(origCompileCommand.trim());
+        StringTokenizer tokenizer = new StringTokenizer(quotesRemovedCompileCommand);
+        tokenizer.setQuoteMatcher(StringMatcherFactory.INSTANCE.quoteMatcher());
+        final List<String> argList = new ArrayList<>();
+        String lastPart = "";
+        int partIndex = 0;
+        while (tokenizer.hasNext()) {
+            String part = restoreWhitespace(tokenizer.nextToken());
+            if (partIndex > 0) {
+                String optionValueOverride = null;
+                for (String optionToOverride : optionOverrides.keySet()) {
+                    if (optionToOverride.equals(lastPart)) {
+                        optionValueOverride = optionOverrides.get(optionToOverride);
+                    }
+                }
+                if (optionValueOverride != null) {
+                    argList.add(optionValueOverride);
+                } else {
+                    argList.add(part);
+                }
+            }
+            lastPart = part;
+            partIndex++;
+        }
+        argList.add("-M");
+        argList.add("-MF");
+        argList.add(depsMkFilePath);
+        return argList;
+    }
+
+    private String restoreWhitespace(String givenString) {
+        return givenString.replaceAll(ESCAPE_SEQUENCE_FOR_SPACE_CHAR, SPACE_CHAR_AS_STRING).replaceAll(ESCAPE_SEQUENCE_FOR_TAB_CHAR, TAB_CHAR_AS_STRING);
+    }
+
+    private String escapeQuotedWhitespace(String givenString) {
+        StringBuilder newString = new StringBuilder();
+        boolean inQuotes = false;
+        boolean quoteTypeIsDouble = false;
+        for (int i=0; i < givenString.length(); i++) {
+            char c = givenString.charAt(i);
+            if (!inQuotes) {
+                if (c == SINGLE_QUOTE_CHAR) {
+                    inQuotes = true;
+                    quoteTypeIsDouble = false;
+                } else if (c == DOUBLE_QUOTE_CHAR) {
+                    inQuotes = true;
+                    quoteTypeIsDouble = true;
+                } else {
+                    newString.append(c);
+                }
+            } else {
+                // Currently inside a quoted substring
+                if ((c == SINGLE_QUOTE_CHAR) && (quoteTypeIsDouble == false)) {
+                    inQuotes = false;
+                } else if ((c == DOUBLE_QUOTE_CHAR) && (quoteTypeIsDouble == true)) {
+                    inQuotes = false;
+                } else if (c == SPACE_CHAR) {
+                    newString.append(ESCAPE_SEQUENCE_FOR_SPACE_CHAR);
+                } else if (c == TAB_CHAR) {
+                    newString.append(ESCAPE_SEQUENCE_FOR_TAB_CHAR);
+                } else {
+                    newString.append(c);
+                }
+            }
+        }
+        return newString.toString();
+    }
+}
