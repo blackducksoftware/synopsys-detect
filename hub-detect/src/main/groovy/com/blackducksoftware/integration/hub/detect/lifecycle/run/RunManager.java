@@ -123,7 +123,7 @@ public class RunManager {
 
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
             logger.info("Will include the detector tool.");
-            String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_BOM_TOOL, PropertyAuthority.None);
+            String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DETECTOR, PropertyAuthority.None);
             SearchOptions searchOptions = detectConfigurationFactory.createSearchOptions(directoryManager.getSourceDirectory());
             DetectorTool detectorTool = new DetectorTool(detectContext);
 
