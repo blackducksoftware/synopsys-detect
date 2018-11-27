@@ -85,6 +85,7 @@ public class DirectoryManager {
     private final Map<ExtractionId, File> extractionDirectories = new HashMap<>();
 
     private final List<File> temporaryFiles = new ArrayList<>();
+    private File userHome;
 
     public DirectoryManager(final DirectoryOptions directoryOptions, final DetectRun detectRun) {
         if (StringUtils.isBlank(directoryOptions.getSourcePathOverride())) {
@@ -93,9 +94,11 @@ public class DirectoryManager {
             sourceDirectory = new File(directoryOptions.getSourcePathOverride());
         }
 
+        userHome = new File(System.getProperty("user.home"));
+
         File outputDirectory;
         if (StringUtils.isBlank(directoryOptions.getOutputPathOverride())) {
-            outputDirectory = new File(System.getProperty("user.home"), "blackduck");
+            outputDirectory = new File(userHome, "blackduck");
         } else {
             outputDirectory = new File(directoryOptions.getOutputPathOverride());
         }
@@ -119,6 +122,10 @@ public class DirectoryManager {
 
         runDirectories.values().forEach(it -> temporaryFiles.add(it));
 
+    }
+
+    public File getUserHome() {
+        return userHome;
     }
 
     public File getExtractionOutputDirectory(final ExtractionId extractionId) {

@@ -50,7 +50,6 @@ import com.synopsys.integration.blackduck.service.HubServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.ReportService;
 import com.synopsys.integration.blackduck.service.ScanStatusService;
-import com.synopsys.integration.exception.EncryptionException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -83,7 +82,7 @@ public class HubServiceManager {
         try {
             hubServerConfig = createHubServerConfig(slf4jIntLogger);
             hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig);
-        } catch (IllegalStateException | EncryptionException e) {
+        } catch (IllegalStateException e) {
             throw new DetectUserFriendlyException(String.format("Not able to process Black Duck connection: %s", e.getMessage()), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
         }
         final HubService hubService = createHubService();

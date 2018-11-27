@@ -76,15 +76,15 @@ public abstract class BlackDuckSignatureScanner {
         this.scanJobManager = scanJobManager;
     }
 
-    protected abstract ScanJob createScanJob(NameVersion projectNameVersion, List<SignatureScanPath> signatureScanPaths, File dockerTarFile);
+    protected abstract ScanJob createScanJob(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile);
 
-    public void performScanActions(NameVersion projectNameVersion, File dockerTarFile) throws InterruptedException, IntegrationException, DetectUserFriendlyException, IOException {
-        scanPaths(projectNameVersion, dockerTarFile);
+    public void performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws InterruptedException, IntegrationException, DetectUserFriendlyException, IOException {
+        scanPaths(projectNameVersion, installDirectory, dockerTarFile);
     }
 
-    private void scanPaths(final NameVersion projectNameVersion, File dockerTarFile) throws IntegrationException, InterruptedException, IOException {
+    private void scanPaths(final NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, InterruptedException, IOException {
         List<SignatureScanPath> signatureScanPaths = determinePathsAndExclusions(projectNameVersion, signatureScannerOptions.getMaxDepth(), dockerTarFile);
-        final ScanJob scanJob = createScanJob(projectNameVersion, signatureScanPaths, dockerTarFile);
+        final ScanJob scanJob = createScanJob(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
 
         List<ScanCommandOutput> scanCommandOutputs = new ArrayList<>();
         try {
@@ -208,10 +208,10 @@ public abstract class BlackDuckSignatureScanner {
         }
     }
 
-    protected ScanJobBuilder createDefaultScanJobBuilder(final NameVersion projectNameVersion, final List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
+    protected ScanJobBuilder createDefaultScanJobBuilder(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
         final ScanJobBuilder scanJobBuilder = new ScanJobBuilder();
         scanJobBuilder.scanMemoryInMegabytes(signatureScannerOptions.getScanMemory());
-        scanJobBuilder.installDirectory(directoryManager.getPermanentDirectory());
+        scanJobBuilder.installDirectory(installDirectory);
         scanJobBuilder.outputDirectory(directoryManager.getScanOutputDirectory());
 
         scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());

@@ -42,8 +42,9 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManag
 import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 import com.synopsys.integration.log.IntLogger;
+import com.synopsys.integration.polaris.common.PolarisDownloadUtility;
+import com.synopsys.integration.polaris.common.PolarisEnvironmentCheck;
 import com.synopsys.integration.rest.connection.RestConnection;
-import com.synopsys.integration.swip.common.SwipDownloadUtility;
 import com.synopsys.integration.util.CleanupZipExpander;
 
 public class PolarisTool {
@@ -60,26 +61,36 @@ public class PolarisTool {
     }
 
     public void runPolaris(final IntLogger logger, File projectDirectory) throws DetectUserFriendlyException {
-        RestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(SwipDownloadUtility.DEFAULT_SWIP_SERVER_URL);
+        logger.info("Checking if Polaris can run.");
+        PolarisEnvironmentCheck polarisEnvironmentCheck = new PolarisEnvironmentCheck();
+
+        if (!polarisEnvironmentCheck.canRun(directoryManager.getUserHome())) {
+            logger.info("Polaris determined it should not run.");
+            logger.debug("Checked the following user directory: " + directoryManager.getUserHome().getAbsolutePath());
+            return;
+        }
+
+        logger.info("Polaris determined it should attempt to run.");
+        RestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(PolarisDownloadUtility.DEFAULT_POLARIS_SERVER_URL);
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(logger);
         File toolsDirectory = directoryManager.getPermanentDirectory();
 
-        SwipDownloadUtility swipDownloadUtility = new SwipDownloadUtility(logger, restConnection, cleanupZipExpander, SwipDownloadUtility.DEFAULT_SWIP_SERVER_URL, toolsDirectory);
-        Optional<String> swipCliPath = swipDownloadUtility.retrieveSwipCliExecutablePath();
+        PolarisDownloadUtility polarisDownloadUtility = new PolarisDownloadUtility(logger, restConnection, cleanupZipExpander, PolarisDownloadUtility.DEFAULT_POLARIS_SERVER_URL, toolsDirectory);
+        Optional<String> polarisCliPath = polarisDownloadUtility.retrievePolarisCliExecutablePath();
 
-        if (swipCliPath.isPresent()) {
+        if (polarisCliPath.isPresent()) {
             Map<String, String> environmentVariables = new HashMap<>();
             environmentVariables.put("COVERITY_UNSUPPORTED", "1");
             environmentVariables.put("SWIP_USER_INPUT_TIMEOUT_MINUTES", "1");
 
-            logger.info("Found polaris cli: " + swipCliPath.get());
+            logger.info("Found polaris cli: " + polarisCliPath.get());
             List<String> arguments = new ArrayList<>();
             arguments.add("analyze");
             arguments.add("-w");
 
-            Executable swipExecutable = new Executable(projectDirectory, environmentVariables, swipCliPath.get(), arguments);
+            Executable polarisExecutable = new Executable(projectDirectory, environmentVariables, polarisCliPath.get(), arguments);
             try {
-                ExecutableOutput output = executableRunner.execute(swipExecutable);
+                ExecutableOutput output = executableRunner.execute(polarisExecutable);
                 if (output.getReturnCode() == 0) {
                     logger.error("Polaris returned a non-zero exit code.");
                     eventSystem.publishEvent(Event.StatusSummary, new Status("POLARIS", StatusType.SUCCESS));

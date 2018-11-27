@@ -45,7 +45,7 @@ test {
 dependencies {
     compile project(":detect-configuration")
 
-    compile 'com.synopsys.integration:swip-common:0.1.5'
+    compile 'com.synopsys.integration:polaris-common:0.2.0'
 
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
