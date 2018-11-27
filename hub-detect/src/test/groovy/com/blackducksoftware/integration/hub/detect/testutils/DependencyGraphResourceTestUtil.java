@@ -1,6 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.testutils;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
@@ -9,9 +8,9 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
-import com.synopsys.integration.hub.bdio.graph.summary.DependencyGraphSummarizer;
-import com.synopsys.integration.hub.bdio.graph.summary.GraphSummary;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.summary.DependencyGraphSummarizer;
+import com.synopsys.integration.bdio.graph.summary.GraphSummary;
 
 public class DependencyGraphResourceTestUtil {
     public static void assertGraph(final String expectedResourceFile, final DependencyGraph actualGraph) {
@@ -40,11 +39,11 @@ public class DependencyGraphResourceTestUtil {
 
         final Set<String> expectedRelationshipIds = expected.externalDataIdRelationships.keySet();
         final Set<String> expectedExistingRelationshipsIds = expectedRelationshipIds.stream().filter(key -> expected.externalDataIdRelationships.get(key) != null && expected.externalDataIdRelationships.get(key).size() > 0)
-                .collect(Collectors.toSet());
+                                                                 .collect(Collectors.toSet());
 
         final Set<String> actualRelationshipIds = actual.externalDataIdRelationships.keySet();
         final Set<String> actualExistingRelationshipsIds = actualRelationshipIds.stream().filter(key -> actual.externalDataIdRelationships.get(key) != null && actual.externalDataIdRelationships.get(key).size() > 0)
-                .collect(Collectors.toSet());
+                                                               .collect(Collectors.toSet());
 
         assertSet(expectedExistingRelationshipsIds, actualExistingRelationshipsIds, "Existing relationships");
 

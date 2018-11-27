@@ -42,9 +42,8 @@ import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchManager;
 import com.synopsys.integration.blackduck.configuration.HubServerConfig;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
-import com.synopsys.integration.exception.EncryptionException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.NameVersion;
@@ -59,7 +58,7 @@ public class BlackDuckSignatureScannerTool {
         this.detectContext = detectContext;
     }
 
-    public void runScanTool(NameVersion projectNameVersion, Optional<File> dockerTar) throws DetectUserFriendlyException, EncryptionException {
+    public void runScanTool(NameVersion projectNameVersion, Optional<File> dockerTar) throws DetectUserFriendlyException {
         DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
         DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         ConnectionManager connectionManager = detectContext.getBean(ConnectionManager.class);
@@ -90,8 +89,8 @@ public class BlackDuckSignatureScannerTool {
         final ExecutorService executorService = Executors.newFixedThreadPool(blackDuckSignatureScannerOptions.getParrallelProcessors());
         IntEnvironmentVariables intEnvironmentVariables = new IntEnvironmentVariables();
 
-        ScanJobManagerFactory scanJobManagerFactory = new ScanJobManagerFactory();
-        ScanJobManager scanJobManager;
+        ScanBatchManagerFactory scanJobManagerFactory = new ScanBatchManagerFactory();
+        ScanBatchManager scanJobManager;
         File installDirectory = directoryManager.getPermanentDirectory();
         if (hubServerConfig.isPresent() && StringUtils.isBlank(userProvidedScannerInstallUrl) && StringUtils.isBlank(localScannerInstallPath)) {
             logger.debug("Signature scanner will use the hub server to download/update the scanner - this is the most likely situation.");
@@ -102,8 +101,8 @@ public class BlackDuckSignatureScannerTool {
                 scanJobManager = scanJobManagerFactory.withUserProvidedUrl(userProvidedScannerInstallUrl, connectionManager, executorService, intEnvironmentVariables);
             } else {
                 logger.debug("Signature scanner either given an existing path for the scanner or is offline - either way, we won't attempt to manage the install.");
-                scanJobManager = scanJobManagerFactory.withoutInstall(executorService, intEnvironmentVariables);
                 installDirectory = new File(localScannerInstallPath);
+                scanJobManager = scanJobManagerFactory.withoutInstall(installDirectory, executorService, intEnvironmentVariables);
             }
         }
         logger.debug("Determined install directory: " + installDirectory.getAbsolutePath());

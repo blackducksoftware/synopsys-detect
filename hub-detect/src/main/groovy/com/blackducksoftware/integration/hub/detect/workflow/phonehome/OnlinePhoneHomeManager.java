@@ -33,7 +33,8 @@ import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.service.model.BlackDuckPhoneHomeCallable;
+import com.synopsys.integration.phonehome.PhoneHomeCallable;
+import com.synopsys.integration.phonehome.PhoneHomeRequestBody;
 import com.synopsys.integration.phonehome.PhoneHomeResponse;
 import com.synopsys.integration.phonehome.PhoneHomeService;
 
@@ -55,9 +56,9 @@ public class OnlinePhoneHomeManager extends PhoneHomeManager {
 
     @Override
     public PhoneHomeResponse phoneHome(final Map<String, String> metadata) {
-        final BlackDuckPhoneHomeCallable onlineCallable = (BlackDuckPhoneHomeCallable) hubServiceManager.getHubServicesFactory().createBlackDuckPhoneHomeCallable(hubUrl, "hub-detect", detectInfo.getDetectVersion());
-        metadata.forEach((key, value) -> onlineCallable.addMetaData(key, value));
-        additionalMetaData.forEach((key, value) -> metadata.put(key, value));
+        PhoneHomeRequestBody.Builder builder = new PhoneHomeRequestBody.Builder();
+        metadata.forEach((key, value) -> builder.addToMetaData(key, value));
+        final PhoneHomeCallable onlineCallable = hubServiceManager.getHubServicesFactory().createBlackDuckPhoneHomeCallable(hubUrl, "hub-detect", detectInfo.getDetectVersion(), builder);
         return phoneHomeService.startPhoneHome(onlineCallable);
     }
 }

@@ -15,16 +15,16 @@ import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphRes
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.hub.bdio.BdioNodeFactory;
-import com.synopsys.integration.hub.bdio.BdioPropertyHelper;
-import com.synopsys.integration.hub.bdio.graph.DependencyGraphTransformer;
-import com.synopsys.integration.hub.bdio.model.BdioComponent;
-import com.synopsys.integration.hub.bdio.model.BdioExternalIdentifier;
-import com.synopsys.integration.hub.bdio.model.BdioNode;
-import com.synopsys.integration.hub.bdio.model.BdioProject;
-import com.synopsys.integration.hub.bdio.model.Forge;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.BdioNodeFactory;
+import com.synopsys.integration.bdio.BdioPropertyHelper;
+import com.synopsys.integration.bdio.graph.DependencyGraphTransformer;
+import com.synopsys.integration.bdio.model.BdioComponent;
+import com.synopsys.integration.bdio.model.BdioExternalIdentifier;
+import com.synopsys.integration.bdio.model.BdioNode;
+import com.synopsys.integration.bdio.model.BdioProject;
+import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class NugetInspectorPackagerTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create();

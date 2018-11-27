@@ -60,10 +60,10 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManag
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+import com.synopsys.integration.bdio.BdioTransformer;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.configuration.HubServerConfig;
 import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
-import com.synopsys.integration.hub.bdio.BdioTransformer;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 import freemarker.template.Configuration;
 

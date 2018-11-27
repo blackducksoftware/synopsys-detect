@@ -47,8 +47,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.hub.bdio.graph.DependencyGraphCombiner;
-import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraphCombiner;
+import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 
 public class NugetInspectorExtractor {
     public static final String INSPECTOR_OUTPUT_PATTERN = "*_inspection.json";

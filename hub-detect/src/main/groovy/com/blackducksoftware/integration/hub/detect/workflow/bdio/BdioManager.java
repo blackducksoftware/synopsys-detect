@@ -44,8 +44,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectorStatus;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
-import com.synopsys.integration.blackduck.summary.Result;
-import com.synopsys.integration.hub.bdio.SimpleBdioFactory;
+import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 

@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,7 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
 import com.synopsys.integration.rest.connection.UnauthenticatedRestConnectionBuilder;
+import com.synopsys.integration.rest.credentials.CredentialsBuilder;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.proxy.ProxyInfoBuilder;
 
@@ -45,26 +47,32 @@ public class ConnectionManager {
     public ProxyInfo getHubProxyInfo() throws DetectUserFriendlyException {
         final ProxyInfoBuilder proxyInfoBuilder = new ProxyInfoBuilder();
         proxyInfoBuilder.setHost(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_HOST, PropertyAuthority.None));
-        proxyInfoBuilder.setPort(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PORT, PropertyAuthority.None));
-        proxyInfoBuilder.setUsername(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_USERNAME, PropertyAuthority.None));
-        proxyInfoBuilder.setPassword(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PASSWORD, PropertyAuthority.None));
+        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PORT, PropertyAuthority.None))) {
+            proxyInfoBuilder.setPort(Integer.parseInt(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PORT, PropertyAuthority.None)));
+        }
+        CredentialsBuilder credentialsBuilder = new CredentialsBuilder();
+        credentialsBuilder.setUsername(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_USERNAME, PropertyAuthority.None));
+        credentialsBuilder.setPassword(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PASSWORD, PropertyAuthority.None));
+        try {
+            proxyInfoBuilder.setCredentials(credentialsBuilder.build());
+        } catch (final IllegalArgumentException e) {
+            throw new DetectUserFriendlyException(String.format("Your proxy credentials are not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_PROXY_CONNECTIVITY);
+        }
         proxyInfoBuilder.setIgnoredProxyHosts(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS, PropertyAuthority.None));
         proxyInfoBuilder.setNtlmDomain(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_NTLM_DOMAIN, PropertyAuthority.None));
         proxyInfoBuilder.setNtlmWorkstation(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_NTLM_WORKSTATION, PropertyAuthority.None));
-        ProxyInfo proxyInfo = ProxyInfo.NO_PROXY_INFO;
         try {
-            proxyInfo = proxyInfoBuilder.build();
-        } catch (final IllegalStateException e) {
+            return proxyInfoBuilder.build();
+        } catch (final IllegalArgumentException e) {
             throw new DetectUserFriendlyException(String.format("Your proxy configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_PROXY_CONNECTIVITY);
         }
-        return proxyInfo;
     }
 
     public UnauthenticatedRestConnection createUnauthenticatedRestConnection(final String url) throws DetectUserFriendlyException {
         final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
         restConnectionBuilder.setBaseUrl(url);
         restConnectionBuilder.setTimeout(detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT, PropertyAuthority.None));
-        restConnectionBuilder.applyProxyInfo(getHubProxyInfo());
+        restConnectionBuilder.setProxyInfo(getHubProxyInfo());
         restConnectionBuilder.setLogger(new Slf4jIntLogger(logger));
         restConnectionBuilder.setAlwaysTrustServerCertificate(detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_TRUST_CERT, PropertyAuthority.None));
 

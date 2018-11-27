@@ -28,9 +28,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.EnumerablePropertySource;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.PropertySource;
 
 import com.blackducksoftware.integration.hub.detect.property.SpringPropertySource;
 import com.synopsys.integration.blackduck.configuration.HubServerConfigBuilder;
@@ -41,7 +38,6 @@ public class DetectPropertySource extends SpringPropertySource {
     public static final String DOCKER_ENVIRONMENT_PREFIX = "DETECT_DOCKER_PASSTHROUGH_";
     public static final String BLACKDUCK_PROPERTY_PREFIX = "blackduck."; // TODO: Remove these in major version 6 and when hub common supports them.
     public static final String BLACKDUCK_ENVIRONMENT_PREFIX = "BLACKDUCK_"; // TODO: Remove these in major version 6 and when hub common supports them.
-
 
     private final Set<String> blackduckPropertyKeys = new HashSet<>();
     private final Set<String> dockerPropertyKeys = new HashSet<>();
@@ -60,7 +56,7 @@ public class DetectPropertySource extends SpringPropertySource {
                     dockerEnvironmentKeys.add(propertyName);
                 } else if (propertyName.startsWith(PHONE_HOME_PROPERTY_PREFIX)) {
                     phoneHomePropertyKeys.add(propertyName);
-                } else if (propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
+                } else if (propertyName.startsWith(HubServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(HubServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
                     blackduckPropertyKeys.add(propertyName);
                 } else if (propertyName.startsWith(BLACKDUCK_PROPERTY_PREFIX) || propertyName.startsWith(BLACKDUCK_ENVIRONMENT_PREFIX)) {
                     blackduckPropertyKeys.add(propertyName);

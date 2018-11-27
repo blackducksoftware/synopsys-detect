@@ -39,9 +39,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.response.CurrentVersionView;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
 import com.synopsys.integration.blackduck.configuration.HubServerConfig;
 import com.synopsys.integration.blackduck.configuration.HubServerConfigBuilder;
-import com.synopsys.integration.blackduck.rest.BlackduckRestConnection;
+import com.synopsys.integration.blackduck.rest.BlackDuckRestConnection;
 import com.synopsys.integration.blackduck.service.BinaryScannerService;
 import com.synopsys.integration.blackduck.service.CodeLocationService;
 import com.synopsys.integration.blackduck.service.HubRegistrationService;
@@ -49,8 +50,8 @@ import com.synopsys.integration.blackduck.service.HubService;
 import com.synopsys.integration.blackduck.service.HubServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.ReportService;
-import com.synopsys.integration.blackduck.service.ScanStatusService;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.jsonfield.JsonFieldResolver;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.phonehome.PhoneHomeClient;
@@ -140,8 +141,8 @@ public class HubServiceManager {
         return hubServicesFactory.createCodeLocationService();
     }
 
-    public ScanStatusService createScanStatusService() {
-        return hubServicesFactory.createScanStatusService(detectConfiguration.getLongProperty(DetectProperty.DETECT_API_TIMEOUT, PropertyAuthority.None));
+    public CodeLocationCreationService createCodeLocationCreationService() {
+        return hubServicesFactory.createCodeLocationCreationService();
     }
 
     public ReportService createReportService() throws IntegrationException {
@@ -149,9 +150,9 @@ public class HubServiceManager {
     }
 
     private HubServicesFactory createHubServicesFactory(final IntLogger slf4jIntLogger, final HubServerConfig hubServerConfig) throws IntegrationException {
-        final BlackduckRestConnection restConnection = hubServerConfig.createRestConnection(slf4jIntLogger);
+        final BlackDuckRestConnection restConnection = hubServerConfig.createRestConnection(slf4jIntLogger);
 
-        return new HubServicesFactory(gson, jsonParser, restConnection, slf4jIntLogger);
+        return new HubServicesFactory(gson, jsonParser, new JsonFieldResolver(gson), restConnection, slf4jIntLogger);
     }
 
     private HubServerConfig createHubServerConfig(final IntLogger slf4jIntLogger) {

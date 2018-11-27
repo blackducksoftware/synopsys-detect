@@ -45,14 +45,17 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManag
 import com.blackducksoftware.integration.hub.detect.workflow.hub.ExclusionPatternCreator;
 import com.blackducksoftware.integration.hub.detect.workflow.status.SignatureScanStatus;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJob;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJobBuilder;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJobOutput;
-import com.synopsys.integration.blackduck.signaturescanner.command.ScanCommandOutput;
-import com.synopsys.integration.blackduck.signaturescanner.command.ScanTarget;
-import com.synopsys.integration.blackduck.signaturescanner.command.SnippetMatching;
-import com.synopsys.integration.blackduck.summary.Result;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
+import com.synopsys.integration.blackduck.codelocation.Result;
+import com.synopsys.integration.blackduck.codelocation.SignatureScannerCodeLocationCreationRequest;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchBuilder;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchManager;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanTarget;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -64,38 +67,37 @@ public abstract class BlackDuckSignatureScanner {
     private final CodeLocationNameManager codeLocationNameManager;
     private final BlackDuckSignatureScannerOptions signatureScannerOptions;
     private final EventSystem eventSystem;
-    private final ScanJobManager scanJobManager;
+    private final ScanBatchManager scanBatchManager;
 
     public BlackDuckSignatureScanner(final DirectoryManager directoryManager, final DetectFileFinder detectFileFinder, final CodeLocationNameManager codeLocationNameManager,
-        final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanJobManager scanJobManager) {
+        final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanBatchManager scanBatchManager) {
         this.directoryManager = directoryManager;
         this.detectFileFinder = detectFileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
         this.signatureScannerOptions = signatureScannerOptions;
         this.eventSystem = eventSystem;
-        this.scanJobManager = scanJobManager;
+        this.scanBatchManager = scanBatchManager;
     }
 
-    protected abstract ScanJob createScanJob(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile);
+    protected abstract ScanBatch createScanBatch(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile);
 
     public void performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws InterruptedException, IntegrationException, DetectUserFriendlyException, IOException {
         scanPaths(projectNameVersion, installDirectory, dockerTarFile);
     }
 
-    private void scanPaths(final NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, InterruptedException, IOException {
+    private CodeLocationCreationData<SignatureScannerCodeLocationCreationRequest> scanPaths(final NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, InterruptedException, IOException {
         List<SignatureScanPath> signatureScanPaths = determinePathsAndExclusions(projectNameVersion, signatureScannerOptions.getMaxDepth(), dockerTarFile);
-        final ScanJob scanJob = createScanJob(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
+        final ScanBatch scanBatch = createScanBatch(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
 
+        CodeLocationCreationService service = null;
+        SignatureScannerCodeLocationCreationRequest request = new SignatureScannerCodeLocationCreationRequest(scanBatchManager, scanBatch);
+        service.createCodeLocations(request);
         List<ScanCommandOutput> scanCommandOutputs = new ArrayList<>();
-        try {
-            final ScanJobOutput scanJobOutput = scanJobManager.executeScans(scanJob);
-            if (scanJobOutput.getScanCommandOutputs() != null) {
-                for (ScanCommandOutput scanCommandOutput : scanJobOutput.getScanCommandOutputs()) {
-                    scanCommandOutputs.add(scanCommandOutput);
-                }
+        final ScanBatchOutput scanBatchOutput = scanBatchManager.executeScans(scanBatch);
+        if (scanBatchOutput.getScanCommandOutputs() != null) {
+            for (ScanCommandOutput scanCommandOutput : scanBatchOutput.getScanCommandOutputs()) {
+                scanCommandOutputs.add(scanCommandOutput);
             }
-        } catch (IOException e) {
-            throw new IntegrationException("Could not execute the scans: " + e.getMessage());
         }
 
         reportResults(signatureScanPaths, scanCommandOutputs);
@@ -208,23 +210,23 @@ public abstract class BlackDuckSignatureScanner {
         }
     }
 
-    protected ScanJobBuilder createDefaultScanJobBuilder(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
-        final ScanJobBuilder scanJobBuilder = new ScanJobBuilder();
-        scanJobBuilder.scanMemoryInMegabytes(signatureScannerOptions.getScanMemory());
-        scanJobBuilder.installDirectory(installDirectory);
-        scanJobBuilder.outputDirectory(directoryManager.getScanOutputDirectory());
+    protected ScanBatchBuilder createDefaultScanBatchBuilder(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
+        final ScanBatchBuilder scanBatchBuilder = new ScanBatchBuilder();
+        scanBatchBuilder.scanMemoryInMegabytes(signatureScannerOptions.getScanMemory());
+        scanBatchBuilder.installDirectory(installDirectory);
+        scanBatchBuilder.outputDirectory(directoryManager.getScanOutputDirectory());
 
-        scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());
-        scanJobBuilder.cleanupOutput(signatureScannerOptions.getCleanupOutput());
+        scanBatchBuilder.dryRun(signatureScannerOptions.getDryRun());
+        scanBatchBuilder.cleanupOutput(signatureScannerOptions.getCleanupOutput());
 
         if (signatureScannerOptions.getSnippetMatching()) {
-            scanJobBuilder.snippetMatching(SnippetMatching.SNIPPET_MATCHING);
+            scanBatchBuilder.snippetMatching(SnippetMatching.SNIPPET_MATCHING);
         }
-        scanJobBuilder.additionalScanArguments(signatureScannerOptions.getAdditionalArguments());
+        scanBatchBuilder.additionalScanArguments(signatureScannerOptions.getAdditionalArguments());
 
         final String projectName = projectNameVersion.getName();
         final String projectVersionName = projectNameVersion.getVersion();
-        scanJobBuilder.projectAndVersionNames(projectName, projectVersionName);
+        scanBatchBuilder.projectAndVersionNames(projectName, projectVersionName);
 
         final String sourcePath = directoryManager.getSourceDirectory().getAbsolutePath();
         final String prefix = signatureScannerOptions.getCodeLocationPrefix();
@@ -236,10 +238,10 @@ public abstract class BlackDuckSignatureScanner {
         }
         for (final SignatureScanPath scanPath : signatureScanPaths) {
             final String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, scanPath.targetPath, dockerTarFilename, projectName, projectVersionName, prefix, suffix);
-            scanJobBuilder.addTarget(ScanTarget.createBasicTarget(scanPath.targetPath, scanPath.exclusions, codeLocationName));
+            scanBatchBuilder.addTarget(ScanTarget.createBasicTarget(scanPath.targetPath, scanPath.exclusions, codeLocationName));
         }
 
-        return scanJobBuilder;
+        return scanBatchBuilder;
     }
 
 }

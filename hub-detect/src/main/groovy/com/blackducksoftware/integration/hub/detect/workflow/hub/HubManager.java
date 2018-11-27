@@ -44,6 +44,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.view.ScanSummaryView;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
 import com.synopsys.integration.blackduck.exception.HubTimeoutExceededException;
 import com.synopsys.integration.blackduck.service.CodeLocationService;
 import com.synopsys.integration.blackduck.service.HubService;
@@ -122,7 +123,7 @@ public class HubManager {
         }
     }
 
-    private void waitForBomUpdate(final CodeLocationService codeLocationService, final HubService hubService, final ScanStatusService scanStatusService) throws IntegrationException, InterruptedException {
+    private void waitForBomUpdate(final CodeLocationService codeLocationService, final HubService hubService, final CodeLocationCreationService codeLocationCreationService) throws IntegrationException, InterruptedException {
         final List<CodeLocationView> allCodeLocations = new ArrayList<>();
         for (final String codeLocationName : codeLocationNameManager.getCodeLocationNames()) {
             final CodeLocationView codeLocationView = codeLocationService.getCodeLocationByName(codeLocationName);
@@ -137,7 +138,7 @@ public class HubManager {
             }
         }
         logger.info("Waiting for the BOM to be updated");
-        scanStatusService.assertScansFinished(scanSummaryViews);
+        codeLocationCreationService.assertScansFinished(scanSummaryViews);
         logger.info("The BOM has been updated");
     }
 }

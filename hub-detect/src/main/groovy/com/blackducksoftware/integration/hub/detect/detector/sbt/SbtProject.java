@@ -26,7 +26,7 @@ package com.blackducksoftware.integration.hub.detect.detector.sbt;
 import java.util.List;
 
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
 public class SbtProject {
     public String projectName;

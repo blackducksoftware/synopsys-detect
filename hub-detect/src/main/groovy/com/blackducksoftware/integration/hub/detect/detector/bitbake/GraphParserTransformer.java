@@ -31,11 +31,11 @@ import org.apache.commons.lang3.StringUtils;
 import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
-import com.synopsys.integration.hub.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
-import com.synopsys.integration.hub.bdio.model.dependencyid.DependencyId;
-import com.synopsys.integration.hub.bdio.model.dependencyid.NameDependencyId;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
+import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
 public class GraphParserTransformer {
     public DependencyGraph transform(final GraphParser graphParser, final String targetArchitecture) {

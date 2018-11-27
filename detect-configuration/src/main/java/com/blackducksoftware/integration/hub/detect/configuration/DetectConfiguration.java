@@ -146,7 +146,7 @@ public class DetectConfiguration {
         final Set<String> allKeys = new HashSet<>(providedKeys);
         Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
             final String propertyName = currentProperty.getPropertyName();
-            if (propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
+            if (propertyName.startsWith(HubServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(HubServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
                 allKeys.add(propertyName);
             } else if (propertyName.startsWith(DetectPropertySource.BLACKDUCK_PROPERTY_PREFIX) || propertyName.startsWith(DetectPropertySource.BLACKDUCK_ENVIRONMENT_PREFIX)) {
                 allKeys.add(propertyName);

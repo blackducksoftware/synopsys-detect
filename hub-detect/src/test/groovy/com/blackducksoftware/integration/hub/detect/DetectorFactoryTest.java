@@ -28,7 +28,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.rules.Detect
 import com.blackducksoftware.integration.hub.detect.workflow.search.rules.DetectorSearchRuleSet;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 import freemarker.template.Configuration;
 

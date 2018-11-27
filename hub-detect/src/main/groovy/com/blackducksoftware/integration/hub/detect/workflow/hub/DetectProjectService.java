@@ -105,9 +105,12 @@ public class DetectProjectService {
             return Optional.empty();
         }
         try {
-            final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(cloneProjectName, cloneProjectVersionName);
-            final String url = hubService.getHref(projectVersionWrapper.getProjectVersionView());
-            return Optional.of(url);
+            final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(cloneProjectName, cloneProjectVersionName).orElseGet(null);
+            if (projectVersionWrapper != null) {
+                final String url = hubService.getHref(projectVersionWrapper.getProjectVersionView());
+                return Optional.of(url);
+            }
+            return Optional.empty();
         } catch (final IntegrationException e) {
             throw new DetectUserFriendlyException("Unable to find clone release url for supplied clone version name.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }

@@ -39,7 +39,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Detec
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientDetectorResult;
-import com.synopsys.integration.hub.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.Forge;
 
 public class BitbakeDetector extends Detector {
     public static Forge YOCTO_FORGE = new Forge("/", "/", "yocto");
