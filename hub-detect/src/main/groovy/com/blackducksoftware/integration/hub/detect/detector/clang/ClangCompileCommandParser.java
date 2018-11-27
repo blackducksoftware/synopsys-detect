@@ -29,10 +29,14 @@ import java.util.Map;
 
 import org.apache.commons.text.StringTokenizer;
 import org.apache.commons.text.matcher.StringMatcherFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ClangCompileCommandParser {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final char SINGLE_QUOTE_CHAR = '\'';
     private static final char DOUBLE_QUOTE_CHAR = '"';
+    private static final char ESCAPE_CHAR = '\\';
     private static final char TAB_CHAR = '\t';
     private static final char SPACE_CHAR = ' ';
     private static final String SPACE_CHAR_AS_STRING = " ";
@@ -46,7 +50,9 @@ public class ClangCompileCommandParser {
     }
 
     public List<String> getCompilerArgsForGeneratingDepsMkFile(final String origCompileCommand, final String depsMkFilePath, final Map<String, String> optionOverrides) {
+        logger.trace(String.format("origCompileCommand         : %s", origCompileCommand));
         String quotesRemovedCompileCommand = escapeQuotedWhitespace(origCompileCommand.trim());
+        logger.trace(String.format("quotesRemovedCompileCommand: %s", quotesRemovedCompileCommand));
         StringTokenizer tokenizer = new StringTokenizer(quotesRemovedCompileCommand);
         tokenizer.setQuoteMatcher(StringMatcherFactory.INSTANCE.quoteMatcher());
         final List<String> argList = new ArrayList<>();
@@ -82,15 +88,16 @@ public class ClangCompileCommandParser {
 
     private String escapeQuotedWhitespace(String givenString) {
         StringBuilder newString = new StringBuilder();
+        boolean lastCharWasEscapeChar = false;
         boolean inQuotes = false;
         boolean quoteTypeIsDouble = false;
         for (int i=0; i < givenString.length(); i++) {
             char c = givenString.charAt(i);
             if (!inQuotes) {
-                if (c == SINGLE_QUOTE_CHAR) {
+                if (!lastCharWasEscapeChar && (c == SINGLE_QUOTE_CHAR)) {
                     inQuotes = true;
                     quoteTypeIsDouble = false;
-                } else if (c == DOUBLE_QUOTE_CHAR) {
+                } else if (!lastCharWasEscapeChar && (c == DOUBLE_QUOTE_CHAR)) {
                     inQuotes = true;
                     quoteTypeIsDouble = true;
                 } else {
@@ -98,9 +105,9 @@ public class ClangCompileCommandParser {
                 }
             } else {
                 // Currently inside a quoted substring
-                if ((c == SINGLE_QUOTE_CHAR) && (quoteTypeIsDouble == false)) {
+                if (!lastCharWasEscapeChar && (c == SINGLE_QUOTE_CHAR) && (quoteTypeIsDouble == false)) {
                     inQuotes = false;
-                } else if ((c == DOUBLE_QUOTE_CHAR) && (quoteTypeIsDouble == true)) {
+                } else if (!lastCharWasEscapeChar && (c == DOUBLE_QUOTE_CHAR) && (quoteTypeIsDouble == true)) {
                     inQuotes = false;
                 } else if (c == SPACE_CHAR) {
                     newString.append(ESCAPE_SEQUENCE_FOR_SPACE_CHAR);
@@ -110,6 +117,7 @@ public class ClangCompileCommandParser {
                     newString.append(c);
                 }
             }
+            lastCharWasEscapeChar = (c == ESCAPE_CHAR);
         }
         return newString.toString();
     }
