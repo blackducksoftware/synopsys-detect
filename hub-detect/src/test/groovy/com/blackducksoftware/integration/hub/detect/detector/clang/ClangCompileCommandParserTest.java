@@ -68,6 +68,29 @@ public class ClangCompileCommandParserTest {
             System.out.printf("compiler arg: %s\n", part);
         }
 
+        verifyResults(result);
+    }
+
+    @Test
+    public void testGetCompilerArgsFromJsonFileUsingArgs() throws IOException {
+        final List<CompileCommand> compileCommands = CompileCommandsJsonFile.parseJsonCompilationDatabaseFile(new Gson(), new File("src/test/resources/clang/compile_commands_args.json"));
+        ClangCompileCommandParser compileCommandParser = new ClangCompileCommandParser();
+
+        Map<String, String> optionOverrides = new HashMap<>(1);
+        optionOverrides.put("-o", "/dev/null");
+        List<String> result = compileCommandParser.getCompilerArgsForGeneratingDepsMkFile(
+            compileCommands.get(0).getCommand(),
+            "/testMkFilePath",
+            optionOverrides);
+
+        for (String part : result) {
+            System.out.printf("compiler arg: %s\n", part);
+        }
+
+        verifyResults(result);
+    }
+
+    private void verifyResults(final List<String> result) {
         assertEquals(68, result.size());
         int i=0;
         assertEquals("CCACHE_CPP2=yes", result.get(i++));
