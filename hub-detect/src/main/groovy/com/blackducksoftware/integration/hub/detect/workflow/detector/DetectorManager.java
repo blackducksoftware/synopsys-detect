@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
@@ -56,7 +57,7 @@ public class DetectorManager {
         this.eventSystem = eventSystem;
     }
 
-    public DetectorToolResult runDetectors() {
+    public DetectorToolResult runDetectors() throws DetectUserFriendlyException {
         List<DetectorEvaluation> detectorEvaluations = new ArrayList<>();
 
         //search

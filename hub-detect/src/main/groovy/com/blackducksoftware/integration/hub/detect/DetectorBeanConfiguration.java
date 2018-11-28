@@ -121,10 +121,10 @@ import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnListParser
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockParser;
+import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.ArtifactResolver;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;

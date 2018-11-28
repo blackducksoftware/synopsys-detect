@@ -32,21 +32,21 @@ public class DetectToolFilter {
 
     private final ExcludedIncludedFilter excludedIncludedFilter;
     private final Optional<Boolean> deprecatedSigScanDisabled;
-    private final Optional<Boolean> deprecatedSwipEnabled;
+    private final Optional<Boolean> deprecatedPolarisEnabled;
 
-    public DetectToolFilter(String excludedTools, String includedTools, Optional<Boolean> deprecatedSigScanDisabled, Optional<Boolean> deprecatedSwipEnabled) {
+    public DetectToolFilter(String excludedTools, String includedTools, Optional<Boolean> deprecatedSigScanDisabled, Optional<Boolean> deprecatedPolarisEnabled) {
         this.excludedIncludedFilter = new ExcludedIncludedFilter(excludedTools, includedTools);
 
         this.deprecatedSigScanDisabled = deprecatedSigScanDisabled;
-        this.deprecatedSwipEnabled = deprecatedSwipEnabled;
+        this.deprecatedPolarisEnabled = deprecatedPolarisEnabled;
     }
 
     public boolean shouldInclude(DetectTool detectTool) {
 
         if (detectTool == DetectTool.SIGNATURE_SCAN && deprecatedSigScanDisabled.isPresent()) {
             return !deprecatedSigScanDisabled.get();
-        } else if (detectTool == DetectTool.SWIP_CLI && deprecatedSwipEnabled.isPresent()) {
-            return deprecatedSwipEnabled.get();
+        } else if (detectTool == DetectTool.POLARIS && deprecatedPolarisEnabled.isPresent()) {
+            return deprecatedPolarisEnabled.get();
         }
 
         return excludedIncludedFilter.shouldInclude(detectTool.name());

@@ -30,7 +30,7 @@ public enum DetectTool {
     DETECTOR,
     SIGNATURE_SCAN,
     BINARY_SCAN,
-    SWIP_CLI,
+    POLARIS,
     DOCKER;
 
     public static List<DetectTool> DEFAULT_PROJECT_ORDER = Arrays.asList(DOCKER, DETECTOR);

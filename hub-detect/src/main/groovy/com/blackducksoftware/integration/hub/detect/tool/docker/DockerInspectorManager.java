@@ -161,7 +161,7 @@ public class DockerInspectorManager {
             ArtifactoryConstants.DOCKER_INSPECTOR_VERSION_OVERRIDE);
         if (location.isPresent()) {
             logger.info("Finding or downloading the docker inspector.");
-            File dockerDirectory = directoryManager.getSharedDirectory(DOCKER_SHARED_DIRECTORY_NAME);
+            File dockerDirectory = directoryManager.getPermanentDirectory(DOCKER_SHARED_DIRECTORY_NAME);
             logger.debug(String.format("Downloading docker inspector from '%s' to '%s'.", location.get(), dockerDirectory.getAbsolutePath()));
             File jarFile = artifactResolver.downloadOrFindArtifact(dockerDirectory, location.get());
             logger.info("Found online docker inspector: " + jarFile.getAbsolutePath());

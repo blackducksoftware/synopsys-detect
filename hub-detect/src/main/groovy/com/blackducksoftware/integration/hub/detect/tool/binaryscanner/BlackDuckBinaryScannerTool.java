@@ -58,6 +58,7 @@ public class BlackDuckBinaryScannerTool {
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
         this.hubServiceManager = hubServiceManager;
+        this.eventSystem = eventSystem;
     }
 
     public void performBinaryScanActions(final NameVersion projectNameVersion) throws DetectUserFriendlyException {
@@ -80,6 +81,8 @@ public class BlackDuckBinaryScannerTool {
             logger.info("Succesfully uploaded binary scan file: " + codeLocationName);
             eventSystem.publishEvent(Event.StatusSummary, new Status("BINARY_SCAN", StatusType.SUCCESS));
         } catch (MalformedURLException | IntegrationException | URISyntaxException e) {
+            logger.error("Failed to upload binary scan file.");
+            logger.error(e.getMessage());
             eventSystem.publishEvent(Event.StatusSummary, new Status("BINARY_SCAN", StatusType.FAILURE));
             throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
         }
