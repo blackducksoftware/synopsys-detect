@@ -90,7 +90,7 @@ public class PolarisTool {
             Executable swipExecutable = new Executable(projectDirectory, environmentVariables, swipCliPath.get(), arguments);
             try {
                 ExecutableOutput output = executableRunner.execute(swipExecutable);
-                if (output.getReturnCode() == 0) {
+                if (output.getReturnCode() != 0) {
                     logger.error("Polaris returned a non-zero exit code.");
                     eventSystem.publishEvent(Event.StatusSummary, new Status("POLARIS", StatusType.SUCCESS));
                 } else {
