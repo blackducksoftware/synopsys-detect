@@ -70,7 +70,7 @@ public class GradleScriptCreator {
     private String generateGradleScript(File scriptFile, String airGapLibs, String inspectorVersion) throws IOException, TemplateException {
         logger.debug("Generating the gradle script file.");
         final Map<String, String> gradleScriptData = new HashMap<>();
-        gradleScriptData.put("airGapLibs", StringEscapeUtils.escapeJava(airGapLibs));
+        gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(airGapLibs));
         gradleScriptData.put("gradleInspectorVersion", StringEscapeUtils.escapeJava(inspectorVersion));
         gradleScriptData.put("excludedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_PROJECTS, PropertyAuthority.None));
         gradleScriptData.put("includedProjectNames", detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_PROJECTS, PropertyAuthority.None));
