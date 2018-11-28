@@ -60,6 +60,16 @@ public class PolarisTool {
     }
 
     public void runPolaris(final IntLogger logger, File projectDirectory) throws DetectUserFriendlyException {
+        logger.info("Checking if Polaris can run.");
+        PolarisEnvironmentCheck polarisEnvironmentCheck = new PolarisEnvironmentCheck();
+
+        if (!polarisEnvironmentCheck.canRun(directoryManager.getUserHome())) {
+            logger.info("Polaris determined it should not run.");
+            logger.debug("Checked the following user directory: " + directoryManager.getUserHome().getAbsolutePath());
+            return;
+        }
+
+        logger.info("Polaris determined it should attempt to run.");
         RestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(SwipDownloadUtility.DEFAULT_SWIP_SERVER_URL);
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(logger);
         File toolsDirectory = directoryManager.getPermanentDirectory();
