@@ -103,7 +103,12 @@ public class BlackDuckSignatureScannerTool {
             } else {
                 logger.debug("Signature scanner either given an existing path for the scanner or is offline - either way, we won't attempt to manage the install.");
                 scanJobManager = scanJobManagerFactory.withoutInstall(executorService, intEnvironmentVariables);
-                installDirectory = new File(localScannerInstallPath);
+                if (StringUtils.isNotBlank(localScannerInstallPath)) {
+                    logger.debug("Using provided path: " + localScannerInstallPath);
+                    installDirectory = new File(localScannerInstallPath);
+                } else {
+                    logger.debug("Using default scanner path.");
+                }
             }
         }
         logger.debug("Determined install directory: " + installDirectory.getAbsolutePath());
