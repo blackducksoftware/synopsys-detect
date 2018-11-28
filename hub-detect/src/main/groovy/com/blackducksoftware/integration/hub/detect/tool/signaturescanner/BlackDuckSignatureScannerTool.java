@@ -41,6 +41,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.blackduck.configuration.HubServerConfig;
 import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
 import com.synopsys.integration.exception.EncryptionException;
@@ -58,11 +59,12 @@ public class BlackDuckSignatureScannerTool {
         this.detectContext = detectContext;
     }
 
-    public void runScanTool(NameVersion projectNameVersion, Optional<File> dockerTar) throws EncryptionException, DetectUserFriendlyException {
+    public void runScanTool(NameVersion projectNameVersion, Optional<File> dockerTar) throws DetectUserFriendlyException, EncryptionException {
         DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
         DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         ConnectionManager connectionManager = detectContext.getBean(ConnectionManager.class);
         ConnectivityManager connectivityManager = detectContext.getBean(ConnectivityManager.class);
+        DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
 
         Optional<HubServerConfig> hubServerConfig = Optional.empty();
         if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
@@ -76,8 +78,10 @@ public class BlackDuckSignatureScannerTool {
         String localScannerInstallPath = "";
         if (StringUtils.isNotBlank(offlineLocalScannerInstallPath)) {
             localScannerInstallPath = offlineLocalScannerInstallPath;
+            logger.debug("Determined offline local scanner path: " + localScannerInstallPath);
         } else if (StringUtils.isNotBlank(onlineLocalScannerInstallPath)) {
             localScannerInstallPath = onlineLocalScannerInstallPath;
+            logger.debug("Determined online local scanner path: " + localScannerInstallPath);
         }
 
         final String userProvidedScannerInstallUrl = detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, PropertyAuthority.None);
@@ -88,30 +92,40 @@ public class BlackDuckSignatureScannerTool {
 
         ScanJobManagerFactory scanJobManagerFactory = new ScanJobManagerFactory();
         ScanJobManager scanJobManager;
+        File installDirectory = directoryManager.getPermanentDirectory();
         if (hubServerConfig.isPresent() && StringUtils.isBlank(userProvidedScannerInstallUrl) && StringUtils.isBlank(localScannerInstallPath)) {
-            // will will use the hub server to download/update the scanner - this is the most likely situation
+            logger.debug("Signature scanner will use the hub server to download/update the scanner - this is the most likely situation.");
             scanJobManager = scanJobManagerFactory.withHubInstall(hubServerConfig.get(), executorService, intEnvironmentVariables);
         } else {
             if (StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
-                // we will use the provided url to download/update the scanner
+                logger.debug("Signature scanner will use the provided url to download/update the scanner.");
                 scanJobManager = scanJobManagerFactory.withUserProvidedUrl(userProvidedScannerInstallUrl, connectionManager, executorService, intEnvironmentVariables);
             } else {
-                // either we were given an existing path for the scanner or
-                // we are offline - either way, we won't attempt to manage the install
+                logger.debug("Signature scanner either given an existing path for the scanner or is offline - either way, we won't attempt to manage the install.");
                 scanJobManager = scanJobManagerFactory.withoutInstall(executorService, intEnvironmentVariables);
+                if (StringUtils.isNotBlank(localScannerInstallPath)) {
+                    logger.debug("Using provided path: " + localScannerInstallPath);
+                    installDirectory = new File(localScannerInstallPath);
+                } else {
+                    logger.debug("Using default scanner path.");
+                }
             }
         }
+        logger.debug("Determined install directory: " + installDirectory.getAbsolutePath());
 
         BlackDuckSignatureScanner blackDuckSignatureScanner;
         if (hubServerConfig.isPresent()) {
+            logger.debug("Signature scan is online.");
             blackDuckSignatureScanner = detectContext.getBean(OnlineBlackDuckSignatureScanner.class, signatureScannerOptions, scanJobManager, hubServerConfig.get());
         } else {
+            logger.debug("Signature scan is offline.");
             blackDuckSignatureScanner = detectContext.getBean(OfflineBlackDuckSignatureScanner.class, signatureScannerOptions, scanJobManager);
         }
         try {
-            blackDuckSignatureScanner.performScanActions(projectNameVersion, dockerTar.orElse(null)); //TODO: get docker tar file.
+            blackDuckSignatureScanner.performScanActions(projectNameVersion, installDirectory, dockerTar.orElse(null));
         } catch (IOException | InterruptedException | IntegrationException e) {
             logger.info("Signature scan failed!");
+            logger.debug("Signature scan error!", e);
         } finally {
             executorService.shutdownNow();
         }

@@ -44,8 +44,8 @@ public class OfflineBlackDuckSignatureScanner extends BlackDuckSignatureScanner 
     }
 
     @Override
-    protected ScanJob createScanJob(final NameVersion projectNameVersion, final List<SignatureScanPath> signatureScanPaths, final File dockerTarFile) {
-        final ScanJobBuilder scanJobBuilder = createDefaultScanJobBuilder(projectNameVersion, signatureScanPaths, dockerTarFile);
+    protected ScanJob createScanJob(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, final File dockerTarFile) {
+        final ScanJobBuilder scanJobBuilder = createDefaultScanJobBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
         try {
             scanJobBuilder.fromHubServerConfig(null);//temporarily need to do this. fix when hub common updates;
         } catch (EncryptionException e) {

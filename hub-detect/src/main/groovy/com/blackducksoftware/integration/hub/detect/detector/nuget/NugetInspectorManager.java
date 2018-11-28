@@ -115,7 +115,7 @@ public class NugetInspectorManager {
 
         } else {
             logger.info("Determining the nuget inspector version.");
-            File nugetDirectory = directoryManager.getSharedDirectory("nuget");
+            File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
             //create the artifact
             String nugetInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_VERSION, PropertyAuthority.None);
             Optional<String> source;
@@ -176,15 +176,17 @@ public class NugetInspectorManager {
     private ExeNugetInspector findExeInspector(File nupkgFolder) throws DetectorException {
         //original inspector
         final String exeInspectorName = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME, PropertyAuthority.None);
-        logger.info("Searching for: " + exeInspectorName);
+        final String exeName = exeInspectorName + ".exe";
+        logger.info("Searching for: " + exeName);
         File toolsFolder = new File(nupkgFolder, "tools");
-        Optional<File> foundExe = detectFileFinder.findFilesToDepth(toolsFolder, exeInspectorName, 3).stream().findFirst();
+        logger.debug("Searching in: " + toolsFolder.getAbsolutePath());
+        Optional<File> foundExe = detectFileFinder.findFilesToDepth(toolsFolder, exeName, 3).stream().findFirst();
         if (foundExe.isPresent() && foundExe.get().exists()) {
             String inspectorExe = foundExe.get().toString();
             logger.info("Found nuget inspector: " + inspectorExe);
             return new ExeNugetInspector(inspectorExe);
         } else {
-            throw new DetectorException("Unable to find nuget inspector, looking for " + exeInspectorName + " in " + toolsFolder.toString());
+            throw new DetectorException("Unable to find nuget inspector named '" + exeName + "' in " + toolsFolder.getAbsolutePath());
         }
     }
 

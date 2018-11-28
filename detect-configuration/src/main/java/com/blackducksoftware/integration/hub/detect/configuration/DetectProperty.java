@@ -292,7 +292,7 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("The tools detect should not allow in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.")
     @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
-    DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "POLARIS"),
+    DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.project.detector in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
