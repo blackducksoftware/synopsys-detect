@@ -47,12 +47,16 @@ public class DetectorSearchProvider {
         Detector goCli = detectorFactory.createGoCliBomTool(environment);
         Detector goLock = detectorFactory.createGoLockBomTool(environment);
         Detector goVnd = detectorFactory.createGoVndrBomTool(environment);
-        searchRuleSet.addBomTool(goCli).defaultNotNested();
+        Detector goVendor = detectorFactory.createGoVendorBomTool(environment);
+
         searchRuleSet.addBomTool(goLock).defaultNotNested();
         searchRuleSet.addBomTool(goVnd).defaultNotNested();
+        searchRuleSet.addBomTool(goVendor).defaultNotNested();
+        searchRuleSet.addBomTool(goCli).defaultNotNested();
 
         searchRuleSet.yield(goCli).to(goLock);
         searchRuleSet.yield(goCli).to(goVnd);
+        searchRuleSet.yield(goCli).to(goVendor);
 
         searchRuleSet.addBomTool(detectorFactory.createGradleInspectorBomTool(environment)).defaultNotNested();
         searchRuleSet.addBomTool(detectorFactory.createRebarBomTool(environment)).defaultNotNested();

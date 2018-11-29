@@ -53,8 +53,8 @@ public class DiagnosticReportManager {
     public enum ReportTypes {
         SEARCH("search_report", "Search Result Report", "A breakdown of detector searching by directory."),
         SEARCH_DETAILED("search_detailed_report", "Search Result Report", "A breakdown of detector searching by directory."),
-        BOM_TOOL("bom_tool_report", "Bom DetectTool Report", "A breakdown of detector's that were applicable and their preparation and extraction results."),
-        BOM_TOOL_PROFILE("bom_tool_profile_report", "Bom DetectTool Profile Report", "A breakdown of timing and profiling for all detectors."),
+        DETECTOR("detector_report", "Detector Report", "A breakdown of detector's that were applicable and their preparation and extraction results."),
+        DETECTOR_PROFILE("detector_profile_report", "Detector Profile Report", "A breakdown of timing and profiling for all detectors."),
         CODE_LOCATIONS("code_location_report", "Code Location Report", "A breakdown of code locations created, their dependencies and status results."),
         DEPENDENCY_COUNTS("dependency_counts_report", "Dependency Count Report", "A breakdown of how many dependencies each detector group generated in their graphs.");
 
@@ -121,7 +121,7 @@ public class DiagnosticReportManager {
 
         try {
             final OverviewSummaryReporter overviewSummaryReporter = new OverviewSummaryReporter();
-            overviewSummaryReporter.writeReport(getReportWriter(ReportTypes.BOM_TOOL), detectorEvaluations);
+            overviewSummaryReporter.writeReport(getReportWriter(ReportTypes.DETECTOR), detectorEvaluations);
         } catch (final Exception e) {
             logger.error("Failed to write detector report.", e);
         }
@@ -143,7 +143,7 @@ public class DiagnosticReportManager {
 
     private void writeReports() {
         try {
-            final ReportWriter profileWriter = getReportWriter(ReportTypes.BOM_TOOL_PROFILE);
+            final ReportWriter profileWriter = getReportWriter(ReportTypes.DETECTOR_PROFILE);
             final ProfilingReporter reporter = new ProfilingReporter();
             reporter.writeReport(profileWriter, bomToolProfiler);
         } catch (final Exception e) {

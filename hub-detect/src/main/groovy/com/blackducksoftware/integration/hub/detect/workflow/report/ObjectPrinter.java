@@ -25,29 +25,43 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
 public class ObjectPrinter {
     public static void printObject(final ReportWriter writer, final String prefix, final Object guy) {
-        for (final Field field : guy.getClass().getFields()) {
-            printField(field, writer, prefix, guy);
-        }
+        Map<String, String> fieldMap = new HashMap<>();
+        populateObject(prefix, guy, fieldMap);
+        fieldMap.forEach((key, value) -> {
+            writer.writeLine(key + ": " + value);
+        });
     }
 
     public static void printObjectPrivate(final ReportWriter writer, final Object guy) {
-        printObjectPrivate(writer, null, guy);
+        Map<String, String> fieldMap = new HashMap<>();
+        populateObjectPrivate(null, guy, fieldMap);
+        fieldMap.forEach((key, value) -> {
+            writer.writeLine(key + ": " + value);
+        });
     }
 
-    public static void printObjectPrivate(final ReportWriter writer, final String prefix, final Object guy) {
+    public static void populateObjectPrivate(final String prefix, final Object guy, Map<String, String> fieldMap) {
         for (final Field field : guy.getClass().getDeclaredFields()) {
-            printField(field, writer, prefix, guy);
+            populateField(field, prefix, guy, fieldMap);
         }
     }
 
-    public static void printField(final Field field, final ReportWriter writer, final String prefix, final Object guy) {
+    public static void populateObject(final String prefix, final Object guy, Map<String, String> fieldMap) {
+        for (final Field field : guy.getClass().getFields()) {
+            populateField(field, prefix, guy, fieldMap);
+        }
+    }
+
+    public static void populateField(final Field field, final String prefix, final Object guy, Map<String, String> fieldMap) {
         if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
             return; // don't print static fields.
         }
@@ -71,17 +85,18 @@ public class ObjectPrinter {
         }
         if (!shouldPrintObjectsFields) {
             if (StringUtils.isBlank(prefix)) {
-                writer.writeLine(name + " : " + value);
+                fieldMap.put(name, value);
             } else {
-                writer.writeLine(prefix + "." + name + " : " + value);
+                fieldMap.put(prefix + "." + name, value);
             }
         } else {
             String nestedPrefix = name;
             if (StringUtils.isNotBlank(prefix)) {
                 nestedPrefix = prefix + "." + nestedPrefix;
             }
-            printObject(writer, nestedPrefix, obj);
+            populateObject(nestedPrefix, obj, fieldMap);
         }
+
     }
 
     public static boolean shouldRecursivelyPrintType(final Class<?> clazz) {

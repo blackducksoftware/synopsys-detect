@@ -41,6 +41,7 @@ import com.blackducksoftware.integration.hub.detect.tool.docker.DockerProperties
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.OfflineBlackDuckSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.OnlineBlackDuckSignatureScanner;
+import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.ArtifactResolver;
@@ -52,7 +53,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLo
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
@@ -174,7 +174,7 @@ public class RunBeanConfiguration {
         final String image = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE, PropertyAuthority.None);
         final boolean dockerRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED, PropertyAuthority.None);
 
-        return new DockerDetector(detectorEnvironment, directoryManager, dockerInspectorManager(), standardExecutableFinder(), dockerRequired, image, tar, dockerExtractor(dockerProperties));
+        return new DockerDetector(detectInfo, detectorEnvironment, directoryManager, dockerInspectorManager(), standardExecutableFinder(), dockerRequired, image, tar, dockerExtractor(dockerProperties));
     }
 
     @Lazy

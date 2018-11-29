@@ -3,7 +3,7 @@ versionFile.delete()
 versionFile << version
 
 dependencies {
-    compile 'org.freemarker:freemarker:2.3.26-incubating'
-    compile 'org.springframework:spring-core'
-    compile 'org.springframework:spring-context'
+    implementation 'org.freemarker:freemarker:2.3.26-incubating'
+    implementation 'org.springframework:spring-core'
+    implementation 'org.springframework:spring-context'
 }

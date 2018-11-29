@@ -212,9 +212,9 @@ public class BootManager {
     private void printConfiguration(boolean fullConfiguration, List<DetectOption> detectOptions) {
         DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter();
         if (!fullConfiguration) {
-            detectConfigurationPrinter.print(System.out, detectOptions);
+            detectConfigurationPrinter.print(detectOptions);
         }
-        detectConfigurationPrinter.printWarnings(System.out, detectOptions);
+        detectConfigurationPrinter.printWarnings(detectOptions);
     }
 
     private void startInteractiveMode(DetectOptionManager detectOptionManager, DetectConfiguration detectConfiguration, Gson gson, JsonParser jsonParser) {

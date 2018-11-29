@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.workflow.detector.DetectorManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
@@ -51,7 +52,7 @@ public class DetectorTool {
         this.detectContext = detectContext;
     }
 
-    public DetectorToolResult performDetectors(SearchOptions searchOptions, String projectBomTool) {
+    public DetectorToolResult performDetectors(SearchOptions searchOptions, String projectBomTool) throws DetectUserFriendlyException {
         logger.info("Preparing to initialize detectors.");
         DetectorFactory detectorFactory = detectContext.getBean(DetectorFactory.class);
         EventSystem eventSystem = detectContext.getBean(EventSystem.class);

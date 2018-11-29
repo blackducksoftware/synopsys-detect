@@ -75,10 +75,14 @@ public enum DetectProperty {
     @HelpDescription("If true, detect will always exit with code 0.")
     DETECT_FORCE_SUCCESS("detect.force.success", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    @Deprecated
+    @DetectDeprecation(description = "This property is being removed. Configuration can no longer be suppressed individually. Log level can be used.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_LOGGING)
     @HelpDescription("If true, the default behavior of printing your configuration properties at startup will be suppressed.")
     DETECT_SUPPRESS_CONFIGURATION_OUTPUT("detect.suppress.configuration.output", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    @Deprecated
+    @DetectDeprecation(description = "This property is being removed. Results can no longer be suppressed individually. Log level can be used.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_LOGGING)
     @HelpDescription("If true, the default behavior of printing the Detect Results will be suppressed.")
     DETECT_SUPPRESS_RESULTS_OUTPUT("detect.suppress.results.output", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
@@ -288,7 +292,7 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("The tools detect should not allow in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.")
     @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
-    DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "POLARIS"),
+    DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.project.detector in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)

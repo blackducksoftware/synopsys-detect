@@ -24,7 +24,8 @@
 package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
@@ -40,28 +41,20 @@ public class OverviewSummaryReporter {
     private void writeSummaries(final ReportWriter writer, final List<OverviewSummaryData> summaries) {
         writer.writeSeperator();
         for (final OverviewSummaryData data : summaries) {
-            if (data.getApplicable().size() > 0) {
-                writer.writeLine(data.getDirectory());
-                if (data.getApplicable().size() > 0) {
-                    printEvaluations(writer, "\t APPLICABLE : ", data.getApplicable());
-                }
-                if (data.getExtractable().size() > 0) {
-                    printEvaluations(writer, "\t EXTRACTABLE: ", data.getExtractable());
-                }
-                if (data.getExtractionSuccess().size() > 0) {
-                    printEvaluations(writer, "\t SUCCESS    : ", data.getExtractionSuccess());
-                }
-                if (data.getExtractionFailure().size() > 0) {
-                    printEvaluations(writer, "\t FAILURE    : ", data.getExtractionFailure());
-                }
+            writer.writeLine("DIRECTORY: " + data.getDirectory());
+            writer.writeLine("DETECTOR: " + data.getDetectorName());
+            writer.writeLine("\tEXTRACTABLE: " + data.wasExtractable());
+            writer.writeLine("\tEXTRACTED: " + data.wasExtracted());
+            if (StringUtils.isNotBlank(data.getErrorReason())) {
+                writer.writeLine("\tERROR: " + data.getErrorReason());
             }
+            data.getAssociatedData().forEach((key, value) -> {
+                writer.writeLine("\t" + key + ": " + value);
+            });
         }
         writer.writeLine(ReportConstants.HEADING);
         writer.writeLine("");
         writer.writeLine("");
     }
 
-    private void printEvaluations(final ReportWriter writer, final String prefix, final List<DetectorEvaluation> evaluations) {
-        writer.writeLine(prefix + evaluations.stream().map(it -> it.getDetector().getDescriptiveName()).sorted().collect(Collectors.joining(", ")));
-    }
 }

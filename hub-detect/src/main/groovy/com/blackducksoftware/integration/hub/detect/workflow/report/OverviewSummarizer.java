@@ -24,13 +24,19 @@
 package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
-public class OverviewSummarizer extends BomToolEvaluationSummarizer {
+public class OverviewSummarizer extends DetectorEvaluationSummarizer {
     public List<OverviewSummaryData> summarize(final List<DetectorEvaluation> evaluations) {
         final Map<File, List<DetectorEvaluation>> byDirectory = groupByDirectory(evaluations);
 
@@ -46,28 +52,33 @@ public class OverviewSummarizer extends BomToolEvaluationSummarizer {
 
     private List<OverviewSummaryData> summarize(final Map<File, List<DetectorEvaluation>> byDirectory) {
         return byDirectory.entrySet().stream()
-                   .map(it -> createData(it.getKey().toString(), it.getValue()))
+                   .flatMap(it -> createData(it.getKey().toString(), it.getValue()))
                    .collect(Collectors.toList());
     }
 
-    private OverviewSummaryData createData(final String directory, final List<DetectorEvaluation> evaluations) {
-        final List<DetectorEvaluation> applicable = evaluations.stream()
-                                                        .filter(it -> it.isApplicable())
-                                                        .collect(Collectors.toList());
+    private Stream<OverviewSummaryData> createData(final String directory, final List<DetectorEvaluation> evaluations) {
+        List<OverviewSummaryData> overviewSummaryDatas = new ArrayList<>();
+        for (DetectorEvaluation evaluation : evaluations) {
+            if (evaluation.isApplicable()) {
+                String name = evaluation.getDetector().getName();
+                boolean wasExtractable = evaluation.isExtractable();
+                String error = "";
+                if (!wasExtractable) {
+                    error = evaluation.getExtractabilityMessage();
+                }
+                boolean wasExtracted = evaluation.getExtraction() != null && evaluation.getExtraction().result == Extraction.ExtractionResultType.SUCCESS;
+                if (evaluation.getExtraction() != null && StringUtils.isNotBlank(evaluation.getExtraction().description)) {
+                    error = evaluation.getExtraction().description;
+                }
+                Map<String, String> associatedData = new HashMap<>();
+                ObjectPrinter.populateObjectPrivate(null, evaluation.getDetector(), associatedData);
+                OverviewSummaryData overviewSummaryData = new OverviewSummaryData(directory, name, wasExtractable, wasExtracted, associatedData, error);
+                overviewSummaryDatas.add(overviewSummaryData);
+            }
 
-        final List<DetectorEvaluation> extractable = applicable.stream()
-                                                         .filter(it -> it.isExtractable())
-                                                         .collect(Collectors.toList());
+        }
 
-        final List<DetectorEvaluation> extractionSuccess = extractable.stream()
-                                                               .filter(it -> it.wasExtractionSuccessful())
-                                                               .collect(Collectors.toList());
-
-        final List<DetectorEvaluation> extractionFailure = extractable.stream()
-                                                               .filter(it -> !it.wasExtractionSuccessful())
-                                                               .collect(Collectors.toList());
-
-        return new OverviewSummaryData(directory, applicable, extractable, extractionSuccess, extractionFailure);
+        return overviewSummaryDatas.stream();
     }
 
 }

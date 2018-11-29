@@ -60,6 +60,16 @@ public class PolarisTool {
     }
 
     public void runPolaris(final IntLogger logger, File projectDirectory) throws DetectUserFriendlyException {
+        logger.info("Checking if Polaris can run.");
+        PolarisEnvironmentCheck polarisEnvironmentCheck = new PolarisEnvironmentCheck();
+
+        if (!polarisEnvironmentCheck.canRun(directoryManager.getUserHome())) {
+            logger.info("Polaris determined it should not run.");
+            logger.debug("Checked the following user directory: " + directoryManager.getUserHome().getAbsolutePath());
+            return;
+        }
+
+        logger.info("Polaris determined it should attempt to run.");
         RestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(SwipDownloadUtility.DEFAULT_SWIP_SERVER_URL);
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(logger);
         File toolsDirectory = directoryManager.getPermanentDirectory();
@@ -80,8 +90,8 @@ public class PolarisTool {
             Executable swipExecutable = new Executable(projectDirectory, environmentVariables, swipCliPath.get(), arguments);
             try {
                 ExecutableOutput output = executableRunner.execute(swipExecutable);
-                if (output.getReturnCode() == 0) {
-                    logger.error("Swip returned a non-zero exit code.");
+                if (output.getReturnCode() != 0) {
+                    logger.error("Polaris returned a non-zero exit code.");
                     eventSystem.publishEvent(Event.StatusSummary, new Status("POLARIS", StatusType.SUCCESS));
                 } else {
                     eventSystem.publishEvent(Event.StatusSummary, new Status("POLARIS", StatusType.FAILURE));

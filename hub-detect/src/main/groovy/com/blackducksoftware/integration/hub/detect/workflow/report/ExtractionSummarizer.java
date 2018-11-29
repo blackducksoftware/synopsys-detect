@@ -32,7 +32,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
-public class ExtractionSummarizer extends BomToolEvaluationSummarizer {
+public class ExtractionSummarizer extends DetectorEvaluationSummarizer {
     public List<ExtractionSummaryData> summarize(final List<DetectorEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final Map<File, List<DetectorEvaluation>> byDirectory = groupByDirectory(results);
 
