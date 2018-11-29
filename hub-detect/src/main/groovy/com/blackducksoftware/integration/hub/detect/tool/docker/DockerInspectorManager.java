@@ -47,7 +47,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManag
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DockerInspectorManager {
-    private static final String IMAGE_INSPECTOR_FAMILY = "blackduck-imageinspector-ws";
+    private static final String IMAGE_INSPECTOR_FAMILY = "blackduck-imageinspector";
     private static final List<String> inspectorNames = Arrays.asList("ubuntu", "alpine", "centos");
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
