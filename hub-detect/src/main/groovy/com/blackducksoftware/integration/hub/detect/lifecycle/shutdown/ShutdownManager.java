@@ -25,10 +25,11 @@ package com.blackducksoftware.integration.hub.detect.lifecycle.shutdown;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -41,6 +42,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthor
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
+import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.detector.RequiredDetectorChecker;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
@@ -57,8 +59,9 @@ public class ShutdownManager {
     private final DetectConfiguration detectConfiguration;
     private final ReportManager reportManager;
     private final DiagnosticManager diagnosticManager;
+    private final ConnectivityManager connectivityManager;
 
-    public ShutdownManager(DetectStatusManager detectStatusManager, final ExitCodeManager exitCodeManager,
+    public ShutdownManager(ConnectivityManager connectivityManager, DetectStatusManager detectStatusManager, final ExitCodeManager exitCodeManager,
         final PhoneHomeManager phoneHomeManager, final DirectoryManager directoryManager, final DetectConfiguration detectConfiguration, ReportManager reportManager, DiagnosticManager diagnosticManager) {
         this.detectStatusManager = detectStatusManager;
         this.exitCodeManager = exitCodeManager;
@@ -67,6 +70,7 @@ public class ShutdownManager {
         this.detectConfiguration = detectConfiguration;
         this.reportManager = reportManager;
         this.diagnosticManager = diagnosticManager;
+        this.connectivityManager = connectivityManager;
     }
 
     public void shutdown(Optional<RunResult> runResultOptional) {
@@ -89,13 +93,19 @@ public class ShutdownManager {
             if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.None)) {
                 logger.info("Detect will cleanup.");
                 boolean dryRun = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, PropertyAuthority.None);
-                if (dryRun) {
-                    logger.debug("Cleaning up some directory contents: " + directoryManager.getRunHomeDirectory().getAbsolutePath());
-                    cleanup(directoryManager.getRunHomeDirectory(), dryRunCleanupPredicate(directoryManager.getScanOutputDirectory()));
-                } else {
-                    logger.debug("Cleaning up entire directory: " + directoryManager.getRunHomeDirectory().getAbsolutePath());
-                    FileUtils.deleteDirectory(directoryManager.getRunHomeDirectory());
+                boolean offline = !connectivityManager.isDetectOnline();
+
+                List<File> cleanupToSkip = new ArrayList<>();
+                if (dryRun || offline) {
+                    logger.debug("Will not cleanup scan folder.");
+                    cleanupToSkip.add(directoryManager.getScanOutputDirectory());
                 }
+                if (offline) {
+                    logger.debug("Will not cleanup bdio folder.");
+                    cleanupToSkip.add(directoryManager.getBdioOutputDirectory());
+                }
+                logger.debug("Cleaning up directory: " + directoryManager.getRunHomeDirectory().getAbsolutePath());
+                cleanup(directoryManager.getRunHomeDirectory(), cleanupToSkip);
             } else {
                 logger.info("Skipping cleanup, it is disabled.");
             }
@@ -119,11 +129,11 @@ public class ShutdownManager {
         }
     }
 
-    public void cleanup(File directory, Predicate<File> exceptPredicate) throws IOException {
+    public void cleanup(File directory, List<File> skip) throws IOException {
         IOException exception = null;
         for (final File file : directory.listFiles()) {
             try {
-                if (exceptPredicate.test(file)) {
+                if (skip.contains(file)) {
                     logger.debug("Skipping cleanup for: " + file.getAbsolutePath());
                 } else {
                     logger.debug("Cleaning up: " + file.getAbsolutePath());
@@ -139,7 +149,4 @@ public class ShutdownManager {
         }
     }
 
-    public Predicate<File> dryRunCleanupPredicate(File scanDirectory) {
-        return (file) -> file.equals(scanDirectory);
-    }
 }
