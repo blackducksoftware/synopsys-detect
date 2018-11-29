@@ -35,6 +35,7 @@ import com.blackducksoftware.integration.hub.detect.detector.cpan.CpanCliDetecto
 import com.blackducksoftware.integration.hub.detect.detector.cran.PackratLockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.go.GoCliDetector;
 import com.blackducksoftware.integration.hub.detect.detector.go.GoLockDetector;
+import com.blackducksoftware.integration.hub.detect.detector.go.GoVendorDetector;
 import com.blackducksoftware.integration.hub.detect.detector.go.GoVndrDetector;
 import com.blackducksoftware.integration.hub.detect.detector.gradle.GradleInspectorDetector;
 import com.blackducksoftware.integration.hub.detect.detector.hex.RebarDetector;
@@ -96,6 +97,10 @@ public class DetectorFactory implements BeanFactoryAware {
 
     public GoVndrDetector createGoVndrBomTool(final DetectorEnvironment environment) {
         return beanFactory.getBean(GoVndrDetector.class, environment);
+    }
+
+    public GoVendorDetector createGoVendorBomTool(final DetectorEnvironment environment) {
+        return beanFactory.getBean(GoVendorDetector.class, environment);
     }
 
     public GradleInspectorDetector createGradleInspectorBomTool(final DetectorEnvironment environment) {
