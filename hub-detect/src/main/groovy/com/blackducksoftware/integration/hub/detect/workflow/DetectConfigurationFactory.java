@@ -50,7 +50,12 @@ public class DetectConfigurationFactory {
 
     public RunOptions createRunOptions() {
         Optional<Boolean> sigScanDisabled = Optional.empty();
-        if (detectConfiguration.wasPropertyActuallySet(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED)) {
+
+        //TODO: Fix this when deprecated properties are removed
+        //This is because it is double deprecated so we must check if either property is set.
+        boolean originalPropertySet = detectConfiguration.wasPropertyActuallySet(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED);
+        boolean newPropertySet = detectConfiguration.wasPropertyActuallySet(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED);
+        if (originalPropertySet || newPropertySet) {
             sigScanDisabled = Optional.of(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, PropertyAuthority.None));
         }
 

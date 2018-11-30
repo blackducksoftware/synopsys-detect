@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
-import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -60,6 +59,7 @@ public class HelpHtmlWriter {
             final Template htmlTemplate = configuration.getTemplate("templates/helpHtml.ftl");
             htmlTemplate.process(templateData, new FileWriter(htmlHelpFile));
             logger.info(filename + " was created in your current directory.");
+            logger.info(htmlHelpFile.getAbsolutePath() + " was created.");
         } catch (final IOException | TemplateException e) {
             logger.error("There was an error when creating the html file", e);
         }
