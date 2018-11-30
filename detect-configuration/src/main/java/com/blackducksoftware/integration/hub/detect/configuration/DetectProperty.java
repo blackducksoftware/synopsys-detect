@@ -486,8 +486,11 @@ public enum DetectProperty {
     @HelpDescription("The path to the Nuget.Config file to supply to the nuget exe")
     DETECT_NUGET_CONFIG_PATH("detect.nuget.config.path", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
+    @Deprecated
+    @DetectDeprecation(description = "In the future, detect will not look for a custom named inspector.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_NUGET)
-    @HelpDescription("Name of the Nuget Inspector")
+    @HelpDescription("Name of the Nuget Inspector package and the Nuget Inspector exe. (Do not include .exe)")
+    @HelpDetailed("The nuget inspector (previously) could be hosted on a custom nuget feed. In this case, detect needed to know the name of the package to pull and the name of the exe file (which has to match). In the future, detect will only retreive it from Artifactory or from Air Gap so a custom name is no longer supported.")
     DETECT_NUGET_INSPECTOR_NAME("detect.nuget.inspector.name", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "IntegrationNugetInspector"),
 
     @HelpGroup(primary = GROUP_NUGET)
@@ -530,8 +533,10 @@ public enum DetectProperty {
     @HelpDescription("The names of the module to include")
     DETECT_MAVEN_INCLUDED_MODULES("detect.maven.included.modules", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
+    @Deprecated
+    @DetectDeprecation(description = "In the future, detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_NUGET)
-    @HelpDescription("The path of the Nuget executable")
+    @HelpDescription("The path of the Nuget executable. Nuget is used to download the classic inspectors nuget package.")
     DETECT_NUGET_PATH("detect.nuget.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NUGET)
