@@ -114,7 +114,8 @@ public class Application implements ApplicationRunner {
                 runResult = Optional.ofNullable(runManager.run());
                 logger.info("Detect run completed.");
             } catch (final Exception e) {
-                logger.error("Detect run failed.");
+                logger.error("Detect run failed: " + e.getMessage());
+                logger.debug("An exception was thrown during the detect run.", e);
                 exitCodeManager.requestExitCode(e);
             }
             try {
