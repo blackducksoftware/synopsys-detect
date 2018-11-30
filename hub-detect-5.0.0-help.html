@@ -1,0 +1,1830 @@
+<html>
+
+<head>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 7px 10px;
+        }
+        
+        th.groupHeader {
+            font-weight: bold;
+            background-color: #ddd;
+            text-align: left;
+        }
+        
+        th {
+            font-weight: normal;
+            background-color: #eee;
+            text-align: left;
+        }
+        
+        tbody tr:hover:not(.noBorder) {
+            background-color: #f8f8f8;
+        }
+        
+        .propertyColumn {
+            width: 400px;
+        }
+        
+        .defaultColumn {
+            width: 300px;
+        }
+        
+        .noBorder {
+            border: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <colgroup>
+            <col class="propertyColumn" />
+            <col class="defaultColumn" />
+            <col />
+        </colgroup>
+                		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Bitbake</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.bitbake.build.env.name</td>
+		            <td>oe-init-build-env</td>
+		            <td></td>
+		            <td>The name of the build environment init script</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.bitbake.package.names</td>
+		            <td></td>
+		            <td></td>
+		            <td>A comma separated list of package names to extract dependencies from</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Blackduck configuration</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--blackduck.api.token</td>
+		            <td></td>
+		            <td></td>
+		            <td>Black Duck API Token</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.offline.mode</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.password</td>
+		            <td></td>
+		            <td></td>
+		            <td>Black Duck password</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.proxy.host</td>
+		            <td></td>
+		            <td></td>
+		            <td>Proxy host</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.proxy.ignored.hosts</td>
+		            <td></td>
+		            <td></td>
+		            <td>Comma separated list of host patterns that should not use the proxy</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.proxy.ntlm.domain</td>
+		            <td></td>
+		            <td></td>
+		            <td>Ntlm Proxy domain</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.proxy.ntlm.workstation</td>
+		            <td></td>
+		            <td></td>
+		            <td>Ntlm Proxy workstation</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.proxy.password</td>
+		            <td></td>
+		            <td></td>
+		            <td>Proxy password</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.proxy.port</td>
+		            <td></td>
+		            <td></td>
+		            <td>Proxy port</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.proxy.username</td>
+		            <td></td>
+		            <td></td>
+		            <td>Proxy username</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.timeout</td>
+		            <td>120</td>
+		            <td></td>
+		            <td>Time to wait for rest connections to complete</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.trust.cert</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, automatically trust the certificate for the current run of Detect only</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.url</td>
+		            <td></td>
+		            <td></td>
+		            <td>URL of the Black Duck server</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.username</td>
+		            <td></td>
+		            <td></td>
+		            <td>Black Duck username</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.disable.without.blackduck</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Cleanup</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.cleanup</td>
+		            <td>true</td>
+		            <td></td>
+		            <td>If true the files created by Detect will be cleaned up.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Conda</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.conda.environment.name</td>
+		            <td></td>
+		            <td></td>
+		            <td>The name of the anaconda environment used by your project</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.conda.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the conda executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Cpan</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.cpan.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the cpan executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.cpanm.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the cpanm executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.perl.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the perl executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Detector</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.excluded.bom.tool.types</td>
+		            <td></td>
+		            <td></td>
+		            <td>By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify "ALL". Exclusion rules always win.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.excluded.detector.types in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.excluded.detector.types</td>
+		            <td></td>
+		            <td></td>
+		            <td>By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify "ALL". Exclusion rules always win.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.included.bom.tool.types</td>
+		            <td></td>
+		            <td></td>
+		            <td>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.included.detector.types in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.included.detector.types</td>
+		            <td></td>
+		            <td></td>
+		            <td>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.required.bom.tool.types</td>
+		            <td></td>
+		            <td></td>
+		            <td>If set, detect will fail if it does not find the bom tool types supplied here.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.required.detector.types in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.required.detector.types</td>
+		            <td></td>
+		            <td></td>
+		            <td>If set, detect will fail if it does not find the detector types supplied here.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Docker</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.docker.image</td>
+		            <td></td>
+		            <td></td>
+		            <td>The docker image name to inspect. For detect to run docker either this property or detect.docker.tar must be set.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.docker.inspector.air.gap.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path to the directory containing the docker inspector script, jar, and images</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.docker.inspector.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>This is used to override using the hosted script by github url. You can provide your own script at this path.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.docker.inspector.version</td>
+		            <td></td>
+		            <td></td>
+		            <td>Version of the Docker Inspector to use. By default detect will attempt to automatically determine the version to use.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.docker.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>Path of the docker executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.docker.path.required</td>
+		            <td>true</td>
+		            <td></td>
+		            <td>If set to false, detect will attempt to run docker even if it cannot find a docker path.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.docker.tar</td>
+		            <td></td>
+		            <td></td>
+		            <td>A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">General</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.force.success</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, detect will always exit with code 0.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Go</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.go.dep.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>Path of the Go Dep executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.go.run.dep.init</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If set to true, we will attempt to run 'init' and 'ensure' which can modify your development environment.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Gradle</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.gradle.build.command</td>
+		            <td></td>
+		            <td></td>
+		            <td>Gradle build command</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.excluded.configurations</td>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the dependency configurations to exclude</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.excluded.projects</td>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the projects to exclude</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.included.configurations</td>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the dependency configurations to include</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.included.projects</td>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the projects to include</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.inspector.air.gap.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path to the directory containing the air gap dependencies for the gradle inspector</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.inspector.repository.url</td>
+		            <td></td>
+		            <td></td>
+		            <td>The respository gradle should use to look for the gradle inspector dependencies</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. In the future, the gradle inspector will no longer be downloaded from a custom repository, please use Detect Air Gap instead.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.inspector.version</td>
+		            <td></td>
+		            <td></td>
+		            <td>The override version of the Gradle Inspector to use. By default, detect will try to automatically determine the correct gradle version.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>Path of the Gradle executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Hex</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.hex.rebar3.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the rebar3 executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Hub configuration</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--blackduck.hub.api.token</td>
+		            <td></td>
+		            <td></td>
+		            <td>Hub API Token</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --blackduck.api.token in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.offline.mode</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>This can disable any Hub communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --blackduck.offline.mode in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.password</td>
+		            <td></td>
+		            <td></td>
+		            <td>Hub password</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --blackduck.password in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.proxy.host</td>
+		            <td></td>
+		            <td></td>
+		            <td>Proxy host</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --blackduck.proxy.host in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.proxy.ignored.hosts</td>
+		            <td></td>
+		            <td></td>
+		            <td>Comma separated list of host patterns that should not use the proxy</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --blackduck.proxy.ignored.hosts in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.proxy.ntlm.domain</td>
+		            <td></td>
+		            <td></td>
+		            <td>Ntlm Proxy domain</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --blackduck.proxy.ntlm.domain in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.proxy.ntlm.workstation</td>
+		            <td></td>
+		            <td></td>
+		            <td>Ntlm Proxy workstation</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --blackduck.proxy.ntlm.workstation in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.proxy.password</td>
+		            <td></td>
+		            <td></td>
+		            <td>Proxy password</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --blackduck.proxy.password in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.proxy.port</td>
+		            <td></td>
+		            <td></td>
+		            <td>Proxy port</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --blackduck.proxy.port in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.proxy.username</td>
+		            <td></td>
+		            <td></td>
+		            <td>Proxy username</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --blackduck.proxy.username in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.timeout</td>
+		            <td>120</td>
+		            <td></td>
+		            <td>Time to wait for rest connections to complete</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --blackduck.timeout in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.trust.cert</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, automatically trust the certificate for the current run of Detect only</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --blackduck.trust.cert in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.url</td>
+		            <td></td>
+		            <td></td>
+		            <td>URL of the Hub server</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --blackduck.url in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.username</td>
+		            <td></td>
+		            <td></td>
+		            <td>Hub username</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --blackduck.username in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.disable.without.hub</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, during initialization Detect will check for Hub connectivity and exit with status code 0 if it cannot connect.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.disable.without.blackduck in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.test.connection</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>Test the connection to Black Duck with the current configuration</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Logging</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.suppress.configuration.output</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, the default behavior of printing your configuration properties at startup will be suppressed.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.suppress.results.output</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, the default behavior of printing the Detect Results will be suppressed.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--logging.level.com.blackducksoftware.integration</td>
+		            <td>INFO</td>
+		            <td>ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF</td>
+		            <td>The logging level of Detect</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Maven</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.maven.build.command</td>
+		            <td></td>
+		            <td></td>
+		            <td>Maven build command</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.maven.excluded.modules</td>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the module to exclude</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.maven.included.modules</td>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the module to include</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.maven.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the Maven executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.maven.scope</td>
+		            <td></td>
+		            <td></td>
+		            <td>The name of the dependency scope to include</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Npm</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.npm.arguments</td>
+		            <td></td>
+		            <td></td>
+		            <td>A space-separated list of additional arguments to use when running Detect against an NPM project</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.npm.include.dev.dependencies</td>
+		            <td>true</td>
+		            <td></td>
+		            <td>Set this value to false if you would like to exclude your dev dependencies when ran</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.npm.node.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the node executable that is used by Npm</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.npm.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the Npm executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Nuget</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.dotnet.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the dotnet executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.config.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path to the Nuget.Config file to supply to the nuget exe</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.excluded.modules</td>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the projects in a solution to exclude</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.ignore.failure</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true errors will be logged and then ignored.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.included.modules</td>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the projects in a solution to include (overrides exclude)</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.inspector.air.gap.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path to the directory containing the nuget inspector nupkg</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.inspector.name</td>
+		            <td>IntegrationNugetInspector</td>
+		            <td></td>
+		            <td>Name of the Nuget Inspector</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.inspector.version</td>
+		            <td></td>
+		            <td></td>
+		            <td>Version of the Nuget Inspector. By default detect will communicate with Artifactory.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.packages.repo.url</td>
+		            <td>https://api.nuget.org/v3/index.json</td>
+		            <td></td>
+		            <td>The source for nuget packages</td>
+		            <td>Set this to "https://www.nuget.org/api/v2/" if your are still using a nuget client expecting the v2 api</td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the Nuget executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Packagist</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.packagist.include.dev.dependencies</td>
+		            <td>true</td>
+		            <td></td>
+		            <td>Set this value to false if you would like to exclude your dev requires dependencies when ran</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Paths</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.bash.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>Path of the bash executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.bdio.output.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The output directory for all bdio files. If not set, the bdio files will be in a 'bdio' subdirectory of the output path.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.bom.tool.search.continue</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.</td>
+		            <td>If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc.
+If false, Detect will only find bom tools in subdirectories of a project if they are of a different type such as an Npm project in a subdirectory of a Gradle project.</td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.detector.search.continue in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.bom.tool.search.depth</td>
+		            <td>0</td>
+		            <td></td>
+		            <td>Depth from source paths to search for files to determine if a bom tool applies.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.detector.search.depth in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.bom.tool.search.exclusion</td>
+		            <td></td>
+		            <td></td>
+		            <td>A comma-separated list of directory names to exclude from the bom tool search.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.detector.search.exclusion in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.bom.tool.search.exclusion.defaults</td>
+		            <td>true</td>
+		            <td></td>
+		            <td>If true, the bom tool search will exclude the default directory names. See the detailed help for more information.</td>
+		            <td>If true, these directories will be excluded from the bom tool search: bin, build, .git, .gradle, node_modules, out, packages, target</td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.detector.search.exclusion.defaults in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.detector.search.continue</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.</td>
+		            <td>If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc.
+If false, Detect will only find bom tools in subdirectories of a project if they are of a different type such as an Npm project in a subdirectory of a Gradle project.</td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.detector.search.depth</td>
+		            <td>0</td>
+		            <td></td>
+		            <td>Depth from source paths to search for files to determine if a detector applies.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.detector.search.exclusion</td>
+		            <td></td>
+		            <td></td>
+		            <td>A comma-separated list of directory names to exclude from the bom tool search.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.detector.search.exclusion.defaults</td>
+		            <td>true</td>
+		            <td></td>
+		            <td>If true, the bom tool search will exclude the default directory names. See the detailed help for more information.</td>
+		            <td>If true, these directories will be excluded from the detector search: bin, build, .git, .gradle, node_modules, out, packages, target</td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.java.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>Path of the java executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.output.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>Output path</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.bom.tool</td>
+		            <td></td>
+		            <td></td>
+		            <td>The detector to choose when multiple detector types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.project.detector in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.detector</td>
+		            <td></td>
+		            <td></td>
+		            <td>The detector to choose when multiple detector types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.tool</td>
+		            <td>DETECTOR,DOCKER</td>
+		            <td>DETECTOR, DOCKER</td>
+		            <td>The tool priority for project name and version. The first tool in this list that provides a project name and version will be used.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.resolve.tilde.in.paths</td>
+		            <td>true</td>
+		            <td></td>
+		            <td>If set to false we will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.scan.output.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The output directory for all scan files. If not set, the scan files will be in a 'scan' subdirectory of the output path.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.search.depth</td>
+		            <td>3</td>
+		            <td></td>
+		            <td>Depth from source paths to search for sbt report files.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 5.0.0. Will be removed in version 6.0.0. This property is changing. Please use --detect.sbt.report.depth in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.source.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>Source path to inspect</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.tools</td>
+		            <td></td>
+		            <td>DETECTOR, DOCKER, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, NONE, ALL</td>
+		            <td>The tools detect should allow in a comma-separated list. Included and not excluded tools will be allowed to run if all criteria of the tool is met. Exclusion rules always win.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.tools.excluded</td>
+		            <td></td>
+		            <td>DETECTOR, DOCKER, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, NONE, ALL</td>
+		            <td>The tools detect should not allow in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Pear</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.pear.only.required.deps</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>Set to true if you would like to include only required packages</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.pear.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the pear executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Pip</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.pip.project.name</td>
+		            <td></td>
+		            <td></td>
+		            <td>The name of your pip project, to be used if your project's name cannot be correctly inferred from its setup.py file</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 5.0.0. Will be removed in version 6.0.0. This property is being removed. Please use --detect.project.name in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.pip.project.version.name</td>
+		            <td></td>
+		            <td></td>
+		            <td>The version of your pip project, to be used if your project's version name cannot be correctly inferred from its setup.py file</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 5.0.0. Will be removed in version 6.0.0. This property is being removed. Please use --detect.project.version.name in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.pip.requirements.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the requirements.txt file</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.pipenv.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the Pipenv executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Polaris</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.polaris.enabled</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>Set to false to disable the Synopsys Polaris Tool.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.tools and POLARIS in the future.<b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Policy check</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.policy.check.fail.on.severities</td>
+		            <td></td>
+		            <td>ALL, BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL</td>
+		            <td>A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Project info</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.api.timeout</td>
+		            <td>300000</td>
+		            <td></td>
+		            <td>Timeout for response from Black Duck regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.bom.aggregate.name</td>
+		            <td></td>
+		            <td></td>
+		            <td>If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.clone.project.version.name</td>
+		            <td></td>
+		            <td></td>
+		            <td>The name of the project version to clone this project version from. Respects the Clone Categories as set on the Black Duck server.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.code.location.name</td>
+		            <td></td>
+		            <td></td>
+		            <td>An override for the name detect will use for the code location it creates. If supplied and multiple code locations are found, detect will append an index to each code location name.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.default.project.version.scheme</td>
+		            <td>text</td>
+		            <td></td>
+		            <td>The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.default.project.version.text</td>
+		            <td>Default Detect Version</td>
+		            <td></td>
+		            <td>The text to use as the default project version</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.default.project.version.timeformat</td>
+		            <td>yyyy-MM-dd\'T\'HH:mm:ss.SSS</td>
+		            <td></td>
+		            <td>The timestamp format to use as the default project version</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.notices.report</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>When set to true, a Black Duck notices report in text form will be created in your source directory</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.notices.report.path</td>
+		            <td>.</td>
+		            <td></td>
+		            <td>The output directory for notices report. Default is the source directory</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.clone.categories</td>
+		            <td>COMPONENT_DATA,VULN_DATA</td>
+		            <td>COMPONENT_DATA, VULN_DATA</td>
+		            <td>An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.codelocation.prefix</td>
+		            <td></td>
+		            <td></td>
+		            <td>A prefix to the name of the codelocations created by Detect. Useful for running against the same projects on multiple machines.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.codelocation.suffix</td>
+		            <td></td>
+		            <td></td>
+		            <td>A suffix to the name of the codelocations created by Detect.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.codelocation.unmap</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If set to true, unmaps all other code locations mapped to the project version produced by the current run of Detect.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.description</td>
+		            <td></td>
+		            <td></td>
+		            <td>If project description is specified, your project version will be created with this description.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.level.adjustments</td>
+		            <td>true</td>
+		            <td></td>
+		            <td>An override for the Project level matches.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.name</td>
+		            <td></td>
+		            <td></td>
+		            <td>An override for the name to use for the Black Duck project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.tier</td>
+		            <td></td>
+		            <td>1, 2, 3, 4, 5</td>
+		            <td>If a Black Duck project tier is specified, your project will be created with this tier.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.version.distribution</td>
+		            <td>External</td>
+		            <td>EXTERNAL, SAAS, INTERNAL, OPENSOURCE</td>
+		            <td>An override for the Project Version distribution</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.version.name</td>
+		            <td></td>
+		            <td></td>
+		            <td>An override for the version to use for the Black Duck project. If not supplied, detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.version.notes</td>
+		            <td></td>
+		            <td></td>
+		            <td>If project version notes are specified, your project version will be created with these notes.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.version.phase</td>
+		            <td>Development</td>
+		            <td>PLANNING, DEVELOPMENT, RELEASED, DEPRECATED, ARCHIVED</td>
+		            <td>An override for the Project Version phase.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.version.update</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If set to true, will update the Project Version with the configured properties. See detailed help for more information.</td>
+		            <td>When set to true, the following properties will be updated on the Project. Project tier (detect.project.tier) and Project Level Adjustments (detect.project.level.adjustments).
+ The following properties will also be updated on the Version. Version notes (detect.project.version.notes), phase (detect.project.version.phase), distribution (detect.project.version.distribution)</td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.risk.report.pdf</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>When set to true, a Black Duck risk report in PDF form will be created</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.risk.report.pdf.path</td>
+		            <td>.</td>
+		            <td></td>
+		            <td>The output directory for risk report in PDF. Default is the source directory</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Python</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.python.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the Python executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.python.python3</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true will use Python 3 if available on class path</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Sbt</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.sbt.excluded.configurations</td>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the sbt configurations to exclude</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.sbt.included.configurations</td>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the sbt configurations to include</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.sbt.report.search.depth</td>
+		            <td>3</td>
+		            <td></td>
+		            <td>Depth the sbt detector will use to search for report files.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Signature scanner</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.binary.scan.file.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of a binary file to scan.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.blackduck.signature.scanner.arguments</td>
+		            <td></td>
+		            <td></td>
+		            <td>Additional arguments to use when running the Black Duck signature scanner.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.blackduck.signature.scanner.disabled</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>Set to true to disable the Black Duck Signature Scanner.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.tools in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.blackduck.signature.scanner.dry.run</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If set to true, the signature scanner results will not be uploaded to Black Duck and the scanner results will be written to disk.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.blackduck.signature.scanner.exclusion.name.patterns</td>
+		            <td>node_modules</td>
+		            <td></td>
+		            <td>Comma separated list of file name patterns to exclude from the signature scan.</td>
+		            <td>Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.
+These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns</td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.blackduck.signature.scanner.exclusion.pattern.search.depth</td>
+		            <td>4</td>
+		            <td></td>
+		            <td>Enables you to adjust the depth to which detect will search when creating signature scanner exclusion patterns</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.blackduck.signature.scanner.exclusion.patterns</td>
+		            <td></td>
+		            <td></td>
+		            <td>Enables you to specify sub-directories to exclude from scans</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.blackduck.signature.scanner.host.url</td>
+		            <td></td>
+		            <td></td>
+		            <td>If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Black Duck's urls for different operating systems.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.blackduck.signature.scanner.local.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.blackduck.signature.scanner.memory</td>
+		            <td>4096</td>
+		            <td></td>
+		            <td>The memory for the scanner to use.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.blackduck.signature.scanner.offline.local.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.blackduck.signature.scanner.parallel.processors</td>
+		            <td>1</td>
+		            <td></td>
+		            <td>The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.blackduck.signature.scanner.paths</td>
+		            <td></td>
+		            <td></td>
+		            <td>These paths and only these paths will be scanned.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.blackduck.signature.scanner.snippet.mode</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.arguments</td>
+		            <td></td>
+		            <td></td>
+		            <td>Additional arguments to use when running the Hub signature scanner.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.blackduck.signature.scanner.arguments in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.disabled</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>Set to true to disable the Hub Signature Scanner.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.tools in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.dry.run</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.blackduck.signature.scanner.dry.run in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.exclusion.name.patterns</td>
+		            <td>node_modules</td>
+		            <td></td>
+		            <td>Comma separated list of file name patterns to exclude from the signature scan.</td>
+		            <td>Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.
+These patterns will be added to the patterns provided by detect.hub.signature.scanner.exclusion.patterns</td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.name.patterns in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.exclusion.patterns</td>
+		            <td></td>
+		            <td></td>
+		            <td>Enables you to specify sub-directories to exclude from scans</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.patterns in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.host.url</td>
+		            <td></td>
+		            <td></td>
+		            <td>If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.blackduck.signature.scanner.host.url in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.local.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.blackduck.signature.scanner.local.path in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.memory</td>
+		            <td>4096</td>
+		            <td></td>
+		            <td>The memory for the scanner to use.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.blackduck.signature.scanner.memory in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.offline.local.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.blackduck.signature.scanner.offline.local.path in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.parallel.processors</td>
+		            <td>1</td>
+		            <td></td>
+		            <td>The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.blackduck.signature.scanner.parallel.processors in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.paths</td>
+		            <td></td>
+		            <td></td>
+		            <td>These paths and only these paths will be scanned.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.blackduck.signature.scanner.paths in the future.<b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.snippet.mode</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.</td>
+		            <td></td>
+		            <td><b>Will cause failures in version 6.0.0. Will be removed in version 7.0.0. This property is changing. Please use --detect.blackduck.signature.scanner.snippet.mode in the future.<b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Yarn</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.yarn.path</td>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the Yarn executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>--detect.yarn.prod.only</td>
+		            <td>false</td>
+		            <td></td>
+		            <td>Set this to true to only scan production dependencies</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+    </table>
+</body>
+
+</html>
