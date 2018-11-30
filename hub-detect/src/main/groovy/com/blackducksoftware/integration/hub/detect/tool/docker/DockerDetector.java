@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
-import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder.CacheableExecutableType;
@@ -117,8 +116,7 @@ public class DockerDetector {
         return new PassedDetectorResult();
     }
 
-    public Extraction extract(final ExtractionId extractionId) {
-        File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
+    public Extraction extract(final File outputDirectory) {
         return dockerExtractor.extract(environment.getDirectory(), outputDirectory, bashExe, javaExe, image, tar, dockerInspectorInfo);
     }
 
