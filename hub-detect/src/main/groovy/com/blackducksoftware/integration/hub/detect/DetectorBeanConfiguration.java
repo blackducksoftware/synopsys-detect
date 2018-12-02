@@ -45,6 +45,7 @@ import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeExtr
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeListTasksParser;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.GraphParserTransformer;
 import com.blackducksoftware.integration.hub.detect.detector.clang.ApkPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.ClangCompileCommandParser;
 import com.blackducksoftware.integration.hub.detect.detector.clang.ClangDetector;
 import com.blackducksoftware.integration.hub.detect.detector.clang.ClangExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.clang.ClangLinuxPackageManager;
@@ -185,7 +186,11 @@ public class DetectorBeanConfiguration {
 
     @Bean
     public DependenciesListFileManager clangDependenciesListFileParser() {
-        return new DependenciesListFileManager(executableRunner);
+        return new DependenciesListFileManager(executableRunner, clangCompileCommandParser());
+    }
+
+    @Bean ClangCompileCommandParser clangCompileCommandParser() {
+        return new ClangCompileCommandParser();
     }
 
     @Bean

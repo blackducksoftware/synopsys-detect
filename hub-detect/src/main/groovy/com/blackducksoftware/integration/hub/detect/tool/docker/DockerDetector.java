@@ -101,7 +101,11 @@ public class DockerDetector {
             return new ExecutableNotFoundDetectorResult("bash");
         }
 
-        dockerExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.DOCKER);
+        try {
+            dockerExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.DOCKER);
+        } catch (Exception e) {
+            dockerExe = null;
+        }
         if (dockerExe == null) {
             if (dockerPathRequired) {
                 return new ExecutableNotFoundDetectorResult("docker");
