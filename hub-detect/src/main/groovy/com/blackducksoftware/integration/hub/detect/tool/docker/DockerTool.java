@@ -34,9 +34,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
-import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
@@ -70,8 +68,7 @@ public class DockerTool {
             DetectorResult extractableResult = dockerBomTool.extractable();
             if (extractableResult.getPassed()) {
                 logger.info("Performing the Docker extraction.");
-                ExtractionId extractionId = new ExtractionId(DetectCodeLocationType.DOCKER.toString(), "docker");
-                Extraction extractResult = dockerBomTool.extract(extractionId);
+                Extraction extractResult = dockerBomTool.extract(directoryManager.getDockerOutputDirectory());
 
                 DockerToolResult dockerToolResult = new DockerToolResult();
                 dockerToolResult.dockerCodeLocations = extractResult.codeLocations;

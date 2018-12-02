@@ -47,6 +47,7 @@ import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ShutdownManager;
+import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
@@ -113,7 +114,8 @@ public class Application implements ApplicationRunner {
                 runResult = Optional.ofNullable(runManager.run());
                 logger.info("Detect run completed.");
             } catch (final Exception e) {
-                logger.error("Detect run failed.");
+                logger.error("Detect run failed: " + e.getMessage());
+                logger.debug("An exception was thrown during the detect run.", e);
                 exitCodeManager.requestExitCode(e);
             }
             try {
@@ -122,7 +124,8 @@ public class Application implements ApplicationRunner {
                 PhoneHomeManager phoneHomeManager = detectContext.getBean(PhoneHomeManager.class);
                 DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
                 DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
-                ShutdownManager shutdownManager = new ShutdownManager(statusManager, exitCodeManager, phoneHomeManager, directoryManager, detectConfiguration, reportManager, diagnosticManager);
+                ConnectivityManager connectivityManager = detectContext.getBean(ConnectivityManager.class);
+                ShutdownManager shutdownManager = new ShutdownManager(connectivityManager, statusManager, exitCodeManager, phoneHomeManager, directoryManager, detectConfiguration, reportManager, diagnosticManager);
                 logger.info("Detect shutdown begin.");
                 shutdownManager.shutdown(runResult);
                 logger.info("Detect shutdown completed.");
