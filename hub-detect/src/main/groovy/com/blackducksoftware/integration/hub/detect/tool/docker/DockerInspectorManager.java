@@ -89,13 +89,13 @@ public class DockerInspectorManager {
         final String providedJarPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH, PropertyAuthority.None);
 
         if (StringUtils.isNotBlank(providedJarPath)) {
-            logger.info("Docker will attempt to use the provided docker inspector.");
+            logger.info("Docker tool will attempt to use the provided docker inspector.");
             return findProvidedJar(providedJarPath);
         } else if (airGapDockerFolder.exists()) {
-            logger.info("Docker will attempt to use the air gapped docker inspector.");
+            logger.info("Docker tool will attempt to use the air gapped docker inspector.");
             return findAirGapInspector();
         } else {
-            logger.info("Docker will attempt to download or find docker inspector.");
+            logger.info("Docker tool will attempt to download or find docker inspector.");
             return findOrDownloadJar();
         }
     }

@@ -109,6 +109,8 @@ public class DockerDetector {
         if (dockerExe == null) {
             if (dockerPathRequired) {
                 return new ExecutableNotFoundDetectorResult("docker");
+            } else {
+                logger.info("Docker executable not found, but it has been configured as not-required; proceeding with execution of Docker tool");
             }
         }
 
