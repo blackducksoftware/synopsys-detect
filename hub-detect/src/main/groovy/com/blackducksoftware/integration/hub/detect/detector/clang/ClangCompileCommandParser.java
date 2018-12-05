@@ -85,19 +85,15 @@ public class ClangCompileCommandParser {
     }
 
     private String restoreWhitespace(String givenString) {
-        return givenString.replaceAll(ESCAPE_SEQUENCE_FOR_SPACE_CHAR, SPACE_CHAR_AS_STRING).replaceAll(ESCAPE_SEQUENCE_FOR_TAB_CHAR, TAB_CHAR_AS_STRING);
+        String newString = givenString.replaceAll(ESCAPE_SEQUENCE_FOR_SPACE_CHAR, SPACE_CHAR_AS_STRING).replaceAll(ESCAPE_SEQUENCE_FOR_TAB_CHAR, TAB_CHAR_AS_STRING);
+        logger.trace(String.format("restoreWhitespace() changed %s to %s", givenString, newString));
+        return newString;
     }
 
     private String unEscapeDoubleQuotes(String givenString) {
-        String cleanedString = givenString.replaceAll(ESCAPED_DOUBLE_QUOTE, DOUBLE_QUOTE);
-        if (givenString.contains("Debug")) {
-            for (int charIndex = 0; charIndex < cleanedString.length(); charIndex++) {
-                char c = cleanedString.charAt(charIndex);
-                int cAsInt = c;
-                System.out.printf("=== c: %X (%c)\n", cAsInt, c);
-            }
-        }
-        return cleanedString;
+        String newString = givenString.replaceAll(ESCAPED_DOUBLE_QUOTE, DOUBLE_QUOTE);
+        logger.trace(String.format("unEscapeDoubleQuotes() changed %s to %s", givenString, newString));
+        return newString;
     }
 
     private String escapeQuotedWhitespace(String givenString) {
@@ -133,6 +129,7 @@ public class ClangCompileCommandParser {
             }
             lastCharWasEscapeChar = (c == ESCAPE_CHAR);
         }
+        logger.trace(String.format("escapeQuotedWhitespace() changed %s to %s", givenString, newString.toString()));
         return newString.toString();
     }
 }

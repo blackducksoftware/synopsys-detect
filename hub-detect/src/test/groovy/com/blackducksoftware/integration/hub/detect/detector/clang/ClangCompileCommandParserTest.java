@@ -97,11 +97,6 @@ public class ClangCompileCommandParserTest {
         assertEquals("/usr/bin/ccache", result.get(i++));
         assertEquals("/usr/bin/clang++-3.6", result.get(i++));
         assertEquals("-DAVX2=1", result.get(i++));
-        for (int charIndex = 0; charIndex < result.get(i).length(); charIndex++) {
-            char c = result.get(i).charAt(charIndex);
-            int cAsInt = c;
-            System.out.printf("c: %X (%c)\n", cAsInt, c);
-        }
         assertEquals("-DCMAKE_BUILD_TYPE=\"Debug\"", result.get(i++));
         assertEquals("-DCMAKE_CC_FLAGS=\" -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -fopenmp --std=c11 -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC --std=c11\"", result.get(i++));
         assertEquals("-DCMAKE_CXX_FLAGS=\" -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -fopenmp -stdlib=libc++ -std=c++14 -DLOG_INTERNAL_ERROR=LOG_DEBUG -mcx16 -msse4.2 -mavx2  -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -stdlib=libc++ -std=c++14 -DLOG_INTERNAL_ERROR=LOG_DEBUG\"", result.get(i++));
