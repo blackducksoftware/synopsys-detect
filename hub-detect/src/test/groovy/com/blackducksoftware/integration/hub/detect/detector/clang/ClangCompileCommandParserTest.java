@@ -97,17 +97,22 @@ public class ClangCompileCommandParserTest {
         assertEquals("/usr/bin/ccache", result.get(i++));
         assertEquals("/usr/bin/clang++-3.6", result.get(i++));
         assertEquals("-DAVX2=1", result.get(i++));
-        assertEquals("-DCMAKE_BUILD_TYPE=\\\"Debug\\\"", result.get(i++));
-        assertEquals("-DCMAKE_CC_FLAGS=\\\" -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -fopenmp --std=c11 -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC --std=c11\\\"", result.get(i++));
-        assertEquals("-DCMAKE_CXX_FLAGS=\\\" -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -fopenmp -stdlib=libc++ -std=c++14 -DLOG_INTERNAL_ERROR=LOG_DEBUG -mcx16 -msse4.2 -mavx2  -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -stdlib=libc++ -std=c++14 -DLOG_INTERNAL_ERROR=LOG_DEBUG\\\"", result.get(i++));
-        assertEquals("-DCMAKE_CXX_FLAGS_DEBUG=\\\" -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -fopenmp -stdlib=libc++ -std=c++14 -DLOG_INTERNAL_ERROR=LOG_DEBUG -mcx16 -msse4.2 -mavx2  \\\"", result.get(i++));
-        assertEquals("-DCMAKE_CXX_FLAGS_RELEASE=\\\"-O3 -DNDEBUG -O3 \\\"", result.get(i++));
-        assertEquals("-DCMAKE_VERSION=\\\"3.5.1\\\"", result.get(i++));
-        assertEquals("-DNSULATE_PROJECT_COMMIT=\\\"b079181 Create smoke Test suites\\\"", result.get(i++));
-        assertEquals("-DNSULATE_SYSTEM=\\\"Ubuntu 16045 LTS\\\"", result.get(i++));
-        assertEquals("-DNSULATE_SYSTEM_PROCESSOR=\\\"Linux srv-narnia 4.15.0-36-generic x86_64 GNU/Linux\\\"", result.get(i++));
-        assertEquals("-DNSULATE_TIME_OF_BUILD=\\\"Wednesday 14-11-2018 03:22 UTC\\\"", result.get(i++));
-        assertEquals("-DNSULATE_VERSION=\\\"1.2.82\\\"", result.get(i++));
+        for (int charIndex = 0; charIndex < result.get(i).length(); charIndex++) {
+            char c = result.get(i).charAt(charIndex);
+            int cAsInt = c;
+            System.out.printf("c: %X (%c)\n", cAsInt, c);
+        }
+        assertEquals("-DCMAKE_BUILD_TYPE=\"Debug\"", result.get(i++));
+        assertEquals("-DCMAKE_CC_FLAGS=\" -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -fopenmp --std=c11 -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC --std=c11\"", result.get(i++));
+        assertEquals("-DCMAKE_CXX_FLAGS=\" -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -fopenmp -stdlib=libc++ -std=c++14 -DLOG_INTERNAL_ERROR=LOG_DEBUG -mcx16 -msse4.2 -mavx2  -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -stdlib=libc++ -std=c++14 -DLOG_INTERNAL_ERROR=LOG_DEBUG\"", result.get(i++));
+        assertEquals("-DCMAKE_CXX_FLAGS_DEBUG=\" -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -fopenmp -stdlib=libc++ -std=c++14 -DLOG_INTERNAL_ERROR=LOG_DEBUG -mcx16 -msse4.2 -mavx2  \"", result.get(i++));
+        assertEquals("-DCMAKE_CXX_FLAGS_RELEASE=\"-O3 -DNDEBUG -O3 \"", result.get(i++));
+        assertEquals("-DCMAKE_VERSION=\"3.5.1\"", result.get(i++));
+        assertEquals("-DNSULATE_PROJECT_COMMIT=\"b079181 Create smoke Test suites\"", result.get(i++));
+        assertEquals("-DNSULATE_SYSTEM=\"Ubuntu 16045 LTS\"", result.get(i++));
+        assertEquals("-DNSULATE_SYSTEM_PROCESSOR=\"Linux srv-narnia 4.15.0-36-generic x86_64 GNU/Linux\"", result.get(i++));
+        assertEquals("-DNSULATE_TIME_OF_BUILD=\"Wednesday 14-11-2018 03:22 UTC\"", result.get(i++));
+        assertEquals("-DNSULATE_VERSION=\"1.2.82\"", result.get(i++));
         assertEquals("-I/home/jslave/sean/mainline/nsulate/include", result.get(i++));
         assertEquals("-I/home/jslave/sean/mainline/nsulate/src", result.get(i++));
     }

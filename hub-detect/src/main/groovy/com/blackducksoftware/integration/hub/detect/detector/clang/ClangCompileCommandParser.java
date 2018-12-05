@@ -33,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ClangCompileCommandParser {
+    private static final String ESCAPED_DOUBLE_QUOTE = "\\\\\"";
+    private static final String DOUBLE_QUOTE = "\"";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final char SINGLE_QUOTE_CHAR = '\'';
     private static final char DOUBLE_QUOTE_CHAR = '"';
@@ -59,7 +61,7 @@ public class ClangCompileCommandParser {
         String lastPart = "";
         int partIndex = 0;
         while (tokenizer.hasNext()) {
-            String part = restoreWhitespace(tokenizer.nextToken());
+            String part = unEscapeDoubleQuotes(restoreWhitespace(tokenizer.nextToken()));
             if (partIndex > 0) {
                 String optionValueOverride = null;
                 for (String optionToOverride : optionOverrides.keySet()) {
@@ -84,6 +86,18 @@ public class ClangCompileCommandParser {
 
     private String restoreWhitespace(String givenString) {
         return givenString.replaceAll(ESCAPE_SEQUENCE_FOR_SPACE_CHAR, SPACE_CHAR_AS_STRING).replaceAll(ESCAPE_SEQUENCE_FOR_TAB_CHAR, TAB_CHAR_AS_STRING);
+    }
+
+    private String unEscapeDoubleQuotes(String givenString) {
+        String cleanedString = givenString.replaceAll(ESCAPED_DOUBLE_QUOTE, DOUBLE_QUOTE);
+        if (givenString.contains("Debug")) {
+            for (int charIndex = 0; charIndex < cleanedString.length(); charIndex++) {
+                char c = cleanedString.charAt(charIndex);
+                int cAsInt = c;
+                System.out.printf("=== c: %X (%c)\n", cAsInt, c);
+            }
+        }
+        return cleanedString;
     }
 
     private String escapeQuotedWhitespace(String givenString) {
