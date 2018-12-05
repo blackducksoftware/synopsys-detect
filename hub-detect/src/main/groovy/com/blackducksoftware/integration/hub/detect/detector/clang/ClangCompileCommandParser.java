@@ -33,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ClangCompileCommandParser {
+    private static final String ESCAPED_DOUBLE_QUOTE = "\\\\\"";
+    private static final String DOUBLE_QUOTE = "\"";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final char SINGLE_QUOTE_CHAR = '\'';
     private static final char DOUBLE_QUOTE_CHAR = '"';
@@ -59,7 +61,7 @@ public class ClangCompileCommandParser {
         String lastPart = "";
         int partIndex = 0;
         while (tokenizer.hasNext()) {
-            String part = restoreWhitespace(tokenizer.nextToken());
+            String part = unEscapeDoubleQuotes(restoreWhitespace(tokenizer.nextToken()));
             if (partIndex > 0) {
                 String optionValueOverride = null;
                 for (String optionToOverride : optionOverrides.keySet()) {
@@ -83,7 +85,15 @@ public class ClangCompileCommandParser {
     }
 
     private String restoreWhitespace(String givenString) {
-        return givenString.replaceAll(ESCAPE_SEQUENCE_FOR_SPACE_CHAR, SPACE_CHAR_AS_STRING).replaceAll(ESCAPE_SEQUENCE_FOR_TAB_CHAR, TAB_CHAR_AS_STRING);
+        String newString = givenString.replaceAll(ESCAPE_SEQUENCE_FOR_SPACE_CHAR, SPACE_CHAR_AS_STRING).replaceAll(ESCAPE_SEQUENCE_FOR_TAB_CHAR, TAB_CHAR_AS_STRING);
+        logger.trace(String.format("restoreWhitespace() changed %s to %s", givenString, newString));
+        return newString;
+    }
+
+    private String unEscapeDoubleQuotes(String givenString) {
+        String newString = givenString.replaceAll(ESCAPED_DOUBLE_QUOTE, DOUBLE_QUOTE);
+        logger.trace(String.format("unEscapeDoubleQuotes() changed %s to %s", givenString, newString));
+        return newString;
     }
 
     private String escapeQuotedWhitespace(String givenString) {
@@ -119,6 +129,7 @@ public class ClangCompileCommandParser {
             }
             lastCharWasEscapeChar = (c == ESCAPE_CHAR);
         }
+        logger.trace(String.format("escapeQuotedWhitespace() changed %s to %s", givenString, newString.toString()));
         return newString.toString();
     }
 }

@@ -28,7 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -51,7 +50,7 @@ public class DependenciesListFileManager {
     private static final String DEPS_MK_FILENAME_PATTERN = "deps_%s_%d.mk";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final Random random = new Random(new Date().getTime());
+    private static final Random random = new Random();
     private final ExecutableRunner executableRunner;
     private final ClangCompileCommandParser compileCommandParser;
 
@@ -60,11 +59,13 @@ public class DependenciesListFileManager {
         this.compileCommandParser = compileCommandParser;
     }
 
-    public Set<String> generateDependencyFilePaths(final File workingDir, final CompileCommand compileCommand) {
+    public Set<String> generateDependencyFilePaths(final File workingDir, final CompileCommand compileCommand, final boolean cleanup) {
         final Set<String> dependencyFilePaths = new HashSet<>();
         final Optional<File> depsMkFile = generate(workingDir, compileCommand);
         dependencyFilePaths.addAll(parse(depsMkFile.orElse(null)));
-        depsMkFile.ifPresent(File::delete);
+        if (cleanup) {
+            depsMkFile.ifPresent(File::delete);
+        }
         return dependencyFilePaths;
     }
 
@@ -118,7 +119,7 @@ public class DependenciesListFileManager {
     }
 
     private String deriveDependenciesListFilename(final CompileCommand compileCommand) {
-        final int randomInt = random.nextInt(1) * 1000;
+        final int randomInt = random.nextInt(1000);
         final String sourceFilenameBase = getFilenameBase(compileCommand.getFile());
         return String.format(DEPS_MK_FILENAME_PATTERN, sourceFilenameBase, randomInt);
     }
