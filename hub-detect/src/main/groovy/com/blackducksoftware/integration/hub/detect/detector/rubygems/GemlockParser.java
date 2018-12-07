@@ -42,6 +42,7 @@ import com.synopsys.integration.hub.bdio.graph.builder.LazyExternalIdDependencyG
 import com.synopsys.integration.hub.bdio.model.Forge;
 import com.synopsys.integration.hub.bdio.model.dependencyid.DependencyId;
 import com.synopsys.integration.hub.bdio.model.dependencyid.NameDependencyId;
+import com.synopsys.integration.hub.bdio.model.dependencyid.NameVersionDependencyId;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.util.NameVersion;
@@ -115,17 +116,19 @@ public class GemlockParser {
         encounteredDependencies.add(name);
     }
 
-    private void setDependencyInfo(final DependencyId id, final String name, final String version, final ExternalId externalId) {
-        resolvedDependencies.add(name);
-        lazyBuilder.setDependencyInfo(id, name, version, externalId);
+    private void discoveredDependencyInfo(final NameVersionDependencyId id) {
+        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, id.name, id.version);
+        resolvedDependencies.add(id.name);
+        NameDependencyId nameOnlyId =
+            new NameDependencyId(id.name);
+        lazyBuilder.setDependencyInfo(nameOnlyId, id.name, "", externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, id.name, ""));
+        lazyBuilder.setDependencyInfo(id, id.name, id.version, externalId);
+        lazyBuilder.addChildWithParent(id, nameOnlyId);
     }
 
     private void addBundlerDependency(final String trimmedLine) {
-        final String name = "bundler";
-        final String version = trimmedLine;
-        final DependencyId bundlerId = new NameDependencyId(name);
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, name, version);
-        setDependencyInfo(bundlerId, name, version, externalId);
+        final NameVersionDependencyId bundlerId = new NameVersionDependencyId("bundler", trimmedLine);
+        discoveredDependencyInfo(bundlerId);
     }
 
     private void parseSpecsSectionLine(final String untrimmedLine) {
@@ -142,9 +145,8 @@ public class GemlockParser {
         if (currentParent == null) {
             logger.error(String.format("Trying to add a child without a parent: %s", trimmedLine));
         } else {
-            final NameVersion childNode = parseNameVersion(trimmedLine);
-            final DependencyId childId = new NameDependencyId(childNode.getName());
-            encounteredDependency(childNode.getName());
+            final NameVersion childNameVersion = parseNameVersion(trimmedLine);
+            final DependencyId childId = processNameVersion(childNameVersion);
             lazyBuilder.addChildWithParent(childId, currentParent);
         }
     }
@@ -153,11 +155,23 @@ public class GemlockParser {
         final NameVersion parentNameVersion = parseNameVersion(trimmedLine);
         if (StringUtils.isNotBlank(parentNameVersion.getVersion())) {
             currentParent = new NameDependencyId(parentNameVersion.getName());
-            final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, parentNameVersion.getName(), parentNameVersion.getVersion());
-            setDependencyInfo(currentParent, parentNameVersion.getName(), parentNameVersion.getVersion(), externalId);
+            discoveredDependencyInfo(new NameVersionDependencyId(parentNameVersion.getName(), parentNameVersion.getVersion()));
         } else {
             logger.error(String.format("An installed spec did not have a non-fuzzy version: %s", trimmedLine));
         }
+    }
+
+    //If you have Version, you know everything. Otherwise, you need to find this version later.
+    //Generally each parse/process call should either call this or add to encountered.
+    private DependencyId processNameVersion(NameVersion nameVersion) {
+        NameDependencyId nameDependencyId = new NameDependencyId(nameVersion.getName());
+        if (StringUtils.isNotBlank(nameVersion.getVersion())) {
+            NameVersionDependencyId nameVersionDependencyId = new NameVersionDependencyId(nameVersion.getName(), nameVersion.getVersion());
+            discoveredDependencyInfo(nameVersionDependencyId);
+        } else {
+            encounteredDependencies.add(nameVersion.getName());
+        }
+        return nameDependencyId;
     }
 
     private void parseDependencySectionLine(final String trimmedLine) {
@@ -165,13 +179,8 @@ public class GemlockParser {
         if (dependencyNameVersionNode.getName() == null) {
             logger.error(String.format("Line in dependencies section can't be parsed: %s", trimmedLine));
         } else {
-            if (StringUtils.isNotBlank(dependencyNameVersionNode.getVersion())) {
-                DependencyId dependencyId = new NameDependencyId(dependencyNameVersionNode.getName());
-                ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, dependencyNameVersionNode.getName(), dependencyNameVersionNode.getVersion());
-                setDependencyInfo(dependencyId, dependencyNameVersionNode.getName(), dependencyNameVersionNode.getVersion(), externalId);
-            }
-            encounteredDependency(dependencyNameVersionNode.getName());
-            lazyBuilder.addChildToRoot(new NameDependencyId(dependencyNameVersionNode.getName()));
+            DependencyId dependencyId = processNameVersion(dependencyNameVersionNode);
+            lazyBuilder.addChildToRoot(dependencyId);
         }
     }
 
