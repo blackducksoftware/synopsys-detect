@@ -17,9 +17,9 @@ public class ExtractionHandler {
             NugetSolutionExtractionDebugger debugger = new NugetSolutionExtractionDebugger();
             debugger.debug(extraction, detectRunInfo, detectConfiguration);
 
+        } else {
+            throw new DetectorException("Don't know what to do with this extraction, sorry brah.");
         }
-
-        throw new DetectorException("Don't know what to do with this extraction, sorry brah.");
 
     }
 }
