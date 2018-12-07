@@ -38,6 +38,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
@@ -55,6 +58,7 @@ public class ClangExtractor {
     private final Set<File> processedDependencyFiles = new HashSet<>(200);
     private final Set<PackageDetails> processedDependencies = new HashSet<>(40);
 
+    private final DetectConfiguration detectConfiguration;
     private final ExecutableRunner executableRunner;
     private final Gson gson;
     private final DetectFileFinder fileFinder;
@@ -63,9 +67,10 @@ public class ClangExtractor {
     private final CodeLocationAssembler codeLocationAssembler;
     private final SimpleBdioFactory bdioFactory;
 
-    public ClangExtractor(final ExecutableRunner executableRunner, final Gson gson, final DetectFileFinder fileFinder,
+    public ClangExtractor(final DetectConfiguration detectConfiguration, final ExecutableRunner executableRunner, final Gson gson, final DetectFileFinder fileFinder,
         final DirectoryManager directoryManager, final DependenciesListFileManager dependenciesListFileManager,
         final CodeLocationAssembler codeLocationAssembler) {
+        this.detectConfiguration = detectConfiguration;
         this.executableRunner = executableRunner;
         this.gson = gson;
         this.fileFinder = fileFinder;
@@ -103,9 +108,10 @@ public class ClangExtractor {
     }
 
     private Function<CompileCommand, Stream<String>> compileCommandToDependencyFilePathsConverter(final File workingDir) {
+        boolean cleanup = detectConfiguration == null ? true : detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.None);
         return (final CompileCommand compileCommand) -> {
             logger.info(String.format("Analyzing source file: %s", compileCommand.getFile()));
-            final Set<String> dependencyFilePaths = dependenciesListFileManager.generateDependencyFilePaths(workingDir, compileCommand);
+            final Set<String> dependencyFilePaths = dependenciesListFileManager.generateDependencyFilePaths(workingDir, compileCommand, cleanup);
             return dependencyFilePaths.stream();
         };
     }

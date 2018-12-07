@@ -55,12 +55,12 @@ public class ClangExtractorTest {
         final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
         final DependenciesListFileManager dependenciesListFileManager = Mockito.mock(DependenciesListFileManager.class);
 
-        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapper)).thenReturn(dependencyFilePaths);
+        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapper, true)).thenReturn(dependencyFilePaths);
         Mockito.when(executableRunner.executeFromDirQuietly(Mockito.any(File.class), Mockito.anyString(), Mockito.anyList())).thenReturn(new ExecutableOutput(0, "", ""));
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
-        final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(),
+        final ClangExtractor extractor = new ClangExtractor(null, executableRunner, gson, new DetectFileFinder(),
             directoryManager, dependenciesListFileManager,
             codeLocationAssembler);
 
@@ -97,14 +97,14 @@ public class ClangExtractorTest {
         final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
         final DependenciesListFileManager dependenciesListFileManager = Mockito.mock(DependenciesListFileManager.class);
 
-        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapperHelloWorld)).thenReturn(dependencyFilePathsHelloWorld);
-        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapperGoodbyeWorld)).thenReturn(dependencyFilePathsGoodbyeWorld);
+        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapperHelloWorld, true)).thenReturn(dependencyFilePathsHelloWorld);
+        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapperGoodbyeWorld, true)).thenReturn(dependencyFilePathsGoodbyeWorld);
 
         Mockito.when(executableRunner.executeFromDirQuietly(Mockito.any(File.class), Mockito.anyString(), Mockito.anyList())).thenReturn(new ExecutableOutput(0, "", ""));
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
-        final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(),
+        final ClangExtractor extractor = new ClangExtractor(null, executableRunner, gson, new DetectFileFinder(),
             directoryManager, dependenciesListFileManager,
             codeLocationAssembler);
 
@@ -145,13 +145,13 @@ public class ClangExtractorTest {
         final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
         final DependenciesListFileManager dependenciesListFileManager = Mockito.mock(DependenciesListFileManager.class);
 
-        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapperHelloWorld)).thenReturn(dependencyFilePathsHelloWorld);
-        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapperGoodbyeWorld)).thenReturn(dependencyFilePathsGoodbyeWorld);
+        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapperHelloWorld, true)).thenReturn(dependencyFilePathsHelloWorld);
+        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapperGoodbyeWorld, true)).thenReturn(dependencyFilePathsGoodbyeWorld);
         Mockito.when(executableRunner.executeFromDirQuietly(Mockito.any(File.class), Mockito.anyString(), Mockito.anyList())).thenReturn(new ExecutableOutput(0, "", ""));
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
-        final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(),
+        final ClangExtractor extractor = new ClangExtractor(null, executableRunner, gson, new DetectFileFinder(),
             directoryManager, dependenciesListFileManager,
             codeLocationAssembler);
 

@@ -28,9 +28,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -44,22 +45,27 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 public class DependenciesListFileManager {
-    private static final String REPLACEMENT_OUTPUT_FILENAME = "/dev/null";
     private static final String COMPILER_OUTPUT_FILE_OPTION = "-o";
-    public static final String DEPS_MK_FILENAME_PATTERN = "deps_%s_%d.mk";
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final Random random = new Random(new Date().getTime());
-    private final ExecutableRunner executableRunner;
+    private static final String REPLACEMENT_OUTPUT_FILENAME = "/dev/null";
+    private static final String DEPS_MK_FILENAME_PATTERN = "deps_%s_%d.mk";
 
-    public DependenciesListFileManager(final ExecutableRunner executableRunner) {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Random random = new Random();
+    private final ExecutableRunner executableRunner;
+    private final ClangCompileCommandParser compileCommandParser;
+
+    public DependenciesListFileManager(final ExecutableRunner executableRunner, final ClangCompileCommandParser compileCommandParser) {
         this.executableRunner = executableRunner;
+        this.compileCommandParser = compileCommandParser;
     }
 
-    public Set<String> generateDependencyFilePaths(final File workingDir, final CompileCommand compileCommand) {
+    public Set<String> generateDependencyFilePaths(final File workingDir, final CompileCommand compileCommand, final boolean cleanup) {
         final Set<String> dependencyFilePaths = new HashSet<>();
         final Optional<File> depsMkFile = generate(workingDir, compileCommand);
         dependencyFilePaths.addAll(parse(depsMkFile.orElse(null)));
-        depsMkFile.ifPresent(File::delete);
+        if (cleanup) {
+            depsMkFile.ifPresent(File::delete);
+        }
         return dependencyFilePaths;
     }
 
@@ -67,9 +73,11 @@ public class DependenciesListFileManager {
         final CompileCommand compileCommand) {
         final String depsMkFilename = deriveDependenciesListFilename(compileCommand);
         final File depsMkFile = new File(workingDir, depsMkFilename);
+        Map<String, String> optionOverrides = new HashMap<>(1);
+        optionOverrides.put(COMPILER_OUTPUT_FILE_OPTION, REPLACEMENT_OUTPUT_FILENAME);
         try {
-            executableRunner.executeFromDirQuietly(new File(compileCommand.getDirectory()), getCompilerCommand(compileCommand.getCommand()),
-                getCompilerArgsForGeneratingDepsMkFile(compileCommand.getCommand(), depsMkFile.getAbsolutePath()));
+            executableRunner.executeFromDirQuietly(new File(compileCommand.getDirectory()), compileCommandParser.getCompilerCommand(compileCommand.getCommand()),
+                compileCommandParser.getCompilerArgsForGeneratingDepsMkFile(compileCommand.getCommand(), depsMkFile.getAbsolutePath(), optionOverrides));
         } catch (final ExecutableRunnerException e) {
             logger.debug(String.format("Error generating dependencies file for command '%s': %s", compileCommand.getCommand(), e.getMessage()));
             return Optional.empty();
@@ -111,35 +119,9 @@ public class DependenciesListFileManager {
     }
 
     private String deriveDependenciesListFilename(final CompileCommand compileCommand) {
-        final int randomInt = random.nextInt(1) * 1000;
+        final int randomInt = random.nextInt(1000);
         final String sourceFilenameBase = getFilenameBase(compileCommand.getFile());
         return String.format(DEPS_MK_FILENAME_PATTERN, sourceFilenameBase, randomInt);
-    }
-
-    private String getCompilerCommand(final String origCompileCommand) {
-        final String[] parts = origCompileCommand.trim().split("\\s+");
-        return parts[0];
-    }
-
-    private List<String> getCompilerArgsForGeneratingDepsMkFile(final String origCompileCommand, final String depsMkFilePath) {
-        final String[] parts = origCompileCommand.trim().split("\\s+");
-        final List<String> argList = new ArrayList<>(parts.length + 3);
-        int partIndex = 0;
-        for (final String part : parts) {
-            if (partIndex > 0) {
-                if (COMPILER_OUTPUT_FILE_OPTION.equals(parts[partIndex - 1])) {
-                    logger.trace(String.format("Replacing compiler output file %s with %s", part, REPLACEMENT_OUTPUT_FILENAME));
-                    argList.add(REPLACEMENT_OUTPUT_FILENAME);
-                } else {
-                    argList.add(part);
-                }
-            }
-            partIndex++;
-        }
-        argList.add("-M");
-        argList.add("-MF");
-        argList.add(depsMkFilePath);
-        return argList;
     }
 
     private String getFilenameBase(final String filePathString) {
