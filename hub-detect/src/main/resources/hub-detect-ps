@@ -59,7 +59,7 @@ $EnvDetectExitCodePassthru = Get-EnvironmentVariable -Key "DETECT_EXIT_CODE_PASS
 # heap size, you would set DETECT_JAVA_OPTS=-Xmx6G.
 #$DetectJavaOpts = Get-EnvironmentVariable -Key "DETECT_JAVA_OPTS" -DefaultValue "";
 
-$Version = "1.0.0"
+$Version = "1.0.1"
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 #Enable TLS2
 
