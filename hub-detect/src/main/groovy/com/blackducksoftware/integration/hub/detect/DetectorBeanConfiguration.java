@@ -201,7 +201,7 @@ public class DetectorBeanConfiguration {
 
     @Bean
     public ClangExtractor clangExtractor() {
-        return new ClangExtractor(executableRunner, gson, detectFileFinder, directoryManager, clangDependenciesListFileParser(), codeLocationAssembler());
+        return new ClangExtractor(detectConfiguration, executableRunner, gson, detectFileFinder, directoryManager, clangDependenciesListFileParser(), codeLocationAssembler());
     }
 
     public List<ClangLinuxPackageManager> clangLinuxPackageManagers() {
