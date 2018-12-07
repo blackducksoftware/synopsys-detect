@@ -44,7 +44,7 @@ $EnvHomeTempFolder = "$HOME/tmp"
 
 # If you do not want to exit with the detect exit code,
 # set DETECT_EXIT_CODE_PASSTHRU to 1 and this script won't exit, but simply return it (pass it thru).
-$EnvDetectExitCodePassthru = Get-EnvironmentVariable -Key "DETECT_EXIT_CODE_PASSTHRU" -DefaultValue "1";
+$EnvDetectExitCodePassthru = Get-EnvironmentVariable -Key "DETECT_EXIT_CODE_PASSTHRU" -DefaultValue "";
 
 # If you want to pass proxy information, use detect environment variables such as 'blackduck.proxy.host'
 # If you do pass the proxy information in this way, you do not need to supply it to detect as arguments. 
@@ -59,7 +59,7 @@ $EnvDetectExitCodePassthru = Get-EnvironmentVariable -Key "DETECT_EXIT_CODE_PASS
 # heap size, you would set DETECT_JAVA_OPTS=-Xmx6G.
 #$DetectJavaOpts = Get-EnvironmentVariable -Key "DETECT_JAVA_OPTS" -DefaultValue "";
 
-$Version = "1.0.0"
+$Version = "1.0.1"
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 #Enable TLS2
 
