@@ -57,9 +57,15 @@ public class NugetDependencyNodeBuilder {
     public DependencyGraph createDependencyGraph(final List<NugetPackageId> packageDependencies) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        for (final NugetPackageSet packageSet : packageSets) {
-            for (final NugetPackageId id : packageSet.dependencies) {
-                graph.addParentWithChild(convertPackageId(packageSet.packageId), convertPackageId(id));
+        if (packageSets != null) {
+            for (final NugetPackageSet packageSet : packageSets) {
+                if (packageSet.dependencies != null) {
+                    for (final NugetPackageId id : packageSet.dependencies) {
+                        if (packageSet.packageId != null) {
+                            graph.addParentWithChild(convertPackageId(packageSet.packageId), convertPackageId(id));
+                        }
+                    }
+                }
             }
         }
 
