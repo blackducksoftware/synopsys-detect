@@ -15,21 +15,24 @@ public class DetectLogParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static String CONFIGURATION_MARKER = "------------------------------------------------------------";
-    private static String EXTRACTION_MARKER = "------------------------------------------------------------------------------------------------------";
+    private static String EXTRACTION_START_MARKER = "Extracting";
+    private static String EXTRACTION_SEPERATOR = "------------------------------------------------------------------------------------------------------";
     private static String DETECT_START_MARKER = "INFO  [main] --- Configuration processed completely.";
     private static String DETECT_VERSION_MARKER = "Detect Version: ";
 
     private static String PROJECT_NAME_MARKER = "Project Name: ";
     private static String PROJECT_VERSION_MARKER = "Project Version Name: ";
 
-    private  DetectLogPropertyParser logPropertyParser = new DetectLogPropertyParser();
-    private  DetectExtractionParser extractionParser = new DetectExtractionParser();
+    private DetectLogPropertyParser logPropertyParser = new DetectLogPropertyParser();
+    private DetectExtractionParser extractionParser = new DetectExtractionParser();
+
     private enum ConfigurationParseState {
         NOT_STARTED,
         PRE_CONFIGURATION,
         IN_CONFIGURATION,
         POST_CONFIGURATION
     }
+
     private enum ExtractionParseState {
         NONE,
         IN_HEADER,
@@ -46,28 +49,32 @@ public class DetectLogParser {
 
         ConfigurationParseState configurationState = ConfigurationParseState.PRE_CONFIGURATION;
         ExtractionParseState extractionState = ExtractionParseState.NONE;
+
+        String previousLine = "";
+        String line = "";
         try {
             try (FileInputStream dependenciesInputStream = new FileInputStream(file); BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8));) {
                 while (reader.ready()) {
-                    final String line = reader.readLine();
+                    previousLine = line;
+                    line = reader.readLine();
 
-                    if (configurationState == ConfigurationParseState.NOT_STARTED){
-                        if (line.contains(DETECT_START_MARKER)){
+                    if (configurationState == ConfigurationParseState.NOT_STARTED) {
+                        if (line.contains(DETECT_START_MARKER)) {
                             configurationState = ConfigurationParseState.PRE_CONFIGURATION;
                             continue;
                         }
                     }
 
-                    if (configurationState == ConfigurationParseState.PRE_CONFIGURATION){
-                        if (line.equalsIgnoreCase(CONFIGURATION_MARKER)){
+                    if (configurationState == ConfigurationParseState.PRE_CONFIGURATION) {
+                        if (line.equalsIgnoreCase(CONFIGURATION_MARKER)) {
                             configurationState = ConfigurationParseState.IN_CONFIGURATION;
                             continue;
                         }
-                        if (line.contains(DETECT_VERSION_MARKER)){
+                        if (line.contains(DETECT_VERSION_MARKER)) {
                             parseResult.loggedConfiguration.detectVersion = DoctorStringUtils.substringAfter(line, DETECT_VERSION_MARKER);
                         }
-                    } else if (configurationState == ConfigurationParseState.IN_CONFIGURATION){
-                        if (line.equalsIgnoreCase(CONFIGURATION_MARKER)){
+                    } else if (configurationState == ConfigurationParseState.IN_CONFIGURATION) {
+                        if (line.equalsIgnoreCase(CONFIGURATION_MARKER)) {
                             configurationState = ConfigurationParseState.POST_CONFIGURATION;
                             continue;
                         } else {
@@ -76,26 +83,26 @@ public class DetectLogParser {
                         }
                     }
 
-                    if (configurationState == ConfigurationParseState.POST_CONFIGURATION){
-                        if (extractionState == ExtractionParseState.NONE){
-                            if (line.contains(EXTRACTION_MARKER)){
+                    if (configurationState == ConfigurationParseState.POST_CONFIGURATION) {
+                        if (extractionState == ExtractionParseState.NONE) {
+                            if (line.contains(EXTRACTION_SEPERATOR) && previousLine.contains(EXTRACTION_START_MARKER)) {
                                 extractionState = ExtractionParseState.IN_HEADER;
                                 currentExtraction = new LoggedDetectExtraction();
                             }
-                        } else if (extractionState == ExtractionParseState.IN_HEADER){
-                            if (line.contains(EXTRACTION_MARKER)){
+                        } else if (extractionState == ExtractionParseState.IN_HEADER) {
+                            if (line.contains(EXTRACTION_SEPERATOR)) {
                                 extractionState = ExtractionParseState.IN_BODY;
                             } else {
                                 extractionParser.parseExtractionHeader(currentExtraction, line);
                             }
-                        } else if (extractionState == ExtractionParseState.IN_BODY){
-                            if (line.contains(EXTRACTION_MARKER)){
+                        } else if (extractionState == ExtractionParseState.IN_BODY) {
+                            if (line.contains(EXTRACTION_SEPERATOR)) {
                                 extractionState = ExtractionParseState.IN_FOOTER;
                             } else {
                                 extractionParser.parseExtractionBody(currentExtraction, line);
                             }
-                        } else if (extractionState == ExtractionParseState.IN_FOOTER){
-                            if (line.contains(EXTRACTION_MARKER)){
+                        } else if (extractionState == ExtractionParseState.IN_FOOTER) {
+                            if (line.contains(EXTRACTION_SEPERATOR)) {
                                 extractionState = ExtractionParseState.NONE;
                                 parseResult.loggedConfiguration.extractions.add(currentExtraction);
                             } else {
@@ -104,10 +111,9 @@ public class DetectLogParser {
                         }
                     }
 
-                    if (configurationState == ConfigurationParseState.POST_CONFIGURATION && extractionState == ExtractionParseState.NONE){
+                    if (configurationState == ConfigurationParseState.POST_CONFIGURATION && extractionState == ExtractionParseState.NONE) {
                         //parse something else?
                     }
-
                 }
             }
             parseResult.success = true;
@@ -124,7 +130,5 @@ public class DetectLogParser {
             result.loggedConfiguration.loggedPropertyList.add(property);
         }
     }
-
-
 
 }

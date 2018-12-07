@@ -189,7 +189,8 @@ public class DetectorBeanConfiguration {
         return new DependenciesListFileManager(executableRunner, clangCompileCommandParser());
     }
 
-    @Bean ClangCompileCommandParser clangCompileCommandParser() {
+    @Bean
+    ClangCompileCommandParser clangCompileCommandParser() {
         return new ClangCompileCommandParser();
     }
 
@@ -353,12 +354,12 @@ public class DetectorBeanConfiguration {
 
     @Bean
     public NugetInspectorExtractor nugetInspectorExtractor() {
-        return new NugetInspectorExtractor(directoryManager, nugetInspectorPackager(), executableRunner, detectFileFinder, detectConfiguration);
+        return new NugetInspectorExtractor(nugetInspectorPackager(), detectFileFinder, detectConfiguration);
     }
 
     @Bean
     public NugetInspectorManager nugetInspectorManager() {
-        return new NugetInspectorManager(directoryManager, executableFinder, detectConfiguration, airGapManager, artifactResolver, detectInfo, detectFileFinder);
+        return new NugetInspectorManager(directoryManager, executableFinder, executableRunner, detectConfiguration, airGapManager, artifactResolver, detectInfo, detectFileFinder);
     }
 
     @Bean
@@ -548,7 +549,7 @@ public class DetectorBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetProjectDetector nugetProjectBomTool(final DetectorEnvironment environment) {
-        return new NugetProjectDetector(environment, detectFileFinder, nugetInspectorManager(), nugetInspectorExtractor());
+        return new NugetProjectDetector(environment, directoryManager, detectFileFinder, nugetInspectorManager(), nugetInspectorExtractor());
     }
 
     @Bean
@@ -560,7 +561,7 @@ public class DetectorBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetSolutionDetector nugetSolutionBomTool(final DetectorEnvironment environment) {
-        return new NugetSolutionDetector(environment, detectFileFinder, nugetInspectorManager(), nugetInspectorExtractor());
+        return new NugetSolutionDetector(environment, detectFileFinder, nugetInspectorManager(), nugetInspectorExtractor(), directoryManager);
     }
 
     @Bean

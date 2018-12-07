@@ -36,14 +36,16 @@ public class DotNetCoreNugetInspector implements NugetInspector {
 
     private String dotnetExe;
     private String inspectorDll;
+    private ExecutableRunner executableRunner;
 
-    public DotNetCoreNugetInspector(String dotnetExe, String inspectorDll) {
+    public DotNetCoreNugetInspector(String dotnetExe, String inspectorDll, ExecutableRunner executableRunner) {
         this.dotnetExe = dotnetExe;
         this.inspectorDll = inspectorDll;
+        this.executableRunner = executableRunner;
     }
 
     @Override
-    public ExecutableOutput execute(ExecutableRunner executableRunner, File workingDirectory, List<String> arguments) throws ExecutableRunnerException {
+    public ExecutableOutput execute(File workingDirectory, List<String> arguments) throws ExecutableRunnerException {
         List<String> dotnetArguments = new ArrayList<String>();
         dotnetArguments.add(inspectorDll);
         dotnetArguments.addAll(arguments);

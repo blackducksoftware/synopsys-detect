@@ -44,6 +44,7 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 import com.blackducksoftware.integration.hub.detect.util.DetectZipUtil;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.ArtifactResolver;
 import com.blackducksoftware.integration.hub.detect.workflow.ArtifactoryConstants;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
@@ -56,6 +57,7 @@ public class NugetInspectorManager {
 
     private final DirectoryManager directoryManager;
     private final ExecutableFinder executableFinder;
+    private final ExecutableRunner executableRunner;
     private final DetectConfiguration detectConfiguration;
     private final AirGapManager airGapManager;
     private final ArtifactResolver artifactResolver;
@@ -66,10 +68,12 @@ public class NugetInspectorManager {
     private NugetInspector resolvedNugetInspector;
 
     public NugetInspectorManager(final DirectoryManager directoryManager, final ExecutableFinder executableFinder,
-        final DetectConfiguration detectConfiguration, final AirGapManager airGapManager, final ArtifactResolver artifactResolver, final DetectInfo detectInfo,
+        final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration, final AirGapManager airGapManager, final ArtifactResolver artifactResolver,
+        final DetectInfo detectInfo,
         final DetectFileFinder detectFileFinder) {
         this.directoryManager = directoryManager;
         this.executableFinder = executableFinder;
+        this.executableRunner = executableRunner;
         this.detectConfiguration = detectConfiguration;
         this.airGapManager = airGapManager;
         this.artifactResolver = artifactResolver;
@@ -167,7 +171,7 @@ public class NugetInspectorManager {
         if (foundExe.isPresent() && foundExe.get().exists()) {
             String inspectorExe = foundExe.get().toString();
             logger.info("Found nuget inspector: " + inspectorExe);
-            return new DotNetCoreNugetInspector(dotnetExecutable, inspectorExe);
+            return new DotNetCoreNugetInspector(dotnetExecutable, inspectorExe, executableRunner);
         } else {
             throw new DetectorException("Unable to find nuget inspector, looking for " + dotnetInspectorName + " in " + toolsFolder.toString());
         }
@@ -184,7 +188,7 @@ public class NugetInspectorManager {
         if (foundExe.isPresent() && foundExe.get().exists()) {
             String inspectorExe = foundExe.get().toString();
             logger.info("Found nuget inspector: " + inspectorExe);
-            return new ExeNugetInspector(inspectorExe);
+            return new ExeNugetInspector(executableRunner, inspectorExe);
         } else {
             throw new DetectorException("Unable to find nuget inspector named '" + exeName + "' in " + toolsFolder.getAbsolutePath());
         }

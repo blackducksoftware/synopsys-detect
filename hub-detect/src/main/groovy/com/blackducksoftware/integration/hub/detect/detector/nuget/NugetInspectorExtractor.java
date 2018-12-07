@@ -42,11 +42,9 @@ import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthor
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.detector.nuget.inspector.NugetInspector;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
 
@@ -55,27 +53,22 @@ public class NugetInspectorExtractor {
 
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorExtractor.class);
 
-    private final DirectoryManager directoryManager;
     private final NugetInspectorPackager nugetInspectorPackager;
-    private final ExecutableRunner executableRunner;
     private final DetectFileFinder detectFileFinder;
     private final DetectConfiguration detectConfiguration;
 
-    public NugetInspectorExtractor(final DirectoryManager directoryManager, final NugetInspectorPackager nugetInspectorPackager, final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder,
+    public NugetInspectorExtractor(final NugetInspectorPackager nugetInspectorPackager, final DetectFileFinder detectFileFinder,
         final DetectConfiguration detectConfiguration) {
-        this.directoryManager = directoryManager;
         this.nugetInspectorPackager = nugetInspectorPackager;
-        this.executableRunner = executableRunner;
         this.detectFileFinder = detectFileFinder;
         this.detectConfiguration = detectConfiguration;
     }
 
-    public Extraction extract(final File directory, NugetInspector inspector, final ExtractionId extractionId) {
+    public Extraction extract(final File targetDirectory, File outputDirectory, NugetInspector inspector, final ExtractionId extractionId) {
         try {
-            final File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
 
             final List<String> options = new ArrayList<>(Arrays.asList(
-                "--target_path=" + directory.toString(),
+                "--target_path=" + targetDirectory.toString(),
                 "--output_directory=" + outputDirectory.getCanonicalPath(),
                 "--ignore_failure=" + detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NUGET_IGNORE_FAILURE, PropertyAuthority.None)));
 
@@ -100,7 +93,7 @@ public class NugetInspectorExtractor {
                 options.add("-v");
             }
 
-            final ExecutableOutput executableOutput = inspector.execute(executableRunner, directory, options);
+            final ExecutableOutput executableOutput = inspector.execute(targetDirectory, options);
 
             if (executableOutput.getReturnCode() != 0) {
                 return new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", options), executableOutput.getReturnCode())).build();
@@ -110,8 +103,6 @@ public class NugetInspectorExtractor {
 
             final List<NugetParseResult> parseResults = new ArrayList<>();
             for (final File dependencyNodeFile : dependencyNodeFiles) {
-                //TODO fix
-                //directoryManager.registerFileOfInterest(extractionId, dependencyNodeFile);
                 final NugetParseResult result = nugetInspectorPackager.createDetectCodeLocation(dependencyNodeFile);
                 parseResults.add(result);
             }
@@ -130,7 +121,7 @@ public class NugetInspectorExtractor {
             codeLocations.stream().forEach(codeLocation -> {
                 final String sourcePathKey = codeLocation.getSourcePath().toLowerCase();
                 if (codeLocationsBySource.containsKey(sourcePathKey)) {
-                    logger.info("Multiple project code locations were generated for: " + directory.toString());
+                    logger.info("Multiple project code locations were generated for: " + targetDirectory.toString());
                     logger.info("This most likely means the same project exists in multiple solutions.");
                     logger.info("The code location's dependencies will be combined, in the future they will exist seperately for each solution.");
                     final DetectCodeLocation destination = codeLocationsBySource.get(sourcePathKey);

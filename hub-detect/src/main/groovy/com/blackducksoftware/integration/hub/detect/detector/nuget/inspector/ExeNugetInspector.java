@@ -34,13 +34,15 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class ExeNugetInspector implements NugetInspector {
 
     private String inspectorExe;
+    private ExecutableRunner executableRunner;
 
-    public ExeNugetInspector(String inspectorExe) {
+    public ExeNugetInspector(ExecutableRunner executableRunner, String inspectorExe) {
+        this.executableRunner = executableRunner;
         this.inspectorExe = inspectorExe;
     }
 
     @Override
-    public ExecutableOutput execute(ExecutableRunner executableRunner, File workingDirectory, List<String> arguments) throws ExecutableRunnerException {
+    public ExecutableOutput execute(File workingDirectory, List<String> arguments) throws ExecutableRunnerException {
         final Executable hubNugetInspectorExecutable = new Executable(workingDirectory, inspectorExe, arguments);
         final ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable);
         return executableOutput;

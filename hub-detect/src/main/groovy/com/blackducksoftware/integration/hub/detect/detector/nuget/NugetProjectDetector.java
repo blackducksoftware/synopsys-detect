@@ -23,6 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.detector.nuget;
 
+import java.io.File;
+
 import com.blackducksoftware.integration.hub.detect.detector.Detector;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
@@ -31,6 +33,7 @@ import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.detector.nuget.inspector.NugetInspector;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.FilesNotFoundDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.InspectorNotFoundDetectorResult;
@@ -84,14 +87,17 @@ public class NugetProjectDetector extends Detector {
         "*.rproj"
     };
 
+    private final DirectoryManager directoryManager;
     private final DetectFileFinder fileFinder;
     private final NugetInspectorManager nugetInspectorManager;
     private final NugetInspectorExtractor nugetInspectorExtractor;
 
     private NugetInspector inspector;
 
-    public NugetProjectDetector(final DetectorEnvironment environment, final DetectFileFinder fileFinder, final NugetInspectorManager nugetInspectorManager, final NugetInspectorExtractor nugetInspectorExtractor) {
+    public NugetProjectDetector(final DetectorEnvironment environment, final DirectoryManager directoryManager, final DetectFileFinder fileFinder,
+        final NugetInspectorManager nugetInspectorManager, final NugetInspectorExtractor nugetInspectorExtractor) {
         super(environment, "Project", DetectorType.NUGET);
+        this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;
         this.nugetInspectorExtractor = nugetInspectorExtractor;
         this.nugetInspectorManager = nugetInspectorManager;
@@ -120,7 +126,8 @@ public class NugetProjectDetector extends Detector {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return nugetInspectorExtractor.extract(environment.getDirectory(), inspector, extractionId);
+        final File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
+        return nugetInspectorExtractor.extract(environment.getDirectory(), outputDirectory, inspector, extractionId);
     }
 
 }

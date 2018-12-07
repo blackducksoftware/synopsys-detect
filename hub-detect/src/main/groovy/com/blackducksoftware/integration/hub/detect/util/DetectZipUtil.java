@@ -39,6 +39,10 @@ import org.apache.commons.compress.utils.IOUtils;
 
 public class DetectZipUtil {
 
+    public static void unzip(File zip, File dest) throws IOException {
+        unzip(zip, dest, Charset.defaultCharset());
+    }
+
     public static void unzip(File zip, File dest, Charset charset) throws IOException {
         Path destPath = dest.toPath();
         try (ZipFile zipFile = new ZipFile(zip, ZipFile.OPEN_READ, charset)) {

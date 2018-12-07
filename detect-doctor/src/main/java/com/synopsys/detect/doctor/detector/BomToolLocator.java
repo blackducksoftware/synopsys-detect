@@ -1,4 +1,4 @@
-package com.synopsys.detect.doctor;
+package com.synopsys.detect.doctor.detector;
 
 public class BomToolLocator {
 

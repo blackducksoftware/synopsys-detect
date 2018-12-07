@@ -60,7 +60,7 @@ public class ExecutableFinder {
             logger.info("Resolved executable " + executableType.toString() + " with file: " + executable.getAbsolutePath());
             return executable.getAbsolutePath();
         } else {
-            logger.warn("Unable to resolve executable " + executableType.toString());
+            logger.info("Unable to resolve executable " + executableType.toString());
             return null;
         }
     }

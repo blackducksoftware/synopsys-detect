@@ -17,6 +17,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.detector.Detector;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
+import com.blackducksoftware.integration.hub.detect.property.SpringPropertySource;
 import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -39,7 +40,7 @@ public class DetectorFactoryTest {
     @Before
     public void createSpringContext() {
         ConfigurableEnvironment environment = new StandardEnvironment();
-        DetectConfiguration mockConfig = new DetectConfiguration(new DetectPropertySource(environment), new DetectPropertyMap());
+        DetectConfiguration mockConfig = new DetectConfiguration(new DetectPropertySource(new SpringPropertySource(environment)), new DetectPropertyMap());
 
         runContext = new AnnotationConfigApplicationContext();
         runContext.setDisplayName("Detect Run Test");

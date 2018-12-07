@@ -58,6 +58,7 @@ import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManag
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
+import com.blackducksoftware.integration.hub.detect.property.SpringPropertySource;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
@@ -95,7 +96,8 @@ public class BootManager {
 
         DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
 
-        DetectPropertySource propertySource = new DetectPropertySource(environment);
+        SpringPropertySource springPropertySource = new SpringPropertySource(environment);
+        DetectPropertySource propertySource = new DetectPropertySource(springPropertySource);
         DetectPropertyMap propertyMap = new DetectPropertyMap();
         DetectConfiguration detectConfiguration = new DetectConfiguration(propertySource, propertyMap);
         DetectOptionManager detectOptionManager = new DetectOptionManager(detectConfiguration, detectInfo);

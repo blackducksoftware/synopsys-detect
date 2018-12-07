@@ -1,6 +1,5 @@
-package com.synopsys.detect.doctor;
+package com.synopsys.detect.doctor.executable;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -11,6 +10,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class DoctorExecutableRunner extends ExecutableRunner {
     @Override
     public ExecutableOutput runExecutable(final Executable executable, final Consumer<String> standardLoggingMethod, final Consumer<String> traceLoggingMethod) throws ExecutableRunnerException {
-        return new ExecutableOutput(0, "","");
+        return new ExecutableOutput(0, "", "");
     }
 }
