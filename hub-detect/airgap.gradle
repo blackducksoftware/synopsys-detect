@@ -142,7 +142,7 @@ File downloadDockerInspectorAirGapZip(String dockerAirGapPath, final String dock
 
 task downloadDockerInspector() {
     doLast {
-        final String dockerInspectorArtifactoryBaseUrl = 'https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector'
+        final String dockerInspectorArtifactoryBaseUrl = 'https://repo.blackducksoftware.com/artifactory/bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector'
         final File dockerInspectorMetadataFile = fetchDockerInspectorMavenMetadata(dockerAirGapPath, dockerInspectorArtifactoryBaseUrl)
         final String dockerInspectorLatestVersion = getLatestDockerInspectorVersion(dockerInspectorMetadataFile)
         final File dockerInspectorAirGapZipFile = downloadDockerInspectorAirGapZip(dockerAirGapPath, dockerInspectorArtifactoryBaseUrl, dockerInspectorLatestVersion)
