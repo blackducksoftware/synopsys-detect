@@ -1,445 +1,348 @@
 {
+  "rootExternalDataIds": [
+    "http:rubygems/second_curtain/0_6_0",
+    "http:rubygems/danger/5_1_1",
+    "http:rubygems/cocoapods_check/1_0_1",
+    "http:rubygems/cocoapods_keys/2_0_0",
+    "http:rubygems/xcpretty/0_2_7",
+    "http:rubygems/lowdown/1_0_0",
+    "http:rubygems/cocoapods/1_2_1",
+    "http:rubygems/nokogiri/1_7_1"
+  ],
   "externalDataIdRelationships": {
-    "http:rubygems/nokogiri/1_7_1": [
-      "http:rubygems/mini_portile2/2_1_0"
-    ],
-    "http:rubygems/mini_portile2/2_1_0": [],
-    "http:rubygems/xcpretty/0_2_7": [
-      "http:rubygems/rouge/2_0_7"
-    ],
-    "http:rubygems/rouge/2_0_7": [],
-    "http:rubygems/lowdown/1_0_0": [
-      "http:rubygems/celluloid_io/0_17_3",
-      "http:rubygems/http_2/0_8_3"
-    ],
-    "http:rubygems/celluloid_io/0_17_3": [
-      "http:rubygems/nio4r/2_0_0",
-      "http:rubygems/timers/4_1_2",
-      "http:rubygems/celluloid/0_17_3"
-    ],
-    "http:rubygems/nio4r/2_0_0": [],
-    "http:rubygems/timers/4_1_2": [
-      "http:rubygems/hitimes/1_2_4"
-    ],
-    "http:rubygems/hitimes/1_2_4": [],
-    "http:rubygems/celluloid/0_17_3": [
-      "http:rubygems/celluloid_extras/0_20_5",
-      "http:rubygems/celluloid_pool/0_20_5",
-      "http:rubygems/celluloid_fsm/0_20_5",
-      "http:rubygems/celluloid_supervision/0_20_6",
-      "http:rubygems/timers/4_1_2",
-      "http:rubygems/celluloid_essentials/0_20_5"
-    ],
-    "http:rubygems/celluloid_extras/0_20_5": [
+    "http:rubygems/celluloid_supervision/0_20_6": [
       "http:rubygems/timers/4_1_2"
     ],
     "http:rubygems/celluloid_pool/0_20_5": [
       "http:rubygems/timers/4_1_2"
     ],
-    "http:rubygems/celluloid_fsm/0_20_5": [
-      "http:rubygems/timers/4_1_2"
-    ],
-    "http:rubygems/celluloid_supervision/0_20_6": [
-      "http:rubygems/timers/4_1_2"
+    "http:rubygems/cocoapods_check/1_0_1": [
+      "http:rubygems/cocoapods/1_2_1"
     ],
     "http:rubygems/celluloid_essentials/0_20_5": [
       "http:rubygems/timers/4_1_2"
     ],
-    "http:rubygems/http_2/0_8_3": [],
-    "http:rubygems/second_curtain/0_6_0": [
-      "http:rubygems/mustache/0_99_8",
-      "http:rubygems/aws_sdk_v1/1_67_0"
-    ],
-    "http:rubygems/mustache/0_99_8": [],
-    "http:rubygems/aws_sdk_v1/1_67_0": [
-      "http:rubygems/nokogiri/1_7_1",
-      "http:rubygems/json/1_8_6"
-    ],
-    "http:rubygems/json/1_8_6": [],
-    "http:rubygems/cocoapods_check/1_0_1": [
-      "http:rubygems/cocoapods/1_2_1"
-    ],
-    "http:rubygems/cocoapods/1_2_1": [
-      "http:rubygems/molinillo/0_5_7",
-      "http:rubygems/cocoapods_stats/1_0_0",
-      "http:rubygems/cocoapods_plugins/1_0_0",
-      "http:rubygems/nap/1_1_0",
-      "http:rubygems/cocoapods_trunk/1_2_0",
-      "http:rubygems/cocoapods_deintegrate/1_0_1",
-      "http:rubygems/ruby_macho/1_1_0",
-      "http:rubygems/fourflusher/2_0_1",
-      "http:rubygems/cocoapods_core/1_2_1",
-      "http:rubygems/cocoapods_search/1_0_0",
-      "http:rubygems/colored2/3_1_2",
-      "http:rubygems/escape/0_0_4",
-      "http:rubygems/gh_inspector/1_0_3",
-      "http:rubygems/cocoapods_downloader/1_1_3",
-      "http:rubygems/xcodeproj/1_4_4",
-      "http:rubygems/cocoapods_try/1_1_0",
-      "http:rubygems/claide/1_0_1",
-      "http:rubygems/activesupport/4_2_8"
-    ],
-    "http:rubygems/molinillo/0_5_7": [],
-    "http:rubygems/cocoapods_stats/1_0_0": [],
-    "http:rubygems/cocoapods_plugins/1_0_0": [
-      "http:rubygems/nap/1_1_0"
-    ],
-    "http:rubygems/nap/1_1_0": [],
-    "http:rubygems/cocoapods_trunk/1_2_0": [
-      "http:rubygems/netrc/0_7_8",
-      "http:rubygems/nap/1_1_0"
-    ],
-    "http:rubygems/netrc/0_7_8": [],
-    "http:rubygems/cocoapods_deintegrate/1_0_1": [],
-    "http:rubygems/ruby_macho/1_1_0": [],
-    "http:rubygems/fourflusher/2_0_1": [],
-    "http:rubygems/cocoapods_core/1_2_1": [
-      "http:rubygems/nap/1_1_0",
-      "http:rubygems/fuzzy_match/2_0_4",
-      "http:rubygems/activesupport/4_2_8"
-    ],
-    "http:rubygems/fuzzy_match/2_0_4": [],
-    "http:rubygems/activesupport/4_2_8": [
-      "http:rubygems/tzinfo/1_2_3",
-      "http:rubygems/minitest/5_10_1",
-      "http:rubygems/thread_safe/0_3_6",
-      "http:rubygems/i18n/0_8_1"
-    ],
-    "http:rubygems/tzinfo/1_2_3": [
-      "http:rubygems/thread_safe/0_3_6"
-    ],
-    "http:rubygems/thread_safe/0_3_6": [],
-    "http:rubygems/minitest/5_10_1": [],
-    "http:rubygems/i18n/0_8_1": [],
-    "http:rubygems/cocoapods_search/1_0_0": [],
-    "http:rubygems/colored2/3_1_2": [],
-    "http:rubygems/escape/0_0_4": [],
-    "http:rubygems/gh_inspector/1_0_3": [],
-    "http:rubygems/cocoapods_downloader/1_1_3": [],
-    "http:rubygems/xcodeproj/1_4_4": [
-      "http:rubygems/CFPropertyList/2_3_5",
-      "http:rubygems/colored2/3_1_2",
-      "http:rubygems/nanaimo/0_2_3",
-      "http:rubygems/claide/1_0_1"
-    ],
-    "http:rubygems/CFPropertyList/2_3_5": [],
-    "http:rubygems/nanaimo/0_2_3": [],
-    "http:rubygems/claide/1_0_1": [],
-    "http:rubygems/cocoapods_try/1_1_0": [],
-    "http:rubygems/danger/5_1_1": [
-      "http:rubygems/colored2/3_1_2",
-      "http:rubygems/claide_plugins/0_9_2",
-      "http:rubygems/cork/0_3_0",
-      "http:rubygems/git/1_3_0",
-      "http:rubygems/kramdown/1_13_2",
-      "http:rubygems/terminal_table/1_7_3",
-      "http:rubygems/octokit/4_7_0",
-      "http:rubygems/claide/1_0_1",
-      "http:rubygems/faraday_http_cache/1_3_1",
-      "http:rubygems/faraday/0_12_1"
-    ],
-    "http:rubygems/claide_plugins/0_9_2": [
-      "http:rubygems/cork/0_3_0",
-      "http:rubygems/nap/1_1_0",
-      "http:rubygems/open4/1_3_4"
-    ],
     "http:rubygems/cork/0_3_0": [
       "http:rubygems/colored2/3_1_2"
     ],
-    "http:rubygems/open4/1_3_4": [],
-    "http:rubygems/git/1_3_0": [],
-    "http:rubygems/kramdown/1_13_2": [],
+    "http:rubygems/celluloid_io/0_17_3": [
+      "http:rubygems/timers/4_1_2",
+      "http:rubygems/celluloid/0_17_3",
+      "http:rubygems/nio4r/2_0_0"
+    ],
+    "http:rubygems/celluloid_fsm/0_20_5": [
+      "http:rubygems/timers/4_1_2"
+    ],
+    "http:rubygems/xcodeproj/1_4_4": [
+      "http:rubygems/claide/1_0_1",
+      "http:rubygems/colored2/3_1_2",
+      "http:rubygems/CFPropertyList/2_3_5",
+      "http:rubygems/nanaimo/0_2_3"
+    ],
     "http:rubygems/terminal_table/1_7_3": [
       "http:rubygems/unicode_display_width/1_1_3"
     ],
-    "http:rubygems/unicode_display_width/1_1_3": [],
-    "http:rubygems/octokit/4_7_0": [
-      "http:rubygems/sawyer/0_8_1"
+    "http:rubygems/cocoapods_core/1_2_1": [
+      "http:rubygems/cocoapods_core/1_2_1",
+      "http:rubygems/activesupport/4_2_8",
+      "http:rubygems/fuzzy_match/2_0_4",
+      "http:rubygems/nap/1_1_0"
     ],
-    "http:rubygems/sawyer/0_8_1": [
-      "http:rubygems/addressable/2_5_1",
-      "http:rubygems/faraday/0_12_1"
+    "http:rubygems/cocoapods_plugins/1_0_0": [
+      "http:rubygems/nap/1_1_0"
     ],
-    "http:rubygems/addressable/2_5_1": [
-      "http:rubygems/public_suffix/2_0_5"
+    "http:rubygems/timers/4_1_2": [
+      "http:rubygems/hitimes/1_2_4"
     ],
-    "http:rubygems/public_suffix/2_0_5": [],
-    "http:rubygems/faraday/0_12_1": [
-      "http:rubygems/multipart_post/2_0_0"
-    ],
-    "http:rubygems/multipart_post/2_0_0": [],
-    "http:rubygems/faraday_http_cache/1_3_1": [
-      "http:rubygems/faraday/0_12_1"
-    ],
-    "http:rubygems/cocoapods_keys/2_0_0": [
-      "http:rubygems/dotenv/2_2_1",
-      "http:rubygems/osx_keychain/1_0_1"
-    ],
-    "http:rubygems/dotenv/2_2_1": [],
     "http:rubygems/osx_keychain/1_0_1": [
       "http:rubygems/RubyInline/3_12_4"
     ],
     "http:rubygems/RubyInline/3_12_4": [
       "http:rubygems/ZenTest/4_11_1"
     ],
-    "http:rubygems/ZenTest/4_11_1": []
+    "http:rubygems/aws_sdk_v1/1_67_0": [
+      "http:rubygems/json/1_8_6",
+      "http:rubygems/nokogiri/1_7_1"
+    ],
+    "http:rubygems/tzinfo/1_2_3": [
+      "http:rubygems/thread_safe/0_3_6"
+    ],
+    "http:rubygems/lowdown/1_0_0": [
+      "http:rubygems/celluloid_io/0_17_3",
+      "http:rubygems/http_2/0_8_3"
+    ],
+    "http:rubygems/second_curtain/0_6_0": [
+      "http:rubygems/aws_sdk_v1/1_67_0",
+      "http:rubygems/mustache/0_99_8"
+    ],
+    "http:rubygems/danger/5_1_1": [
+      "http:rubygems/faraday/0_12_1",
+      "http:rubygems/terminal_table/1_7_3",
+      "http:rubygems/claide/1_0_1",
+      "http:rubygems/colored2/3_1_2",
+      "http:rubygems/faraday_http_cache/1_3_1",
+      "http:rubygems/octokit/4_7_0",
+      "http:rubygems/git/1_3_0",
+      "http:rubygems/cork/0_3_0",
+      "http:rubygems/kramdown/1_13_2",
+      "http:rubygems/claide_plugins/0_9_2"
+    ],
+    "http:rubygems/activesupport/4_2_8": [
+      "http:rubygems/thread_safe/0_3_6",
+      "http:rubygems/minitest/5_10_1",
+      "http:rubygems/tzinfo/1_2_3",
+      "http:rubygems/i18n/0_8_1"
+    ],
+    "http:rubygems/faraday_http_cache/1_3_1": [
+      "http:rubygems/faraday/0_12_1"
+    ],
+    "http:rubygems/netrc/0_7_8": [
+      "http:rubygems/netrc/0_7_8"
+    ],
+    "http:rubygems/cocoapods_keys/2_0_0": [
+      "http:rubygems/dotenv/2_2_1",
+      "http:rubygems/osx_keychain/1_0_1"
+    ],
+    "http:rubygems/claide_plugins/0_9_2": [
+      "http:rubygems/open4/1_3_4",
+      "http:rubygems/cork/0_3_0",
+      "http:rubygems/nap/1_1_0"
+    ],
+    "http:rubygems/xcpretty/0_2_7": [
+      "http:rubygems/rouge/2_0_7"
+    ],
+    "http:rubygems/cocoapods/1_2_1": [
+      "http:rubygems/escape/0_0_4",
+      "http:rubygems/molinillo/0_5_7",
+      "http:rubygems/cocoapods_deintegrate/1_0_1",
+      "http:rubygems/claide/1_0_1",
+      "http:rubygems/colored2/3_1_2",
+      "http:rubygems/activesupport/4_2_8",
+      "http:rubygems/cocoapods_downloader/1_1_3",
+      "http:rubygems/cocoapods_stats/1_0_0",
+      "http:rubygems/nap/1_1_0",
+      "http:rubygems/xcodeproj/1_4_4",
+      "http:rubygems/cocoapods_try/1_1_0",
+      "http:rubygems/cocoapods_search/1_0_0",
+      "http:rubygems/gh_inspector/1_0_3",
+      "http:rubygems/cocoapods_core/1_2_1",
+      "http:rubygems/cocoapods_plugins/1_0_0",
+      "http:rubygems/cocoapods_trunk/1_2_0",
+      "http:rubygems/ruby_macho/1_1_0",
+      "http:rubygems/fourflusher/2_0_1"
+    ],
+    "http:rubygems/nokogiri/1_7_1": [
+      "http:rubygems/mini_portile2/2_1_0"
+    ],
+    "http:rubygems/faraday/0_12_1": [
+      "http:rubygems/multipart_post/2_0_0"
+    ],
+    "http:rubygems/celluloid_extras/0_20_5": [
+      "http:rubygems/timers/4_1_2"
+    ],
+    "http:rubygems/cocoapods_trunk/1_2_0": [
+      "http:rubygems/netrc/0_7_8",
+      "http:rubygems/nap/1_1_0"
+    ],
+    "http:rubygems/octokit/4_7_0": [
+      "http:rubygems/sawyer/0_8_1"
+    ],
+    "http:rubygems/celluloid/0_17_3": [
+      "http:rubygems/celluloid_supervision/0_20_6",
+      "http:rubygems/celluloid_pool/0_20_5",
+      "http:rubygems/celluloid_extras/0_20_5",
+      "http:rubygems/timers/4_1_2",
+      "http:rubygems/celluloid_essentials/0_20_5",
+      "http:rubygems/celluloid_fsm/0_20_5"
+    ],
+    "http:rubygems/addressable/2_5_1": [
+      "http:rubygems/public_suffix/2_0_5"
+    ],
+    "http:rubygems/sawyer/0_8_1": [
+      "http:rubygems/faraday/0_12_1",
+      "http:rubygems/addressable/2_5_1"
+    ]
   },
   "dependencySummaries": {
-    "http:rubygems/nokogiri/1_7_1": {
-      "name": "nokogiri",
-      "version": "1.7.1"
-    },
-    "http:rubygems/mini_portile2/2_1_0": {
-      "name": "mini_portile2",
-      "version": "2.1.0"
-    },
-    "http:rubygems/xcpretty/0_2_7": {
-      "name": "xcpretty",
-      "version": "0.2.7"
-    },
-    "http:rubygems/rouge/2_0_7": {
-      "name": "rouge",
-      "version": "2.0.7"
-    },
-    "http:rubygems/lowdown/1_0_0": {
-      "name": "lowdown",
-      "version": "1.0.0"
-    },
-    "http:rubygems/celluloid_io/0_17_3": {
-      "name": "celluloid-io",
-      "version": "0.17.3"
-    },
-    "http:rubygems/nio4r/2_0_0": {
-      "name": "nio4r",
-      "version": "2.0.0"
-    },
-    "http:rubygems/timers/4_1_2": {
-      "name": "timers",
-      "version": "4.1.2"
-    },
-    "http:rubygems/hitimes/1_2_4": {
-      "name": "hitimes",
-      "version": "1.2.4"
-    },
-    "http:rubygems/celluloid/0_17_3": {
-      "name": "celluloid",
-      "version": "0.17.3"
-    },
-    "http:rubygems/celluloid_extras/0_20_5": {
-      "name": "celluloid-extras",
-      "version": "0.20.5"
+    "http:rubygems/molinillo/0_5_7": {
+      "name": "molinillo",
+      "version": "0.5.7"
     },
     "http:rubygems/celluloid_pool/0_20_5": {
       "name": "celluloid-pool",
       "version": "0.20.5"
     },
-    "http:rubygems/celluloid_fsm/0_20_5": {
-      "name": "celluloid-fsm",
-      "version": "0.20.5"
-    },
-    "http:rubygems/celluloid_supervision/0_20_6": {
-      "name": "celluloid-supervision",
-      "version": "0.20.6"
-    },
-    "http:rubygems/celluloid_essentials/0_20_5": {
-      "name": "celluloid-essentials",
-      "version": "0.20.5"
-    },
-    "http:rubygems/http_2/0_8_3": {
-      "name": "http-2",
-      "version": "0.8.3"
-    },
-    "http:rubygems/second_curtain/0_6_0": {
-      "name": "second_curtain",
-      "version": "0.6.0"
-    },
-    "http:rubygems/mustache/0_99_8": {
-      "name": "mustache",
-      "version": "0.99.8"
-    },
-    "http:rubygems/aws_sdk_v1/1_67_0": {
-      "name": "aws-sdk-v1",
-      "version": "1.67.0"
-    },
-    "http:rubygems/json/1_8_6": {
-      "name": "json",
-      "version": "1.8.6"
-    },
-    "http:rubygems/cocoapods_check/1_0_1": {
-      "name": "cocoapods-check",
-      "version": "1.0.1"
-    },
-    "http:rubygems/cocoapods/1_2_1": {
-      "name": "cocoapods",
-      "version": "1.2.1"
-    },
-    "http:rubygems/molinillo/0_5_7": {
-      "name": "molinillo",
-      "version": "0.5.7"
-    },
-    "http:rubygems/cocoapods_stats/1_0_0": {
-      "name": "cocoapods-stats",
-      "version": "1.0.0"
-    },
-    "http:rubygems/cocoapods_plugins/1_0_0": {
-      "name": "cocoapods-plugins",
-      "version": "1.0.0"
-    },
-    "http:rubygems/nap/1_1_0": {
-      "name": "nap",
-      "version": "1.1.0"
-    },
-    "http:rubygems/cocoapods_trunk/1_2_0": {
-      "name": "cocoapods-trunk",
-      "version": "1.2.0"
-    },
-    "http:rubygems/netrc/0_7_8": {
-      "name": "netrc",
-      "version": "0.7.8"
-    },
-    "http:rubygems/cocoapods_deintegrate/1_0_1": {
-      "name": "cocoapods-deintegrate",
-      "version": "1.0.1"
-    },
-    "http:rubygems/ruby_macho/1_1_0": {
-      "name": "ruby-macho",
-      "version": "1.1.0"
-    },
-    "http:rubygems/fourflusher/2_0_1": {
-      "name": "fourflusher",
-      "version": "2.0.1"
-    },
-    "http:rubygems/cocoapods_core/1_2_1": {
-      "name": "cocoapods-core",
-      "version": "1.2.1"
-    },
-    "http:rubygems/fuzzy_match/2_0_4": {
-      "name": "fuzzy_match",
-      "version": "2.0.4"
-    },
-    "http:rubygems/activesupport/4_2_8": {
-      "name": "activesupport",
-      "version": "4.2.8"
-    },
-    "http:rubygems/tzinfo/1_2_3": {
-      "name": "tzinfo",
-      "version": "1.2.3"
-    },
-    "http:rubygems/thread_safe/0_3_6": {
-      "name": "thread_safe",
-      "version": "0.3.6"
+    "http:rubygems/CFPropertyList/2_3_5": {
+      "name": "CFPropertyList",
+      "version": "2.3.5"
     },
     "http:rubygems/minitest/5_10_1": {
       "name": "minitest",
       "version": "5.10.1"
     },
-    "http:rubygems/i18n/0_8_1": {
-      "name": "i18n",
-      "version": "0.8.1"
-    },
-    "http:rubygems/cocoapods_search/1_0_0": {
-      "name": "cocoapods-search",
-      "version": "1.0.0"
-    },
-    "http:rubygems/colored2/3_1_2": {
-      "name": "colored2",
-      "version": "3.1.2"
-    },
-    "http:rubygems/escape/0_0_4": {
-      "name": "escape",
-      "version": "0.0.4"
+    "http:rubygems/nap/1_1_0": {
+      "name": "nap",
+      "version": "1.1.0"
     },
     "http:rubygems/gh_inspector/1_0_3": {
       "name": "gh_inspector",
       "version": "1.0.3"
     },
-    "http:rubygems/cocoapods_downloader/1_1_3": {
-      "name": "cocoapods-downloader",
-      "version": "1.1.3"
+    "http:rubygems/terminal_table/1_7_3": {
+      "name": "terminal-table",
+      "version": "1.7.3"
     },
-    "http:rubygems/xcodeproj/1_4_4": {
-      "name": "xcodeproj",
-      "version": "1.4.4"
+    "http:rubygems/cocoapods_plugins/1_0_0": {
+      "name": "cocoapods-plugins",
+      "version": "1.0.0"
     },
-    "http:rubygems/CFPropertyList/2_3_5": {
-      "name": "CFPropertyList",
-      "version": "2.3.5"
+    "http:rubygems/timers/4_1_2": {
+      "name": "timers",
+      "version": "4.1.2"
     },
-    "http:rubygems/nanaimo/0_2_3": {
-      "name": "nanaimo",
-      "version": "0.2.3"
+    "http:rubygems/RubyInline/3_12_4": {
+      "name": "RubyInline",
+      "version": "3.12.4"
     },
-    "http:rubygems/claide/1_0_1": {
-      "name": "claide",
+    "http:rubygems/tzinfo/1_2_3": {
+      "name": "tzinfo",
+      "version": "1.2.3"
+    },
+    "http:rubygems/fuzzy_match/2_0_4": {
+      "name": "fuzzy_match",
+      "version": "2.0.4"
+    },
+    "http:rubygems/http_2/0_8_3": {
+      "name": "http-2",
+      "version": "0.8.3"
+    },
+    "http:rubygems/i18n/0_8_1": {
+      "name": "i18n",
+      "version": "0.8.1"
+    },
+    "http:rubygems/second_curtain/0_6_0": {
+      "name": "second_curtain",
+      "version": "0.6.0"
+    },
+    "http:rubygems/cocoapods_deintegrate/1_0_1": {
+      "name": "cocoapods-deintegrate",
       "version": "1.0.1"
-    },
-    "http:rubygems/cocoapods_try/1_1_0": {
-      "name": "cocoapods-try",
-      "version": "1.1.0"
     },
     "http:rubygems/danger/5_1_1": {
       "name": "danger",
       "version": "5.1.1"
     },
+    "http:rubygems/claide/1_0_1": {
+      "name": "claide",
+      "version": "1.0.1"
+    },
+    "http:rubygems/activesupport/4_2_8": {
+      "name": "activesupport",
+      "version": "4.2.8"
+    },
+    "http:rubygems/netrc/0_7_8": {
+      "name": "netrc",
+      "version": "0.7.8"
+    },
+    "http:rubygems/cocoapods_keys/2_0_0": {
+      "name": "cocoapods-keys",
+      "version": "2.0.0"
+    },
     "http:rubygems/claide_plugins/0_9_2": {
       "name": "claide-plugins",
       "version": "0.9.2"
     },
-    "http:rubygems/cork/0_3_0": {
-      "name": "cork",
-      "version": "0.3.0"
+    "http:rubygems/json/1_8_6": {
+      "name": "json",
+      "version": "1.8.6"
     },
-    "http:rubygems/open4/1_3_4": {
-      "name": "open4",
-      "version": "1.3.4"
+    "http:rubygems/nokogiri/1_7_1": {
+      "name": "nokogiri",
+      "version": "1.7.1"
     },
-    "http:rubygems/git/1_3_0": {
-      "name": "git",
-      "version": "1.3.0"
+    "http:rubygems/cocoapods_try/1_1_0": {
+      "name": "cocoapods-try",
+      "version": "1.1.0"
     },
-    "http:rubygems/kramdown/1_13_2": {
-      "name": "kramdown",
-      "version": "1.13.2"
+    "http:rubygems/nanaimo/0_2_3": {
+      "name": "nanaimo",
+      "version": "0.2.3"
     },
-    "http:rubygems/terminal_table/1_7_3": {
-      "name": "terminal-table",
-      "version": "1.7.3"
-    },
-    "http:rubygems/unicode_display_width/1_1_3": {
-      "name": "unicode-display_width",
-      "version": "1.1.3"
+    "http:rubygems/cocoapods_trunk/1_2_0": {
+      "name": "cocoapods-trunk",
+      "version": "1.2.0"
     },
     "http:rubygems/octokit/4_7_0": {
       "name": "octokit",
       "version": "4.7.0"
     },
+    "http:rubygems/mini_portile2/2_1_0": {
+      "name": "mini_portile2",
+      "version": "2.1.0"
+    },
     "http:rubygems/sawyer/0_8_1": {
       "name": "sawyer",
       "version": "0.8.1"
     },
-    "http:rubygems/addressable/2_5_1": {
-      "name": "addressable",
-      "version": "2.5.1"
+    "http:rubygems/escape/0_0_4": {
+      "name": "escape",
+      "version": "0.0.4"
     },
-    "http:rubygems/public_suffix/2_0_5": {
-      "name": "public_suffix",
-      "version": "2.0.5"
+    "http:rubygems/thread_safe/0_3_6": {
+      "name": "thread_safe",
+      "version": "0.3.6"
     },
-    "http:rubygems/faraday/0_12_1": {
-      "name": "faraday",
-      "version": "0.12.1"
+    "http:rubygems/celluloid_supervision/0_20_6": {
+      "name": "celluloid-supervision",
+      "version": "0.20.6"
+    },
+    "http:rubygems/cocoapods_check/1_0_1": {
+      "name": "cocoapods-check",
+      "version": "1.0.1"
+    },
+    "http:rubygems/colored2/3_1_2": {
+      "name": "colored2",
+      "version": "3.1.2"
     },
     "http:rubygems/multipart_post/2_0_0": {
       "name": "multipart-post",
       "version": "2.0.0"
     },
-    "http:rubygems/faraday_http_cache/1_3_1": {
-      "name": "faraday-http-cache",
-      "version": "1.3.1"
+    "http:rubygems/celluloid_essentials/0_20_5": {
+      "name": "celluloid-essentials",
+      "version": "0.20.5"
     },
-    "http:rubygems/cocoapods_keys/2_0_0": {
-      "name": "cocoapods-keys",
-      "version": "2.0.0"
+    "http:rubygems/cork/0_3_0": {
+      "name": "cork",
+      "version": "0.3.0"
+    },
+    "http:rubygems/celluloid_io/0_17_3": {
+      "name": "celluloid-io",
+      "version": "0.17.3"
+    },
+    "http:rubygems/cocoapods_stats/1_0_0": {
+      "name": "cocoapods-stats",
+      "version": "1.0.0"
+    },
+    "http:rubygems/celluloid_fsm/0_20_5": {
+      "name": "celluloid-fsm",
+      "version": "0.20.5"
+    },
+    "http:rubygems/xcodeproj/1_4_4": {
+      "name": "xcodeproj",
+      "version": "1.4.4"
+    },
+    "http:rubygems/ZenTest/4_11_1": {
+      "name": "ZenTest",
+      "version": "4.11.1"
+    },
+    "http:rubygems/cocoapods_core/1_2_1": {
+      "name": "cocoapods-core",
+      "version": "1.2.1"
+    },
+    "http:rubygems/unicode_display_width/1_1_3": {
+      "name": "unicode-display_width",
+      "version": "1.1.3"
     },
     "http:rubygems/dotenv/2_2_1": {
       "name": "dotenv",
@@ -449,23 +352,89 @@
       "name": "osx_keychain",
       "version": "1.0.1"
     },
-    "http:rubygems/RubyInline/3_12_4": {
-      "name": "RubyInline",
-      "version": "3.12.4"
+    "http:rubygems/fourflusher/2_0_1": {
+      "name": "fourflusher",
+      "version": "2.0.1"
     },
-    "http:rubygems/ZenTest/4_11_1": {
-      "name": "ZenTest",
-      "version": "4.11.1"
+    "http:rubygems/aws_sdk_v1/1_67_0": {
+      "name": "aws-sdk-v1",
+      "version": "1.67.0"
+    },
+    "http:rubygems/lowdown/1_0_0": {
+      "name": "lowdown",
+      "version": "1.0.0"
+    },
+    "http:rubygems/open4/1_3_4": {
+      "name": "open4",
+      "version": "1.3.4"
+    },
+    "http:rubygems/hitimes/1_2_4": {
+      "name": "hitimes",
+      "version": "1.2.4"
+    },
+    "http:rubygems/faraday_http_cache/1_3_1": {
+      "name": "faraday-http-cache",
+      "version": "1.3.1"
+    },
+    "http:rubygems/cocoapods_downloader/1_1_3": {
+      "name": "cocoapods-downloader",
+      "version": "1.1.3"
+    },
+    "http:rubygems/xcpretty/0_2_7": {
+      "name": "xcpretty",
+      "version": "0.2.7"
+    },
+    "http:rubygems/cocoapods/1_2_1": {
+      "name": "cocoapods",
+      "version": "1.2.1"
+    },
+    "http:rubygems/cocoapods_search/1_0_0": {
+      "name": "cocoapods-search",
+      "version": "1.0.0"
+    },
+    "http:rubygems/faraday/0_12_1": {
+      "name": "faraday",
+      "version": "0.12.1"
+    },
+    "http:rubygems/celluloid_extras/0_20_5": {
+      "name": "celluloid-extras",
+      "version": "0.20.5"
+    },
+    "http:rubygems/rouge/2_0_7": {
+      "name": "rouge",
+      "version": "2.0.7"
+    },
+    "http:rubygems/ruby_macho/1_1_0": {
+      "name": "ruby-macho",
+      "version": "1.1.0"
+    },
+    "http:rubygems/celluloid/0_17_3": {
+      "name": "celluloid",
+      "version": "0.17.3"
+    },
+    "http:rubygems/public_suffix/2_0_5": {
+      "name": "public_suffix",
+      "version": "2.0.5"
+    },
+    "http:rubygems/git/1_3_0": {
+      "name": "git",
+      "version": "1.3.0"
+    },
+    "http:rubygems/kramdown/1_13_2": {
+      "name": "kramdown",
+      "version": "1.13.2"
+    },
+    "http:rubygems/mustache/0_99_8": {
+      "name": "mustache",
+      "version": "0.99.8"
+    },
+    "http:rubygems/addressable/2_5_1": {
+      "name": "addressable",
+      "version": "2.5.1"
+    },
+    "http:rubygems/nio4r/2_0_0": {
+      "name": "nio4r",
+      "version": "2.0.0"
     }
-  },
-  "rootExternalDataIds": [
-    "http:rubygems/nokogiri/1_7_1",
-    "http:rubygems/xcpretty/0_2_7",
-    "http:rubygems/lowdown/1_0_0",
-    "http:rubygems/second_curtain/0_6_0",
-    "http:rubygems/cocoapods_check/1_0_1",
-    "http:rubygems/danger/5_1_1",
-    "http:rubygems/cocoapods/1_2_1",
-    "http:rubygems/cocoapods_keys/2_0_0"
-  ]
+  }
 }
