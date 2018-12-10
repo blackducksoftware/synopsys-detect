@@ -34,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 
@@ -100,6 +101,12 @@ public class DirectoryManager {
         File outputDirectory;
         if (StringUtils.isBlank(directoryOptions.getOutputPathOverride())) {
             outputDirectory = new File(userHome, "blackduck");
+            if (outputDirectory.getAbsolutePath().contains("systemprofile")) {
+                logger.warn("You appear to be running in 'systemprofile' which can happen when detect is invoked by a system account or as a service.");
+                logger.warn("If detect has full access to the output directory, no further action is necessary.");
+                logger.warn("However, this folder typically has restricted access and may cause exceptions in detect.");
+                logger.warn("To ensure continued operation, supply an output directory using " + DetectProperty.DETECT_OUTPUT_PATH.getPropertyName() + " in the future.");
+            }
         } else {
             outputDirectory = new File(directoryOptions.getOutputPathOverride());
         }
