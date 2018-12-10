@@ -25,8 +25,8 @@ import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthor
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil;
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class PearDependencyTest {
     private DetectConfiguration detectConfiguration;

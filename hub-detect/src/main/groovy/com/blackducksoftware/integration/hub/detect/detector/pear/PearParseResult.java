@@ -23,7 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.detector.pear;
 
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 
 public class PearParseResult {
     public String name;

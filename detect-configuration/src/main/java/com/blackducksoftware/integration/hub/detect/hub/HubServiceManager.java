@@ -35,22 +35,26 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.response.CurrentVersionView;
-import com.synopsys.integration.blackduck.configuration.HubServerConfig;
-import com.synopsys.integration.blackduck.configuration.HubServerConfigBuilder;
-import com.synopsys.integration.blackduck.rest.BlackduckRestConnection;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.synopsys.integration.blackduck.rest.BlackDuckRestConnection;
 import com.synopsys.integration.blackduck.service.BinaryScannerService;
+import com.synopsys.integration.blackduck.service.BlackDuckService;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.CodeLocationService;
-import com.synopsys.integration.blackduck.service.HubRegistrationService;
-import com.synopsys.integration.blackduck.service.HubService;
-import com.synopsys.integration.blackduck.service.HubServicesFactory;
+import com.synopsys.integration.blackduck.service.BlackDuckRegistrationService;
+import com.synopsys.integration.blackduck.service.BlackDuckService;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.ReportService;
-import com.synopsys.integration.blackduck.service.ScanStatusService;
-import com.synopsys.integration.exception.EncryptionException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -66,34 +70,34 @@ public class HubServiceManager {
     private final DetectConfiguration detectConfiguration;
     private final ConnectionManager connectionManager;
     private final Gson gson;
-    private final JsonParser jsonParser;
+    private final ObjectMapper objectMapper;
 
     private Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger);
-    private HubServerConfig hubServerConfig;
-    private HubServicesFactory hubServicesFactory;
+    private BlackDuckServerConfig hubServerConfig;
+    private BlackDuckServicesFactory hubServicesFactory;
 
-    public HubServiceManager(final DetectConfiguration detectConfiguration, final ConnectionManager connectionManager, final Gson gson, final JsonParser jsonParser) {
+    public HubServiceManager(final DetectConfiguration detectConfiguration, final ConnectionManager connectionManager, final Gson gson, final ObjectMapper objectMapper) {
         this.detectConfiguration = detectConfiguration;
         this.connectionManager = connectionManager;
         this.gson = gson;
-        this.jsonParser = jsonParser;
+        this.objectMapper = objectMapper;
     }
 
     public void init() throws IntegrationException, DetectUserFriendlyException {
         try {
-            hubServerConfig = createHubServerConfig(slf4jIntLogger);
-            hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig);
-        } catch (IllegalStateException | EncryptionException e) {
+            hubServerConfig = createBlackDuckServerConfig(slf4jIntLogger);
+            hubServicesFactory = createBlackDuckServicesFactory(slf4jIntLogger, hubServerConfig);
+        } catch (IllegalArgumentException e) {
             throw new DetectUserFriendlyException(String.format("Not able to process Black Duck connection: %s", e.getMessage()), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
         }
-        final HubService hubService = createHubService();
+        final BlackDuckService hubService = createBlackDuckService();
         final CurrentVersionView currentVersion = hubService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
-        logger.info(String.format("Successfully connected to BlackDuck (version %s)!", currentVersion.version));
+        logger.info(String.format("Successfully connected to BlackDuck (version %s)!", currentVersion.getVersion()));
     }
 
-    public boolean testHubConnection(final IntLogger intLogger) {
+    public boolean testBlackDuckConnection(final IntLogger intLogger) {
         try {
-            assertHubConnection(intLogger);
+            assertBlackDuckConnection(intLogger);
             return true;
         } catch (final IntegrationException e) {
             intLogger.error(String.format("Could not reach the Black Duck server or the credentials were invalid: %s", e.getMessage()), e);
@@ -101,19 +105,16 @@ public class HubServiceManager {
         return false;
     }
 
-    public void assertHubConnection(final IntLogger intLogger) throws IntegrationException {
+    public void assertBlackDuckConnection(final IntLogger intLogger) throws IntegrationException {
         logger.info("Attempting connection to the Black Duck server");
-        RestConnection connection = null;
 
         try {
-            final HubServerConfig hubServerConfig = createHubServerConfig(intLogger);
-            connection = hubServerConfig.createRestConnection(intLogger);
-            connection.connect();
+            //FIXME need to actually test connection
+            final BlackDuckServerConfig hubServerConfig = createBlackDuckServerConfig(intLogger);
+            hubServerConfig.createRestConnection(intLogger);
             logger.info("Connection to the Black Duck server was successful");
-        } catch (final IllegalStateException e) {
+        } catch (final IllegalArgumentException e) {
             throw new IntegrationException(e.getMessage(), e);
-        } finally {
-            ResourceUtil.closeQuietly(connection);
         }
     }
 
@@ -121,12 +122,12 @@ public class HubServiceManager {
         return hubServicesFactory.createBinaryScannerService();
     }
 
-    public HubService createHubService() {
-        return hubServicesFactory.createHubService();
+    public BlackDuckService createBlackDuckService() {
+        return hubServicesFactory.createBlackDuckService();
     }
 
-    public HubRegistrationService createHubRegistrationService() {
-        return hubServicesFactory.createHubRegistrationService();
+    public BlackDuckRegistrationService createBlackDuckRegistrationService() {
+        return hubServicesFactory.createBlackDuckRegistrationService();
     }
 
     public ProjectService createProjectService() {
@@ -134,54 +135,57 @@ public class HubServiceManager {
     }
 
     public PhoneHomeService createPhoneHomeService() {
-        return hubServicesFactory.createPhoneHomeService(Executors.newSingleThreadExecutor());
+        //FIXME use PhoneHomeService and PhoneHomeClient correctly
+        return null;
     }
 
     public CodeLocationService createCodeLocationService() {
         return hubServicesFactory.createCodeLocationService();
     }
 
-    public ScanStatusService createScanStatusService() {
-        return hubServicesFactory.createScanStatusService(detectConfiguration.getLongProperty(DetectProperty.DETECT_API_TIMEOUT, PropertyAuthority.None));
+    public CodeLocationCreationService createCodeLocationCreationService() {
+        return hubServicesFactory.createCodeLocationCreationService();
     }
 
     public ReportService createReportService() throws IntegrationException {
         return hubServicesFactory.createReportService(detectConfiguration.getLongProperty(DetectProperty.DETECT_API_TIMEOUT, PropertyAuthority.None));
     }
 
-    private HubServicesFactory createHubServicesFactory(final IntLogger slf4jIntLogger, final HubServerConfig hubServerConfig) throws IntegrationException {
-        final BlackduckRestConnection restConnection = hubServerConfig.createRestConnection(slf4jIntLogger);
+    private BlackDuckServicesFactory createBlackDuckServicesFactory(final IntLogger slf4jIntLogger, final BlackDuckServerConfig hubServerConfig) throws IntegrationException {
+        final BlackDuckRestConnection restConnection = hubServerConfig.createRestConnection(slf4jIntLogger);
 
-        return new HubServicesFactory(gson, jsonParser, restConnection, slf4jIntLogger);
+        return new BlackDuckServicesFactory(gson, objectMapper, restConnection, slf4jIntLogger);
     }
 
-    private HubServerConfig createHubServerConfig(final IntLogger slf4jIntLogger) {
-        final HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder();
+    private BlackDuckServerConfig createBlackDuckServerConfig(final IntLogger slf4jIntLogger) {
+        final BlackDuckServerConfigBuilder hubServerConfigBuilder = new BlackDuckServerConfigBuilder();
         hubServerConfigBuilder.setLogger(slf4jIntLogger);
 
-        final Map<String, String> blackduckHubProperties = detectConfiguration.getBlackduckProperties();
-        hubServerConfigBuilder.setFromProperties(blackduckHubProperties);
+        final Map<String, String> blackduckBlackDuckProperties = detectConfiguration.getBlackduckProperties();
+        hubServerConfigBuilder.setFromProperties(blackduckBlackDuckProperties);
 
         return hubServerConfigBuilder.build();
     }
 
-    public HubServerConfig getHubServerConfig() {
+    public BlackDuckServerConfig getBlackDuckServerConfig() {
         return hubServerConfig;
     }
 
-    public HubServicesFactory getHubServicesFactory() {
+    public BlackDuckServicesFactory getBlackDuckServicesFactory() {
         return hubServicesFactory;
     }
 
     public PhoneHomeClient createPhoneHomeClient() {
-        return hubServicesFactory.createPhoneHomeClient();
+        //FIXME use PhoneHomeService and PhoneHomeClient correctly
+        return null;
     }
 
     public IntEnvironmentVariables getEnvironmentVariables() {
         try {
-            return (IntEnvironmentVariables) HubServicesFactory.class.getDeclaredField("intEnvironmentVariables").get(hubServicesFactory);
+            return (IntEnvironmentVariables) BlackDuckServicesFactory.class.getDeclaredField("intEnvironmentVariables").get(hubServicesFactory);
         } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
             return new IntEnvironmentVariables();
         }
     }
+
 }

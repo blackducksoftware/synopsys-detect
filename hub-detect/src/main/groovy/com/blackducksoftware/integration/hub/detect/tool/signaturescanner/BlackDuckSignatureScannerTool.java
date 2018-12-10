@@ -42,9 +42,8 @@ import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.blackduck.configuration.HubServerConfig;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
-import com.synopsys.integration.exception.EncryptionException;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchManager;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.NameVersion;
@@ -59,16 +58,16 @@ public class BlackDuckSignatureScannerTool {
         this.detectContext = detectContext;
     }
 
-    public void runScanTool(NameVersion projectNameVersion, Optional<File> dockerTar) throws DetectUserFriendlyException, EncryptionException {
+    public void runScanTool(NameVersion projectNameVersion, Optional<File> dockerTar) throws DetectUserFriendlyException {
         DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
         DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         ConnectionManager connectionManager = detectContext.getBean(ConnectionManager.class);
         ConnectivityManager connectivityManager = detectContext.getBean(ConnectivityManager.class);
         DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
 
-        Optional<HubServerConfig> hubServerConfig = Optional.empty();
+        Optional<BlackDuckServerConfig> hubServerConfig = Optional.empty();
         if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
-            hubServerConfig = Optional.of(connectivityManager.getHubServiceManager().get().getHubServerConfig());
+            hubServerConfig = Optional.of(connectivityManager.getHubServiceManager().get().getBlackDuckServerConfig());
         }
 
         logger.info("Will run the signature scanner tool.");
@@ -91,7 +90,7 @@ public class BlackDuckSignatureScannerTool {
         IntEnvironmentVariables intEnvironmentVariables = new IntEnvironmentVariables();
 
         ScanJobManagerFactory scanJobManagerFactory = new ScanJobManagerFactory();
-        ScanJobManager scanJobManager;
+        ScanBatchManager scanJobManager;
         File installDirectory = directoryManager.getPermanentDirectory();
         if (hubServerConfig.isPresent() && StringUtils.isBlank(userProvidedScannerInstallUrl) && StringUtils.isBlank(localScannerInstallPath)) {
             logger.debug("Signature scanner will use the hub server to download/update the scanner - this is the most likely situation.");

@@ -21,9 +21,9 @@ import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphRes
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
-import com.synopsys.integration.hub.bdio.model.Forge;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class RubygemsNodePackagerTest {
     Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();

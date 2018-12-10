@@ -26,7 +26,7 @@ package com.blackducksoftware.integration.hub.detect.util;
 import java.util.Deque;
 import java.util.LinkedList;
 
-import com.synopsys.integration.hub.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
 
 public class DependencyHistory {
     private final Deque<Dependency> dependencyStack = new LinkedList<>();

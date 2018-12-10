@@ -72,10 +72,10 @@ import com.blackducksoftware.integration.hub.detect.workflow.phonehome.OfflinePh
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.OnlinePhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.SilentLogger;
+import com.synopsys.integration.log.SilentIntLogger;
 
 import freemarker.template.Configuration;
 
@@ -90,7 +90,7 @@ public class BootManager {
 
     public BootResult boot(DetectRun detectRun, final String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) throws DetectUserFriendlyException, IntegrationException {
         Gson gson = bootFactory.createGson();
-        JsonParser jsonParser = bootFactory.createJsonParser();
+        ObjectMapper objectMapper = bootFactory.createObjectMapper();
         DocumentBuilder xml = bootFactory.createXmlDocumentBuilder();
         Configuration configuration = bootFactory.createConfiguration();
 
@@ -119,7 +119,7 @@ public class BootManager {
         printDetectInfo(detectInfo);
 
         if (detectArgumentState.isInteractive()) {
-            startInteractiveMode(detectOptionManager, detectConfiguration, gson, jsonParser);
+            startInteractiveMode(detectOptionManager, detectConfiguration, gson, objectMapper);
         }
 
         processDetectConfiguration(detectInfo, detectRun, detectConfiguration, options);
@@ -146,14 +146,14 @@ public class BootManager {
             return BootResult.exit(detectConfiguration);
         }
 
-        HubServiceManager hubServiceManager = new HubServiceManager(detectConfiguration, new ConnectionManager(detectConfiguration), gson, jsonParser);
+        HubServiceManager hubServiceManager = new HubServiceManager(detectConfiguration, new ConnectionManager(detectConfiguration), gson, objectMapper);
 
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
-            hubServiceManager.assertHubConnection(new SilentLogger());
+            hubServiceManager.assertBlackDuckConnection(new SilentIntLogger());
             return BootResult.exit(detectConfiguration);
         }
 
-        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, PropertyAuthority.None) && !hubServiceManager.testHubConnection(new SilentLogger())) {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, PropertyAuthority.None) && !hubServiceManager.testBlackDuckConnection(new SilentIntLogger())) {
             logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
             return BootResult.exit(detectConfiguration);
         }
@@ -184,7 +184,7 @@ public class BootManager {
         detectContext.registerBean(connectivityManager);
 
         detectContext.registerBean(gson);
-        detectContext.registerBean(jsonParser);
+        detectContext.registerBean(objectMapper);
         detectContext.registerBean(xml);
         detectContext.registerBean(configuration);
 
@@ -221,9 +221,9 @@ public class BootManager {
         detectConfigurationPrinter.printWarnings(detectOptions);
     }
 
-    private void startInteractiveMode(DetectOptionManager detectOptionManager, DetectConfiguration detectConfiguration, Gson gson, JsonParser jsonParser) {
+    private void startInteractiveMode(DetectOptionManager detectOptionManager, DetectConfiguration detectConfiguration, Gson gson, ObjectMapper objectMapper) {
         InteractiveManager interactiveManager = new InteractiveManager(detectOptionManager);
-        HubServiceManager hubServiceManager = new HubServiceManager(detectConfiguration, new ConnectionManager(detectConfiguration), gson, jsonParser);
+        HubServiceManager hubServiceManager = new HubServiceManager(detectConfiguration, new ConnectionManager(detectConfiguration), gson, objectMapper);
         DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(hubServiceManager, detectOptionManager);
         interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
     }

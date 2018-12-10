@@ -15,8 +15,8 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.synopsys.integration.hub.bdio.model.dependency.Dependency;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class PipEnvTreeParserTest {
     private PipenvGraphParser parser;

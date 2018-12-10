@@ -70,7 +70,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectName
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchOptions;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.hub.bdio.SimpleBdioFactory;
+import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;

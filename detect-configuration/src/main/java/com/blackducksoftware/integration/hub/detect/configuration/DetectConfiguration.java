@@ -37,7 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.configuration.HubServerConfigBuilder;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 
 //Instead of Source of Truth, this is the initial configuration.
 public class DetectConfiguration {
@@ -146,7 +146,7 @@ public class DetectConfiguration {
         final Set<String> allKeys = new HashSet<>(providedKeys);
         Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
             final String propertyName = currentProperty.getPropertyName();
-            if (propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
+            if (propertyName.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
                 allKeys.add(propertyName);
             } else if (propertyName.startsWith(DetectPropertySource.BLACKDUCK_PROPERTY_PREFIX) || propertyName.startsWith(DetectPropertySource.BLACKDUCK_ENVIRONMENT_PREFIX)) {
                 allKeys.add(propertyName);

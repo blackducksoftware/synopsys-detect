@@ -23,8 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.codelocation;
 
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
 public class DetectCodeLocation {
     private final DetectCodeLocationType codeLocationType;

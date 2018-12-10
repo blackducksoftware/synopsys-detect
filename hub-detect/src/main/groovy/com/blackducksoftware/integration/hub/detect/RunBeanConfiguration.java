@@ -60,10 +60,10 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManag
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
-import com.synopsys.integration.blackduck.configuration.HubServerConfig;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
-import com.synopsys.integration.hub.bdio.BdioTransformer;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.BdioTransformer;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchManager;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 
 import freemarker.template.Configuration;
 
@@ -185,13 +185,13 @@ public class RunBeanConfiguration {
 
     @Lazy
     @Bean
-    public OnlineBlackDuckSignatureScanner onlineBlackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanJobManager scanJobManager, HubServerConfig hubServerConfig) {
+    public OnlineBlackDuckSignatureScanner onlineBlackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchManager scanJobManager, BlackDuckServerConfig hubServerConfig) {
         return new OnlineBlackDuckSignatureScanner(directoryManager, detectFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanJobManager, hubServerConfig);
     }
 
     @Lazy
     @Bean
-    public OfflineBlackDuckSignatureScanner offlineBlackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanJobManager scanJobManager) {
+    public OfflineBlackDuckSignatureScanner offlineBlackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchManager scanJobManager) {
         return new OfflineBlackDuckSignatureScanner(directoryManager, detectFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanJobManager);
     }
 

@@ -44,7 +44,10 @@ import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.view.ScanSummaryView;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
+import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
 import com.synopsys.integration.blackduck.exception.HubTimeoutExceededException;
+import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.CodeLocationService;
 import com.synopsys.integration.blackduck.service.HubService;
 import com.synopsys.integration.blackduck.service.ProjectService;
@@ -77,9 +80,9 @@ public class HubManager {
         try {
             final ProjectService projectService = hubServiceManager.createProjectService();
             final ReportService reportService = hubServiceManager.createReportService();
-            final HubService hubService = hubServiceManager.createHubService();
+            final BlackDuckService hubService = hubServiceManager.createBlackDuckService();
             final CodeLocationService codeLocationService = hubServiceManager.createCodeLocationService();
-            final ScanStatusService scanStatusService = hubServiceManager.createScanStatusService();
+            final CodeLocationCreationService codeLocationCreationService = hubServiceManager.createCodeLocationCreationService();
 
             if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None)) || detectConfiguration
                                                                                                                                                               .getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF, PropertyAuthority.None)
@@ -115,7 +118,7 @@ public class HubManager {
             throw new DetectUserFriendlyException(String.format("Your Black Duck configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
         } catch (final IntegrationRestException e) {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
-        } catch (final HubTimeoutExceededException e) {
+        } catch (final BlackDuckTimeoutExceededException e) {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
         } catch (final Exception e) {
             throw new DetectUserFriendlyException(String.format("There was a problem: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);

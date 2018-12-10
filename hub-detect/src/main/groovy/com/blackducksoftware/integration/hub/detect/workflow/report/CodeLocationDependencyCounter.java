@@ -32,8 +32,8 @@ import java.util.Set;
 
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
 public class CodeLocationDependencyCounter {
     public Map<DetectCodeLocationType, Integer> aggregateCountsByGroup(final Map<DetectCodeLocation, Integer> codeLocations) {
