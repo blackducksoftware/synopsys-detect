@@ -137,20 +137,24 @@ public class DetectFileFinder {
                 // Ensure msg only shown once
                 maxDepthHitMsgPattern.setLength(0);
             }
-        } else if (sourceDirectory.isDirectory() && sourceDirectory.listFiles().length > 0 && null != filenamePatterns && filenamePatterns.length >= 1) {
-            for (final File file : sourceDirectory.listFiles()) {
-                final boolean fileMatchesPatterns = Arrays.stream(filenamePatterns).anyMatch(pattern -> FilenameUtils.wildcardMatchOnSystem(file.getName(), pattern));
+        } else if (sourceDirectory.isDirectory()) {
+            File[] children = sourceDirectory.listFiles();
+            if (children != null && children.length > 0 && null != filenamePatterns && filenamePatterns.length >= 1) {
+                for (final File file : children) {
+                    final boolean fileMatchesPatterns = Arrays.stream(filenamePatterns).anyMatch(pattern -> FilenameUtils.wildcardMatchOnSystem(file.getName(), pattern));
 
-                if (fileMatchesPatterns) {
-                    files.add(file);
-                }
+                    if (fileMatchesPatterns) {
+                        files.add(file);
+                    }
 
-                if (file.isDirectory() && (!fileMatchesPatterns || recurseIntoDirectoryMatch)) {
-                    // only go into the directory if it is not a match OR it is a match and the flag is set to go into matching directories
-                    files.addAll(findFilesRecursive(file, currentDepth + 1, maxDepth, maxDepthHitMsgPattern, recurseIntoDirectoryMatch, filenamePatterns));
+                    if (file.isDirectory() && (!fileMatchesPatterns || recurseIntoDirectoryMatch)) {
+                        // only go into the directory if it is not a match OR it is a match and the flag is set to go into matching directories
+                        files.addAll(findFilesRecursive(file, currentDepth + 1, maxDepth, maxDepthHitMsgPattern, recurseIntoDirectoryMatch, filenamePatterns));
+                    }
                 }
+            } else if (children == null) {
+                logger.warn("Directory contents could not be accessed: " + sourceDirectory.getAbsolutePath());
             }
-
         }
         return files;
     }
