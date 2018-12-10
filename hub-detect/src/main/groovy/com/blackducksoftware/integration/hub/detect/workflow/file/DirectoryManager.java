@@ -93,6 +93,7 @@ public class DirectoryManager {
         } else {
             sourceDirectory = new File(directoryOptions.getSourcePathOverride());
         }
+        logger.info("Source directory: " + sourceDirectory.getAbsolutePath());
 
         userHome = new File(System.getProperty("user.home"));
 
@@ -102,11 +103,13 @@ public class DirectoryManager {
         } else {
             outputDirectory = new File(directoryOptions.getOutputPathOverride());
         }
+        logger.info("Output directory: " + outputDirectory.getAbsolutePath());
 
         EnumSet.allOf(OutputDirectory.class).stream()
             .forEach(it -> outputDirectories.put(it, new File(outputDirectory, it.getDirectoryName())));
 
         runDirectory = new File(getOutputDirectory(OutputDirectory.Runs), detectRun.getRunId());
+        logger.info("Run directory: " + runDirectory.getAbsolutePath());
 
         EnumSet.allOf(RunDirectory.class).stream()
             .forEach(it -> runDirectories.put(it, new File(runDirectory, it.getDirectoryName())));
@@ -121,7 +124,6 @@ public class DirectoryManager {
         }
 
         runDirectories.values().forEach(it -> temporaryFiles.add(it));
-
     }
 
     public File getUserHome() {

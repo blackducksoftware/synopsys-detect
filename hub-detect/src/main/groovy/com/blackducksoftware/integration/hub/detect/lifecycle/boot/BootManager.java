@@ -128,14 +128,16 @@ public class BootManager {
 
         logger.info("Configuration processed completely.");
 
+        printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT, PropertyAuthority.None), options);
+
+        logger.info("Initializing detect.");
+
         DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
         DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
         FileManager fileManager = new FileManager(detectArgumentState.isDiagnostic(),
             detectArgumentState.isDiagnosticProtected(), directoryManager);
 
         DiagnosticManager diagnosticManager = createDiagnostics(detectConfiguration, detectRun, detectArgumentState, eventSystem, directoryManager, fileManager);
-
-        printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT, PropertyAuthority.None), options);
 
         checkForInvalidOptions(detectOptionManager);
 
