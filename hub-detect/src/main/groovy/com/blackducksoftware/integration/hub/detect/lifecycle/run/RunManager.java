@@ -69,6 +69,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectName
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchOptions;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.service.HubService;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.hub.bdio.SimpleBdioFactory;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -228,6 +229,13 @@ public class RunManager {
             logger.info("Will perform Black Duck post actions.");
             HubManager hubManager = new HubManager(codeLocationNameManager, detectConfiguration, hubServiceManager, new PolicyChecker(detectConfiguration), eventSystem);
             hubManager.performPostHubActions(projectNameVersion, projectView.get());
+
+            if (!bdioResult.getBdioFiles().isEmpty() || !detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
+                final HubService hubService = hubServiceManager.createHubService();
+                final String componentsLink = hubService.getFirstLinkSafely(projectView.get(), ProjectVersionView.COMPONENTS_LINK);
+                logger.info(String.format("To see your results, follow the URL: %s", componentsLink));
+            }
+
             logger.info("Black Duck actions have finished.");
         } else {
             logger.debug("Will not perform post actions: Detect is not online.");
