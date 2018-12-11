@@ -58,6 +58,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLo
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.CodeLocationWaitData;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectBdioUploadService;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectCodeLocationUnmapService;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectService;
@@ -69,6 +70,9 @@ import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectName
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchOptions;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
+import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -151,18 +155,18 @@ public class RunManager {
         logger.info("Project name: " + projectNameVersion.getName());
         logger.info("Project version: " + projectNameVersion.getVersion());
 
-        Optional<ProjectVersionView> projectView = Optional.empty();
+        Optional<ProjectVersionWrapper> projectVersionWrapper = Optional.empty();
 
         if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
             HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
             logger.info("Getting or creating project.");
             DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
             DetectProjectService detectProjectService = new DetectProjectService(hubServiceManager, options);
-            projectView = detectProjectService.createOrUpdateHubProject(projectNameVersion);
-            if (projectView.isPresent() && runOptions.shouldUnmapCodeLocations()) {
+            projectVersionWrapper = Optional.of(detectProjectService.createOrUpdateHubProject(projectNameVersion));
+            if (projectVersionWrapper.isPresent() && runOptions.shouldUnmapCodeLocations()) {
                 logger.info("Unmapping code locations.");
-                DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(hubServiceManager.createHubService(), hubServiceManager.createCodeLocationService());
-                detectCodeLocationUnmapService.unmapCodeLocations(projectView.get());
+                DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(hubServiceManager.createBlackDuckService(), hubServiceManager.createCodeLocationService());
+                detectCodeLocationUnmapService.unmapCodeLocations(projectVersionWrapper.get().getProjectVersionView());
             } else {
                 logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");
             }
@@ -173,17 +177,19 @@ public class RunManager {
         logger.info("Completed project and version actions.");
 
         logger.info("Processing Detect Code Locations.");
+        CodeLocationWaitData codeLocationWaitData = new CodeLocationWaitData();
         BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new IntegrationEscapeUtil(), codeLocationNameManager, detectConfiguration, bdioCodeLocationCreator, directoryManager, eventSystem);
         BdioResult bdioResult = bdioManager.createBdioFiles(runOptions.getAggregateName(), projectNameVersion, runResult.getDetectCodeLocations());
 
-        if (bdioResult.getBdioFiles().size() > 0) {
-            logger.info("Created " + bdioResult.getBdioFiles().size() + " BDIO files.");
-            bdioResult.getBdioFiles().forEach(it -> eventSystem.publishEvent(Event.OutputFileOfInterest, it));
+        if (bdioResult.getUploadTargets().size() > 0) {
+            logger.info("Created " + bdioResult.getUploadTargets().size() + " BDIO files.");
+            bdioResult.getUploadTargets().forEach(it -> eventSystem.publishEvent(Event.OutputFileOfInterest, it.getUploadFile()));
             if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
                 logger.info("Uploading BDIO files.");
                 HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
-                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, hubServiceManager.createCodeLocationService());
-                detectBdioUploadService.uploadBdioFiles(bdioResult.getBdioFiles());
+                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, hubServiceManager.createBdioUploadService());
+                CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
+                codeLocationWaitData.setFromBdioCodeLocationCreationData(uploadBatchOutputCodeLocationCreationData);
             }
         } else {
             logger.debug("Did not create any BDIO files.");
@@ -222,12 +228,12 @@ public class RunManager {
             logger.info("Polaris CLI tool will not be run.");
         }
 
-        if (projectView.isPresent() && connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
+        if (projectVersionWrapper.isPresent() && connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
             HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
 
             logger.info("Will perform Black Duck post actions.");
             HubManager hubManager = new HubManager(codeLocationNameManager, detectConfiguration, hubServiceManager, new PolicyChecker(detectConfiguration), eventSystem);
-            hubManager.performPostHubActions(projectNameVersion, projectView.get());
+            hubManager.performPostHubActions(projectVersionWrapper.get(), codelo);
             logger.info("Black Duck actions have finished.");
         } else {
             logger.debug("Will not perform post actions: Detect is not online.");

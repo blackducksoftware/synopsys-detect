@@ -46,6 +46,7 @@ import com.synopsys.integration.bdio.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
@@ -67,22 +68,19 @@ public class AggregateBdioCreator {
         this.detectBdioWriter = detectBdioWriter;
     }
 
-    public File createAggregateBdioFile(File sourcePath, File bdioDirectory, final List<DetectCodeLocation> codeLocations, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public UploadTarget createAggregateBdioFile(File sourcePath, File bdioDirectory, final List<DetectCodeLocation> codeLocations, NameVersion projectNameVersion) throws DetectUserFriendlyException {
         final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations);
 
-        final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(projectNameVersion, aggregateDependencyGraph);
+        final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "/", ""), projectNameVersion.getName(), projectNameVersion.getVersion());
+        final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
+        final SimpleBdioDocument aggregateBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectNameVersion.getName(), projectNameVersion.getVersion(), projectExternalId, aggregateDependencyGraph);
+
         final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME, PropertyAuthority.None)));
         final File aggregateBdioFile = new File(bdioDirectory, filename);
 
         detectBdioWriter.writeBdioFile(aggregateBdioFile, aggregateBdioDocument);
 
-        return aggregateBdioFile;
-    }
-
-    private SimpleBdioDocument createAggregateSimpleBdioDocument(NameVersion projectNameVersion, final DependencyGraph dependencyGraph) {
-        final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "/", ""), projectNameVersion.getName(), projectNameVersion.getVersion());
-        final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
-        return simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectNameVersion.getName(), projectNameVersion.getVersion(), projectExternalId, dependencyGraph);
+        return UploadTarget.createDefault(codeLocationName, aggregateBdioFile);
     }
 
     private DependencyGraph createAggregateDependencyGraph(File sourcePath, final List<DetectCodeLocation> codeLocations) {

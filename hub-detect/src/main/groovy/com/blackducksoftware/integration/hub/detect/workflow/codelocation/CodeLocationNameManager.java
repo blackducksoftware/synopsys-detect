@@ -37,7 +37,6 @@ public class CodeLocationNameManager {
     private final DetectConfiguration detectConfiguration;
     private final CodeLocationNameGenerator codeLocationNameGenerator;
 
-    private final Set<String> codeLocationNames = new HashSet<>();
     private int givenCodeLocationOverrideCount = 0;
 
     public CodeLocationNameManager(final DetectConfiguration detectConfiguration, final CodeLocationNameGenerator codeLocationNameGenerator) {
@@ -53,7 +52,6 @@ public class CodeLocationNameManager {
         } else {
             aggregateCodeLocationName = String.format("%s/%s Black Duck I/O Export", projectNameVersion.getName(), projectNameVersion.getVersion());
         }
-        codeLocationNames.add(aggregateCodeLocationName);
         return aggregateCodeLocationName;
     }
 
@@ -70,7 +68,6 @@ public class CodeLocationNameManager {
         } else {
             codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getCodeLocationType(), prefix, suffix);
         }
-        codeLocationNames.add(codeLocationName);
         return codeLocationName;
     }
 
@@ -84,7 +81,6 @@ public class CodeLocationNameManager {
         } else {
             scanCodeLocationName = codeLocationNameGenerator.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
         }
-        codeLocationNames.add(scanCodeLocationName);
         return scanCodeLocationName;
     }
 
@@ -96,7 +92,6 @@ public class CodeLocationNameManager {
         } else {
             scanCodeLocationName = codeLocationNameGenerator.createBinaryScanCodeLocationName(filename, projectName, projectVersionName, prefix, suffix);
         }
-        codeLocationNames.add(scanCodeLocationName);
         return scanCodeLocationName;
     }
 
@@ -115,7 +110,4 @@ public class CodeLocationNameManager {
         }
     }
 
-    public Set<String> getCodeLocationNames() {
-        return codeLocationNames;
-    }
 }

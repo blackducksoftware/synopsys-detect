@@ -42,6 +42,9 @@ import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatch;
+import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchManager;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.exception.IntegrationException;
@@ -58,7 +61,7 @@ public class BlackDuckSignatureScannerTool {
         this.detectContext = detectContext;
     }
 
-    public void runScanTool(NameVersion projectNameVersion, Optional<File> dockerTar) throws DetectUserFriendlyException {
+    public CodeLocationCreationData<UploadBatchOutput> runScanTool(NameVersion projectNameVersion, Optional<File> dockerTar) throws DetectUserFriendlyException {
         DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
         DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         ConnectionManager connectionManager = detectContext.getBean(ConnectionManager.class);

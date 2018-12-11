@@ -41,10 +41,12 @@ import com.google.gson.JsonParser;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.response.CurrentVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
+import com.synopsys.integration.blackduck.codelocation.bdioupload.BdioUploadService;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
 import com.synopsys.integration.blackduck.rest.BlackDuckRestConnection;
 import com.synopsys.integration.blackduck.service.BinaryScannerService;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
@@ -134,9 +136,8 @@ public class HubServiceManager {
         return hubServicesFactory.createProjectService();
     }
 
-    public PhoneHomeService createPhoneHomeService() {
-        //FIXME use PhoneHomeService and PhoneHomeClient correctly
-        return null;
+    public BlackDuckPhoneHomeHelper createBlackDuckPhoneHomeHelper() {
+        return BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(hubServicesFactory, Executors.newSingleThreadExecutor());
     }
 
     public CodeLocationService createCodeLocationService() {
@@ -145,6 +146,10 @@ public class HubServiceManager {
 
     public CodeLocationCreationService createCodeLocationCreationService() {
         return hubServicesFactory.createCodeLocationCreationService();
+    }
+
+    public BdioUploadService createBdioUploadService() {
+        return hubServicesFactory.createBdioUploadService();
     }
 
     public ReportService createReportService() throws IntegrationException {
@@ -173,11 +178,6 @@ public class HubServiceManager {
 
     public BlackDuckServicesFactory getBlackDuckServicesFactory() {
         return hubServicesFactory;
-    }
-
-    public PhoneHomeClient createPhoneHomeClient() {
-        //FIXME use PhoneHomeService and PhoneHomeClient correctly
-        return null;
     }
 
     public IntEnvironmentVariables getEnvironmentVariables() {

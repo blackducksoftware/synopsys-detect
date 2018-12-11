@@ -56,13 +56,12 @@ public class DetectProjectService {
         this.detectProjectServiceOptions = detectProjectServiceOptions;
     }
 
-    public Optional<ProjectVersionView> createOrUpdateHubProject(NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
+    public ProjectVersionWrapper createOrUpdateHubProject(NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         final ProjectService projectService = hubServiceManager.createProjectService();
         final BlackDuckService hubService = hubServiceManager.createBlackDuckService();
         final ProjectRequest projectRequest = createProjectRequest(projectNameVersion, projectService, hubService);
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
-        ProjectVersionWrapper projectVersionViewWrapper = projectService.syncProjectAndVersion(projectRequest, forceUpdate);
-        return Optional.ofNullable(projectVersionViewWrapper.getProjectVersionView());
+        return projectService.syncProjectAndVersion(projectRequest, forceUpdate);
     }
 
     public ProjectRequest createProjectRequest(final NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService hubService) throws DetectUserFriendlyException {

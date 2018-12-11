@@ -36,6 +36,7 @@ import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.util.NameVersion;
 
 public class CodeLocationBdioCreator {
@@ -48,8 +49,8 @@ public class CodeLocationBdioCreator {
         this.simpleBdioFactory = simpleBdioFactory;
     }
 
-    public List<File> createBdioFiles(File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, NameVersion projectNameVersion) throws DetectUserFriendlyException {
-        final List<File> bdioFiles = new ArrayList<>();
+    public List<UploadTarget> createBdioFiles(File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+        final List<UploadTarget> uploadTargets = new ArrayList<>();
         for (final BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
             String codeLocationName = bdioCodeLocation.codeLocationName;
             ExternalId externalId = bdioCodeLocation.codeLocation.getExternalId();
@@ -59,9 +60,9 @@ public class CodeLocationBdioCreator {
 
             final File outputFile = new File(bdioOutput, bdioCodeLocation.bdioName);
             detectBdioWriter.writeBdioFile(outputFile, simpleBdioDocument);
-            bdioFiles.add(outputFile);
+            uploadTargets.add(UploadTarget.createDefault(codeLocationName, outputFile));
         }
 
-        return bdioFiles;
+        return uploadTargets;
     }
 }

@@ -68,7 +68,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.FileMana
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.phonehome.OfflinePhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.OnlinePhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
@@ -135,7 +134,7 @@ public class BootManager {
         DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
         DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
         FileManager fileManager = new FileManager(detectArgumentState.isDiagnostic(),
-            detectArgumentState.isDiagnosticProtected(), directoryManager);
+                detectArgumentState.isDiagnosticProtected(), directoryManager);
 
         DiagnosticManager diagnosticManager = createDiagnostics(detectConfiguration, detectRun, detectArgumentState, eventSystem, directoryManager, fileManager);
 
@@ -161,12 +160,12 @@ public class BootManager {
         ConnectivityManager connectivityManager;
         if (!detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None)) {
             hubServiceManager.init();
-            connectivityManager = ConnectivityManager.online(hubServiceManager);
+            Map<String, String> additionalMetaData = detectConfiguration.getPhoneHomeProperties();
+            PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem, hubServiceManager);
+            connectivityManager = ConnectivityManager.online(hubServiceManager, phoneHomeManager);
         } else {
             connectivityManager = ConnectivityManager.offline();
         }
-
-        PhoneHomeManager phoneHomeManager = createPhoneHomeManager(detectInfo, detectConfiguration, connectivityManager, eventSystem, gson);
 
         //lock the configuration, boot has completed.
         logger.debug("Configuration is now complete. No changes should occur to configuration.");
@@ -179,7 +178,6 @@ public class BootManager {
         detectContext.registerBean(detectConfiguration);
         detectContext.registerBean(detectInfo);
         detectContext.registerBean(directoryManager);
-        detectContext.registerBean(phoneHomeManager);
         detectContext.registerBean(diagnosticManager);
         detectContext.registerBean(connectivityManager);
 
@@ -250,16 +248,8 @@ public class BootManager {
     private DiagnosticManager createDiagnostics(DetectConfiguration detectConfiguration, DetectRun detectRun, DetectArgumentState detectArgumentState, EventSystem eventSystem, DirectoryManager directoryManager, FileManager fileManager) {
         BomToolProfiler profiler = new BomToolProfiler(eventSystem); //TODO: I think phone home needs one?
         DiagnosticManager diagnosticManager = new DiagnosticManager(detectConfiguration, detectRun, fileManager, detectArgumentState.isDiagnostic(),
-            detectArgumentState.isDiagnosticProtected(), directoryManager, eventSystem, profiler);
+                detectArgumentState.isDiagnosticProtected(), directoryManager, eventSystem, profiler);
         return diagnosticManager;
     }
 
-    private PhoneHomeManager createPhoneHomeManager(DetectInfo detectInfo, DetectConfiguration detectConfiguration, ConnectivityManager connectivityManager, EventSystem eventSystem, Gson gson) {
-        Map<String, String> additionalMetaData = detectConfiguration.getPhoneHomeProperties();
-        if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
-            return new OnlinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem, connectivityManager.getHubServiceManager().get());
-        } else {
-            return new OfflinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem);
-        }
-    }
 }

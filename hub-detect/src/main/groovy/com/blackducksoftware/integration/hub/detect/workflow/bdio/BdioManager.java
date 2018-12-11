@@ -45,6 +45,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManag
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectorStatus;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
+import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
@@ -82,14 +83,16 @@ public class BdioManager {
 
             logger.info("Creating BDIO files from code locations.");
             CodeLocationBdioCreator codeLocationBdioCreator = new CodeLocationBdioCreator(detectBdioWriter, simpleBdioFactory);
-            final List<File> createdBdioFiles = codeLocationBdioCreator.createBdioFiles(directoryManager.getBdioOutputDirectory(), codeLocationResult.getBdioCodeLocations(), projectNameVersion);
+            final List<UploadTarget> uploadTargets = codeLocationBdioCreator.createBdioFiles(directoryManager.getBdioOutputDirectory(), codeLocationResult.getBdioCodeLocations(), projectNameVersion);
 
-            return new BdioResult(codeLocationResult.getBdioCodeLocations(), createdBdioFiles);
+            return new BdioResult(uploadTargets);
         } else {
             logger.info("Creating aggregate BDIO file.");
             AggregateBdioCreator aggregateBdioCreator = new AggregateBdioCreator(simpleBdioFactory, integrationEscapeUtil, codeLocationNameManager, detectConfiguration, detectBdioWriter);
-            final File aggregateBdioFile = aggregateBdioCreator.createAggregateBdioFile(directoryManager.getSourceDirectory(), directoryManager.getBdioOutputDirectory(), codeLocations, projectNameVersion);
-            return new BdioResult(new ArrayList<>(), Arrays.asList(aggregateBdioFile));
+            final UploadTarget uploadTarget = aggregateBdioCreator.createAggregateBdioFile(directoryManager.getSourceDirectory(), directoryManager.getBdioOutputDirectory(), codeLocations, projectNameVersion);
+
+            return new BdioResult(Arrays.asList(uploadTarget));
         }
     }
+
 }
