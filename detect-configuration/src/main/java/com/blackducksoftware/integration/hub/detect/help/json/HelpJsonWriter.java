@@ -31,7 +31,7 @@ public class HelpJsonWriter {
 
         for (DetectOption option : detectOptions) {
             HelpJsonOption helpJsonOption = convertOption(option);
-            data.helpOptions.add(helpJsonOption);
+            data.options.add(helpJsonOption);
         }
 
         try {
