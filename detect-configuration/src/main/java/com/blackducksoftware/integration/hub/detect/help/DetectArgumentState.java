@@ -25,7 +25,8 @@ package com.blackducksoftware.integration.hub.detect.help;
 
 public class DetectArgumentState {
     private final boolean isHelp;
-    private final boolean isHelpDocument;
+    private final boolean isHelpHtmlDocument;
+    private final boolean isHelpJsonDocument;
     private final boolean isInteractive;
 
     private final boolean isVerboseHelp;
@@ -35,10 +36,12 @@ public class DetectArgumentState {
     private final boolean isDiagnostic;
     private final boolean isDiagnosticProtected;
 
-    public DetectArgumentState(final boolean isHelp, final boolean isHelpDocument, final boolean isInteractive, final boolean isVerboseHelp, final boolean isDeprecatedHelp, final String parsedValue, final boolean isDiagnostic,
-            final boolean isDiagnosticProtected) {
+    public DetectArgumentState(final boolean isHelp, final boolean isHelpHtmlDocument, final boolean isHelpJsonDocument, final boolean isInteractive, final boolean isVerboseHelp, final boolean isDeprecatedHelp, final String parsedValue,
+        final boolean isDiagnostic,
+        final boolean isDiagnosticProtected) {
         this.isHelp = isHelp;
-        this.isHelpDocument = isHelpDocument;
+        this.isHelpHtmlDocument = isHelpHtmlDocument;
+        this.isHelpJsonDocument = isHelpJsonDocument;
         this.isInteractive = isInteractive;
         this.isVerboseHelp = isVerboseHelp;
         this.isDeprecatedHelp = isDeprecatedHelp;
@@ -51,8 +54,12 @@ public class DetectArgumentState {
         return isHelp;
     }
 
-    public boolean isHelpDocument() {
-        return isHelpDocument;
+    public boolean isHelpHtmlDocument() {
+        return isHelpHtmlDocument;
+    }
+
+    public boolean isHelpJsonDocument() {
+        return isHelpJsonDocument;
     }
 
     public boolean isInteractive() {

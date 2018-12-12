@@ -907,6 +907,10 @@ public enum DetectProperty {
         return defaultValue;
     }
 
+    public String getAddedInVersion() {
+        return asOf;
+    }
+
     public Boolean isEqualToDefault(final String value) {
         String defaultValue = "";
         if (null != getDefaultValue()) {

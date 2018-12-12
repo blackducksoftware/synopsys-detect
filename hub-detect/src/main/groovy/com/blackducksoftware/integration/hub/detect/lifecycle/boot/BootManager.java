@@ -50,6 +50,7 @@ import com.blackducksoftware.integration.hub.detect.help.DetectArgumentStatePars
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
+import com.blackducksoftware.integration.hub.detect.help.json.HelpJsonWriter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
@@ -110,8 +111,13 @@ public class BootManager {
             return BootResult.exit(detectConfiguration);
         }
 
-        if (detectArgumentState.isHelpDocument()) {
-            printHelpDocument(options, detectInfo, configuration);
+        if (detectArgumentState.isHelpHtmlDocument()) {
+            printHelpHtmlDocument(options, detectInfo, configuration);
+            return BootResult.exit(detectConfiguration);
+        }
+
+        if (detectArgumentState.isHelpJsonDocument()) {
+            printHelpJsonDocument(options, detectInfo, configuration, gson);
             return BootResult.exit(detectConfiguration);
         }
 
@@ -201,9 +207,14 @@ public class BootManager {
         helpPrinter.printAppropriateHelpMessage(System.out, detectOptions, detectArgumentState);
     }
 
-    private void printHelpDocument(List<DetectOption> detectOptions, DetectInfo detectInfo, Configuration configuration) {
+    private void printHelpHtmlDocument(List<DetectOption> detectOptions, DetectInfo detectInfo, Configuration configuration) {
         HelpHtmlWriter helpHtmlWriter = new HelpHtmlWriter(configuration);
         helpHtmlWriter.writeHtmlDocument(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()), detectOptions);
+    }
+
+    private void printHelpJsonDocument(List<DetectOption> detectOptions, DetectInfo detectInfo, Configuration configuration, Gson gson) {
+        HelpJsonWriter helpJsonWriter = new HelpJsonWriter(configuration, gson);
+        helpJsonWriter.writeGsonDocument(String.format("hub-detect-%s-help.json", detectInfo.getDetectVersion()), detectOptions);
     }
 
     private void printDetectInfo(DetectInfo detectInfo) {
