@@ -52,7 +52,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectStatusManager;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -121,11 +120,10 @@ public class Application implements ApplicationRunner {
             try {
                 logger.info("Detect will attempt to shutdown.");
                 DiagnosticManager diagnosticManager = detectContext.getBean(DiagnosticManager.class);
-                PhoneHomeManager phoneHomeManager = detectContext.getBean(PhoneHomeManager.class);
                 DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
                 DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
                 ConnectivityManager connectivityManager = detectContext.getBean(ConnectivityManager.class);
-                ShutdownManager shutdownManager = new ShutdownManager(connectivityManager, statusManager, exitCodeManager, phoneHomeManager, directoryManager, detectConfiguration, reportManager, diagnosticManager);
+                ShutdownManager shutdownManager = new ShutdownManager(connectivityManager, statusManager, exitCodeManager, directoryManager, detectConfiguration, reportManager, diagnosticManager);
                 logger.info("Detect shutdown begin.");
                 shutdownManager.shutdown(runResult);
                 logger.info("Detect shutdown completed.");

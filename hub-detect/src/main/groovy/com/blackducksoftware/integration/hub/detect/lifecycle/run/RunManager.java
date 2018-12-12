@@ -66,7 +66,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectSe
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectServiceOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
-import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionDecider;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
@@ -85,7 +84,6 @@ public class RunManager {
 
     public RunResult run() throws DetectUserFriendlyException, InterruptedException, IntegrationException {
         //TODO: Better way for run manager to get dependencies so he can be tested. (And better ways of creating his objects)
-        PhoneHomeManager phoneHomeManager = detectContext.getBean(PhoneHomeManager.class);
         DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
         DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
@@ -96,7 +94,9 @@ public class RunManager {
         DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
         ConnectivityManager connectivityManager = detectContext.getBean(ConnectivityManager.class);
 
-        phoneHomeManager.startPhoneHome();
+        if (connectivityManager.getPhoneHomeManager().isPresent()) {
+            connectivityManager.getPhoneHomeManager().get().startPhoneHome();
+        }
 
         RunResult runResult = new RunResult();
         RunOptions runOptions = detectConfigurationFactory.createRunOptions();

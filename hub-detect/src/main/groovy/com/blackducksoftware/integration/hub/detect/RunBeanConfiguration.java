@@ -57,7 +57,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.synopsys.integration.bdio.BdioTransformer;
@@ -78,8 +77,6 @@ public class RunBeanConfiguration {
     public DetectConfiguration detectConfiguration;
     @Autowired
     public DirectoryManager directoryManager;
-    @Autowired
-    public PhoneHomeManager phoneHomeManager;
     @Autowired
     public DiagnosticManager diagnosticManager;
     @Autowired
@@ -186,7 +183,8 @@ public class RunBeanConfiguration {
 
     @Lazy
     @Bean
-    public OnlineBlackDuckSignatureScanner onlineBlackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner, CodeLocationCreationService codeLocationCreationService, BlackDuckServerConfig hubServerConfig) {
+    public OnlineBlackDuckSignatureScanner onlineBlackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner, CodeLocationCreationService codeLocationCreationService,
+        BlackDuckServerConfig hubServerConfig) {
         return new OnlineBlackDuckSignatureScanner(directoryManager, detectFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, codeLocationCreationService, hubServerConfig);
     }
 
