@@ -47,6 +47,7 @@ public class RubygemsNodePackagerTest {
         final GemlockParser rubygemsNodePackager = new GemlockParser(new ExternalIdFactory());
         final DependencyGraph graph = rubygemsNodePackager.parseProjectDependencies(actualText);
 
+        assertNoDependency("nokogiri", "", graph);
         assertDependency("nokogiri", "1.8.2", graph);
         assertDependency("nokogiri", "1.8.2-java", graph);
         assertDependency("nokogiri", "1.8.2-x86-mingw32", graph);
@@ -54,5 +55,9 @@ public class RubygemsNodePackagerTest {
 
     private void assertDependency(String name, String version, DependencyGraph graph) {
         Assert.assertTrue("Graph must have " + name + " with version " + version + " but did not.", graph.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, name, version)));
+    }
+
+    private void assertNoDependency(String name, String version, DependencyGraph graph) {
+        Assert.assertFalse("Graph should not have " + name + " with version " + version + " but it did.", graph.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, name, version)));
     }
 }

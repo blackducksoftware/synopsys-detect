@@ -69,12 +69,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionDecider;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionOptions;
-import com.blackducksoftware.integration.hub.detect.workflow.search.SearchOptions;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.Result;
-import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
-import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
@@ -238,6 +232,13 @@ public class RunManager {
             logger.info("Will perform Black Duck post actions.");
             HubManager hubManager = new HubManager(detectConfiguration, hubServiceManager, new PolicyChecker(detectConfiguration), eventSystem);
             hubManager.performPostHubActions(projectVersionWrapper.get(), codeLocationWaitData);
+
+            if (!bdioResult.getBdioFiles().isEmpty() || !detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
+                final HubService hubService = hubServiceManager.createHubService();
+                final String componentsLink = hubService.getFirstLinkSafely(projectView.get(), ProjectVersionView.COMPONENTS_LINK);
+                logger.info(String.format("To see your results, follow the URL: %s", componentsLink));
+            }
+
             logger.info("Black Duck actions have finished.");
         } else {
             logger.debug("Will not perform post actions: Detect is not online.");

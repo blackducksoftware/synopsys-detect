@@ -101,9 +101,15 @@ public class NugetInspectorManager {
                                                 detectConfiguration.getProperty(DetectProperty.DETECT_DOTNET_PATH, PropertyAuthority.None));
 
         boolean useDotnet = true;
-        if (shouldForceExeInspector(detectInfo) || dotnetExecutable == null) {
+        if (shouldForceExeInspector(detectInfo)) {
             logger.info("Will use the classic inspector.");
             useDotnet = false;
+        } else if (dotnetExecutable == null) {
+            if (isNotWindows(detectInfo)) {
+                throw new DetectorException("When not on Windows, the nuget inspector requires the dotnet executable to run.");
+            } else {
+                useDotnet = false;
+            }
         }
 
         if (shouldUseAirGap()) {
@@ -194,11 +200,23 @@ public class NugetInspectorManager {
         }
     }
 
+    private boolean isWindows(DetectInfo detectInfo) {
+        if (detectInfo.getCurrentOs() == OperatingSystemType.WINDOWS) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isNotWindows(DetectInfo detectInfo) {
+        return !isWindows(detectInfo);
+    }
+
     private boolean shouldForceExeInspector(DetectInfo detectInfo) {
 
-        if (detectInfo.getCurrentOs() != OperatingSystemType.WINDOWS) {
+        if (isNotWindows(detectInfo)) {
             return false;
         }
+
         //if customers have overridden the repo url's and include a v2 api, we must use the old nuget inspector (exe inspector) until 5.0.0 of detect.
         //TODO: Remove in 6.0.0
         for (final String source : detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL, PropertyAuthority.None)) {

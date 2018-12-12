@@ -201,11 +201,11 @@ function Invoke-WebRequestWrapper($Url, $ProxyInfo, $DownloadLocation = $null) {
 function Get-DetectJar ($DetectFolder, $DetectSource, $DetectVersionKey, $DetectVersion, $ProxyInfo) {
     if ($DetectSource -eq "") {
         if ($DetectVersion -eq "") {
-            $DetectVersionUrl = "https://test-repo.blackducksoftware.com/artifactory/api/storage/bds-integrations-release/com/blackducksoftware/integration/hub-detect?properties=" + $DetectVersionKey
+            $DetectVersionUrl = "https://repo.blackducksoftware.com/artifactory/api/storage/bds-integrations-release/com/blackducksoftware/integration/hub-detect?properties=" + $DetectVersionKey
             $DetectSource = Receive-DetectSource -ProxyInfo $ProxyInfo -DetectVersionUrl $DetectVersionUrl -DetectVersionKey $DetectVersionKey
         }
         else {
-            $DetectSource = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect/" + $DetectVersion + "/hub-detect-" + $DetectVersion + ".jar"
+            $DetectSource = "https://repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect/" + $DetectVersion + "/hub-detect-" + $DetectVersion + ".jar"
         }
     }
 

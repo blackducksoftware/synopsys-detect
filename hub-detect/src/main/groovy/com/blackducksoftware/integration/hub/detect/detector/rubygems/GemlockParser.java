@@ -117,13 +117,19 @@ public class GemlockParser {
     }
 
     private void discoveredDependencyInfo(final NameVersionDependencyId id) {
+        NameDependencyId nameOnlyId = new NameDependencyId(id.name);
+
+        //regardless we found the external id for this specific dependency.
         final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, id.name, id.version);
-        resolvedDependencies.add(id.name);
-        NameDependencyId nameOnlyId =
-            new NameDependencyId(id.name);
-        lazyBuilder.setDependencyInfo(nameOnlyId, id.name, "", externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, id.name, ""));
         lazyBuilder.setDependencyInfo(id, id.name, id.version, externalId);
-        lazyBuilder.addChildWithParent(id, nameOnlyId);
+
+        if (!resolvedDependencies.contains(id.name)) { //if this is our first time encountering a dependency of this name, we become the 'version-less'
+            resolvedDependencies.add(id.name);
+            lazyBuilder.setDependencyInfo(nameOnlyId, id.name, id.version, externalId);
+        } else {//otherwise, add us as a child to the version-less
+            lazyBuilder.addChildWithParent(id, nameOnlyId);
+        }
+
     }
 
     private void addBundlerDependency(final String trimmedLine) {
