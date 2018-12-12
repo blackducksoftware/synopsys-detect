@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +59,9 @@ public class ConnectionManager {
         final ProxyInfoBuilder proxyInfoBuilder = new ProxyInfoBuilder();
         proxyInfoBuilder.setCredentials(proxyCredentials);
         proxyInfoBuilder.setHost(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_HOST, PropertyAuthority.None));
-        proxyInfoBuilder.setPort(detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_PROXY_PORT, PropertyAuthority.None));
+        String proxyPortFromConfiguration = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PORT, PropertyAuthority.None);
+        int proxyPort = NumberUtils.toInt(proxyPortFromConfiguration, 0);
+        proxyInfoBuilder.setPort(proxyPort);
         proxyInfoBuilder.setNtlmDomain(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_NTLM_DOMAIN, PropertyAuthority.None));
         proxyInfoBuilder.setNtlmWorkstation(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_NTLM_WORKSTATION, PropertyAuthority.None));
         try {

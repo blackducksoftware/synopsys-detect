@@ -86,8 +86,6 @@ public class RunBeanConfiguration {
     @Autowired
     public Gson gson;
     @Autowired
-    public JsonParser jsonParser;
-    @Autowired
     public Configuration configuration;
     @Autowired
     public DocumentBuilder documentBuilder;
