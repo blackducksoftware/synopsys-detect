@@ -31,7 +31,8 @@ public class DetectArgumentStateParser {
 
     public DetectArgumentState parseArgs(final ArgumentParser parser) {
         final boolean isHelp = parser.isArgumentPresent("-h", "--help");
-        final boolean isHelpDocument = parser.isArgumentPresent("-hdoc", "--helpdocument");
+        final boolean isHelpHtmlDocument = parser.isArgumentPresent("-hdoc", "--helpdocument");
+        final boolean isHelpJsonDocument = parser.isArgumentPresent("-hjson", "--helpjson");
         final boolean isInteractive = parser.isArgumentPresent("-i", "--interactive");
 
         final boolean isVerboseHelp = parser.isArgumentPresent("-hv", "--helpVerbose");
@@ -55,7 +56,7 @@ public class DetectArgumentStateParser {
             parsedValue = parser.findValueForCommand("-h", "--help");
         }
 
-        return new DetectArgumentState(isHelp, isHelpDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue, isDiagnostic, isDiagnosticProtected);
+        return new DetectArgumentState(isHelp, isHelpHtmlDocument, isHelpJsonDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue, isDiagnostic, isDiagnosticProtected);
     }
 
 }
