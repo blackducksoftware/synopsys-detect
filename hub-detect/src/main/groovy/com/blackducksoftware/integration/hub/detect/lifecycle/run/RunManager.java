@@ -47,6 +47,7 @@ import com.blackducksoftware.integration.hub.detect.tool.docker.DockerToolResult
 import com.blackducksoftware.integration.hub.detect.tool.polaris.PolarisTool;
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
+import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
@@ -69,8 +70,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHome
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionDecider;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchOptions;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.exception.IntegrationException;
@@ -201,10 +202,13 @@ public class RunManager {
             logger.info("Will include the signature scanner tool.");
             BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
             BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
-            blackDuckSignatureScannerTool.runScanTool(projectNameVersion, runResult.getDockerTar());
+            SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(projectNameVersion, runResult.getDockerTar());
+            if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
+                codeLocationWaitData.setFromSignatureScannerCodeLocationCreationData(signatureScannerToolResult.getCreationData().get());
+            }
             logger.info("Signature scanner actions finished.");
         } else {
-            logger.info("Singature scan tool will not be run.");
+            logger.info("Signature scan tool will not be run.");
         }
 
         if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
@@ -232,8 +236,8 @@ public class RunManager {
             HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
 
             logger.info("Will perform Black Duck post actions.");
-            HubManager hubManager = new HubManager(codeLocationNameManager, detectConfiguration, hubServiceManager, new PolicyChecker(detectConfiguration), eventSystem);
-            hubManager.performPostHubActions(projectVersionWrapper.get(), codelo);
+            HubManager hubManager = new HubManager(detectConfiguration, hubServiceManager, new PolicyChecker(detectConfiguration), eventSystem);
+            hubManager.performPostHubActions(projectVersionWrapper.get(), codeLocationWaitData);
             logger.info("Black Duck actions have finished.");
         } else {
             logger.debug("Will not perform post actions: Detect is not online.");
@@ -243,4 +247,5 @@ public class RunManager {
 
         return runResult;
     }
+
 }

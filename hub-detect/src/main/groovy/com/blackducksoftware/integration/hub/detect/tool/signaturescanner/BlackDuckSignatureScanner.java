@@ -48,7 +48,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchBuilder;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchManager;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanTarget;
@@ -64,10 +64,10 @@ public abstract class BlackDuckSignatureScanner {
     private final CodeLocationNameManager codeLocationNameManager;
     private final BlackDuckSignatureScannerOptions signatureScannerOptions;
     private final EventSystem eventSystem;
-    private final ScanBatchManager scanJobManager;
+    private final ScanBatchRunner scanJobManager;
 
     public BlackDuckSignatureScanner(final DirectoryManager directoryManager, final DetectFileFinder detectFileFinder, final CodeLocationNameManager codeLocationNameManager,
-            final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanBatchManager scanJobManager) {
+            final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanBatchRunner scanJobManager) {
         this.directoryManager = directoryManager;
         this.detectFileFinder = detectFileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
@@ -78,11 +78,11 @@ public abstract class BlackDuckSignatureScanner {
 
     protected abstract ScanBatch createScanBatch(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile);
 
-    public void performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws InterruptedException, IntegrationException, DetectUserFriendlyException, IOException {
-        scanPaths(projectNameVersion, installDirectory, dockerTarFile);
+    public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws InterruptedException, IntegrationException, DetectUserFriendlyException, IOException {
+        return scanPaths(projectNameVersion, installDirectory, dockerTarFile);
     }
 
-    private void scanPaths(final NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, InterruptedException, IOException {
+    private ScanBatchOutput scanPaths(final NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, InterruptedException, IOException {
         List<SignatureScanPath> signatureScanPaths = determinePathsAndExclusions(projectNameVersion, signatureScannerOptions.getMaxDepth(), dockerTarFile);
         final ScanBatch scanJob = createScanBatch(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
 
@@ -95,16 +95,17 @@ public abstract class BlackDuckSignatureScanner {
         }
 
         reportResults(signatureScanPaths, scanCommandOutputs);
+
+        return scanJobOutput;
     }
 
     private void reportResults(List<SignatureScanPath> signatureScanPaths, List<ScanCommandOutput> scanCommandOutputList) {
         boolean anyFailed = false;
         boolean anyExitCodeIs64 = false;
         for (final SignatureScanPath target : signatureScanPaths) {
-            Optional<ScanCommandOutput> targetOutput =
-                    scanCommandOutputList.stream()
-                            .filter(output -> output.getScanTarget().equals(target.targetPath))
-                            .findFirst();
+            Optional<ScanCommandOutput> targetOutput = scanCommandOutputList.stream()
+                                                               .filter(output -> output.getScanTarget().equals(target.targetPath))
+                                                               .findFirst();
 
             StatusType scanStatus;
             if (!targetOutput.isPresent()) {

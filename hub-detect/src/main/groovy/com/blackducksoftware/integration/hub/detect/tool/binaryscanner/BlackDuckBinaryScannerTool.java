@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.tool.binaryscanner;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
@@ -80,7 +81,7 @@ public class BlackDuckBinaryScannerTool {
             binaryService.scanBinary(file, projectName, projectVersionName, codeLocationName);
             logger.info("Succesfully uploaded binary scan file: " + codeLocationName);
             eventSystem.publishEvent(Event.StatusSummary, new Status("BINARY_SCAN", StatusType.SUCCESS));
-        } catch (MalformedURLException | IntegrationException | URISyntaxException e) {
+        } catch (IOException | IntegrationException | URISyntaxException e) {
             logger.error("Failed to upload binary scan file: " + e.getMessage());
             eventSystem.publishEvent(Event.StatusSummary, new Status("BINARY_SCAN", StatusType.FAILURE));
             throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
