@@ -289,7 +289,7 @@ public class DetectorBeanConfiguration {
 
     @Bean
     public GradleInspectorExtractor gradleInspectorExtractor() {
-        return new GradleInspectorExtractor(executableRunner, detectFileFinder, directoryManager, gradleReportParser(), detectConfiguration);
+        return new GradleInspectorExtractor(executableRunner, detectFileFinder, gradleReportParser(), detectConfiguration);
     }
 
     @Bean
@@ -519,7 +519,7 @@ public class DetectorBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GradleInspectorDetector gradleInspectorBomTool(final DetectorEnvironment environment) throws ParserConfigurationException {
-        return new GradleInspectorDetector(environment, detectFileFinder, gradleExecutableFinder(), gradleInspectorManager(), gradleInspectorExtractor());
+        return new GradleInspectorDetector(environment, directoryManager, detectFileFinder, gradleExecutableFinder(), gradleInspectorManager(), gradleInspectorExtractor());
     }
 
     @Bean
