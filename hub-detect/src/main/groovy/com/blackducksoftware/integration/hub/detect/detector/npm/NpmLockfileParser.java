@@ -23,10 +23,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.detector.npm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.detector.npm.model.PackageJson;
+import com.blackducksoftware.integration.hub.detect.detector.npm.model.PackageLock;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.google.gson.Gson;
@@ -39,30 +44,42 @@ import com.synopsys.integration.hub.bdio.model.dependencyid.NameVersionDependenc
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
-public class NpmLockfilePackager {
-    private final Logger logger = LoggerFactory.getLogger(NpmLockfilePackager.class);
+public class NpmLockfileParser {
+    private final Logger logger = LoggerFactory.getLogger(NpmLockfileParser.class);
     private final Gson gson;
     private final ExternalIdFactory externalIdFactory;
 
-    public NpmLockfilePackager(final Gson gson, final ExternalIdFactory externalIdFactory) {
+    public NpmLockfileParser(final Gson gson, final ExternalIdFactory externalIdFactory) {
         this.gson = gson;
         this.externalIdFactory = externalIdFactory;
     }
 
-    public NpmParseResult parse(final String sourcePath, final String lockFileText, final boolean includeDevDependencies) {
+    public NpmParseResult parse(final String sourcePath, final String packageJsonText, final String lockFileText, final boolean includeDevDependencies) {
         final LazyExternalIdDependencyGraphBuilder lazyBuilder = new LazyExternalIdDependencyGraphBuilder();
         logger.info("Parsing lock file text: ");
         logger.debug(lockFileText);
 
-        final NpmProject npmProject = gson.fromJson(lockFileText, NpmProject.class);
+        final PackageJson packageJson = gson.fromJson(packageJsonText, PackageJson.class);
+        final PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
+
+        List<String> rootPackages = new ArrayList<>();
+        if (packageJson != null) {
+            if (packageJson.dependencies != null)
+                rootPackages.addAll(packageJson.dependencies.keySet());
+            if (packageJson.devDependencies != null)
+                rootPackages.addAll(packageJson.devDependencies.keySet());
+        }
+
         logger.info("Processing project.");
-        if (npmProject.dependencies != null) {
-            logger.info(String.format("Found %d dependencies.", npmProject.dependencies.size()));
-            npmProject.dependencies.forEach((name, npmDependency) -> {
+        if (packageLock.dependencies != null) {
+            logger.info(String.format("Found %d dependencies.", packageLock.dependencies.size()));
+            packageLock.dependencies.forEach((name, npmDependency) -> {
                 if (shouldInclude(npmDependency, includeDevDependencies)) {
                     final DependencyId dependency = createDependencyId(name, npmDependency.version);
                     setDependencyInfo(dependency, name, npmDependency.version, lazyBuilder);
-                    lazyBuilder.addChildToRoot(dependency);
+                    if (rootPackages.contains(name)) {
+                        lazyBuilder.addChildToRoot(dependency);
+                    }
                     if (npmDependency.requires != null) {
                         npmDependency.requires.forEach((childName, childVersion) -> {
                             final DependencyId childId = createDependencyId(childName, childVersion);
@@ -77,9 +94,9 @@ public class NpmLockfilePackager {
         }
         logger.info("Finished processing.");
         final DependencyGraph graph = lazyBuilder.build();
-        final ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPM, npmProject.name, npmProject.version);
+        final ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPM, packageLock.name, packageLock.version);
         final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.NPM, sourcePath, projectId, graph).build();
-        return new NpmParseResult(npmProject.name, npmProject.version, codeLocation);
+        return new NpmParseResult(packageLock.name, packageLock.version, codeLocation);
     }
 
     private boolean shouldInclude(final NpmDependency npmDependency, final boolean includeDevDependencies) {

@@ -9,20 +9,20 @@ import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
-public class NpmLockfilePackagerTest {
-    NpmLockfilePackager npmLockfilePackager;
+public class NpmLockfileParserTest {
+    NpmLockfileParser npmLockfileParser;
     TestUtil testUtil;
 
     @Before
     public void init() {
         testUtil = new TestUtil();
-        npmLockfilePackager = new NpmLockfilePackager(new GsonBuilder().setPrettyPrinting().create(), new ExternalIdFactory());
+        npmLockfileParser = new NpmLockfileParser(new GsonBuilder().setPrettyPrinting().create(), new ExternalIdFactory());
     }
 
     @Test
     public void parseLockFileTest() {
         final String lockFileText = testUtil.getResourceAsUTF8String("/npm/package-lock.json");
-        final NpmParseResult result = npmLockfilePackager.parse("source", lockFileText, true);
+        final NpmParseResult result = npmLockfileParser.parse("source", "", lockFileText, true);
 
         Assert.assertEquals(result.projectName, "knockout-tournament");
         Assert.assertEquals(result.projectVersion, "1.0.0");
@@ -32,7 +32,7 @@ public class NpmLockfilePackagerTest {
     @Test
     public void parseShrinkwrapTest() {
         final String shrinkwrapText = testUtil.getResourceAsUTF8String("/npm/npm-shrinkwrap.json");
-        final NpmParseResult result = npmLockfilePackager.parse("source", shrinkwrapText, true);
+        final NpmParseResult result = npmLockfileParser.parse("source", "", shrinkwrapText, true);
 
         Assert.assertEquals(result.projectName, "fec-builder");
         Assert.assertEquals(result.projectVersion, "1.3.7");

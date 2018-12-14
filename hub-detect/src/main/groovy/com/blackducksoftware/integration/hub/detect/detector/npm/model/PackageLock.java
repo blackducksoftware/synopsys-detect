@@ -21,13 +21,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.npm;
+package com.blackducksoftware.integration.hub.detect.detector.npm.model;
 
 import java.util.Map;
 
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmDependency;
 import com.google.gson.annotations.SerializedName;
 
-public class NpmProject {
+public class PackageLock {
     @SerializedName("name")
     public String name;
 

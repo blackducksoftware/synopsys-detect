@@ -35,25 +35,27 @@ import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthor
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class NpmLockfileExtractor {
-    private final NpmLockfilePackager npmLockfilePackager;
+    private final NpmLockfileParser npmLockfileParser;
     private final DetectConfiguration detectConfiguration;
 
-    public NpmLockfileExtractor(final NpmLockfilePackager npmLockfilePackager, final DetectConfiguration detectConfiguration) {
-        this.npmLockfilePackager = npmLockfilePackager;
+    public NpmLockfileExtractor(final NpmLockfileParser npmLockfileParser, final DetectConfiguration detectConfiguration) {
+        this.npmLockfileParser = npmLockfileParser;
         this.detectConfiguration = detectConfiguration;
     }
 
-    public Extraction extract(final File directory, final File lockfile) {
+    public Extraction extract(final File directory, final File packageJson, final File lockfile) {
         String lockText;
+        String packageText;
         try {
             lockText = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
+            packageText = FileUtils.readFileToString(packageJson, StandardCharsets.UTF_8);
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
 
         try {
             final boolean includeDevDeps = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.None);
-            final NpmParseResult result = npmLockfilePackager.parse(directory.getCanonicalPath(), lockText, includeDevDeps);
+            final NpmParseResult result = npmLockfileParser.parse(directory.getCanonicalPath(), packageText, lockText, includeDevDeps);
             return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();

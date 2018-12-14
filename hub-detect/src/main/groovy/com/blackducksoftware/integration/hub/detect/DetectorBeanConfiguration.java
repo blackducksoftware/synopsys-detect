@@ -92,7 +92,7 @@ import com.blackducksoftware.integration.hub.detect.detector.npm.NpmCliExtractor
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmCliParser;
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmLockfileExtractor;
-import com.blackducksoftware.integration.hub.detect.detector.npm.NpmLockfilePackager;
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmLockfileParser;
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmPackageLockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmShrinkwrapDetector;
 import com.blackducksoftware.integration.hub.detect.detector.nuget.NugetInspectorExtractor;
@@ -328,8 +328,8 @@ public class DetectorBeanConfiguration {
     }
 
     @Bean
-    public NpmLockfilePackager npmLockfilePackager() {
-        return new NpmLockfilePackager(gson, externalIdFactory);
+    public NpmLockfileParser npmLockfilePackager() {
+        return new NpmLockfileParser(gson, externalIdFactory);
     }
 
     @Bean

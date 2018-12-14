@@ -37,11 +37,13 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Passe
 
 public class NpmShrinkwrapDetector extends Detector {
     public static final String SHRINKWRAP_JSON = "npm-shrinkwrap.json";
+    public static final String PACKAGE_JSON = "package.json";
 
     private final DetectFileFinder fileFinder;
     private final NpmLockfileExtractor npmLockfileExtractor;
 
     private File lockfile;
+    private File packageJson;
 
     public NpmShrinkwrapDetector(final DetectorEnvironment environment, final DetectFileFinder fileFinder, final NpmLockfileExtractor npmLockfileExtractor) {
         super(environment, "Shrinkwrap", DetectorType.NPM);
@@ -56,6 +58,11 @@ public class NpmShrinkwrapDetector extends Detector {
             return new FileNotFoundDetectorResult(SHRINKWRAP_JSON);
         }
 
+        packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
+        if (packageJson == null) {
+            return new FileNotFoundDetectorResult(PACKAGE_JSON);
+        }
+
         return new PassedDetectorResult();
     }
 
@@ -67,7 +74,7 @@ public class NpmShrinkwrapDetector extends Detector {
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         addRelevantDiagnosticFile(lockfile);
-        return npmLockfileExtractor.extract(environment.getDirectory(), lockfile);
+        return npmLockfileExtractor.extract(environment.getDirectory(), packageJson, lockfile);
     }
 
 }
