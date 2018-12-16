@@ -32,6 +32,7 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
@@ -41,6 +42,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Passe
 public class GradleInspectorDetector extends Detector {
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
 
+    private final DirectoryManager directoryManager;
     private final DetectFileFinder fileFinder;
     private final GradleExecutableFinder gradleFinder;
     private final GradleInspectorManager gradleInspectorManager;
@@ -49,9 +51,11 @@ public class GradleInspectorDetector extends Detector {
     private String gradleExe;
     private String gradleInspector;
 
-    public GradleInspectorDetector(final DetectorEnvironment environment, final DetectFileFinder fileFinder, final GradleExecutableFinder gradleFinder, final GradleInspectorManager gradleInspectorManager,
+    public GradleInspectorDetector(final DetectorEnvironment environment, final DirectoryManager directoryManager, final DetectFileFinder fileFinder,
+        final GradleExecutableFinder gradleFinder, final GradleInspectorManager gradleInspectorManager,
         final GradleInspectorExtractor gradleInspectorExtractor) {
         super(environment, "Gradle Inspector", DetectorType.GRADLE);
+        this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;
         this.gradleFinder = gradleFinder;
         this.gradleInspectorManager = gradleInspectorManager;
@@ -85,7 +89,8 @@ public class GradleInspectorDetector extends Detector {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleInspector, extractionId);
+        File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
+        return gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleInspector, outputDirectory);
     }
 
 }

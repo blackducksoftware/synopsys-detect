@@ -92,7 +92,7 @@ import com.blackducksoftware.integration.hub.detect.detector.npm.NpmCliExtractor
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmCliParser;
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmLockfileExtractor;
-import com.blackducksoftware.integration.hub.detect.detector.npm.NpmLockfilePackager;
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmLockfileParser;
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmPackageLockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmShrinkwrapDetector;
 import com.blackducksoftware.integration.hub.detect.detector.nuget.NugetInspectorExtractor;
@@ -287,7 +287,7 @@ public class DetectorBeanConfiguration {
 
     @Bean
     public GradleInspectorExtractor gradleInspectorExtractor() {
-        return new GradleInspectorExtractor(executableRunner, detectFileFinder, directoryManager, gradleReportParser(), detectConfiguration);
+        return new GradleInspectorExtractor(executableRunner, detectFileFinder, gradleReportParser(), detectConfiguration);
     }
 
     @Bean
@@ -326,8 +326,8 @@ public class DetectorBeanConfiguration {
     }
 
     @Bean
-    public NpmLockfilePackager npmLockfilePackager() {
-        return new NpmLockfilePackager(gson, externalIdFactory);
+    public NpmLockfileParser npmLockfilePackager() {
+        return new NpmLockfileParser(gson, externalIdFactory);
     }
 
     @Bean
@@ -517,7 +517,7 @@ public class DetectorBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GradleInspectorDetector gradleInspectorBomTool(final DetectorEnvironment environment) throws ParserConfigurationException {
-        return new GradleInspectorDetector(environment, detectFileFinder, gradleExecutableFinder(), gradleInspectorManager(), gradleInspectorExtractor());
+        return new GradleInspectorDetector(environment, directoryManager, detectFileFinder, gradleExecutableFinder(), gradleInspectorManager(), gradleInspectorExtractor());
     }
 
     @Bean

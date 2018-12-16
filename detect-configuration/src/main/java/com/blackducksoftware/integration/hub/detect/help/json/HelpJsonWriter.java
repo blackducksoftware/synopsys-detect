@@ -72,6 +72,7 @@ public class HelpJsonWriter {
         HelpJsonOption helpJsonOption = new HelpJsonOption();
 
         DetectProperty property = detectOption.getDetectProperty();
+        helpJsonOption.propertyName = property.getPropertyName();
         helpJsonOption.propertyKey = property.getPropertyName();
         helpJsonOption.propertyType = property.getPropertyType().getDisplayName();
         helpJsonOption.addedInVersion = property.getAddedInVersion();

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HelpJsonOption {
+    public String propertyName = "";
     public String propertyKey = "";
     public String propertyType = "";
     public String defaultValue = "";

@@ -36,14 +36,12 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.util.NameVersion;
 
 public class GradleInspectorExtractor {
@@ -51,23 +49,19 @@ public class GradleInspectorExtractor {
 
     private final ExecutableRunner executableRunner;
     private final DetectFileFinder detectFileFinder;
-    private final DirectoryManager directoryManager;
     private final GradleReportParser gradleReportParser;
     private final DetectConfiguration detectConfiguration;
 
-    public GradleInspectorExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final DirectoryManager directoryManager,
+    public GradleInspectorExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder,
         final GradleReportParser gradleReportParser, final DetectConfiguration detectConfiguration) {
         this.executableRunner = executableRunner;
         this.detectFileFinder = detectFileFinder;
-        this.directoryManager = directoryManager;
         this.gradleReportParser = gradleReportParser;
         this.detectConfiguration = detectConfiguration;
     }
 
-    public Extraction extract(final File directory, final String gradleExe, final String gradleInspector, final ExtractionId extractionId) {
+    public Extraction extract(final File directory, final String gradleExe, final String gradleInspector, final File outputDirectory) {
         try {
-            final File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
-
             String gradleCommand = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND, PropertyAuthority.None);
 
             final List<String> arguments = new ArrayList<>();
