@@ -67,6 +67,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionDecider;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionOptions;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ReportConstants;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchOptions;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.service.HubService;
@@ -105,6 +106,7 @@ public class RunManager {
 
         DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
 
+        logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the docker tool.");
             DockerTool dockerTool = new DockerTool(detectContext);
@@ -122,6 +124,7 @@ public class RunManager {
             logger.info("Docker tool will not be run.");
         }
 
+        logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
             logger.info("Will include the detector tool.");
             String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DETECTOR, PropertyAuthority.None);
@@ -141,6 +144,7 @@ public class RunManager {
             logger.info("Detector tool will not be run.");
         }
 
+        logger.info(ReportConstants.RUN_SEPARATOR);
         logger.info("Completed code location tools.");
 
         logger.info("Determining project info.");
@@ -192,6 +196,7 @@ public class RunManager {
 
         logger.info("Completed Detect Code Location processing.");
 
+        logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
             logger.info("Will include the signature scanner tool.");
             BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
@@ -199,9 +204,10 @@ public class RunManager {
             blackDuckSignatureScannerTool.runScanTool(projectNameVersion, runResult.getDockerTar());
             logger.info("Signature scanner actions finished.");
         } else {
-            logger.info("Singature scan tool will not be run.");
+            logger.info("Signature scan tool will not be run.");
         }
 
+        logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
             logger.info("Will include the binary scanner tool.");
             if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
@@ -214,6 +220,7 @@ public class RunManager {
             logger.info("Binary scan tool will not be run.");
         }
 
+        logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
             logger.info("Will include the Polaris tool.");
             PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, new ExecutableRunner(), connectionManager);
@@ -223,6 +230,7 @@ public class RunManager {
             logger.info("Polaris CLI tool will not be run.");
         }
 
+        logger.info(ReportConstants.RUN_SEPARATOR);
         if (projectView.isPresent() && connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
             HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
 
@@ -230,7 +238,10 @@ public class RunManager {
             HubManager hubManager = new HubManager(codeLocationNameManager, detectConfiguration, hubServiceManager, new PolicyChecker(detectConfiguration), eventSystem);
             hubManager.performPostHubActions(projectNameVersion, projectView.get());
 
-            if (!bdioResult.getBdioFiles().isEmpty() || !detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
+            boolean hasAtLeastOneBdio = !bdioResult.getBdioFiles().isEmpty();
+            boolean shouldHaveScanned = detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN);
+
+            if (hasAtLeastOneBdio || shouldHaveScanned) {
                 final HubService hubService = hubServiceManager.createHubService();
                 final String componentsLink = hubService.getFirstLinkSafely(projectView.get(), ProjectVersionView.COMPONENTS_LINK);
                 logger.info(String.format("To see your results, follow the URL: %s", componentsLink));
@@ -242,6 +253,7 @@ public class RunManager {
         }
 
         logger.info("All tools have finished.");
+        logger.info(ReportConstants.RUN_SEPARATOR);
 
         return runResult;
     }

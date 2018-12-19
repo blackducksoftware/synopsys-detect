@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 public class ReportConstants {
+    public static String RUN_SEPARATOR = "----------------------------------";
     public static String HEADING = "======================================================================================================";
     public static String SEPERATOR = "------------------------------------------------------------------------------------------------------";
 }
