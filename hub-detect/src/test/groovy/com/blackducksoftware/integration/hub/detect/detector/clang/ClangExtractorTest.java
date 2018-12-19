@@ -31,7 +31,6 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class ClangExtractorTest {
-
     private static final String EXTRACTION_ID = "testExtractionId";
     private final Gson gson = new Gson();
     private final File outputDir = new File("src/test/resources/clang/output");
