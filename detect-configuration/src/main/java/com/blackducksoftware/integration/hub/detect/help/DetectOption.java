@@ -58,6 +58,10 @@ public abstract class DetectOption {
         this.resolvedValue = resolvedValue;
     }
 
+    public boolean isCommaSeperatedList() {
+        return false;
+    }
+
     public DetectProperty getDetectProperty() {
         return detectProperty;
     }

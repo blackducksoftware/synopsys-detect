@@ -58,4 +58,9 @@ public class DetectListOption extends DetectOption {
         return result;
     }
 
+    @Override
+    public boolean isCommaSeperatedList() {
+        return true;
+    }
+
 }
