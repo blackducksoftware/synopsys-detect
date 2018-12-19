@@ -91,7 +91,7 @@ public class ClangExtractorTest {
         final CompileCommand compileCommandWrapperGoodbyeWorld = createCompileCommand("src/test/resources/clang/source/goodbye_world.cpp", "gcc goodbye_world.cpp", null);
 
         final Set<String> dependencyFilePathsHelloWorld = createDependencyFilePaths(new File("src/test/resources/clang/source/myinclude.h"), new File("/usr/include/nonexistentfile1.h"), new File("/usr/include/nonexistentfile2.h"));
-        final Set<String> dependencyFilePathsGoodbyeWorld = createDependencyFilePaths(new File("/usr/include/pwd.h"), new File("/usr/include/printf.h"));
+        final Set<String> dependencyFilePathsGoodbyeWorld = createDependencyFilePaths(new File("/usr/include/nonexistentfile4.h"), new File("/usr/include/nonexistentfile3.h"));
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
@@ -138,7 +138,7 @@ public class ClangExtractorTest {
         final CompileCommand compileCommandWrapperGoodbyeWorld = createCompileCommand("src/test/resources/clang/source/goodbye_world.cpp", null, argsGoodbye);
 
         final Set<String> dependencyFilePathsHelloWorld = createDependencyFilePaths(new File("src/test/resources/clang/source/myinclude.h"), new File("/usr/include/nonexistentfile1.h"), new File("/usr/include/nonexistentfile2.h"));
-        final Set<String> dependencyFilePathsGoodbyeWorld = createDependencyFilePaths(new File("/usr/include/pwd.h"), new File("/usr/include/printf.h"));
+        final Set<String> dependencyFilePathsGoodbyeWorld = createDependencyFilePaths(new File("/usr/include/nonexistentfile4.h"), new File("/usr/include/nonexistentfile3.h"));
         ;
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
