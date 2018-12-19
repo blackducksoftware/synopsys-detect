@@ -43,6 +43,7 @@ public class HelpJsonOption {
     public boolean strictValues = false;
     public boolean caseSensitiveValues = false;
     public boolean hasAcceptableValues = false;
+    public boolean isCommaSeparatedList = false;
     public List<String> acceptableValues = new ArrayList<>();
 
 }

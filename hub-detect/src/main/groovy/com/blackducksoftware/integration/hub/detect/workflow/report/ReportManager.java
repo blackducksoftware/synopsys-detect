@@ -82,7 +82,12 @@ public class ReportManager {
     }
 
     public void codeLocationsCompleted(final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        extractionSummaryReporter.writeSummary(logWriter, completedDetectorEvaluations, codeLocationNameMap);
+        if (completedDetectorEvaluations.size() > 0) {
+            extractionSummaryReporter.writeSummary(logWriter, completedDetectorEvaluations, codeLocationNameMap);
+        } else {
+            logWriter.writeLine("Will not summarize extractions, no evaluations occurred.");
+        }
+
     }
 
     public void printDetectorIssues() {
