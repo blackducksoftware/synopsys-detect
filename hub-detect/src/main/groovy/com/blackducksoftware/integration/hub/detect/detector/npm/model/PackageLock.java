@@ -25,7 +25,6 @@ package com.blackducksoftware.integration.hub.detect.detector.npm.model;
 
 import java.util.Map;
 
-import com.blackducksoftware.integration.hub.detect.detector.npm.NpmDependency;
 import com.google.gson.annotations.SerializedName;
 
 public class PackageLock {
@@ -36,5 +35,5 @@ public class PackageLock {
     public String version;
 
     @SerializedName("dependencies")
-    public Map<String, NpmDependency> dependencies;
+    public Map<String, PackageLockDependency> dependencies;
 }

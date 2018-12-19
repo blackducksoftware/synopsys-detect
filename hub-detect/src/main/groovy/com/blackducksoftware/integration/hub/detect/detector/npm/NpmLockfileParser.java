@@ -23,24 +23,18 @@
  */
 package com.blackducksoftware.integration.hub.detect.detector.npm;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.detector.npm.model.NpmDependency;
 import com.blackducksoftware.integration.hub.detect.detector.npm.model.PackageJson;
 import com.blackducksoftware.integration.hub.detect.detector.npm.model.PackageLock;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.google.gson.Gson;
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
-import com.synopsys.integration.hub.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.hub.bdio.model.Forge;
-import com.synopsys.integration.hub.bdio.model.dependencyid.DependencyId;
-import com.synopsys.integration.hub.bdio.model.dependencyid.NameDependencyId;
-import com.synopsys.integration.hub.bdio.model.dependencyid.NameVersionDependencyId;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
@@ -55,71 +49,70 @@ public class NpmLockfileParser {
     }
 
     public NpmParseResult parse(final String sourcePath, final String packageJsonText, final String lockFileText, final boolean includeDevDependencies) {
-        final LazyExternalIdDependencyGraphBuilder lazyBuilder = new LazyExternalIdDependencyGraphBuilder();
+        final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         logger.info("Parsing lock file text: ");
         logger.debug(lockFileText);
 
         final PackageJson packageJson = gson.fromJson(packageJsonText, PackageJson.class);
         final PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
 
-        List<String> rootPackages = new ArrayList<>();
-        if (packageJson != null) {
-            if (packageJson.dependencies != null)
-                rootPackages.addAll(packageJson.dependencies.keySet());
-            if (packageJson.devDependencies != null)
-                rootPackages.addAll(packageJson.devDependencies.keySet());
-        }
-
         logger.info("Processing project.");
         if (packageLock.dependencies != null) {
             logger.info(String.format("Found %d dependencies.", packageLock.dependencies.size()));
-            packageLock.dependencies.forEach((name, npmDependency) -> {
-                if (shouldInclude(npmDependency, includeDevDependencies)) {
-                    final DependencyId dependency = createDependencyId(name, npmDependency.version);
-                    setDependencyInfo(dependency, name, npmDependency.version, lazyBuilder);
-                    if (rootPackages.contains(name)) {
-                        lazyBuilder.addChildToRoot(dependency);
-                    }
-                    if (npmDependency.requires != null) {
-                        npmDependency.requires.forEach((childName, childVersion) -> {
-                            final DependencyId childId = createDependencyId(childName, childVersion);
-                            setDependencyInfo(childId, childName, childVersion, lazyBuilder);
-                            lazyBuilder.addChildWithParent(childId, dependency);
-                        });
-                    }
-                }
-            });
+            //Convert to our custom format
+            NpmDependencyConverter dependencyConverter = new NpmDependencyConverter(externalIdFactory);
+            NpmDependency rootDependency = dependencyConverter.convertLockFile(packageLock, packageJson);
+            traverse(rootDependency, dependencyGraph, true, includeDevDependencies);
         } else {
             logger.info("Lock file did not have a 'dependencies' section.");
         }
         logger.info("Finished processing.");
-        final DependencyGraph graph = lazyBuilder.build();
         final ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPM, packageLock.name, packageLock.version);
-        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.NPM, sourcePath, projectId, graph).build();
+        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.NPM, sourcePath, projectId, dependencyGraph).build();
         return new NpmParseResult(packageLock.name, packageLock.version, codeLocation);
     }
 
-    private boolean shouldInclude(final NpmDependency npmDependency, final boolean includeDevDependencies) {
-        boolean isDev = false;
-        if (npmDependency.dev != null && npmDependency.dev == true) {
-            isDev = true;
+    private void traverse(NpmDependency npmDependency, MutableDependencyGraph dependencyGraph, boolean atRoot, boolean includeDevDependencies) {
+        if (!shouldInclude(npmDependency, includeDevDependencies))
+            return;
+
+        npmDependency.getRequires().forEach(required -> {
+            NpmDependency resolved = lookupDependency(npmDependency, required.getName());
+            logger.debug("Required package: " + required.getName() + " of version: " + required.getFuzzyVersion());
+            if (resolved != null) {
+                logger.debug("Found package: " + resolved.getName() + "with version: " + resolved.getVersion());
+                if (atRoot) {
+                    dependencyGraph.addChildToRoot(resolved.getGraphDependency());
+                } else {
+                    dependencyGraph.addChildWithParent(resolved.getGraphDependency(), npmDependency.getGraphDependency());
+                }
+            } else {
+                logger.error("No dependency found for package: " + required.getName());
+            }
+        });
+
+        npmDependency.getDependencies().forEach(child -> traverse(child, dependencyGraph, false, includeDevDependencies));
+    }
+
+    //returns the first dependency directly under this dependency or under a parent
+    private NpmDependency lookupDependency(NpmDependency npmDependency, String name) {
+        for (NpmDependency current : npmDependency.getDependencies()) {
+            if (current.getName().equals(name)) {
+                return current;
+            }
         }
-        if (isDev) {
+
+        if (npmDependency.getParent().isPresent()) {
+            return lookupDependency(npmDependency.getParent().get(), name);
+        } else {
+            return null;
+        }
+    }
+
+    private boolean shouldInclude(final NpmDependency packageLockDependency, final boolean includeDevDependencies) {
+        if (packageLockDependency.isDevDependency()) {
             return includeDevDependencies;
         }
         return true;
-    }
-
-    private DependencyId createDependencyId(final String name, final String version) {
-        if (StringUtils.isNotBlank(version)) {
-            return new NameVersionDependencyId(name, version);
-        } else {
-            return new NameDependencyId(name);
-        }
-    }
-
-    private void setDependencyInfo(final DependencyId dependencyId, final String name, final String version, final LazyExternalIdDependencyGraphBuilder lazyBuilder) {
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, name, version);
-        lazyBuilder.setDependencyInfo(dependencyId, name, version, externalId);
     }
 }
