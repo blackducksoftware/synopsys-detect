@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public enum DetectorType {
+    BAZEL,
     BITBAKE,
     COCOAPODS,
     CONDA,
