@@ -37,6 +37,7 @@ public class DetectorSearchProvider {
     public DetectorSearchRuleSet createBomToolSearchRuleSet(final DetectorEnvironment environment) {
         final DetectorSearchRuleSetBuilder searchRuleSet = new DetectorSearchRuleSetBuilder(environment);
 
+        searchRuleSet.addBomTool(detectorFactory.createBazelDetector(environment)).defaultNested();
         searchRuleSet.addBomTool(detectorFactory.createBitbakeBomTool(environment)).defaultNotNested();
 
         searchRuleSet.addBomTool(detectorFactory.createPodLockBomTool(environment)).defaultNested();

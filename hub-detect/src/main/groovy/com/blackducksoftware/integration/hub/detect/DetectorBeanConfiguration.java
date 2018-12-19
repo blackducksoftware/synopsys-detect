@@ -40,6 +40,8 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
+import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelDetector;
+import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeDetector;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeListTasksParser;
@@ -197,6 +199,11 @@ public class DetectorBeanConfiguration {
     @Bean
     public CodeLocationAssembler codeLocationAssembler() {
         return new CodeLocationAssembler(externalIdFactory);
+    }
+
+    @Bean
+    public BazelExtractor bazelExtractor() {
+        return new BazelExtractor();
     }
 
     @Bean
@@ -455,6 +462,13 @@ public class DetectorBeanConfiguration {
     //BomTools
     //Should be scoped to Prototype so a new Detector is created every time one is needed.
     //Should only be accessed through the DetectorFactory.
+
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public BazelDetector bazelDetector(final DetectorEnvironment environment) {
+        return new BazelDetector(environment, executableRunner, detectFileFinder, bazelExtractor());
+    }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
