@@ -93,6 +93,7 @@ public class HelpJsonWriter {
         helpJsonOption.caseSensitiveValues = detectOption.hasCaseSensitiveValidation();
         helpJsonOption.acceptableValues = detectOption.getValidValues();
         helpJsonOption.hasAcceptableValues = detectOption.getValidValues().size() > 0;
+        helpJsonOption.isCommaSeparatedList = detectOption.isCommaSeperatedList();
         return helpJsonOption;
     }
 }

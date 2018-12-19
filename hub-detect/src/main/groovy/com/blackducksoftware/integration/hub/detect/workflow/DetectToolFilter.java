@@ -26,16 +26,17 @@ package com.blackducksoftware.integration.hub.detect.workflow;
 import java.util.Optional;
 
 import com.blackducksoftware.integration.hub.detect.DetectTool;
-import com.synopsys.integration.util.ExcludedIncludedFilter;
+import com.blackducksoftware.integration.hub.detect.util.filter.DetectFilter;
+import com.blackducksoftware.integration.hub.detect.util.filter.DetectOverrideableFilter;
 
 public class DetectToolFilter {
 
-    private final ExcludedIncludedFilter excludedIncludedFilter;
+    private final DetectFilter excludedIncludedFilter;
     private final Optional<Boolean> deprecatedSigScanDisabled;
     private final Optional<Boolean> deprecatedPolarisEnabled;
 
     public DetectToolFilter(String excludedTools, String includedTools, Optional<Boolean> deprecatedSigScanDisabled, Optional<Boolean> deprecatedPolarisEnabled) {
-        this.excludedIncludedFilter = new ExcludedIncludedFilter(excludedTools, includedTools);
+        this.excludedIncludedFilter = new DetectOverrideableFilter(excludedTools, includedTools);
 
         this.deprecatedSigScanDisabled = deprecatedSigScanDisabled;
         this.deprecatedPolarisEnabled = deprecatedPolarisEnabled;
