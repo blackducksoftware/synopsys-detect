@@ -31,6 +31,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 public class BazelExtractor {
 
     public Extraction extract(final File givenDir, final int depth, final ExtractionId extractionId) {
-        return new Extraction.Builder().failure("Not yet implemented").build();
+        return new Extraction.Builder().success().build();
     }
 }
