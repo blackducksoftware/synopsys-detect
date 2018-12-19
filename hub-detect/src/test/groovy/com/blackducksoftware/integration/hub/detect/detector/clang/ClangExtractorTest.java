@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +49,7 @@ public class ClangExtractorTest {
         Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         final CompileCommand compileCommandWrapper = createCompileCommand("src/test/resources/clang/source/hello_world.cpp", "gcc hello_world.cpp", null);
-        final Set<String> dependencyFilePaths = createDependencyFilePaths(new File("/usr/include/stdlib.h"), new File("src/test/resources/clang/source/myinclude.h"));
+        final Set<String> dependencyFilePaths = createDependencyFilePaths(new File("/usr/include/nonexistentfile1.h"), new File("src/test/resources/clang/source/myinclude.h"));
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
@@ -89,7 +90,7 @@ public class ClangExtractorTest {
         final CompileCommand compileCommandWrapperHelloWorld = createCompileCommand("src/test/resources/clang/source/hello_world.cpp", "gcc hello_world.cpp", null);
         final CompileCommand compileCommandWrapperGoodbyeWorld = createCompileCommand("src/test/resources/clang/source/goodbye_world.cpp", "gcc goodbye_world.cpp", null);
 
-        final Set<String> dependencyFilePathsHelloWorld = createDependencyFilePaths(new File("src/test/resources/clang/source/myinclude.h"), new File("/usr/include/stdlib.h"), new File("/usr/include/math.h"));
+        final Set<String> dependencyFilePathsHelloWorld = createDependencyFilePaths(new File("src/test/resources/clang/source/myinclude.h"), new File("/usr/include/nonexistentfile1.h"), new File("/usr/include/nonexistentfile2.h"));
         final Set<String> dependencyFilePathsGoodbyeWorld = createDependencyFilePaths(new File("/usr/include/pwd.h"), new File("/usr/include/printf.h"));
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
@@ -136,7 +137,7 @@ public class ClangExtractorTest {
         final String[] argsGoodbye = { "gcc", "goodbye_world.cpp" };
         final CompileCommand compileCommandWrapperGoodbyeWorld = createCompileCommand("src/test/resources/clang/source/goodbye_world.cpp", null, argsGoodbye);
 
-        final Set<String> dependencyFilePathsHelloWorld = createDependencyFilePaths(new File("src/test/resources/clang/source/myinclude.h"), new File("/usr/include/stdlib.h"), new File("/usr/include/math.h"));
+        final Set<String> dependencyFilePathsHelloWorld = createDependencyFilePaths(new File("src/test/resources/clang/source/myinclude.h"), new File("/usr/include/nonexistentfile1.h"), new File("/usr/include/nonexistentfile2.h"));
         final Set<String> dependencyFilePathsGoodbyeWorld = createDependencyFilePaths(new File("/usr/include/pwd.h"), new File("/usr/include/printf.h"));
         ;
 
@@ -175,15 +176,25 @@ public class ClangExtractorTest {
     }
 
     private void checkGeneratedDependenciesSimple(Extraction extraction) {
-        final Dependency dependency = extraction.codeLocations.get(0).getDependencyGraph().getRootDependencies().iterator().next();
-        assertEquals("testPackageName", dependency.name);
-        assertEquals("testPackageVersion", dependency.version);
-        assertEquals("testPackageArch", dependency.externalId.architecture);
-        assertEquals("ubuntu", dependency.externalId.forge.getName());
-        assertEquals(null, dependency.externalId.group);
-        assertEquals("testPackageName", dependency.externalId.name);
-        assertEquals(null, dependency.externalId.path);
-        assertEquals("testPackageVersion", dependency.externalId.version);
+        boolean ubuntuComponentVerified = false;
+        Set<Dependency> dependencies = extraction.codeLocations.get(0).getDependencyGraph().getRootDependencies();
+        Iterator<Dependency> iter = dependencies.iterator();
+        while (iter.hasNext()) {
+            Dependency dependency = iter.next();
+            System.out.printf("Checking dependency %s\n", dependency.externalId);
+            if ("ubuntu".equals(dependency.externalId.forge.getName())) {
+                assertEquals("testPackageName", dependency.name);
+                assertEquals("testPackageVersion", dependency.version);
+                assertEquals("testPackageArch", dependency.externalId.architecture);
+                assertEquals("ubuntu", dependency.externalId.forge.getName());
+                assertEquals(null, dependency.externalId.group);
+                assertEquals("testPackageName", dependency.externalId.name);
+                assertEquals(null, dependency.externalId.path);
+                assertEquals("testPackageVersion", dependency.externalId.version);
+                ubuntuComponentVerified = true;
+            }
+        }
+        assertTrue(ubuntuComponentVerified);
     }
 
     private void checkGeneratedDependenciesComplex(Extraction extraction) {
