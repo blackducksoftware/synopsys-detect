@@ -203,7 +203,7 @@ public class DetectorBeanConfiguration {
 
     @Bean
     public BazelExtractor bazelExtractor() {
-        return new BazelExtractor();
+        return new BazelExtractor(executableRunner);
     }
 
     @Bean

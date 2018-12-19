@@ -43,11 +43,20 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileN
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class BazelDetector extends Detector {
+    public static final String BAZEL_COMMAND = "bazel";
+    public static final String BAZEL_QUERY_SUBCOMMAND = "query";
+    // This query will succeed only within a workspace (top level, or nested dir)
+    private static final String BAZEL_QUERY_SPEC_WORKSPACE_TEST = "kind(rule, //...:*)";
+    public static final String BAZEL_QUERY_SPEC_GET_EXTERNAL_DEPENDENCIES = "kind(.*, //external:*)";
+    public static final String BAZEL_QUERY_OUTPUT_TYPE_SELECTOR = "--output";
+    public static final String BAZEL_QUERY_OUTPUT_TYPE_XML = "xml";
+
     private static final String BAZEL_WORKSPACE_FILENAME = "WORKSPACE";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final BazelExtractor bazelExtractor;
     private File workspaceFile;
+    private File workspaceDir;
     private final DetectFileFinder fileFinder;
     private final ExecutableRunner executableRunner;
 
@@ -62,6 +71,7 @@ public class BazelDetector extends Detector {
     public DetectorResult applicable() {
         logger.info("*********** Bazel applicable()");
         workspaceFile = fileFinder.findFile(environment.getDirectory(), BAZEL_WORKSPACE_FILENAME);
+        workspaceDir = workspaceFile.getParentFile();
         if (workspaceFile == null) {
             return new FileNotFoundDetectorResult(BAZEL_WORKSPACE_FILENAME);
         }
@@ -71,17 +81,12 @@ public class BazelDetector extends Detector {
     @Override
     public DetectorResult extractable() throws DetectorException {
         logger.info("*********** Bazel extractable()");
+        // TODO Should write and use BazelExecutableFinder like Gradle and MavenExecutableFinder
 //        try {
-            // TODO run a bazel command to see if we are in a valid workspace
-            // bazel query 'kind(rule, //...:*)'
-            // will succeed only inside a workspace.
-        // Will succeed at top of workspace, and in a workspace subdir, so
-        // make sure there is a WORKSPACE file in the dir
-        // If there is a WORKSPACE file in this dir AND bazel query 'kind(rule, //...:*)' succeeds (status: 0): It's a WORKSPACE root dir
-        // We're only supporting certain languages. OK if workspace contains others? What will happen?
+        // TODO: We're only supporting certain languages. OK if workspace contains others? What will happen?
         final ExecutableOutput bazelQueryDepsRecursiveOutput;
         try {
-            bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(workspaceFile.getParentFile(), "bazel", "query", "kind(rule, //...:*)");
+            bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(workspaceDir, BAZEL_COMMAND, BAZEL_QUERY_SUBCOMMAND, BAZEL_QUERY_SPEC_WORKSPACE_TEST);
             int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
             logger.info(String.format("Bazel query returned %d; output: %s", returnCode, bazelQueryDepsRecursiveOutput.getStandardOutput()));
         } catch (ExecutableRunnerException e) {
