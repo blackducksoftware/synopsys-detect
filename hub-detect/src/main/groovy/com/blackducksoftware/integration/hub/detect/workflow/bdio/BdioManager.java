@@ -24,9 +24,10 @@
 package com.blackducksoftware.integration.hub.detect.workflow.bdio;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -44,7 +45,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectorStatus;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
-import com.synopsys.integration.blackduck.summary.Result;
 import com.synopsys.integration.hub.bdio.SimpleBdioFactory;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
@@ -89,8 +89,13 @@ public class BdioManager {
         } else {
             logger.info("Creating aggregate BDIO file.");
             AggregateBdioCreator aggregateBdioCreator = new AggregateBdioCreator(simpleBdioFactory, integrationEscapeUtil, codeLocationNameManager, detectConfiguration, detectBdioWriter);
-            final File aggregateBdioFile = aggregateBdioCreator.createAggregateBdioFile(directoryManager.getSourceDirectory(), directoryManager.getBdioOutputDirectory(), codeLocations, projectNameVersion);
-            return new BdioResult(new ArrayList<>(), Arrays.asList(aggregateBdioFile));
+            final Optional<File> aggregateBdioFile = aggregateBdioCreator.createAggregateBdioFile(directoryManager.getSourceDirectory(), directoryManager.getBdioOutputDirectory(), codeLocations, projectNameVersion);
+            if (aggregateBdioFile.isPresent()) {
+                return new BdioResult(Collections.emptyList(), Arrays.asList(aggregateBdioFile.get()));
+            } else {
+                return new BdioResult(Collections.emptyList(), Collections.emptyList());
+            }
+
         }
     }
 }

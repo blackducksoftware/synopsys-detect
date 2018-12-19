@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,16 +68,22 @@ public class AggregateBdioCreator {
         this.detectBdioWriter = detectBdioWriter;
     }
 
-    public File createAggregateBdioFile(File sourcePath, File bdioDirectory, final List<DetectCodeLocation> codeLocations, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public Optional<File> createAggregateBdioFile(File sourcePath, File bdioDirectory, final List<DetectCodeLocation> codeLocations, NameVersion projectNameVersion) throws DetectUserFriendlyException {
         final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations);
 
         final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(projectNameVersion, aggregateDependencyGraph);
+
+        if (aggregateDependencyGraph.getRootDependencies().size() == 0) {
+            logger.info("The aggregate contained no dependencies, will not create bdio file.");
+            return Optional.empty();
+        }
+
         final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME, PropertyAuthority.None)));
         final File aggregateBdioFile = new File(bdioDirectory, filename);
 
         detectBdioWriter.writeBdioFile(aggregateBdioFile, aggregateBdioDocument);
 
-        return aggregateBdioFile;
+        return Optional.of(aggregateBdioFile);
     }
 
     private SimpleBdioDocument createAggregateSimpleBdioDocument(NameVersion projectNameVersion, final DependencyGraph dependencyGraph) {
