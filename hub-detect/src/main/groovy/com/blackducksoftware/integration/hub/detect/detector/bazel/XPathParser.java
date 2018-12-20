@@ -29,7 +29,7 @@ public class XPathParser {
         this.xmlString = xmlString;
     }
 
-    public List<String> parseStringValues(final String xPathExpression, final String targetAttributeName) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
+    public List<String> parseAttributeValuesWithGivenXPathQuery(final String xPathExpression, final String targetAttributeName) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
         logger.debug(String.format("xPathExpression: %s, targetAttributeName: %s", xPathExpression, targetAttributeName));
         final List<String> parsedValues = new ArrayList<>();
         InputStream xmlInputStream = new ByteArrayInputStream(xmlString.getBytes());

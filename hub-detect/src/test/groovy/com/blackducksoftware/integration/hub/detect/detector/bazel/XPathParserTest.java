@@ -18,7 +18,7 @@ import org.xml.sax.SAXException;
 public class XPathParserTest {
 
     @Test
-    public void test1() throws Exception {
+    public void testSimpleXml() throws Exception {
         final String xmlFilePath = "src/test/resources/bazel/sample1.xml";
         List<String> externalIds = parseXmlFile(xmlFilePath);
         assertEquals(1, externalIds.size());
@@ -26,7 +26,7 @@ public class XPathParserTest {
     }
 
     @Test
-    public void test2() throws Exception {
+    public void testMoreComplexXml() throws Exception {
         final String xmlFilePath = "src/test/resources/bazel/sample2.xml";
         List<String> externalIds = parseXmlFile(xmlFilePath);
         assertEquals(2, externalIds.size());
@@ -37,7 +37,7 @@ public class XPathParserTest {
     private List<String> parseXmlFile(final String xmlFilePath) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
         final String xml = FileUtils.readFileToString(new File(xmlFilePath), StandardCharsets.UTF_8);
         XPathParser parser = new XPathParser(xml);
-        List<String> externalIds = parser.parseStringValues("/query/rule/string[@name='artifact']", "value");
+        List<String> externalIds = parser.parseAttributeValuesWithGivenXPathQuery("/query/rule/string[@name='artifact']", "value");
         return externalIds;
     }
 
