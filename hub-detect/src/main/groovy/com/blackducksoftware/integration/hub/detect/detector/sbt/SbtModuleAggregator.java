@@ -30,9 +30,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.hub.bdio.graph.DependencyGraphCombiner;
-import com.synopsys.integration.hub.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.hub.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraphCombiner;
+import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 
 public class SbtModuleAggregator {
     private final Logger logger = LoggerFactory.getLogger(SbtModuleAggregator.class);

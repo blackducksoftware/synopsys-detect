@@ -57,4 +57,5 @@ public class DockerToolResult {
         result.resultType = DockerToolResultType.SKIPPED;
         return result;
     }
+
 }

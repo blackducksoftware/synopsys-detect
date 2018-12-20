@@ -27,21 +27,17 @@ import java.io.File;
 import java.util.List;
 
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocation;
+import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 
 public class BdioResult {
-    private final List<BdioCodeLocation> bdioCodeLocations;
-    private final List<File> bdioFiles;
+    private final List<UploadTarget> uploadTargets;
 
-    public BdioResult(final List<BdioCodeLocation> bdioCodeLocations, List<File> bdioFiles) {
-        this.bdioCodeLocations = bdioCodeLocations;
-        this.bdioFiles = bdioFiles;
+    public BdioResult(final List<UploadTarget> uploadTargets) {
+        this.uploadTargets = uploadTargets;
     }
 
-    public List<BdioCodeLocation> getBdioCodeLocations() {
-        return bdioCodeLocations;
+    public List<UploadTarget> getUploadTargets() {
+        return uploadTargets;
     }
 
-    public List<File> getBdioFiles() {
-        return bdioFiles;
-    }
 }

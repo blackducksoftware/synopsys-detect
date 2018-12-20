@@ -46,7 +46,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager
 import com.blackducksoftware.integration.hub.detect.workflow.detector.RequiredDetectorChecker;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectStatusManager;
 
@@ -54,7 +53,6 @@ public class ShutdownManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectStatusManager detectStatusManager;
     private final ExitCodeManager exitCodeManager;
-    private final PhoneHomeManager phoneHomeManager;
     private final DirectoryManager directoryManager;
     private final DetectConfiguration detectConfiguration;
     private final ReportManager reportManager;
@@ -62,10 +60,9 @@ public class ShutdownManager {
     private final ConnectivityManager connectivityManager;
 
     public ShutdownManager(ConnectivityManager connectivityManager, DetectStatusManager detectStatusManager, final ExitCodeManager exitCodeManager,
-        final PhoneHomeManager phoneHomeManager, final DirectoryManager directoryManager, final DetectConfiguration detectConfiguration, ReportManager reportManager, DiagnosticManager diagnosticManager) {
+        final DirectoryManager directoryManager, final DetectConfiguration detectConfiguration, ReportManager reportManager, DiagnosticManager diagnosticManager) {
         this.detectStatusManager = detectStatusManager;
         this.exitCodeManager = exitCodeManager;
-        this.phoneHomeManager = phoneHomeManager;
         this.directoryManager = directoryManager;
         this.detectConfiguration = detectConfiguration;
         this.reportManager = reportManager;
@@ -74,12 +71,13 @@ public class ShutdownManager {
     }
 
     public void shutdown(Optional<RunResult> runResultOptional) {
-        try {
-            logger.debug("Ending phone home.");
-
-            phoneHomeManager.endPhoneHome();
-        } catch (final Exception e) {
-            logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
+        if (connectivityManager.getPhoneHomeManager().isPresent()) {
+            try {
+                logger.debug("Ending phone home.");
+                connectivityManager.getPhoneHomeManager().get().endPhoneHome();
+            } catch (final Exception e) {
+                logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
+            }
         }
 
         try {

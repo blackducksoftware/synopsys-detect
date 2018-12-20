@@ -107,7 +107,7 @@ public abstract class PhoneHomeManager {
 
     public void endPhoneHome() {
         if (currentPhoneHomeResponse != null) {
-            currentPhoneHomeResponse.endPhoneHome();
+            currentPhoneHomeResponse.getImmediateResult();
         }
     }
 }

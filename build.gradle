@@ -16,7 +16,7 @@ buildscript {
 
 apply plugin: 'java'
 
-version = '5.1.0-SNAPSHOT'
+version = '5.2.0-SNAPSHOT'
 String parentVersion = project.version
 
 allprojects {
@@ -43,7 +43,7 @@ configure(subprojects) { project ->
     }
 
     dependencies {
-        implementation 'com.blackducksoftware.integration:hub-common:38.7.0'
+        implementation 'com.blackducksoftware.integration:blackduck-common:40.0.0'
         implementation 'com.github.zafarkhaja:java-semver:0.9.0'
         implementation 'com.paypal.digraph:digraph-parser:1.0'
     }

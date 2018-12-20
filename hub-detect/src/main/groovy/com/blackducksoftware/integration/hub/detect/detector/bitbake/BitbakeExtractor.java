@@ -51,8 +51,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFind
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
 public class BitbakeExtractor {
     public static final String RECIPE_DEPENDS_FILE_NAME = "recipe-depends.dot";

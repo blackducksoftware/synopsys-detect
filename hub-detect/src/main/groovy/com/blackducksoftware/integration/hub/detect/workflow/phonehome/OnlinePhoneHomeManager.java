@@ -23,7 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.phonehome;
 
-import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -33,31 +33,28 @@ import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.service.model.BlackDuckPhoneHomeCallable;
+import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
 import com.synopsys.integration.phonehome.PhoneHomeResponse;
-import com.synopsys.integration.phonehome.PhoneHomeService;
 
 public class OnlinePhoneHomeManager extends PhoneHomeManager {
     private final Logger logger = LoggerFactory.getLogger(OnlinePhoneHomeManager.class);
 
-    private URL hubUrl;
-
-    private PhoneHomeService phoneHomeService;
+    private BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper;
     private HubServiceManager hubServiceManager;
 
     public OnlinePhoneHomeManager(Map<String, String> additionalMetaData, final DetectInfo detectInfo, final Gson gson, EventSystem eventSystem, final HubServiceManager hubServiceManager) {
         super(additionalMetaData, detectInfo, gson, eventSystem);
         this.hubServiceManager = hubServiceManager;
 
-        hubUrl = hubServiceManager.getHubServicesFactory().getRestConnection().getBaseUrl();
-        phoneHomeService = hubServiceManager.createPhoneHomeService();
+        blackDuckPhoneHomeHelper = hubServiceManager.createBlackDuckPhoneHomeHelper();
     }
 
     @Override
     public PhoneHomeResponse phoneHome(final Map<String, String> metadata) {
-        final BlackDuckPhoneHomeCallable onlineCallable = (BlackDuckPhoneHomeCallable) hubServiceManager.getHubServicesFactory().createBlackDuckPhoneHomeCallable(hubUrl, "hub-detect", detectInfo.getDetectVersion());
-        metadata.forEach((key, value) -> onlineCallable.addMetaData(key, value));
-        additionalMetaData.forEach((key, value) -> metadata.put(key, value));
-        return phoneHomeService.startPhoneHome(onlineCallable);
+        Map<String, String> metaDataToSend = new HashMap<>();
+        metaDataToSend.putAll(metadata);
+        metaDataToSend.putAll(additionalMetaData);
+        return blackDuckPhoneHomeHelper.handlePhoneHome("hub-detect", detectInfo.getDetectVersion(), metaDataToSend);
     }
+
 }

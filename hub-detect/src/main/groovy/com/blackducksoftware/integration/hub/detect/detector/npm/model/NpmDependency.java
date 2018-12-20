@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import com.synopsys.integration.hub.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
 
 public class NpmDependency {
     private final String name;

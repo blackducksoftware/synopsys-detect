@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 
 public class CodeLocationReporter {
     public void writeCodeLocationReport(final ReportWriter writer, final ReportWriter writer2, final List<DetectorEvaluation> detectorEvaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {

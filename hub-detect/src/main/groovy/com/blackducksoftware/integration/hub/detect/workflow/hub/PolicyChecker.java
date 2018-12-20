@@ -23,6 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.hub;
 
+import java.util.Optional;
+
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -53,8 +55,8 @@ public class PolicyChecker {
      * @throws IntegrationException
      */
     public PolicyStatusDescription getPolicyStatus(final ProjectService projectService, final ProjectVersionView version) throws IntegrationException {
-        final VersionBomPolicyStatusView versionBomPolicyStatusView = projectService.getPolicyStatusForVersion(version);
-        final PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView);
+        final Optional<VersionBomPolicyStatusView> versionBomPolicyStatusView = projectService.getPolicyStatusForVersion(version);
+        final PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView.get());
 
         PolicySummaryStatusType statusEnum = PolicySummaryStatusType.NOT_IN_VIOLATION;
         if (policyStatusDescription.getCountInViolation() != null && policyStatusDescription.getCountInViolation().value > 0) {
@@ -95,4 +97,5 @@ public class PolicyChecker {
 
         return false;
     }
+
 }

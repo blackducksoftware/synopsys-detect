@@ -133,7 +133,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFind
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 import freemarker.template.Configuration;
 
@@ -145,8 +145,6 @@ public class DetectorBeanConfiguration {
     //Provided Dependencies
     @Autowired
     public Gson gson;
-    @Autowired
-    public JsonParser jsonParser;
     @Autowired
     public Configuration configuration;
     @Autowired

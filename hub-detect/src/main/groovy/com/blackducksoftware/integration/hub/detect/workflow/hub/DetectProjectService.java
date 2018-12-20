@@ -35,12 +35,11 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
+import com.synopsys.integration.blackduck.api.core.ProjectRequestBuilder;
 import com.synopsys.integration.blackduck.api.generated.component.ProjectRequest;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.service.HubService;
+import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.ProjectService;
-import com.synopsys.integration.blackduck.service.model.ProjectRequestBuilder;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -56,16 +55,15 @@ public class DetectProjectService {
         this.detectProjectServiceOptions = detectProjectServiceOptions;
     }
 
-    public Optional<ProjectVersionView> createOrUpdateHubProject(NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
+    public ProjectVersionWrapper createOrUpdateHubProject(NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         final ProjectService projectService = hubServiceManager.createProjectService();
-        final HubService hubService = hubServiceManager.createHubService();
+        final BlackDuckService hubService = hubServiceManager.createBlackDuckService();
         final ProjectRequest projectRequest = createProjectRequest(projectNameVersion, projectService, hubService);
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
-        ProjectVersionWrapper projectVersionViewWrapper = projectService.syncProjectAndVersion(projectRequest, forceUpdate);
-        return Optional.ofNullable(projectVersionViewWrapper.getProjectVersionView());
+        return projectService.syncProjectAndVersion(projectRequest, forceUpdate);
     }
 
-    public ProjectRequest createProjectRequest(final NameVersion projectNameVersion, final ProjectService projectService, final HubService hubService) throws DetectUserFriendlyException {
+    public ProjectRequest createProjectRequest(final NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService hubService) throws DetectUserFriendlyException {
         final ProjectRequestBuilder projectRequestBuilder = new ProjectRequestBuilder();
 
         projectRequestBuilder.setProjectName(projectNameVersion.getName());
@@ -97,7 +95,7 @@ public class DetectProjectService {
         return categories;
     }
 
-    public Optional<String> findCloneUrl(NameVersion projectNameVersion, final ProjectService projectService, final HubService hubService) throws DetectUserFriendlyException {
+    public Optional<String> findCloneUrl(NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService hubService) throws DetectUserFriendlyException {
         final String cloneProjectName = projectNameVersion.getName();
         final String cloneProjectVersionName = detectProjectServiceOptions.getCloneVersionName();
         if (StringUtils.isBlank(cloneProjectName) || StringUtils.isBlank(cloneProjectVersionName)) {
@@ -105,9 +103,12 @@ public class DetectProjectService {
             return Optional.empty();
         }
         try {
-            final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(cloneProjectName, cloneProjectVersionName);
-            final String url = hubService.getHref(projectVersionWrapper.getProjectVersionView());
-            return Optional.of(url);
+            final Optional<ProjectVersionWrapper> projectVersionWrapper = projectService.getProjectVersion(cloneProjectName, cloneProjectVersionName);
+            if (projectVersionWrapper.isPresent()) {
+                return projectVersionWrapper.get().getProjectVersionView().getHref();
+            } else {
+                return Optional.empty();
+            }
         } catch (final IntegrationException e) {
             throw new DetectUserFriendlyException("Unable to find clone release url for supplied clone version name.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }

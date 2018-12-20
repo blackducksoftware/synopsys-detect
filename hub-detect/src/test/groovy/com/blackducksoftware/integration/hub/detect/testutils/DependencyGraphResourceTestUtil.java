@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
-import com.synopsys.integration.hub.bdio.graph.summary.DependencyGraphSummarizer;
-import com.synopsys.integration.hub.bdio.graph.summary.GraphSummary;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.summary.DependencyGraphSummarizer;
+import com.synopsys.integration.bdio.graph.summary.GraphSummary;
 
 public class DependencyGraphResourceTestUtil {
     public static void assertGraph(final String expectedResourceFile, final DependencyGraph actualGraph) {

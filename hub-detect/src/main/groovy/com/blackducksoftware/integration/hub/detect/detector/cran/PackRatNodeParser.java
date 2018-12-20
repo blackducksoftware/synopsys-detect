@@ -25,14 +25,14 @@ package com.blackducksoftware.integration.hub.detect.detector.cran;
 
 import java.util.List;
 
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
-import com.synopsys.integration.hub.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
-import com.synopsys.integration.hub.bdio.model.Forge;
-import com.synopsys.integration.hub.bdio.model.dependencyid.DependencyId;
-import com.synopsys.integration.hub.bdio.model.dependencyid.NameDependencyId;
-import com.synopsys.integration.hub.bdio.model.dependencyid.NameVersionDependencyId;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
+import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
+import com.synopsys.integration.bdio.model.dependencyid.NameVersionDependencyId;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class PackRatNodeParser {
     private final ExternalIdFactory externalIdFactory;

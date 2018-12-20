@@ -34,10 +34,10 @@ import com.blackducksoftware.integration.hub.detect.detector.npm.model.NpmRequir
 import com.blackducksoftware.integration.hub.detect.detector.npm.model.PackageJson;
 import com.blackducksoftware.integration.hub.detect.detector.npm.model.PackageLock;
 import com.blackducksoftware.integration.hub.detect.detector.npm.model.PackageLockDependency;
-import com.synopsys.integration.hub.bdio.model.Forge;
-import com.synopsys.integration.hub.bdio.model.dependency.Dependency;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class NpmDependencyConverter {
     private final ExternalIdFactory externalIdFactory;

@@ -24,8 +24,6 @@
 package com.blackducksoftware.integration.hub.detect.workflow.hub;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -41,53 +39,51 @@ import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeR
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
-import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.api.view.ScanSummaryView;
-import com.synopsys.integration.blackduck.exception.HubTimeoutExceededException;
-import com.synopsys.integration.blackduck.service.CodeLocationService;
-import com.synopsys.integration.blackduck.service.HubService;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
+import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
 import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.ReportService;
-import com.synopsys.integration.blackduck.service.ScanStatusService;
 import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
+import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
-import com.synopsys.integration.util.NameVersion;
 
 public class HubManager {
     private final Logger logger = LoggerFactory.getLogger(HubManager.class);
 
-    private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfiguration detectConfiguration;
     private final HubServiceManager hubServiceManager;
     private final PolicyChecker policyChecker;
     private final EventSystem eventSystem;
 
-    public HubManager(final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final HubServiceManager hubServiceManager,
-        final PolicyChecker policyChecker, final EventSystem eventSystem) {
-        this.codeLocationNameManager = codeLocationNameManager;
+    public HubManager(final DetectConfiguration detectConfiguration, final HubServiceManager hubServiceManager, final PolicyChecker policyChecker, final EventSystem eventSystem) {
         this.detectConfiguration = detectConfiguration;
         this.hubServiceManager = hubServiceManager;
         this.policyChecker = policyChecker;
         this.eventSystem = eventSystem;
     }
 
-    public void performPostHubActions(final NameVersion projectNameVersion, final ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
+    public void performPostHubActions(ProjectVersionWrapper projectVersionWrapper, CodeLocationWaitData codeLocationWaitData) throws DetectUserFriendlyException {
         try {
+            ProjectView projectView = projectVersionWrapper.getProjectView();
+            ProjectVersionView projectVersionView = projectVersionWrapper.getProjectVersionView();
+
             final ProjectService projectService = hubServiceManager.createProjectService();
             final ReportService reportService = hubServiceManager.createReportService();
-            final HubService hubService = hubServiceManager.createHubService();
-            final CodeLocationService codeLocationService = hubServiceManager.createCodeLocationService();
-            final ScanStatusService scanStatusService = hubServiceManager.createScanStatusService();
+            final CodeLocationCreationService codeLocationCreationService = hubServiceManager.createCodeLocationCreationService();
 
-            if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None)) || detectConfiguration
-                                                                                                                                                              .getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF, PropertyAuthority.None)
-                    || detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT, PropertyAuthority.None)) {
-                waitForBomUpdate(codeLocationService, hubService, scanStatusService);
+            String policyCheckFailOnSeverities = detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None);
+            boolean runRiskReport = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF, PropertyAuthority.None);
+            boolean runNoticesReport = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT, PropertyAuthority.None);
+            long timeout = detectConfiguration.getLongProperty(DetectProperty.DETECT_API_TIMEOUT, PropertyAuthority.None);
+            long timeoutInSeconds = timeout / 1000;
+            if (StringUtils.isNotBlank(policyCheckFailOnSeverities) || runRiskReport || runNoticesReport) {
+                waitForBomUpdate(codeLocationCreationService, codeLocationWaitData, timeoutInSeconds);
             }
 
-            if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None))) {
+            if (StringUtils.isNotBlank(policyCheckFailOnSeverities)) {
                 final PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView);
                 logger.info(policyStatusDescription.getPolicyStatusMessage());
                 if (policyChecker.policyViolated(policyStatusDescription)) {
@@ -95,49 +91,36 @@ public class HubManager {
                 }
             }
 
-            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF, PropertyAuthority.None)) {
+            if (runRiskReport) {
                 logger.info("Creating risk report pdf");
-                final File pdfFile = reportService
-                                         .createReportPdfFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_RISK_REPORT_PDF_PATH, PropertyAuthority.None)), projectNameVersion.getName(), projectNameVersion.getVersion());
-                logger.info(String.format("Created risk report pdf: %s", pdfFile.getCanonicalPath()));
+                File reportDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_RISK_REPORT_PDF_PATH, PropertyAuthority.None));
+                File createdPdf = reportService.createReportPdfFile(reportDirectory, projectView, projectVersionView);
+                logger.info(String.format("Created risk report pdf: %s", createdPdf.getCanonicalPath()));
             }
 
-            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT, PropertyAuthority.None)) {
+            if (runNoticesReport) {
                 logger.info("Creating notices report");
-                final File noticesFile = reportService.createNoticesReportFile(new File(detectConfiguration.getProperty(DetectProperty.DETECT_NOTICES_REPORT_PATH, PropertyAuthority.None)), projectNameVersion.getName(),
-                    projectNameVersion.getVersion()
-                );
-                if (noticesFile != null) {
-                    logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
-                }
+                File noticesDirectory = new File(detectConfiguration.getProperty(DetectProperty.DETECT_NOTICES_REPORT_PATH, PropertyAuthority.None));
+                final File noticesFile = reportService.createNoticesReportFile(noticesDirectory, projectView, projectVersionView);
+                logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
             }
-        } catch (final IllegalStateException e) {
+        } catch (final IllegalArgumentException e) {
             throw new DetectUserFriendlyException(String.format("Your Black Duck configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
         } catch (final IntegrationRestException e) {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
-        } catch (final HubTimeoutExceededException e) {
+        } catch (final BlackDuckTimeoutExceededException e) {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
         } catch (final Exception e) {
             throw new DetectUserFriendlyException(String.format("There was a problem: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }
 
-    private void waitForBomUpdate(final CodeLocationService codeLocationService, final HubService hubService, final ScanStatusService scanStatusService) throws IntegrationException, InterruptedException {
-        final List<CodeLocationView> allCodeLocations = new ArrayList<>();
-        for (final String codeLocationName : codeLocationNameManager.getCodeLocationNames()) {
-            final CodeLocationView codeLocationView = codeLocationService.getCodeLocationByName(codeLocationName);
-            allCodeLocations.add(codeLocationView);
+    private void waitForBomUpdate(final CodeLocationCreationService codeLocationCreationService, CodeLocationWaitData codeLocationWaitData, long timeoutInSeconds) throws IntegrationException, InterruptedException {
+        if (codeLocationWaitData.hasBdioResults()) {
+            codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getBdioUploadRange(), codeLocationWaitData.getBdioUploadCodeLocationNames(), timeoutInSeconds);
         }
-        final List<ScanSummaryView> scanSummaryViews = new ArrayList<>();
-        for (final CodeLocationView codeLocationView : allCodeLocations) {
-            final String scansLink = hubService.getFirstLinkSafely(codeLocationView, CodeLocationView.SCANS_LINK);
-            if (StringUtils.isNotBlank(scansLink)) {
-                final List<ScanSummaryView> codeLocationScanSummaryViews = hubService.getResponses(scansLink, ScanSummaryView.class, true);
-                scanSummaryViews.addAll(codeLocationScanSummaryViews);
-            }
+        if (codeLocationWaitData.hasScanResults()) {
+            codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getSignatureScanRange(), codeLocationWaitData.getSignatureScanCodeLocationNames(), timeoutInSeconds);
         }
-        logger.info("Waiting for the BOM to be updated");
-        scanStatusService.assertScansFinished(scanSummaryViews);
-        logger.info("The BOM has been updated");
     }
 }

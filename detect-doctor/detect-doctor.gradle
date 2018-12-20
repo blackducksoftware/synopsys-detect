@@ -10,9 +10,7 @@ dependencies {
     implementation project(":hub-detect")
     implementation project(":detect-configuration")
 
-
     implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.mockito:mockito-core:1.+'
 
+    testImplementation 'org.mockito:mockito-core:1.+'
 }
-

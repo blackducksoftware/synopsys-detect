@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import com.paypal.digraph.parser.GraphParser;
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 
 public class GraphParserTransformerTest {
     @Test
