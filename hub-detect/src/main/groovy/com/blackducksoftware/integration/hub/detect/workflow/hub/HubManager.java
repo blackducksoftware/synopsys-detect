@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.workflow.hub;
 
 import java.io.File;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -84,10 +85,16 @@ public class HubManager {
             }
 
             if (StringUtils.isNotBlank(policyCheckFailOnSeverities)) {
-                final PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView);
-                logger.info(policyStatusDescription.getPolicyStatusMessage());
-                if (policyChecker.policyViolated(policyStatusDescription)) {
-                    eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_POLICY_VIOLATION, policyStatusDescription.getPolicyStatusMessage()));
+                final Optional<PolicyStatusDescription> optionalPolicyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView);
+                if (optionalPolicyStatusDescription.isPresent()) {
+                    PolicyStatusDescription policyStatusDescription = optionalPolicyStatusDescription.get();
+                    logger.info(policyStatusDescription.getPolicyStatusMessage());
+                    if (policyChecker.policyViolated(policyStatusDescription)) {
+                        eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_POLICY_VIOLATION, policyStatusDescription.getPolicyStatusMessage()));
+                    }
+                } else {
+                    String availableLinks = StringUtils.join(projectVersionView.getAvailableLinks(), ", ");
+                    logger.warn("It is not possible to check the policy status for this project/version. The policy-status link must be present. The available links are: " + availableLinks);
                 }
             }
 
