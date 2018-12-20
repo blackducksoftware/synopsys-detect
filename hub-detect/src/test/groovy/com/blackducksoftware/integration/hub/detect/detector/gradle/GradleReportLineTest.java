@@ -3,8 +3,8 @@ package com.blackducksoftware.integration.hub.detect.detector.gradle;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.synopsys.integration.hub.bdio.model.dependency.Dependency;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class GradleReportLineTest {
     @Test

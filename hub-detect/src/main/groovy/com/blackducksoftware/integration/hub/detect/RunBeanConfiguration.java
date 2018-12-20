@@ -57,13 +57,13 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
-import com.synopsys.integration.blackduck.configuration.HubServerConfig;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
-import com.synopsys.integration.hub.bdio.BdioTransformer;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.BdioTransformer;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 
 import freemarker.template.Configuration;
 
@@ -78,8 +78,6 @@ public class RunBeanConfiguration {
     @Autowired
     public DirectoryManager directoryManager;
     @Autowired
-    public PhoneHomeManager phoneHomeManager;
-    @Autowired
     public DiagnosticManager diagnosticManager;
     @Autowired
     public ConnectivityManager connectivityManager;
@@ -87,8 +85,6 @@ public class RunBeanConfiguration {
     public EventSystem eventSystem;
     @Autowired
     public Gson gson;
-    @Autowired
-    public JsonParser jsonParser;
     @Autowired
     public Configuration configuration;
     @Autowired
@@ -185,14 +181,15 @@ public class RunBeanConfiguration {
 
     @Lazy
     @Bean
-    public OnlineBlackDuckSignatureScanner onlineBlackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanJobManager scanJobManager, HubServerConfig hubServerConfig) {
-        return new OnlineBlackDuckSignatureScanner(directoryManager, detectFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanJobManager, hubServerConfig);
+    public OnlineBlackDuckSignatureScanner onlineBlackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner, CodeLocationCreationService codeLocationCreationService,
+        BlackDuckServerConfig hubServerConfig) {
+        return new OnlineBlackDuckSignatureScanner(directoryManager, detectFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, codeLocationCreationService, hubServerConfig);
     }
 
     @Lazy
     @Bean
-    public OfflineBlackDuckSignatureScanner offlineBlackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanJobManager scanJobManager) {
-        return new OfflineBlackDuckSignatureScanner(directoryManager, detectFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanJobManager);
+    public OfflineBlackDuckSignatureScanner offlineBlackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner) {
+        return new OfflineBlackDuckSignatureScanner(directoryManager, detectFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner);
     }
 
 }

@@ -19,7 +19,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class PipInspectorTreeParserTest {
     private PipInspectorTreeParser parser;

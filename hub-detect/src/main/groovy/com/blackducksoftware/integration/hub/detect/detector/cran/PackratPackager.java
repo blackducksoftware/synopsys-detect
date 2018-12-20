@@ -25,8 +25,8 @@ package com.blackducksoftware.integration.hub.detect.detector.cran;
 
 import java.util.List;
 
-import com.synopsys.integration.hub.bdio.graph.DependencyGraph;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class PackratPackager {
     private final ExternalIdFactory externalIdFactory;

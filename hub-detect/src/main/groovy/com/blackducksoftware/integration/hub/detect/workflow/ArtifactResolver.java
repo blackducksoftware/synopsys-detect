@@ -40,7 +40,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.ConnectionMana
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.google.gson.Gson;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.rest.connection.UnauthenticatedRestConnection;
+import com.synopsys.integration.rest.connection.RestConnection;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.request.Response;
 
@@ -65,7 +65,7 @@ public class ArtifactResolver {
      * @return the location of the artifact
      */
     public Optional<String> resolveArtifactLocation(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey, final String overrideVersion, final String overrideArtifactPattern)
-        throws IntegrationException, DetectUserFriendlyException, IOException {
+            throws IntegrationException, DetectUserFriendlyException, IOException {
         if (StringUtils.isNotBlank(overrideVersion) && StringUtils.isNotBlank(overrideArtifactPattern)) {
             logger.info("An override version was provided, will resolve using the given version.");
             String repoUrl = artifactoryBaseUrl + repositoryUrl;
@@ -111,21 +111,20 @@ public class ArtifactResolver {
         String propertyUrl = apiUrl + "?properties=" + propertyKey;
         logger.debug("Downloading property: " + propertyUrl);
         final Request request = new Request.Builder().uri(propertyUrl).build();
-        try (final UnauthenticatedRestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(propertyUrl)) {
-            try (final Response response = restConnection.executeRequest(request)) {
-                try (final InputStreamReader reader = new InputStreamReader(response.getContent())) {
-                    logger.debug("Downloaded property, attempting to parse response.");
-                    Map json = gson.fromJson(reader, Map.class);
-                    Map propertyMap = (Map) json.get("properties");
-                    List propertyUrls = (List) propertyMap.get(propertyKey);
-                    Optional<String> foundProperty = propertyUrls.stream().findFirst();
-                    if (foundProperty.isPresent()) {
-                        logger.debug("Successfully parsed property: " + propertyUrls);
-                    } else {
-                        logger.debug("Failed to find property.");
-                    }
-                    return foundProperty;
+        final RestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(propertyUrl);
+        try (final Response response = restConnection.execute(request)) {
+            try (final InputStreamReader reader = new InputStreamReader(response.getContent())) {
+                logger.debug("Downloaded property, attempting to parse response.");
+                Map json = gson.fromJson(reader, Map.class);
+                Map propertyMap = (Map) json.get("properties");
+                List propertyUrls = (List) propertyMap.get(propertyKey);
+                Optional<String> foundProperty = propertyUrls.stream().findFirst();
+                if (foundProperty.isPresent()) {
+                    logger.debug("Successfully parsed property: " + propertyUrls);
+                } else {
+                    logger.debug("Failed to find property.");
                 }
+                return foundProperty;
             }
         }
     }
@@ -154,16 +153,15 @@ public class ArtifactResolver {
     public File downloadArtifact(File target, String source) throws DetectUserFriendlyException, IntegrationException, IOException {
         logger.debug(String.format("Downloading for artifact to '%s' from '%s'.", target.getAbsolutePath(), source));
         final Request request = new Request.Builder().uri(source).build();
-        try (final UnauthenticatedRestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(source)) {
-            try (Response response = restConnection.executeRequest(request)) {
-                logger.debug("Deleting existing file.");
-                target.delete();
-                logger.debug("Writing to file.");
-                final InputStream jarBytesInputStream = response.getContent();
-                FileUtils.copyInputStreamToFile(jarBytesInputStream, target);
-                logger.debug("Successfully wrote response to file.");
-                return target;
-            }
+        final RestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(source);
+        try (Response response = restConnection.execute(request)) {
+            logger.debug("Deleting existing file.");
+            target.delete();
+            logger.debug("Writing to file.");
+            final InputStream jarBytesInputStream = response.getContent();
+            FileUtils.copyInputStreamToFile(jarBytesInputStream, target);
+            logger.debug("Successfully wrote response to file.");
+            return target;
         }
     }
 

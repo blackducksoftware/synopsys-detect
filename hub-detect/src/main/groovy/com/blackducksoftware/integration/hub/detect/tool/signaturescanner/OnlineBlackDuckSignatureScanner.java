@@ -24,38 +24,51 @@
 package com.blackducksoftware.integration.hub.detect.tool.signaturescanner;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.blackduck.configuration.HubServerConfig;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJob;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJobBuilder;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
-import com.synopsys.integration.exception.EncryptionException;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
+import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchBuilder;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.SignatureScannerService;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
+import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class OnlineBlackDuckSignatureScanner extends BlackDuckSignatureScanner {
-
-    private final HubServerConfig hubServerConfig;
+    private final CodeLocationCreationService codeLocationCreationService;
+    private final BlackDuckServerConfig hubServerConfig;
 
     public OnlineBlackDuckSignatureScanner(final DirectoryManager directoryManager, final DetectFileFinder detectFileFinder,
-        final CodeLocationNameManager codeLocationNameManager, final BlackDuckSignatureScannerOptions signatureScannerOptions, final EventSystem eventSystem, final ScanJobManager scanJobManager,
-        final HubServerConfig hubServerConfig) {
-        super(directoryManager, detectFileFinder, codeLocationNameManager, signatureScannerOptions, eventSystem, scanJobManager);
+        final CodeLocationNameManager codeLocationNameManager, final BlackDuckSignatureScannerOptions signatureScannerOptions, final EventSystem eventSystem, final ScanBatchRunner scanBatchRunner, final CodeLocationCreationService codeLocationCreationService,
+        final BlackDuckServerConfig hubServerConfig) {
+        super(directoryManager, detectFileFinder, codeLocationNameManager, signatureScannerOptions, eventSystem, scanBatchRunner);
+        this.codeLocationCreationService = codeLocationCreationService;
         this.hubServerConfig = hubServerConfig;
     }
 
+    public CodeLocationCreationData<ScanBatchOutput> performOnlineScan(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws InterruptedException, IntegrationException, DetectUserFriendlyException, IOException {
+        NotificationTaskRange notificationTaskRange = codeLocationCreationService.calculateCodeLocationRange();
+        ScanBatchOutput scanBatchOutput = performScanActions(projectNameVersion, installDirectory, dockerTarFile);
+        CodeLocationCreationData<ScanBatchOutput> creationData = new CodeLocationCreationData<>(notificationTaskRange, scanBatchOutput);
+        return creationData;
+    }
+
     @Override
-    protected ScanJob createScanJob(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
-        final ScanJobBuilder scanJobBuilder = createDefaultScanJobBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
-        try {
-            scanJobBuilder.fromHubServerConfig(hubServerConfig);
-        } catch (EncryptionException e) {
-            throw new RuntimeException(e);
-        }
+    protected ScanBatch createScanBatch(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
+        final ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
+        scanJobBuilder.fromBlackDuckServerConfig(hubServerConfig);
         return scanJobBuilder.build();
     }
+
 }

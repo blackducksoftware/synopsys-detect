@@ -28,24 +28,26 @@ import java.util.Optional;
 import org.springframework.util.Assert;
 
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
+import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 
 public class ConnectivityManager {
-
     private final boolean isDetectOnline;
     private final HubServiceManager hubServiceManager;
-
-    private ConnectivityManager(boolean isDetectOnline, final HubServiceManager hubServiceManager) {
-        this.isDetectOnline = isDetectOnline;
-        this.hubServiceManager = hubServiceManager;
-    }
+    private final PhoneHomeManager phoneHomeManager;
 
     public static ConnectivityManager offline() {
-        return new ConnectivityManager(false, null);
+        return new ConnectivityManager(false, null, null);
     }
 
-    public static ConnectivityManager online(HubServiceManager hubServiceManager) {
+    public static ConnectivityManager online(HubServiceManager hubServiceManager, final PhoneHomeManager phoneHomeManager) {
         Assert.notNull(hubServiceManager, "Online detect needs a valid hub services manager.");
-        return new ConnectivityManager(true, hubServiceManager);
+        return new ConnectivityManager(true, hubServiceManager, phoneHomeManager);
+    }
+
+    private ConnectivityManager(boolean isDetectOnline, final HubServiceManager hubServiceManager, final PhoneHomeManager phoneHomeManager) {
+        this.isDetectOnline = isDetectOnline;
+        this.hubServiceManager = hubServiceManager;
+        this.phoneHomeManager = phoneHomeManager;
     }
 
     public boolean isDetectOnline() {
@@ -55,4 +57,9 @@ public class ConnectivityManager {
     public Optional<HubServiceManager> getHubServiceManager() {
         return Optional.ofNullable(hubServiceManager);
     }
+
+    public Optional<PhoneHomeManager> getPhoneHomeManager() {
+        return Optional.ofNullable(phoneHomeManager);
+    }
+
 }

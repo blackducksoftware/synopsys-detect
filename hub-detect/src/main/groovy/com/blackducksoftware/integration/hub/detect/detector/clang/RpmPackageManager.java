@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.synopsys.integration.hub.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.Forge;
 
 public class RpmPackageManager extends ClangLinuxPackageManager {
     private static final String PKG_MGR_NAME = "rpm";

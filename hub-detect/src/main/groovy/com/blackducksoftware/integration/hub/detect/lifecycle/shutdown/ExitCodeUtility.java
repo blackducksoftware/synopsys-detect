@@ -30,12 +30,12 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class ExitCodeUtility {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private static String ERROR_MESSAGE_STRING_LITERAL_WRAPPER_MEMBER_NAME_VARIABLE = "errorMessage";
     private static String BLACDUCK_ERROR_MESSAGE = "An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg";
 
     public ExitCodeType getExitCodeFromExceptionDetails(final Exception e) {
@@ -47,18 +47,11 @@ public class ExitCodeUtility {
             }
             final DetectUserFriendlyException friendlyException = (DetectUserFriendlyException) e;
             exceptionExitCodeType = friendlyException.getExitCodeType();
-        } else if (e instanceof IntegrationRestException) {
+        } else if (e instanceof BlackDuckApiException) {
             logger.error(BLACDUCK_ERROR_MESSAGE);
             logger.debug(e.getMessage(), e);
-
-            IntegrationRestException re = (IntegrationRestException) e;
-            Gson gson = new Gson();
-            JsonObject jsonData = gson.fromJson(re.getHttpResponseContent(), JsonObject.class);
-
-            if (jsonData.has(ERROR_MESSAGE_STRING_LITERAL_WRAPPER_MEMBER_NAME_VARIABLE)) {
-                String message = jsonData.getAsJsonPrimitive(ERROR_MESSAGE_STRING_LITERAL_WRAPPER_MEMBER_NAME_VARIABLE).getAsString();
-                logger.error(message);
-            }
+            logger.error(((BlackDuckApiException) e).getBlackDuckErrorMessage());
+            logger.error(((BlackDuckApiException) e).getBlackDuckErrorMessage());
 
             exceptionExitCodeType = ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR;
         } else if (e instanceof IntegrationException) {

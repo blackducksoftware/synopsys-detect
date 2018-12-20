@@ -29,15 +29,15 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.CodeLocationService;
-import com.synopsys.integration.blackduck.service.HubService;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectCodeLocationUnmapService {
-    private final HubService hubService;
+    private final BlackDuckService hubService;
     private CodeLocationService codeLocationService;
 
-    public DetectCodeLocationUnmapService(HubService hubService, CodeLocationService codeLocationService) {
+    public DetectCodeLocationUnmapService(BlackDuckService hubService, CodeLocationService codeLocationService) {
         this.hubService = hubService;
         this.codeLocationService = codeLocationService;
     }

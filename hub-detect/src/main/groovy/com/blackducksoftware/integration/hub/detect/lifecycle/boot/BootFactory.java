@@ -27,9 +27,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import com.blackducksoftware.integration.hub.detect.Application;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
-import com.synopsys.integration.blackduck.service.HubServicesFactory;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 import freemarker.template.Configuration;
@@ -37,11 +38,11 @@ import freemarker.template.Configuration;
 //Responsible for creating a few classes boot needs
 public class BootFactory {
     public Gson createGson() {
-        return HubServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create();
+        return BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create();
     }
 
-    public JsonParser createJsonParser() {
-        return new JsonParser();
+    public ObjectMapper createObjectMapper() {
+        return BlackDuckServicesFactory.createDefaultObjectMapper();
     }
 
     public Configuration createConfiguration() {

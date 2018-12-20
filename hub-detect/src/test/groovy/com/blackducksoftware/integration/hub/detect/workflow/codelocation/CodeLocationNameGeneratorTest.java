@@ -18,8 +18,8 @@ import static org.mockito.Mockito.when;
 import org.junit.Test;
 
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class CodeLocationNameGeneratorTest {
     @Test

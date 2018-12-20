@@ -45,14 +45,14 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManag
 import com.blackducksoftware.integration.hub.detect.workflow.hub.ExclusionPatternCreator;
 import com.blackducksoftware.integration.hub.detect.workflow.status.SignatureScanStatus;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJob;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJobBuilder;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJobManager;
-import com.synopsys.integration.blackduck.signaturescanner.ScanJobOutput;
-import com.synopsys.integration.blackduck.signaturescanner.command.ScanCommandOutput;
-import com.synopsys.integration.blackduck.signaturescanner.command.ScanTarget;
-import com.synopsys.integration.blackduck.signaturescanner.command.SnippetMatching;
-import com.synopsys.integration.blackduck.summary.Result;
+import com.synopsys.integration.blackduck.codelocation.Result;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchBuilder;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanTarget;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -64,10 +64,10 @@ public abstract class BlackDuckSignatureScanner {
     private final CodeLocationNameManager codeLocationNameManager;
     private final BlackDuckSignatureScannerOptions signatureScannerOptions;
     private final EventSystem eventSystem;
-    private final ScanJobManager scanJobManager;
+    private final ScanBatchRunner scanJobManager;
 
     public BlackDuckSignatureScanner(final DirectoryManager directoryManager, final DetectFileFinder detectFileFinder, final CodeLocationNameManager codeLocationNameManager,
-        final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanJobManager scanJobManager) {
+            final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanBatchRunner scanJobManager) {
         this.directoryManager = directoryManager;
         this.detectFileFinder = detectFileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
@@ -76,29 +76,27 @@ public abstract class BlackDuckSignatureScanner {
         this.scanJobManager = scanJobManager;
     }
 
-    protected abstract ScanJob createScanJob(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile);
+    protected abstract ScanBatch createScanBatch(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile);
 
-    public void performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws InterruptedException, IntegrationException, DetectUserFriendlyException, IOException {
-        scanPaths(projectNameVersion, installDirectory, dockerTarFile);
+    public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws InterruptedException, IntegrationException, DetectUserFriendlyException, IOException {
+        return scanPaths(projectNameVersion, installDirectory, dockerTarFile);
     }
 
-    private void scanPaths(final NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, InterruptedException, IOException {
+    private ScanBatchOutput scanPaths(final NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, InterruptedException, IOException {
         List<SignatureScanPath> signatureScanPaths = determinePathsAndExclusions(projectNameVersion, signatureScannerOptions.getMaxDepth(), dockerTarFile);
-        final ScanJob scanJob = createScanJob(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
+        final ScanBatch scanJob = createScanBatch(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
 
         List<ScanCommandOutput> scanCommandOutputs = new ArrayList<>();
-        try {
-            final ScanJobOutput scanJobOutput = scanJobManager.executeScans(scanJob);
-            if (scanJobOutput.getScanCommandOutputs() != null) {
-                for (ScanCommandOutput scanCommandOutput : scanJobOutput.getScanCommandOutputs()) {
-                    scanCommandOutputs.add(scanCommandOutput);
-                }
+        final ScanBatchOutput scanJobOutput = scanJobManager.executeScans(scanJob);
+        if (scanJobOutput.getOutputs() != null) {
+            for (ScanCommandOutput scanCommandOutput : scanJobOutput.getOutputs()) {
+                scanCommandOutputs.add(scanCommandOutput);
             }
-        } catch (IOException e) {
-            throw new IntegrationException("Could not execute the scans: " + e.getMessage());
         }
 
         reportResults(signatureScanPaths, scanCommandOutputs);
+
+        return scanJobOutput;
     }
 
     private void reportResults(List<SignatureScanPath> signatureScanPaths, List<ScanCommandOutput> scanCommandOutputList) {
@@ -106,8 +104,8 @@ public abstract class BlackDuckSignatureScanner {
         boolean anyExitCodeIs64 = false;
         for (final SignatureScanPath target : signatureScanPaths) {
             Optional<ScanCommandOutput> targetOutput = scanCommandOutputList.stream()
-                                                           .filter(output -> output.getScanTarget().equals(target.targetPath))
-                                                           .findFirst();
+                                                               .filter(output -> output.getScanTarget().equals(target.targetPath))
+                                                               .findFirst();
 
             StatusType scanStatus;
             if (!targetOutput.isPresent()) {
@@ -191,7 +189,7 @@ public abstract class BlackDuckSignatureScanner {
             final ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(detectFileFinder, target);
 
             final String maxDepthHitMsg = String.format("Maximum depth %d hit while traversing source tree to generate signature scanner exclusion patterns. To search deeper, adjust the value of property %s",
-                maxDepth, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH.getPropertyName());
+                    maxDepth, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH.getPropertyName());
 
             final Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepthHitMsg, maxDepth, hubSignatureScannerExclusionNamePatterns);
             if (null != providedExclusionPatterns) {
@@ -208,8 +206,8 @@ public abstract class BlackDuckSignatureScanner {
         }
     }
 
-    protected ScanJobBuilder createDefaultScanJobBuilder(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
-        final ScanJobBuilder scanJobBuilder = new ScanJobBuilder();
+    protected ScanBatchBuilder createDefaultScanBatchBuilder(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
+        final ScanBatchBuilder scanJobBuilder = new ScanBatchBuilder();
         scanJobBuilder.scanMemoryInMegabytes(signatureScannerOptions.getScanMemory());
         scanJobBuilder.installDirectory(installDirectory);
         scanJobBuilder.outputDirectory(directoryManager.getScanOutputDirectory());

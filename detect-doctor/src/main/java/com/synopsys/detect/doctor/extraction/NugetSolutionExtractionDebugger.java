@@ -20,7 +20,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFind
 import com.google.gson.Gson;
 import com.synopsys.detect.doctor.diagnosticparser.DetectRunInfo;
 import com.synopsys.detect.doctor.logparser.LoggedDetectExtraction;
-import com.synopsys.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class NugetSolutionExtractionDebugger {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

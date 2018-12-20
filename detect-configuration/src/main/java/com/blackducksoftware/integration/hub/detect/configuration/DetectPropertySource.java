@@ -29,7 +29,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.property.PropertySource;
-import com.synopsys.integration.blackduck.configuration.HubServerConfigBuilder;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 
 public class DetectPropertySource {
     public static final String PHONE_HOME_PROPERTY_PREFIX = "detect.phone.home.passthrough.";
@@ -57,7 +57,7 @@ public class DetectPropertySource {
                     dockerEnvironmentKeys.add(propertyName);
                 } else if (propertyName.startsWith(PHONE_HOME_PROPERTY_PREFIX)) {
                     phoneHomePropertyKeys.add(propertyName);
-                } else if (propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
+                } else if (propertyName.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
                     blackduckPropertyKeys.add(propertyName);
                 } else if (propertyName.startsWith(BLACKDUCK_PROPERTY_PREFIX) || propertyName.startsWith(BLACKDUCK_ENVIRONMENT_PREFIX)) {
                     blackduckPropertyKeys.add(propertyName);
