@@ -42,6 +42,9 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment
 import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelDetector;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExtractor;
+import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelQueryXmlOutputParser;
+import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExternalIdExtractionRules;
+import com.blackducksoftware.integration.hub.detect.detector.bazel.XPathParser;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeDetector;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeListTasksParser;
@@ -132,7 +135,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 import freemarker.template.Configuration;
@@ -201,7 +203,9 @@ public class DetectorBeanConfiguration {
 
     @Bean
     public BazelExtractor bazelExtractor() {
-        return new BazelExtractor(executableRunner);
+        BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
+        BazelExternalIdExtractionRules rules = new BazelExternalIdExtractionRules();
+        return new BazelExtractor(executableRunner, parser, rules);
     }
 
     @Bean

@@ -23,29 +23,19 @@
  */
 package com.blackducksoftware.integration.hub.detect.detector.bazel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class ExternalIdExtractionRule {
-    // Everything following "bazel". Example: "query", "kind(.*, //external:*)", "--output", "xml"
-    private final List<String> bazelQueryCommandArgsIncludingQuery;
-    private final String ruleClassname;
-    private final String ruleElementSelectorValue;
+public class BazelExternalIdExtractionRules {
+    private final List<BazelExternalIdExtractionRule> rules;
 
-    public ExternalIdExtractionRule(final List<String> bazelQueryCommandArgsIncludingQuery, final String ruleClassname, final String ruleElementSelectorValue) {
-        this.bazelQueryCommandArgsIncludingQuery = bazelQueryCommandArgsIncludingQuery;
-        this.ruleClassname = ruleClassname;
-        this.ruleElementSelectorValue = ruleElementSelectorValue;
+    public BazelExternalIdExtractionRules() {
+        rules = new ArrayList<>();
+        rules.add(new BazelExternalIdExtractionRule(Arrays.asList("query", "kind(.*, //external:*)", "--output", "xml"), "maven_jar", "artifact"));
     }
 
-    public List<String> getBazelQueryCommandArgsIncludingQuery() {
-        return bazelQueryCommandArgsIncludingQuery;
-    }
-
-    public String getRuleClassname() {
-        return ruleClassname;
-    }
-
-    public String getRuleElementSelectorValue() {
-        return ruleElementSelectorValue;
+    public List<BazelExternalIdExtractionRule> getRules() {
+        return rules;
     }
 }

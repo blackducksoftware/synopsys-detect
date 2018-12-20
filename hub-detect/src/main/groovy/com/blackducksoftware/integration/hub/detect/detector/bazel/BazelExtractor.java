@@ -38,27 +38,31 @@ public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ExecutableRunner executableRunner;
+    private final BazelQueryXmlOutputParser parser;
+    private final BazelExternalIdExtractionRules rules;
 
-    public BazelExtractor(final ExecutableRunner executableRunner) {
+    public BazelExtractor(final ExecutableRunner executableRunner, BazelQueryXmlOutputParser parser, BazelExternalIdExtractionRules rules) {
         this.executableRunner = executableRunner;
+        this.parser = parser;
+        this.rules = rules;
     }
 
     public Extraction extract(final File workspaceDir, final int depth, final ExtractionId extractionId) {
-        logger.info("*********** Bazel extractable()");
+        logger.info("Bazel extract()");
         // TODO Should write and use BazelExecutableFinder like Gradle and MavenExecutableFinder
         try {
             // TODO inject these
-            BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
-            ExternalIdExtractionRules rules = new ExternalIdExtractionRules();
+//            BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
+//            BazelExternalIdExtractionRules rules = new BazelExternalIdExtractionRules();
             ///////////
-            for (ExternalIdExtractionRule rule : rules.getRules()) {
+            for (BazelExternalIdExtractionRule rule : rules.getRules()) {
                 ExecutableOutput bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(workspaceDir, BazelDetector.BAZEL_COMMAND, rule.getBazelQueryCommandArgsIncludingQuery());
                 final int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
                 final String xml = bazelQueryDepsRecursiveOutput.getStandardOutput();
                 logger.info(String.format("Bazel query returned %d; output: %s", returnCode, xml));
                 List<String> externalIdStrings = parser.parseStringValuesFromRulesConstrained(xml, rule.getRuleClassname(), rule.getRuleElementSelectorValue());
                 for (String externalIdString : externalIdStrings) {
-                    logger.info(String.format("====== externalIdString: %s", externalIdString));
+                    logger.info(String.format("externalIdString: %s", externalIdString));
                 }
             }
         } catch (Exception e) {
