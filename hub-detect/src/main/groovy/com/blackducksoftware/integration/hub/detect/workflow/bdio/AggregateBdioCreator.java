@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,7 @@ public class AggregateBdioCreator {
     private final DetectBdioWriter detectBdioWriter;
 
     public AggregateBdioCreator(final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil,
-        final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, DetectBdioWriter detectBdioWriter) {
+            final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, DetectBdioWriter detectBdioWriter) {
         this.simpleBdioFactory = simpleBdioFactory;
         this.integrationEscapeUtil = integrationEscapeUtil;
         this.codeLocationNameManager = codeLocationNameManager;
@@ -68,8 +69,12 @@ public class AggregateBdioCreator {
         this.detectBdioWriter = detectBdioWriter;
     }
 
-    public UploadTarget createAggregateBdioFile(File sourcePath, File bdioDirectory, final List<DetectCodeLocation> codeLocations, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public Optional<UploadTarget> createAggregateBdioFile(File sourcePath, File bdioDirectory, final List<DetectCodeLocation> codeLocations, NameVersion projectNameVersion) throws DetectUserFriendlyException {
         final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations);
+        if (aggregateDependencyGraph.getRootDependencies().size() == 0) {
+            logger.info("The aggregate contained no dependencies, will not create bdio file.");
+            return Optional.empty();
+        }
 
         final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "/", ""), projectNameVersion.getName(), projectNameVersion.getVersion());
         final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
@@ -80,7 +85,7 @@ public class AggregateBdioCreator {
 
         detectBdioWriter.writeBdioFile(aggregateBdioFile, aggregateBdioDocument);
 
-        return UploadTarget.createDefault(codeLocationName, aggregateBdioFile);
+        return Optional.of(UploadTarget.createDefault(codeLocationName, aggregateBdioFile));
     }
 
     private DependencyGraph createAggregateDependencyGraph(File sourcePath, final List<DetectCodeLocation> codeLocations) {

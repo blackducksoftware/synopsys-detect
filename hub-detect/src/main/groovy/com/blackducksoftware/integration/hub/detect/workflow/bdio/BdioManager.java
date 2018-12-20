@@ -23,10 +23,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.bdio;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -62,7 +62,7 @@ public class BdioManager {
     private final EventSystem eventSystem;
 
     public BdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil, final CodeLocationNameManager codeLocationNameManager,
-        final DetectConfiguration detectConfiguration, final BdioCodeLocationCreator codeLocationManager, final DirectoryManager directoryManager, final EventSystem eventSystem) {
+            final DetectConfiguration detectConfiguration, final BdioCodeLocationCreator codeLocationManager, final DirectoryManager directoryManager, final EventSystem eventSystem) {
         this.detectInfo = detectInfo;
         this.simpleBdioFactory = simpleBdioFactory;
         this.integrationEscapeUtil = integrationEscapeUtil;
@@ -89,9 +89,12 @@ public class BdioManager {
         } else {
             logger.info("Creating aggregate BDIO file.");
             AggregateBdioCreator aggregateBdioCreator = new AggregateBdioCreator(simpleBdioFactory, integrationEscapeUtil, codeLocationNameManager, detectConfiguration, detectBdioWriter);
-            final UploadTarget uploadTarget = aggregateBdioCreator.createAggregateBdioFile(directoryManager.getSourceDirectory(), directoryManager.getBdioOutputDirectory(), codeLocations, projectNameVersion);
-
-            return new BdioResult(Arrays.asList(uploadTarget));
+            final Optional<UploadTarget> uploadTarget = aggregateBdioCreator.createAggregateBdioFile(directoryManager.getSourceDirectory(), directoryManager.getBdioOutputDirectory(), codeLocations, projectNameVersion);
+            if (uploadTarget.isPresent()) {
+                return new BdioResult(Arrays.asList(uploadTarget.get()));
+            } else {
+                return new BdioResult(Collections.emptyList());
+            }
         }
     }
 
