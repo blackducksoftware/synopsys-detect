@@ -3,6 +3,8 @@ package com.blackducksoftware.integration.hub.detect.detector.bazel;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,7 +29,9 @@ public class XPathParser {
         this.xmlString = xmlString;
     }
 
-    public void parse(final String xPathExpression, final String targetAttributeName) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
+    public List<String> parseStringValues(final String xPathExpression, final String targetAttributeName) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
+        logger.debug(String.format("xPathExpression: %s, targetAttributeName: %s", xPathExpression, targetAttributeName));
+        final List<String> parsedValues = new ArrayList<>();
         InputStream xmlInputStream = new ByteArrayInputStream(xmlString.getBytes());
 
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
@@ -37,7 +41,9 @@ public class XPathParser {
         NodeList nodeList = (NodeList) xPath.compile(xPathExpression).evaluate(xmlDocument, XPathConstants.NODESET);
         for (int i=0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
-            logger.info(String.format("External ID: %s", node.getAttributes().getNamedItem(targetAttributeName)));
+            logger.debug(String.format("parsed value: %s", node.getAttributes().getNamedItem(targetAttributeName).getTextContent()));
+            parsedValues.add(node.getAttributes().getNamedItem(targetAttributeName).getTextContent());
         }
+        return parsedValues;
     }
 }
