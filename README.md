@@ -1,4 +1,4 @@
 ## Hub Detect Landing Page ##
 
-Download latest Detect from here.
+Download latest Detect from our Artifactory.
 
