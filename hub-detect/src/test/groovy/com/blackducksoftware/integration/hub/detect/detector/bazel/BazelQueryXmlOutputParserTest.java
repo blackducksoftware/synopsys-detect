@@ -53,15 +53,15 @@ public class BazelQueryXmlOutputParserTest {
 
     private List<String> getExternalIdsFromXmlFileConstrained(final String xmlFilePath) throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         final String xml = FileUtils.readFileToString(new File(xmlFilePath), StandardCharsets.UTF_8);
-        final XPathParser xPathParser = new XPathParser(xml);
+        final XPathParser xPathParser = new XPathParser();
         BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(xPathParser);
-        return parser.parseStringValuesFromRulesConstrained("maven_jar", "artifact");
+        return parser.parseStringValuesFromRulesConstrained(xml,"maven_jar", "artifact");
     }
 
     private List<String> getExternalIdsFromXmlFileFlexible(final String xmlFilePath) throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         final String xml = FileUtils.readFileToString(new File(xmlFilePath), StandardCharsets.UTF_8);
-        final XPathParser xPathParser = new XPathParser(xml);
+        final XPathParser xPathParser = new XPathParser();
         BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(xPathParser);
-        return parser.parseStringValuesFromRules("maven_jar", "string", "name", "artifact", "value");
+        return parser.parseStringValuesFromRules(xml,"maven_jar", "string", "name", "artifact", "value");
     }
 }

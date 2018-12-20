@@ -36,8 +36,8 @@ public class XPathParserTest {
 
     private List<String> parseXmlFile(final String xmlFilePath) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
         final String xml = FileUtils.readFileToString(new File(xmlFilePath), StandardCharsets.UTF_8);
-        XPathParser parser = new XPathParser(xml);
-        List<String> externalIds = parser.parseAttributeValuesWithGivenXPathQuery("/query/rule/string[@name='artifact']", "value");
+        XPathParser parser = new XPathParser();
+        List<String> externalIds = parser.parseAttributeValuesWithGivenXPathQuery(xml,"/query/rule/string[@name='artifact']", "value");
         return externalIds;
     }
 

@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.detector.bazel;
 
 import java.io.File;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class BazelExtractor {
@@ -46,14 +46,23 @@ public class BazelExtractor {
     public Extraction extract(final File workspaceDir, final int depth, final ExtractionId extractionId) {
         logger.info("*********** Bazel extractable()");
         // TODO Should write and use BazelExecutableFinder like Gradle and MavenExecutableFinder
-        final ExecutableOutput bazelQueryDepsRecursiveOutput;
         try {
-            bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(workspaceDir, BazelDetector.BAZEL_COMMAND, BazelDetector.BAZEL_QUERY_SUBCOMMAND,
-                BazelDetector.BAZEL_QUERY_SPEC_GET_EXTERNAL_DEPENDENCIES, BazelDetector.BAZEL_QUERY_OUTPUT_TYPE_SELECTOR, BazelDetector.BAZEL_QUERY_OUTPUT_TYPE_XML);
-            int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
-            logger.info(String.format("Bazel query returned %d; output: %s", returnCode, bazelQueryDepsRecursiveOutput.getStandardOutput()));
-        } catch (ExecutableRunnerException e) {
-            logger.info(String.format("Bazel query threw exception: %s", e.getMessage()));
+            // TODO inject these
+            BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
+            ExternalIdExtractionRules rules = new ExternalIdExtractionRules();
+            ///////////
+            for (ExternalIdExtractionRule rule : rules.getRules()) {
+                ExecutableOutput bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(workspaceDir, BazelDetector.BAZEL_COMMAND, rule.getBazelQueryCommandArgsIncludingQuery());
+                final int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
+                final String xml = bazelQueryDepsRecursiveOutput.getStandardOutput();
+                logger.info(String.format("Bazel query returned %d; output: %s", returnCode, xml));
+                List<String> externalIdStrings = parser.parseStringValuesFromRulesConstrained(xml, rule.getRuleClassname(), rule.getRuleElementSelectorValue());
+                for (String externalIdString : externalIdStrings) {
+                    logger.info(String.format("====== externalIdString: %s", externalIdString));
+                }
+            }
+        } catch (Exception e) {
+            logger.error(String.format("Bazel query threw exception: %s", e.getMessage()), e);
         }
         return new Extraction.Builder().success().build();
     }
