@@ -40,7 +40,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
-import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelBdioGenerator;
+import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelBdioBuilder;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelDetector;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelQueryXmlOutputParser;
@@ -206,7 +206,7 @@ public class DetectorBeanConfiguration {
     public BazelExtractor bazelExtractor() {
         BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
         BazelExternalIdExtractionSimpleRules rules = new BazelExternalIdExtractionSimpleRules();
-        BazelBdioGenerator bdioGenerator = new BazelBdioGenerator(externalIdFactory);
+        BazelBdioBuilder bdioGenerator = new BazelBdioBuilder(externalIdFactory);
         return new BazelExtractor(executableRunner, parser, rules, bdioGenerator);
     }
 
