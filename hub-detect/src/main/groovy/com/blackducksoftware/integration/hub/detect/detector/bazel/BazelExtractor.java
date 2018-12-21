@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.detector.bazel;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
 
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -40,29 +42,31 @@ public class BazelExtractor {
     private final ExecutableRunner executableRunner;
     private final BazelQueryXmlOutputParser parser;
     private final BazelExternalIdExtractionRules rules;
+    private final BazelBdioGenerator bdioGenerator;
 
-    public BazelExtractor(final ExecutableRunner executableRunner, BazelQueryXmlOutputParser parser, BazelExternalIdExtractionRules rules) {
+    public BazelExtractor(final ExecutableRunner executableRunner, BazelQueryXmlOutputParser parser, final BazelExternalIdExtractionRules rules, final BazelBdioGenerator bdioGenerator) {
         this.executableRunner = executableRunner;
         this.parser = parser;
         this.rules = rules;
+        this.bdioGenerator = bdioGenerator;
     }
 
     public Extraction extract(final File workspaceDir, final int depth, final ExtractionId extractionId) {
         logger.info("Bazel extract()");
         // TODO Should write and use BazelExecutableFinder like Gradle and MavenExecutableFinder
         try {
-            // TODO inject these
-//            BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
-//            BazelExternalIdExtractionRules rules = new BazelExternalIdExtractionRules();
-            ///////////
             for (BazelExternalIdExtractionRule rule : rules.getRules()) {
                 ExecutableOutput bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(workspaceDir, BazelDetector.BAZEL_COMMAND, rule.getBazelQueryCommandArgsIncludingQuery());
                 final int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
                 final String xml = bazelQueryDepsRecursiveOutput.getStandardOutput();
                 logger.info(String.format("Bazel query returned %d; output: %s", returnCode, xml));
-                List<String> externalIdStrings = parser.parseStringValuesFromRulesConstrained(xml, rule.getRuleClassname(), rule.getRuleElementSelectorValue());
-                for (String externalIdString : externalIdStrings) {
-                    logger.info(String.format("externalIdString: %s", externalIdString));
+                List<String> artifactStrings = parser.parseStringValuesFromRulesConstrained(xml, rule.getRuleClassname(), rule.getRuleElementSelectorValue());
+                for (String artifactString : artifactStrings) {
+                    logger.info(String.format("artifactString: %s", artifactString));
+                    Optional<Dependency> dependency = bdioGenerator.artifactStringToDependency(artifactString, rule.getArtifactStringSeparatorRegex());
+                    if (dependency.isPresent()) {
+                        logger.info(String.format("Generated dependency: %s", dependency.get().externalId.toString()));
+                    }
                 }
             }
         } catch (Exception e) {

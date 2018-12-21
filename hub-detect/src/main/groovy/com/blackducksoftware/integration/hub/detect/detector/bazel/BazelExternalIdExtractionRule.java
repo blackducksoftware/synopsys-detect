@@ -30,11 +30,14 @@ public class BazelExternalIdExtractionRule {
     private final List<String> bazelQueryCommandArgsIncludingQuery;
     private final String ruleClassname;
     private final String ruleElementSelectorValue;
+    // Example: ":"
+    private final String artifactStringSeparatorRegex;
 
-    public BazelExternalIdExtractionRule(final List<String> bazelQueryCommandArgsIncludingQuery, final String ruleClassname, final String ruleElementSelectorValue) {
+    public BazelExternalIdExtractionRule(final List<String> bazelQueryCommandArgsIncludingQuery, final String ruleClassname, final String ruleElementSelectorValue, final String artifactStringSeparatorRegex) {
         this.bazelQueryCommandArgsIncludingQuery = bazelQueryCommandArgsIncludingQuery;
         this.ruleClassname = ruleClassname;
         this.ruleElementSelectorValue = ruleElementSelectorValue;
+        this.artifactStringSeparatorRegex = artifactStringSeparatorRegex;
     }
 
     public List<String> getBazelQueryCommandArgsIncludingQuery() {
@@ -47,5 +50,9 @@ public class BazelExternalIdExtractionRule {
 
     public String getRuleElementSelectorValue() {
         return ruleElementSelectorValue;
+    }
+
+    public String getArtifactStringSeparatorRegex() {
+        return artifactStringSeparatorRegex;
     }
 }

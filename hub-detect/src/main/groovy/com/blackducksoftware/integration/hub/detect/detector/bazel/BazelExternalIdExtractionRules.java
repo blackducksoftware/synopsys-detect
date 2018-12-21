@@ -32,7 +32,7 @@ public class BazelExternalIdExtractionRules {
 
     public BazelExternalIdExtractionRules() {
         rules = new ArrayList<>();
-        rules.add(new BazelExternalIdExtractionRule(Arrays.asList("query", "kind(.*, //external:*)", "--output", "xml"), "maven_jar", "artifact"));
+        rules.add(new BazelExternalIdExtractionRule(Arrays.asList("query", "kind(.*, //external:*)", "--output", "xml"), "maven_jar", "artifact", ":"));
     }
 
     public List<BazelExternalIdExtractionRule> getRules() {
