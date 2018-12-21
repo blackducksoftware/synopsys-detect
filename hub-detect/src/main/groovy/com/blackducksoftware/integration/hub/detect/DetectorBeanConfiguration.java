@@ -44,7 +44,7 @@ import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelBdioGene
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelDetector;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelQueryXmlOutputParser;
-import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExternalIdExtractionRules;
+import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExternalIdExtractionSimpleRules;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.XPathParser;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeDetector;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeExtractor;
@@ -205,7 +205,7 @@ public class DetectorBeanConfiguration {
     @Bean
     public BazelExtractor bazelExtractor() {
         BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
-        BazelExternalIdExtractionRules rules = new BazelExternalIdExtractionRules();
+        BazelExternalIdExtractionSimpleRules rules = new BazelExternalIdExtractionSimpleRules();
         BazelBdioGenerator bdioGenerator = new BazelBdioGenerator(externalIdFactory);
         return new BazelExtractor(executableRunner, parser, rules, bdioGenerator);
     }

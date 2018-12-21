@@ -25,7 +25,9 @@ package com.blackducksoftware.integration.hub.detect.detector.bazel;
 
 import java.util.List;
 
-public class BazelExternalIdExtractionRule {
+import com.synopsys.integration.util.Stringable;
+
+public class BazelExternalIdExtractionSimpleRule extends Stringable {
     // Everything following "bazel". Example: "query", "kind(.*, //external:*)", "--output", "xml"
     private final List<String> bazelQueryCommandArgsIncludingQuery;
     private final String ruleClassname;
@@ -33,7 +35,7 @@ public class BazelExternalIdExtractionRule {
     // Example: ":"
     private final String artifactStringSeparatorRegex;
 
-    public BazelExternalIdExtractionRule(final List<String> bazelQueryCommandArgsIncludingQuery, final String ruleClassname, final String ruleElementSelectorValue, final String artifactStringSeparatorRegex) {
+    public BazelExternalIdExtractionSimpleRule(final List<String> bazelQueryCommandArgsIncludingQuery, final String ruleClassname, final String ruleElementSelectorValue, final String artifactStringSeparatorRegex) {
         this.bazelQueryCommandArgsIncludingQuery = bazelQueryCommandArgsIncludingQuery;
         this.ruleClassname = ruleClassname;
         this.ruleElementSelectorValue = ruleElementSelectorValue;

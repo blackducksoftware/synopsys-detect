@@ -69,7 +69,6 @@ public class BazelDetector extends Detector {
 
     @Override
     public DetectorResult applicable() {
-        logger.info("*********** Bazel applicable()");
         workspaceFile = fileFinder.findFile(environment.getDirectory(), BAZEL_WORKSPACE_FILENAME);
         workspaceDir = workspaceFile.getParentFile();
         if (workspaceFile == null) {
@@ -80,7 +79,6 @@ public class BazelDetector extends Detector {
 
     @Override
     public DetectorResult extractable() throws DetectorException {
-        logger.info("*********** Bazel extractable()");
         // TODO Should write and use BazelExecutableFinder like Gradle and MavenExecutableFinder
 //        try {
         // TODO: We're only supporting certain languages. OK if workspace contains others? What will happen?

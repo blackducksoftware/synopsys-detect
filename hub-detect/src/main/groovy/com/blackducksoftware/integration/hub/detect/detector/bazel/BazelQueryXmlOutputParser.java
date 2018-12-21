@@ -41,15 +41,7 @@ public class BazelQueryXmlOutputParser {
         this.xPathParser = xPathParser;
     }
 
-    // This method provides a simple interface
-    public List<String> parseStringValuesFromRulesConstrained(final String xml, final String ruleClassName, final String ruleElementSelectorAttrValue) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
-        return parseStringValuesFromRules(xml, ruleClassName, "string", "name", ruleElementSelectorAttrValue, "value");
-    }
-
-    // This method provides more flexibility
-    public List<String> parseStringValuesFromRules(final String xml, final String ruleClassName, final String ruleElementName, final String ruleElementSelectorAttrName, final String ruleElementSelectorAttrValue, final String ruleElementValueAttrName) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
-        String xPathQuery = String.format("/query/rule[@class='%s']/%s[@%s='%s']", ruleClassName, ruleElementName, ruleElementSelectorAttrName, ruleElementSelectorAttrValue);
-        logger.info(String.format("xPathQuery: %s", xPathQuery));
+    public List<String> parseStringValuesWithXPath(final String xml, final String xPathQuery, final String ruleElementValueAttrName) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
         List<String> externalIds = xPathParser.parseAttributeValuesWithGivenXPathQuery(xml, xPathQuery, ruleElementValueAttrName);
         return externalIds;
     }

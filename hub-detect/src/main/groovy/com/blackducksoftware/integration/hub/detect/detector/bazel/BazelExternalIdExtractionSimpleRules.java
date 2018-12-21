@@ -27,15 +27,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BazelExternalIdExtractionRules {
-    private final List<BazelExternalIdExtractionRule> rules;
+public class BazelExternalIdExtractionSimpleRules {
+    private final List<BazelExternalIdExtractionSimpleRule> rules;
 
-    public BazelExternalIdExtractionRules() {
+    public BazelExternalIdExtractionSimpleRules() {
         rules = new ArrayList<>();
-        rules.add(new BazelExternalIdExtractionRule(Arrays.asList("query", "kind(.*, //external:*)", "--output", "xml"), "maven_jar", "artifact", ":"));
+        rules.add(new BazelExternalIdExtractionSimpleRule(Arrays.asList("query", "kind(.*, //external:*)", "--output", "xml"), "maven_jar", "artifact", ":"));
     }
 
-    public List<BazelExternalIdExtractionRule> getRules() {
+    public List<BazelExternalIdExtractionSimpleRule> getRules() {
         return rules;
     }
 }
