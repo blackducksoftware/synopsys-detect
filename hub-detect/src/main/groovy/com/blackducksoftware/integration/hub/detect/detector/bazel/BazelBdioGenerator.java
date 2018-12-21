@@ -40,6 +40,11 @@ public class BazelBdioGenerator {
         this.externalIdFactory = externalIdFactory;
     }
 
+    public Dependency gavToProject(final String group, final String artifact, final String version) {
+        final ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
+        return new Dependency(artifact, version, externalId);
+    }
+
     public Optional<Dependency> artifactStringToDependency(final String artifactString, final String artifactStringSeparatorRegex) {
         try {
             final String[] gavParts = artifactString.split(artifactStringSeparatorRegex);
