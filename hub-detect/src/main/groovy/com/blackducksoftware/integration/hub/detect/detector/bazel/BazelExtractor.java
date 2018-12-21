@@ -24,9 +24,9 @@
 package com.blackducksoftware.integration.hub.detect.detector.bazel;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,27 +53,26 @@ public class BazelExtractor {
     }
 
     public Extraction extract(final File workspaceDir, final int depth, final ExtractionId extractionId) {
-        logger.info("Bazel extract()");
+        logger.debug("Bazel extract()");
         // TODO Should write and use BazelExecutableFinder like Gradle and MavenExecutableFinder
         try {
-            // Convert simple (user-friendly) rules to more flexible XPath rules
-            // TODO stream
-            final List<BazelExternalIdExtractionXPathRule> xPathRules = new ArrayList<>(simpleRules.getRules().size());
-            for (BazelExternalIdExtractionSimpleRule simpleRule : simpleRules.getRules()) {
-                BazelExternalIdExtractionXPathRule xPathRule = new BazelExternalIdExtractionXPathRule(simpleRule);
-                xPathRules.add(xPathRule);
-            }
+            // Convert simple (user-friendly but inflexible) rules to more flexible XPath rules
+            final List<BazelExternalIdExtractionXPathRule> xPathRules =
+                simpleRules.getRules().stream()
+                    .map(simpleRule -> new BazelExternalIdExtractionXPathRule(simpleRule))
+                    .collect(Collectors.toList());
+            // We want the code to process xPathRules in case SimpleRules turn out to be too inflexible
             for (BazelExternalIdExtractionXPathRule xPathRule : xPathRules) {
                 ExecutableOutput bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(workspaceDir, BazelDetector.BAZEL_COMMAND, xPathRule.getBazelQueryCommandArgsIncludingQuery());
                 final int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
                 final String xml = bazelQueryDepsRecursiveOutput.getStandardOutput();
-                logger.info(String.format("Bazel query returned %d; output: %s", returnCode, xml));
+                logger.debug(String.format("Bazel query returned %d; output: %s", returnCode, xml));
                 List<String> artifactStrings = parser.parseStringValuesWithXPath(xml, xPathRule.getxPathQuery(), xPathRule.getRuleElementValueAttrName());
                 for (String artifactString : artifactStrings) {
-                    logger.info(String.format("artifactString: %s", artifactString));
+                    logger.debug(String.format("artifactString: %s", artifactString));
                     Optional<Dependency> dependency = bdioGenerator.artifactStringToDependency(artifactString, xPathRule.getArtifactStringSeparatorRegex());
                     if (dependency.isPresent()) {
-                        logger.info(String.format("Generated dependency: %s", dependency.get().externalId.toString()));
+                        logger.debug(String.format("Generated dependency: %s", dependency.get().externalId.toString()));
                     }
                 }
             }
