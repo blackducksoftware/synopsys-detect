@@ -58,6 +58,7 @@ public class BazelBdioBuilder {
 
     public BazelBdioBuilder addDependency(final BazelExternalId bazelExternalId) {
         try {
+            logger.debug(String.format("Adding dependency from external id: %s", bazelExternalId));
             // TODO: always creating a maven externalId may become too limiting
             final ExternalId externalId = externalIdFactory.createMavenExternalId(bazelExternalId.getGroup(), bazelExternalId.getArtifact(), bazelExternalId.getVersion());
             Dependency artifactDependency = new Dependency(bazelExternalId.getArtifact(), bazelExternalId.getVersion(), externalId);
