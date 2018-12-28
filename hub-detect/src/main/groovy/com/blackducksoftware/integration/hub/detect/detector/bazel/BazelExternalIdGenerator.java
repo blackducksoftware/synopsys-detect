@@ -42,11 +42,14 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class BazelExternalIdGenerator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
+    private final String bazelExe;
     private final BazelQueryXmlOutputParser parser;
     private final File workspaceDir;
 
-    public BazelExternalIdGenerator(final ExecutableRunner executableRunner, final BazelQueryXmlOutputParser parser, final File workspaceDir) {
+    public BazelExternalIdGenerator(final ExecutableRunner executableRunner, final String bazelExe,
+        final BazelQueryXmlOutputParser parser, final File workspaceDir) {
         this.executableRunner = executableRunner;
+        this.bazelExe = bazelExe;
         this.parser = parser;
         this.workspaceDir = workspaceDir;
     }
@@ -55,7 +58,7 @@ public class BazelExternalIdGenerator {
         final List<BazelExternalId> projectExternalIds = new ArrayList<>();
         ExecutableOutput bazelQueryDepsRecursiveOutput = null;
         try {
-            bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(workspaceDir, BazelDetector.BAZEL_COMMAND, xPathRule.getBazelQueryCommandArgsIncludingQuery());
+            bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(workspaceDir, bazelExe, xPathRule.getBazelQueryCommandArgsIncludingQuery());
         } catch (ExecutableRunnerException e) {
             logger.error(String.format("Error executing bazel with args: %s: %s", xPathRule.getBazelQueryCommandArgsIncludingQuery(), e.getMessage()));
             return projectExternalIds;

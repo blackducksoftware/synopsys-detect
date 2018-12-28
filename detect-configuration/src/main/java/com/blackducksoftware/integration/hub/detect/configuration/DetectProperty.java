@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
+import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_BAZEL;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_BITBAKE;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_BLACKDUCK_CONFIGURATION;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_BOMTOOL;
@@ -533,6 +534,10 @@ public enum DetectProperty {
     @HelpDescription("The names of the module to include")
     DETECT_MAVEN_INCLUDED_MODULES("detect.maven.included.modules", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
+    @HelpGroup(primary = GROUP_BAZEL)
+    @HelpDescription("The path of the Bazel executable")
+    DETECT_BAZEL_PATH("detect.bazel.path", "5.1.0", PropertyType.STRING, PropertyAuthority.None),
+
     @Deprecated
     @DetectDeprecation(description = "In the future, detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_NUGET)
@@ -953,6 +958,7 @@ public enum DetectProperty {
         public static final String GROUP_SIGNATURE_SCANNER = "signature scanner";
         public static final String GROUP_YARN = "yarn";
         public static final String GROUP_POLARIS = "polaris";
+        public static final String GROUP_BAZEL = "bazel";
 
         @Deprecated
         public static final String SEARCH_GROUP_HUB = "hub";

@@ -43,7 +43,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileN
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class BazelDetector extends Detector {
-    public static final String BAZEL_COMMAND = "bazel";
     public static final String BAZEL_QUERY_SUBCOMMAND = "query";
     // This query will succeed only within a workspace (top level, or nested dir)
     private static final String BAZEL_QUERY_SPEC_WORKSPACE_TEST = "kind(rule, //...:*)";
@@ -59,12 +58,16 @@ public class BazelDetector extends Detector {
     private File workspaceDir;
     private final DetectFileFinder fileFinder;
     private final ExecutableRunner executableRunner;
+    private final BazelExecutableFinder bazelExecutableFinder;
+    private String bazelExe;
 
-    public BazelDetector(final DetectorEnvironment environment, final ExecutableRunner executableRunner, final DetectFileFinder fileFinder, final BazelExtractor bazelExtractor) {
+    public BazelDetector(final DetectorEnvironment environment, final ExecutableRunner executableRunner, final DetectFileFinder fileFinder, final BazelExtractor bazelExtractor,
+        BazelExecutableFinder bazelExecutableFinder) {
         super(environment, "Bazel", DetectorType.BAZEL);
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;
         this.bazelExtractor = bazelExtractor;
+        this.bazelExecutableFinder = bazelExecutableFinder;
     }
 
     @Override
@@ -79,12 +82,13 @@ public class BazelDetector extends Detector {
 
     @Override
     public DetectorResult extractable() throws DetectorException {
-        // TODO Should write and use BazelExecutableFinder like Gradle and MavenExecutableFinder
+        bazelExe = bazelExecutableFinder.findBazel(environment);
+        // TODO figure out this try/catch
 //        try {
         // TODO: We're only supporting certain languages. OK if workspace contains others? What will happen?
         final ExecutableOutput bazelQueryDepsRecursiveOutput;
         try {
-            bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(workspaceDir, BAZEL_COMMAND, BAZEL_QUERY_SUBCOMMAND, BAZEL_QUERY_SPEC_WORKSPACE_TEST);
+            bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(workspaceDir, bazelExe, BAZEL_QUERY_SUBCOMMAND, BAZEL_QUERY_SPEC_WORKSPACE_TEST);
             int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
             logger.info(String.format("Bazel query returned %d; output: %s", returnCode, bazelQueryDepsRecursiveOutput.getStandardOutput()));
         } catch (ExecutableRunnerException e) {
@@ -100,6 +104,6 @@ public class BazelDetector extends Detector {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return bazelExtractor.extract(environment.getDirectory(), environment.getDepth(), extractionId);
+        return bazelExtractor.extract(bazelExe, environment.getDirectory(), environment.getDepth(), extractionId);
     }
 }

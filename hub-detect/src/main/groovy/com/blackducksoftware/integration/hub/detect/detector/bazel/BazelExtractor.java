@@ -43,19 +43,19 @@ public class BazelExtractor {
     private final BazelExternalIdExtractionSimpleRules simpleRules;
     private final BazelBdioBuilder bdioGenerator;
 
-    public BazelExtractor(final ExecutableRunner executableRunner, BazelQueryXmlOutputParser parser, final BazelExternalIdExtractionSimpleRules simpleRules, final BazelBdioBuilder bdioGenerator) {
+    public BazelExtractor(final ExecutableRunner executableRunner, BazelQueryXmlOutputParser parser, final BazelExternalIdExtractionSimpleRules simpleRules,
+        final BazelBdioBuilder bdioGenerator) {
         this.executableRunner = executableRunner;
         this.parser = parser;
         this.simpleRules = simpleRules;
         this.bdioGenerator = bdioGenerator;
     }
 
-    public Extraction extract(final File workspaceDir, final int depth, final ExtractionId extractionId) {
+    public Extraction extract(final String bazelExe, final File workspaceDir, final int depth, final ExtractionId extractionId) {
         logger.debug("Bazel extract()");
-        // TODO Should write and use BazelExecutableFinder like Gradle and MavenExecutableFinder
         try {
             bdioGenerator.setWorkspaceDir(workspaceDir);
-            BazelExternalIdGenerator generator = new BazelExternalIdGenerator(executableRunner, parser, workspaceDir);
+            BazelExternalIdGenerator generator = new BazelExternalIdGenerator(executableRunner, bazelExe, parser, workspaceDir);
             simpleRules.getRules().stream()
                 .map(BazelExternalIdExtractionXPathRule::new)
                 .map(generator::generate)

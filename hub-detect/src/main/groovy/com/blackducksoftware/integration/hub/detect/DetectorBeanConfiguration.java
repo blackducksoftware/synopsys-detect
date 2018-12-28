@@ -42,9 +42,10 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment
 import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelBdioBuilder;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelDetector;
+import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExternalIdExtractionSimpleRules;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelQueryXmlOutputParser;
-import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExternalIdExtractionSimpleRules;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.XPathParser;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeDetector;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeExtractor;
@@ -334,6 +335,11 @@ public class DetectorBeanConfiguration {
     }
 
     @Bean
+    public BazelExecutableFinder bazelExecutableFinder() {
+        return new BazelExecutableFinder(executableFinder, detectConfiguration);
+    }
+
+    @Bean
     public NpmCliParser npmCliDependencyFinder() {
         return new NpmCliParser(externalIdFactory);
     }
@@ -471,7 +477,7 @@ public class DetectorBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public BazelDetector bazelDetector(final DetectorEnvironment environment) {
-        return new BazelDetector(environment, executableRunner, detectFileFinder, bazelExtractor());
+        return new BazelDetector(environment, executableRunner, detectFileFinder, bazelExtractor(), bazelExecutableFinder());
     }
 
     @Bean
