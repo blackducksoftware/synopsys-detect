@@ -49,8 +49,6 @@ public class BazelBdioBuilder {
         dependencyGraph = new MutableMapDependencyGraph();
     }
 
-    // TODO seriously rethink this class
-
     public BazelBdioBuilder setWorkspaceDir(final File workspaceDir) {
         this.workspaceDir = workspaceDir;
         return this;

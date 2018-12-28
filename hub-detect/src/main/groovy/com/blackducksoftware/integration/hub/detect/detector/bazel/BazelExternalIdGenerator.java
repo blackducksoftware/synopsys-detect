@@ -54,6 +54,7 @@ public class BazelExternalIdGenerator {
         this.workspaceDir = workspaceDir;
     }
 
+    // TODO This method is swallowing exceptions
     public List<BazelExternalId> generate(BazelExternalIdExtractionXPathRule xPathRule) {
         final List<BazelExternalId> projectExternalIds = new ArrayList<>();
         ExecutableOutput bazelQueryDepsRecursiveOutput = null;

@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.detector.bazel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class BazelExternalIdExtractionSimpleRules {
@@ -35,7 +36,7 @@ public class BazelExternalIdExtractionSimpleRules {
         rules.add(new BazelExternalIdExtractionSimpleRule(Arrays.asList("query", "kind(.*, //external:*)", "--output", "xml"), "maven_jar", "artifact", ":"));
     }
 
-    public List<BazelExternalIdExtractionSimpleRule> getRules() {
+    public Collection<BazelExternalIdExtractionSimpleRule> getRules() {
         return rules;
     }
 }
