@@ -58,7 +58,7 @@ public class BazelExternalIdExtractionXPathRule extends Stringable {
         return bazelQueryCommandArgsIncludingQuery;
     }
 
-    public String getxPathQuery() {
+    public String getXPathQuery() {
         return xPathQuery;
     }
 

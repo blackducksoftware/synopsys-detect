@@ -61,7 +61,7 @@ public class BazelDetector extends Detector {
     private final ExecutableRunner executableRunner;
 
     public BazelDetector(final DetectorEnvironment environment, final ExecutableRunner executableRunner, final DetectFileFinder fileFinder, final BazelExtractor bazelExtractor) {
-        super(environment, "Clang", DetectorType.BAZEL);
+        super(environment, "Bazel", DetectorType.BAZEL);
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;
         this.bazelExtractor = bazelExtractor;

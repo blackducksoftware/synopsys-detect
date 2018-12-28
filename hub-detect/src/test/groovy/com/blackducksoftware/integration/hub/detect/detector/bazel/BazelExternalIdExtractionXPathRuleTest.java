@@ -17,7 +17,7 @@ public class BazelExternalIdExtractionXPathRuleTest {
         BazelExternalIdExtractionXPathRule xPathRule = new BazelExternalIdExtractionXPathRule(simpleRule);
         assertEquals(1, xPathRule.getBazelQueryCommandArgsIncludingQuery().size());
         assertEquals("not used by this test", xPathRule.getBazelQueryCommandArgsIncludingQuery().get(0));
-        assertEquals("/query/rule[@class='test_class']/string[@name='testRuleElementSelectorValue']", xPathRule.getxPathQuery());
+        assertEquals("/query/rule[@class='test_class']/string[@name='testRuleElementSelectorValue']", xPathRule.getXPathQuery());
         assertEquals("value", xPathRule.getRuleElementValueAttrName());
         assertEquals("testArtifactStringSeparatorRegex", xPathRule.getArtifactStringSeparatorRegex());
     }
