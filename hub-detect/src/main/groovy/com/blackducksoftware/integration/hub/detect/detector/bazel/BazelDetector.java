@@ -39,6 +39,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
@@ -83,24 +84,17 @@ public class BazelDetector extends Detector {
     @Override
     public DetectorResult extractable() throws DetectorException {
         bazelExe = bazelExecutableFinder.findBazel(environment);
-        // TODO figure out this try/catch
-//        try {
-        // TODO: We're only supporting certain languages. OK if workspace contains others? What will happen?
         final ExecutableOutput bazelQueryDepsRecursiveOutput;
         try {
             bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(workspaceDir, bazelExe, BAZEL_QUERY_SUBCOMMAND, BAZEL_QUERY_SPEC_WORKSPACE_TEST);
             int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
-            logger.info(String.format("Bazel query returned %d; output: %s", returnCode, bazelQueryDepsRecursiveOutput.getStandardOutput()));
+            logger.trace(String.format("Bazel query returned %d; output: %s", returnCode, bazelQueryDepsRecursiveOutput.getStandardOutput()));
         } catch (ExecutableRunnerException e) {
-            logger.info(String.format("Bazel query threw exception: %s", e.getMessage()));
+            logger.debug(String.format("Bazel query threw exception: %s", e.getMessage()));
+            return new ExecutableNotFoundDetectorResult("bazel");
         }
-
-//        } catch (final IntegrationException e) {
-//            return new ExecutableNotFoundDetectorResult("bazel");
-//        }
         return new PassedDetectorResult();
     }
-
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {

@@ -39,7 +39,6 @@ public class BazelExecutableFinder {
     private final ExecutableFinder executableFinder;
     private final DetectConfiguration detectConfiguration;
 
-    private String systemBazel = null;
     private boolean hasLookedForSystemBazel = false;
 
     public BazelExecutableFinder(final ExecutableFinder executableFinder, final DetectConfiguration detectConfiguration) {

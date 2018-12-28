@@ -55,18 +55,21 @@ public class BazelExtractor {
         logger.debug("Bazel extract()");
         try {
             bdioGenerator.setWorkspaceDir(workspaceDir);
-            BazelExternalIdGenerator generator = new BazelExternalIdGenerator(executableRunner, bazelExe, parser, workspaceDir);
+            BazelExternalIdGenerator externalIdGenerator = new BazelExternalIdGenerator(executableRunner, bazelExe, parser, workspaceDir);
             simpleRules.getRules().stream()
                 .map(BazelExternalIdExtractionXPathRule::new)
-                .map(generator::generate)
+                .map(externalIdGenerator::generate)
                 .flatMap(Collection::stream)
                 .forEach(bdioGenerator::addDependency);
+            if (externalIdGenerator.isErrors()) {
+                return new Extraction.Builder().failure(externalIdGenerator.getErrorMessage()).build();
+            }
             final List<DetectCodeLocation> codeLocations = bdioGenerator.build();
             final Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
             return builder.build();
         } catch (Exception e) {
-            final String msg = String.format("Bazel query threw exception: %s", e.getMessage());
-            logger.error(msg, e);
+            final String msg = String.format("Bazel processing exception: %s", e.getMessage());
+            logger.debug(msg, e);
             return new Extraction.Builder().failure(msg).build();
         }
     }

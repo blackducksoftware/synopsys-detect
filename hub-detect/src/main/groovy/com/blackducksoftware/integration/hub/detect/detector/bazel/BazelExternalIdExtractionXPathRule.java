@@ -49,7 +49,7 @@ public class BazelExternalIdExtractionXPathRule extends Stringable {
     public BazelExternalIdExtractionXPathRule(final BazelExternalIdExtractionSimpleRule simpleRule) {
         this.bazelQueryCommandArgsIncludingQuery = simpleRule.getBazelQueryCommandArgsIncludingQuery();
         this.xPathQuery = String.format("/query/rule[@class='%s']/%s[@%s='%s']", simpleRule.getRuleClassname(), "string", "name", simpleRule.getRuleElementSelectorValue());
-        logger.info(String.format("Generated xPathQuery: %s", xPathQuery));
+        logger.debug(String.format("Generated xPathQuery: %s", xPathQuery));
         this.ruleElementValueAttrName = "value";
         this.artifactStringSeparatorRegex = simpleRule.getArtifactStringSeparatorRegex();
     }

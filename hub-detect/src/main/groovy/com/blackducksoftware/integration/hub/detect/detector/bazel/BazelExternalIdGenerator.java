@@ -26,7 +26,9 @@ package com.blackducksoftware.integration.hub.detect.detector.bazel;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
@@ -45,6 +47,7 @@ public class BazelExternalIdGenerator {
     private final String bazelExe;
     private final BazelQueryXmlOutputParser parser;
     private final File workspaceDir;
+    private final Map<BazelExternalIdExtractionXPathRule, Exception> exceptionsGenerated = new HashMap<>();
 
     public BazelExternalIdGenerator(final ExecutableRunner executableRunner, final String bazelExe,
         final BazelQueryXmlOutputParser parser, final File workspaceDir) {
@@ -54,29 +57,48 @@ public class BazelExternalIdGenerator {
         this.workspaceDir = workspaceDir;
     }
 
-    // TODO This method is swallowing exceptions
     public List<BazelExternalId> generate(BazelExternalIdExtractionXPathRule xPathRule) {
         final List<BazelExternalId> projectExternalIds = new ArrayList<>();
-        ExecutableOutput bazelQueryDepsRecursiveOutput = null;
+        ExecutableOutput bazelQueryOutput = null;
         try {
-            bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(workspaceDir, bazelExe, xPathRule.getBazelQueryCommandArgsIncludingQuery());
+            bazelQueryOutput = executableRunner.executeQuietly(workspaceDir, bazelExe, xPathRule.getBazelQueryCommandArgsIncludingQuery());
         } catch (ExecutableRunnerException e) {
             logger.error(String.format("Error executing bazel with args: %s: %s", xPathRule.getBazelQueryCommandArgsIncludingQuery(), e.getMessage()));
+            exceptionsGenerated.put(xPathRule, e);
             return projectExternalIds;
         }
-        final int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
-        final String xml = bazelQueryDepsRecursiveOutput.getStandardOutput();
-        logger.debug(String.format("Bazel query returned %d; output: %s", returnCode, xml));
+        final int returnCode = bazelQueryOutput.getReturnCode();
+        final String xml = bazelQueryOutput.getStandardOutput();
+        logger.trace(String.format("Bazel query returned %d; output: %s", returnCode, xml));
         final List<String> ruleArtifactStrings;
         try {
             ruleArtifactStrings = parser.parseStringValuesWithXPath(xml, xPathRule.getXPathQuery(), xPathRule.getRuleElementValueAttrName());
         } catch (IOException | SAXException | ParserConfigurationException | XPathExpressionException e) {
             logger.error(String.format("Error parsing bazel query output with: %s: %s", xPathRule.getXPathQuery(), e.getMessage()));
+            exceptionsGenerated.put(xPathRule, e);
             return projectExternalIds;
         }
         for (String artifactString : ruleArtifactStrings) {
             projectExternalIds.add(BazelExternalId.fromBazelArtifactString(artifactString, xPathRule.getArtifactStringSeparatorRegex()));
         }
         return projectExternalIds;
+    }
+
+    public boolean isErrors() {
+        if (exceptionsGenerated.keySet().size() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public String getErrorMessage() {
+        if (!isErrors()) {
+            return "No errors";
+        }
+        final StringBuilder sb = new StringBuilder("Errors encountered generating external IDs: ");
+        for (BazelExternalIdExtractionXPathRule rule : exceptionsGenerated.keySet()) {
+            sb.append(String.format("%s: %s; ", rule, exceptionsGenerated.get(rule).getMessage()));
+        }
+        return sb.toString();
     }
 }
