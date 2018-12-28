@@ -58,9 +58,9 @@ public class BazelExtractor {
             BazelExternalIdGenerator generator = new BazelExternalIdGenerator(executableRunner, parser, workspaceDir);
             simpleRules.getRules().stream()
                 .map(BazelExternalIdExtractionXPathRule::new)
-                .map(r -> generator.generate(r))
+                .map(generator::generate)
                 .flatMap(Collection::stream)
-                .forEach(i -> bdioGenerator.addDependency(i));
+                .forEach(bdioGenerator::addDependency);
             final List<DetectCodeLocation> codeLocations = bdioGenerator.build();
             final Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
             return builder.build();
