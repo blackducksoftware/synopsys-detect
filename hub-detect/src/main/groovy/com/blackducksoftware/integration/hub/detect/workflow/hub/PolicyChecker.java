@@ -54,8 +54,12 @@ public class PolicyChecker {
      * For the given DetectProject, find the matching Hub project/version, then all of its code locations, then all of their scan summaries, wait until they are all complete, then get the policy status.
      * @throws IntegrationException
      */
-    public PolicyStatusDescription getPolicyStatus(final ProjectService projectService, final ProjectVersionView version) throws IntegrationException {
+    public Optional<PolicyStatusDescription> getPolicyStatus(final ProjectService projectService, final ProjectVersionView version) throws IntegrationException {
         final Optional<VersionBomPolicyStatusView> versionBomPolicyStatusView = projectService.getPolicyStatusForVersion(version);
+        if (!versionBomPolicyStatusView.isPresent()) {
+            return Optional.empty();
+        }
+
         final PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView.get());
 
         PolicySummaryStatusType statusEnum = PolicySummaryStatusType.NOT_IN_VIOLATION;
@@ -65,7 +69,7 @@ public class PolicyChecker {
             statusEnum = PolicySummaryStatusType.IN_VIOLATION_OVERRIDDEN;
         }
         logger.info(String.format("Policy Status: %s", statusEnum.name()));
-        return policyStatusDescription;
+        return Optional.of(policyStatusDescription);
     }
 
     public boolean policyViolated(final PolicyStatusDescription policyStatusDescription) {
