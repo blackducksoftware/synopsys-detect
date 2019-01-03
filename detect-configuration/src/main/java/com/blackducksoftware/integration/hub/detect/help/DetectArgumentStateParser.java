@@ -42,13 +42,13 @@ public class DetectArgumentStateParser {
         final boolean isDiagnosticExtendedProvided = parser.isArgumentPresent("-de", "--diagnosticExtended");
 
         boolean isDiagnostic = false;
-        boolean isDiagnosticProtected = true;
+        boolean isDiagnosticExtended = false;
 
         if (isDiagnosticProvided || isDiagnosticExtendedProvided) {
             isDiagnostic = true;
         }
         if (isDiagnosticExtendedProvided) {
-            isDiagnosticProtected = false;
+            isDiagnosticExtended = true;
         }
 
         String parsedValue = null;
@@ -56,7 +56,7 @@ public class DetectArgumentStateParser {
             parsedValue = parser.findValueForCommand("-h", "--help");
         }
 
-        return new DetectArgumentState(isHelp, isHelpHtmlDocument, isHelpJsonDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue, isDiagnostic, isDiagnosticProtected);
+        return new DetectArgumentState(isHelp, isHelpHtmlDocument, isHelpJsonDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue, isDiagnostic, isDiagnosticExtended);
     }
 
 }

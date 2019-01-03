@@ -21,31 +21,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
+package com.blackducksoftware.integration.hub.detect.workflow.report.writer;
 
-import java.util.Optional;
+import com.blackducksoftware.integration.hub.detect.workflow.report.util.ReportConstants;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public abstract class LogReportWriter implements ReportWriter {
+    @Override
+    public abstract void writeLine(final String line);
 
-public class DiagnosticManager {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private Optional<DiagnosticSystem> diagnosticSystem;
-
-    private DiagnosticManager(final Optional<DiagnosticSystem> diagnosticSystem) {
-        this.diagnosticSystem = diagnosticSystem;
+    @Override
+    public void writeSeperator() {
+        writeLine(ReportConstants.SEPERATOR);
     }
 
-    public static DiagnosticManager createWithoutDiagnostics() {
-        return new DiagnosticManager(Optional.empty());
+    @Override
+    public void writeLine() {
+        writeLine("");
     }
 
-    public static DiagnosticManager createWithDiagnostics(DiagnosticSystem diagnosticSystem) {
-        return new DiagnosticManager(Optional.of(diagnosticSystem));
+    @Override
+    public void writeHeader() {
+        writeLine(ReportConstants.HEADING);
     }
 
-    public Optional<DiagnosticSystem> getDiagnosticSystem() {
-        return diagnosticSystem;
+    @Override
+    public void finish() {
+        // Nothing to clean up
     }
+
 }

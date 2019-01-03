@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.report;
+package com.blackducksoftware.integration.hub.detect.workflow.report.util;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.ReportWriter;
 
 public class ObjectPrinter {
     public static void printObject(final ReportWriter writer, final String prefix, final Object guy) {

@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.report;
+package com.blackducksoftware.integration.hub.detect.workflow.report.writer;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.workflow.report.util.ReportConstants;
 
 public class FileReportWriter implements ReportWriter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

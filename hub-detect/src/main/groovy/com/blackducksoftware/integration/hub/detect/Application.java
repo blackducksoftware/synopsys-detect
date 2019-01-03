@@ -109,7 +109,7 @@ public class Application implements ApplicationRunner {
             logger.info("Detect will attempt to run.");
             RunManager runManager = new RunManager(detectContext);
             try {
-                logger.info("Detect run begin.");
+                logger.info("Detect run begin: " + detectRun.getRunId());
                 runResult = Optional.ofNullable(runManager.run());
                 logger.info("Detect run completed.");
             } catch (final Exception e) {

@@ -54,13 +54,13 @@ public class BomToolTimekeeper {
         getStopWatch(detector).stop();
     }
 
-    public List<BomToolTime> getTimings() {
-        final List<BomToolTime> bomToolTimings = new ArrayList<>();
+    public List<DetectorTime> getTimings() {
+        final List<DetectorTime> bomToolTimings = new ArrayList<>();
         for (final Detector detector : bomToolMap.keySet()) {
             final StopWatch sw = bomToolMap.get(detector);
             final long ms = sw.getTime();
-            final BomToolTime bomToolTime = new BomToolTime(detector, ms);
-            bomToolTimings.add(bomToolTime);
+            final DetectorTime detectorTime = new DetectorTime(detector, ms);
+            bomToolTimings.add(detectorTime);
         }
         return bomToolTimings;
     }

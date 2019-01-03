@@ -24,28 +24,23 @@
 package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.workflow.report.util.ReporterUtils;
+import com.blackducksoftware.integration.hub.detect.DetectInfo;
+import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.workflow.report.writer.ReportWriter;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
-public class SearchSummaryReporter {
-
-    public void print(ReportWriter writer, final List<DetectorEvaluation> results) {
-        final SearchSummarizer searchSummarizer = new SearchSummarizer();
-        final List<SearchSummaryData> summaryData = searchSummarizer.summarize(results);
-
-        printDirectoriesInfo(writer, summaryData);
+public class ConfigurationReporter {
+    public void writeReport(final ReportWriter writer, DetectInfo detectInfo, final List<DetectOption> detectOptions) {
+        writer.writeSeperator();
+        writer.writeLine("Detect Info");
+        writer.writeSeperator();
+        writer.writeLine("Detect Version: " + detectInfo.getDetectVersion());
+        writer.writeLine("Operating System: " + detectInfo.getCurrentOs());
+        writer.writeSeperator();
+        writer.writeLine("Detect Configuration");
+        writer.writeSeperator();
+        DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
+        detectConfigurationReporter.print(writer, detectOptions);
+        writer.writeSeperator();
     }
-
-    private void printDirectoriesInfo(ReportWriter writer, final List<SearchSummaryData> summaryData) {
-        ReporterUtils.printHeader(writer, "Search results");
-        for (final SearchSummaryData data : summaryData) {
-            writer.writeLine(data.getDirectory());
-            writer.writeLine("\tAPPLIES: " + data.getApplicable().stream().map(it -> it.getDescriptiveName()).sorted().collect(Collectors.joining(", ")));
-        }
-        ReporterUtils.printFooter(writer);
-    }
-
 }

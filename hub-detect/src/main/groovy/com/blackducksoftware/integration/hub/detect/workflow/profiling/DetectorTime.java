@@ -21,31 +21,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
+package com.blackducksoftware.integration.hub.detect.workflow.profiling;
 
-import java.util.Optional;
+import com.blackducksoftware.integration.hub.detect.detector.Detector;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class DetectorTime {
+    private final long ms;
+    private final Detector detector;
 
-public class DiagnosticManager {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private Optional<DiagnosticSystem> diagnosticSystem;
-
-    private DiagnosticManager(final Optional<DiagnosticSystem> diagnosticSystem) {
-        this.diagnosticSystem = diagnosticSystem;
+    public DetectorTime(final Detector detector, final long ms) {
+        this.ms = ms;
+        this.detector = detector;
     }
 
-    public static DiagnosticManager createWithoutDiagnostics() {
-        return new DiagnosticManager(Optional.empty());
+    public long getMs() {
+        return ms;
     }
 
-    public static DiagnosticManager createWithDiagnostics(DiagnosticSystem diagnosticSystem) {
-        return new DiagnosticManager(Optional.of(diagnosticSystem));
-    }
-
-    public Optional<DiagnosticSystem> getDiagnosticSystem() {
-        return diagnosticSystem;
+    public Detector getDetector() {
+        return detector;
     }
 }

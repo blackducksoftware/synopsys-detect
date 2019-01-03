@@ -25,6 +25,8 @@ package com.blackducksoftware.integration.hub.detect.workflow.report;
 
 import java.util.List;
 
+import com.blackducksoftware.integration.hub.detect.workflow.report.util.ReporterUtils;
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.ReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class ErrorSummaryReporter {

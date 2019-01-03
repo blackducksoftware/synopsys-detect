@@ -21,24 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.profiling;
+package com.blackducksoftware.integration.hub.detect.workflow.report.writer;
 
-import com.blackducksoftware.integration.hub.detect.detector.Detector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class BomToolTime {
-    private final long ms;
-    private final Detector detector;
+public class TraceLogReportWriter extends LogReportWriter {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public BomToolTime(final Detector detector, final long ms) {
-        this.ms = ms;
-        this.detector = detector;
-    }
-
-    public long getMs() {
-        return ms;
-    }
-
-    public Detector getDetector() {
-        return detector;
+    @Override
+    public void writeLine(final String line) {
+        logger.trace(line);
     }
 }

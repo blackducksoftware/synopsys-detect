@@ -21,19 +21,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.report;
+package com.blackducksoftware.integration.hub.detect.workflow.report.writer;
 
-public class ReporterUtils {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    public static void printHeader(ReportWriter writer, String title) {
-        writer.writeLine();
-        writer.writeHeader();
-        writer.writeLine(title);
-        writer.writeHeader();
-    }
+public class DebugLogReportWriter extends LogReportWriter {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public static void printFooter(ReportWriter writer) {
-        writer.writeLine(ReportConstants.HEADING);
-        writer.writeLine();
+    @Override
+    public void writeLine(final String line) {
+        logger.debug(line);
     }
 }
+

@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.report.util.ReporterUtils;
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.ReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class ExtractionSummaryReporter {

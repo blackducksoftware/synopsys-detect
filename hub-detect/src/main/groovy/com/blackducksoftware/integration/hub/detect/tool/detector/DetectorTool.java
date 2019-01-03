@@ -69,7 +69,7 @@ public class DetectorTool {
         logger.info("Running detectors.");
         DetectorToolResult detectorToolResult = detectorManager.runDetectors();
         logger.info("Finished running detectors.");
-        eventSystem.publishEvent(Event.BomToolsComplete, detectorToolResult);
+        eventSystem.publishEvent(Event.DetectorsComplete, detectorToolResult);
 
         logger.info("Evaluating detectors for project info.");
 

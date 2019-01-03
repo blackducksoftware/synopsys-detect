@@ -46,7 +46,7 @@ public class BomToolProfiler {
         eventSystem.registerListener(Event.ExtractableEnded, event -> extractableEnded(event));
         eventSystem.registerListener(Event.ExtractionStarted, event -> extractionStarted(event.getDetector()));
         eventSystem.registerListener(Event.ExtractionEnded, event -> extractionEnded(event.getDetector()));
-        eventSystem.registerListener(Event.BomToolsComplete, event -> bomToolsComplete());
+        eventSystem.registerListener(Event.DetectorsComplete, event -> bomToolsComplete());
     }
 
     private void applicableStarted(final Detector detector) {
@@ -73,22 +73,21 @@ public class BomToolProfiler {
         extractionTimekeeper.ended(detector);
     }
 
-    public List<BomToolTime> getApplicableTimings() {
+    public List<DetectorTime> getApplicableTimings() {
         return applicableTimekeeper.getTimings();
     }
 
-    public List<BomToolTime> getExtractableTimings() {
+    public List<DetectorTime> getExtractableTimings() {
         return extractableTimekeeper.getTimings();
     }
 
-    public List<BomToolTime> getExtractionTimings() {
+    public List<DetectorTime> getExtractionTimings() {
         return extractionTimekeeper.getTimings();
     }
 
     public void bomToolsComplete() {
-        BomToolAggregateTimings timings = new BomToolAggregateTimings();
-        timings.bomToolTimings = getAggregateBomToolGroupTimes();
-        eventSystem.publishEvent(Event.BomToolsProfiled, timings);
+        DetectorTimings timings = new DetectorTimings(getAggregateBomToolGroupTimes(), getApplicableTimings(), getExtractableTimings(), getExtractionTimings());
+        eventSystem.publishEvent(Event.DetectorsProfiled, timings);
     }
 
     public Map<DetectorType, Long> getAggregateBomToolGroupTimes() {
@@ -98,13 +97,13 @@ public class BomToolProfiler {
         return aggregate;
     }
 
-    private void addAggregateByBomToolGroupType(final Map<DetectorType, Long> aggregate, final List<BomToolTime> bomToolTimes) {
-        for (final BomToolTime bomToolTime : bomToolTimes) {
-            final DetectorType type = bomToolTime.getDetector().getDetectorType();
+    private void addAggregateByBomToolGroupType(final Map<DetectorType, Long> aggregate, final List<DetectorTime> detectorTimes) {
+        for (final DetectorTime detectorTime : detectorTimes) {
+            final DetectorType type = detectorTime.getDetector().getDetectorType();
             if (!aggregate.containsKey(type)) {
                 aggregate.put(type, 0L);
             }
-            final long time = bomToolTime.getMs();
+            final long time = detectorTime.getMs();
             final Long currentTime = aggregate.get(type);
             final Long sum = time + currentTime;
             aggregate.put(type, sum);

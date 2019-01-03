@@ -31,7 +31,7 @@ import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorToolRe
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationResult;
-import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolAggregateTimings;
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.DetectorTimings;
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
@@ -40,8 +40,8 @@ public class Event {
     public static EventType<SearchResult> SearchCompleted = new EventType(SearchResult.class);
     public static EventType<PreparationResult> PreparationsCompleted = new EventType(PreparationResult.class);
     public static EventType<ExtractionResult> ExtractionsCompleted = new EventType(ExtractionResult.class);
-    public static EventType<DetectorToolResult> BomToolsComplete = new EventType(DetectorToolResult.class);
-    public static EventType<BomToolAggregateTimings> BomToolsProfiled = new EventType(BomToolAggregateTimings.class);
+    public static EventType<DetectorToolResult> DetectorsComplete = new EventType(DetectorToolResult.class);
+    public static EventType<DetectorTimings> DetectorsProfiled = new EventType(DetectorTimings.class);
     public static EventType<Detector> ApplicableStarted = new EventType(Detector.class);
     public static EventType<Detector> ApplicableEnded = new EventType(Detector.class);
     public static EventType<Detector> ExtractableStarted = new EventType(Detector.class);
