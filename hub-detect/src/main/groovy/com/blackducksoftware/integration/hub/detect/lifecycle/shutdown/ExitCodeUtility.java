@@ -51,10 +51,14 @@ public class ExitCodeUtility {
             logger.error(BLACDUCK_ERROR_MESSAGE);
             logger.debug(e.getMessage(), e);
 
-            IntegrationRestException re = (IntegrationRestException) e;
-            Gson gson = new Gson();
-            JsonObject jsonData = gson.fromJson(re.getHttpResponseContent(), JsonObject.class);
-
+            JsonObject jsonData = null;
+            try {
+                IntegrationRestException re = (IntegrationRestException) e;
+                Gson gson = new Gson();
+                JsonObject jsonData = gson.fromJson(re.getHttpResponseContent(), JsonObject.class);
+            } catch (Exception e){
+                logger.trace("Unable to parse the json embedded in the exception details.", e);
+            }
             if (jsonData != null && jsonData.has(ERROR_MESSAGE_STRING_LITERAL_WRAPPER_MEMBER_NAME_VARIABLE)) {
                 String message = jsonData.getAsJsonPrimitive(ERROR_MESSAGE_STRING_LITERAL_WRAPPER_MEMBER_NAME_VARIABLE).getAsString();
                 logger.error(message);
