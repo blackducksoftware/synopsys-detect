@@ -55,9 +55,9 @@ public class ExitCodeUtility {
             try {
                 IntegrationRestException re = (IntegrationRestException) e;
                 Gson gson = new Gson();
-                JsonObject jsonData = gson.fromJson(re.getHttpResponseContent(), JsonObject.class);
-            } catch (Exception e){
-                logger.trace("Unable to parse the json embedded in the exception details.", e);
+                jsonData = gson.fromJson(re.getHttpResponseContent(), JsonObject.class);
+            } catch (Exception parseException){
+                logger.trace("Unable to parse the json embedded in the exception details.", parseException);
             }
             if (jsonData != null && jsonData.has(ERROR_MESSAGE_STRING_LITERAL_WRAPPER_MEMBER_NAME_VARIABLE)) {
                 String message = jsonData.getAsJsonPrimitive(ERROR_MESSAGE_STRING_LITERAL_WRAPPER_MEMBER_NAME_VARIABLE).getAsString();
