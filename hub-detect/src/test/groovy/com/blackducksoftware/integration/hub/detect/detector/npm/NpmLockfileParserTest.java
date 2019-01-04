@@ -1,5 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.detector.npm;
 
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +25,7 @@ public class NpmLockfileParserTest {
     }
 
     @Test
-    public void parseLockFileTest() {
+    public void parseLockFileWithRecreatedJsonTest() {
         final String lockFileText = testUtil.getResourceAsUTF8String("/npm/package-lock.json");
 
         final NpmParseResult result = npmLockfileParser.parse("source", recreatePackageJsonFromLock(lockFileText), lockFileText, true);
@@ -33,20 +35,42 @@ public class NpmLockfileParserTest {
         DependencyGraphResourceTestUtil.assertGraph("/npm/packageLockExpected_graph.json", result.codeLocation.getDependencyGraph());
     }
 
-    private String recreatePackageJsonFromLock(String lockFileText) {
+    @Test
+    public void parseLockFileTest() {
+        final String lockFileText = testUtil.getResourceAsUTF8String("/npm/package-lock.json");
+
+        final NpmParseResult result = npmLockfileParser.parse("source", Optional.empty(), lockFileText, true);
+
+        Assert.assertEquals(result.projectName, "knockout-tournament");
+        Assert.assertEquals(result.projectVersion, "1.0.0");
+        DependencyGraphResourceTestUtil.assertGraph("/npm/packageLockExpected_graph.json", result.codeLocation.getDependencyGraph());
+    }
+
+    private Optional<String> recreatePackageJsonFromLock(String lockFileText) {
         //These tests were written before we needed a package json.
         //So we replicate a package json with every package as root.
         PackageJson packageJson = new PackageJson();
         Gson gson = new Gson();
         PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
         packageLock.dependencies.forEach((key, value) -> packageJson.dependencies.put(key, key));
-        return gson.toJson(packageJson);
+        String text = gson.toJson(packageJson);
+        return Optional.of(text);
+    }
+
+    @Test
+    public void parseShrinkwrapWithRecreatedJsonTest() {
+        final String shrinkwrapText = testUtil.getResourceAsUTF8String("/npm/npm-shrinkwrap.json");
+        final NpmParseResult result = npmLockfileParser.parse("source", recreatePackageJsonFromLock(shrinkwrapText), shrinkwrapText, true);
+
+        Assert.assertEquals(result.projectName, "fec-builder");
+        Assert.assertEquals(result.projectVersion, "1.3.7");
+        DependencyGraphResourceTestUtil.assertGraph("/npm/shrinkwrapExpected_graph.json", result.codeLocation.getDependencyGraph());
     }
 
     @Test
     public void parseShrinkwrapTest() {
         final String shrinkwrapText = testUtil.getResourceAsUTF8String("/npm/npm-shrinkwrap.json");
-        final NpmParseResult result = npmLockfileParser.parse("source", recreatePackageJsonFromLock(shrinkwrapText), shrinkwrapText, true);
+        final NpmParseResult result = npmLockfileParser.parse("source", Optional.empty(), shrinkwrapText, true);
 
         Assert.assertEquals(result.projectName, "fec-builder");
         Assert.assertEquals(result.projectVersion, "1.3.7");
