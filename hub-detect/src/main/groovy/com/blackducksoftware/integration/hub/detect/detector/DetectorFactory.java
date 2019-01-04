@@ -43,7 +43,9 @@ import com.blackducksoftware.integration.hub.detect.detector.maven.MavenPomDetec
 import com.blackducksoftware.integration.hub.detect.detector.maven.MavenPomWrapperDetector;
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmCliDetector;
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmPackageLockDetector;
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmPackageLockOnlyDetector;
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmShrinkwrapDetector;
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmShrinkwrapOnlyDetector;
 import com.blackducksoftware.integration.hub.detect.detector.nuget.NugetProjectDetector;
 import com.blackducksoftware.integration.hub.detect.detector.nuget.NugetSolutionDetector;
 import com.blackducksoftware.integration.hub.detect.detector.packagist.ComposerLockDetector;
@@ -123,12 +125,20 @@ public class DetectorFactory implements BeanFactoryAware {
         return beanFactory.getBean(NpmPackageLockDetector.class, environment);
     }
 
+    public NpmPackageLockOnlyDetector createNpmPackageLockOnlyBomTool(final DetectorEnvironment environment) {
+        return beanFactory.getBean(NpmPackageLockOnlyDetector.class, environment);
+    }
+
     public NugetProjectDetector createNugetProjectBomTool(final DetectorEnvironment environment) {
         return beanFactory.getBean(NugetProjectDetector.class, environment);
     }
 
     public NpmShrinkwrapDetector createNpmShrinkwrapBomTool(final DetectorEnvironment environment) {
         return beanFactory.getBean(NpmShrinkwrapDetector.class, environment);
+    }
+
+    public NpmShrinkwrapOnlyDetector createNpmShrinkwrapOnlyBomTool(final DetectorEnvironment environment) {
+        return beanFactory.getBean(NpmShrinkwrapOnlyDetector.class, environment);
     }
 
     public NugetSolutionDetector createNugetSolutionBomTool(final DetectorEnvironment environment) {

@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.detector.npm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
@@ -54,21 +55,42 @@ public class NpmLockfileParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public NpmParseResult parse(final String sourcePath, final String packageJsonText, final String lockFileText, final boolean includeDevDependencies) {
-        final LazyExternalIdDependencyGraphBuilder lazyBuilder = new LazyExternalIdDependencyGraphBuilder();
-        logger.info("Parsing lock file text: ");
+    public NpmParseResult parse(final String sourcePath, final Optional<String> packageJsonTextOptional, final String lockFileText, final boolean includeDevDependencies) {
+        logger.info("Parsing npm lock file.");
         logger.debug(lockFileText);
 
-        final PackageJson packageJson = gson.fromJson(packageJsonText, PackageJson.class);
         final PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
 
         List<String> rootPackages = new ArrayList<>();
-        if (packageJson != null) {
-            if (packageJson.dependencies != null)
-                rootPackages.addAll(packageJson.dependencies.keySet());
-            if (packageJson.devDependencies != null)
-                rootPackages.addAll(packageJson.devDependencies.keySet());
+
+        if (packageJsonTextOptional.isPresent()) {
+            String packageJsonText = packageJsonTextOptional.get();
+
+            logger.info("Parsing npm package json.");
+            logger.debug(packageJsonText);
+
+            final PackageJson packageJson = gson.fromJson(packageJsonText, PackageJson.class);
+            if (packageJson != null) {
+                if (packageJson.dependencies != null) {
+                    rootPackages.addAll(packageJson.dependencies.keySet());
+                }
+                if (packageJson.devDependencies != null) {
+                    rootPackages.addAll(packageJson.devDependencies.keySet());
+                }
+            }
+        } else {
+            if (packageLock.dependencies != null) {
+                logger.warn("When parsing only the lock file NPM will add all dependencies to the root project.");
+                logger.warn("Provide the applicable package.json to allow NPM to find actual root dependencies for this project.");
+                rootPackages.addAll(packageLock.dependencies.keySet());
+            }
         }
+
+        return resolveDependencies(sourcePath, packageLock, rootPackages, includeDevDependencies);
+    }
+
+    private NpmParseResult resolveDependencies(final String sourcePath, final PackageLock packageLock, List<String> rootPackages, final boolean includeDevDependencies) {
+        final LazyExternalIdDependencyGraphBuilder lazyBuilder = new LazyExternalIdDependencyGraphBuilder();
 
         logger.info("Processing project.");
         if (packageLock.dependencies != null) {

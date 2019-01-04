@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.detector.npm;
 
 import java.io.File;
+import java.util.Optional;
 
 import com.blackducksoftware.integration.hub.detect.detector.Detector;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
@@ -74,7 +75,8 @@ public class NpmPackageLockDetector extends Detector {
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         addRelevantDiagnosticFile(lockfile);
-        return npmLockfileExtractor.extract(environment.getDirectory(), packageJson, lockfile);
+        addRelevantDiagnosticFile(packageJson);
+        return npmLockfileExtractor.extract(environment.getDirectory(), lockfile, Optional.of(packageJson));
     }
 
 }

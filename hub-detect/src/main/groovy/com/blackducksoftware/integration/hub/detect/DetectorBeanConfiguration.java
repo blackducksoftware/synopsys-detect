@@ -94,7 +94,9 @@ import com.blackducksoftware.integration.hub.detect.detector.npm.NpmExecutableFi
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmLockfileExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmLockfileParser;
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmPackageLockDetector;
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmPackageLockOnlyDetector;
 import com.blackducksoftware.integration.hub.detect.detector.npm.NpmShrinkwrapDetector;
+import com.blackducksoftware.integration.hub.detect.detector.npm.NpmShrinkwrapOnlyDetector;
 import com.blackducksoftware.integration.hub.detect.detector.nuget.NugetInspectorExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.nuget.NugetInspectorManager;
 import com.blackducksoftware.integration.hub.detect.detector.nuget.NugetInspectorPackager;
@@ -548,6 +550,12 @@ public class DetectorBeanConfiguration {
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public NpmPackageLockOnlyDetector npmPackageLockOnlyBomTool(final DetectorEnvironment environment) {
+        return new NpmPackageLockOnlyDetector(environment, detectFileFinder, npmLockfileExtractor());
+    }
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetProjectDetector nugetProjectBomTool(final DetectorEnvironment environment) {
         return new NugetProjectDetector(environment, directoryManager, detectFileFinder, nugetInspectorManager(), nugetInspectorExtractor());
     }
@@ -556,6 +564,12 @@ public class DetectorBeanConfiguration {
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NpmShrinkwrapDetector npmShrinkwrapBomTool(final DetectorEnvironment environment) {
         return new NpmShrinkwrapDetector(environment, detectFileFinder, npmLockfileExtractor());
+    }
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public NpmShrinkwrapOnlyDetector npmShrinkwrapOnlyBomTool(final DetectorEnvironment environment) {
+        return new NpmShrinkwrapOnlyDetector(environment, detectFileFinder, npmLockfileExtractor());
     }
 
     @Bean
