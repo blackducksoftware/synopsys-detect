@@ -23,6 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.detector.npm;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,12 +50,16 @@ public class NpmLockfileParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public NpmParseResult parse(final String sourcePath, final String packageJsonText, final String lockFileText, final boolean includeDevDependencies) {
+    public NpmParseResult parse(final String sourcePath, final Optional<String> packageJsonText, final String lockFileText, final boolean includeDevDependencies) {
         final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         logger.info("Parsing lock file text: ");
         logger.debug(lockFileText);
 
-        final PackageJson packageJson = gson.fromJson(packageJsonText, PackageJson.class);
+        Optional<PackageJson> packageJson = Optional.empty();
+        if (packageJsonText.isPresent()) {
+            packageJson = Optional.of(gson.fromJson(packageJsonText.get(), PackageJson.class));
+        }
+
         final PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
 
         logger.info("Processing project.");

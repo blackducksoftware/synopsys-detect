@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.detector.npm.model.NpmDependency;
@@ -44,7 +45,7 @@ public class NpmDependencyConverter {
 
     public NpmDependencyConverter(final ExternalIdFactory externalIdFactory) {this.externalIdFactory = externalIdFactory;}
 
-    public NpmDependency convertLockFile(PackageLock packageLock, PackageJson packageJson) {
+    public NpmDependency convertLockFile(PackageLock packageLock, Optional<PackageJson> packageJsonOptional) {
 
         NpmDependency root = createNpmDependency(packageLock.name, packageLock.version, false);
 
@@ -53,14 +54,25 @@ public class NpmDependencyConverter {
             root.addAllDependencies(children);
         }
 
-        if (packageJson.dependencies != null) {
-            List<NpmRequires> rootRequires = convertNameVersionMapToRequires(packageJson.dependencies);
-            root.addAllRequires(rootRequires);
-        }
+        if (packageJsonOptional.isPresent()) {
+            PackageJson packageJson = packageJsonOptional.get();
+            if (packageJson.dependencies != null) {
+                List<NpmRequires> rootRequires = convertNameVersionMapToRequires(packageJson.dependencies);
+                root.addAllRequires(rootRequires);
+            }
 
-        if (packageJson.devDependencies != null) {
-            List<NpmRequires> rootDevRequires = convertNameVersionMapToRequires(packageJson.devDependencies);
-            root.addAllRequires(rootDevRequires);
+            if (packageJson.devDependencies != null) {
+                List<NpmRequires> rootDevRequires = convertNameVersionMapToRequires(packageJson.devDependencies);
+                root.addAllRequires(rootDevRequires);
+            }
+        } else {
+            if (packageLock.dependencies != null) {
+                List<NpmRequires> requires = packageLock.dependencies.entrySet().stream()
+                                                 .map(entry -> new NpmRequires(entry.getKey(), entry.getValue().version))
+                                                 .collect(Collectors.toList());
+
+                root.addAllRequires(requires);
+            }
         }
 
         return root;
