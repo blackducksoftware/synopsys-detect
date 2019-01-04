@@ -1,5 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.detector.npm;
 
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,14 +35,15 @@ public class NpmLockfileParserTest {
         DependencyGraphResourceTestUtil.assertGraph("/npm/packageLockExpected_graph.json", result.codeLocation.getDependencyGraph());
     }
 
-    private String recreatePackageJsonFromLock(String lockFileText) {
+    private Optional<String> recreatePackageJsonFromLock(String lockFileText) {
         //These tests were written before we needed a package json.
         //So we replicate a package json with every package as root.
         PackageJson packageJson = new PackageJson();
         Gson gson = new Gson();
         PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
         packageLock.dependencies.forEach((key, value) -> packageJson.dependencies.put(key, key));
-        return gson.toJson(packageJson);
+        String text = gson.toJson(packageJson);
+        return Optional.of(text);
     }
 
     @Test

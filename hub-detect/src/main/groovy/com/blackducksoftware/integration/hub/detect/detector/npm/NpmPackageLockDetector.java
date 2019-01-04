@@ -26,6 +26,9 @@ package com.blackducksoftware.integration.hub.detect.detector.npm;
 import java.io.File;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.blackducksoftware.integration.hub.detect.detector.Detector;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
@@ -37,6 +40,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileN
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 
 public class NpmPackageLockDetector extends Detector {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final String PACKAGE_LOCK_JSON = "package-lock.json";
     public static final String PACKAGE_JSON = "package.json";
 
@@ -44,7 +48,7 @@ public class NpmPackageLockDetector extends Detector {
     private final NpmLockfileExtractor npmLockfileExtractor;
 
     private File lockfile;
-    private File packageJson;
+    private Optional<File> packageJson = Optional.empty();
 
     public NpmPackageLockDetector(final DetectorEnvironment environment, final DetectFileFinder fileFinder, final NpmLockfileExtractor npmLockfileExtractor) {
         super(environment, "Package Lock", DetectorType.NPM);
@@ -59,9 +63,11 @@ public class NpmPackageLockDetector extends Detector {
             return new FileNotFoundDetectorResult(PACKAGE_LOCK_JSON);
         }
 
-        packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
-        if (packageJson == null) {
-            return new FileNotFoundDetectorResult(PACKAGE_JSON);
+        File foundPackageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
+        if (foundPackageJson == null) {
+            logger.warn("Npm applied but it could not find a package.json so dependencies may not be entirely accurate.");
+        } else {
+            packageJson = Optional.of(foundPackageJson);
         }
 
         return new PassedDetectorResult();
@@ -75,8 +81,10 @@ public class NpmPackageLockDetector extends Detector {
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         addRelevantDiagnosticFile(lockfile);
-        addRelevantDiagnosticFile(packageJson);
-        return npmLockfileExtractor.extract(environment.getDirectory(), lockfile, Optional.of(packageJson));
+        if (packageJson.isPresent()) {
+            addRelevantDiagnosticFile(packageJson.get());
+        }
+        return npmLockfileExtractor.extract(environment.getDirectory(), lockfile, packageJson);
     }
 
 }

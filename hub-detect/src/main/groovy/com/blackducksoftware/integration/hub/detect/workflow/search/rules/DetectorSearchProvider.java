@@ -69,30 +69,19 @@ public class DetectorSearchProvider {
 
         Detector npmPackageLock = detectorFactory.createNpmPackageLockBomTool(environment);
         Detector npmShrinkwrap = detectorFactory.createNpmShrinkwrapBomTool(environment);
-        Detector npmPackageLockOnly = detectorFactory.createNpmPackageLockOnlyBomTool(environment);
-        Detector npmShrinkwrapOnly = detectorFactory.createNpmShrinkwrapOnlyBomTool(environment);
         Detector npmCli = detectorFactory.createNpmCliBomTool(environment);
 
         searchRuleSet.addBomTool(npmPackageLock).defaultNested();
         searchRuleSet.addBomTool(npmShrinkwrap).defaultNested();
-        searchRuleSet.addBomTool(npmPackageLockOnly).defaultNested();
-        searchRuleSet.addBomTool(npmShrinkwrapOnly).defaultNested();
         searchRuleSet.addBomTool(npmCli).defaultNested();
 
         searchRuleSet.yield(npmShrinkwrap).to(npmPackageLock);
-        searchRuleSet.yield(npmShrinkwrapOnly).to(npmPackageLock);
-        searchRuleSet.yield(npmShrinkwrap).to(npmPackageLockOnly);
-        searchRuleSet.yield(npmShrinkwrapOnly).to(npmPackageLockOnly);
         searchRuleSet.yield(npmCli).to(npmPackageLock);
         searchRuleSet.yield(npmCli).to(npmShrinkwrap);
-        searchRuleSet.yield(npmCli).to(npmPackageLockOnly);
-        searchRuleSet.yield(npmCli).to(npmShrinkwrapOnly);
 
         searchRuleSet.yield(npmCli).to(yarnLock);
         searchRuleSet.yield(npmPackageLock).to(yarnLock);
         searchRuleSet.yield(npmShrinkwrap).to(yarnLock);
-        searchRuleSet.yield(npmPackageLockOnly).to(yarnLock);
-        searchRuleSet.yield(npmShrinkwrapOnly).to(yarnLock);
 
         Detector nugetSolution = detectorFactory.createNugetSolutionBomTool(environment);
         Detector nugetProject = detectorFactory.createNugetProjectBomTool(environment);
