@@ -42,7 +42,7 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
 
-public class DiagnosticLogManager {
+public class DiagnosticLogger {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static String logFilePath = "log.txt";
@@ -55,7 +55,7 @@ public class DiagnosticLogManager {
     private FileAppender<ILoggingEvent> fileAppender;
     private FileAppender<ILoggingEvent> extractionAppender;
 
-    public DiagnosticLogManager(File logDirectory, EventSystem eventSystem) {
+    public DiagnosticLogger(File logDirectory, EventSystem eventSystem) {
 
         this.logDirectory = logDirectory;
 

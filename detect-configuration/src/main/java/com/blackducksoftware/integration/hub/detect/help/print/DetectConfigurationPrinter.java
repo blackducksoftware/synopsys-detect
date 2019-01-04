@@ -1,7 +1,7 @@
 /**
  * detect-configuration
  *
- * Copyright (C) 2018 Black Duck Software, Inc.
+ * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -23,97 +23,3 @@
  */
 package com.blackducksoftware.integration.hub.detect.help.print;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.blackducksoftware.integration.hub.detect.help.DetectOption;
-
-public class DetectConfigurationPrinter {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private List<DetectOption> sortOptions(final List<DetectOption> detectOptions) {
-        return detectOptions.stream()
-                   .sorted((o1, o2) -> o1.getDetectProperty().getPropertyName().compareTo(o2.getDetectProperty().getPropertyName()))
-                   .collect(Collectors.toList());
-    }
-
-    public void print(final List<DetectOption> detectOptions) throws IllegalArgumentException, SecurityException {
-        logger.info("");
-        logger.info("Current property values:");
-        logger.info("--property = value [notes]");
-        logger.info(StringUtils.repeat("-", 60));
-
-        final List<DetectOption> sortedOptions = sortOptions(detectOptions);
-
-        for (final DetectOption option : sortedOptions) {
-            final String key = option.getDetectProperty().getPropertyName();
-            String fieldValue = option.getFinalValue();
-            final DetectOption.FinalValueType fieldType = option.getFinalValueType();
-            if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(fieldValue) && "metaClass" != key) {
-                final boolean containsPassword = key.toLowerCase().contains("password") || key.toLowerCase().contains("api.token");
-                if (containsPassword) {
-                    fieldValue = StringUtils.repeat("*", fieldValue.length());
-                }
-
-                String text = "";
-                final String displayName = option.getDetectProperty().getPropertyName();
-                if (fieldType == DetectOption.FinalValueType.SUPPLIED || fieldType == DetectOption.FinalValueType.DEFAULT || containsPassword) {
-                    if (fieldValue.trim().length() > 0) {
-                        text = displayName + " = " + fieldValue;
-                    }
-                } else if (fieldType == DetectOption.FinalValueType.INTERACTIVE) {
-                    text = displayName + " = " + fieldValue + " [interactive]";
-                } else if (fieldType == DetectOption.FinalValueType.LATEST) {
-                    text = displayName + " = " + fieldValue + " [latest]";
-                } else if (fieldType == DetectOption.FinalValueType.CALCULATED) {
-                    text = displayName + " = " + fieldValue + " [calculated]";
-                } else if (fieldType == DetectOption.FinalValueType.OVERRIDE) {
-                    text = displayName + " = " + fieldValue + " [" + option.getResolvedValue() + "]";
-                } else if (fieldType == DetectOption.FinalValueType.COPIED) {
-                    text = displayName + " = " + fieldValue + " [copied]";
-                }
-
-                if (option.getValidValues().size() > 0) {
-                    final DetectOption.OptionValidationResult validationResult = option.validateValue(fieldValue);
-                    if (!validationResult.isValid()) {
-                        text += String.format(" [%s]", validationResult.getValidationMessage());
-                    }
-                }
-
-                if (option.getWarnings().size() > 0) {
-                    text += "\t *** WARNING ***";
-                }
-                logger.info(text);
-            }
-        }
-        logger.info(StringUtils.repeat("-", 60));
-        logger.info("");
-
-    }
-
-    public void printWarnings(final List<DetectOption> detectOptions) {
-        final List<DetectOption> sortedOptions = sortOptions(detectOptions);
-
-        final List<DetectOption> allWarnings = sortedOptions.stream().filter(it -> it.getWarnings().size() > 0).collect(Collectors.toList());
-        if (allWarnings.size() > 0) {
-            logger.info("");
-            logger.info(StringUtils.repeat("*", 60));
-            if (allWarnings.size() == 1) {
-                logger.info("WARNING (" + allWarnings.size() + ")");
-            } else {
-                logger.info("WARNINGS (" + allWarnings.size() + ")");
-            }
-            for (final DetectOption option : allWarnings) {
-                for (final String warning : option.getWarnings()) {
-                    logger.info(option.getDetectProperty().getPropertyName() + ": " + warning);
-                }
-            }
-            logger.info(StringUtils.repeat("*", 60));
-            logger.info("");
-        }
-    }
-}

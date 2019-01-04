@@ -81,8 +81,10 @@ public class ShutdownManager {
         }
 
         try {
-            logger.debug("Ending diagnostics.");
-            diagnosticManager.finish();
+            if (diagnosticManager.getDiagnosticSystem().isPresent()) {
+                logger.debug("Ending diagnostics.");
+                diagnosticManager.getDiagnosticSystem().get().finish();
+            }
         } catch (final Exception e) {
             logger.debug(String.format("Error trying to finish diagnostics: %s", e.getMessage()));
         }

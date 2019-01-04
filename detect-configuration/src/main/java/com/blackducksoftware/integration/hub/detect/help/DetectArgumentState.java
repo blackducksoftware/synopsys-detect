@@ -1,7 +1,7 @@
 /**
  * detect-configuration
  *
- * Copyright (C) 2018 Black Duck Software, Inc.
+ * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -34,11 +34,11 @@ public class DetectArgumentState {
     private final String parsedValue;
 
     private final boolean isDiagnostic;
-    private final boolean isDiagnosticProtected;
+    private final boolean isDiagnosticExtended;
 
     public DetectArgumentState(final boolean isHelp, final boolean isHelpHtmlDocument, final boolean isHelpJsonDocument, final boolean isInteractive, final boolean isVerboseHelp, final boolean isDeprecatedHelp, final String parsedValue,
         final boolean isDiagnostic,
-        final boolean isDiagnosticProtected) {
+        final boolean isDiagnosticExtended) {
         this.isHelp = isHelp;
         this.isHelpHtmlDocument = isHelpHtmlDocument;
         this.isHelpJsonDocument = isHelpJsonDocument;
@@ -47,7 +47,7 @@ public class DetectArgumentState {
         this.isDeprecatedHelp = isDeprecatedHelp;
         this.parsedValue = parsedValue;
         this.isDiagnostic = isDiagnostic;
-        this.isDiagnosticProtected = isDiagnosticProtected;
+        this.isDiagnosticExtended = isDiagnosticExtended;
     }
 
     public boolean isHelp() {
@@ -78,8 +78,8 @@ public class DetectArgumentState {
         return isDiagnostic;
     }
 
-    public boolean isDiagnosticProtected() {
-        return isDiagnosticProtected;
+    public boolean isDiagnosticExtended() {
+        return isDiagnosticExtended;
     }
 
     public String getParsedValue() {

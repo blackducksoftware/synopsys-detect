@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.ReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 

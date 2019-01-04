@@ -27,6 +27,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.blackducksoftware.integration.hub.detect.workflow.report.util.ReportConstants;
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.ReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class OverviewSummaryReporter {

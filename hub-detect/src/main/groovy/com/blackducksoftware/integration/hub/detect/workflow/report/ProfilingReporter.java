@@ -27,34 +27,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
-import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolTime;
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.DetectorTime;
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.DetectorTimings;
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.ReportWriter;
 
 public class ProfilingReporter {
-    public void writeReport(final ReportWriter writer, final BomToolProfiler bomToolProfiler) {
+    public void writeReport(final ReportWriter writer, final DetectorTimings detectorTimings) {
         writer.writeSeperator();
         writer.writeLine("Applicable Times");
         writer.writeSeperator();
-        writeAggregateReport(writer, bomToolProfiler.getApplicableTimings());
+        writeAggregateReport(writer, detectorTimings.getApplicableTimings());
         writer.writeSeperator();
         writer.writeLine("Extractable Times");
         writer.writeSeperator();
-        writeReport(writer, bomToolProfiler.getExtractableTimings());
+        writeReport(writer, detectorTimings.getExtractableTimings());
         writer.writeSeperator();
         writer.writeLine("Extraction Times");
         writer.writeSeperator();
-        writeReport(writer, bomToolProfiler.getExtractionTimings());
+        writeReport(writer, detectorTimings.getExtractionTimings());
     }
 
-    private void writeAggregateReport(final ReportWriter writer, final List<BomToolTime> timings) {
+    private void writeAggregateReport(final ReportWriter writer, final List<DetectorTime> timings) {
         final Map<String, Long> aggregated = new HashMap<>();
 
-        for (final BomToolTime bomToolTime : timings) {
-            final String name = bomToolTime.getDetector().getDescriptiveName();
+        for (final DetectorTime detectorTime : timings) {
+            final String name = detectorTime.getDetector().getDescriptiveName();
             if (!aggregated.containsKey(name)) {
                 aggregated.put(name, 0L);
             }
-            aggregated.put(name, aggregated.get(name) + bomToolTime.getMs());
+            aggregated.put(name, aggregated.get(name) + detectorTime.getMs());
         }
 
         for (final String key : aggregated.keySet()) {
@@ -62,10 +63,10 @@ public class ProfilingReporter {
         }
     }
 
-    private void writeReport(final ReportWriter writer, final List<BomToolTime> timings) {
+    private void writeReport(final ReportWriter writer, final List<DetectorTime> timings) {
 
-        for (final BomToolTime bomToolTime : timings) {
-            writer.writeLine("\t" + padToLength(bomToolTime.getDetector().getDescriptiveName(), 30) + "\t" + bomToolTime.getMs());
+        for (final DetectorTime detectorTime : timings) {
+            writer.writeLine("\t" + padToLength(detectorTime.getDetector().getDescriptiveName(), 30) + "\t" + detectorTime.getMs());
         }
 
     }

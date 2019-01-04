@@ -23,17 +23,24 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.report;
 
-public class ReporterUtils {
+import java.util.List;
 
-    public static void printHeader(ReportWriter writer, String title) {
-        writer.writeLine();
-        writer.writeHeader();
-        writer.writeLine(title);
-        writer.writeHeader();
-    }
+import com.blackducksoftware.integration.hub.detect.DetectInfo;
+import com.blackducksoftware.integration.hub.detect.help.DetectOption;
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.ReportWriter;
 
-    public static void printFooter(ReportWriter writer) {
-        writer.writeLine(ReportConstants.HEADING);
-        writer.writeLine();
+public class ConfigurationReporter {
+    public void writeReport(final ReportWriter writer, DetectInfo detectInfo, final List<DetectOption> detectOptions) {
+        writer.writeSeperator();
+        writer.writeLine("Detect Info");
+        writer.writeSeperator();
+        writer.writeLine("Detect Version: " + detectInfo.getDetectVersion());
+        writer.writeLine("Operating System: " + detectInfo.getCurrentOs());
+        writer.writeSeperator();
+        writer.writeLine("Detect Configuration");
+        writer.writeSeperator();
+        DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
+        detectConfigurationReporter.print(writer, detectOptions);
+        writer.writeSeperator();
     }
 }

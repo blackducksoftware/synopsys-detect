@@ -21,16 +21,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.report;
+package com.blackducksoftware.integration.hub.detect.workflow.report.util;
 
-public interface ReportWriter {
-    public void writeLine();
-
-    public void writeLine(final String line);
-
-    public void writeSeperator();
-
-    public void writeHeader();
-
-    public void finish();
+public class ReportConstants {
+    public static String RUN_SEPARATOR = "----------------------------------";
+    public static String HEADING = "======================================================================================================";
+    public static String SEPERATOR = "------------------------------------------------------------------------------------------------------";
 }

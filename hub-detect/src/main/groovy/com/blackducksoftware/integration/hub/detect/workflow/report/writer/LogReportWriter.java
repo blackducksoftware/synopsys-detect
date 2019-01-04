@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * hub-detect
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,25 +21,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.interactive.reader;
+package com.blackducksoftware.integration.hub.detect.workflow.report.writer;
 
-import java.io.Console;
+import com.blackducksoftware.integration.hub.detect.workflow.report.util.ReportConstants;
 
-public class ConsoleInteractiveReader implements InteractiveReader {
-    private final Console console;
+public abstract class LogReportWriter implements ReportWriter {
+    @Override
+    public abstract void writeLine(final String line);
 
-    public ConsoleInteractiveReader(final Console console) {
-        this.console = console;
+    @Override
+    public void writeSeperator() {
+        writeLine(ReportConstants.SEPERATOR);
     }
 
     @Override
-    public String readLine() {
-        return console.readLine();
+    public void writeLine() {
+        writeLine("");
     }
 
     @Override
-    public String readPassword() {
-        return new String(console.readPassword());
+    public void writeHeader() {
+        writeLine(ReportConstants.HEADING);
+    }
+
+    @Override
+    public void finish() {
+        // Nothing to clean up
     }
 
 }

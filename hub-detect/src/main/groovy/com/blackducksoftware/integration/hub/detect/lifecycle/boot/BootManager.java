@@ -51,7 +51,6 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.help.json.HelpJsonWriter;
-import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
@@ -65,13 +64,16 @@ import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager
 import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
-import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.FileManager;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.RelevantFileTracker;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.OnlinePhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.workflow.report.DetectConfigurationReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.InfoLogReportWriter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.exception.IntegrationException;
@@ -139,10 +141,7 @@ public class BootManager {
 
         DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
         DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
-        FileManager fileManager = new FileManager(detectArgumentState.isDiagnostic(),
-                detectArgumentState.isDiagnosticProtected(), directoryManager);
-
-        DiagnosticManager diagnosticManager = createDiagnostics(detectConfiguration, detectRun, detectArgumentState, eventSystem, directoryManager, fileManager);
+        DiagnosticManager diagnosticManager = createDiagnostics(detectOptionManager.getDetectOptions(), detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
         checkForInvalidOptions(detectOptionManager);
 
@@ -173,6 +172,9 @@ public class BootManager {
             connectivityManager = ConnectivityManager.offline();
         }
 
+        //TODO: Only need this if in diagnostic or online:
+        BomToolProfiler profiler = new BomToolProfiler(eventSystem);
+
         //lock the configuration, boot has completed.
         logger.debug("Configuration is now complete. No changes should occur to configuration.");
         detectConfiguration.lock();
@@ -180,6 +182,7 @@ public class BootManager {
         //Finished, populate the detect context
         detectContext.registerBean(detectRun);
         detectContext.registerBean(eventSystem);
+        detectContext.registerBean(profiler);
 
         detectContext.registerBean(detectConfiguration);
         detectContext.registerBean(detectInfo);
@@ -223,11 +226,12 @@ public class BootManager {
     }
 
     private void printConfiguration(boolean fullConfiguration, List<DetectOption> detectOptions) {
-        DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter();
+        DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
+        InfoLogReportWriter infoLogReportWriter = new InfoLogReportWriter();
         if (!fullConfiguration) {
-            detectConfigurationPrinter.print(detectOptions);
+            detectConfigurationReporter.print(infoLogReportWriter, detectOptions);
         }
-        detectConfigurationPrinter.printWarnings(detectOptions);
+        detectConfigurationReporter.printWarnings(infoLogReportWriter, detectOptions);
     }
 
     private void startInteractiveMode(DetectOptionManager detectOptionManager, DetectConfiguration detectConfiguration, Gson gson, ObjectMapper objectMapper) {
@@ -256,11 +260,15 @@ public class BootManager {
         }
     }
 
-    private DiagnosticManager createDiagnostics(DetectConfiguration detectConfiguration, DetectRun detectRun, DetectArgumentState detectArgumentState, EventSystem eventSystem, DirectoryManager directoryManager, FileManager fileManager) {
-        BomToolProfiler profiler = new BomToolProfiler(eventSystem); //TODO: I think phone home needs one?
-        DiagnosticManager diagnosticManager = new DiagnosticManager(detectConfiguration, detectRun, fileManager, detectArgumentState.isDiagnostic(),
-                detectArgumentState.isDiagnosticProtected(), directoryManager, eventSystem, profiler);
-        return diagnosticManager;
-    }
+    private DiagnosticManager createDiagnostics(List<DetectOption> detectOptions, DetectRun detectRun, DetectInfo detectInfo, DetectArgumentState detectArgumentState, EventSystem eventSystem, DirectoryManager directoryManager) {
 
+        if (detectArgumentState.isDiagnostic() || detectArgumentState.isDiagnosticExtended()) {
+            boolean extendedMode = detectArgumentState.isDiagnosticExtended();
+            RelevantFileTracker relevantFileTracker = new RelevantFileTracker(detectArgumentState.isDiagnostic(), detectArgumentState.isDiagnosticExtended(), directoryManager);
+            DiagnosticSystem diagnosticSystem = new DiagnosticSystem(extendedMode, detectOptions, detectRun, detectInfo, relevantFileTracker, directoryManager, eventSystem);
+            return DiagnosticManager.createWithDiagnostics(diagnosticSystem);
+        } else {
+            return DiagnosticManager.createWithoutDiagnostics();
+        }
+    }
 }

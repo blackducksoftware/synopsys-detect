@@ -23,128 +23,29 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.diagnostic;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
-import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
-
 public class DiagnosticManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final DetectConfiguration detectConfiguration;
-    private DiagnosticReportManager diagnosticReportManager;
-    private DiagnosticLogManager diagnosticLogManager;
-    private final DetectRun detectRun;
-    private final FileManager fileManager;
-    private final DirectoryManager directoryManager;
-    private final EventSystem eventSystem;
+    private Optional<DiagnosticSystem> diagnosticSystem;
 
-    private boolean isDiagnosticProtected = false;
-    private boolean isDiagnostic = false;
-    private BomToolProfiler bomToolProfiler;
-
-    public DiagnosticManager(final DetectConfiguration detectConfiguration,
-        final DetectRun detectRun, final FileManager fileManager, final boolean isDiagnostic, final boolean isDiagnosticProtected, DirectoryManager directoryManager,
-        final EventSystem eventSystem, final BomToolProfiler bomToolProfiler) {
-        this.detectConfiguration = detectConfiguration;
-        this.detectRun = detectRun;
-        this.fileManager = fileManager;
-        this.directoryManager = directoryManager;
-        this.eventSystem = eventSystem;
-        this.bomToolProfiler = bomToolProfiler;
-
-        init(isDiagnostic, isDiagnosticProtected);
+    private DiagnosticManager(final Optional<DiagnosticSystem> diagnosticSystem) {
+        this.diagnosticSystem = diagnosticSystem;
     }
 
-    private void init(final boolean isDiagnostic, final boolean isDiagnosticProtected) {
-
-        this.isDiagnostic = isDiagnostic;
-        this.isDiagnosticProtected = isDiagnosticProtected;
-
-        if (!isDiagnostic) {
-            return;
-        }
-
-        System.out.println();
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("Diagnostic mode on.");
-        System.out.println("A zip file will be created with logs and relevant detect output files.");
-        System.out.println("It is not recommended to leave diagnostic mode on as you must manually clean up the zip.");
-        if (!isDiagnosticProtected) {
-            System.out.println("Additional relevant files such as lock files can be collected automatically in extended diagnostics.");
-        }
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println();
-
-        logger.info("Initializing diagnostic managers.");
-        try {
-            diagnosticReportManager = new DiagnosticReportManager(directoryManager.getReportOutputDirectory(), detectRun.getRunId(), eventSystem, bomToolProfiler);
-            diagnosticLogManager = new DiagnosticLogManager(directoryManager.getLogOutputDirectory(), eventSystem);
-        } catch (final Exception e) {
-            logger.error("Failed to process.", e);
-        }
-
+    public static DiagnosticManager createWithoutDiagnostics() {
+        return new DiagnosticManager(Optional.empty());
     }
 
-    public void finish() {
-        if (!isDiagnosticModeOn()) {
-            return;
-        }
-        logger.info("Finishing diagnostic mode.");
-
-        try {
-            logger.info("Finishing reports.");
-            diagnosticReportManager.finish();
-        } catch (final Exception e) {
-            logger.error("Failed to finish.", e);
-        }
-
-        try {
-            logger.info("Finishing logging.");
-            diagnosticLogManager.finish();
-        } catch (final Exception e) {
-            logger.error("Failed to finish.", e);
-        }
-
-        logger.info("Creating diagnostics zip.");
-        boolean zipCreated = false;
-        try {
-            zipCreated = createZip();
-        } catch (final Exception e) {
-            logger.error("Failed to create diagnostic zip. Cleanup will not occur.", e);
-        }
-
-        if (zipCreated) {
-            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.None)) {
-                //fileManager.cleanup(); //TODO: FIx
-            }
-        } else {
-            logger.error("Diagnostic mode failed to create zip. Cleanup will not occur.");
-        }
-
-        logger.info("Diagnostic mode has completed.");
+    public static DiagnosticManager createWithDiagnostics(DiagnosticSystem diagnosticSystem) {
+        return new DiagnosticManager(Optional.of(diagnosticSystem));
     }
 
-    public boolean isDiagnosticModeOn() {
-        return isDiagnostic;
+    public Optional<DiagnosticSystem> getDiagnosticSystem() {
+        return diagnosticSystem;
     }
-
-    private boolean createZip() {
-        final List<File> directoriesToCompress = new ArrayList<>();
-        directoriesToCompress.add(directoryManager.getRunHomeDirectory());
-
-        final DiagnosticZipCreator zipper = new DiagnosticZipCreator();
-        return zipper.createDiagnosticZip(detectRun.getRunId(), directoryManager.getRunsOutputDirectory(), directoriesToCompress);
-    }
-
 }

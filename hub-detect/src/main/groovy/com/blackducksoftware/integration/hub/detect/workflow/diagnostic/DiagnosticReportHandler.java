@@ -31,21 +31,24 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.DetectInfo;
+import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
+import com.blackducksoftware.integration.hub.detect.workflow.profiling.DetectorTimings;
 import com.blackducksoftware.integration.hub.detect.workflow.report.CodeLocationReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.ConfigurationReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.DetailedSearchSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.report.FileReportWriter;
-import com.blackducksoftware.integration.hub.detect.workflow.report.InfoLogReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.OverviewSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ProfilingReporter;
-import com.blackducksoftware.integration.hub.detect.workflow.report.ReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.SearchSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.FileReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.InfoLogReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.ReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
-public class DiagnosticReportManager {
+public class DiagnosticReportHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final Map<ReportTypes, FileReportWriter> reportWriters = new HashMap<>();
@@ -56,7 +59,8 @@ public class DiagnosticReportManager {
         DETECTOR("detector_report", "Detector Report", "A breakdown of detector's that were applicable and their preparation and extraction results."),
         DETECTOR_PROFILE("detector_profile_report", "Detector Profile Report", "A breakdown of timing and profiling for all detectors."),
         CODE_LOCATIONS("code_location_report", "Code Location Report", "A breakdown of code locations created, their dependencies and status results."),
-        DEPENDENCY_COUNTS("dependency_counts_report", "Dependency Count Report", "A breakdown of how many dependencies each detector group generated in their graphs.");
+        DEPENDENCY_COUNTS("dependency_counts_report", "Dependency Count Report", "A breakdown of how many dependencies each detector group generated in their graphs."),
+        CONFIGURATION("detect_configuration", "Detect Configuration Report", "A complete set of all parameters detect used, including detect run and version.");
 
         String reportFileName;
         String reportTitle;
@@ -81,23 +85,20 @@ public class DiagnosticReportManager {
         }
     }
 
-    private final BomToolProfiler bomToolProfiler;
     private final File reportDirectory;
     private final String runId;
 
-    public DiagnosticReportManager(final File reportDirectory, final String runId, EventSystem eventSystem, final BomToolProfiler bomToolProfiler) {
+    public DiagnosticReportHandler(final File reportDirectory, final String runId, EventSystem eventSystem) {
         this.reportDirectory = reportDirectory;
         this.runId = runId;
-        this.bomToolProfiler = bomToolProfiler;
         createReports();
 
-        eventSystem.registerListener(Event.BomToolsComplete, event -> completedBomToolEvaluations(event.evaluatedDetectors));
+        eventSystem.registerListener(Event.DetectorsComplete, event -> completedBomToolEvaluations(event.evaluatedDetectors));
         eventSystem.registerListener(Event.CodeLocationsCalculated, event -> completedCodeLocations(event.getCodeLocationNames()));
+        eventSystem.registerListener(Event.DetectorsProfiled, event -> detectorsProfiled(event));
     }
 
     public void finish() {
-        writeReports();
-
         closeReportWriters();
     }
 
@@ -141,11 +142,21 @@ public class DiagnosticReportManager {
         }
     }
 
-    private void writeReports() {
+    private void detectorsProfiled(DetectorTimings detectorTimings) {
         try {
             final ReportWriter profileWriter = getReportWriter(ReportTypes.DETECTOR_PROFILE);
             final ProfilingReporter reporter = new ProfilingReporter();
-            reporter.writeReport(profileWriter, bomToolProfiler);
+            reporter.writeReport(profileWriter, detectorTimings);
+        } catch (final Exception e) {
+            logger.error("Failed to write profiling report.", e);
+        }
+    }
+
+    public void configurationsReport(DetectInfo detectInfo, List<DetectOption> detectOptions) {
+        try {
+            final ReportWriter profileWriter = getReportWriter(ReportTypes.CONFIGURATION);
+            final ConfigurationReporter reporter = new ConfigurationReporter();
+            reporter.writeReport(profileWriter, detectInfo, detectOptions);
         } catch (final Exception e) {
             logger.error("Failed to write profiling report.", e);
         }

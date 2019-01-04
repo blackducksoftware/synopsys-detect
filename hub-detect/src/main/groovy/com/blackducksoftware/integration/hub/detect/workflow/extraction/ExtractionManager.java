@@ -34,9 +34,9 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction.ExtractionResultType;
-import com.blackducksoftware.integration.hub.detect.workflow.report.InfoLogReportWriter;
-import com.blackducksoftware.integration.hub.detect.workflow.report.ObjectPrinter;
-import com.blackducksoftware.integration.hub.detect.workflow.report.ReportConstants;
+import com.blackducksoftware.integration.hub.detect.workflow.report.util.ObjectPrinter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.util.ReportConstants;
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.InfoLogReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class ExtractionManager {

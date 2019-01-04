@@ -1,7 +1,7 @@
 /**
  * detect-configuration
  *
- * Copyright (C) 2018 Black Duck Software, Inc.
+ * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -42,13 +42,13 @@ public class DetectArgumentStateParser {
         final boolean isDiagnosticExtendedProvided = parser.isArgumentPresent("-de", "--diagnosticExtended");
 
         boolean isDiagnostic = false;
-        boolean isDiagnosticProtected = true;
+        boolean isDiagnosticExtended = false;
 
         if (isDiagnosticProvided || isDiagnosticExtendedProvided) {
             isDiagnostic = true;
         }
         if (isDiagnosticExtendedProvided) {
-            isDiagnosticProtected = false;
+            isDiagnosticExtended = true;
         }
 
         String parsedValue = null;
@@ -56,7 +56,7 @@ public class DetectArgumentStateParser {
             parsedValue = parser.findValueForCommand("-h", "--help");
         }
 
-        return new DetectArgumentState(isHelp, isHelpHtmlDocument, isHelpJsonDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue, isDiagnostic, isDiagnosticProtected);
+        return new DetectArgumentState(isHelp, isHelpHtmlDocument, isHelpJsonDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue, isDiagnostic, isDiagnosticExtended);
     }
 
 }

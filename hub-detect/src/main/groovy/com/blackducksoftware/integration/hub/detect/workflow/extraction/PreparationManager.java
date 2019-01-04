@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
@@ -34,6 +37,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Detec
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExceptionDetectorResult;
 
 public class PreparationManager {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final EventSystem eventSystem;
 
     public PreparationManager(final EventSystem eventSystem) {
@@ -46,6 +51,7 @@ public class PreparationManager {
             try {
                 result.setExtractable(result.getDetector().extractable());
             } catch (final Exception e) {
+                logger.error("Detector " + result.getDetector().getDescriptiveName() + " was not extractable.", e);
                 result.setExtractable(new ExceptionDetectorResult(e));
             }
             eventSystem.publishEvent(Event.ExtractableEnded, result.getDetector());

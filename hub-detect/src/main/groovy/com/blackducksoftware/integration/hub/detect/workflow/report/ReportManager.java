@@ -30,6 +30,9 @@ import java.util.Map;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.InfoLogReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.ReportWriter;
+import com.blackducksoftware.integration.hub.detect.workflow.report.writer.TraceLogReportWriter;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorEvaluation;
 
 public class ReportManager {
@@ -42,8 +45,8 @@ public class ReportManager {
     private final ExtractionSummaryReporter extractionSummaryReporter;
     private final ErrorSummaryReporter errorSummaryReporter;
 
-    private final InfoLogReportWriter logWriter = new InfoLogReportWriter();
-    private final DebugLogReportWriter debugLogWriter = new DebugLogReportWriter();
+    private final ReportWriter logWriter = new InfoLogReportWriter();
+    private final ReportWriter traceLogWriter = new TraceLogReportWriter();
 
     public static ReportManager createDefault(EventSystem eventSystem) {
         return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new ErrorSummaryReporter());
@@ -59,7 +62,7 @@ public class ReportManager {
 
         eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event.getDetectorEvaluations()));
         eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event.getDetectorEvaluations()));
-        eventSystem.registerListener(Event.BomToolsComplete, event -> bomToolsComplete(event.evaluatedDetectors));
+        eventSystem.registerListener(Event.DetectorsComplete, event -> bomToolsComplete(event.evaluatedDetectors));
         eventSystem.registerListener(Event.CodeLocationsCalculated, event -> codeLocationsCompleted(event.getCodeLocationNames()));
 
     }
@@ -68,7 +71,7 @@ public class ReportManager {
     public void searchCompleted(final List<DetectorEvaluation> detectorEvaluations) {
         searchSummaryReporter.print(logWriter, detectorEvaluations);
         final DetailedSearchSummaryReporter detailedSearchSummaryReporter = new DetailedSearchSummaryReporter();
-        detailedSearchSummaryReporter.print(debugLogWriter, detectorEvaluations);
+        detailedSearchSummaryReporter.print(traceLogWriter, detectorEvaluations);
     }
 
     public void preparationsCompleted(final List<DetectorEvaluation> detectorEvaluations) {
