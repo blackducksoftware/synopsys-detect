@@ -536,7 +536,11 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_BAZEL)
     @HelpDescription("The path of the Bazel executable")
-    DETECT_BAZEL_PATH("detect.bazel.path", "5.1.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_BAZEL_PATH("detect.bazel.path", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_BAZEL)
+    @HelpDescription("The path to a file containing a list of BazelExternalIdExtractionXPathRule objects in json (to override the default behavior)")
+    DETECT_BAZEL_ADVANCED_RULES_PATH("detect.bazel.advanced.rules.path", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "In the future, detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)

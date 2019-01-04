@@ -25,13 +25,9 @@ package com.blackducksoftware.integration.hub.detect.detector.bazel;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.util.Stringable;
 
 public class BazelExternalIdExtractionXPathRule extends Stringable {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     // Everything following "bazel". Example: "query", "kind(.*, //external:*)", "--output", "xml"
     private final List<String> bazelQueryCommandArgsIncludingQuery;
     private final String xPathQuery;
@@ -49,7 +45,6 @@ public class BazelExternalIdExtractionXPathRule extends Stringable {
     public BazelExternalIdExtractionXPathRule(final BazelExternalIdExtractionSimpleRule simpleRule) {
         this.bazelQueryCommandArgsIncludingQuery = simpleRule.getBazelQueryCommandArgsIncludingQuery();
         this.xPathQuery = String.format("/query/rule[@class='%s']/%s[@%s='%s']", simpleRule.getRuleClassname(), "string", "name", simpleRule.getRuleElementSelectorValue());
-        logger.debug(String.format("Generated xPathQuery: %s", xPathQuery));
         this.ruleElementValueAttrName = "value";
         this.artifactStringSeparatorRegex = simpleRule.getArtifactStringSeparatorRegex();
     }

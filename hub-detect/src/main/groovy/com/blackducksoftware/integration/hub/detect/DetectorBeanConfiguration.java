@@ -44,6 +44,7 @@ import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelBdioBuil
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelDetector;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExternalIdExtractionSimpleRules;
+import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExternalIdExtractionXPathRuleJsonProcessor;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelQueryXmlOutputParser;
 import com.blackducksoftware.integration.hub.detect.detector.bazel.XPathParser;
@@ -208,7 +209,8 @@ public class DetectorBeanConfiguration {
         BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
         BazelExternalIdExtractionSimpleRules rules = new BazelExternalIdExtractionSimpleRules();
         BazelBdioBuilder bdioGenerator = new BazelBdioBuilder(externalIdFactory);
-        return new BazelExtractor(executableRunner, parser, rules, bdioGenerator);
+        BazelExternalIdExtractionXPathRuleJsonProcessor bazelExternalIdExtractionXPathRuleJsonProcessor = new BazelExternalIdExtractionXPathRuleJsonProcessor(gson);
+        return new BazelExtractor(detectConfiguration, executableRunner, parser, rules, bdioGenerator, bazelExternalIdExtractionXPathRuleJsonProcessor);
     }
 
     @Bean

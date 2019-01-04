@@ -24,12 +24,18 @@
 package com.blackducksoftware.integration.hub.detect.detector.bazel;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
@@ -37,27 +43,41 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    private final DetectConfiguration detectConfiguration;
     private final ExecutableRunner executableRunner;
     private final BazelQueryXmlOutputParser parser;
     private final BazelExternalIdExtractionSimpleRules simpleRules;
     private final BazelBdioBuilder bdioGenerator;
+    private final BazelExternalIdExtractionXPathRuleJsonProcessor bazelExternalIdExtractionXPathRuleJsonProcessor;
 
-    public BazelExtractor(final ExecutableRunner executableRunner, BazelQueryXmlOutputParser parser, final BazelExternalIdExtractionSimpleRules simpleRules,
-        final BazelBdioBuilder bdioGenerator) {
+    public BazelExtractor(final DetectConfiguration detectConfiguration, final ExecutableRunner executableRunner, BazelQueryXmlOutputParser parser, final BazelExternalIdExtractionSimpleRules simpleRules,
+        final BazelBdioBuilder bdioGenerator, final BazelExternalIdExtractionXPathRuleJsonProcessor bazelExternalIdExtractionXPathRuleJsonProcessor) {
+        this.detectConfiguration = detectConfiguration;
         this.executableRunner = executableRunner;
         this.parser = parser;
         this.simpleRules = simpleRules;
         this.bdioGenerator = bdioGenerator;
+        this.bazelExternalIdExtractionXPathRuleJsonProcessor = bazelExternalIdExtractionXPathRuleJsonProcessor;
     }
 
     public Extraction extract(final String bazelExe, final File workspaceDir, final int depth, final ExtractionId extractionId) {
         logger.debug("Bazel extract()");
         try {
             bdioGenerator.setWorkspaceDir(workspaceDir);
+            final String xPathRulesPath = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_ADVANCED_RULES_PATH, PropertyAuthority.None);
+            List<BazelExternalIdExtractionXPathRule> xPathRules;
+            if (StringUtils.isNotBlank(xPathRulesPath)) {
+                xPathRules = loadXPathRulesFromFile(xPathRulesPath);
+                logger.debug(String.format("Read %d rule(s) from %s", xPathRules.size(), xPathRulesPath));
+            } else {
+                xPathRules = simpleRules.getRules().stream()
+                                      .map(BazelExternalIdExtractionXPathRule::new).collect(Collectors.toList());
+                if (logger.isDebugEnabled()) {
+                    logger.debug(String.format("Using default rules:\n%s", bazelExternalIdExtractionXPathRuleJsonProcessor.toJson(xPathRules)));
+                }
+            }
             BazelExternalIdGenerator externalIdGenerator = new BazelExternalIdGenerator(executableRunner, bazelExe, parser, workspaceDir);
-            simpleRules.getRules().stream()
-                .map(BazelExternalIdExtractionXPathRule::new)
+            xPathRules.stream()
                 .map(externalIdGenerator::generate)
                 .flatMap(Collection::stream)
                 .forEach(bdioGenerator::addDependency);
@@ -72,5 +92,11 @@ public class BazelExtractor {
             logger.debug(msg, e);
             return new Extraction.Builder().failure(msg).build();
         }
+    }
+
+    private List<BazelExternalIdExtractionXPathRule> loadXPathRulesFromFile(final String xPathRulesJsonFilePath) throws IOException {
+        final File jsonFile = new File(xPathRulesJsonFilePath);
+        List<BazelExternalIdExtractionXPathRule> loadedRules = bazelExternalIdExtractionXPathRuleJsonProcessor.load(jsonFile);
+        return loadedRules;
     }
 }
