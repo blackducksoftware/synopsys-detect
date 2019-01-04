@@ -17,12 +17,12 @@ import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 
-public class BazelExternalIdExtractionXPathRuleLoaderTest {
+public class BazelExternalIdExtractionXPathRuleJsonProcessorTest {
     private static File tempDir;
 
     @BeforeAll
     public static void before() throws IOException {
-        Path tempDirPath = Files.createTempDirectory("BazelExternalIdExtractionXPathRuleLoaderTest_");
+        Path tempDirPath = Files.createTempDirectory("BazelExternalIdExtractionXPathRuleJsonProcessorTest_");
         tempDir = tempDirPath.toFile();
     }
 
