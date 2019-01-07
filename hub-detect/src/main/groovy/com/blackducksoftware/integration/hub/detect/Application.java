@@ -45,11 +45,13 @@ import com.blackducksoftware.integration.hub.detect.lifecycle.boot.BootResult;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeManager;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ShutdownManager;
 import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
@@ -143,6 +145,11 @@ public class Application implements ApplicationRunner {
         if (bootResult != null && bootResult.detectConfiguration != null) {
             printOutput = !bootResult.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT, PropertyAuthority.None);
             shouldForceSuccess = bootResult.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS, PropertyAuthority.None);
+        }
+
+        //Generally, when requesting a failure status, an exit code is also requested, but if it is not, we default to an unknown error.
+        if (statusManager.hasAnyFailure()) {
+            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_UNKNOWN_ERROR, "A failure status was requested by one or more of Detect's tools."));
         }
 
         //Find the final (as requested) exit code
