@@ -45,4 +45,9 @@ public class DetectStatusManager {
     public void logDetectResults(final IntLogger logger, final ExitCodeType exitCodeType) {
         new DetectStatusLogger().logDetectResults(logger, statusSummaries, exitCodeType);
     }
+
+    public boolean hasAnyFailure() {
+        return statusSummaries.stream()
+                   .anyMatch(it -> it.getStatusType() == StatusType.FAILURE);
+    }
 }
