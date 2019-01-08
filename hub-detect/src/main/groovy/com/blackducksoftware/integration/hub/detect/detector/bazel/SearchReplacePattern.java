@@ -23,20 +23,20 @@
  */
 package com.blackducksoftware.integration.hub.detect.detector.bazel;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+public class SearchReplacePattern {
+    private final String searchRegex;
+    private final String replacementString;
 
-public class BazelExternalIdExtractionSimpleRules {
-    private final List<BazelExternalIdExtractionSimpleRule> rules;
-
-    public BazelExternalIdExtractionSimpleRules(final String bazelTarget) {
-        rules = new ArrayList<>();
-        rules.add(new BazelExternalIdExtractionSimpleRule("@.*:jar", "maven_jar", "artifact", ":",
-            bazelTarget));
+    public SearchReplacePattern(final String searchRegex, final String replacementString) {
+        this.searchRegex = searchRegex;
+        this.replacementString = replacementString;
     }
 
-    public Collection<BazelExternalIdExtractionSimpleRule> getRules() {
-        return rules;
+    public String getSearchRegex() {
+        return searchRegex;
+    }
+
+    public String getReplacementString() {
+        return replacementString;
     }
 }

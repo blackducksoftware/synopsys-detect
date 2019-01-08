@@ -207,7 +207,7 @@ public class DetectorBeanConfiguration {
     @Bean
     public BazelExtractor bazelExtractor() {
         BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
-        BazelExternalIdExtractionSimpleRules rules = new BazelExternalIdExtractionSimpleRules();
+        BazelExternalIdExtractionSimpleRules rules = new BazelExternalIdExtractionSimpleRules(detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None));
         BazelBdioBuilder bdioGenerator = new BazelBdioBuilder(externalIdFactory);
         BazelExternalIdExtractionXPathRuleJsonProcessor bazelExternalIdExtractionXPathRuleJsonProcessor = new BazelExternalIdExtractionXPathRuleJsonProcessor(gson);
         return new BazelExtractor(detectConfiguration, executableRunner, parser, rules, bdioGenerator, bazelExternalIdExtractionXPathRuleJsonProcessor);

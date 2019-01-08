@@ -28,10 +28,15 @@ public class BazelExternalIdExtractionXPathRuleJsonProcessorTest {
 
     @Test
     public void test() throws IOException {
+        List<SearchReplacePattern> searchReplacePatterns = new ArrayList<>();
+        searchReplacePatterns.add(new SearchReplacePattern("search1", "replace1"));
         List<String> bazelQueryCommandArgsIncludingQuery = Arrays.asList("query", "stuff", "-output", "xml");
         BazelExternalIdExtractionXPathRule origRule = new BazelExternalIdExtractionXPathRule(
-            bazelQueryCommandArgsIncludingQuery, "testXPathQuery",
-            "testRuleElementValueAttrName", "testArtifactStringSeparatorRegex");
+            Arrays.asList("targetDependenciesQueryBazelCmdArgument1", "targetDependenciesQueryBazelCmdArgument2"),
+            searchReplacePatterns,
+        Arrays.asList("dependencyDetailsXmlQueryBazelCmdArgument1", "dependencyDetailsXmlQueryBazelCmdArgument2"),
+        "testXPathQuery", "testRuleElementValueAttrName", "testArtifactStringSeparatorRegex");
+
         List<BazelExternalIdExtractionXPathRule> origRules = new ArrayList<>();
         origRules.add(origRule);
         Gson gson = new Gson();
@@ -50,7 +55,7 @@ public class BazelExternalIdExtractionXPathRuleJsonProcessorTest {
         assertEquals("testXPathQuery", loadedRules.get(0).getXPathQuery());
 
         String convertedJson = processor.toJson(loadedRules);
-        assertEquals("[{\"bazelQueryCommandArgsIncludingQuery\":[\"query\",\"stuff\",\"-output\",\"xml\"],\"xPathQuery\":\"testXPathQuery\",\"ruleElementValueAttrName\":\"testRuleElementValueAttrName\",\"artifactStringSeparatorRegex\":\"testArtifactStringSeparatorRegex\"}]",
+        assertEquals("[{\"targetDependenciesQueryBazelCmdArguments\":[\"targetDependenciesQueryBazelCmdArgument1\",\"targetDependenciesQueryBazelCmdArgument2\"],\"dependencyToBazelExternalIdTransforms\":[{\"searchRegex\":\"search1\",\"replacementString\":\"replace1\"}],\"dependencyDetailsXmlQueryBazelCmdArguments\":[\"dependencyDetailsXmlQueryBazelCmdArgument1\",\"dependencyDetailsXmlQueryBazelCmdArgument2\"],\"xPathQuery\":\"testXPathQuery\",\"ruleElementValueAttrName\":\"testRuleElementValueAttrName\",\"artifactStringSeparatorRegex\":\"testArtifactStringSeparatorRegex\"}]",
             convertedJson);
     }
 }

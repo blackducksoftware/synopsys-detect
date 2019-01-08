@@ -23,27 +23,42 @@
  */
 package com.blackducksoftware.integration.hub.detect.detector.bazel;
 
-import java.util.List;
-
 import com.synopsys.integration.util.Stringable;
 
 public class BazelExternalIdExtractionSimpleRule extends Stringable {
-    // Everything following "bazel". Example: "query", "kind(.*, //external:*)", "--output", "xml"
-    private final List<String> bazelQueryCommandArgsIncludingQuery;
+    // Example: "@.*:jar"
+    private final String targetDependenciesQueryFilterPattern;
+    // Example: "maven_jar"
+    private final String dependencyDetailsXmlQueryKindPattern;
+
+    // Location of artifact in dependency details XML:
+    // Example: "maven_jar"
     private final String ruleClassname;
+    // Example: "artifact"
     private final String ruleElementSelectorValue;
     // Example: ":"
     private final String artifactStringSeparatorRegex;
+    // Example: "//foo:foolib"
+    private final String bazelTarget;
 
-    public BazelExternalIdExtractionSimpleRule(final List<String> bazelQueryCommandArgsIncludingQuery, final String ruleClassname, final String ruleElementSelectorValue, final String artifactStringSeparatorRegex) {
-        this.bazelQueryCommandArgsIncludingQuery = bazelQueryCommandArgsIncludingQuery;
-        this.ruleClassname = ruleClassname;
+    public BazelExternalIdExtractionSimpleRule(final String targetDependenciesQueryFilterPattern, final String dependencyDetailsXmlQueryKindPattern,
+        final String ruleElementSelectorValue, final String artifactStringSeparatorRegex,
+        final String bazelTarget) {
+        this.targetDependenciesQueryFilterPattern = targetDependenciesQueryFilterPattern;
+        this.dependencyDetailsXmlQueryKindPattern = dependencyDetailsXmlQueryKindPattern;
+        // ruleClassname is the dependencyDetailsXmlQueryKindPattern
+        this.ruleClassname = dependencyDetailsXmlQueryKindPattern;
         this.ruleElementSelectorValue = ruleElementSelectorValue;
         this.artifactStringSeparatorRegex = artifactStringSeparatorRegex;
+        this.bazelTarget = bazelTarget;
     }
 
-    public List<String> getBazelQueryCommandArgsIncludingQuery() {
-        return bazelQueryCommandArgsIncludingQuery;
+    public String getTargetDependenciesQueryFilterPattern() {
+        return targetDependenciesQueryFilterPattern;
+    }
+
+    public String getDependencyDetailsXmlQueryKindPattern() {
+        return dependencyDetailsXmlQueryKindPattern;
     }
 
     public String getRuleClassname() {
@@ -56,5 +71,9 @@ public class BazelExternalIdExtractionSimpleRule extends Stringable {
 
     public String getArtifactStringSeparatorRegex() {
         return artifactStringSeparatorRegex;
+    }
+
+    public String getBazelTarget() {
+        return bazelTarget;
     }
 }

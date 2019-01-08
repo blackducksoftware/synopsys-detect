@@ -23,34 +23,63 @@
  */
 package com.blackducksoftware.integration.hub.detect.detector.bazel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.synopsys.integration.util.Stringable;
 
 public class BazelExternalIdExtractionXPathRule extends Stringable {
-    // Everything following "bazel". Example: "query", "kind(.*, //external:*)", "--output", "xml"
-    private final List<String> bazelQueryCommandArgsIncludingQuery;
+    // The bazel query to get the target's dependencies
+    // Include everything following "bazel". Example: "query", "filter(\"@.*:jar\", deps(${detect.bazel.target}))"
+    private final List<String> targetDependenciesQueryBazelCmdArguments;
+    // The search/replace transforms to run on the output of each targetDependenciesQuery to convert each into a bazel external ID
+    private final List<SearchReplacePattern> dependencyToBazelExternalIdTransforms;
+    //
+    private final List<String> dependencyDetailsXmlQueryBazelCmdArguments;
     private final String xPathQuery;
     private final String ruleElementValueAttrName;
     // Example: ":"
     private final String artifactStringSeparatorRegex;
 
-    public BazelExternalIdExtractionXPathRule(final List<String> bazelQueryCommandArgsIncludingQuery, final String xPathQuery, final String ruleElementValueAttrName, final String artifactStringSeparatorRegex) {
-        this.bazelQueryCommandArgsIncludingQuery = bazelQueryCommandArgsIncludingQuery;
+    public BazelExternalIdExtractionXPathRule(final List<String> targetDependenciesQueryBazelCmdArguments, final List<SearchReplacePattern> dependencyToBazelExternalIdTransforms,
+        final List<String> dependencyDetailsXmlQueryBazelCmdArguments,
+        final String xPathQuery, final String ruleElementValueAttrName, final String artifactStringSeparatorRegex) {
+        this.targetDependenciesQueryBazelCmdArguments = targetDependenciesQueryBazelCmdArguments;
+        this.dependencyToBazelExternalIdTransforms = dependencyToBazelExternalIdTransforms;
+        this.dependencyDetailsXmlQueryBazelCmdArguments = dependencyDetailsXmlQueryBazelCmdArguments;
         this.xPathQuery = xPathQuery;
         this.ruleElementValueAttrName = ruleElementValueAttrName;
         this.artifactStringSeparatorRegex = artifactStringSeparatorRegex;
     }
 
     public BazelExternalIdExtractionXPathRule(final BazelExternalIdExtractionSimpleRule simpleRule) {
-        this.bazelQueryCommandArgsIncludingQuery = simpleRule.getBazelQueryCommandArgsIncludingQuery();
+        this.targetDependenciesQueryBazelCmdArguments = Arrays.asList("query",
+            String.format("filter(\"%s\", deps(%s))", simpleRule.getTargetDependenciesQueryFilterPattern(), simpleRule.getBazelTarget()));
+
+        this.dependencyToBazelExternalIdTransforms = new ArrayList<>();
+        this.dependencyToBazelExternalIdTransforms.add(new SearchReplacePattern("^@", ""));
+        this.dependencyToBazelExternalIdTransforms.add(new SearchReplacePattern("//.*", ""));
+        this.dependencyToBazelExternalIdTransforms.add(new SearchReplacePattern("^", "//external:"));
+
+        this.dependencyDetailsXmlQueryBazelCmdArguments = Arrays.asList("query",
+            String.format("kind(%s, ${detect.bazel.target.dependency})", simpleRule.getDependencyDetailsXmlQueryKindPattern()));
+
         this.xPathQuery = String.format("/query/rule[@class='%s']/%s[@%s='%s']", simpleRule.getRuleClassname(), "string", "name", simpleRule.getRuleElementSelectorValue());
         this.ruleElementValueAttrName = "value";
         this.artifactStringSeparatorRegex = simpleRule.getArtifactStringSeparatorRegex();
     }
 
-    public List<String> getBazelQueryCommandArgsIncludingQuery() {
-        return bazelQueryCommandArgsIncludingQuery;
+    public List<String> getTargetDependenciesQueryBazelCmdArguments() {
+        return targetDependenciesQueryBazelCmdArguments;
+    }
+
+    public List<SearchReplacePattern> getDependencyToBazelExternalIdTransforms() {
+        return dependencyToBazelExternalIdTransforms;
+    }
+
+    public List<String> getDependencyDetailsXmlQueryBazelCmdArguments() {
+        return dependencyDetailsXmlQueryBazelCmdArguments;
     }
 
     public String getXPathQuery() {

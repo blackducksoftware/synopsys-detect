@@ -539,6 +539,10 @@ public enum DetectProperty {
     DETECT_BAZEL_PATH("detect.bazel.path", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BAZEL)
+    @HelpDescription("The bazel target (e.g. //foo:foolib) to collect dependencies for. For detect to run bazel this property must be set.")
+    DETECT_BAZEL_TARGET("detect.bazel.target", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_BAZEL)
     @HelpDescription("The path to a file containing a list of BazelExternalIdExtractionXPathRule objects in json (to override the default behavior)")
     DETECT_BAZEL_ADVANCED_RULES_PATH("detect.bazel.advanced.rules.path", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
