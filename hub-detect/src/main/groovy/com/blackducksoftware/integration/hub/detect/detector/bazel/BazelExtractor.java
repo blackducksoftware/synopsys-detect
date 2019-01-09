@@ -65,6 +65,7 @@ public class BazelExtractor {
         try {
             bdioGenerator.setWorkspaceDir(workspaceDir);
             final String xPathRulesPath = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_ADVANCED_RULES_PATH, PropertyAuthority.None);
+            final String bazelTarget = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None);
             List<BazelExternalIdExtractionXPathRule> xPathRules;
             if (StringUtils.isNotBlank(xPathRulesPath)) {
                 xPathRules = loadXPathRulesFromFile(xPathRulesPath);
@@ -76,7 +77,7 @@ public class BazelExtractor {
                     logger.debug(String.format("Using default rules:\n%s", bazelExternalIdExtractionXPathRuleJsonProcessor.toJson(xPathRules)));
                 }
             }
-            BazelExternalIdGenerator externalIdGenerator = new BazelExternalIdGenerator(executableRunner, bazelExe, parser, workspaceDir);
+            BazelExternalIdGenerator externalIdGenerator = new BazelExternalIdGenerator(executableRunner, bazelExe, parser, workspaceDir, bazelTarget);
             xPathRules.stream()
                 .map(externalIdGenerator::generate)
                 .flatMap(Collection::stream)

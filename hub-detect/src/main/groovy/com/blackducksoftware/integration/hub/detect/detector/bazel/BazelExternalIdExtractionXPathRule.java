@@ -55,7 +55,7 @@ public class BazelExternalIdExtractionXPathRule extends Stringable {
 
     public BazelExternalIdExtractionXPathRule(final BazelExternalIdExtractionSimpleRule simpleRule) {
         this.targetDependenciesQueryBazelCmdArguments = Arrays.asList("query",
-            String.format("filter(\"%s\", deps(%s))", simpleRule.getTargetDependenciesQueryFilterPattern(), simpleRule.getBazelTarget()));
+            String.format("filter(\"%s\", deps(${detect.bazel.target}))", simpleRule.getTargetDependenciesQueryFilterPattern()));
 
         this.dependencyToBazelExternalIdTransforms = new ArrayList<>();
         this.dependencyToBazelExternalIdTransforms.add(new SearchReplacePattern("^@", ""));

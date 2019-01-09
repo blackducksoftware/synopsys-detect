@@ -47,14 +47,16 @@ public class BazelExternalIdGenerator {
     private final String bazelExe;
     private final BazelQueryXmlOutputParser parser;
     private final File workspaceDir;
+    private final String bazelTarget;
     private final Map<BazelExternalIdExtractionXPathRule, Exception> exceptionsGenerated = new HashMap<>();
 
     public BazelExternalIdGenerator(final ExecutableRunner executableRunner, final String bazelExe,
-        final BazelQueryXmlOutputParser parser, final File workspaceDir) {
+        final BazelQueryXmlOutputParser parser, final File workspaceDir, final String bazelTarget) {
         this.executableRunner = executableRunner;
         this.bazelExe = bazelExe;
         this.parser = parser;
         this.workspaceDir = workspaceDir;
+        this.bazelTarget = bazelTarget;
     }
 
     public List<BazelExternalId> generate(BazelExternalIdExtractionXPathRule xPathRule) {

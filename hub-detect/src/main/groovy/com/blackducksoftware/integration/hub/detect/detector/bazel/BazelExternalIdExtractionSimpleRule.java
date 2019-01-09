@@ -38,19 +38,15 @@ public class BazelExternalIdExtractionSimpleRule extends Stringable {
     private final String ruleElementSelectorValue;
     // Example: ":"
     private final String artifactStringSeparatorRegex;
-    // Example: "//foo:foolib"
-    private final String bazelTarget;
 
     public BazelExternalIdExtractionSimpleRule(final String targetDependenciesQueryFilterPattern, final String dependencyDetailsXmlQueryKindPattern,
-        final String ruleElementSelectorValue, final String artifactStringSeparatorRegex,
-        final String bazelTarget) {
+        final String ruleElementSelectorValue, final String artifactStringSeparatorRegex) {
         this.targetDependenciesQueryFilterPattern = targetDependenciesQueryFilterPattern;
         this.dependencyDetailsXmlQueryKindPattern = dependencyDetailsXmlQueryKindPattern;
         // ruleClassname is the dependencyDetailsXmlQueryKindPattern
         this.ruleClassname = dependencyDetailsXmlQueryKindPattern;
         this.ruleElementSelectorValue = ruleElementSelectorValue;
         this.artifactStringSeparatorRegex = artifactStringSeparatorRegex;
-        this.bazelTarget = bazelTarget;
     }
 
     public String getTargetDependenciesQueryFilterPattern() {
@@ -71,9 +67,5 @@ public class BazelExternalIdExtractionSimpleRule extends Stringable {
 
     public String getArtifactStringSeparatorRegex() {
         return artifactStringSeparatorRegex;
-    }
-
-    public String getBazelTarget() {
-        return bazelTarget;
     }
 }

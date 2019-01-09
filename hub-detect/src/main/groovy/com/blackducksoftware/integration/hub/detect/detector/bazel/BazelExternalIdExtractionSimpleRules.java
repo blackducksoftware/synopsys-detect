@@ -32,8 +32,7 @@ public class BazelExternalIdExtractionSimpleRules {
 
     public BazelExternalIdExtractionSimpleRules(final String bazelTarget) {
         rules = new ArrayList<>();
-        rules.add(new BazelExternalIdExtractionSimpleRule("@.*:jar", "maven_jar", "artifact", ":",
-            bazelTarget));
+        rules.add(new BazelExternalIdExtractionSimpleRule("@.*:jar", "maven_jar", "artifact", ":"));
     }
 
     public Collection<BazelExternalIdExtractionSimpleRule> getRules() {
