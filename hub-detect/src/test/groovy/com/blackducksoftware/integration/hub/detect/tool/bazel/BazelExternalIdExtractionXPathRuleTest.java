@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.detector.bazel;
+package com.blackducksoftware.integration.hub.detect.tool.bazel;
 
 import static org.junit.Assert.assertEquals;
 

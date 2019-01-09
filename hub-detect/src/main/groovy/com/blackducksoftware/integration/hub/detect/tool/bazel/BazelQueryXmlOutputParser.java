@@ -21,21 +21,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.bazel;
+package com.blackducksoftware.integration.hub.detect.tool.bazel;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.io.IOException;
 import java.util.List;
 
-public class BazelExternalIdExtractionSimpleRules {
-    private final List<BazelExternalIdExtractionSimpleRule> rules;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
 
-    public BazelExternalIdExtractionSimpleRules(final String bazelTarget) {
-        rules = new ArrayList<>();
-        rules.add(new BazelExternalIdExtractionSimpleRule("@.*:jar", "maven_jar", "artifact", ":"));
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
+public class BazelQueryXmlOutputParser {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final XPathParser xPathParser;
+
+    public BazelQueryXmlOutputParser(final XPathParser xPathParser) {
+        this.xPathParser = xPathParser;
     }
 
-    public Collection<BazelExternalIdExtractionSimpleRule> getRules() {
-        return rules;
+    public List<String> parseStringValuesWithXPath(final String xml, final String xPathQuery, final String ruleElementValueAttrName) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+        List<String> externalIds = xPathParser.parseAttributeValuesWithGivenXPathQuery(xml, xPathQuery, ruleElementValueAttrName);
+        return externalIds;
     }
 }

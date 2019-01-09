@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.bazel;
+package com.blackducksoftware.integration.hub.detect.tool.bazel;
 
 import java.util.ArrayList;
 import java.util.HashMap;

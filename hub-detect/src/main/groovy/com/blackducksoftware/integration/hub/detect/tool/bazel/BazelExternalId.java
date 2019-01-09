@@ -21,32 +21,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.bazel;
+package com.blackducksoftware.integration.hub.detect.tool.bazel;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
+import com.synopsys.integration.util.Stringable;
 
-import org.apache.commons.io.FileUtils;
+public class BazelExternalId extends Stringable {
+    private final String group;
+    private final String artifact;
+    private final String version;
 
-import com.google.gson.Gson;
-
-public class BazelExternalIdExtractionXPathRuleJsonProcessor {
-    private final Gson gson;
-
-    public BazelExternalIdExtractionXPathRuleJsonProcessor(final Gson gson) {
-        this.gson = gson;
+    public static BazelExternalId fromBazelArtifactString(final String bazelArtifactString, final String separatorRegEx) {
+        final String[] parts = bazelArtifactString.split(separatorRegEx);
+        return new BazelExternalId(parts[0], parts[1], parts[2]);
+    }
+    private BazelExternalId(final String group, final String artifact, final String version) {
+        this.group = group;
+        this.artifact = artifact;
+        this.version = version;
     }
 
-    public List<BazelExternalIdExtractionXPathRule> load(File jsonFile) throws IOException {
-        String json = FileUtils.readFileToString(jsonFile, StandardCharsets.UTF_8);
-        BazelExternalIdExtractionXPathRule[] rulesArray = gson.fromJson(json, BazelExternalIdExtractionXPathRule[].class);
-        return Arrays.asList(rulesArray);
+    public String getGroup() {
+        return group;
     }
 
-    public String toJson(final List<BazelExternalIdExtractionXPathRule> rules) {
-        return gson.toJson(rules);
+    public String getArtifact() {
+        return artifact;
+    }
+
+    public String getVersion() {
+        return version;
     }
 }

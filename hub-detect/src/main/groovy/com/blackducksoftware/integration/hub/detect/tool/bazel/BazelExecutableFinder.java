@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.bazel;
+package com.blackducksoftware.integration.hub.detect.tool.bazel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

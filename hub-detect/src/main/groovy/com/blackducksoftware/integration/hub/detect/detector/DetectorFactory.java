@@ -27,7 +27,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
-import com.blackducksoftware.integration.hub.detect.detector.bazel.BazelDetector;
+import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelDetector;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeDetector;
 import com.blackducksoftware.integration.hub.detect.detector.clang.ClangDetector;
 import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockDetector;
