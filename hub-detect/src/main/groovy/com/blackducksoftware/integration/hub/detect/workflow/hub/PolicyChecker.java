@@ -23,16 +23,17 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.hub;
 
+import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicySummaryStatusType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
@@ -44,10 +45,24 @@ import com.synopsys.integration.exception.IntegrationException;
 public class PolicyChecker {
     private final Logger logger = LoggerFactory.getLogger(PolicyChecker.class);
 
-    private final DetectConfiguration detectConfiguration;
+    private final EventSystem eventSystem;
 
-    public PolicyChecker(final DetectConfiguration detectConfiguration) {
-        this.detectConfiguration = detectConfiguration;
+    public PolicyChecker(EventSystem eventSystem) {
+        this.eventSystem = eventSystem;
+    }
+
+    public void checkPolicy(final List<PolicySeverityType> policySeverities, final ProjectService projectService, final ProjectVersionView projectVersionView) throws IntegrationException {
+        final Optional<PolicyStatusDescription> optionalPolicyStatusDescription = getPolicyStatus(projectService, projectVersionView);
+        if (optionalPolicyStatusDescription.isPresent()) {
+            PolicyStatusDescription policyStatusDescription = optionalPolicyStatusDescription.get();
+            logger.info(policyStatusDescription.getPolicyStatusMessage());
+            if (arePolicySeveritiesViolated(policyStatusDescription, policySeverities)) {
+                eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_POLICY_VIOLATION, policyStatusDescription.getPolicyStatusMessage()));
+            }
+        } else {
+            String availableLinks = StringUtils.join(projectVersionView.getAvailableLinks(), ", ");
+            logger.warn("It is not possible to check the policy status for this project/version. The policy-status link must be present. The available links are: " + availableLinks);
+        }
     }
 
     /**
@@ -72,30 +87,11 @@ public class PolicyChecker {
         return Optional.of(policyStatusDescription);
     }
 
-    public boolean policyViolated(final PolicyStatusDescription policyStatusDescription) {
-        final String policyFailOnSeverity = detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None);
-        if (StringUtils.isEmpty(policyFailOnSeverity)) {
-            return isAnyPolicyViolated(policyStatusDescription);
-        }
-
-        final String[] policySeverityCheck = policyFailOnSeverity.split(",");
-        return arePolicySeveritiesViolated(policyStatusDescription, policySeverityCheck);
-    }
-
-    private boolean isAnyPolicyViolated(final PolicyStatusDescription policyStatusDescription) {
-        final int inViolationCount = policyStatusDescription.getCountOfStatus(PolicySummaryStatusType.IN_VIOLATION);
-        return inViolationCount != 0;
-    }
-
-    private boolean arePolicySeveritiesViolated(final PolicyStatusDescription policyStatusDescription, final String[] severityCheckList) {
-        for (final String policySeverity : severityCheckList) {
-            final String formattedPolicySeverity = policySeverity.toUpperCase().trim();
-            final PolicySeverityType policySeverityType = EnumUtils.getEnum(PolicySeverityType.class, formattedPolicySeverity);
-            if (policySeverityType != null) {
-                final int severityCount = policyStatusDescription.getCountOfSeverity(policySeverityType);
-                if (severityCount > 0) {
-                    return true;
-                }
+    private boolean arePolicySeveritiesViolated(final PolicyStatusDescription policyStatusDescription, final List<PolicySeverityType> policySeverities) {
+        for (final PolicySeverityType policySeverity : policySeverities) {
+            final int severityCount = policyStatusDescription.getCountOfSeverity(policySeverity);
+            if (severityCount > 0) {
+                return true;
             }
         }
 

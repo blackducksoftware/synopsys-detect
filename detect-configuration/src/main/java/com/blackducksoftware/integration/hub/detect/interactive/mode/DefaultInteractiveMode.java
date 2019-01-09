@@ -25,16 +25,12 @@ package com.blackducksoftware.integration.hub.detect.interactive.mode;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
-import com.synopsys.integration.log.BufferedIntLogger;
-import com.synopsys.integration.log.SilentIntLogger;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 
 public class DefaultInteractiveMode extends InteractiveMode {
-    private final HubServiceManager hubServiceManager;
     private final DetectOptionManager detectOptionManager;
 
-    public DefaultInteractiveMode(final HubServiceManager hubServiceManager, final DetectOptionManager detectOptionManager) {
-        this.hubServiceManager = hubServiceManager;
+    public DefaultInteractiveMode(final DetectOptionManager detectOptionManager) {
         this.detectOptionManager = detectOptionManager;
     }
 
@@ -57,7 +53,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
                     setPropertyFromQuestion(DetectProperty.BLACKDUCK_USERNAME, "What is the username?");
 
                     final Boolean setHubPassword = askYesOrNoWithMessage("Would you like to set the password?",
-                            "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_HUB_PASSWORD.");
+                        "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_HUB_PASSWORD.");
                     if (setHubPassword) {
                         setPropertyFromSecretQuestion(DetectProperty.BLACKDUCK_PASSWORD, "What is the password?");
                     }
@@ -69,7 +65,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
                     setPropertyFromQuestion(DetectProperty.BLACKDUCK_PROXY_PORT, "What is the proxy port?");
                     setPropertyFromQuestion(DetectProperty.BLACKDUCK_PROXY_USERNAME, "What is the Black Duck username?");
                     final Boolean setHubPassword = askYesOrNoWithMessage("Would you like to set the Black Duck password?",
-                            "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_PROXY_PASSWORD.");
+                        "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_PROXY_PASSWORD.");
                     if (setHubPassword) {
                         setPropertyFromSecretQuestion(DetectProperty.BLACKDUCK_PROXY_PASSWORD, "What is the proxy password?");
                     }
@@ -89,7 +85,8 @@ public class DefaultInteractiveMode extends InteractiveMode {
                 if (testHub) {
                     try {
                         detectOptionManager.applyInteractiveOptions(getInteractiveOptions());
-                        connected = hubServiceManager.testBlackDuckConnection(new SilentIntLogger());
+                        BlackDuckServerConfig blackDuckServerConfig = detectOptionManager.createBlackduckServerConfig();
+                        connected = blackDuckServerConfig.canConnect();
                     } catch (final Exception e) {
                         println("Failed to test connection.");
                         println(e.toString());

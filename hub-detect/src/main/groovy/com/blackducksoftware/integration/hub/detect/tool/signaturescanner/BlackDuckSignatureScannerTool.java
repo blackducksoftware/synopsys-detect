@@ -35,12 +35,12 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
-import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
@@ -69,8 +69,8 @@ public class BlackDuckSignatureScannerTool {
         DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
 
         Optional<BlackDuckServerConfig> hubServerConfig = Optional.empty();
-        if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
-            hubServerConfig = Optional.of(connectivityManager.getHubServiceManager().get().getBlackDuckServerConfig());
+        if (connectivityManager.isDetectOnline() && connectivityManager.getBlackDuckServerConfig().isPresent()) {
+            hubServerConfig = connectivityManager.getBlackDuckServerConfig();
         }
 
         logger.info("Will run the signature scanner tool.");
@@ -118,7 +118,7 @@ public class BlackDuckSignatureScannerTool {
         try {
             if (hubServerConfig.isPresent()) {
                 logger.debug("Signature scan is online.");
-                CodeLocationCreationService codeLocationCreationService = connectivityManager.getHubServiceManager().get().createCodeLocationCreationService();
+                CodeLocationCreationService codeLocationCreationService = connectivityManager.getBlackDuckServicesFactory().get().createCodeLocationCreationService();
                 OnlineBlackDuckSignatureScanner blackDuckSignatureScanner = detectContext.getBean(OnlineBlackDuckSignatureScanner.class, signatureScannerOptions, scanBatchRunner, codeLocationCreationService, hubServerConfig.get());
                 CodeLocationCreationData<ScanBatchOutput> codeLocationCreationData = blackDuckSignatureScanner.performOnlineScan(projectNameVersion, installDirectory, dockerTar.orElse(null));
                 return SignatureScannerToolResult.createOnlineResult(codeLocationCreationData);
