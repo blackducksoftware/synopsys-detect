@@ -61,9 +61,10 @@ public class BazelExternalIdGenerator {
 
     public List<BazelExternalId> generate(BazelExternalIdExtractionXPathRule xPathRule) {
         final List<BazelExternalId> projectExternalIds = new ArrayList<>();
+        final BazelVariableSubstitutor variableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
         ExecutableOutput targetDependenciesQueryResults = null;
         try {
-            targetDependenciesQueryResults = executableRunner.executeQuietly(workspaceDir, bazelExe, xPathRule.getTargetDependenciesQueryBazelCmdArguments());
+            targetDependenciesQueryResults = executableRunner.executeQuietly(workspaceDir, bazelExe, variableSubstitutor.substitute(xPathRule.getTargetDependenciesQueryBazelCmdArguments()));
         } catch (ExecutableRunnerException e) {
             logger.error(String.format("Error executing bazel with args: %s: %s", xPathRule.getTargetDependenciesQueryBazelCmdArguments(), e.getMessage()));
             exceptionsGenerated.put(xPathRule, e);
@@ -71,7 +72,7 @@ public class BazelExternalIdGenerator {
         }
         final int targetDependenciesQueryReturnCode = targetDependenciesQueryResults.getReturnCode();
         final String targetDependenciesQueryOutput = targetDependenciesQueryResults.getStandardOutput();
-        logger.trace(String.format("Bazel targetDependenciesQuery returned %d; output: %s", targetDependenciesQueryReturnCode, targetDependenciesQueryOutput));
+        logger.debug(String.format("Bazel targetDependenciesQuery returned %d; output: %s", targetDependenciesQueryReturnCode, targetDependenciesQueryOutput));
 
         // TODO : error checking?
         // TODO : streams
@@ -89,10 +90,10 @@ public class BazelExternalIdGenerator {
             }
             final int dependencyDetailsXmlQueryReturnCode = dependencyDetailsXmlQueryResults.getReturnCode();
             final String dependencyDetailsXmlQueryOutput = dependencyDetailsXmlQueryResults.getStandardOutput();
-            logger.trace(String.format("Bazel targetDependenciesQuery returned %d; output: %s", dependencyDetailsXmlQueryReturnCode, dependencyDetailsXmlQueryOutput));
+            logger.debug(String.format("Bazel targetDependenciesQuery returned %d; output: %s", dependencyDetailsXmlQueryReturnCode, dependencyDetailsXmlQueryOutput));
 
             final String xml = dependencyDetailsXmlQueryResults.getStandardOutput();
-            logger.trace(String.format("Bazel query returned %d; output: %s", dependencyDetailsXmlQueryReturnCode, xml));
+            logger.debug(String.format("Bazel query returned %d; output: %s", dependencyDetailsXmlQueryReturnCode, xml));
             final List<String> ruleArtifactStrings;
             try {
                 ruleArtifactStrings = parser.parseStringValuesWithXPath(xml, xPathRule.getXPathQuery(), xPathRule.getRuleElementValueAttrName());
