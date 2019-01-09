@@ -77,7 +77,7 @@ public class BazelExternalIdGenerator {
         // TODO : error checking?
         // TODO : streams
         // TODO : split up this method
-        final String[] rawDependencies = targetDependenciesQueryOutput.split(" ");
+        final String[] rawDependencies = targetDependenciesQueryOutput.split("\\s+");
         for (final String rawDependency : rawDependencies) {
             logger.debug(String.format("Processing rawDependency: %s", rawDependency));
             String bazelExternalId = rawDependency;
