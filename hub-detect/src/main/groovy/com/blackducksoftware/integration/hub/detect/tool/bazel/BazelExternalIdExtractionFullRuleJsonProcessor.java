@@ -33,20 +33,20 @@ import org.apache.commons.io.FileUtils;
 
 import com.google.gson.Gson;
 
-public class BazelExternalIdExtractionXPathRuleJsonProcessor {
+public class BazelExternalIdExtractionFullRuleJsonProcessor {
     private final Gson gson;
 
-    public BazelExternalIdExtractionXPathRuleJsonProcessor(final Gson gson) {
+    public BazelExternalIdExtractionFullRuleJsonProcessor(final Gson gson) {
         this.gson = gson;
     }
 
-    public List<BazelExternalIdExtractionXPathRule> load(File jsonFile) throws IOException {
+    public List<BazelExternalIdExtractionFullRule> load(File jsonFile) throws IOException {
         String json = FileUtils.readFileToString(jsonFile, StandardCharsets.UTF_8);
-        BazelExternalIdExtractionXPathRule[] rulesArray = gson.fromJson(json, BazelExternalIdExtractionXPathRule[].class);
+        BazelExternalIdExtractionFullRule[] rulesArray = gson.fromJson(json, BazelExternalIdExtractionFullRule[].class);
         return Arrays.asList(rulesArray);
     }
 
-    public String toJson(final List<BazelExternalIdExtractionXPathRule> rules) {
+    public String toJson(final List<BazelExternalIdExtractionFullRule> rules) {
         return gson.toJson(rules);
     }
 }

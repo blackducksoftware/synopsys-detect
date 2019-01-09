@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 
-public class BazelExternalIdExtractionXPathRuleJsonProcessorTest {
+public class BazelExternalIdExtractionFullRuleJsonProcessorTest {
     private static File tempDir;
 
     @BeforeAll
@@ -31,13 +31,13 @@ public class BazelExternalIdExtractionXPathRuleJsonProcessorTest {
         List<SearchReplacePattern> searchReplacePatterns = new ArrayList<>();
         searchReplacePatterns.add(new SearchReplacePattern("search1", "replace1"));
         List<String> bazelQueryCommandArgsIncludingQuery = Arrays.asList("query", "stuff", "-output", "xml");
-        BazelExternalIdExtractionXPathRule origRule = new BazelExternalIdExtractionXPathRule(
+        BazelExternalIdExtractionFullRule origRule = new BazelExternalIdExtractionFullRule(
             Arrays.asList("targetDependenciesQueryBazelCmdArgument1", "targetDependenciesQueryBazelCmdArgument2"),
             searchReplacePatterns,
         Arrays.asList("dependencyDetailsXmlQueryBazelCmdArgument1", "dependencyDetailsXmlQueryBazelCmdArgument2"),
         "testXPathQuery", "testRuleElementValueAttrName", "testArtifactStringSeparatorRegex");
 
-        List<BazelExternalIdExtractionXPathRule> origRules = new ArrayList<>();
+        List<BazelExternalIdExtractionFullRule> origRules = new ArrayList<>();
         origRules.add(origRule);
         Gson gson = new Gson();
         String json = gson.toJson(origRules);
@@ -46,9 +46,9 @@ public class BazelExternalIdExtractionXPathRuleJsonProcessorTest {
         System.out.printf("Writing file %s\n", jsonFile.getAbsolutePath());
         FileUtils.write(jsonFile, json, StandardCharsets.UTF_8);
 
-        BazelExternalIdExtractionXPathRuleJsonProcessor processor = new BazelExternalIdExtractionXPathRuleJsonProcessor(gson);
-        List<BazelExternalIdExtractionXPathRule> loadedRules = processor.load(jsonFile);
-        for (BazelExternalIdExtractionXPathRule loadedRule : loadedRules) {
+        BazelExternalIdExtractionFullRuleJsonProcessor processor = new BazelExternalIdExtractionFullRuleJsonProcessor(gson);
+        List<BazelExternalIdExtractionFullRule> loadedRules = processor.load(jsonFile);
+        for (BazelExternalIdExtractionFullRule loadedRule : loadedRules) {
             System.out.printf("loaded rule: %s\n", loadedRule);
         }
         assertEquals(1, loadedRules.size());

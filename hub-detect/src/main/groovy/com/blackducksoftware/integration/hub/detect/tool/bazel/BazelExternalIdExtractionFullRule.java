@@ -29,7 +29,16 @@ import java.util.List;
 
 import com.synopsys.integration.util.Stringable;
 
-public class BazelExternalIdExtractionXPathRule extends Stringable {
+public class BazelExternalIdExtractionFullRule extends Stringable {
+    public static final String BAZEL_QUERY_SUBCOMMAND = "query";
+    public static final String FILTER_GET_DEPENDENCIES_FOR_TARGET = "filter(\"%s\", deps(${detect.bazel.target}))";
+    public static final String FILTER_GET_DETAILS_FOR_DEPENDENCY = "kind(%s, ${detect.bazel.target.dependency})";
+    public static final String OUTPUT_SELECTOR = "--output";
+    public static final String OUTPUT_XML_FORMAT = "xml";
+    public static final String XPATH_QUERY_FOR_ARTIFACT = "/query/rule[@class='%s']/%s[@%s='%s']";
+    public static final String XPATH_QUERY_ARTIFACT_VALUE_ATTRIBUTE = "value";
+    public static final String XPATH_QUERY_RULE_ELEMENT_CLASS = "string";
+    public static final String XPATH_QUERY_SELECTOR_ATTRIBUTE = "name";
     // The bazel query to get the target's dependencies
     // Include everything following "bazel". Example: "query", "filter(\"@.*:jar\", deps(${detect.bazel.target}))"
     private final List<String> targetDependenciesQueryBazelCmdArguments;
@@ -42,7 +51,7 @@ public class BazelExternalIdExtractionXPathRule extends Stringable {
     // Example: ":"
     private final String artifactStringSeparatorRegex;
 
-    public BazelExternalIdExtractionXPathRule(final List<String> targetDependenciesQueryBazelCmdArguments, final List<SearchReplacePattern> dependencyToBazelExternalIdTransforms,
+    public BazelExternalIdExtractionFullRule(final List<String> targetDependenciesQueryBazelCmdArguments, final List<SearchReplacePattern> dependencyToBazelExternalIdTransforms,
         final List<String> dependencyDetailsXmlQueryBazelCmdArguments,
         final String xPathQuery, final String ruleElementValueAttrName, final String artifactStringSeparatorRegex) {
         this.targetDependenciesQueryBazelCmdArguments = targetDependenciesQueryBazelCmdArguments;
@@ -53,21 +62,21 @@ public class BazelExternalIdExtractionXPathRule extends Stringable {
         this.artifactStringSeparatorRegex = artifactStringSeparatorRegex;
     }
 
-    public BazelExternalIdExtractionXPathRule(final BazelExternalIdExtractionSimpleRule simpleRule) {
-        this.targetDependenciesQueryBazelCmdArguments = Arrays.asList("query",
-            String.format("filter(\"%s\", deps(${detect.bazel.target}))", simpleRule.getTargetDependenciesQueryFilterPattern()));
+    public BazelExternalIdExtractionFullRule(final BazelExternalIdExtractionSimpleRule simpleRule) {
+        this.targetDependenciesQueryBazelCmdArguments = Arrays.asList(BAZEL_QUERY_SUBCOMMAND,
+            String.format(FILTER_GET_DEPENDENCIES_FOR_TARGET, simpleRule.getTargetDependenciesQueryFilterPattern()));
 
         this.dependencyToBazelExternalIdTransforms = new ArrayList<>();
         this.dependencyToBazelExternalIdTransforms.add(new SearchReplacePattern("^@", ""));
         this.dependencyToBazelExternalIdTransforms.add(new SearchReplacePattern("//.*", ""));
         this.dependencyToBazelExternalIdTransforms.add(new SearchReplacePattern("^", "//external:"));
 
-        this.dependencyDetailsXmlQueryBazelCmdArguments = Arrays.asList("query",
-            String.format("kind(%s, ${detect.bazel.target.dependency})", simpleRule.getDependencyDetailsXmlQueryKindPattern()),
-            "--output", "xml");
+        this.dependencyDetailsXmlQueryBazelCmdArguments = Arrays.asList(BAZEL_QUERY_SUBCOMMAND,
+            String.format(FILTER_GET_DETAILS_FOR_DEPENDENCY, simpleRule.getDependencyDetailsXmlQueryKindPattern()),
+            OUTPUT_SELECTOR, OUTPUT_XML_FORMAT);
 
-        this.xPathQuery = String.format("/query/rule[@class='%s']/%s[@%s='%s']", simpleRule.getRuleClassname(), "string", "name", simpleRule.getRuleElementSelectorValue());
-        this.ruleElementValueAttrName = "value";
+        this.xPathQuery = String.format(XPATH_QUERY_FOR_ARTIFACT, simpleRule.getRuleClassname(), XPATH_QUERY_RULE_ELEMENT_CLASS, XPATH_QUERY_SELECTOR_ATTRIBUTE, simpleRule.getRuleElementSelectorValue());
+        this.ruleElementValueAttrName = XPATH_QUERY_ARTIFACT_VALUE_ATTRIBUTE;
         this.artifactStringSeparatorRegex = simpleRule.getArtifactStringSeparatorRegex();
     }
 

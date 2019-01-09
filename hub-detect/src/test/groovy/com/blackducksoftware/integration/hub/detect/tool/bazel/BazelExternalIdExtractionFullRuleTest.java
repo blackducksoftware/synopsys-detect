@@ -4,13 +4,13 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class BazelExternalIdExtractionXPathRuleTest {
+public class BazelExternalIdExtractionFullRuleTest {
 
     @Test
     public void test() {
         BazelExternalIdExtractionSimpleRule simpleRule = new BazelExternalIdExtractionSimpleRule("@.*:jar", "maven_jar",
             "artifactory", ":");
-        BazelExternalIdExtractionXPathRule xPathRule = new BazelExternalIdExtractionXPathRule(simpleRule);
+        BazelExternalIdExtractionFullRule xPathRule = new BazelExternalIdExtractionFullRule(simpleRule);
 
         assertEquals(2, xPathRule.getTargetDependenciesQueryBazelCmdArguments().size());
         assertEquals("query", xPathRule.getTargetDependenciesQueryBazelCmdArguments().get(0));

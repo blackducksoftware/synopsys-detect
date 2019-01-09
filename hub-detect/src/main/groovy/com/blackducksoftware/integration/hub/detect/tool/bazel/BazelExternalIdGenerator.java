@@ -48,7 +48,7 @@ public class BazelExternalIdGenerator {
     private final BazelQueryXmlOutputParser parser;
     private final File workspaceDir;
     private final String bazelTarget;
-    private final Map<BazelExternalIdExtractionXPathRule, Exception> exceptionsGenerated = new HashMap<>();
+    private final Map<BazelExternalIdExtractionFullRule, Exception> exceptionsGenerated = new HashMap<>();
 
     public BazelExternalIdGenerator(final ExecutableRunner executableRunner, final String bazelExe,
         final BazelQueryXmlOutputParser parser, final File workspaceDir, final String bazelTarget) {
@@ -59,7 +59,7 @@ public class BazelExternalIdGenerator {
         this.bazelTarget = bazelTarget;
     }
 
-    public List<BazelExternalId> generate(BazelExternalIdExtractionXPathRule xPathRule) {
+    public List<BazelExternalId> generate(BazelExternalIdExtractionFullRule xPathRule) {
         final List<BazelExternalId> projectExternalIds = new ArrayList<>();
         final BazelVariableSubstitutor targetOnlyVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
         ExecutableOutput targetDependenciesQueryResults = null;
@@ -129,7 +129,7 @@ public class BazelExternalIdGenerator {
             return "No errors";
         }
         final StringBuilder sb = new StringBuilder("Errors encountered generating external IDs: ");
-        for (BazelExternalIdExtractionXPathRule rule : exceptionsGenerated.keySet()) {
+        for (BazelExternalIdExtractionFullRule rule : exceptionsGenerated.keySet()) {
             sb.append(String.format("%s: %s; ", rule, exceptionsGenerated.get(rule).getMessage()));
         }
         return sb.toString();

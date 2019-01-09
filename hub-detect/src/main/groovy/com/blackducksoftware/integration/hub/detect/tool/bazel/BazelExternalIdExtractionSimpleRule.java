@@ -28,8 +28,6 @@ import com.synopsys.integration.util.Stringable;
 public class BazelExternalIdExtractionSimpleRule extends Stringable {
     // Example: "@.*:jar"
     private final String targetDependenciesQueryFilterPattern;
-    // Example: "maven_jar"
-    private final String dependencyDetailsXmlQueryKindPattern;
 
     // Location of artifact in dependency details XML:
     // Example: "maven_jar"
@@ -39,12 +37,10 @@ public class BazelExternalIdExtractionSimpleRule extends Stringable {
     // Example: ":"
     private final String artifactStringSeparatorRegex;
 
-    public BazelExternalIdExtractionSimpleRule(final String targetDependenciesQueryFilterPattern, final String dependencyDetailsXmlQueryKindPattern,
+    public BazelExternalIdExtractionSimpleRule(final String targetDependenciesQueryFilterPattern, final String ruleClassname,
         final String ruleElementSelectorValue, final String artifactStringSeparatorRegex) {
         this.targetDependenciesQueryFilterPattern = targetDependenciesQueryFilterPattern;
-        this.dependencyDetailsXmlQueryKindPattern = dependencyDetailsXmlQueryKindPattern;
-        // ruleClassname is the dependencyDetailsXmlQueryKindPattern
-        this.ruleClassname = dependencyDetailsXmlQueryKindPattern;
+        this.ruleClassname = ruleClassname;
         this.ruleElementSelectorValue = ruleElementSelectorValue;
         this.artifactStringSeparatorRegex = artifactStringSeparatorRegex;
     }
@@ -54,7 +50,7 @@ public class BazelExternalIdExtractionSimpleRule extends Stringable {
     }
 
     public String getDependencyDetailsXmlQueryKindPattern() {
-        return dependencyDetailsXmlQueryKindPattern;
+        return ruleClassname;
     }
 
     public String getRuleClassname() {
