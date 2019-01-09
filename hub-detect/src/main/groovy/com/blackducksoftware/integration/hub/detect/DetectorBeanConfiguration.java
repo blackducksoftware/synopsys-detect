@@ -479,7 +479,7 @@ public class DetectorBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public BazelDetector bazelDetector(final DetectorEnvironment environment) {
-        return new BazelDetector(environment, executableRunner, detectFileFinder, bazelExtractor(), bazelExecutableFinder());
+        return new BazelDetector(environment, executableRunner, bazelExtractor(), bazelExecutableFinder(), detectConfiguration);
     }
 
     @Bean

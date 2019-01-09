@@ -23,74 +23,63 @@
  */
 package com.blackducksoftware.integration.hub.detect.tool.bazel;
 
-import java.io.File;
-
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.Detector;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
-import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
-import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientDetectorResult;
 
 public class BazelDetector extends Detector {
-    public static final String BAZEL_QUERY_SUBCOMMAND = "query";
-    // This query will succeed only within a workspace (top level, or nested dir)
-    private static final String BAZEL_QUERY_SPEC_WORKSPACE_TEST = "kind(rule, //...:*)";
-    public static final String BAZEL_QUERY_SPEC_GET_EXTERNAL_DEPENDENCIES = "kind(.*, //external:*)";
-    public static final String BAZEL_QUERY_OUTPUT_TYPE_SELECTOR = "--output";
-    public static final String BAZEL_QUERY_OUTPUT_TYPE_XML = "xml";
-
-    private static final String BAZEL_WORKSPACE_FILENAME = "WORKSPACE";
-
+    private static final String BAZEL_VERSION_SUBCOMMAND = "version";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final BazelExtractor bazelExtractor;
-    private File workspaceFile;
-    private File workspaceDir;
-    private final DetectFileFinder fileFinder;
     private final ExecutableRunner executableRunner;
     private final BazelExecutableFinder bazelExecutableFinder;
     private String bazelExe;
+    private final DetectConfiguration detectConfiguration;
 
-    public BazelDetector(final DetectorEnvironment environment, final ExecutableRunner executableRunner, final DetectFileFinder fileFinder, final BazelExtractor bazelExtractor,
-        BazelExecutableFinder bazelExecutableFinder) {
+    public BazelDetector(final DetectorEnvironment environment, final ExecutableRunner executableRunner, final BazelExtractor bazelExtractor,
+        BazelExecutableFinder bazelExecutableFinder, final DetectConfiguration detectConfiguration) {
         super(environment, "Bazel", DetectorType.BAZEL);
-        this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;
         this.bazelExtractor = bazelExtractor;
         this.bazelExecutableFinder = bazelExecutableFinder;
+        this.detectConfiguration = detectConfiguration;
     }
 
     @Override
     public DetectorResult applicable() {
-        workspaceFile = fileFinder.findFile(environment.getDirectory(), BAZEL_WORKSPACE_FILENAME);
-        workspaceDir = workspaceFile.getParentFile();
-        if (workspaceFile == null) {
-            return new FileNotFoundDetectorResult(BAZEL_WORKSPACE_FILENAME);
+        final String bazelTarget = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None);
+        if (StringUtils.isBlank(bazelTarget)) {
+            return new PropertyInsufficientDetectorResult();
         }
         return new PassedDetectorResult();
     }
 
     @Override
-    public DetectorResult extractable() throws DetectorException {
+    public DetectorResult extractable() {
         bazelExe = bazelExecutableFinder.findBazel(environment);
         final ExecutableOutput bazelQueryDepsRecursiveOutput;
         try {
-            bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(workspaceDir, bazelExe, BAZEL_QUERY_SUBCOMMAND, BAZEL_QUERY_SPEC_WORKSPACE_TEST);
+            bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(environment.getDirectory(), bazelExe, BAZEL_VERSION_SUBCOMMAND);
             int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
-            logger.trace(String.format("Bazel query returned %d; output: %s", returnCode, bazelQueryDepsRecursiveOutput.getStandardOutput()));
+            logger.trace(String.format("Bazel version returned %d; output: %s", returnCode, bazelQueryDepsRecursiveOutput.getStandardOutput()));
         } catch (ExecutableRunnerException e) {
-            logger.debug(String.format("Bazel query threw exception: %s", e.getMessage()));
+            logger.debug(String.format("Bazel version threw exception: %s", e.getMessage()));
             return new ExecutableNotFoundDetectorResult("bazel");
         }
         return new PassedDetectorResult();
