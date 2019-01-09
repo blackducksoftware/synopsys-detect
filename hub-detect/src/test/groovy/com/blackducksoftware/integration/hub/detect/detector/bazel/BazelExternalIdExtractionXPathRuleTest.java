@@ -22,9 +22,11 @@ public class BazelExternalIdExtractionXPathRuleTest {
         assertEquals("", xPathRule.getDependencyToBazelExternalIdTransforms().get(1).getReplacementString());
         assertEquals("^", xPathRule.getDependencyToBazelExternalIdTransforms().get(2).getSearchRegex());
         assertEquals("//external:", xPathRule.getDependencyToBazelExternalIdTransforms().get(2).getReplacementString());
-        assertEquals(2, xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments().size());
+        assertEquals(4, xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments().size());
         assertEquals("query", xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments().get(0));
         assertEquals("kind(maven_jar, ${detect.bazel.target.dependency})", xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments().get(1));
+        assertEquals("--output", xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments().get(2));
+        assertEquals("xml", xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments().get(3));
         assertEquals("/query/rule[@class='maven_jar']/string[@name='artifactory']", xPathRule.getXPathQuery());
         assertEquals(":", xPathRule.getArtifactStringSeparatorRegex());
         assertEquals("value", xPathRule.getRuleElementValueAttrName());

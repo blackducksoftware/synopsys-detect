@@ -61,10 +61,10 @@ public class BazelExternalIdGenerator {
 
     public List<BazelExternalId> generate(BazelExternalIdExtractionXPathRule xPathRule) {
         final List<BazelExternalId> projectExternalIds = new ArrayList<>();
-        final BazelVariableSubstitutor variableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
+        final BazelVariableSubstitutor targetOnlyVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
         ExecutableOutput targetDependenciesQueryResults = null;
         try {
-            targetDependenciesQueryResults = executableRunner.executeQuietly(workspaceDir, bazelExe, variableSubstitutor.substitute(xPathRule.getTargetDependenciesQueryBazelCmdArguments()));
+            targetDependenciesQueryResults = executableRunner.executeQuietly(workspaceDir, bazelExe, targetOnlyVariableSubstitutor.substitute(xPathRule.getTargetDependenciesQueryBazelCmdArguments()));
         } catch (ExecutableRunnerException e) {
             logger.error(String.format("Error executing bazel with args: %s: %s", xPathRule.getTargetDependenciesQueryBazelCmdArguments(), e.getMessage()));
             exceptionsGenerated.put(xPathRule, e);
@@ -78,11 +78,19 @@ public class BazelExternalIdGenerator {
         // TODO : streams
         // TODO : split up this method
         final String[] rawDependencies = targetDependenciesQueryOutput.split(" ");
-        for (String rawDependency : rawDependencies) {
+        for (final String rawDependency : rawDependencies) {
+            logger.debug(String.format("Processing rawDependency: %s", rawDependency));
+            String bazelExternalId = rawDependency;
+            for (SearchReplacePattern pattern : xPathRule.getDependencyToBazelExternalIdTransforms()) {
+                logger.debug(String.format("Replacing %s with %s", pattern.getSearchRegex(), pattern.getReplacementString()));
+                bazelExternalId = bazelExternalId.replaceAll(pattern.getSearchRegex(), pattern.getReplacementString());
+            }
+            logger.debug(String.format("Transformed rawDependency: %s to bazel external id %s", rawDependency, bazelExternalId));
+            final BazelVariableSubstitutor dependencyVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget, bazelExternalId);
             // TODO use rawDependency
             ExecutableOutput dependencyDetailsXmlQueryResults = null;
             try {
-                dependencyDetailsXmlQueryResults = executableRunner.executeQuietly(workspaceDir, bazelExe, xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments());
+                dependencyDetailsXmlQueryResults = executableRunner.executeQuietly(workspaceDir, bazelExe, dependencyVariableSubstitutor.substitute(xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments()));
             } catch (ExecutableRunnerException e) {
                 logger.error(String.format("Error executing bazel with args: %s: %s", xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments(), e.getMessage()));
                 exceptionsGenerated.put(xPathRule, e);

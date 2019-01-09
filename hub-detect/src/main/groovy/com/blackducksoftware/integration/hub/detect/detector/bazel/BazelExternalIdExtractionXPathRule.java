@@ -63,7 +63,8 @@ public class BazelExternalIdExtractionXPathRule extends Stringable {
         this.dependencyToBazelExternalIdTransforms.add(new SearchReplacePattern("^", "//external:"));
 
         this.dependencyDetailsXmlQueryBazelCmdArguments = Arrays.asList("query",
-            String.format("kind(%s, ${detect.bazel.target.dependency})", simpleRule.getDependencyDetailsXmlQueryKindPattern()));
+            String.format("kind(%s, ${detect.bazel.target.dependency})", simpleRule.getDependencyDetailsXmlQueryKindPattern()),
+            "--output", "xml");
 
         this.xPathQuery = String.format("/query/rule[@class='%s']/%s[@%s='%s']", simpleRule.getRuleClassname(), "string", "name", simpleRule.getRuleElementSelectorValue());
         this.ruleElementValueAttrName = "value";
