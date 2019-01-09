@@ -39,15 +39,15 @@ public class BazelExternalIdExtractionFullRule extends Stringable {
     public static final String XPATH_QUERY_ARTIFACT_VALUE_ATTRIBUTE = "value";
     public static final String XPATH_QUERY_RULE_ELEMENT_CLASS = "string";
     public static final String XPATH_QUERY_SELECTOR_ATTRIBUTE = "name";
-    // The bazel query to get the target's dependencies
-    // Include everything following "bazel". Example: "query", "filter(\"@.*:jar\", deps(${detect.bazel.target}))"
+    // The args for the bazel query to get the target's dependencies
     private final List<String> targetDependenciesQueryBazelCmdArguments;
     // The search/replace transforms to run on the output of each targetDependenciesQuery to convert each into a bazel external ID
     private final List<SearchReplacePattern> dependencyToBazelExternalIdTransforms;
-    //
+    // The args for the bazel query to get a dependency's details
     private final List<String> dependencyDetailsXmlQueryBazelCmdArguments;
     private final String xPathQuery;
     private final String ruleElementValueAttrName;
+    // The separator between group, artifact, version in the bazel query output xml artifact value
     // Example: ":"
     private final String artifactStringSeparatorRegex;
 
