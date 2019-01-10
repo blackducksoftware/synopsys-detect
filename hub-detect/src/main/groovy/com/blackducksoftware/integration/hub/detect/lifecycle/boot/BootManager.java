@@ -25,6 +25,8 @@ package com.blackducksoftware.integration.hub.detect.lifecycle.boot;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -36,8 +38,8 @@ import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.DetectInfoUtility;
 import com.blackducksoftware.integration.hub.detect.DetectorBeanConfiguration;
 import com.blackducksoftware.integration.hub.detect.RunBeanConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyMap;
@@ -53,7 +55,6 @@ import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.help.json.HelpJsonWriter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
@@ -61,7 +62,6 @@ import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeR
 import com.blackducksoftware.integration.hub.detect.property.SpringPropertySource;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
-import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticManager;
 import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.DiagnosticSystem;
@@ -76,8 +76,11 @@ import com.blackducksoftware.integration.hub.detect.workflow.report.DetectConfig
 import com.blackducksoftware.integration.hub.detect.workflow.report.writer.InfoLogReportWriter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.SilentIntLogger;
+import com.synopsys.integration.log.Slf4jIntLogger;
 
 import freemarker.template.Configuration;
 
@@ -150,29 +153,45 @@ public class BootManager {
             return BootResult.exit(detectConfiguration);
         }
 
-        HubServiceManager hubServiceManager = new HubServiceManager(detectConfiguration, new ConnectionManager(detectConfiguration), gson, objectMapper);
-
-        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
-            hubServiceManager.assertBlackDuckConnection(new SilentIntLogger());
-            return BootResult.exit(detectConfiguration);
-        }
-
-        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, PropertyAuthority.None) && !hubServiceManager.testBlackDuckConnection(new SilentIntLogger())) {
-            logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
-            return BootResult.exit(detectConfiguration);
-        }
-
-        ConnectivityManager connectivityManager;
+        ConnectivityManager connectivityManager = ConnectivityManager.offline();
         if (!detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None)) {
-            hubServiceManager.init();
-            Map<String, String> additionalMetaData = detectConfiguration.getPhoneHomeProperties();
-            PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem, hubServiceManager);
-            connectivityManager = ConnectivityManager.online(hubServiceManager, phoneHomeManager);
-        } else {
-            connectivityManager = ConnectivityManager.offline();
+            logger.info("Detect is in online mode.");
+            Slf4jIntLogger blackduckLogger = new Slf4jIntLogger(logger);
+            BlackDuckServerConfig blackDuckServerConfig = detectOptionManager.createBlackduckServerConfig();
+
+            boolean connected = false;
+            logger.info("Attempting connection to the Black Duck server");
+            if (blackDuckServerConfig.canConnect(blackduckLogger)) {
+                logger.info("Connection to the Black Duck server was successful");//TODO: Get a detailed reason of why canConnect failed.
+                connected = true;
+            } else {
+                logger.error("Failed to connect to the Black Duck server");
+                connected = false;
+            }
+
+            if (connected) {
+                BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(gson, objectMapper, blackduckLogger);
+
+                Map<String, String> additionalMetaData = detectConfiguration.getPhoneHomeProperties();
+                ExecutorService executorService = Executors.newFixedThreadPool(2);
+                BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(blackDuckServicesFactory, executorService);
+                PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem, blackDuckPhoneHomeHelper);
+
+                connectivityManager = ConnectivityManager.online(blackDuckServicesFactory, phoneHomeManager, blackDuckServerConfig);
+            } else if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
+                return BootResult.exit(detectConfiguration);
+            } else { //if (!connected) {
+                if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, PropertyAuthority.None)) {
+                    logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
+                    return BootResult.exit(detectConfiguration);
+                } else {
+                    //TODO: log the detail message?
+                    throw new DetectUserFriendlyException("Could not reach the Black Duck server or the credentials were invalid.", ExitCodeType.FAILURE_HUB_CONNECTIVITY);
+                }
+            }
         }
 
-        //TODO: Only need this if in diagnostic or online:
+        //TODO: Only need this if in diagnostic or online (for phone home):
         BomToolProfiler profiler = new BomToolProfiler(eventSystem);
 
         //lock the configuration, boot has completed.
@@ -236,8 +255,7 @@ public class BootManager {
 
     private void startInteractiveMode(DetectOptionManager detectOptionManager, DetectConfiguration detectConfiguration, Gson gson, ObjectMapper objectMapper) {
         InteractiveManager interactiveManager = new InteractiveManager(detectOptionManager);
-        HubServiceManager hubServiceManager = new HubServiceManager(detectConfiguration, new ConnectionManager(detectConfiguration), gson, objectMapper);
-        DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(hubServiceManager, detectOptionManager);
+        DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(detectOptionManager);
         interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
     }
 

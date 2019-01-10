@@ -32,11 +32,11 @@ import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelTool;
@@ -52,7 +52,6 @@ import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackD
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
-import com.blackducksoftware.integration.hub.detect.workflow.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectToolFilter;
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.bdio.BdioResult;
@@ -61,13 +60,14 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLo
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackduckPostActions;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.BlackduckReportOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.CodeLocationWaitData;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectBdioUploadService;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectCodeLocationUnmapService;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectService;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.DetectProjectServiceOptions;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
-import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyCheckOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionDecider;
 import com.blackducksoftware.integration.hub.detect.workflow.project.ProjectNameVersionOptions;
 import com.blackducksoftware.integration.hub.detect.workflow.report.util.ReportConstants;
@@ -77,6 +77,7 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -182,15 +183,15 @@ public class RunManager {
 
         Optional<ProjectVersionWrapper> projectVersionWrapper = Optional.empty();
 
-        if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
-            HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
+        if (connectivityManager.isDetectOnline() && connectivityManager.getBlackDuckServicesFactory().isPresent()) {
+            BlackDuckServicesFactory blackDuckServicesFactory = connectivityManager.getBlackDuckServicesFactory().get();
             logger.info("Getting or creating project.");
             DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
-            DetectProjectService detectProjectService = new DetectProjectService(hubServiceManager, options);
+            DetectProjectService detectProjectService = new DetectProjectService(blackDuckServicesFactory, options);
             projectVersionWrapper = Optional.of(detectProjectService.createOrUpdateHubProject(projectNameVersion));
             if (projectVersionWrapper.isPresent() && runOptions.shouldUnmapCodeLocations()) {
                 logger.info("Unmapping code locations.");
-                DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(hubServiceManager.createBlackDuckService(), hubServiceManager.createCodeLocationService());
+                DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createCodeLocationService());
                 detectCodeLocationUnmapService.unmapCodeLocations(projectVersionWrapper.get().getProjectVersionView());
             } else {
                 logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");
@@ -209,10 +210,10 @@ public class RunManager {
         if (bdioResult.getUploadTargets().size() > 0) {
             logger.info("Created " + bdioResult.getUploadTargets().size() + " BDIO files.");
             bdioResult.getUploadTargets().forEach(it -> eventSystem.publishEvent(Event.OutputFileOfInterest, it.getUploadFile()));
-            if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
+            if (connectivityManager.isDetectOnline() && connectivityManager.getBlackDuckServicesFactory().isPresent()) {
                 logger.info("Uploading BDIO files.");
-                HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
-                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, hubServiceManager.createBdioUploadService());
+                BlackDuckServicesFactory blackDuckServicesFactory = connectivityManager.getBlackDuckServicesFactory().get();
+                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, blackDuckServicesFactory.createBdioUploadService());
                 CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
                 codeLocationWaitData.setFromBdioCodeLocationCreationData(uploadBatchOutputCodeLocationCreationData);
             }
@@ -239,9 +240,9 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
             logger.info("Will include the binary scanner tool.");
-            if (connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
-                HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
-                BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, detectConfiguration, hubServiceManager);
+            if (connectivityManager.isDetectOnline() && connectivityManager.getBlackDuckServicesFactory().isPresent()) {
+                BlackDuckServicesFactory blackDuckServicesFactory = connectivityManager.getBlackDuckServicesFactory().get();
+                BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, detectConfiguration, blackDuckServicesFactory);
                 blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
             }
             logger.info("Binary scanner actions finished.");
@@ -260,12 +261,16 @@ public class RunManager {
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (projectVersionWrapper.isPresent() && connectivityManager.isDetectOnline() && connectivityManager.getHubServiceManager().isPresent()) {
-            HubServiceManager hubServiceManager = connectivityManager.getHubServiceManager().get();
+        if (projectVersionWrapper.isPresent() && connectivityManager.isDetectOnline() && connectivityManager.getBlackDuckServicesFactory().isPresent()) {
+            BlackDuckServicesFactory blackDuckServicesFactory = connectivityManager.getBlackDuckServicesFactory().get();
 
             logger.info("Will perform Black Duck post actions.");
-            HubManager hubManager = new HubManager(detectConfiguration, hubServiceManager, new PolicyChecker(detectConfiguration), eventSystem);
-            hubManager.performPostHubActions(projectVersionWrapper.get(), codeLocationWaitData);
+            BlackduckReportOptions blackduckReportOptions = detectConfigurationFactory.createReportOptions();
+            PolicyCheckOptions policyCheckOptions = detectConfigurationFactory.createPolicyCheckOptions();
+            long timeoutInSeconds = detectConfigurationFactory.getTimeoutInSeconds();
+
+            BlackduckPostActions blackduckPostActions = new BlackduckPostActions(blackDuckServicesFactory, eventSystem);
+            blackduckPostActions.perform(blackduckReportOptions, policyCheckOptions, codeLocationWaitData, projectVersionWrapper.get(), timeoutInSeconds);
 
             boolean hasAtLeastOneBdio = !bdioResult.getUploadTargets().isEmpty();
             boolean shouldHaveScanned = detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN);

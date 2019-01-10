@@ -42,6 +42,10 @@ import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthor
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption.OptionValidationResult;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.synopsys.integration.log.IntLogger;
+import com.synopsys.integration.log.SilentIntLogger;
 
 public class DetectOptionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class);
@@ -93,6 +97,18 @@ public class DetectOptionManager {
                            .collect(Collectors.toList());
 
         checkForRemovedProperties();
+    }
+
+    public BlackDuckServerConfig createBlackduckServerConfig() {
+        return createBlackduckServerConfig(new SilentIntLogger());
+    }
+
+    public BlackDuckServerConfig createBlackduckServerConfig(IntLogger logger) {
+        final BlackDuckServerConfigBuilder hubServerConfigBuilder = new BlackDuckServerConfigBuilder().setLogger(logger);
+        final Map<String, String> blackduckBlackDuckProperties = detectConfiguration.getBlackduckProperties();
+        hubServerConfigBuilder.setFromProperties(blackduckBlackDuckProperties);
+        BlackDuckServerConfig blackDuckServerConfig = hubServerConfigBuilder.build();
+        return blackDuckServerConfig;
     }
 
     public void postConfigurationProcessedInit() throws IllegalArgumentException, SecurityException {

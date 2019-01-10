@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * hub-detect
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,11 +21,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help.json;
+package com.blackducksoftware.integration.hub.detect.util;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class HelpJsonData {
-    public List<HelpJsonOption> options = new ArrayList<>();
+public class EnumUtilExtension {
+    //TODO: Replace with EnumUtil inside of 40.1 of Hub Common
+    public static <T extends Enum<T>> List<T> parseCommaDelimitted(String commaDelimittedEnumString, Class<T> enumClass) {
+        return Arrays.stream(commaDelimittedEnumString.split("\\s*,\\s*"))
+                   .map(token -> Enum.valueOf(enumClass, token))
+                   .collect(Collectors.toList());
+    }
 }
