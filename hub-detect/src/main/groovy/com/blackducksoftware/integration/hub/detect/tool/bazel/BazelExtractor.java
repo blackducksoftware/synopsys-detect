@@ -85,13 +85,26 @@ public class BazelExtractor {
                 return new Extraction.Builder().failure(externalIdGenerator.getErrorMessage()).build();
             }
             final List<DetectCodeLocation> codeLocations = bdioGenerator.build();
-            final Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
+
+            final String projectName = cleanProjectName(bazelTarget);
+            final Extraction.Builder builder = new Extraction.Builder()
+                                                   .success(codeLocations)
+                                                   .projectName(projectName);
             return builder.build();
         } catch (Exception e) {
             final String msg = String.format("Bazel processing exception: %s", e.getMessage());
             logger.debug(msg, e);
             return new Extraction.Builder().failure(msg).build();
         }
+    }
+
+    private String cleanProjectName(final String bazelTarget) {
+        String projectName = bazelTarget
+                                 .replaceAll("^//", "")
+                   .replaceAll("^:", "")
+                   .replaceAll("/", "_")
+                   .replaceAll(":", "_");
+        return projectName;
     }
 
     private List<BazelExternalIdExtractionFullRule> loadXPathRulesFromFile(final String xPathRulesJsonFilePath) throws IOException {

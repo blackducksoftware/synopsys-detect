@@ -70,7 +70,7 @@ public class BazelTool {
 
                 BazelToolResult bazelToolResult = new BazelToolResult();
                 bazelToolResult.bazelCodeLocations = extractResult.codeLocations;
-                if (StringUtils.isNotBlank(extractResult.projectName) && StringUtils.isNotBlank(extractResult.projectVersion)) {
+                if (StringUtils.isNotBlank(extractResult.projectName)) {
                     bazelToolResult.bazelProjectNameVersion = Optional.of(new NameVersion(extractResult.projectName, extractResult.projectVersion));
                 }
 

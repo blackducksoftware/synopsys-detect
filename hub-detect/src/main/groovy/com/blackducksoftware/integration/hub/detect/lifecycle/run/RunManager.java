@@ -138,7 +138,7 @@ public class RunManager {
             BazelTool bazelTool = new BazelTool(detectContext);
 
             BazelToolResult bazelToolResult = bazelTool.run();
-            runResult.addToolNameVersionIfPresent(DetectTool.DOCKER, bazelToolResult.bazelProjectNameVersion);
+            runResult.addToolNameVersionIfPresent(DetectTool.BAZEL, bazelToolResult.bazelProjectNameVersion);
             runResult.addDetectCodeLocations(bazelToolResult.bazelCodeLocations);
 
             if (bazelToolResult.resultType == BazelToolResult.BazelToolResultType.FAILURE) {
