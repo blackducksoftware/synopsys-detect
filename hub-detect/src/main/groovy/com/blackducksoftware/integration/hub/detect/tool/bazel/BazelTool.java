@@ -75,16 +75,16 @@ public class BazelTool {
                 }
 
                 if (extractResult.result == Extraction.ExtractionResultType.SUCCESS) {
-                    eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.SUCCESS));
+                    eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.SUCCESS));
                 } else {
-                    eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
+                    eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
                 }
 
                 return bazelToolResult;
             } else {
                 logger.error("Bazel was not extractable.");
                 logger.error(extractableResult.toDescription());
-                eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
+                eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
                 return BazelToolResult.failure(extractableResult.toDescription());
             }
         } else {
