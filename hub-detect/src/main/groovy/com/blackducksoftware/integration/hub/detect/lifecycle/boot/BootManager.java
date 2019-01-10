@@ -171,6 +171,7 @@ public class BootManager {
 
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
             logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
+            return BootResult.exit(detectConfiguration);
         }
 
         //TODO: Only need this if in diagnostic or online (for phone home):
