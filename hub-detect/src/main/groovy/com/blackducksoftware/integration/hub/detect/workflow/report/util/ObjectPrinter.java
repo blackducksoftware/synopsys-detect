@@ -28,6 +28,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -120,6 +121,7 @@ public class ObjectPrinter {
         ret.add(Float.class);
         ret.add(Double.class);
         ret.add(Void.class);
+        ret.add(Optional.class);
         return ret;
     }
 }
