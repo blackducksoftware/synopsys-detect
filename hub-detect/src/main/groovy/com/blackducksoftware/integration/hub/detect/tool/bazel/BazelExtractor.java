@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
@@ -60,7 +59,7 @@ public class BazelExtractor {
         this.bazelExternalIdExtractionFullRuleJsonProcessor = bazelExternalIdExtractionFullRuleJsonProcessor;
     }
 
-    public Extraction extract(final String bazelExe, final File workspaceDir, final int depth, final ExtractionId extractionId) {
+    public Extraction extract(final String bazelExe, final File workspaceDir) {
         logger.debug("Bazel extract()");
         try {
             bdioGenerator.setWorkspaceDir(workspaceDir);

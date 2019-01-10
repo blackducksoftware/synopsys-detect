@@ -30,10 +30,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.detector.Detector;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
-import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
-import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -43,9 +40,10 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Execu
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientDetectorResult;
 
-public class BazelDetector extends Detector {
+public class BazelDetector {
     private static final String BAZEL_VERSION_SUBCOMMAND = "version";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final DetectorEnvironment environment;
     private final BazelExtractor bazelExtractor;
     private final ExecutableRunner executableRunner;
     private final BazelExecutableFinder bazelExecutableFinder;
@@ -54,14 +52,13 @@ public class BazelDetector extends Detector {
 
     public BazelDetector(final DetectorEnvironment environment, final ExecutableRunner executableRunner, final BazelExtractor bazelExtractor,
         BazelExecutableFinder bazelExecutableFinder, final DetectConfiguration detectConfiguration) {
-        super(environment, "Bazel", DetectorType.BAZEL);
+        this.environment = environment;
         this.executableRunner = executableRunner;
         this.bazelExtractor = bazelExtractor;
         this.bazelExecutableFinder = bazelExecutableFinder;
         this.detectConfiguration = detectConfiguration;
     }
 
-    @Override
     public DetectorResult applicable() {
         final String bazelTarget = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None);
         if (StringUtils.isBlank(bazelTarget)) {
@@ -70,7 +67,6 @@ public class BazelDetector extends Detector {
         return new PassedDetectorResult();
     }
 
-    @Override
     public DetectorResult extractable() {
         bazelExe = bazelExecutableFinder.findBazel(environment);
         final ExecutableOutput bazelQueryDepsRecursiveOutput;
@@ -85,8 +81,7 @@ public class BazelDetector extends Detector {
         return new PassedDetectorResult();
     }
 
-    @Override
-    public Extraction extract(final ExtractionId extractionId) {
-        return bazelExtractor.extract(bazelExe, environment.getDirectory(), environment.getDepth(), extractionId);
+    public Extraction extract() {
+        return bazelExtractor.extract(bazelExe, environment.getDirectory());
     }
 }

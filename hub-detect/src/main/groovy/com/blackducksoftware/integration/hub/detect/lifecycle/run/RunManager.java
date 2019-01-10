@@ -39,6 +39,8 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
+import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelTool;
+import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelToolResult;
 import com.blackducksoftware.integration.hub.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorToolResult;
@@ -127,6 +129,23 @@ public class RunManager {
             logger.info("Docker actions finished.");
         } else {
             logger.info("Docker tool will not be run.");
+        }
+
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
+            logger.info("Will include the bazel tool.");
+            BazelTool bazelTool = new BazelTool(detectContext);
+
+            BazelToolResult bazelToolResult = bazelTool.run();
+            runResult.addToolNameVersionIfPresent(DetectTool.DOCKER, bazelToolResult.bazelProjectNameVersion);
+            runResult.addDetectCodeLocations(bazelToolResult.bazelCodeLocations);
+
+            if (bazelToolResult.resultType == BazelToolResult.BazelToolResultType.FAILURE) {
+                eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, bazelToolResult.errorMessage));
+            }
+            logger.info("Bazel actions finished.");
+        } else {
+            logger.info("Bazel tool will not be run.");
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);

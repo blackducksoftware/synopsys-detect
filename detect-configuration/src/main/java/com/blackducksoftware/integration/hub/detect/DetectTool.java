@@ -31,8 +31,9 @@ public enum DetectTool {
     SIGNATURE_SCAN,
     BINARY_SCAN,
     POLARIS,
-    DOCKER;
+    DOCKER,
+    BAZEL;
 
-    public static List<DetectTool> DEFAULT_PROJECT_ORDER = Arrays.asList(DOCKER, DETECTOR);
+    public static List<DetectTool> DEFAULT_PROJECT_ORDER = Arrays.asList(DOCKER, DETECTOR, BAZEL);
 
 }

@@ -282,8 +282,8 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("The tool priority for project name and version. The first tool in this list that provides a project name and version will be used.")
-    @AcceptableValues(value = { "DETECTOR", "DOCKER" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
-    DETECT_PROJECT_TOOL("detect.project.tool", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "DETECTOR,DOCKER"),
+    @AcceptableValues(value = { "DETECTOR", "DOCKER", "BAZEL" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
+    DETECT_PROJECT_TOOL("detect.project.tool", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "DOCKER,DETECTOR,BAZEL"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("The tools detect should allow in a comma-separated list. Included and not excluded tools will be allowed to run if all criteria of the tool is met. Exclusion rules always win.")
