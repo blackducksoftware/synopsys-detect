@@ -24,10 +24,6 @@
 package com.blackducksoftware.integration.hub.detect.lifecycle.boot;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -70,21 +66,12 @@ import com.blackducksoftware.integration.hub.detect.workflow.diagnostic.Relevant
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
-import com.blackducksoftware.integration.hub.detect.workflow.phonehome.OnlinePhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.profiling.BomToolProfiler;
 import com.blackducksoftware.integration.hub.detect.workflow.report.DetectConfigurationReporter;
 import com.blackducksoftware.integration.hub.detect.workflow.report.writer.InfoLogReportWriter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
-import com.synopsys.integration.blackduck.api.generated.response.CurrentVersionView;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
-import com.synopsys.integration.blackduck.service.BlackDuckService;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.Slf4jIntLogger;
 
 import freemarker.template.Configuration;
 
@@ -157,14 +144,33 @@ public class BootManager {
             return BootResult.exit(detectConfiguration);
         }
 
-        Optional<ConnectivityManager> connectivityManagerOptional = determineConnectivity(detectConfiguration, detectOptionManager, detectInfo, gson, objectMapper, eventSystem);
         ConnectivityManager connectivityManager;
-        if (connectivityManagerOptional.isPresent()) {
-            logger.debug("Successfully found a connection manager, detect will run.");
-            connectivityManager = connectivityManagerOptional.get();
+        boolean offline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
+        if (offline) {
+            logger.info("Detect is in offline mode.");
+            connectivityManager = ConnectivityManager.offline();
         } else {
-            logger.debug("No connection manager provided, will not continue detect.");
-            return BootResult.exit(detectConfiguration);
+            logger.info("Detect is in online mode.");
+            //check my connectivity
+            ConnectivityChecker connectivityChecker = new ConnectivityChecker();
+            ConnectivityResult connectivityResult = connectivityChecker.determineConnectivity(detectConfiguration, detectOptionManager, detectInfo, gson, objectMapper, eventSystem);
+
+            if (connectivityResult.isSuccessfullyConnected()) {
+                logger.info("Detect is capable of communicating with server.");
+                connectivityManager = ConnectivityManager.online(connectivityResult.getBlackDuckServicesFactory(), connectivityResult.getPhoneHomeManager(), connectivityResult.getBlackDuckServerConfig());
+            } else {
+                logger.info("Detect is NOT capable of communicating with server.");
+                if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, PropertyAuthority.None)) {
+                    logger.info(String.format("%s is set to 'true' so Detect will simply exit.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
+                    return BootResult.exit(detectConfiguration);
+                } else {
+                    throw new DetectUserFriendlyException("Could not reach the Black Duck server or the credentials were invalid.", ExitCodeType.FAILURE_HUB_CONNECTIVITY);
+                }
+            }
+        }
+
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
+            logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
         }
 
         //TODO: Only need this if in diagnostic or online (for phone home):
@@ -198,58 +204,6 @@ public class BootManager {
         result.bootType = BootResult.BootType.CONTINUE;
         result.detectConfiguration = detectConfiguration;
         return result;
-    }
-
-    //Return an Offline/Online ConnectivityManager to continue, or return an empty Optional to exit.
-    private Optional<ConnectivityManager> determineConnectivity(DetectConfiguration detectConfiguration, DetectOptionManager detectOptionManager, DetectInfo detectInfo, Gson gson, ObjectMapper objectMapper, EventSystem eventSystem)
-        throws DetectUserFriendlyException {
-        if (!detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None)) {
-            logger.info("Detect is in online mode.");
-            Slf4jIntLogger blackduckLogger = new Slf4jIntLogger(logger);
-            BlackDuckServerConfig blackDuckServerConfig = detectOptionManager.createBlackduckServerConfig();
-
-            boolean connected = false;
-            logger.info("Attempting connection to the Black Duck server");
-            if (blackDuckServerConfig.canConnect(blackduckLogger)) {
-                logger.info("Connection to the Black Duck server was successful");//TODO: Get a detailed reason of why canConnect failed.
-                connected = true;
-            } else {
-                logger.error("Failed to connect to the Black Duck server");
-                connected = false;
-            }
-
-            if (connected) {
-                BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(gson, objectMapper, blackduckLogger);
-
-                try {
-                    final BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService();
-                    final CurrentVersionView currentVersion = blackDuckService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
-                    logger.info(String.format("Successfully connected to BlackDuck (version %s)!", currentVersion.getVersion()));
-                } catch (IntegrationException e) {
-                    throw new DetectUserFriendlyException("Could not determine which version of Black Duck detect connected to.", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
-                }
-
-                Map<String, String> additionalMetaData = detectConfiguration.getPhoneHomeProperties();
-                ExecutorService executorService = Executors.newFixedThreadPool(2);
-                BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(blackDuckServicesFactory, executorService);
-                PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem, blackDuckPhoneHomeHelper);
-
-                return Optional.of(ConnectivityManager.online(blackDuckServicesFactory, phoneHomeManager, blackDuckServerConfig));
-            } else if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
-                logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
-                return Optional.empty();
-            } else { //if (!connected) {
-                if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, PropertyAuthority.None)) {
-                    logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
-                    return Optional.empty();
-                } else {
-                    //TODO: log the detail message?
-                    throw new DetectUserFriendlyException("Could not reach the Black Duck server or the credentials were invalid.", ExitCodeType.FAILURE_HUB_CONNECTIVITY);
-                }
-            }
-        } else {
-            return Optional.of(ConnectivityManager.offline());
-        }
     }
 
     private void printAppropriateHelp(List<DetectOption> detectOptions, DetectArgumentState detectArgumentState) {
