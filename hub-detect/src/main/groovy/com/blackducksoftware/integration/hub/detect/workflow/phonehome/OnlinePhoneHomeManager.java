@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
@@ -40,13 +39,11 @@ public class OnlinePhoneHomeManager extends PhoneHomeManager {
     private final Logger logger = LoggerFactory.getLogger(OnlinePhoneHomeManager.class);
 
     private BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper;
-    private HubServiceManager hubServiceManager;
 
-    public OnlinePhoneHomeManager(Map<String, String> additionalMetaData, final DetectInfo detectInfo, final Gson gson, EventSystem eventSystem, final HubServiceManager hubServiceManager) {
+    public OnlinePhoneHomeManager(Map<String, String> additionalMetaData, final DetectInfo detectInfo, final Gson gson, EventSystem eventSystem, final BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper) {
         super(additionalMetaData, detectInfo, gson, eventSystem);
-        this.hubServiceManager = hubServiceManager;
 
-        blackDuckPhoneHomeHelper = hubServiceManager.createBlackDuckPhoneHomeHelper();
+        this.blackDuckPhoneHomeHelper = blackDuckPhoneHomeHelper;
     }
 
     @Override

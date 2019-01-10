@@ -27,35 +27,43 @@ import java.util.Optional;
 
 import org.springframework.util.Assert;
 
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.workflow.phonehome.PhoneHomeManager;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 
 public class ConnectivityManager {
     private final boolean isDetectOnline;
-    private final HubServiceManager hubServiceManager;
+    private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final PhoneHomeManager phoneHomeManager;
+    private final BlackDuckServerConfig blackDuckServerConfig;
 
     public static ConnectivityManager offline() {
-        return new ConnectivityManager(false, null, null);
+        return new ConnectivityManager(false, null, null, null);
     }
 
-    public static ConnectivityManager online(HubServiceManager hubServiceManager, final PhoneHomeManager phoneHomeManager) {
-        Assert.notNull(hubServiceManager, "Online detect needs a valid hub services manager.");
-        return new ConnectivityManager(true, hubServiceManager, phoneHomeManager);
+    public static ConnectivityManager online(BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, final BlackDuckServerConfig blackDuckServerConfig) {
+        Assert.notNull(blackDuckServicesFactory, "Online detect needs a services factory.");
+        Assert.notNull(blackDuckServerConfig, "Online detect needs a server config.");
+        return new ConnectivityManager(true, blackDuckServicesFactory, phoneHomeManager, blackDuckServerConfig);
     }
 
-    private ConnectivityManager(boolean isDetectOnline, final HubServiceManager hubServiceManager, final PhoneHomeManager phoneHomeManager) {
+    private ConnectivityManager(boolean isDetectOnline, final BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
         this.isDetectOnline = isDetectOnline;
-        this.hubServiceManager = hubServiceManager;
+        this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.phoneHomeManager = phoneHomeManager;
+        this.blackDuckServerConfig = blackDuckServerConfig;
     }
 
     public boolean isDetectOnline() {
         return isDetectOnline;
     }
 
-    public Optional<HubServiceManager> getHubServiceManager() {
-        return Optional.ofNullable(hubServiceManager);
+    public Optional<BlackDuckServicesFactory> getBlackDuckServicesFactory() {
+        return Optional.ofNullable(blackDuckServicesFactory);
+    }
+
+    public Optional<BlackDuckServerConfig> getBlackDuckServerConfig() {
+        return Optional.ofNullable(blackDuckServerConfig);
     }
 
     public Optional<PhoneHomeManager> getPhoneHomeManager() {

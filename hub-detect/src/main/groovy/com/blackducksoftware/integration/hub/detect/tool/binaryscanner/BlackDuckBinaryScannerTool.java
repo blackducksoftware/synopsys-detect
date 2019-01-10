@@ -25,7 +25,6 @@ package com.blackducksoftware.integration.hub.detect.tool.binaryscanner;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -37,13 +36,13 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 import com.synopsys.integration.blackduck.service.BinaryScannerService;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -52,13 +51,13 @@ public class BlackDuckBinaryScannerTool {
 
     private final CodeLocationNameManager codeLocationNameManager;
     private DetectConfiguration detectConfiguration;
-    private HubServiceManager hubServiceManager;
+    private BlackDuckServicesFactory blackDuckServicesFactory;
     private EventSystem eventSystem;
 
-    public BlackDuckBinaryScannerTool(EventSystem eventSystem, final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final HubServiceManager hubServiceManager) {
+    public BlackDuckBinaryScannerTool(EventSystem eventSystem, final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final BlackDuckServicesFactory blackDuckServicesFactory) {
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfiguration = detectConfiguration;
-        this.hubServiceManager = hubServiceManager;
+        this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.eventSystem = eventSystem;
     }
 
@@ -68,7 +67,7 @@ public class BlackDuckBinaryScannerTool {
             final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.None);
 
             final File file = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None));
-            uploadBinaryScanFile(hubServiceManager.createBinaryScannerService(), file, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);
+            uploadBinaryScanFile(blackDuckServicesFactory.createBinaryScannerService(), file, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);
         } else {
             logger.debug("No binary scan path was provided, so binary scan will not occur.");
         }

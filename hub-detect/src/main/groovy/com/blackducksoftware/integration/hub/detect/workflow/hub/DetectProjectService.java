@@ -34,11 +34,11 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceManager;
 import com.synopsys.integration.blackduck.api.core.ProjectRequestBuilder;
 import com.synopsys.integration.blackduck.api.generated.component.ProjectRequest;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.exception.IntegrationException;
@@ -47,17 +47,17 @@ import com.synopsys.integration.util.NameVersion;
 public class DetectProjectService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final HubServiceManager hubServiceManager;
+    private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final DetectProjectServiceOptions detectProjectServiceOptions;
 
-    public DetectProjectService(final HubServiceManager hubServiceManager, final DetectProjectServiceOptions detectProjectServiceOptions) {
-        this.hubServiceManager = hubServiceManager;
+    public DetectProjectService(final BlackDuckServicesFactory blackDuckServicesFactory, final DetectProjectServiceOptions detectProjectServiceOptions) {
+        this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.detectProjectServiceOptions = detectProjectServiceOptions;
     }
 
     public ProjectVersionWrapper createOrUpdateHubProject(NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
-        final ProjectService projectService = hubServiceManager.createProjectService();
-        final BlackDuckService hubService = hubServiceManager.createBlackDuckService();
+        final ProjectService projectService = blackDuckServicesFactory.createProjectService();
+        final BlackDuckService hubService = blackDuckServicesFactory.createBlackDuckService();
         final ProjectRequest projectRequest = createProjectRequest(projectNameVersion, projectService, hubService);
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
         return projectService.syncProjectAndVersion(projectRequest, forceUpdate);

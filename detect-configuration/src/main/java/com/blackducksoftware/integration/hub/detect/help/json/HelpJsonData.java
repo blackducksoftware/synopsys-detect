@@ -27,7 +27,5 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HelpJsonData {
-
     public List<HelpJsonOption> options = new ArrayList<>();
-
 }
