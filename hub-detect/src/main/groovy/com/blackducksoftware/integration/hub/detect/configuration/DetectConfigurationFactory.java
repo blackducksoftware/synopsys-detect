@@ -158,6 +158,7 @@ public class DetectConfigurationFactory {
 
     public PolicyCheckOptions createPolicyCheckOptions() {
         String policySeverities = detectConfiguration.getPropertyValueAsString(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None);
+        policySeverities = ",";
         List<PolicySeverityType> severitiesToFailPolicyCheck = EnumUtilExtension.parseCommaDelimitted(policySeverities.toUpperCase(), PolicySeverityType.class);
         return new PolicyCheckOptions(severitiesToFailPolicyCheck);
     }
