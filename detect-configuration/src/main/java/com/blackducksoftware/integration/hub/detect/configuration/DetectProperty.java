@@ -395,6 +395,10 @@ public enum DetectProperty {
     DETECT_PROJECT_VERSION_NAME("detect.project.version.name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
+    @HelpDescription("If a project version nickname is specified, your project version will be created with this nickname.")
+    DETECT_PROJECT_VERSION_NICKNAME("detect.project.version.nickname", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("If project version notes are specified, your project version will be created with these notes.")
     DETECT_PROJECT_VERSION_NOTES("detect.project.version.notes", "3.1.0", PropertyType.STRING, PropertyAuthority.None),
 

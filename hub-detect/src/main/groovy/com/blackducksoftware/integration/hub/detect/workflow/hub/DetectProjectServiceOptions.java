@@ -33,9 +33,10 @@ public class DetectProjectServiceOptions {
     private final Boolean projectLevelAdjustments;
     private final Boolean forceProjectVersionUpdate;
     private final String cloneVersionName;
+    private final String projectVersionNickname;
 
     public DetectProjectServiceOptions(final String projectVersionPhase, final String projectVersionDistribution, final Integer projectTier, final String projectDescription, final String projectVersionNotes,
-        final String[] cloneCategories, final Boolean projectLevelAdjustments, final Boolean forceProjectVersionUpdate, final String cloneVersionName) {
+        final String[] cloneCategories, final Boolean projectLevelAdjustments, final Boolean forceProjectVersionUpdate, final String cloneVersionName, final String projectVersionNickname) {
         this.projectVersionPhase = projectVersionPhase;
         this.projectVersionDistribution = projectVersionDistribution;
         this.projectTier = projectTier;
@@ -45,6 +46,7 @@ public class DetectProjectServiceOptions {
         this.projectLevelAdjustments = projectLevelAdjustments;
         this.forceProjectVersionUpdate = forceProjectVersionUpdate;
         this.cloneVersionName = cloneVersionName;
+        this.projectVersionNickname = projectVersionNickname;
     }
 
     public String getProjectVersionPhase() {
@@ -81,5 +83,9 @@ public class DetectProjectServiceOptions {
 
     public String getCloneVersionName() {
         return cloneVersionName;
+    }
+
+    public String getProjectVersionNickname() {
+        return projectVersionNickname;
     }
 }
