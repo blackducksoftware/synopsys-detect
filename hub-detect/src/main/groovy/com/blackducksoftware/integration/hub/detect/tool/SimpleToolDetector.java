@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.tool;
 
 import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
 
@@ -34,6 +35,6 @@ public interface SimpleToolDetector {
     DetectorResult applicable();
     DetectorResult extractable() throws DetectorException;
     Extraction extract();
-    ToolResult createToolResult(final Extraction extractResults);
+    ToolResult createToolResult(final EventSystem eventSystem, final DetectorResult extractResults);
 
 }

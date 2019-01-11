@@ -35,6 +35,7 @@ import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
+import com.blackducksoftware.integration.hub.detect.tool.ToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
@@ -92,12 +93,12 @@ public class DockerTool {
                 logger.error("Docker was not extractable.");
                 logger.error(extractableResult.toDescription());
                 eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
-                return DockerToolResult.failure(extractableResult.toDescription());
+                return new DockerToolResult().failure(extractableResult.toDescription());
             }
         } else {
             logger.info("Docker was not applicable, will not actually run Docker tool.");
             logger.info(applicableResult.toDescription());
-            return DockerToolResult.skipped();
+            return new DockerToolResult().skipped();
         }
     }
 }

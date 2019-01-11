@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.tool.docker;
 
 import java.io.File;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -38,6 +39,8 @@ import com.blackducksoftware.integration.hub.detect.tool.ToolResult;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder.CacheableExecutableType;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
@@ -46,6 +49,9 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Inspe
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.WrongOperatingSystemResult;
+import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
+import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
+import com.synopsys.integration.util.NameVersion;
 
 public class DockerDetector implements SimpleToolDetector {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -143,9 +149,34 @@ public class DockerDetector implements SimpleToolDetector {
     }
 
     @Override
-    public ToolResult createToolResult(final Extraction extractResults) {
-        // TODO
-        return null;
-    }
+    public ToolResult createToolResult(final EventSystem eventSystem, final DetectorResult extractableResult) {
+        if (extractableResult.getPassed()) {
+            logger.info("Performing the Docker extraction.");
+            Extraction extractResult = extract();
 
+            DockerToolResult dockerToolResult = new DockerToolResult();
+            dockerToolResult.dockerCodeLocations = extractResult.codeLocations;
+            if (StringUtils.isNotBlank(extractResult.projectName) && StringUtils.isNotBlank(extractResult.projectVersion)) {
+                dockerToolResult.dockerProjectNameVersion = Optional.of(new NameVersion(extractResult.projectName, extractResult.projectVersion));
+            }
+
+            Optional<Object> dockerTar = extractResult.getMetaDataValue(DockerExtractor.DOCKER_TAR_META_DATA_KEY);
+            if (dockerTar.isPresent()) {
+                dockerToolResult.dockerTar = Optional.of((File) dockerTar.get());
+            }
+
+            if (extractResult.result == Extraction.ExtractionResultType.SUCCESS) {
+                eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.SUCCESS));
+            } else {
+                eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
+            }
+
+            return dockerToolResult;
+        } else {
+            logger.error("Docker was not extractable.");
+            logger.error(extractableResult.toDescription());
+            eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
+            return new DockerToolResult().failure(extractableResult.toDescription());
+        }
+    }
 }
