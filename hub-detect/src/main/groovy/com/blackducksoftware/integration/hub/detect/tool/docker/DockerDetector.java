@@ -30,8 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
+import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
+import com.blackducksoftware.integration.hub.detect.tool.SimpleToolDetector;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder.CacheableExecutableType;
@@ -44,7 +46,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Passe
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.WrongOperatingSystemResult;
 
-public class DockerDetector {
+public class DockerDetector implements SimpleToolDetector {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectInfo detectInfo;
     private final DetectorEnvironment environment;
@@ -77,6 +79,17 @@ public class DockerDetector {
         this.suppliedDockerTar = suppliedDockerTar;
     }
 
+    @Override
+    public String getName() {
+        return "Docker";
+    }
+
+    @Override
+    public DetectTool getDetectTool() {
+        return DetectTool.DOCKER;
+    }
+
+    @Override
     public DetectorResult applicable() {
         if (detectInfo.getCurrentOs() == OperatingSystemType.WINDOWS) {
             return new WrongOperatingSystemResult(detectInfo.getCurrentOs());
@@ -90,6 +103,7 @@ public class DockerDetector {
         return new PassedDetectorResult();
     }
 
+    @Override
     public DetectorResult extractable() throws DetectorException {
         javaExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.JAVA);
         if (javaExe == null) {
@@ -122,8 +136,9 @@ public class DockerDetector {
         return new PassedDetectorResult();
     }
 
-    public Extraction extract(final File outputDirectory) {
-        return dockerExtractor.extract(environment.getDirectory(), outputDirectory, bashExe, javaExe, image, tar, dockerInspectorInfo);
+    @Override
+    public Extraction extract() {
+        return dockerExtractor.extract(environment.getDirectory(), directoryManager.getDockerOutputDirectory(), bashExe, javaExe, image, tar, dockerInspectorInfo);
     }
 
 }

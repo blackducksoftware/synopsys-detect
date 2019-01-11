@@ -68,7 +68,7 @@ public class DockerTool {
             DetectorResult extractableResult = dockerBomTool.extractable();
             if (extractableResult.getPassed()) {
                 logger.info("Performing the Docker extraction.");
-                Extraction extractResult = dockerBomTool.extract(directoryManager.getDockerOutputDirectory());
+                Extraction extractResult = dockerBomTool.extract();
 
                 DockerToolResult dockerToolResult = new DockerToolResult();
                 dockerToolResult.dockerCodeLocations = extractResult.codeLocations;

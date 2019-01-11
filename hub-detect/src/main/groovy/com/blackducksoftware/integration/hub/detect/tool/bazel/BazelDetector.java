@@ -27,10 +27,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
+import com.blackducksoftware.integration.hub.detect.tool.SimpleToolDetector;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -40,7 +42,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Execu
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientDetectorResult;
 
-public class BazelDetector {
+public class BazelDetector implements SimpleToolDetector {
     private static final String BAZEL_VERSION_SUBCOMMAND = "version";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectorEnvironment environment;
@@ -59,6 +61,17 @@ public class BazelDetector {
         this.detectConfiguration = detectConfiguration;
     }
 
+    @Override
+    public String getName() {
+        return "Bazel";
+    }
+
+    @Override
+    public DetectTool getDetectTool() {
+        return DetectTool.BAZEL;
+    }
+
+    @Override
     public DetectorResult applicable() {
         final String bazelTarget = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None);
         if (StringUtils.isBlank(bazelTarget)) {
@@ -67,6 +80,7 @@ public class BazelDetector {
         return new PassedDetectorResult();
     }
 
+    @Override
     public DetectorResult extractable() {
         bazelExe = bazelExecutableFinder.findBazel(environment);
         final ExecutableOutput bazelQueryDepsRecursiveOutput;
@@ -81,6 +95,7 @@ public class BazelDetector {
         return new PassedDetectorResult();
     }
 
+    @Override
     public Extraction extract() {
         return bazelExtractor.extract(bazelExe, environment.getDirectory());
     }
