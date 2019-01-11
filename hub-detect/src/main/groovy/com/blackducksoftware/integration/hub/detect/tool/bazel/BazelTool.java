@@ -85,12 +85,12 @@ public class BazelTool {
                 logger.error("Bazel was not extractable.");
                 logger.error(extractableResult.toDescription());
                 eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
-                return BazelToolResult.failure(extractableResult.toDescription());
+                return new BazelToolResult().failure(extractableResult.toDescription());
             }
         } else {
             logger.info("Bazel was not applicable, will not actually run Bazel tool.");
             logger.info(applicableResult.toDescription());
-            return BazelToolResult.skipped();
+            return new BazelToolResult().skipped();
         }
     }
 }

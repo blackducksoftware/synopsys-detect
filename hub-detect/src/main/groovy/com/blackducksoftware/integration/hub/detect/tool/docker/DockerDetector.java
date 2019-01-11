@@ -34,6 +34,7 @@ import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.tool.SimpleToolDetector;
+import com.blackducksoftware.integration.hub.detect.tool.ToolResult;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder.CacheableExecutableType;
@@ -139,6 +140,12 @@ public class DockerDetector implements SimpleToolDetector {
     @Override
     public Extraction extract() {
         return dockerExtractor.extract(environment.getDirectory(), directoryManager.getDockerOutputDirectory(), bashExe, javaExe, image, tar, dockerInspectorInfo);
+    }
+
+    @Override
+    public ToolResult createToolResult(final Extraction extractResults) {
+        // TODO
+        return null;
     }
 
 }

@@ -33,6 +33,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.tool.SimpleToolDetector;
+import com.blackducksoftware.integration.hub.detect.tool.ToolResult;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -98,5 +99,11 @@ public class BazelDetector implements SimpleToolDetector {
     @Override
     public Extraction extract() {
         return bazelExtractor.extract(bazelExe, environment.getDirectory());
+    }
+
+    @Override
+    public ToolResult createToolResult(final Extraction extractResults) {
+        // TODO
+        return null;
     }
 }
