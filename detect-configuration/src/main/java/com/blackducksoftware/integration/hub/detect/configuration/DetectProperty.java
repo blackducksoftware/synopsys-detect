@@ -396,6 +396,10 @@ public enum DetectProperty {
     DETECT_PROJECT_VERSION_NAME("detect.project.version.name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
+    @HelpDescription("If a project version nickname is specified, your project version will be created with this nickname.")
+    DETECT_PROJECT_VERSION_NICKNAME("detect.project.version.nickname", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("If project version notes are specified, your project version will be created with these notes.")
     DETECT_PROJECT_VERSION_NOTES("detect.project.version.notes", "3.1.0", PropertyType.STRING, PropertyAuthority.None),
 
@@ -674,11 +678,11 @@ public enum DetectProperty {
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.patterns in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB })
-    @HelpDescription("Enables you to specify sub-directories to exclude from scans")
+    @HelpDescription("A comma-separated list of values to be used with the Signature Scanner --exclude flag.")
     DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS("detect.hub.signature.scanner.exclusion.patterns", "3.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_BLACKDUCK })
-    @HelpDescription("Enables you to specify sub-directories to exclude from scans")
+    @HelpDescription("A comma-separated list of values to be used with the Signature Scanner --exclude flag.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS("detect.blackduck.signature.scanner.exclusion.patterns", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_BLACKDUCK })
@@ -698,12 +702,12 @@ public enum DetectProperty {
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.name.patterns in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB })
-    @HelpDescription("Comma separated list of file name patterns to exclude from the signature scan.")
-    @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.hub.signature.scanner.exclusion.patterns")
+    @HelpDescription("A comma-separated list of directory name patterns detect will search for and add to the Signature Scanner --exclude flag values.")
+    @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns")
     DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.hub.signature.scanner.exclusion.name.patterns", "4.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "node_modules"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_BLACKDUCK })
-    @HelpDescription("Comma separated list of file name patterns to exclude from the signature scan.")
+    @HelpDescription("A comma-separated list of directory name patterns detect will search for and add to the Signature Scanner --exclude flag values.")
     @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.blackduck.signature.scanner.exclusion.name.patterns", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "node_modules"),
 

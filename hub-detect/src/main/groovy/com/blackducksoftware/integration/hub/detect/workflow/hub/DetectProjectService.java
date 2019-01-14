@@ -76,6 +76,7 @@ public class DetectProjectService {
         projectRequestBuilder.setDescription(detectProjectServiceOptions.getProjectDescription());
         projectRequestBuilder.setReleaseComments(detectProjectServiceOptions.getProjectVersionNotes());
         projectRequestBuilder.setCloneCategories(convertClonePropertyToEnum(detectProjectServiceOptions.getCloneCategories()));
+        projectRequestBuilder.setVersionNickname(detectProjectServiceOptions.getProjectVersionNickname());
 
         final Optional<String> cloneUrl = findCloneUrl(projectNameVersion, projectService, hubService);
         if (cloneUrl.isPresent()) {
