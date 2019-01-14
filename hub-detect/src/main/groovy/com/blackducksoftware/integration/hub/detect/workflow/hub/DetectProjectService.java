@@ -37,6 +37,7 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.blackduck.api.core.ProjectRequestBuilder;
 import com.synopsys.integration.blackduck.api.generated.component.ProjectRequest;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectService;
@@ -49,13 +50,15 @@ public class DetectProjectService {
 
     private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final DetectProjectServiceOptions detectProjectServiceOptions;
+    private final DetectProjectMappingService projectMappingService;
 
-    public DetectProjectService(final BlackDuckServicesFactory blackDuckServicesFactory, final DetectProjectServiceOptions detectProjectServiceOptions) {
+    public DetectProjectService(final BlackDuckServicesFactory blackDuckServicesFactory, final DetectProjectServiceOptions detectProjectServiceOptions, final DetectProjectMappingService projectMappingService) {
         this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.detectProjectServiceOptions = detectProjectServiceOptions;
+        this.projectMappingService = projectMappingService;
     }
 
-    public ProjectVersionWrapper createOrUpdateHubProject(NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
+    public ProjectVersionWrapper createOrUpdateHubProject(final NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         final ProjectService projectService = blackDuckServicesFactory.createProjectService();
         final BlackDuckService hubService = blackDuckServicesFactory.createBlackDuckService();
         final ProjectRequest projectRequest = createProjectRequest(projectNameVersion, projectService, hubService);
@@ -96,7 +99,7 @@ public class DetectProjectService {
         return categories;
     }
 
-    public Optional<String> findCloneUrl(NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService hubService) throws DetectUserFriendlyException {
+    public Optional<String> findCloneUrl(final NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService hubService) throws DetectUserFriendlyException {
         final String cloneProjectName = projectNameVersion.getName();
         final String cloneProjectVersionName = detectProjectServiceOptions.getCloneVersionName();
         if (StringUtils.isBlank(cloneProjectName) || StringUtils.isBlank(cloneProjectVersionName)) {
@@ -113,6 +116,13 @@ public class DetectProjectService {
         } catch (final IntegrationException e) {
             throw new DetectUserFriendlyException("Unable to find clone release url for supplied clone version name.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }
+    }
 
+    public void setApplicationId(final ProjectView projectView, final String applicationId) throws DetectUserFriendlyException {
+        try {
+            projectMappingService.setApplicationId(projectView, applicationId);
+        } catch (final IntegrationException e) {
+            throw new DetectUserFriendlyException(String.format("Unable to set Application ID for project: %s", projectView.getName()), e, ExitCodeType.FAILURE_CONFIGURATION);
+        }
     }
 }
