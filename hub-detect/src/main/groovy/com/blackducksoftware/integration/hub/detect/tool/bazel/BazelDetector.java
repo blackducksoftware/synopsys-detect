@@ -88,7 +88,6 @@ public class BazelDetector extends SimpleToolDetector {
 
     @Override
     public Extraction extract() {
-        logger.info("Performing the Bazel extraction.");
         Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory());
         return extractResult;
     }

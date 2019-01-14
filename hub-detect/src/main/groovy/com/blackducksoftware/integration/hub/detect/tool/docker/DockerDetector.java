@@ -124,7 +124,6 @@ public class DockerDetector extends SimpleToolDetector {
 
     @Override
     public Extraction extract() {
-        logger.info("Performing the Docker extraction.");
         Extraction extractResult = dockerExtractor.extract(environment.getDirectory(), directoryManager.getDockerOutputDirectory(), bashExe, javaExe, image, tar, dockerInspectorInfo);
         return extractResult;
     }

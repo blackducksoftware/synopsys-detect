@@ -69,14 +69,14 @@ public class ToolRunner {
                 publishNotExtractableResults(eventSystem, extractableResult, toolDetector.getToolEnum().toString());
             }
         } else {
-            logger.info("Docker was not applicable, will not actually run Docker tool.");
+            logger.info(String.format("%s was not applicable, will not actually run %s tool.", toolDetector.getToolEnum().toString(), toolDetector.getToolEnum().toString()));
             logger.info(applicableResult.toDescription());
         }
     }
 
     private void publishExtractionResults(final EventSystem eventSystem, final RunResult runResult, final Extraction extractionResult) {
         if (StringUtils.isNotBlank(extractionResult.projectName)) {
-            runResult.addToolNameVersionIfPresent(DetectTool.DOCKER, Optional.of(new NameVersion(extractionResult.projectName, extractionResult.projectVersion)));
+            runResult.addToolNameVersionIfPresent(toolDetector.getToolEnum(), Optional.of(new NameVersion(extractionResult.projectName, extractionResult.projectVersion)));
         }
         Optional<Object> dockerTar = extractionResult.getMetaDataValue(DockerExtractor.DOCKER_TAR_META_DATA_KEY);
         if (dockerTar.isPresent()) {
@@ -84,9 +84,9 @@ public class ToolRunner {
         }
         runResult.addDetectCodeLocations(extractionResult.codeLocations);
         if (extractionResult.result == Extraction.ExtractionResultType.SUCCESS) {
-            eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.SUCCESS));
+            eventSystem.publishEvent(Event.StatusSummary, new Status(toolDetector.getToolEnum().toString(), StatusType.SUCCESS));
         } else {
-            eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
+            eventSystem.publishEvent(Event.StatusSummary, new Status(toolDetector.getToolEnum().toString(), StatusType.FAILURE));
         }
     }
 
