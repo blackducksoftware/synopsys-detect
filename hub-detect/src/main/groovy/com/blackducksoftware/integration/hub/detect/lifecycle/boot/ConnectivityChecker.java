@@ -36,35 +36,30 @@ public class ConnectivityChecker {
         Slf4jIntLogger blackduckLogger = new Slf4jIntLogger(logger);
         BlackDuckServerConfig blackDuckServerConfig = detectOptionManager.createBlackduckServerConfig();
 
-        boolean connected;
         logger.info("Attempting connection to the Black Duck server");
-        if (blackDuckServerConfig.canConnect(blackduckLogger)) {
-            logger.info("Connection to the Black Duck server was successful");//TODO: Get a detailed reason of why canConnect failed.
-            connected = true;
-        } else {
+        
+        if (!blackDuckServerConfig.canConnect(blackduckLogger)) {
             logger.error("Failed to connect to the Black Duck server");
-            connected = false;
-        }
-
-        if (connected) {
-            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(gson, objectMapper, blackduckLogger);
-
-            try {
-                final BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService();
-                final CurrentVersionView currentVersion = blackDuckService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
-                logger.info(String.format("Successfully connected to BlackDuck (version %s)!", currentVersion.getVersion()));
-            } catch (IntegrationException e) {
-                throw new DetectUserFriendlyException("Could not determine which version of Black Duck detect connected to.", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
-            }
-
-            Map<String, String> additionalMetaData = detectConfiguration.getPhoneHomeProperties();
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
-            BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(blackDuckServicesFactory, executorService);
-            PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem, blackDuckPhoneHomeHelper);
-
-            return ConnectivityResult.success(blackDuckServicesFactory, phoneHomeManager, blackDuckServerConfig);
-        } else {
             return ConnectivityResult.failure("Could not reach the Black Duck server or the credentials were invalid.");
         }
+
+        logger.info("Connection to the Black Duck server was successful");//TODO: Get a detailed reason of why canConnect failed.
+
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(gson, objectMapper, blackduckLogger);
+
+        try {
+            final BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService();
+            final CurrentVersionView currentVersion = blackDuckService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
+            logger.info(String.format("Successfully connected to BlackDuck (version %s)!", currentVersion.getVersion()));
+        } catch (IntegrationException e) {
+            throw new DetectUserFriendlyException("Could not determine which version of Black Duck detect connected to.", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
+        }
+
+        Map<String, String> additionalMetaData = detectConfiguration.getPhoneHomeProperties();
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(blackDuckServicesFactory, executorService);
+        PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem, blackDuckPhoneHomeHelper);
+
+        return ConnectivityResult.success(blackDuckServicesFactory, phoneHomeManager, blackDuckServerConfig);
     }
 }
