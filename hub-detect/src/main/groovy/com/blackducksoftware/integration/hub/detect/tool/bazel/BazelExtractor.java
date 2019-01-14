@@ -60,7 +60,7 @@ public class BazelExtractor {
     }
 
     public Extraction extract(final String bazelExe, final File workspaceDir) {
-        logger.debug("Bazel extract()");
+        logger.debug("Bazel extractAndPublishResults()");
         try {
             bdioGenerator.setWorkspaceDir(workspaceDir);
             final String xPathRulesPath = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_ADVANCED_RULES_PATH, PropertyAuthority.None);

@@ -32,5 +32,6 @@ public interface SimpleToolDetector {
     String getName();
     DetectorResult applicable();
     DetectorResult extractable() throws DetectorException;
-    void extract(final EventSystem eventSystem, final DetectorResult extractResults, final RunResult runResult);
+    void extractAndPublishResults(final EventSystem eventSystem, final RunResult runResult);
+    void publishNotExtractableResults(final EventSystem eventSystem, final DetectorResult extractableResult);
 }

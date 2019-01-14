@@ -26,14 +26,10 @@ package com.blackducksoftware.integration.hub.detect.tool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
-import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
-import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
-import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 
 public class ToolRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -54,11 +50,9 @@ public class ToolRunner {
             DetectorResult extractableResult = toolDetector.extractable();
             if (extractableResult.getPassed()) {
                 logger.info(String.format("Performing the %s extraction.", toolDetector.getName()));
-                toolDetector.extract(eventSystem, extractableResult, runResult);
+                toolDetector.extractAndPublishResults(eventSystem, runResult);
             } else {
-                logger.error(String.format("%s was not extractable.", toolDetector.getName()));
-                logger.error(applicableResult.toDescription());
-                eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
+                toolDetector.publishNotExtractableResults(eventSystem, extractableResult);
             }
         } else {
             logger.info("Docker was not applicable, will not actually run Docker tool.");

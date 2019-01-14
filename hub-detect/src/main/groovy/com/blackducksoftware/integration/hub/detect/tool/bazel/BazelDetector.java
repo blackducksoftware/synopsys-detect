@@ -101,8 +101,7 @@ public class BazelDetector implements SimpleToolDetector {
     }
 
     @Override
-    public void extract(final EventSystem eventSystem, final DetectorResult extractableResult, final RunResult runResult) {
-        if (extractableResult.getPassed()) {
+    public void extractAndPublishResults(final EventSystem eventSystem, final RunResult runResult) {
             logger.info("Performing the Bazel extraction.");
             Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory());
             if (StringUtils.isNotBlank(extractResult.projectName)) {
@@ -114,12 +113,12 @@ public class BazelDetector implements SimpleToolDetector {
             } else {
                 eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
             }
-        } else {
-            logger.error(String.format("Bazel was not extractable: %s", extractableResult.toDescription()));
-            eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
-            final BazelToolResult bazelToolResult = new BazelToolResult().failure(extractableResult.toDescription());
-            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, bazelToolResult.errorMessage));
-        }
     }
 
+    @Override
+    public void publishNotExtractableResults(final EventSystem eventSystem, final DetectorResult extractableResult) {
+        logger.error(String.format("Bazel was not extractable: %s", extractableResult.toDescription()));
+        eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
+        eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractableResult.toDescription()));
+    }
 }

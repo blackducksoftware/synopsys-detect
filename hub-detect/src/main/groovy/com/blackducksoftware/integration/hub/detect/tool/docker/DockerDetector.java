@@ -34,7 +34,9 @@ import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.tool.SimpleToolDetector;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder;
@@ -141,8 +143,7 @@ public class DockerDetector implements SimpleToolDetector {
     }
 
     @Override
-    public void extract(final EventSystem eventSystem, final DetectorResult extractableResult, final RunResult runResult) {
-        if (extractableResult.getPassed()) {
+    public void extractAndPublishResults(final EventSystem eventSystem, final RunResult runResult) {
             logger.info("Performing the Docker extraction.");
             Extraction extractResult = dockerExtractor.extract(environment.getDirectory(), directoryManager.getDockerOutputDirectory(), bashExe, javaExe, image, tar, dockerInspectorInfo);
             if (StringUtils.isNotBlank(extractResult.projectName) && StringUtils.isNotBlank(extractResult.projectVersion)) {
@@ -158,10 +159,16 @@ public class DockerDetector implements SimpleToolDetector {
             } else {
                 eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
             }
-        } else {
-            logger.error(String.format("Docker was not extractable: %s", extractableResult.toDescription()));
-            eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
-        }
     }
+
+    @Override
+    public void publishNotExtractableResults(final EventSystem eventSystem, final DetectorResult extractableResult) {
+        logger.error(String.format("Docker was not extractable: %s", extractableResult.toDescription()));
+        eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
+        eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractableResult.toDescription()));
+    }
+
+
+
 
 }
