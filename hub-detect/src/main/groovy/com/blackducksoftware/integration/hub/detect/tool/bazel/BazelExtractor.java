@@ -63,21 +63,21 @@ public class BazelExtractor {
         logger.debug("Bazel extractAndPublishResults()");
         try {
             bdioGenerator.setWorkspaceDir(workspaceDir);
-            final String xPathRulesPath = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_ADVANCED_RULES_PATH, PropertyAuthority.None);
+            final String fullRulesPath = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_ADVANCED_RULES_PATH, PropertyAuthority.None);
             final String bazelTarget = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None);
-            List<BazelExternalIdExtractionFullRule> xPathRules;
-            if (StringUtils.isNotBlank(xPathRulesPath)) {
-                xPathRules = loadXPathRulesFromFile(xPathRulesPath);
-                logger.debug(String.format("Read %d rule(s) from %s", xPathRules.size(), xPathRulesPath));
+            List<BazelExternalIdExtractionFullRule> fullRules;
+            if (StringUtils.isNotBlank(fullRulesPath)) {
+                fullRules = loadXPathRulesFromFile(fullRulesPath);
+                logger.debug(String.format("Read %d rule(s) from %s", fullRules.size(), fullRulesPath));
             } else {
-                xPathRules = simpleRules.getRules().stream()
+                fullRules = simpleRules.getRules().stream()
                                       .map(BazelExternalIdExtractionFullRule::new).collect(Collectors.toList());
                 if (logger.isDebugEnabled()) {
-                    logger.debug(String.format("Using default rules:\n%s", bazelExternalIdExtractionFullRuleJsonProcessor.toJson(xPathRules)));
+                    logger.debug(String.format("Using default rules:\n%s", bazelExternalIdExtractionFullRuleJsonProcessor.toJson(fullRules)));
                 }
             }
             BazelExternalIdGenerator externalIdGenerator = new BazelExternalIdGenerator(executableRunner, bazelExe, parser, workspaceDir, bazelTarget);
-            xPathRules.stream()
+            fullRules.stream()
                 .map(externalIdGenerator::generate)
                 .flatMap(Collection::stream)
                 .forEach(bdioGenerator::addDependency);
@@ -85,7 +85,6 @@ public class BazelExtractor {
                 return new Extraction.Builder().failure(externalIdGenerator.getErrorMessage()).build();
             }
             final List<DetectCodeLocation> codeLocations = bdioGenerator.build();
-
             final String projectName = cleanProjectName(bazelTarget);
             final Extraction.Builder builder = new Extraction.Builder()
                                                    .success(codeLocations)

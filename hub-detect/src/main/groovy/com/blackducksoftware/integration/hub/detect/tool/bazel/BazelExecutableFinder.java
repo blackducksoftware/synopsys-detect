@@ -40,6 +40,7 @@ public class BazelExecutableFinder {
     private final DetectConfiguration detectConfiguration;
 
     private boolean hasLookedForSystemBazel = false;
+    private String resolvedBazel = null;
 
     public BazelExecutableFinder(final ExecutableFinder executableFinder, final DetectConfiguration detectConfiguration) {
         this.executableFinder = executableFinder;
@@ -47,10 +48,9 @@ public class BazelExecutableFinder {
     }
 
     public String findBazel(final DetectorEnvironment environment) {
-        String resolvedBazel = null;
         if (!hasLookedForSystemBazel) {
-            final String providedBazelPath = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_PATH, PropertyAuthority.None);
-            resolvedBazel = executableFinder.getExecutablePathOrOverride(ExecutableType.BAZEL, true, environment.getDirectory(), providedBazelPath);
+            final String userProvidedBazelPath = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_PATH, PropertyAuthority.None);
+            resolvedBazel = executableFinder.getExecutablePathOrOverride(ExecutableType.BAZEL, true, environment.getDirectory(), userProvidedBazelPath);
                 hasLookedForSystemBazel = true;
         }
         return resolvedBazel;
