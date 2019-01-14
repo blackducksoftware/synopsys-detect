@@ -41,7 +41,6 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.blackducksoftware.integration.hub.detect.tool.ToolResult;
 import com.blackducksoftware.integration.hub.detect.tool.ToolSupport;
 import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelDetector;
 import com.blackducksoftware.integration.hub.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
@@ -138,22 +137,10 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the bazel tool.");
-            ////////// new
             DetectorEnvironment detectorEnvironment = new DetectorEnvironment(directoryManager.getSourceDirectory(), Collections.emptySet(), 0, null, false);
             BazelDetector bazelDetector = detectContext.getBean(BazelDetector.class, detectorEnvironment);
             ToolSupport toolSupport = new ToolSupport(eventSystem, detectContext, bazelDetector);
-            ToolResult bazelToolResult = toolSupport.run(runResult);
-            ///////////////////////////
-//            BazelTool bazelTool = new BazelTool(detectContext);
-
-//            BazelToolResult bazelToolResult = bazelTool.run();
-//            runResult.addToolNameVersionIfPresent(DetectTool.BAZEL, bazelToolResult.bazelProjectNameVersion);
-//            runResult.addDetectCodeLocations(bazelToolResult.bazelCodeLocations);
-
-
-//            if (bazelToolResult.resultType == BazelToolResult.BazelToolResultType.FAILURE) {
-//                eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, bazelToolResult.errorMessage));
-//            }
+            toolSupport.run(runResult);
             logger.info("Bazel actions finished.");
         } else {
             logger.info("Bazel tool will not be run.");

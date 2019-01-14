@@ -33,7 +33,6 @@ import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
@@ -52,13 +51,6 @@ public class ToolSupport {
     }
 
     public ToolResult run(final RunResult runResult) throws DetectorException {
-        logger.info(String.format("Preparing the %s tool.", toolDetector.getName()));
-//        DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
-
-//        DetectorEnvironment detectorEnvironment = new DetectorEnvironment(directoryManager.getSourceDirectory(), Collections.emptySet(), 0, null, false);
-//        DockerDetector dockerBomTool = detectContext.getBean(DockerDetector.class, detectorEnvironment);
-//        EventSystem eventSystem = detectContext.getBean(EventSystem.class);
-
         logger.info(String.format("Checking if %s applies.", toolDetector.getName()));
         DetectorResult applicableResult = toolDetector.applicable();
         if (applicableResult.getPassed()) {
@@ -66,7 +58,7 @@ public class ToolSupport {
             DetectorResult extractableResult = toolDetector.extractable();
             if (extractableResult.getPassed()) {
                 logger.info(String.format("Performing the %s extraction.", toolDetector.getName()));
-                Extraction extractResult = toolDetector.extract();
+                toolDetector.extract();
                 return toolDetector.createToolResult(eventSystem, extractableResult, runResult);
             } else {
                 logger.error(String.format("%s was not extractable.", toolDetector.getName()));

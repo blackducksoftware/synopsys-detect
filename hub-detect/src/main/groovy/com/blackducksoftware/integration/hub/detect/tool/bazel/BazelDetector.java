@@ -84,7 +84,6 @@ public class BazelDetector implements SimpleToolDetector {
 
     @Override
     public DetectorResult applicable() {
-        logger.info("*** applicable()");
         final String bazelTarget = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None);
         if (StringUtils.isBlank(bazelTarget)) {
             return new PropertyInsufficientDetectorResult();
@@ -94,7 +93,6 @@ public class BazelDetector implements SimpleToolDetector {
 
     @Override
     public DetectorResult extractable() {
-        logger.info("*** extractable()");
         bazelExe = bazelExecutableFinder.findBazel(environment);
         final ExecutableOutput bazelQueryDepsRecursiveOutput;
         try {
@@ -112,7 +110,7 @@ public class BazelDetector implements SimpleToolDetector {
     public Extraction extract() {
         return bazelExtractor.extract(bazelExe, environment.getDirectory());
     }
-    // TODO inline extract(); createToolResult() gets renamed to extract()
+
     @Override
     public ToolResult createToolResult(final EventSystem eventSystem, final DetectorResult extractableResult, final RunResult runResult) {
         if (extractableResult.getPassed()) {
@@ -124,7 +122,6 @@ public class BazelDetector implements SimpleToolDetector {
             if (StringUtils.isNotBlank(extractResult.projectName)) {
                 bazelToolResult.bazelProjectNameVersion = Optional.of(new NameVersion(extractResult.projectName, extractResult.projectVersion));
             }
-
             if (extractResult.result == Extraction.ExtractionResultType.SUCCESS) {
                 eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.SUCCESS));
             } else {
