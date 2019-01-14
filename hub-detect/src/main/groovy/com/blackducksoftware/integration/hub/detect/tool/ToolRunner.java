@@ -43,13 +43,13 @@ public class ToolRunner {
     }
 
     public void run(final RunResult runResult) throws DetectorException {
-        logger.info(String.format("Checking if %s applies.", toolDetector.getName()));
+        logger.info(String.format("Checking if %s applies.", toolDetector.getToolEnum().toString()));
         DetectorResult applicableResult = toolDetector.applicable();
         if (applicableResult.getPassed()) {
-            logger.info(String.format("Checking if %s is extractable.", toolDetector.getName()));
+            logger.info(String.format("Checking if %s is extractable.", toolDetector.getToolEnum().toString()));
             DetectorResult extractableResult = toolDetector.extractable();
             if (extractableResult.getPassed()) {
-                logger.info(String.format("Performing the %s extraction.", toolDetector.getName()));
+                logger.info(String.format("Performing the %s extraction.", toolDetector.getToolEnum().toString()));
                 toolDetector.extractAndPublishResults(eventSystem, runResult);
             } else {
                 toolDetector.publishNotExtractableResults(eventSystem, extractableResult);

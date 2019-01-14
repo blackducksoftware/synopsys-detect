@@ -34,9 +34,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
-import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
-import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.tool.SimpleToolDetector;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -52,7 +50,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 import com.synopsys.integration.util.NameVersion;
 
-public class BazelDetector implements SimpleToolDetector {
+public class BazelDetector extends SimpleToolDetector {
     private static final String BAZEL_VERSION_SUBCOMMAND = "version";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectorEnvironment environment;
@@ -64,16 +62,12 @@ public class BazelDetector implements SimpleToolDetector {
 
     public BazelDetector(final DetectorEnvironment environment, final ExecutableRunner executableRunner, final BazelExtractor bazelExtractor,
         BazelExecutableFinder bazelExecutableFinder, final DetectConfiguration detectConfiguration) {
+        super(DetectTool.BAZEL);
         this.environment = environment;
         this.executableRunner = executableRunner;
         this.bazelExtractor = bazelExtractor;
         this.bazelExecutableFinder = bazelExecutableFinder;
         this.detectConfiguration = detectConfiguration;
-    }
-
-    @Override
-    public String getName() {
-        return "Bazel";
     }
 
     @Override
@@ -102,23 +96,16 @@ public class BazelDetector implements SimpleToolDetector {
 
     @Override
     public void extractAndPublishResults(final EventSystem eventSystem, final RunResult runResult) {
-            logger.info("Performing the Bazel extraction.");
-            Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory());
-            if (StringUtils.isNotBlank(extractResult.projectName)) {
-                runResult.addToolNameVersionIfPresent(DetectTool.BAZEL, Optional.of(new NameVersion(extractResult.projectName, extractResult.projectVersion)));
-            }
-            runResult.addDetectCodeLocations(extractResult.codeLocations);
-            if (extractResult.result == Extraction.ExtractionResultType.SUCCESS) {
-                eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.SUCCESS));
-            } else {
-                eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
-            }
-    }
-
-    @Override
-    public void publishNotExtractableResults(final EventSystem eventSystem, final DetectorResult extractableResult) {
-        logger.error(String.format("Bazel was not extractable: %s", extractableResult.toDescription()));
-        eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
-        eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractableResult.toDescription()));
+        logger.info("Performing the Bazel extraction.");
+        Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory());
+        if (StringUtils.isNotBlank(extractResult.projectName)) {
+            runResult.addToolNameVersionIfPresent(DetectTool.BAZEL, Optional.of(new NameVersion(extractResult.projectName, extractResult.projectVersion)));
+        }
+        runResult.addDetectCodeLocations(extractResult.codeLocations);
+        if (extractResult.result == Extraction.ExtractionResultType.SUCCESS) {
+            eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.SUCCESS));
+        } else {
+            eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
+        }
     }
 }

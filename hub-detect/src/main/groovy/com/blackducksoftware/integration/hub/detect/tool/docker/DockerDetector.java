@@ -34,9 +34,7 @@ import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
-import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
-import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.tool.SimpleToolDetector;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder;
@@ -55,12 +53,11 @@ import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 import com.synopsys.integration.util.NameVersion;
 
-public class DockerDetector implements SimpleToolDetector {
+public class DockerDetector extends SimpleToolDetector {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectInfo detectInfo;
     private final DetectorEnvironment environment;
     private final DirectoryManager directoryManager;
-    private final EventSystem eventSystem;
     private final DockerInspectorManager dockerInspectorManager;
     private final CacheableExecutableFinder cacheableExecutableFinder;
     private final DockerExtractor dockerExtractor;
@@ -75,13 +72,13 @@ public class DockerDetector implements SimpleToolDetector {
     private String tar;
     private DockerInspectorInfo dockerInspectorInfo;
 
-    public DockerDetector(final DetectInfo detectInfo, final DetectorEnvironment environment, final DirectoryManager directoryManager, final EventSystem eventSystem, final DockerInspectorManager dockerInspectorManager,
+    public DockerDetector(final DetectInfo detectInfo, final DetectorEnvironment environment, final DirectoryManager directoryManager, final DockerInspectorManager dockerInspectorManager,
         final CacheableExecutableFinder cacheableExecutableFinder, final boolean dockerPathRequired, final String suppliedDockerImage,
         final String suppliedDockerTar, final DockerExtractor dockerExtractor) {
+        super(DetectTool.DOCKER);
         this.detectInfo = detectInfo;
         this.environment = environment;
         this.directoryManager = directoryManager;
-        this.eventSystem = eventSystem;
         this.cacheableExecutableFinder = cacheableExecutableFinder;
         this.dockerExtractor = dockerExtractor;
         this.dockerPathRequired = dockerPathRequired;
@@ -91,18 +88,12 @@ public class DockerDetector implements SimpleToolDetector {
     }
 
     @Override
-    public String getName() {
-        return "Docker";
-    }
-
-    @Override
     public DetectorResult applicable() {
         if (detectInfo.getCurrentOs() == OperatingSystemType.WINDOWS) {
             return new WrongOperatingSystemResult(detectInfo.getCurrentOs());
         }
         image = suppliedDockerImage;
         tar = suppliedDockerTar;
-
         if (StringUtils.isBlank(image) && StringUtils.isBlank(tar)) {
             return new PropertyInsufficientDetectorResult();
         }
@@ -115,12 +106,10 @@ public class DockerDetector implements SimpleToolDetector {
         if (javaExe == null) {
             return new ExecutableNotFoundDetectorResult("java");
         }
-
         bashExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.BASH);
         if (bashExe == null) {
             return new ExecutableNotFoundDetectorResult("bash");
         }
-
         try {
             dockerExe = cacheableExecutableFinder.getExecutable(CacheableExecutableType.DOCKER);
         } catch (Exception e) {
@@ -133,42 +122,29 @@ public class DockerDetector implements SimpleToolDetector {
                 logger.info("Docker executable not found, but it has been configured as not-required; proceeding with execution of Docker tool");
             }
         }
-
         dockerInspectorInfo = dockerInspectorManager.getDockerInspector();
         if (dockerInspectorInfo == null) {
             return new InspectorNotFoundDetectorResult("docker");
         }
-
         return new PassedDetectorResult();
     }
 
     @Override
     public void extractAndPublishResults(final EventSystem eventSystem, final RunResult runResult) {
-            logger.info("Performing the Docker extraction.");
-            Extraction extractResult = dockerExtractor.extract(environment.getDirectory(), directoryManager.getDockerOutputDirectory(), bashExe, javaExe, image, tar, dockerInspectorInfo);
-            if (StringUtils.isNotBlank(extractResult.projectName) && StringUtils.isNotBlank(extractResult.projectVersion)) {
-                runResult.addToolNameVersionIfPresent(DetectTool.DOCKER, Optional.of(new NameVersion(extractResult.projectName, extractResult.projectVersion)));
-            }
-            Optional<Object> dockerTar = extractResult.getMetaDataValue(DockerExtractor.DOCKER_TAR_META_DATA_KEY);
-            if (dockerTar.isPresent()) {
-                runResult.addDockerFile(Optional.of((File) dockerTar.get()));
-            }
-            runResult.addDetectCodeLocations(extractResult.codeLocations);
-            if (extractResult.result == Extraction.ExtractionResultType.SUCCESS) {
-                eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.SUCCESS));
-            } else {
-                eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
-            }
+        logger.info("Performing the Docker extraction.");
+        Extraction extractResult = dockerExtractor.extract(environment.getDirectory(), directoryManager.getDockerOutputDirectory(), bashExe, javaExe, image, tar, dockerInspectorInfo);
+        if (StringUtils.isNotBlank(extractResult.projectName) && StringUtils.isNotBlank(extractResult.projectVersion)) {
+            runResult.addToolNameVersionIfPresent(DetectTool.DOCKER, Optional.of(new NameVersion(extractResult.projectName, extractResult.projectVersion)));
+        }
+        Optional<Object> dockerTar = extractResult.getMetaDataValue(DockerExtractor.DOCKER_TAR_META_DATA_KEY);
+        if (dockerTar.isPresent()) {
+            runResult.addDockerFile(Optional.of((File) dockerTar.get()));
+        }
+        runResult.addDetectCodeLocations(extractResult.codeLocations);
+        if (extractResult.result == Extraction.ExtractionResultType.SUCCESS) {
+            eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.SUCCESS));
+        } else {
+            eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
+        }
     }
-
-    @Override
-    public void publishNotExtractableResults(final EventSystem eventSystem, final DetectorResult extractableResult) {
-        logger.error(String.format("Docker was not extractable: %s", extractableResult.toDescription()));
-        eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
-        eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractableResult.toDescription()));
-    }
-
-
-
-
 }

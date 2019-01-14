@@ -23,15 +23,37 @@
  */
 package com.blackducksoftware.integration.hub.detect.tool;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
+import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 
-public interface SimpleToolDetector {
-    String getName();
-    DetectorResult applicable();
-    DetectorResult extractable() throws DetectorException;
-    void extractAndPublishResults(final EventSystem eventSystem, final RunResult runResult);
-    void publishNotExtractableResults(final EventSystem eventSystem, final DetectorResult extractableResult);
+public abstract class SimpleToolDetector {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final DetectTool toolEnum;
+
+    public SimpleToolDetector(final DetectTool toolEnum) {
+        this.toolEnum = toolEnum;
+    }
+    public DetectTool getToolEnum() {
+        return toolEnum;
+    }
+    public abstract DetectorResult applicable();
+    public abstract DetectorResult extractable() throws DetectorException;
+    public abstract void extractAndPublishResults(final EventSystem eventSystem, final RunResult runResult);
+
+    public void publishNotExtractableResults(final EventSystem eventSystem, final DetectorResult extractableResult) {
+        logger.error(String.format("Bazel was not extractable: %s", extractableResult.toDescription()));
+        eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
+        eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractableResult.toDescription()));
+    }
 }

@@ -134,7 +134,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExe
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.ArtifactResolver;
-import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.AirGapManager;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
