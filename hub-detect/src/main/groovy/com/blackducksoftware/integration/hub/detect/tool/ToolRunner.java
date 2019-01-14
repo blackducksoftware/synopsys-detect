@@ -71,44 +71,5 @@ public class ToolRunner {
             logger.info(applicableResult.toDescription());
             return new DockerToolResult().skipped();
         }
-
-        // TODO cleanup:
-//        if (applicableResult.getPassed()) {
-//            logger.info("Checking if Docker is extractable.");
-//            DetectorResult extractableResult = dockerBomTool.extractable();
-//            if (extractableResult.getPassed()) {
-//                logger.info("Performing the Docker extraction.");
-//                Extraction extractResult = dockerBomTool.extract();
-//
-//                DockerToolResult dockerToolResult = new DockerToolResult();
-//                dockerToolResult.dockerCodeLocations = extractResult.codeLocations;
-//                if (StringUtils.isNotBlank(extractResult.projectName) && StringUtils.isNotBlank(extractResult.projectVersion)) {
-//                    dockerToolResult.dockerProjectNameVersion = Optional.of(new NameVersion(extractResult.projectName, extractResult.projectVersion));
-//                }
-//
-//                Optional<Object> dockerTar = extractResult.getMetaDataValue(DockerExtractor.DOCKER_TAR_META_DATA_KEY);
-//                if (dockerTar.isPresent()) {
-//                    dockerToolResult.dockerTar = Optional.of((File) dockerTar.get());
-//                }
-//
-//                if (extractResult.result == Extraction.ExtractionResultType.SUCCESS) {
-//                    eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.SUCCESS));
-//                } else {
-//                    eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
-//                }
-//
-//                return dockerToolResult;
-//            } else {
-//                logger.error("Docker was not extractable.");
-//                logger.error(extractableResult.toDescription());
-//                eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
-//                return new DockerToolResult().failure(extractableResult.toDescription());
-//            }
-//        } else {
-//            logger.info("Docker was not applicable, will not actually run Docker tool.");
-//            logger.info(applicableResult.toDescription());
-//            return new DockerToolResult().skipped();
-//        }
-
     }
 }
