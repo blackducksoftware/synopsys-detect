@@ -27,10 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.blackducksoftware.integration.hub.detect.tool.ToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.util.NameVersion;
 
-public class BazelToolResult {
+public class BazelToolResult implements ToolResult {
     public enum BazelToolResultType {
         SUCCESS,
         FAILURE,
@@ -43,14 +44,16 @@ public class BazelToolResult {
     public BazelToolResult.BazelToolResultType resultType = BazelToolResult.BazelToolResultType.SUCCESS;
     public String errorMessage;
 
-    public static BazelToolResult failure(String message) {
+    @Override
+    public BazelToolResult failure(String message) {
         BazelToolResult result = new BazelToolResult();
         result.resultType = BazelToolResult.BazelToolResultType.FAILURE;
         result.errorMessage = message;
         return result;
     }
 
-    public static BazelToolResult skipped() {
+    @Override
+    public BazelToolResult skipped() {
         BazelToolResult result = new BazelToolResult();
         result.resultType = BazelToolResult.BazelToolResultType.SKIPPED;
         return result;

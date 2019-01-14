@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 public class BazelVariableSubstitutor {
-    // TODO remove commented logging junk here and below
-//    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Map<String, String> substitutions;
 
     public BazelVariableSubstitutor(final String bazelTarget) {
@@ -55,10 +53,8 @@ public class BazelVariableSubstitutor {
     private String substitute(final String origString) {
         String modifiedString = origString;
         for (String variablePattern : substitutions.keySet()) {
-//            logger.debug(String.format("replacing %s with %s", variablePattern, substitutions.get(variablePattern)));
             modifiedString = modifiedString.replaceAll(variablePattern, substitutions.get(variablePattern));
         }
-//        logger.debug(String.format("substitute(): origString: %s; modifiedString: %s", origString, modifiedString));
         return modifiedString;
     }
 }

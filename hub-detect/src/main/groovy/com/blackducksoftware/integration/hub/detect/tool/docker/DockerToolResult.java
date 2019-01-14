@@ -28,10 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.blackducksoftware.integration.hub.detect.tool.ToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.util.NameVersion;
 
-public class DockerToolResult {
+public class DockerToolResult implements ToolResult {
     public enum DockerToolResultType {
         SUCCESS,
         FAILURE,
@@ -45,14 +46,14 @@ public class DockerToolResult {
     public DockerToolResultType resultType = DockerToolResultType.SUCCESS;
     public String errorMessage;
 
-    public static DockerToolResult failure(String message) {
+    public DockerToolResult failure(String message) {
         DockerToolResult result = new DockerToolResult();
         result.resultType = DockerToolResultType.FAILURE;
         result.errorMessage = message;
         return result;
     }
 
-    public static DockerToolResult skipped() {
+    public DockerToolResult skipped() {
         DockerToolResult result = new DockerToolResult();
         result.resultType = DockerToolResultType.SKIPPED;
         return result;
