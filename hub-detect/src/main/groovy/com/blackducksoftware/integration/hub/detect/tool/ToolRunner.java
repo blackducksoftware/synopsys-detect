@@ -64,6 +64,9 @@ public class ToolRunner {
             if (extractableResult.getPassed()) {
                 logger.info(String.format("Performing the %s extraction.", toolDetector.getToolEnum().toString()));
                 Extraction extractionResults = toolDetector.extract();
+                if (extractionResults.result != Extraction.ExtractionResultType.SUCCESS) {
+                    logger.error(String.format("%s extraction failed: %s", toolDetector.getToolEnum().toString(), extractionResults.description));
+                }
                 publishExtractionResults(eventSystem, runResult, extractionResults);
             } else {
                 publishNotExtractableResults(eventSystem, extractableResult, toolDetector.getToolEnum().toString());
