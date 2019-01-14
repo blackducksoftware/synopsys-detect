@@ -37,14 +37,14 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Detec
 import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 
-public class ToolSupport {
+public class ToolRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final EventSystem eventSystem;
     private final DetectContext detectContext;
     private final SimpleToolDetector toolDetector;
 
-    public ToolSupport(final EventSystem eventSystem, final DetectContext detectContext, final SimpleToolDetector toolDetector) {
+    public ToolRunner(final EventSystem eventSystem, final DetectContext detectContext, final SimpleToolDetector toolDetector) {
         this.eventSystem = eventSystem;
         this.detectContext = detectContext;
         this.toolDetector = toolDetector;
