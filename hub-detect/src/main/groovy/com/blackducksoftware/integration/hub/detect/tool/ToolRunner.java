@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
-import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
@@ -41,12 +40,10 @@ public class ToolRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final EventSystem eventSystem;
-    private final DetectContext detectContext;
     private final SimpleToolDetector toolDetector;
 
-    public ToolRunner(final EventSystem eventSystem, final DetectContext detectContext, final SimpleToolDetector toolDetector) {
+    public ToolRunner(final EventSystem eventSystem, final SimpleToolDetector toolDetector) {
         this.eventSystem = eventSystem;
-        this.detectContext = detectContext;
         this.toolDetector = toolDetector;
     }
 

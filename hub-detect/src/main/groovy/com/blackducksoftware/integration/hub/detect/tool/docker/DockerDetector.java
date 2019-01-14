@@ -95,11 +95,6 @@ public class DockerDetector implements SimpleToolDetector {
     }
 
     @Override
-    public DetectTool getDetectTool() {
-        return DetectTool.DOCKER;
-    }
-
-    @Override
     public DetectorResult applicable() {
         if (detectInfo.getCurrentOs() == OperatingSystemType.WINDOWS) {
             return new WrongOperatingSystemResult(detectInfo.getCurrentOs());

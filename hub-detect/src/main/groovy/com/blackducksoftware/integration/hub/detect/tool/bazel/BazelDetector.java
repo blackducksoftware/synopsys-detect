@@ -78,11 +78,6 @@ public class BazelDetector implements SimpleToolDetector {
     }
 
     @Override
-    public DetectTool getDetectTool() {
-        return DetectTool.BAZEL;
-    }
-
-    @Override
     public DetectorResult applicable() {
         final String bazelTarget = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None);
         if (StringUtils.isBlank(bazelTarget)) {

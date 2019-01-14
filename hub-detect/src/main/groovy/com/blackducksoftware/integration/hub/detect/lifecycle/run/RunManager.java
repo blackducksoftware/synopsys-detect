@@ -118,7 +118,7 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the docker tool.");
-            ToolRunner toolRunner = new ToolRunner(eventSystem, detectContext, detectContext.getBean(DockerDetector.class, detectorEnvironment));
+            ToolRunner toolRunner = new ToolRunner(eventSystem, detectContext.getBean(DockerDetector.class, detectorEnvironment));
             toolRunner.run(runResult);
             logger.info("Docker actions finished.");
         } else {
@@ -128,7 +128,7 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the bazel tool.");
-            ToolRunner toolRunner = new ToolRunner(eventSystem, detectContext, detectContext.getBean(BazelDetector.class, detectorEnvironment));
+            ToolRunner toolRunner = new ToolRunner(eventSystem, detectContext.getBean(BazelDetector.class, detectorEnvironment));
             toolRunner.run(runResult);
             logger.info("Bazel actions finished.");
         } else {

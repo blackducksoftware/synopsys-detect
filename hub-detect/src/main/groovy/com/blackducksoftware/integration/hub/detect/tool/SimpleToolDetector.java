@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.tool;
 
-import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
@@ -32,7 +31,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Detec
 
 public interface SimpleToolDetector {
     String getName();
-    DetectTool getDetectTool();
     DetectorResult applicable();
     DetectorResult extractable() throws DetectorException;
     Extraction extract();
