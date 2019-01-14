@@ -27,6 +27,10 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
@@ -37,6 +41,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class GemlockExtractor {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
 
     public GemlockExtractor(final ExternalIdFactory externalIdFactory) {
@@ -46,6 +51,7 @@ public class GemlockExtractor {
     public Extraction extract(final File directory, final File gemlock) {
         try {
             final List<String> gemlockText = Files.readAllLines(gemlock.toPath(), StandardCharsets.UTF_8);
+            logger.debug(gemlockText.stream().collect(Collectors.joining("\n")));
 
             final GemlockParser gemlockParser = new GemlockParser(externalIdFactory);
             final DependencyGraph dependencyGraph = gemlockParser.parseProjectDependencies(gemlockText);

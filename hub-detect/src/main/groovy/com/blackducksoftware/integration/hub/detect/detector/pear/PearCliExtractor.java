@@ -60,7 +60,7 @@ public class PearCliExtractor {
             final ExecutableOutput pearListing = executableRunner.execute(workingDirectory, pearExe, "list");
             final ExecutableOutput pearDependencies = executableRunner.execute(workingDirectory, pearExe, "package-dependencies", PACKAGE_XML_FILENAME);
 
-            final File packageFile = detectFileFinder.findFile(directory, PACKAGE_XML_FILENAME);
+            final File packageFile = detectFileFinder.findFile(directory, PACKAGE_XML_FILENAME); //TODO: Why is this done here?
 
             final PearParseResult result = pearParser.parse(packageFile, pearListing, pearDependencies);
             final ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.PEAR, result.name, result.version);

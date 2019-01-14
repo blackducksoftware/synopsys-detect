@@ -27,6 +27,8 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
@@ -38,6 +40,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class GoVendorExtractor {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Gson gson;
     private final ExternalIdFactory externalIdFactory;
 
@@ -50,8 +53,9 @@ public class GoVendorExtractor {
         try {
             final GoVendorJsonParser vendorJsonParser = new GoVendorJsonParser(externalIdFactory);
             final String vendorJsonContents = FileUtils.readFileToString(vendorJsonFile, StandardCharsets.UTF_8);
+            logger.debug(vendorJsonContents);
+            
             final DependencyGraph dependencyGraph = vendorJsonParser.parseVendorJson(gson, vendorJsonContents);
-
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString());
 
             final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.GO_VENDOR, directory.toString(), externalId, dependencyGraph).build();

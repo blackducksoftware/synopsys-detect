@@ -57,10 +57,12 @@ public class NpmLockfileParser {
 
         Optional<PackageJson> packageJson = Optional.empty();
         if (packageJsonText.isPresent()) {
+            logger.debug(packageJsonText.get());
             packageJson = Optional.of(gson.fromJson(packageJsonText.get(), PackageJson.class));
         }
 
         final PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
+        logger.debug(lockFileText);
 
         logger.info("Processing project.");
         if (packageLock.dependencies != null) {
