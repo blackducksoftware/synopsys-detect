@@ -38,7 +38,6 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.tool.SimpleToolDetector;
-import com.blackducksoftware.integration.hub.detect.tool.ToolResult;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -102,37 +101,25 @@ public class BazelDetector implements SimpleToolDetector {
     }
 
     @Override
-    public Extraction extract() {
-        return bazelExtractor.extract(bazelExe, environment.getDirectory());
-    }
-
-    @Override
-    public ToolResult createToolResult(final EventSystem eventSystem, final DetectorResult extractableResult, final RunResult runResult) {
+    public void extract(final EventSystem eventSystem, final DetectorResult extractableResult, final RunResult runResult) {
         if (extractableResult.getPassed()) {
             logger.info("Performing the Bazel extraction.");
-            Extraction extractResult = extract();
-
-            BazelToolResult bazelToolResult = new BazelToolResult();
-            bazelToolResult.bazelCodeLocations = extractResult.codeLocations;
+            Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory());
             if (StringUtils.isNotBlank(extractResult.projectName)) {
-                bazelToolResult.bazelProjectNameVersion = Optional.of(new NameVersion(extractResult.projectName, extractResult.projectVersion));
+                runResult.addToolNameVersionIfPresent(DetectTool.BAZEL, Optional.of(new NameVersion(extractResult.projectName, extractResult.projectVersion)));
             }
+            runResult.addDetectCodeLocations(extractResult.codeLocations);
             if (extractResult.result == Extraction.ExtractionResultType.SUCCESS) {
                 eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.SUCCESS));
             } else {
                 eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
             }
-            runResult.addToolNameVersionIfPresent(DetectTool.BAZEL, bazelToolResult.bazelProjectNameVersion);
-            runResult.addDetectCodeLocations(bazelToolResult.bazelCodeLocations);
-
-            return bazelToolResult;
         } else {
-            logger.error("Bazel was not extractable.");
-            logger.error(extractableResult.toDescription());
+            logger.error(String.format("Bazel was not extractable: %s", extractableResult.toDescription()));
             eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
             final BazelToolResult bazelToolResult = new BazelToolResult().failure(extractableResult.toDescription());
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, bazelToolResult.errorMessage));
-            return bazelToolResult;
         }
     }
+
 }

@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
-import com.blackducksoftware.integration.hub.detect.tool.docker.DockerToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
@@ -47,7 +46,7 @@ public class ToolRunner {
         this.toolDetector = toolDetector;
     }
 
-    public ToolResult run(final RunResult runResult) throws DetectorException {
+    public void run(final RunResult runResult) throws DetectorException {
         logger.info(String.format("Checking if %s applies.", toolDetector.getName()));
         DetectorResult applicableResult = toolDetector.applicable();
         if (applicableResult.getPassed()) {
@@ -55,18 +54,15 @@ public class ToolRunner {
             DetectorResult extractableResult = toolDetector.extractable();
             if (extractableResult.getPassed()) {
                 logger.info(String.format("Performing the %s extraction.", toolDetector.getName()));
-                toolDetector.extract();
-                return toolDetector.createToolResult(eventSystem, extractableResult, runResult);
+                toolDetector.extract(eventSystem, extractableResult, runResult);
             } else {
                 logger.error(String.format("%s was not extractable.", toolDetector.getName()));
                 logger.error(applicableResult.toDescription());
                 eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
-                return new DockerToolResult().failure(applicableResult.toDescription());
             }
         } else {
             logger.info("Docker was not applicable, will not actually run Docker tool.");
             logger.info(applicableResult.toDescription());
-            return new DockerToolResult().skipped();
         }
     }
 }
