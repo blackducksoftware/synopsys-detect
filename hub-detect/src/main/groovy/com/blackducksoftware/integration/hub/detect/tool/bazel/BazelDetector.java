@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.tool.bazel;
 
-import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,21 +32,15 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
-import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
 import com.blackducksoftware.integration.hub.detect.tool.SimpleToolDetector;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
-import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
-import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientDetectorResult;
-import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
-import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
-import com.synopsys.integration.util.NameVersion;
 
 public class BazelDetector extends SimpleToolDetector {
     private static final String BAZEL_VERSION_SUBCOMMAND = "version";
@@ -95,17 +87,9 @@ public class BazelDetector extends SimpleToolDetector {
     }
 
     @Override
-    public void extractAndPublishResults(final EventSystem eventSystem, final RunResult runResult) {
+    public Extraction extract() {
         logger.info("Performing the Bazel extraction.");
         Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory());
-        if (StringUtils.isNotBlank(extractResult.projectName)) {
-            runResult.addToolNameVersionIfPresent(DetectTool.BAZEL, Optional.of(new NameVersion(extractResult.projectName, extractResult.projectVersion)));
-        }
-        runResult.addDetectCodeLocations(extractResult.codeLocations);
-        if (extractResult.result == Extraction.ExtractionResultType.SUCCESS) {
-            eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.SUCCESS));
-        } else {
-            eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
-        }
+        return extractResult;
     }
 }

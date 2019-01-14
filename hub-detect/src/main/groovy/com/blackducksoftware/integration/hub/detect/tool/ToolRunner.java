@@ -23,13 +23,26 @@
  */
 package com.blackducksoftware.integration.hub.detect.tool;
 
+import java.io.File;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
+import com.blackducksoftware.integration.hub.detect.tool.docker.DockerExtractor;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
+import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
+import com.synopsys.integration.util.NameVersion;
 
 public class ToolRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -50,13 +63,36 @@ public class ToolRunner {
             DetectorResult extractableResult = toolDetector.extractable();
             if (extractableResult.getPassed()) {
                 logger.info(String.format("Performing the %s extraction.", toolDetector.getToolEnum().toString()));
-                toolDetector.extractAndPublishResults(eventSystem, runResult);
+                Extraction extractionResults = toolDetector.extract();
+                publishExtractionResults(eventSystem, runResult, extractionResults);
             } else {
-                toolDetector.publishNotExtractableResults(eventSystem, extractableResult);
+                publishNotExtractableResults(eventSystem, extractableResult, toolDetector.getToolEnum().toString());
             }
         } else {
             logger.info("Docker was not applicable, will not actually run Docker tool.");
             logger.info(applicableResult.toDescription());
         }
+    }
+
+    private void publishExtractionResults(final EventSystem eventSystem, final RunResult runResult, final Extraction extractionResult) {
+        if (StringUtils.isNotBlank(extractionResult.projectName)) {
+            runResult.addToolNameVersionIfPresent(DetectTool.DOCKER, Optional.of(new NameVersion(extractionResult.projectName, extractionResult.projectVersion)));
+        }
+        Optional<Object> dockerTar = extractionResult.getMetaDataValue(DockerExtractor.DOCKER_TAR_META_DATA_KEY);
+        if (dockerTar.isPresent()) {
+            runResult.addDockerFile(Optional.of((File) dockerTar.get()));
+        }
+        runResult.addDetectCodeLocations(extractionResult.codeLocations);
+        if (extractionResult.result == Extraction.ExtractionResultType.SUCCESS) {
+            eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.SUCCESS));
+        } else {
+            eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
+        }
+    }
+
+    private void publishNotExtractableResults(final EventSystem eventSystem, final DetectorResult extractableResult, final String toolName) {
+        logger.error(String.format("%s was not extractable: %s", toolName, extractableResult.toDescription()));
+        eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
+        eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractableResult.toDescription()));
     }
 }
