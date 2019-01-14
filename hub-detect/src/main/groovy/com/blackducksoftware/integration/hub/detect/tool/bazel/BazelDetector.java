@@ -34,6 +34,9 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.tool.SimpleToolDetector;
 import com.blackducksoftware.integration.hub.detect.tool.ToolResult;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
@@ -81,6 +84,7 @@ public class BazelDetector implements SimpleToolDetector {
 
     @Override
     public DetectorResult applicable() {
+        logger.info("*** applicable()");
         final String bazelTarget = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None);
         if (StringUtils.isBlank(bazelTarget)) {
             return new PropertyInsufficientDetectorResult();
@@ -90,6 +94,7 @@ public class BazelDetector implements SimpleToolDetector {
 
     @Override
     public DetectorResult extractable() {
+        logger.info("*** extractable()");
         bazelExe = bazelExecutableFinder.findBazel(environment);
         final ExecutableOutput bazelQueryDepsRecursiveOutput;
         try {
@@ -107,9 +112,9 @@ public class BazelDetector implements SimpleToolDetector {
     public Extraction extract() {
         return bazelExtractor.extract(bazelExe, environment.getDirectory());
     }
-
+    // TODO inline extract(); createToolResult() gets renamed to extract()
     @Override
-    public ToolResult createToolResult(final EventSystem eventSystem, final DetectorResult extractableResult) {
+    public ToolResult createToolResult(final EventSystem eventSystem, final DetectorResult extractableResult, final RunResult runResult) {
         if (extractableResult.getPassed()) {
             logger.info("Performing the Bazel extraction.");
             Extraction extractResult = extract();
@@ -125,13 +130,17 @@ public class BazelDetector implements SimpleToolDetector {
             } else {
                 eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
             }
+            runResult.addToolNameVersionIfPresent(DetectTool.BAZEL, bazelToolResult.bazelProjectNameVersion);
+            runResult.addDetectCodeLocations(bazelToolResult.bazelCodeLocations);
 
             return bazelToolResult;
         } else {
             logger.error("Bazel was not extractable.");
             logger.error(extractableResult.toDescription());
             eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.BAZEL.toString(), StatusType.FAILURE));
-            return new BazelToolResult().failure(extractableResult.toDescription());
+            final BazelToolResult bazelToolResult = new BazelToolResult().failure(extractableResult.toDescription());
+            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, bazelToolResult.errorMessage));
+            return bazelToolResult;
         }
     }
 }

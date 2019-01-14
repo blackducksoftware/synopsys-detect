@@ -34,6 +34,7 @@ import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
+import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunResult;
 import com.blackducksoftware.integration.hub.detect.tool.SimpleToolDetector;
 import com.blackducksoftware.integration.hub.detect.tool.ToolResult;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
@@ -58,6 +59,7 @@ public class DockerDetector implements SimpleToolDetector {
     private final DetectInfo detectInfo;
     private final DetectorEnvironment environment;
     private final DirectoryManager directoryManager;
+    private final EventSystem eventSystem;
     private final DockerInspectorManager dockerInspectorManager;
     private final CacheableExecutableFinder cacheableExecutableFinder;
     private final DockerExtractor dockerExtractor;
@@ -72,12 +74,13 @@ public class DockerDetector implements SimpleToolDetector {
     private String tar;
     private DockerInspectorInfo dockerInspectorInfo;
 
-    public DockerDetector(final DetectInfo detectInfo, final DetectorEnvironment environment, final DirectoryManager directoryManager, final DockerInspectorManager dockerInspectorManager,
+    public DockerDetector(final DetectInfo detectInfo, final DetectorEnvironment environment, final DirectoryManager directoryManager, final EventSystem eventSystem, final DockerInspectorManager dockerInspectorManager,
         final CacheableExecutableFinder cacheableExecutableFinder, final boolean dockerPathRequired, final String suppliedDockerImage,
         final String suppliedDockerTar, final DockerExtractor dockerExtractor) {
         this.detectInfo = detectInfo;
         this.environment = environment;
         this.directoryManager = directoryManager;
+        this.eventSystem = eventSystem;
         this.cacheableExecutableFinder = cacheableExecutableFinder;
         this.dockerExtractor = dockerExtractor;
         this.dockerPathRequired = dockerPathRequired;
@@ -149,7 +152,7 @@ public class DockerDetector implements SimpleToolDetector {
     }
 
     @Override
-    public ToolResult createToolResult(final EventSystem eventSystem, final DetectorResult extractableResult) {
+    public ToolResult createToolResult(final EventSystem eventSystem, final DetectorResult extractableResult, final RunResult runResult) {
         if (extractableResult.getPassed()) {
             logger.info("Performing the Docker extraction.");
             Extraction extractResult = extract();
@@ -170,6 +173,9 @@ public class DockerDetector implements SimpleToolDetector {
             } else {
                 eventSystem.publishEvent(Event.StatusSummary, new Status(DetectTool.DOCKER.toString(), StatusType.FAILURE));
             }
+            runResult.addToolNameVersionIfPresent(DetectTool.DOCKER, dockerToolResult.dockerProjectNameVersion);
+            runResult.addDetectCodeLocations(dockerToolResult.dockerCodeLocations);
+            runResult.addDockerFile(dockerToolResult.dockerTar);
 
             return dockerToolResult;
         } else {

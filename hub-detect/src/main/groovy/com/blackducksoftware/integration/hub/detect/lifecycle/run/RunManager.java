@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.lifecycle.run;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -35,12 +36,14 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelTool;
-import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelToolResult;
+import com.blackducksoftware.integration.hub.detect.tool.ToolResult;
+import com.blackducksoftware.integration.hub.detect.tool.ToolSupport;
+import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelDetector;
 import com.blackducksoftware.integration.hub.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorToolResult;
@@ -135,15 +138,22 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the bazel tool.");
-            BazelTool bazelTool = new BazelTool(detectContext);
+            ////////// new
+            DetectorEnvironment detectorEnvironment = new DetectorEnvironment(directoryManager.getSourceDirectory(), Collections.emptySet(), 0, null, false);
+            BazelDetector bazelDetector = detectContext.getBean(BazelDetector.class, detectorEnvironment);
+            ToolSupport toolSupport = new ToolSupport(eventSystem, detectContext, bazelDetector);
+            ToolResult bazelToolResult = toolSupport.run(runResult);
+            ///////////////////////////
+//            BazelTool bazelTool = new BazelTool(detectContext);
 
-            BazelToolResult bazelToolResult = bazelTool.run();
-            runResult.addToolNameVersionIfPresent(DetectTool.BAZEL, bazelToolResult.bazelProjectNameVersion);
-            runResult.addDetectCodeLocations(bazelToolResult.bazelCodeLocations);
+//            BazelToolResult bazelToolResult = bazelTool.run();
+//            runResult.addToolNameVersionIfPresent(DetectTool.BAZEL, bazelToolResult.bazelProjectNameVersion);
+//            runResult.addDetectCodeLocations(bazelToolResult.bazelCodeLocations);
 
-            if (bazelToolResult.resultType == BazelToolResult.BazelToolResultType.FAILURE) {
-                eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, bazelToolResult.errorMessage));
-            }
+
+//            if (bazelToolResult.resultType == BazelToolResult.BazelToolResultType.FAILURE) {
+//                eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, bazelToolResult.errorMessage));
+//            }
             logger.info("Bazel actions finished.");
         } else {
             logger.info("Bazel tool will not be run.");
