@@ -58,12 +58,14 @@ public class DetectProjectService {
         this.projectMappingService = projectMappingService;
     }
 
-    public ProjectVersionWrapper createOrUpdateHubProject(final NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
+    public ProjectVersionWrapper createOrUpdateHubProject(final NameVersion projectNameVersion, final String applicationId) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         final ProjectService projectService = blackDuckServicesFactory.createProjectService();
         final BlackDuckService hubService = blackDuckServicesFactory.createBlackDuckService();
         final ProjectRequest projectRequest = createProjectRequest(projectNameVersion, projectService, hubService);
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
-        return projectService.syncProjectAndVersion(projectRequest, forceUpdate);
+        final ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectRequest, forceUpdate);
+        setApplicationId(projectVersionWrapper.getProjectView(), applicationId);
+        return projectVersionWrapper;
     }
 
     public ProjectRequest createProjectRequest(final NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService hubService) throws DetectUserFriendlyException {
@@ -119,7 +121,13 @@ public class DetectProjectService {
     }
 
     public void setApplicationId(final ProjectView projectView, final String applicationId) throws DetectUserFriendlyException {
+        if (StringUtils.isBlank(applicationId)) {
+            logger.info("No Application ID to set");
+            return;
+        }
+
         try {
+            logger.info("Setting project Application ID");
             projectMappingService.setApplicationId(projectView, applicationId);
         } catch (final IntegrationException e) {
             throw new DetectUserFriendlyException(String.format("Unable to set Application ID for project: %s", projectView.getName()), e, ExitCodeType.FAILURE_CONFIGURATION);

@@ -25,7 +25,6 @@ package com.blackducksoftware.integration.hub.detect.lifecycle.run;
 
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +73,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.report.util.ReportC
 import com.blackducksoftware.integration.hub.detect.workflow.search.SearchOptions;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
@@ -173,13 +171,7 @@ public class RunManager {
             final DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
             final DetectProjectMappingService detectProjectMappingService = new DetectProjectMappingService(blackDuckServicesFactory.createBlackDuckService());
             final DetectProjectService detectProjectService = new DetectProjectService(blackDuckServicesFactory, options, detectProjectMappingService);
-            projectVersionWrapper = Optional.of(detectProjectService.createOrUpdateHubProject(projectNameVersion));
-
-            if (projectVersionWrapper.isPresent() && StringUtils.isNotBlank(options.getApplicationId())) {
-                logger.info("Setting project Application ID");
-                final ProjectView projectView = projectVersionWrapper.get().getProjectView();
-                detectProjectService.setApplicationId(projectView, options.getApplicationId());
-            }
+            projectVersionWrapper = Optional.of(detectProjectService.createOrUpdateHubProject(projectNameVersion, options.getApplicationId()));
 
             if (projectVersionWrapper.isPresent() && runOptions.shouldUnmapCodeLocations()) {
                 logger.info("Unmapping code locations.");

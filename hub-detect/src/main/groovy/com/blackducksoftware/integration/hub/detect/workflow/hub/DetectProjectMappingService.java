@@ -42,7 +42,6 @@ public class DetectProjectMappingService {
 
     /**
      * Sets the applicationId for a project
-     * @return The url of the project mapping
      * @throws IntegrationException
      */
     public void setApplicationId(final ProjectView projectView, final String applicationId) throws IntegrationException {
@@ -66,6 +65,12 @@ public class DetectProjectMappingService {
         }
     }
 
+    /**
+     * Retrieves all the project-mappings from a project
+     * @param projectView for the project whose mappings you want
+     * @return A list of project-mappings that have been set
+     * @throws IntegrationException
+     */
     public List<DetectProjectMappingView> getProjectMappings(final ProjectView projectView) throws IntegrationException {
         final Optional<String> projectMappingsLink = projectView.getFirstLink(PROJECT_MAPPINGS_LINK_RESPONSE.getLink());
         if (projectMappingsLink.isPresent()) {
