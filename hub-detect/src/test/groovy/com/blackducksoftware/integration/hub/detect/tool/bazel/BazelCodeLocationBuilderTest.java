@@ -11,11 +11,11 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
-public class BazelBdioBuilderTest {
+public class BazelCodeLocationBuilderTest {
 
     @Test
     public void test() {
-        BazelBdioBuilder bdioBuilder = new BazelBdioBuilder(new ExternalIdFactory());
+        BazelCodeLocationBuilder bdioBuilder = new BazelCodeLocationBuilder(new ExternalIdFactory());
         final List<DetectCodeLocation> codeLocations = bdioBuilder.setWorkspaceDir(new File("src/test/resources/bazel/multiLevel"))
             .addDependency(BazelExternalId.fromBazelArtifactString("testGroup:testArtifact:testVersion", ":"))
             .build();

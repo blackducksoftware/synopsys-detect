@@ -46,23 +46,23 @@ public class BazelExtractor {
     private final ExecutableRunner executableRunner;
     private final BazelQueryXmlOutputParser parser;
     private final BazelExternalIdExtractionSimpleRules simpleRules;
-    private final BazelBdioBuilder bdioGenerator;
+    private final BazelCodeLocationBuilder codeLocationGenerator;
     private final BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor;
 
     public BazelExtractor(final DetectConfiguration detectConfiguration, final ExecutableRunner executableRunner, BazelQueryXmlOutputParser parser, final BazelExternalIdExtractionSimpleRules simpleRules,
-        final BazelBdioBuilder bdioGenerator, final BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor) {
+        final BazelCodeLocationBuilder codeLocationGenerator, final BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor) {
         this.detectConfiguration = detectConfiguration;
         this.executableRunner = executableRunner;
         this.parser = parser;
         this.simpleRules = simpleRules;
-        this.bdioGenerator = bdioGenerator;
+        this.codeLocationGenerator = codeLocationGenerator;
         this.bazelExternalIdExtractionFullRuleJsonProcessor = bazelExternalIdExtractionFullRuleJsonProcessor;
     }
 
     public Extraction extract(final String bazelExe, final File workspaceDir) {
         logger.debug("Bazel extractAndPublishResults()");
         try {
-            bdioGenerator.setWorkspaceDir(workspaceDir);
+            codeLocationGenerator.setWorkspaceDir(workspaceDir);
             final String fullRulesPath = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_ADVANCED_RULES_PATH, PropertyAuthority.None);
             final String bazelTarget = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None);
             List<BazelExternalIdExtractionFullRule> fullRules;
@@ -80,11 +80,11 @@ public class BazelExtractor {
             fullRules.stream()
                 .map(externalIdGenerator::generate)
                 .flatMap(Collection::stream)
-                .forEach(bdioGenerator::addDependency);
+                .forEach(codeLocationGenerator::addDependency);
             if (externalIdGenerator.isErrors()) {
                 return new Extraction.Builder().failure(externalIdGenerator.getErrorMessage()).build();
             }
-            final List<DetectCodeLocation> codeLocations = bdioGenerator.build();
+            final List<DetectCodeLocation> codeLocations = codeLocationGenerator.build();
             final String projectName = cleanProjectName(bazelTarget);
             final Extraction.Builder builder = new Extraction.Builder()
                                                    .success(codeLocations)

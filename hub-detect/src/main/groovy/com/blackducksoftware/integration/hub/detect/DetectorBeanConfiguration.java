@@ -122,7 +122,7 @@ import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnListParser
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockParser;
-import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelBdioBuilder;
+import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelCodeLocationBuilder;
 import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelDetector;
 import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelExternalIdExtractionFullRuleJsonProcessor;
@@ -208,9 +208,9 @@ public class DetectorBeanConfiguration {
     public BazelExtractor bazelExtractor() {
         BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
         BazelExternalIdExtractionSimpleRules rules = new BazelExternalIdExtractionSimpleRules(detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None));
-        BazelBdioBuilder bdioGenerator = new BazelBdioBuilder(externalIdFactory);
+        BazelCodeLocationBuilder codeLocationGenerator = new BazelCodeLocationBuilder(externalIdFactory);
         BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor = new BazelExternalIdExtractionFullRuleJsonProcessor(gson);
-        return new BazelExtractor(detectConfiguration, executableRunner, parser, rules, bdioGenerator, bazelExternalIdExtractionFullRuleJsonProcessor);
+        return new BazelExtractor(detectConfiguration, executableRunner, parser, rules, codeLocationGenerator, bazelExternalIdExtractionFullRuleJsonProcessor);
     }
 
     @Bean

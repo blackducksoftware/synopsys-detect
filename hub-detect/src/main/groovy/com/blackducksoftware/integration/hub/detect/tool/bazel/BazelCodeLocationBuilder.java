@@ -38,23 +38,23 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
-public class BazelBdioBuilder {
+public class BazelCodeLocationBuilder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
     private final MutableDependencyGraph dependencyGraph;
     private File workspaceDir;
 
-    public BazelBdioBuilder(final ExternalIdFactory externalIdFactory) {
+    public BazelCodeLocationBuilder(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
         dependencyGraph = new MutableMapDependencyGraph();
     }
 
-    public BazelBdioBuilder setWorkspaceDir(final File workspaceDir) {
+    public BazelCodeLocationBuilder setWorkspaceDir(final File workspaceDir) {
         this.workspaceDir = workspaceDir;
         return this;
     }
 
-    public BazelBdioBuilder addDependency(final BazelExternalId bazelExternalId) {
+    public BazelCodeLocationBuilder addDependency(final BazelExternalId bazelExternalId) {
         try {
             logger.debug(String.format("Adding dependency from external id: %s", bazelExternalId));
             final ExternalId externalId = externalIdFactory.createMavenExternalId(bazelExternalId.getGroup(), bazelExternalId.getArtifact(), bazelExternalId.getVersion());
