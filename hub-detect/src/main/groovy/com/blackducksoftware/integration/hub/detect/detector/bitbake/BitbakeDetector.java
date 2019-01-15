@@ -64,16 +64,16 @@ public class BitbakeDetector extends Detector {
             return new FileNotFoundDetectorResult(DetectProperty.DETECT_INIT_BUILD_ENV_NAME.getDefaultValue());
         }
 
-        return new PassedDetectorResult();
-    }
-
-    @Override
-    public DetectorResult extractable() {
         final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES, PropertyAuthority.None);
         if (packageNames == null || packageNames.length == 0) {
             return new PropertyInsufficientDetectorResult();
         }
 
+        return new PassedDetectorResult();
+    }
+
+    @Override
+    public DetectorResult extractable() {
         return new PassedDetectorResult();
     }
 
