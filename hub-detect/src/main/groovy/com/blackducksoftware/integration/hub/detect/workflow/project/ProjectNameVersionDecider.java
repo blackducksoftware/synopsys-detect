@@ -36,6 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.DetectTool;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.util.NameVersion;
 
 public class ProjectNameVersionDecider {
@@ -47,7 +50,7 @@ public class ProjectNameVersionDecider {
         this.projectVersionOptions = projectVersionOptions;
     }
 
-    public NameVersion decideProjectNameVersion(String preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) {
+    public NameVersion decideProjectNameVersion(String preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
 
         Optional<String> decidedProjectName = Optional.empty();
         Optional<String> decidedProjectVersion = Optional.empty();
@@ -102,13 +105,16 @@ public class ProjectNameVersionDecider {
                    .findFirst();
     }
 
-    private Optional<DetectToolProjectInfo> decideToolProjectInfo(String preferredDetectTools, List<DetectToolProjectInfo> detectToolProjectInfo) {
+    private Optional<DetectToolProjectInfo> decideToolProjectInfo(String preferredDetectTools, List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
         Optional<DetectToolProjectInfo> chosenTool = Optional.empty();
 
-        List<DetectTool> toolOrder = DetectTool.DEFAULT_PROJECT_ORDER;
+        List<DetectTool> toolOrder = null;
         if (StringUtils.isNotBlank(preferredDetectTools)) {
             String[] tools = preferredDetectTools.split(",");
             toolOrder = Arrays.asList(tools).stream().map(it -> DetectTool.valueOf(it)).collect(Collectors.toList());
+        }
+        if (toolOrder == null) {
+            throw new DetectUserFriendlyException("Could not determine project tool order. Please specify a tool order using " + DetectProperty.DETECT_PROJECT_TOOL.getPropertyName(), ExitCodeType.FAILURE_CONFIGURATION);
         }
 
         for (DetectTool tool : toolOrder) {
