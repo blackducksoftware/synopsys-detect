@@ -54,6 +54,7 @@ public class PodlockExtractor {
         try {
             logger.trace(String.format("Reading from the pod lock file %s", podlock.getAbsolutePath()));
             podLockText = FileUtils.readFileToString(podlock, StandardCharsets.UTF_8);
+            logger.debug(podLockText);
             logger.trace("Finished reading from the pod lock file.");
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();

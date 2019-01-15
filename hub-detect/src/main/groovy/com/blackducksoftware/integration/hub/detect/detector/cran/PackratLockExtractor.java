@@ -27,6 +27,10 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
@@ -38,6 +42,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class PackratLockExtractor {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final PackratPackager packratPackager;
     private final ExternalIdFactory externalIdFactory;
     private final DetectFileFinder detectFileFinder;
@@ -55,6 +60,7 @@ public class PackratLockExtractor {
             if (detectFileFinder.containsAllFiles(directory, "DESCRIPTION")) {
                 final File descriptionFile = new File(directory, "DESCRIPTION");
                 final List<String> descriptionText = Files.readAllLines(descriptionFile.toPath(), StandardCharsets.UTF_8);
+                logger.debug(descriptionText.stream().collect(Collectors.joining("\n")));
                 projectName = packratPackager.getProjectName(descriptionText);
                 projectVersion = packratPackager.getVersion(descriptionText);
             }

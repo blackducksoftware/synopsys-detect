@@ -26,6 +26,7 @@ package com.blackducksoftware.integration.hub.detect.detector.bitbake;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,9 +51,9 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.paypal.digraph.parser.GraphParser;
-import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class BitbakeExtractor {
     public static final String RECIPE_DEPENDS_FILE_NAME = "recipe-depends.dot";
@@ -97,6 +98,7 @@ public class BitbakeExtractor {
                     throw new IntegrationException("Failed to find a target architecture");
                 }
 
+                logger.debug(FileUtils.readFileToString(dependsFile, Charset.defaultCharset()));
                 final InputStream recipeDependsInputStream = FileUtils.openInputStream(dependsFile);
                 final GraphParser graphParser = new GraphParser(recipeDependsInputStream);
                 final DependencyGraph dependencyGraph = graphParserTransformer.transform(graphParser, targetArchitecture);

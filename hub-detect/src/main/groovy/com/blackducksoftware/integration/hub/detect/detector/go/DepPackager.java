@@ -73,6 +73,7 @@ public class DepPackager {
         if (gopkgLockFile.exists()) {
             try (FileInputStream fis = new FileInputStream(gopkgLockFile)) {
                 gopkgLockContents = IOUtils.toString(fis, Charset.defaultCharset());
+                logger.debug(gopkgLockContents);
             } catch (final Exception e) {
                 gopkgLockContents = null;
             }

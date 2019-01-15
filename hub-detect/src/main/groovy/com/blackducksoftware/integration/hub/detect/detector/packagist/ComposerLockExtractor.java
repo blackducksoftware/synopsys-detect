@@ -27,11 +27,13 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class ComposerLockExtractor {
-
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final PackagistParser packagistParser;
 
     public ComposerLockExtractor(final PackagistParser packagistParser) {
@@ -42,6 +44,9 @@ public class ComposerLockExtractor {
         try {
             final String composerJsonText = FileUtils.readFileToString(composerJson, StandardCharsets.UTF_8);
             final String composerLockText = FileUtils.readFileToString(composerLock, StandardCharsets.UTF_8);
+
+            logger.debug(composerJsonText);
+            logger.debug(composerLockText);
 
             final PackagistParseResult result = packagistParser.getDependencyGraphFromProject(directory.toString(), composerJsonText, composerLockText);
 

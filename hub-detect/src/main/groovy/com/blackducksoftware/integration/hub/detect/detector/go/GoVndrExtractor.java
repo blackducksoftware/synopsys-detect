@@ -27,6 +27,10 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
@@ -37,6 +41,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class GoVndrExtractor {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
 
     public GoVndrExtractor(final ExternalIdFactory externalIdFactory) {
@@ -47,6 +52,7 @@ public class GoVndrExtractor {
         try {
             final VndrParser vndrParser = new VndrParser(externalIdFactory);
             final List<String> venderConfContents = Files.readAllLines(vndrConfig.toPath(), StandardCharsets.UTF_8);
+            logger.debug(venderConfContents.stream().collect(Collectors.joining("\n")));
             final DependencyGraph dependencyGraph = vndrParser.parseVendorConf(venderConfContents);
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString());
 
