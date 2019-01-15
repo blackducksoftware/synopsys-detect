@@ -35,13 +35,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -52,6 +47,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFind
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -60,34 +56,29 @@ public class BitbakeExtractor {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final ExecutableFinder executableFinder;
     private final ExecutableRunner executableRunner;
-    private final DetectConfiguration detectConfiguration;
     private final DetectFileFinder detectFileFinder;
     private final DirectoryManager directoryManager;
     private final GraphParserTransformer graphParserTransformer;
     private final BitbakeListTasksParser bitbakeListTasksParser;
 
-    public BitbakeExtractor(final ExecutableFinder executableFinder, final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager,
+    public BitbakeExtractor(final ExecutableRunner executableRunner, final DirectoryManager directoryManager,
         final DetectFileFinder detectFileFinder, final GraphParserTransformer graphParserTransformer, final BitbakeListTasksParser bitbakeListTasksParser) {
-        this.executableFinder = executableFinder;
         this.executableRunner = executableRunner;
-        this.detectConfiguration = detectConfiguration;
         this.directoryManager = directoryManager;
         this.detectFileFinder = detectFileFinder;
         this.graphParserTransformer = graphParserTransformer;
         this.bitbakeListTasksParser = bitbakeListTasksParser;
     }
 
-    public Extraction extract(final ExtractionId extractionId, final String foundBuildEnvScriptPath, final String sourcePath) {
+    public Extraction extract(final ExtractionId extractionId, final File buildEnvScript, final File sourcePath, String[] packageNames, File bash) {
         final File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
         final File bitbakeBuildDirectory = new File(outputDirectory, "build");
-        final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES, PropertyAuthority.None);
 
         final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
         for (final String packageName : packageNames) {
-            final File dependsFile = executeBitbakeForRecipeDependsFile(outputDirectory, bitbakeBuildDirectory, foundBuildEnvScriptPath, packageName);
-            final String targetArchitecture = executeBitbakeForTargetArchitecture(outputDirectory, foundBuildEnvScriptPath, packageName);
+            final File dependsFile = executeBitbakeForRecipeDependsFile(outputDirectory, bitbakeBuildDirectory, buildEnvScript, packageName, bash);
+            final String targetArchitecture = executeBitbakeForTargetArchitecture(outputDirectory, buildEnvScript, packageName, bash);
 
             try {
                 if (dependsFile == null) {
@@ -102,8 +93,8 @@ public class BitbakeExtractor {
                 final InputStream recipeDependsInputStream = FileUtils.openInputStream(dependsFile);
                 final GraphParser graphParser = new GraphParser(recipeDependsInputStream);
                 final DependencyGraph dependencyGraph = graphParserTransformer.transform(graphParser, targetArchitecture);
-                final ExternalId externalId = new ExternalId(BitbakeDetector.YOCTO_FORGE);
-                final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.BITBAKE, sourcePath, externalId, dependencyGraph).build();
+                final ExternalId externalId = new ExternalId(Forge.YOCTO);
+                final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.BITBAKE, sourcePath.getCanonicalPath(), externalId, dependencyGraph).build();
 
                 detectCodeLocations.add(detectCodeLocation);
             } catch (final IOException | IntegrationException e) {
@@ -127,9 +118,9 @@ public class BitbakeExtractor {
         return extraction;
     }
 
-    private File executeBitbakeForRecipeDependsFile(final File outputDirectory, final File bitbakeBuildDirectory, final String foundBuildEnvScriptPath, final String packageName) {
+    private File executeBitbakeForRecipeDependsFile(final File outputDirectory, final File bitbakeBuildDirectory, final File buildEnvScript, final String packageName, File bash) {
         final String bitbakeCommand = "bitbake -g " + packageName;
-        final ExecutableOutput executableOutput = runBitbake(outputDirectory, foundBuildEnvScriptPath, bitbakeCommand);
+        final ExecutableOutput executableOutput = runBitbake(outputDirectory, buildEnvScript, bitbakeCommand, bash);
         final int returnCode = executableOutput.getReturnCode();
         File recipeDependsFile = null;
 
@@ -142,9 +133,9 @@ public class BitbakeExtractor {
         return recipeDependsFile;
     }
 
-    private String executeBitbakeForTargetArchitecture(final File outputDirectory, final String foundBuildEnvScriptPath, final String packageName) {
+    private String executeBitbakeForTargetArchitecture(final File outputDirectory, final File buildEnvScript, final String packageName, File bash) {
         final String bitbakeCommand = "bitbake -c listtasks " + packageName;
-        final ExecutableOutput executableOutput = runBitbake(outputDirectory, foundBuildEnvScriptPath, bitbakeCommand);
+        final ExecutableOutput executableOutput = runBitbake(outputDirectory, buildEnvScript, bitbakeCommand, bash);
         final int returnCode = executableOutput.getReturnCode();
         String targetArchitecture = null;
 
@@ -157,13 +148,12 @@ public class BitbakeExtractor {
         return targetArchitecture;
     }
 
-    private ExecutableOutput runBitbake(final File outputDirectory, final String foundBuildEnvScriptPath, final String bitbakeCommand) {
-        final String bashExecutablePath = executableFinder.getExecutablePathOrOverride(ExecutableType.BASH, true, "", detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH, PropertyAuthority.None));
+    private ExecutableOutput runBitbake(final File outputDirectory, final File buildEnvScript, final String bitbakeCommand, File bash) {
 
         final List<String> arguments = new ArrayList<>();
         arguments.add("-c");
-        arguments.add(". " + foundBuildEnvScriptPath + "; " + bitbakeCommand);
-        final Executable sourceExecutable = new Executable(outputDirectory, bashExecutablePath, arguments);
+        arguments.add(". " + buildEnvScript + "; " + bitbakeCommand);
+        final Executable sourceExecutable = new Executable(outputDirectory, bash, arguments);
         ExecutableOutput executableOutput = null;
 
         try {

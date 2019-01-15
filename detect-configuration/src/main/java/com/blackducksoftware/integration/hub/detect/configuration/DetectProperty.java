@@ -838,7 +838,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_BITBAKE)
     @HelpDescription("The name of the build environment init script")
-    DETECT_INIT_BUILD_ENV_NAME("detect.bitbake.build.env.name", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "oe-init-build-env"),
+    DETECT_BITBAKE_BUILD_ENV_NAME("detect.bitbake.build.env.name", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "oe-init-build-env"),
 
     @HelpGroup(primary = GROUP_BITBAKE)
     @HelpDescription("A comma separated list of package names to extract dependencies from")

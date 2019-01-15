@@ -33,6 +33,7 @@ import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
 import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -49,7 +50,7 @@ public class GraphParserTransformer {
             final Optional<String> version = getVersionFromNode(graphNode);
 
             if (version.isPresent()) {
-                final ExternalId externalId = new ExternalId(BitbakeDetector.YOCTO_FORGE);
+                final ExternalId externalId = new ExternalId(Forge.YOCTO);
                 externalId.name = name;
                 externalId.version = version.get();
                 externalId.architecture = targetArchitecture;
