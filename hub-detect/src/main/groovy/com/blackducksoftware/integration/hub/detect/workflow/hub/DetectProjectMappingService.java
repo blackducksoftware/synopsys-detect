@@ -26,19 +26,13 @@ package com.blackducksoftware.integration.hub.detect.workflow.hub;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.blackduck.api.core.LinkSingleResponse;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.log.Slf4jIntLogger;
 
 public class DetectProjectMappingService {
     public static final LinkSingleResponse<DetectProjectMappingView> PROJECT_MAPPINGS_LINK_RESPONSE = new LinkSingleResponse<>("project-mappings", DetectProjectMappingView.class);
-
-    private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
     private final BlackDuckService blackDuckService;
 
@@ -51,21 +45,22 @@ public class DetectProjectMappingService {
      * @return The url of the project mapping
      * @throws IntegrationException
      */
-    public String setApplicationId(final ProjectView projectView, final String applicationId) throws IntegrationException {
+    public void setApplicationId(final ProjectView projectView, final String applicationId) throws IntegrationException {
         final Optional<String> projectMappingsLink = projectView.getFirstLink(PROJECT_MAPPINGS_LINK_RESPONSE.getLink());
 
         if (projectMappingsLink.isPresent()) {
-            // TODO: Currently there exists only one project-mapping which is the application id. Eventually there will be many so we need to filter
+            // TODO: Currently there exists only one project-mapping which is the project's Application ID. Eventually there will be namespaces that we will need to filter
             final Optional<DetectProjectMappingView> existingProjectMappingView = getProjectMappings(projectView).stream()
                                                                                       .findFirst();
             if (existingProjectMappingView.isPresent()) {
-                deleteProjectMapping(existingProjectMappingView.get());
+                final DetectProjectMappingView projectMappingView = existingProjectMappingView.get();
+                projectMappingView.setApplicationId(applicationId);
+                updateProjectMapping(projectMappingView);
+            } else {
+                final DetectProjectMappingView detectProjectMappingView = new DetectProjectMappingView();
+                detectProjectMappingView.setApplicationId(applicationId);
+                blackDuckService.post(projectMappingsLink.get(), detectProjectMappingView);
             }
-
-            final DetectProjectMappingView detectProjectMappingView = new DetectProjectMappingView();
-            detectProjectMappingView.setApplicationId(applicationId);
-
-            return blackDuckService.post(projectMappingsLink.get(), detectProjectMappingView);
         } else {
             throw new IntegrationException("project-mappings link not found in projectView");
         }
@@ -80,12 +75,11 @@ public class DetectProjectMappingService {
         }
     }
 
+    public void updateProjectMapping(final DetectProjectMappingView detectProjectMappingView) throws IntegrationException {
+        blackDuckService.put(detectProjectMappingView);
+    }
+
     public void deleteProjectMapping(final DetectProjectMappingView detectProjectMappingView) throws IntegrationException {
-        final Optional<String> href = detectProjectMappingView.getHref();
-        if (href.isPresent()) {
-            blackDuckService.delete(href.get());
-        } else {
-            logger.error("Cannot delete project mapping because no href was found");
-        }
+        blackDuckService.delete(detectProjectMappingView);
     }
 }

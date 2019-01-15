@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.hub;
 
 import com.synopsys.integration.blackduck.api.core.BlackDuckView;
 
+// TODO: There will eventually be a namespace field
 public class DetectProjectMappingView extends BlackDuckView {
     private String applicationId;
 
