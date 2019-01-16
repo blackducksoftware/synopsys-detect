@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.lifecycle.run;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -35,15 +36,16 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigur
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigurationFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
+import com.blackducksoftware.integration.hub.detect.tool.ToolRunner;
 import com.blackducksoftware.integration.hub.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorToolResult;
-import com.blackducksoftware.integration.hub.detect.tool.docker.DockerTool;
-import com.blackducksoftware.integration.hub.detect.tool.docker.DockerToolResult;
 import com.blackducksoftware.integration.hub.detect.tool.polaris.PolarisTool;
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.blackducksoftware.integration.hub.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
@@ -110,25 +112,28 @@ public class RunManager {
 
         final RunResult runResult = new RunResult();
         final RunOptions runOptions = detectConfigurationFactory.createRunOptions();
-
+        
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
-
+        DetectorEnvironment detectorEnvironment = new DetectorEnvironment(directoryManager.getSourceDirectory(), Collections.emptySet(), 0, null, false);
+        DetectorFactory detectorFactory = detectContext.getBean(DetectorFactory.class);
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the docker tool.");
-            final DockerTool dockerTool = new DockerTool(detectContext);
-
-            final DockerToolResult dockerToolResult = dockerTool.run();
-            runResult.addToolNameVersionIfPresent(DetectTool.DOCKER, dockerToolResult.dockerProjectNameVersion);
-            runResult.addDetectCodeLocations(dockerToolResult.dockerCodeLocations);
-            runResult.addDockerFile(dockerToolResult.dockerTar);
-
-            if (dockerToolResult.resultType == DockerToolResult.DockerToolResultType.FAILURE) {
-                eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, dockerToolResult.errorMessage));
-            }
+            ToolRunner toolRunner = new ToolRunner(eventSystem, detectorFactory.createDockerDetector(detectorEnvironment));
+            toolRunner.run(runResult);
             logger.info("Docker actions finished.");
         } else {
             logger.info("Docker tool will not be run.");
+        }
+
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
+            logger.info("Will include the bazel tool.");
+            ToolRunner toolRunner = new ToolRunner(eventSystem, detectorFactory.createBazelDetector(detectorEnvironment));
+            toolRunner.run(runResult);
+            logger.info("Bazel actions finished.");
+        } else {
+            logger.info("Bazel tool will not be run.");
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);

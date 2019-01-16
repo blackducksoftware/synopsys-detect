@@ -53,6 +53,8 @@ import com.blackducksoftware.integration.hub.detect.detector.pip.PipenvDetector;
 import com.blackducksoftware.integration.hub.detect.detector.rubygems.GemlockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.sbt.SbtResolutionCacheDetector;
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockDetector;
+import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelDetector;
+import com.blackducksoftware.integration.hub.detect.tool.docker.DockerDetector;
 
 public class DetectorFactory implements BeanFactoryAware {
 
@@ -61,6 +63,14 @@ public class DetectorFactory implements BeanFactoryAware {
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
+    }
+
+    public BazelDetector createBazelDetector(final DetectorEnvironment environment) {
+        return beanFactory.getBean(BazelDetector.class, environment);
+    }
+
+    public DockerDetector createDockerDetector(final DetectorEnvironment environment) {
+        return beanFactory.getBean(DockerDetector.class, environment);
     }
 
     public BitbakeDetector createBitbakeBomTool(final DetectorEnvironment environment) {

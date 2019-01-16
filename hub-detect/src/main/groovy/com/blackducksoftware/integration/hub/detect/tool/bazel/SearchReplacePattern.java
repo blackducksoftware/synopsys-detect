@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * hub-detect
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,47 +21,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.type;
+package com.blackducksoftware.integration.hub.detect.tool.bazel;
 
-public enum ExecutableType {
-    BASH,
-    BITBAKE,
-    CONDA,
-    CPAN,
-    CPANM,
-    DOCKER,
-    DOTNET,
-    GO,
-    GO_DEP("dep"),
-    GRADLE,
-    GRADLEW,
-    MVN,
-    MVNW,
-    NPM,
-    NUGET,
-    PEAR,
-    PERL,
-    PIP,
-    PIP3,
-    PIPENV,
-    PYTHON,
-    PYTHON3,
-    REBAR3,
-    YARN,
-    JAVA,
-    BAZEL;
+public class SearchReplacePattern {
+    private final String searchRegex;
+    private final String replacementString;
 
-    private String executableName;
-
-    private ExecutableType() {
-        this.executableName = this.name().toLowerCase();
+    public SearchReplacePattern(final String searchRegex, final String replacementString) {
+        this.searchRegex = searchRegex;
+        this.replacementString = replacementString;
     }
 
-    private ExecutableType(final String executableName) {
-        this.executableName = executableName;
+    public String getSearchRegex() {
+        return searchRegex;
     }
 
-    public String getExecutable() {
-        return executableName;
+    public String getReplacementString() {
+        return replacementString;
     }
 }

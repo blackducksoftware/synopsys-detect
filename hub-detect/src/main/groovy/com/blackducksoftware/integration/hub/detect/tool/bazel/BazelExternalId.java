@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * hub-detect
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,47 +21,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.type;
+package com.blackducksoftware.integration.hub.detect.tool.bazel;
 
-public enum ExecutableType {
-    BASH,
-    BITBAKE,
-    CONDA,
-    CPAN,
-    CPANM,
-    DOCKER,
-    DOTNET,
-    GO,
-    GO_DEP("dep"),
-    GRADLE,
-    GRADLEW,
-    MVN,
-    MVNW,
-    NPM,
-    NUGET,
-    PEAR,
-    PERL,
-    PIP,
-    PIP3,
-    PIPENV,
-    PYTHON,
-    PYTHON3,
-    REBAR3,
-    YARN,
-    JAVA,
-    BAZEL;
+import com.synopsys.integration.util.Stringable;
 
-    private String executableName;
+public class BazelExternalId extends Stringable {
+    private final String group;
+    private final String artifact;
+    private final String version;
 
-    private ExecutableType() {
-        this.executableName = this.name().toLowerCase();
+    public static BazelExternalId fromBazelArtifactString(final String bazelArtifactString, final String separatorRegEx) {
+        final String[] parts = bazelArtifactString.split(separatorRegEx);
+        return new BazelExternalId(parts[0], parts[1], parts[2]);
+    }
+    private BazelExternalId(final String group, final String artifact, final String version) {
+        this.group = group;
+        this.artifact = artifact;
+        this.version = version;
     }
 
-    private ExecutableType(final String executableName) {
-        this.executableName = executableName;
+    public String getGroup() {
+        return group;
     }
 
-    public String getExecutable() {
-        return executableName;
+    public String getArtifact() {
+        return artifact;
+    }
+
+    public String getVersion() {
+        return version;
     }
 }

@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
+import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_BAZEL;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_BITBAKE;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_BLACKDUCK_CONFIGURATION;
 import static com.blackducksoftware.integration.hub.detect.configuration.DetectProperty.PropertyConstants.GROUP_BOMTOOL;
@@ -281,8 +282,8 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("The tool priority for project name and version. The first tool in this list that provides a project name and version will be used.")
-    @AcceptableValues(value = { "DETECTOR", "DOCKER" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
-    DETECT_PROJECT_TOOL("detect.project.tool", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "DETECTOR,DOCKER"),
+    @AcceptableValues(value = { "DETECTOR", "DOCKER", "BAZEL" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
+    DETECT_PROJECT_TOOL("detect.project.tool", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "DOCKER,DETECTOR,BAZEL"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("The tools detect should allow in a comma-separated list. Included and not excluded tools will be allowed to run if all criteria of the tool is met. Exclusion rules always win.")
@@ -291,7 +292,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_BOMTOOL, SEARCH_GROUP_SEARCH })
     @HelpDescription("The tools detect should not allow in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.")
-    @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
+    @AcceptableValues(value = { "BAZEL", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
     DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
@@ -540,6 +541,18 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_MAVEN)
     @HelpDescription("The names of the module to include")
     DETECT_MAVEN_INCLUDED_MODULES("detect.maven.included.modules", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_BAZEL)
+    @HelpDescription("The path of the Bazel executable")
+    DETECT_BAZEL_PATH("detect.bazel.path", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_BAZEL)
+    @HelpDescription("The bazel target (e.g. //foo:foolib) to collect dependencies for. For detect to run bazel this property must be set.")
+    DETECT_BAZEL_TARGET("detect.bazel.target", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_BAZEL)
+    @HelpDescription("The path to a file containing a list of BazelExternalIdExtractionXPathRule objects in json (to override the default behavior)")
+    DETECT_BAZEL_ADVANCED_RULES_PATH("detect.bazel.advanced.rules.path", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "In the future, detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
@@ -961,6 +974,7 @@ public enum DetectProperty {
         public static final String GROUP_SIGNATURE_SCANNER = "signature scanner";
         public static final String GROUP_YARN = "yarn";
         public static final String GROUP_POLARIS = "polaris";
+        public static final String GROUP_BAZEL = "bazel";
 
         @Deprecated
         public static final String SEARCH_GROUP_HUB = "hub";

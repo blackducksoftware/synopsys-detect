@@ -123,6 +123,14 @@ import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnListParser
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockParser;
+import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelCodeLocationBuilder;
+import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelDetector;
+import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelExternalIdExtractionFullRuleJsonProcessor;
+import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelExternalIdExtractionSimpleRules;
+import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelExtractor;
+import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelQueryXmlOutputParser;
+import com.blackducksoftware.integration.hub.detect.tool.bazel.XPathParser;
 import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -200,6 +208,15 @@ public class DetectorBeanConfiguration {
     @Bean
     public CodeLocationAssembler codeLocationAssembler() {
         return new CodeLocationAssembler(externalIdFactory);
+    }
+
+    @Bean
+    public BazelExtractor bazelExtractor() {
+        BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
+        BazelExternalIdExtractionSimpleRules rules = new BazelExternalIdExtractionSimpleRules(detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None));
+        BazelCodeLocationBuilder codeLocationGenerator = new BazelCodeLocationBuilder(externalIdFactory);
+        BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor = new BazelExternalIdExtractionFullRuleJsonProcessor(gson);
+        return new BazelExtractor(detectConfiguration, executableRunner, parser, rules, codeLocationGenerator, bazelExternalIdExtractionFullRuleJsonProcessor);
     }
 
     @Bean
@@ -323,6 +340,11 @@ public class DetectorBeanConfiguration {
     @Bean
     public MavenExecutableFinder mavenExecutableFinder() {
         return new MavenExecutableFinder(executableFinder, detectConfiguration);
+    }
+
+    @Bean
+    public BazelExecutableFinder bazelExecutableFinder() {
+        return new BazelExecutableFinder(executableRunner, directoryManager, executableFinder, detectConfiguration);
     }
 
     @Bean
@@ -458,6 +480,13 @@ public class DetectorBeanConfiguration {
     //BomTools
     //Should be scoped to Prototype so a new Detector is created every time one is needed.
     //Should only be accessed through the DetectorFactory.
+
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public BazelDetector bazelDetector(final DetectorEnvironment environment) {
+        return new BazelDetector(environment, bazelExtractor(), bazelExecutableFinder(), detectConfiguration);
+    }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)

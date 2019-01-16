@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * hub-detect
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,47 +21,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.type;
+package com.blackducksoftware.integration.hub.detect.tool;
 
-public enum ExecutableType {
-    BASH,
-    BITBAKE,
-    CONDA,
-    CPAN,
-    CPANM,
-    DOCKER,
-    DOTNET,
-    GO,
-    GO_DEP("dep"),
-    GRADLE,
-    GRADLEW,
-    MVN,
-    MVNW,
-    NPM,
-    NUGET,
-    PEAR,
-    PERL,
-    PIP,
-    PIP3,
-    PIPENV,
-    PYTHON,
-    PYTHON3,
-    REBAR3,
-    YARN,
-    JAVA,
-    BAZEL;
+import com.blackducksoftware.integration.hub.detect.DetectTool;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
 
-    private String executableName;
+public abstract class SimpleToolDetector {
+    private final DetectTool toolEnum;
 
-    private ExecutableType() {
-        this.executableName = this.name().toLowerCase();
+    public SimpleToolDetector(final DetectTool toolEnum) {
+        this.toolEnum = toolEnum;
     }
-
-    private ExecutableType(final String executableName) {
-        this.executableName = executableName;
+    public DetectTool getToolEnum() {
+        return toolEnum;
     }
-
-    public String getExecutable() {
-        return executableName;
-    }
+    public abstract DetectorResult applicable();
+    public abstract DetectorResult extractable() throws DetectorException;
+    public abstract Extraction extract();
 }
