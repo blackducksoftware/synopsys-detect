@@ -448,6 +448,10 @@ public enum DetectProperty {
     @HelpDetailed("When set to true, the following properties will be updated on the Project. Project tier (detect.project.tier) and Project Level Adjustments (detect.project.level.adjustments).\r\n The following properties will also be updated on the Version. Version notes (detect.project.version.notes), phase (detect.project.version.phase), distribution (detect.project.version.distribution)")
     DETECT_PROJECT_VERSION_UPDATE("detect.project.version.update", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
+    @HelpDescription("Sets the 'Application ID' project setting")
+    DETECT_PROJECT_APPLICATION_ID("detect.project.application.id", "5.2.0", PropertyType.STRING, PropertyAuthority.None, null),
+
     @HelpGroup(primary = GROUP_POLICY_CHECK, additional = { SEARCH_GROUP_POLICY })
     @HelpDescription("A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.")
     @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
@@ -851,7 +855,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_BITBAKE)
     @HelpDescription("The name of the build environment init script")
-    DETECT_INIT_BUILD_ENV_NAME("detect.bitbake.build.env.name", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "oe-init-build-env"),
+    DETECT_BITBAKE_BUILD_ENV_NAME("detect.bitbake.build.env.name", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "oe-init-build-env"),
 
     @HelpGroup(primary = GROUP_BITBAKE)
     @HelpDescription("A comma separated list of package names to extract dependencies from")
@@ -896,11 +900,11 @@ public enum DetectProperty {
     private final String asOf;
     private final PropertyAuthority propertyAuthority;
 
-    DetectProperty(final String propertyName, final String asOf, final PropertyType propertyType, PropertyAuthority propertyAuthority) {
+    DetectProperty(final String propertyName, final String asOf, final PropertyType propertyType, final PropertyAuthority propertyAuthority) {
         this(propertyName, asOf, propertyType, propertyAuthority, null);
     }
 
-    DetectProperty(final String propertyName, final String asOf, final PropertyType propertyType, PropertyAuthority propertyAuthority, final String defaultValue) {
+    DetectProperty(final String propertyName, final String asOf, final PropertyType propertyType, final PropertyAuthority propertyAuthority, final String defaultValue) {
         this.propertyName = propertyName;
         this.asOf = asOf;
         this.propertyType = propertyType;

@@ -24,53 +24,48 @@
 package com.blackducksoftware.integration.hub.detect.detector.bitbake;
 
 import java.io.File;
-import java.io.IOException;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.Detector;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
+import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.FileNotFoundDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PassedDetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientDetectorResult;
-import com.synopsys.integration.bdio.model.Forge;
 
 public class BitbakeDetector extends Detector {
-    public static Forge YOCTO_FORGE = new Forge("/", "/", "yocto");
-
+    private final BitbakeDetectorOptions bitbakeDetectorOptions;
     private final DetectFileFinder detectFileFinder;
-    private final DetectConfiguration detectConfiguration;
     private final BitbakeExtractor bitbakeExtractor;
+    private final CacheableExecutableFinder cacheableExecutableFinder;
 
     private File foundBuildEnvScript;
+    private File bashExe;
 
-    public BitbakeDetector(final DetectorEnvironment detectorEnvironment, final DetectFileFinder detectFileFinder, final DetectConfiguration detectConfiguration, final BitbakeExtractor bitbakeExtractor) {
+    public BitbakeDetector(final DetectorEnvironment detectorEnvironment, final DetectFileFinder detectFileFinder, final BitbakeDetectorOptions bitbakeDetectorOptions, final BitbakeExtractor bitbakeExtractor,
+        final CacheableExecutableFinder cacheableExecutableFinder) {
         super(detectorEnvironment, "Bitbake", DetectorType.BITBAKE);
         this.detectFileFinder = detectFileFinder;
-        this.detectConfiguration = detectConfiguration;
+        this.bitbakeDetectorOptions = bitbakeDetectorOptions;
         this.bitbakeExtractor = bitbakeExtractor;
+        this.cacheableExecutableFinder = cacheableExecutableFinder;
     }
 
     @Override
     public DetectorResult applicable() {
-        foundBuildEnvScript = detectFileFinder.findFile(environment.getDirectory(), detectConfiguration.getProperty(DetectProperty.DETECT_INIT_BUILD_ENV_NAME, PropertyAuthority.None));
+        foundBuildEnvScript = detectFileFinder.findFile(environment.getDirectory(), bitbakeDetectorOptions.getBuildEnvName());
         if (foundBuildEnvScript == null) {
-            return new FileNotFoundDetectorResult(DetectProperty.DETECT_INIT_BUILD_ENV_NAME.getDefaultValue());
+            return new FileNotFoundDetectorResult(DetectProperty.DETECT_BITBAKE_BUILD_ENV_NAME.getDefaultValue());
         }
 
-        return new PassedDetectorResult();
-    }
-
-    @Override
-    public DetectorResult extractable() {
-        final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES, PropertyAuthority.None);
-        if (packageNames == null || packageNames.length == 0) {
+        if (bitbakeDetectorOptions.getPackageNames() == null || bitbakeDetectorOptions.getPackageNames().length == 0) {
             return new PropertyInsufficientDetectorResult();
         }
 
@@ -78,11 +73,17 @@ public class BitbakeDetector extends Detector {
     }
 
     @Override
-    public Extraction extract(final ExtractionId extractionId) {
-        try {
-            return bitbakeExtractor.extract(extractionId, foundBuildEnvScript.getCanonicalPath(), environment.getDirectory().getCanonicalPath());
-        } catch (final IOException e) {
-            return new Extraction.Builder().failure(String.format("Failed to extract dependencies from bitbake: %s", e.getMessage())).build();
+    public DetectorResult extractable() throws DetectorException {
+        bashExe = cacheableExecutableFinder.getExecutable(CacheableExecutableFinder.CacheableExecutableType.BASH);
+        if (bashExe == null) {
+            return new ExecutableNotFoundDetectorResult("bash");
         }
+
+        return new PassedDetectorResult();
+    }
+
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return bitbakeExtractor.extract(extractionId, foundBuildEnvScript, environment.getDirectory(), bitbakeDetectorOptions.getPackageNames(), bashExe);
     }
 }

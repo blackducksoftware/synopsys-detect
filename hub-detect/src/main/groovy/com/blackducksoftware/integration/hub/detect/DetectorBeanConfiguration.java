@@ -37,6 +37,7 @@ import org.springframework.context.annotation.Scope;
 import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectorOptionFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
@@ -176,6 +177,11 @@ public class DetectorBeanConfiguration {
     public ArtifactResolver artifactResolver;
     @Autowired
     public DetectInfo detectInfo;
+
+    @Bean
+    public DetectorOptionFactory detectorOptionFactory() {
+        return new DetectorOptionFactory(detectConfiguration);
+    }
 
     //DetectorFactory
     //This is the ONLY class that should be taken from the Configuration manually.
@@ -463,7 +469,7 @@ public class DetectorBeanConfiguration {
 
     @Bean
     public BitbakeExtractor bitbakeExtractor() {
-        return new BitbakeExtractor(executableFinder, executableRunner, detectConfiguration, directoryManager, detectFileFinder, graphParserTransformer(), bitbakeListTasksParser());
+        return new BitbakeExtractor(executableRunner, directoryManager, detectFileFinder, graphParserTransformer(), bitbakeListTasksParser());
     }
 
     @Bean
@@ -485,7 +491,7 @@ public class DetectorBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public BitbakeDetector bitbakeBomTool(final DetectorEnvironment environment) {
-        return new BitbakeDetector(environment, detectFileFinder, detectConfiguration, bitbakeExtractor());
+        return new BitbakeDetector(environment, detectFileFinder, detectorOptionFactory().createBitbakeDetectorOptions(), bitbakeExtractor(), cacheableExecutableFinder);
     }
 
     @Bean

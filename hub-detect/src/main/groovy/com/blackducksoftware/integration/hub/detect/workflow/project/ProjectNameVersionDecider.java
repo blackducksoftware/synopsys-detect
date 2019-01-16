@@ -117,6 +117,10 @@ public class ProjectNameVersionDecider {
             throw new DetectUserFriendlyException("Could not determine project tool order. Please specify a tool order using " + DetectProperty.DETECT_PROJECT_TOOL.getPropertyName(), ExitCodeType.FAILURE_CONFIGURATION);
         }
 
+        if (toolOrder == null) {
+            throw new DetectUserFriendlyException("Could not determine project tool order. Please specify a tool order using " + DetectProperty.DETECT_PROJECT_TOOL.getPropertyName(), ExitCodeType.FAILURE_CONFIGURATION);
+        }
+
         for (DetectTool tool : toolOrder) {
             chosenTool = findProjectInfoForTool(tool, detectToolProjectInfo);
 
