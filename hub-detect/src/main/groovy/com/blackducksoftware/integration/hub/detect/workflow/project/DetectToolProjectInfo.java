@@ -25,8 +25,9 @@ package com.blackducksoftware.integration.hub.detect.workflow.project;
 
 import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.synopsys.integration.util.NameVersion;
+import com.synopsys.integration.util.Stringable;
 
-public class DetectToolProjectInfo {
+public class DetectToolProjectInfo extends Stringable {
     private final DetectTool detectTool;
     private final NameVersion suggestedNameVersion;
 

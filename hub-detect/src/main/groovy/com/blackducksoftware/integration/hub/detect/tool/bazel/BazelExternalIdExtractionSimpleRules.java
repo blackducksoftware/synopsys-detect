@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * hub-detect
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,47 +21,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.type;
+package com.blackducksoftware.integration.hub.detect.tool.bazel;
 
-public enum ExecutableType {
-    BASH,
-    BITBAKE,
-    CONDA,
-    CPAN,
-    CPANM,
-    DOCKER,
-    DOTNET,
-    GO,
-    GO_DEP("dep"),
-    GRADLE,
-    GRADLEW,
-    MVN,
-    MVNW,
-    NPM,
-    NUGET,
-    PEAR,
-    PERL,
-    PIP,
-    PIP3,
-    PIPENV,
-    PYTHON,
-    PYTHON3,
-    REBAR3,
-    YARN,
-    JAVA,
-    BAZEL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-    private String executableName;
+public class BazelExternalIdExtractionSimpleRules {
+    private final List<BazelExternalIdExtractionSimpleRule> rules;
 
-    private ExecutableType() {
-        this.executableName = this.name().toLowerCase();
+    public BazelExternalIdExtractionSimpleRules(final String bazelTarget) {
+        rules = new ArrayList<>();
+        rules.add(new BazelExternalIdExtractionSimpleRule("@.*:jar", "maven_jar", "artifact", ":"));
     }
 
-    private ExecutableType(final String executableName) {
-        this.executableName = executableName;
-    }
-
-    public String getExecutable() {
-        return executableName;
+    public Collection<BazelExternalIdExtractionSimpleRule> getRules() {
+        return rules;
     }
 }

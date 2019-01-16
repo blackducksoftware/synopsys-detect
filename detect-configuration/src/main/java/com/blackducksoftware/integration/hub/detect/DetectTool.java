@@ -28,6 +28,6 @@ public enum DetectTool {
     SIGNATURE_SCAN,
     BINARY_SCAN,
     POLARIS,
-    DOCKER;
-
+    DOCKER,
+    BAZEL;
 }

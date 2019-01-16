@@ -1,0 +1,230 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<query version="2">
+    <rule class="http_archive" location="/DEFAULT.WORKSPACE.SUFFIX:112:1" name="//external:remotejdk_win">
+        <string name="name" value="remotejdk_win"/>
+        <list name="urls">
+            <string value="https://mirror.bazel.build/openjdk/azul-zulu-9.0.7.1-jdk9.0.7/zulu9.0.7.1-jdk9.0.7-win_x64-allmodules.zip"/>
+        </list>
+        <string name="sha256" value="e738829017f107e7a7cd5069db979398ec3c3f03ef56122f89ba38e7374f63ed"/>
+        <string name="strip_prefix" value="zulu9.0.7.1-jdk9.0.7-win_x64-allmodules"/>
+        <label name="build_file" value="@local_jdk//:BUILD.bazel"/>
+        <rule-input name="@local_jdk//:BUILD.bazel"/>
+    </rule>
+    <rule class="http_archive" location="/DEFAULT.WORKSPACE.SUFFIX:102:1" name="//external:remotejdk_macos">
+        <string name="name" value="remotejdk_macos"/>
+        <list name="urls">
+            <string value="https://mirror.bazel.build/openjdk/azul-zulu-9.0.7.1-jdk9.0.7/zulu9.0.7.1-jdk9.0.7-macosx_x64-allmodules.tar.gz"/>
+        </list>
+        <string name="sha256" value="404e7058ff91f956612f47705efbee8e175a38b505fb1b52d8c1ea98718683de"/>
+        <string name="strip_prefix" value="zulu9.0.7.1-jdk9.0.7-macosx_x64-allmodules"/>
+        <label name="build_file" value="@local_jdk//:BUILD.bazel"/>
+        <rule-input name="@local_jdk//:BUILD.bazel"/>
+    </rule>
+    <rule class="http_archive" location="/DEFAULT.WORKSPACE.SUFFIX:124:1" name="//external:remotejdk_linux_aarch64">
+        <string name="name" value="remotejdk_linux_aarch64"/>
+        <list name="urls">
+            <string value="https://mirror.bazel.build/openjdk.linaro.org/releases/jdk9-server-release-1708.tar.xz"/>
+            <string value="http://openjdk.linaro.org/releases/jdk9-server-release-1708.tar.xz"/>
+        </list>
+        <string name="sha256" value="72e7843902b0395e2d30e1e9ad2a5f05f36a4bc62529828bcbc698d54aec6022"/>
+        <string name="strip_prefix" value="jdk9-server-release-1708"/>
+        <label name="build_file" value="@local_jdk//:BUILD.bazel"/>
+        <rule-input name="@local_jdk//:BUILD.bazel"/>
+    </rule>
+    <rule class="http_archive" location="/DEFAULT.WORKSPACE.SUFFIX:92:1" name="//external:remotejdk_linux">
+        <string name="name" value="remotejdk_linux"/>
+        <list name="urls">
+            <string value="https://mirror.bazel.build/openjdk/azul-zulu-9.0.7.1-jdk9.0.7/zulu9.0.7.1-jdk9.0.7-linux_x64-allmodules.tar.gz"/>
+        </list>
+        <string name="sha256" value="f27cb933de4f9e7fe9a703486cf44c84bc8e9f138be0c270c9e5716a32367e87"/>
+        <string name="strip_prefix" value="zulu9.0.7.1-jdk9.0.7-linux_x64-allmodules"/>
+        <label name="build_file" value="@local_jdk//:BUILD.bazel"/>
+        <rule-input name="@local_jdk//:BUILD.bazel"/>
+    </rule>
+    <rule class="http_archive" location="/DEFAULT.WORKSPACE.SUFFIX:157:1" name="//external:remotejdk10_win">
+        <string name="name" value="remotejdk10_win"/>
+        <list name="urls">
+            <string value="https://mirror.bazel.build/openjdk/azul-zulu10.2+3-jdk10.0.1/zulu10.2+3-jdk10.0.1-win_x64-allmodules.zip"/>
+        </list>
+        <string name="sha256" value="c39e7700a8d41794d60985df5a20352435196e78ecbc6a2b30df7be8637bffd5"/>
+        <string name="strip_prefix" value="zulu10.2+3-jdk10.0.1-win_x64-allmodules"/>
+        <label name="build_file" value="@local_jdk//:BUILD.bazel"/>
+        <rule-input name="@local_jdk//:BUILD.bazel"/>
+    </rule>
+    <rule class="http_archive" location="/DEFAULT.WORKSPACE.SUFFIX:147:1" name="//external:remotejdk10_macos">
+        <string name="name" value="remotejdk10_macos"/>
+        <list name="urls">
+            <string value="https://mirror.bazel.build/openjdk/azul-zulu10.2+3-jdk10.0.1/zulu10.2+3-jdk10.0.1-macosx_x64-allmodules.tar.gz"/>
+        </list>
+        <string name="sha256" value="e669c9a897413d855b550b4e39d79614392e6fb96f494e8ef99a34297d9d85d3"/>
+        <string name="strip_prefix" value="zulu10.2+3-jdk10.0.1-macosx_x64-allmodules"/>
+        <label name="build_file" value="@local_jdk//:BUILD.bazel"/>
+        <rule-input name="@local_jdk//:BUILD.bazel"/>
+    </rule>
+    <rule class="http_archive" location="/DEFAULT.WORKSPACE.SUFFIX:169:1" name="//external:remotejdk10_linux_aarch64">
+        <string name="name" value="remotejdk10_linux_aarch64"/>
+        <list name="urls">
+            <string value="https://mirror.bazel.build/openjdk.linaro.org/releases/jdk10-server-release-1804.tar.xz"/>
+            <string value="http://openjdk.linaro.org/releases/jdk10-server-release-1804.tar.xz"/>
+        </list>
+        <string name="sha256" value="b7098b7aaf6ee1ffd4a2d0371a0be26c5a5c87f6aebbe46fe9a92c90583a84be"/>
+        <string name="strip_prefix" value="jdk10-server-release-1804"/>
+        <label name="build_file" value="@local_jdk//:BUILD.bazel"/>
+        <rule-input name="@local_jdk//:BUILD.bazel"/>
+    </rule>
+    <rule class="http_archive" location="/DEFAULT.WORKSPACE.SUFFIX:136:1" name="//external:remotejdk10_linux">
+        <string name="name" value="remotejdk10_linux"/>
+        <list name="urls">
+            <string value="https://mirror.bazel.build/openjdk/azul-zulu10.2+3-jdk10.0.1/zulu10.2+3-jdk10.0.1-linux_x64-allmodules.tar.gz"/>
+        </list>
+        <string name="sha256" value="57fad3602e74c79587901d6966d3b54ef32cb811829a2552163185d5064fe9b5"/>
+        <string name="strip_prefix" value="zulu10.2+3-jdk10.0.1-linux_x64-allmodules"/>
+        <label name="build_file" value="@local_jdk//:BUILD.bazel"/>
+        <rule-input name="@local_jdk//:BUILD.bazel"/>
+    </rule>
+    <rule class="maven_jar" location="/root/home/steve/examples/java-tutorial/WORKSPACE:6:1" name="//external:org_apache_commons_commons_io">
+        <string name="name" value="org_apache_commons_commons_io"/>
+        <string name="artifact" value="org.apache.commons:commons-io:1.3.2"/>
+    </rule>
+    <rule class="new_local_repository" location="/DEFAULT.WORKSPACE.SUFFIX:4:1" name="//external:local_jdk">
+        <string name="name" value="local_jdk"/>
+        <string name="path" value="/usr/lib/jvm/java-8-openjdk-amd64"/>
+        <string name="build_file" value="/root/.cache/bazel/_bazel_root/install/3aadb0885b1cb52846820562c39bed63/_embedded_binaries/jdk.BUILD"/>
+    </rule>
+    <rule class="xcode_autoconf" location="/root/.cache/bazel/_bazel_root/94ba7f0e45231ccc5d859f8391ae7310/external/bazel_tools/tools/osx/xcode_configure.bzl:252:5" name="//external:local_config_xcode">
+        <string name="name" value="local_config_xcode"/>
+        <string name="xcode_locator" value="@bazel_tools//tools/osx:xcode_locator.m"/>
+    </rule>
+    <rule class="sh_config" location="/root/.cache/bazel/_bazel_root/94ba7f0e45231ccc5d859f8391ae7310/external/bazel_tools/tools/sh/sh_configure.bzl:83:5" name="//external:local_config_sh">
+        <string name="name" value="local_config_sh"/>
+    </rule>
+    <rule class="cc_autoconf" location="/root/.cache/bazel/_bazel_root/94ba7f0e45231ccc5d859f8391ae7310/external/bazel_tools/tools/cpp/cc_configure.bzl:95:5" name="//external:local_config_cc">
+        <string name="name" value="local_config_cc"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE.SUFFIX:77:1" name="//external:jre-default">
+        <string name="name" value="jre-default"/>
+        <label name="actual" value="@local_jdk//:jre"/>
+        <rule-input name="@local_jdk//:jre"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE.SUFFIX:64:1" name="//external:jre">
+        <string name="name" value="jre"/>
+        <label name="actual" value="@local_jdk//:jre"/>
+        <rule-input name="@local_jdk//:jre"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE.SUFFIX:39:1" name="//external:jni_md_header-linux">
+        <string name="name" value="jni_md_header-linux"/>
+        <label name="actual" value="@local_jdk//:jni_md_header-linux"/>
+        <rule-input name="@local_jdk//:jni_md_header-linux"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE.SUFFIX:44:1" name="//external:jni_md_header-freebsd">
+        <string name="name" value="jni_md_header-freebsd"/>
+        <label name="actual" value="@local_jdk//:jni_md_header-freebsd"/>
+        <rule-input name="@local_jdk//:jni_md_header-freebsd"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE.SUFFIX:34:1" name="//external:jni_md_header-darwin">
+        <string name="name" value="jni_md_header-darwin"/>
+        <label name="actual" value="@local_jdk//:jni_md_header-darwin"/>
+        <rule-input name="@local_jdk//:jni_md_header-darwin"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE.SUFFIX:29:1" name="//external:jni_header">
+        <string name="name" value="jni_header"/>
+        <label name="actual" value="@local_jdk//:jni_header"/>
+        <rule-input name="@local_jdk//:jni_header"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE.SUFFIX:82:1" name="//external:jdk-default">
+        <string name="name" value="jdk-default"/>
+        <label name="actual" value="@local_jdk//:jdk"/>
+        <rule-input name="@local_jdk//:jdk"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE.SUFFIX:69:1" name="//external:jdk">
+        <string name="name" value="jdk"/>
+        <label name="actual" value="@local_jdk//:jdk"/>
+        <rule-input name="@local_jdk//:jdk"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE.SUFFIX:59:1" name="//external:javac">
+        <string name="name" value="javac"/>
+        <label name="actual" value="@local_jdk//:javac"/>
+        <rule-input name="@local_jdk//:javac"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE.SUFFIX:49:1" name="//external:java">
+        <string name="name" value="java"/>
+        <label name="actual" value="@local_jdk//:java"/>
+        <rule-input name="@local_jdk//:java"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE.SUFFIX:54:1" name="//external:jar">
+        <string name="name" value="jar"/>
+        <label name="actual" value="@local_jdk//:jar"/>
+        <rule-input name="@local_jdk//:jar"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE:12:1" name="//external:has_androidsdk">
+        <string name="name" value="has_androidsdk"/>
+        <label name="actual" value="@bazel_tools//tools/android:always_false"/>
+        <rule-input name="@bazel_tools//tools/android:always_false"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE.SUFFIX:21:1" name="//external:extdir">
+        <string name="name" value="extdir"/>
+        <label name="actual" value="@local_jdk//:extdir"/>
+        <rule-input name="@local_jdk//:extdir"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE.SUFFIX:25:1" name="//external:extclasspath">
+        <string name="name" value="extclasspath"/>
+        <label name="actual" value="@local_jdk//:extdir"/>
+        <rule-input name="@local_jdk//:extdir"/>
+    </rule>
+    <rule class="new_local_repository" location="/DEFAULT.WORKSPACE.SUFFIX:10:1" name="//external:embedded_jdk">
+        <string name="name" value="embedded_jdk"/>
+        <string name="path" value="/root/.cache/bazel/_bazel_root/install/3aadb0885b1cb52846820562c39bed63/_embedded_binaries/embedded_tools/jdk"/>
+        <string name="build_file" value="/root/.cache/bazel/_bazel_root/install/3aadb0885b1cb52846820562c39bed63/_embedded_binaries/jdk.BUILD"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE:8:1" name="//external:databinding_annotation_processor">
+        <string name="name" value="databinding_annotation_processor"/>
+        <label name="actual" value="@bazel_tools//tools/android:empty"/>
+        <rule-input name="@bazel_tools//tools/android:empty"/>
+    </rule>
+    <rule class="maven_jar" location="/root/home/steve/examples/java-tutorial/WORKSPACE:1:1" name="//external:com_google_guava_guava">
+        <string name="name" value="com_google_guava_guava"/>
+        <string name="artifact" value="com.google.guava:guava:18.0"/>
+    </rule>
+    <rule class="bind" location="/root/.cache/bazel/_bazel_root/94ba7f0e45231ccc5d859f8391ae7310/external/bazel_tools/tools/cpp/cc_configure.bzl:96:5" name="//external:cc_toolchain">
+        <string name="name" value="cc_toolchain"/>
+        <label name="actual" value="@local_config_cc//:toolchain"/>
+        <rule-input name="@local_config_cc//:toolchain"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE.SUFFIX:16:1" name="//external:bootclasspath">
+        <string name="name" value="bootclasspath"/>
+        <label name="actual" value="@local_jdk//:bootclasspath"/>
+        <rule-input name="@local_jdk//:bootclasspath"/>
+    </rule>
+    <rule class="local_repository" location="/DEFAULT.WORKSPACE:1:1" name="//external:bazel_tools">
+        <string name="name" value="bazel_tools"/>
+        <string name="path" value="/root/.cache/bazel/_bazel_root/install/3aadb0885b1cb52846820562c39bed63/_embedded_binaries/embedded_tools"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE:6:1" name="//external:android_sdk_for_testing">
+        <string name="name" value="android_sdk_for_testing"/>
+        <label name="actual" value="//:dummy"/>
+        <rule-input name="//:dummy"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE:7:1" name="//external:android_ndk_for_testing">
+        <string name="name" value="android_ndk_for_testing"/>
+        <label name="actual" value="//:dummy"/>
+        <rule-input name="//:dummy"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE:3:1" name="//external:android/sdk">
+        <string name="name" value="android/sdk"/>
+        <label name="actual" value="@bazel_tools//tools/android:poison_pill_android_sdk"/>
+        <rule-input name="@bazel_tools//tools/android:poison_pill_android_sdk"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE:4:1" name="//external:android/dx_jar_import">
+        <string name="name" value="android/dx_jar_import"/>
+        <label name="actual" value="@bazel_tools//tools/android:no_android_sdk_repository_error"/>
+        <rule-input name="@bazel_tools//tools/android:no_android_sdk_repository_error"/>
+    </rule>
+    <rule class="bind" location="/DEFAULT.WORKSPACE:5:1" name="//external:android/crosstool">
+        <string name="name" value="android/crosstool"/>
+        <label name="actual" value="@bazel_tools//tools/cpp:toolchain"/>
+        <rule-input name="@bazel_tools//tools/cpp:toolchain"/>
+    </rule>
+    <source-file location="/root/home/steve/examples/java-tutorial/WORKSPACE:1" name="//external:WORKSPACE">
+        <visibility-label name="//visibility:private"/>
+    </source-file>
+</query>
