@@ -91,12 +91,12 @@ public class PipInspectorDetector extends Detector {
 
         final String pipExe = pythonExecutableFinder.findPip(environment);
         if (pipExe == null) {
-            return new ExecutableNotFoundDetectorResult("pip");
+            return new ExecutableNotFoundDetectorResult("bitbake");
         }
 
         pipInspector = pipInspectorManager.findPipInspector(environment);
         if (pipInspector == null) {
-            return new InspectorNotFoundDetectorResult("pip");
+            return new InspectorNotFoundDetectorResult("bitbake");
         }
 
         return new PassedDetectorResult();

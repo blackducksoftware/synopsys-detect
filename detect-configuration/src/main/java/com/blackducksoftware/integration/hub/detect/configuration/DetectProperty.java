@@ -553,13 +553,13 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PIP)
     @DetectDeprecation(description = "This property is being removed. Please use --detect.project.name in the future.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
-    @HelpDescription("The name of your pip project, to be used if your project's name cannot be correctly inferred from its setup.py file")
-    DETECT_PIP_PROJECT_NAME("detect.pip.project.name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    @HelpDescription("The name of your bitbake project, to be used if your project's name cannot be correctly inferred from its setup.py file")
+    DETECT_PIP_PROJECT_NAME("detect.bitbake.project.name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PIP)
     @DetectDeprecation(description = "This property is being removed. Please use --detect.project.version.name in the future.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
-    @HelpDescription("The version of your pip project, to be used if your project's version name cannot be correctly inferred from its setup.py file")
-    DETECT_PIP_PROJECT_VERSION_NAME("detect.pip.project.version.name", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
+    @HelpDescription("The version of your bitbake project, to be used if your project's version name cannot be correctly inferred from its setup.py file")
+    DETECT_PIP_PROJECT_VERSION_NAME("detect.bitbake.project.version.name", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PYTHON)
     @HelpDescription("If true will use Python 3 if available on class path")
@@ -599,7 +599,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PIP)
     @HelpDescription("The path of the requirements.txt file")
-    DETECT_PIP_REQUIREMENTS_PATH("detect.pip.requirements.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PIP_REQUIREMENTS_PATH("detect.bitbake.requirements.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GO)
     @HelpDescription("Path of the Go Dep executable")
@@ -953,7 +953,7 @@ public enum DetectProperty {
         public static final String GROUP_NUGET = "nuget";
         public static final String GROUP_PACKAGIST = "packagist";
         public static final String GROUP_PEAR = "pear";
-        public static final String GROUP_PIP = "pip";
+        public static final String GROUP_PIP = "bitbake";
         public static final String GROUP_POLICY_CHECK = "policy check";
         public static final String GROUP_PROJECT_INFO = "project info";
         public static final String GROUP_PYTHON = "python";

@@ -59,7 +59,7 @@ public class PipenvExtractor {
             final String projectVersionName = getProjectVersionName(directory, pythonExe, setupFile);
             final PipParseResult result;
 
-            final Executable pipenvRunPipFreeze = new Executable(directory, pipenvExe, Arrays.asList("run", "pip", "freeze"));
+            final Executable pipenvRunPipFreeze = new Executable(directory, pipenvExe, Arrays.asList("run", "bitbake", "freeze"));
             final ExecutableOutput pipFreezeOutput = executableRunner.execute(pipenvRunPipFreeze);
 
             final Executable pipenvGraph = new Executable(directory, pipenvExe, Arrays.asList("graph", "--bare"));

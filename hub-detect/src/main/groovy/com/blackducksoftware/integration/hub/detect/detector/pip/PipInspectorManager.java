@@ -62,7 +62,7 @@ public class PipInspectorManager {
     private File installInspector() throws IOException {
         final InputStream insptectorFileStream = getClass().getResourceAsStream(String.format("/%s", INSPECTOR_NAME));
         final String inpsectorScriptContents = IOUtils.toString(insptectorFileStream, StandardCharsets.UTF_8);
-        final File inspectorScript = directoryManager.getSharedFile("pip", INSPECTOR_NAME);
+        final File inspectorScript = directoryManager.getSharedFile("bitbake", INSPECTOR_NAME);
         return DetectFileUtils.writeToFile(inspectorScript, inpsectorScriptContents);
     }
 
