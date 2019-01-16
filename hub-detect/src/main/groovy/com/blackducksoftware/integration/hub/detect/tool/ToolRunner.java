@@ -26,7 +26,6 @@ package com.blackducksoftware.integration.hub.detect.tool;
 import java.io.File;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,9 +77,7 @@ public class ToolRunner {
     }
 
     private void publishExtractionResults(final EventSystem eventSystem, final RunResult runResult, final Extraction extractionResult) {
-        if (StringUtils.isNotBlank(extractionResult.projectName)) {
-            runResult.addToolNameVersionIfPresent(toolDetector.getToolEnum(), Optional.of(new NameVersion(extractionResult.projectName, extractionResult.projectVersion)));
-        }
+        runResult.addToolNameVersionIfPresent(toolDetector.getToolEnum(), Optional.of(new NameVersion(extractionResult.projectName, extractionResult.projectVersion)));
         Optional<Object> dockerTar = extractionResult.getMetaDataValue(DockerExtractor.DOCKER_TAR_META_DATA_KEY);
         if (dockerTar.isPresent()) {
             runResult.addDockerFile(Optional.of((File) dockerTar.get()));
@@ -90,6 +87,7 @@ public class ToolRunner {
             eventSystem.publishEvent(Event.StatusSummary, new Status(toolDetector.getToolEnum().toString(), StatusType.SUCCESS));
         } else {
             eventSystem.publishEvent(Event.StatusSummary, new Status(toolDetector.getToolEnum().toString(), StatusType.FAILURE));
+            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractionResult.description));
         }
     }
 
