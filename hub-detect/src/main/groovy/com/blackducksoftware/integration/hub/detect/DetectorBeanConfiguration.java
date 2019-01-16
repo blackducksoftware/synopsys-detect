@@ -338,7 +338,7 @@ public class DetectorBeanConfiguration {
 
     @Bean
     public BazelExecutableFinder bazelExecutableFinder() {
-        return new BazelExecutableFinder(executableFinder, detectConfiguration);
+        return new BazelExecutableFinder(executableRunner, executableFinder, detectConfiguration);
     }
 
     @Bean
@@ -479,7 +479,7 @@ public class DetectorBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public BazelDetector bazelDetector(final DetectorEnvironment environment) {
-        return new BazelDetector(environment, executableRunner, bazelExtractor(), bazelExecutableFinder(), detectConfiguration);
+        return new BazelDetector(environment, bazelExtractor(), bazelExecutableFinder(), detectConfiguration);
     }
 
     @Bean

@@ -33,9 +33,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.tool.SimpleToolDetector;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.ExecutableNotFoundDetectorResult;
@@ -43,20 +40,17 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.result.Passe
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.PropertyInsufficientDetectorResult;
 
 public class BazelDetector extends SimpleToolDetector {
-    private static final String BAZEL_VERSION_SUBCOMMAND = "version";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectorEnvironment environment;
     private final BazelExtractor bazelExtractor;
-    private final ExecutableRunner executableRunner;
     private final BazelExecutableFinder bazelExecutableFinder;
     private String bazelExe;
     private final DetectConfiguration detectConfiguration;
 
-    public BazelDetector(final DetectorEnvironment environment, final ExecutableRunner executableRunner, final BazelExtractor bazelExtractor,
+    public BazelDetector(final DetectorEnvironment environment, final BazelExtractor bazelExtractor,
         BazelExecutableFinder bazelExecutableFinder, final DetectConfiguration detectConfiguration) {
         super(DetectTool.BAZEL);
         this.environment = environment;
-        this.executableRunner = executableRunner;
         this.bazelExtractor = bazelExtractor;
         this.bazelExecutableFinder = bazelExecutableFinder;
         this.detectConfiguration = detectConfiguration;
@@ -74,13 +68,8 @@ public class BazelDetector extends SimpleToolDetector {
     @Override
     public DetectorResult extractable() {
         bazelExe = bazelExecutableFinder.findBazel(environment);
-        final ExecutableOutput bazelQueryDepsRecursiveOutput;
-        try {
-            bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(environment.getDirectory(), bazelExe, BAZEL_VERSION_SUBCOMMAND);
-            int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
-            logger.trace(String.format("Bazel version returned %d; output: %s", returnCode, bazelQueryDepsRecursiveOutput.getStandardOutput()));
-        } catch (ExecutableRunnerException e) {
-            logger.debug(String.format("Bazel version threw exception: %s", e.getMessage()));
+        if (bazelExe == null) {
+            logger.debug("Bazel command not found");
             return new ExecutableNotFoundDetectorResult("bazel");
         }
         return new PassedDetectorResult();

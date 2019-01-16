@@ -68,7 +68,7 @@ public class DetectorFactory implements BeanFactoryAware {
     public BazelDetector createBazelDetector(final DetectorEnvironment environment) {
         return beanFactory.getBean(BazelDetector.class, environment);
     }
-    
+
     public DockerDetector createDockerDetector(final DetectorEnvironment environment) {
         return beanFactory.getBean(DockerDetector.class, environment);
     }
