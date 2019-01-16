@@ -23,16 +23,12 @@
  */
 package com.blackducksoftware.integration.hub.detect.tool;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.blackducksoftware.integration.hub.detect.DetectTool;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.search.result.DetectorResult;
 
 public abstract class SimpleToolDetector {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectTool toolEnum;
 
     public SimpleToolDetector(final DetectTool toolEnum) {
