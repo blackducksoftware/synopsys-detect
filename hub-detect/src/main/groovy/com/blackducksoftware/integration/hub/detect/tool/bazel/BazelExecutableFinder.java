@@ -23,50 +23,55 @@
  */
 package com.blackducksoftware.integration.hub.detect.tool.bazel;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
-import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
+import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
+import com.blackducksoftware.integration.hub.detect.util.executable.CacheableExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 
-public class BazelExecutableFinder {
+public class BazelExecutableFinder  extends CacheableExecutableFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String BAZEL_VERSION_SUBCOMMAND = "version";
     private final ExecutableRunner executableRunner;
-    private final ExecutableFinder executableFinder;
-    private final DetectConfiguration detectConfiguration;
 
-    private boolean hasLookedForSystemBazel = false;
-    private String resolvedBazel = null;
-
-    public BazelExecutableFinder(final ExecutableRunner executableRunner, final ExecutableFinder executableFinder, final DetectConfiguration detectConfiguration) {
+    public BazelExecutableFinder(final ExecutableRunner executableRunner, final DirectoryManager directoryManager, final ExecutableFinder executableFinder, final DetectConfiguration detectConfiguration) {
+        super(directoryManager, executableFinder, detectConfiguration);
         this.executableRunner = executableRunner;
-        this.executableFinder = executableFinder;
-        this.detectConfiguration = detectConfiguration;
     }
 
     public String findBazel(final DetectorEnvironment environment) {
-        if (!hasLookedForSystemBazel) {
-            final String userProvidedBazelPath = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_PATH, PropertyAuthority.None);
-            resolvedBazel = executableFinder.getExecutablePathOrOverride(ExecutableType.BAZEL, true, environment.getDirectory(), userProvidedBazelPath);
-                hasLookedForSystemBazel = true;
-        }
-
-        final ExecutableOutput bazelQueryDepsRecursiveOutput;
+        final boolean resolvedPreviously = isAlreadyFound(CacheableExecutableType.BAZEL);
+        String resolvedBazel = null;
         try {
-            bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(environment.getDirectory(), resolvedBazel, BAZEL_VERSION_SUBCOMMAND);
-            int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
-            logger.trace(String.format("Bazel version returned %d; output: %s", returnCode, bazelQueryDepsRecursiveOutput.getStandardOutput()));
-        } catch (ExecutableRunnerException e) {
-            logger.debug(String.format("Bazel version threw exception: %s", e.getMessage()));
-            resolvedBazel = null;
+            final File bazelExeFile = getExecutable(CacheableExecutableType.BAZEL);
+            if (bazelExeFile == null) {
+                logger.debug("Unable to locate Bazel executable");
+                return null;
+            }
+            resolvedBazel = bazelExeFile.getAbsolutePath();
+        } catch (DetectorException e) {
+            logger.debug(String.format("Unable to locate Bazel executable: %s", e.getMessage()));
+            return null;
+        }
+        if (!resolvedPreviously) {
+            final ExecutableOutput bazelQueryDepsRecursiveOutput;
+            try {
+                bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(environment.getDirectory(), resolvedBazel, BAZEL_VERSION_SUBCOMMAND);
+                int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
+                logger.trace(String.format("Bazel version returned %d; output: %s", returnCode, bazelQueryDepsRecursiveOutput.getStandardOutput()));
+            } catch (ExecutableRunnerException e) {
+                logger.debug(String.format("Bazel version threw exception: %s", e.getMessage()));
+                resolvedBazel = null;
+            }
         }
         return resolvedBazel;
     }

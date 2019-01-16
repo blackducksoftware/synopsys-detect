@@ -51,7 +51,8 @@ public class CacheableExecutableFinder {
         REBAR3,
         PEAR,
         YARN,
-        JAVA
+        JAVA,
+        BAZEL
     }
 
     private final ExecutableFinder executableFinder;
@@ -107,8 +108,14 @@ public class CacheableExecutableFinder {
                 return new StandardExecutableInfo(ExecutableType.YARN, detectConfiguration.getProperty(DetectProperty.DETECT_YARN_PATH, PropertyAuthority.None));
             case JAVA:
                 return new StandardExecutableInfo(ExecutableType.JAVA, detectConfiguration.getProperty(DetectProperty.DETECT_JAVA_PATH, PropertyAuthority.None));
+            case BAZEL:
+                return new StandardExecutableInfo(ExecutableType.BAZEL, detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_PATH, PropertyAuthority.None));
         }
         return null;
+    }
+
+    protected boolean isAlreadyFound(final CacheableExecutableType executableType) {
+        return alreadyFound.containsKey(executableType);
     }
 
     private class StandardExecutableInfo {
