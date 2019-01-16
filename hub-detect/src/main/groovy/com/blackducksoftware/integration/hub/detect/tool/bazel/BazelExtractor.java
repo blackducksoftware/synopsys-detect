@@ -71,7 +71,7 @@ public class BazelExtractor {
                 logger.debug(String.format("Read %d rule(s) from %s", fullRules.size(), fullRulesPath));
             } else {
                 fullRules = simpleRules.getRules().stream()
-                                      .map(BazelExternalIdExtractionFullRule::new).collect(Collectors.toList());
+                                      .map(RuleConverter::simpleToFull).collect(Collectors.toList());
                 if (logger.isDebugEnabled()) {
                     logger.debug(String.format("Using default rules:\n%s", bazelExternalIdExtractionFullRuleJsonProcessor.toJson(fullRules)));
                 }

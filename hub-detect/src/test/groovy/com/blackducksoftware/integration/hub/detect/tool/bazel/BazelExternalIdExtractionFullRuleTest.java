@@ -10,7 +10,7 @@ public class BazelExternalIdExtractionFullRuleTest {
     public void test() {
         BazelExternalIdExtractionSimpleRule simpleRule = new BazelExternalIdExtractionSimpleRule("@.*:jar", "maven_jar",
             "artifactory", ":");
-        BazelExternalIdExtractionFullRule xPathRule = new BazelExternalIdExtractionFullRule(simpleRule);
+        BazelExternalIdExtractionFullRule xPathRule = RuleConverter.simpleToFull(simpleRule);
 
         assertEquals(2, xPathRule.getTargetDependenciesQueryBazelCmdArguments().size());
         assertEquals("query", xPathRule.getTargetDependenciesQueryBazelCmdArguments().get(0));

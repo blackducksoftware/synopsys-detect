@@ -42,7 +42,7 @@ public class BazelExternalIdGeneratorTest {
 
         BazelExternalIdExtractionSimpleRule simpleRule = new BazelExternalIdExtractionSimpleRule("@.*:jar", "maven_jar",
             "artifact", ":");
-        BazelExternalIdExtractionFullRule xPathRule = new BazelExternalIdExtractionFullRule(simpleRule);
+        BazelExternalIdExtractionFullRule xPathRule = RuleConverter.simpleToFull(simpleRule);
 
         // executableRunner.executeQuietly(workspaceDir, bazelExe, targetOnlyVariableSubstitutor.substitute(xPathRule.getTargetDependenciesQueryBazelCmdArguments()));
         final BazelVariableSubstitutor targetOnlyVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
