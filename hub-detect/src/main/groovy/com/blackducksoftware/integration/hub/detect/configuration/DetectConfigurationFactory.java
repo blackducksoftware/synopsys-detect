@@ -167,8 +167,13 @@ public class DetectConfigurationFactory {
     }
 
     public long getTimeoutInSeconds() {
-        final long timeout = detectConfiguration.getLongProperty(DetectProperty.DETECT_API_TIMEOUT, PropertyAuthority.None);
-        final long timeoutInSeconds = timeout / 1000;
-        return timeoutInSeconds;
+        if (detectConfiguration.wasPropertyActuallySet(DetectProperty.DETECT_API_TIMEOUT)) {
+            final long timeout = detectConfiguration.getLongProperty(DetectProperty.DETECT_API_TIMEOUT, PropertyAuthority.None);
+            final long timeoutInSeconds = timeout / 1000;
+            return timeoutInSeconds;
+        } else {
+            return detectConfiguration.getLongProperty(DetectProperty.DETECT_REPORT_TIMEOUT, PropertyAuthority.None);
+        }
+
     }
 }
