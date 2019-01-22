@@ -89,27 +89,27 @@ public enum DetectProperty {
     @HelpDescription("Proxy host")
     BLACKDUCK_PROXY_HOST("blackduck.proxy.host", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Comma separated list of host patterns that should not use the proxy")
     BLACKDUCK_PROXY_IGNORED_HOSTS("blackduck.proxy.ignored.hosts", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Ntlm Proxy domain")
     BLACKDUCK_PROXY_NTLM_DOMAIN("blackduck.proxy.ntlm.domain", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Ntlm Proxy workstation")
     BLACKDUCK_PROXY_NTLM_WORKSTATION("blackduck.proxy.ntlm.workstation", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Proxy password")
     BLACKDUCK_PROXY_PASSWORD("blackduck.proxy.password", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Proxy port")
     BLACKDUCK_PROXY_PORT("blackduck.proxy.port", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Proxy username")
     BLACKDUCK_PROXY_USERNAME("blackduck.proxy.username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
