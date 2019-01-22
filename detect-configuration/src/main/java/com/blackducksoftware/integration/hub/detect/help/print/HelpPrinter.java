@@ -66,7 +66,7 @@ public class HelpPrinter {
     private void printVerboseOptions(final HelpTextWriter writer, final List<DetectOption> options, final String notes) {
         final List<DetectOption> sorted = options.stream().sorted((o1, o2) -> {
             if (o1.getDetectOptionHelp().primaryGroup.equals(o2.getDetectOptionHelp().primaryGroup)) {
-                return o1.getDetectProperty().getPropertyName().compareTo(o2.getDetectProperty().getPropertyName());
+                return o1.getDetectProperty().getPropertyKey().compareTo(o2.getDetectProperty().getPropertyKey());
             } else {
                 return o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup);
             }
@@ -76,7 +76,7 @@ public class HelpPrinter {
 
     private void printDetailedHelp(final HelpTextWriter writer, final List<DetectOption> options, final String optionName) {
         final DetectOption option = options.stream()
-                .filter(it -> it.getDetectProperty().getPropertyName().equals(optionName))
+                .filter(it -> it.getDetectProperty().getPropertyKey().equals(optionName))
                 .findFirst().orElse(null);
 
         if (option == null) {
@@ -95,7 +95,7 @@ public class HelpPrinter {
 
         final List<DetectOption> filteredOptions = options.stream()
                 .filter(it -> it.getDetectOptionHelp().groups.stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
-                .sorted((o1, o2) -> o1.getDetectProperty().getPropertyName().compareTo(o2.getDetectProperty().getPropertyName()))
+                .sorted((o1, o2) -> o1.getDetectProperty().getPropertyKey().compareTo(o2.getDetectProperty().getPropertyKey()))
                 .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
@@ -105,7 +105,7 @@ public class HelpPrinter {
         final String notes = "Showing help only for fields that contain: " + searchTerm;
 
         final List<DetectOption> filteredOptions = options.stream()
-                .filter(it -> it.getDetectProperty().getPropertyName().contains(searchTerm))
+                .filter(it -> it.getDetectProperty().getPropertyKey().contains(searchTerm))
                 .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
@@ -117,7 +117,7 @@ public class HelpPrinter {
 
     private boolean isProperty(final List<DetectOption> allOptions, final String filterTerm) {
         return allOptions.stream()
-                .map(it -> it.getDetectProperty().getPropertyName())
+                .map(it -> it.getDetectProperty().getPropertyKey())
                 .anyMatch(it -> it.equals(filterTerm));
     }
 

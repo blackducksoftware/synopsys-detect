@@ -89,27 +89,27 @@ public enum DetectProperty {
     @HelpDescription("Hostname for proxy server")
     BLACKDUCK_PROXY_HOST("blackduck.proxy.host", "Proxy Host", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Comma separated list of host patterns that should not use the proxy")
     BLACKDUCK_PROXY_IGNORED_HOSTS("blackduck.proxy.ignored.hosts", "Bypass Proxy Hosts", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("NTLM Proxy domain")
     BLACKDUCK_PROXY_NTLM_DOMAIN("blackduck.proxy.ntlm.domain", "NTLM Proxy Domain","4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("NTLM Proxy workstation")
     BLACKDUCK_PROXY_NTLM_WORKSTATION("blackduck.proxy.ntlm.workstation", "NTLM Proxy Workstation", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Proxy password")
     BLACKDUCK_PROXY_PASSWORD("blackduck.proxy.password", "Proxy Password","4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Proxy port")
     BLACKDUCK_PROXY_PORT("blackduck.proxy.port", "Proxy Port", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Proxy username")
     BLACKDUCK_PROXY_USERNAME("blackduck.proxy.username", "Proxy Username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
@@ -309,7 +309,7 @@ public enum DetectProperty {
     DETECT_DOTNET_PATH("detect.dotnet.path", "dotnet Executable", "4.4.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify \"ALL\". Exclusion rules always win.")
+    @HelpDescription("By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win.")
     DETECT_EXCLUDED_DETECTOR_TYPES("detect.excluded.detector.types", "Detector Types Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
@@ -749,7 +749,7 @@ public enum DetectProperty {
     @DetectDeprecation(description = "This property is changing. Please use --detect.excluded.detector.types in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_DETECTOR, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify \"ALL\". Exclusion rules always win.")
-    DETECT_EXCLUDED_BOM_TOOL_TYPES("detect.excluded.bom.tool.types", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_EXCLUDED_BOM_TOOL_TYPES("detect.excluded.bom.tool.types", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.detector.search.exclusion.defaults in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)

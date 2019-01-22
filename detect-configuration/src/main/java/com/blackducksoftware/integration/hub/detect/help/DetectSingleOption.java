@@ -40,7 +40,7 @@ public class DetectSingleOption extends DetectOption {
         if (validValuesContains(value)) {
             result = OptionValidationResult.valid("");
         } else {
-            final String validationMesssage = String.format("%s: Unknown value '%s', acceptable values are %s", getDetectProperty().getPropertyName(), value, getValidValues().stream().collect(Collectors.joining(",")));
+            final String validationMesssage = String.format("%s: Unknown value '%s', acceptable values are %s", getDetectProperty().getPropertyKey(), value, getValidValues().stream().collect(Collectors.joining(",")));
             result = OptionValidationResult.invalid(validationMesssage);
         }
 

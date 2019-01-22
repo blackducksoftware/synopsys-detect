@@ -266,7 +266,7 @@ public class DetectOptionManager {
         for (final DetectOption detectOption : detectOptions) {
             if (detectOption.getDetectOptionHelp().isDeprecated) {
                 if (detectMajorVersion >= detectOption.getDetectOptionHelp().deprecationRemoveInVersion.getIntValue()) {
-                    throw new RuntimeException("A property should have been removed in this Detect Major Version: " + detectOption.getDetectProperty().getPropertyName());
+                    throw new RuntimeException("A property should have been removed in this Detect Major Version: " + detectOption.getDetectProperty().getPropertyKey());
                 }
             }
         }
@@ -279,13 +279,13 @@ public class DetectOptionManager {
             if (detectOption.hasWarnings() && detectOption.isRequestedDeprecation()) {
                 if (detectMajorVersion >= detectOption.getDetectOptionHelp().deprecationFailInVersion.getIntValue()) {
                     atLeastOneDeprecatedFailure = true;
-                    logger.error(detectOption.getDetectProperty().getPropertyName() + " is deprecated and should not be used.");
+                    logger.error(detectOption.getDetectProperty().getPropertyKey() + " is deprecated and should not be used.");
                 }
             }
         }
         if (atLeastOneDeprecatedFailure) {
             logger.error("Configuration is using deprecated properties. Please fix deprecation issues.");
-            logger.error("To ignore these messages and force detect to exit with success supply --" + DetectProperty.DETECT_FORCE_SUCCESS.getPropertyName() + "=true");
+            logger.error("To ignore these messages and force detect to exit with success supply --" + DetectProperty.DETECT_FORCE_SUCCESS.getPropertyKey() + "=true");
             logger.error("This will not force detect to run, but to pretend to have succeeded.");
             return true;
         }

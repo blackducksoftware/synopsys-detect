@@ -49,29 +49,29 @@ public class DetectPropertySource {
         this.propertySource = propertySource;
 
         // TODO: Remove redirection from "blackduck.hub." to "blackduck." in version 6.
-        for (final String propertyName : propertySource.getPropertyKeys()) {
-            if (StringUtils.isNotBlank(propertyName)) {
-                if (propertyName.startsWith(DOCKER_PROPERTY_PREFIX)) {
-                    dockerPropertyKeys.add(propertyName);
-                } else if (propertyName.startsWith(DOCKER_ENVIRONMENT_PREFIX)) {
-                    dockerEnvironmentKeys.add(propertyName);
-                } else if (propertyName.startsWith(PHONE_HOME_PROPERTY_PREFIX)) {
-                    phoneHomePropertyKeys.add(propertyName);
-                } else if (propertyName.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
-                    blackduckPropertyKeys.add(propertyName);
-                } else if (propertyName.startsWith(BLACKDUCK_PROPERTY_PREFIX) || propertyName.startsWith(BLACKDUCK_ENVIRONMENT_PREFIX)) {
-                    blackduckPropertyKeys.add(propertyName);
+        for (final String propertyKey : propertySource.getPropertyKeys()) {
+            if (StringUtils.isNotBlank(propertyKey)) {
+                if (propertyKey.startsWith(DOCKER_PROPERTY_PREFIX)) {
+                    dockerPropertyKeys.add(propertyKey);
+                } else if (propertyKey.startsWith(DOCKER_ENVIRONMENT_PREFIX)) {
+                    dockerEnvironmentKeys.add(propertyKey);
+                } else if (propertyKey.startsWith(PHONE_HOME_PROPERTY_PREFIX)) {
+                    phoneHomePropertyKeys.add(propertyKey);
+                } else if (propertyKey.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyKey.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
+                    blackduckPropertyKeys.add(propertyKey);
+                } else if (propertyKey.startsWith(BLACKDUCK_PROPERTY_PREFIX) || propertyKey.startsWith(BLACKDUCK_ENVIRONMENT_PREFIX)) {
+                    blackduckPropertyKeys.add(propertyKey);
                 }
             }
         }
     }
 
     public boolean containsDetectProperty(final DetectProperty property) {
-        return propertySource.containsProperty(property.getPropertyName());
+        return propertySource.containsProperty(property.getPropertyKey());
     }
 
     public String getDetectProperty(final DetectProperty property) {
-        return propertySource.getProperty(property.getPropertyName(), property.getDefaultValue());
+        return propertySource.getProperty(property.getPropertyKey(), property.getDefaultValue());
     }
 
     public String getProperty(String property) {
