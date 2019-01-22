@@ -74,283 +74,283 @@ import com.blackducksoftware.integration.hub.detect.property.PropertyType;
 public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
-    @HelpDescription("Black Duck API Token")
-    BLACKDUCK_API_TOKEN("blackduck.api.token", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    @HelpDescription("The API token used to authenticate with the Black Duck Server.")
+    BLACKDUCK_API_TOKEN("blackduck.api.token", "Black Duck API Token", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, SEARCH_GROUP_OFFLINE })
     @HelpDescription("This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
-    BLACKDUCK_OFFLINE_MODE("blackduck.offline.mode", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    BLACKDUCK_OFFLINE_MODE("blackduck.offline.mode", "Offline Mode", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Black Duck password")
-    BLACKDUCK_PASSWORD("blackduck.password", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_PASSWORD("blackduck.password","Black Duck Password","4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
-    @HelpDescription("Proxy host")
-    BLACKDUCK_PROXY_HOST("blackduck.proxy.host", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    @HelpDescription("Hostname for proxy server")
+    BLACKDUCK_PROXY_HOST("blackduck.proxy.host", "Proxy Host", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Comma separated list of host patterns that should not use the proxy")
-    BLACKDUCK_PROXY_IGNORED_HOSTS("blackduck.proxy.ignored.hosts", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_PROXY_IGNORED_HOSTS("blackduck.proxy.ignored.hosts", "Bypass Proxy Hosts", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
-    @HelpDescription("Ntlm Proxy domain")
-    BLACKDUCK_PROXY_NTLM_DOMAIN("blackduck.proxy.ntlm.domain", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    @HelpDescription("NTLM Proxy domain")
+    BLACKDUCK_PROXY_NTLM_DOMAIN("blackduck.proxy.ntlm.domain", "NTLM Proxy Domain","4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
-    @HelpDescription("Ntlm Proxy workstation")
-    BLACKDUCK_PROXY_NTLM_WORKSTATION("blackduck.proxy.ntlm.workstation", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    @HelpDescription("NTLM Proxy workstation")
+    BLACKDUCK_PROXY_NTLM_WORKSTATION("blackduck.proxy.ntlm.workstation", "NTLM Proxy Workstation", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Proxy password")
-    BLACKDUCK_PROXY_PASSWORD("blackduck.proxy.password", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_PROXY_PASSWORD("blackduck.proxy.password", "Proxy Password","4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Proxy port")
-    BLACKDUCK_PROXY_PORT("blackduck.proxy.port", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_PROXY_PORT("blackduck.proxy.port", "Proxy Port", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Proxy username")
-    BLACKDUCK_PROXY_USERNAME("blackduck.proxy.username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_PROXY_USERNAME("blackduck.proxy.username", "Proxy Username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
-    @HelpDescription("Time to wait for rest connections to complete in seconds.")
-    BLACKDUCK_TIMEOUT("blackduck.timeout", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "120"),
+    @HelpDescription("Time to wait for network connections to complete (in seconds).")
+    BLACKDUCK_TIMEOUT("blackduck.timeout", "Black Duck Timeout", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "120"),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("If true, automatically trust the certificate for the current run of Detect only")
-    BLACKDUCK_TRUST_CERT("blackduck.trust.cert", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    BLACKDUCK_TRUST_CERT("blackduck.trust.cert",  "Trust All SSL Certificates","4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("URL of the Black Duck server")
-    BLACKDUCK_URL("blackduck.url", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_URL("blackduck.url", "Black Duck URL", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Black Duck username")
-    BLACKDUCK_USERNAME("blackduck.username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_USERNAME("blackduck.username", "Black Duck Username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Path of the bash executable")
-    DETECT_BASH_PATH("detect.bash.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_BASH_PATH("detect.bash.path", "Bash Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = SEARCH_GROUP_GLOBAL)
     @HelpDescription("The path of the Bazel executable")
-    DETECT_BAZEL_PATH("detect.bazel.path", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_BAZEL_PATH("detect.bazel.path", "Bazel Executable", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = GROUP_SOURCE_SCAN)
     @HelpDescription("The bazel target (e.g. //foo:foolib) to collect dependencies for. For detect to run bazel this property must be set.")
-    DETECT_BAZEL_TARGET("detect.bazel.target", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_BAZEL_TARGET("detect.bazel.target", "Bazel Target", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = GROUP_SOURCE_SCAN)
     @HelpDescription("The path to a file containing a list of BazelExternalIdExtractionXPathRule objects in json (to override the default behavior)")
-    DETECT_BAZEL_ADVANCED_RULES_PATH("detect.bazel.advanced.rules.path", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_BAZEL_ADVANCED_RULES_PATH("detect.bazel.advanced.rules.path", "Bazel Advanced Rules File", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The output directory for all bdio files. If not set, the bdio files will be in a 'bdio' subdirectory of the output path.")
-    DETECT_BDIO_OUTPUT_PATH("detect.bdio.output.path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
+    DETECT_BDIO_OUTPUT_PATH("detect.bdio.output.path", "BDIO Output Directory", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("The path of a binary file to scan.")
-    DETECT_BINARY_SCAN_FILE("detect.binary.scan.file.path", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_BINARY_SCAN_FILE("detect.binary.scan.file.path", "Binary Scan Target", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
     @HelpDescription("The name of the build environment init script")
-    DETECT_BITBAKE_BUILD_ENV_NAME("detect.bitbake.build.env.name", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "oe-init-build-env"),
+    DETECT_BITBAKE_BUILD_ENV_NAME("detect.bitbake.build.env.name", "BitBake Init Script Name", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "oe-init-build-env"),
 
     @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
     @HelpDescription("A comma separated list of package names to extract dependencies from")
-    DETECT_BITBAKE_PACKAGE_NAMES("detect.bitbake.package.names", "4.4.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
+    DETECT_BITBAKE_PACKAGE_NAMES("detect.bitbake.package.names", "BitBake Package Names", "4.4.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Additional arguments to use when running the Black Duck signature scanner.")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS("detect.blackduck.signature.scanner.arguments", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS("detect.blackduck.signature.scanner.arguments", "Signature Scanner Arguments", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If set to true, the signature scanner results will not be uploaded to Black Duck and the scanner results will be written to disk.")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN("detect.blackduck.signature.scanner.dry.run", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN("detect.blackduck.signature.scanner.dry.run", "Signature Scanner Dry Run", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("A comma-separated list of directory name patterns detect will search for and add to the Signature Scanner --exclude flag values.")
     @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.blackduck.signature.scanner.exclusion.name.patterns", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "node_modules"),
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.blackduck.signature.scanner.exclusion.name.patterns", "Directory Name Exclusion Patterns", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "node_modules"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("Enables you to adjust the depth to which detect will search when creating signature scanner exclusion patterns")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH("detect.blackduck.signature.scanner.exclusion.pattern.search.depth", "5.0.0", PropertyType.INTEGER, PropertyAuthority.None, "4"),
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH("detect.blackduck.signature.scanner.exclusion.pattern.search.depth", "Exclusion Patterns Search Depth", "5.0.0", PropertyType.INTEGER, PropertyAuthority.None, "4"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("A comma-separated list of values to be used with the Signature Scanner --exclude flag.")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS("detect.blackduck.signature.scanner.exclusion.patterns", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS("detect.blackduck.signature.scanner.exclusion.patterns", "Exclusion Patterns", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Black Duck's urls for different operating systems.")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL("detect.blackduck.signature.scanner.host.url", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL("detect.blackduck.signature.scanner.host.url", "Signature Scanner Host URL", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH("detect.blackduck.signature.scanner.local.path", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH("detect.blackduck.signature.scanner.local.path", "Signature Scanner Local Path", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The memory for the scanner to use.")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY("detect.blackduck.signature.scanner.memory", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "4096"),
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY("detect.blackduck.signature.scanner.memory", "Signature Scanner Memory", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "4096"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH("detect.blackduck.signature.scanner.offline.local.path", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH("detect.blackduck.signature.scanner.offline.local.path", "Signature Scanner Local Path (Offline)", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS("detect.blackduck.signature.scanner.parallel.processors", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "1"),
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS("detect.blackduck.signature.scanner.parallel.processors", "Signature Scanner Parallel Processors", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "1"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("These paths and only these paths will be scanned.")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS("detect.blackduck.signature.scanner.paths", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS("detect.blackduck.signature.scanner.paths", "Signature Scanner Target Paths", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode.")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE("detect.blackduck.signature.scanner.snippet.mode", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE("detect.blackduck.signature.scanner.snippet.mode", "Snippet Scanning", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.")
-    DETECT_BOM_AGGREGATE_NAME("detect.bom.aggregate.name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_BOM_AGGREGATE_NAME("detect.bom.aggregate.name", "Aggregate BDIO File Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_CLEANUP, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("If true the files created by Detect will be cleaned up.")
-    DETECT_CLEANUP("detect.cleanup", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+    @HelpDescription("If true, the files created by Detect will be cleaned up.")
+    DETECT_CLEANUP("detect.cleanup", "Cleanup Output", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("The name of the project version to clone this project version from. Respects the Clone Categories as set on the Black Duck server.")
-    DETECT_CLONE_PROJECT_VERSION_NAME("detect.clone.project.version.name", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_CLONE_PROJECT_VERSION_NAME("detect.clone.project.version.name", "Clone Project Version Name", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("An override for the name detect will use for the code location it creates. If supplied and multiple code locations are found, detect will append an index to each code location name.")
-    DETECT_CODE_LOCATION_NAME("detect.code.location.name", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
+    @HelpDescription("An override for the name detect will use for the scan file it creates. If supplied and multiple scans are found, detect will append an index to each scan name.")
+    DETECT_CODE_LOCATION_NAME("detect.code.location.name", "Scan Name", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_CONDA, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The name of the anaconda environment used by your project")
-    DETECT_CONDA_ENVIRONMENT_NAME("detect.conda.environment.name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_CONDA_ENVIRONMENT_NAME("detect.conda.environment.name", "Anaconda Environment Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_CONDA, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the conda executable")
-    DETECT_CONDA_PATH("detect.conda.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_CONDA_PATH("detect.conda.path", "Conda Executable","3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_CPAN, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the cpan executable")
-    DETECT_CPAN_PATH("detect.cpan.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_CPAN_PATH("detect.cpan.path", "cpan Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_CPAN, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the cpanm executable")
-    DETECT_CPANM_PATH("detect.cpanm.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_CPANM_PATH("detect.cpanm.path", "cpanm Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'")
-    DETECT_DEFAULT_PROJECT_VERSION_SCHEME("detect.default.project.version.scheme", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "text"),
+    DETECT_DEFAULT_PROJECT_VERSION_SCHEME("detect.default.project.version.scheme", "Default Project Version Name Scheme", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "text"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The text to use as the default project version")
-    DETECT_DEFAULT_PROJECT_VERSION_TEXT("detect.default.project.version.text", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "Default Detect Version"),
+    DETECT_DEFAULT_PROJECT_VERSION_TEXT("detect.default.project.version.text", "Default Project Version Name Text", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "Default Detect Version"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The timestamp format to use as the default project version")
-    DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT("detect.default.project.version.timeformat", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "yyyy-MM-dd\\'T\\'HH:mm:ss.SSS"),
+    DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT("detect.default.project.version.timeformat", "Default Project Version Name Timestamp Format", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "yyyy-MM-dd\\'T\\'HH:mm:ss.SSS"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("Depth from source paths to search for files to determine if a detector applies.")
-    DETECT_DETECTOR_SEARCH_DEPTH("detect.detector.search.depth", "3.2.0", PropertyType.INTEGER, PropertyAuthority.None, "0"),
+    DETECT_DETECTOR_SEARCH_DEPTH("detect.detector.search.depth", "Detector Search Depth", "3.2.0", PropertyType.INTEGER, PropertyAuthority.None, "0"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.")
     @HelpDetailed("If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc.\r\nIf false, Detect will only find bom tools in subdirectories of a project if they are of a different type such as an Npm project in a subdirectory of a Gradle project.")
-    DETECT_DETECTOR_SEARCH_CONTINUE("detect.detector.search.continue", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_DETECTOR_SEARCH_CONTINUE("detect.detector.search.continue", "Detector Search Continue", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("A comma-separated list of directory names to exclude from the bom tool search.")
-    DETECT_DETECTOR_SEARCH_EXCLUSION("detect.detector.search.exclusion", "3.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
+    DETECT_DETECTOR_SEARCH_EXCLUSION("detect.detector.search.exclusion", "Detector Directory Exclusions", "3.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.")
     @HelpDetailed("If true, these directories will be excluded from the detector search: " + DetectorSearchExcludedDirectories.DIRECTORY_NAMES)
-    DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS("detect.detector.search.exclusion.defaults", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+    DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS("detect.detector.search.exclusion.defaults", "Detector Exclude Default Directories", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect.")
-    DETECT_DISABLE_WITHOUT_BLACKDUCK("detect.disable.without.blackduck", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_DISABLE_WITHOUT_BLACKDUCK("detect.disable.without.blackduck", "Check For Valid Black Duck Connection", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("The docker image name to inspect. For detect to run docker either this property or detect.docker.tar must be set.")
-    DETECT_DOCKER_IMAGE("detect.docker.image", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_DOCKER_IMAGE("detect.docker.image", "Docker Image Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path to the directory containing the docker inspector script, jar, and images")
-    DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH("detect.docker.inspector.air.gap.path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
+    DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH("detect.docker.inspector.air.gap.path", "Docker Inspector AirGap Path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("This is used to override using the hosted script by github url. You can provide your own script at this path.")
-    DETECT_DOCKER_INSPECTOR_PATH("detect.docker.inspector.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_DOCKER_INSPECTOR_PATH("detect.docker.inspector.path", "Docker Inspector Path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Version of the Docker Inspector to use. By default detect will attempt to automatically determine the version to use.")
-    DETECT_DOCKER_INSPECTOR_VERSION("detect.docker.inspector.version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
+    DETECT_DOCKER_INSPECTOR_VERSION("detect.docker.inspector.version", "Docker Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Path of the docker executable")
-    DETECT_DOCKER_PATH("detect.docker.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_DOCKER_PATH("detect.docker.path", "Docker Executable","3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If set to false, detect will attempt to run docker even if it cannot find a docker path.")
-    DETECT_DOCKER_PATH_REQUIRED("detect.docker.path.required", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+    DETECT_DOCKER_PATH_REQUIRED("detect.docker.path.required",  "Run Without Docker in Path",   "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.")
-    DETECT_DOCKER_TAR("detect.docker.tar", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_DOCKER_TAR("detect.docker.tar", "Docker Image Archive File", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the dotnet executable")
-    DETECT_DOTNET_PATH("detect.dotnet.path", "4.4.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_DOTNET_PATH("detect.dotnet.path", "dotnet Executable", "4.4.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify \"ALL\". Exclusion rules always win.")
-    DETECT_EXCLUDED_DETECTOR_TYPES("detect.excluded.detector.types", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_EXCLUDED_DETECTOR_TYPES("detect.excluded.detector.types", "Detector Types Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If true, detect will always exit with code 0.")
-    DETECT_FORCE_SUCCESS("detect.force.success", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_FORCE_SUCCESS("detect.force.success", "Force Success", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_GO, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Path of the Go Dep executable")
-    DETECT_GO_DEP_PATH("detect.go.dep.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    @HelpDescription("Path of the Godep executable")
+    DETECT_GO_DEP_PATH("detect.go.dep.path", "Godep Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GO, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("If set to true, we will attempt to run 'init' and 'ensure' which can modify your development environment.")
-    DETECT_GO_RUN_DEP_INIT("detect.go.run.dep.init", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_GO_RUN_DEP_INIT("detect.go.run.dep.init", "Godep Run init/ensure", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("Gradle build command")
-    DETECT_GRADLE_BUILD_COMMAND("detect.gradle.build.command", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_GRADLE_BUILD_COMMAND("detect.gradle.build.command", "Gradle Build Command", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the dependency configurations to exclude")
-    DETECT_GRADLE_EXCLUDED_CONFIGURATIONS("detect.gradle.excluded.configurations", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_GRADLE_EXCLUDED_CONFIGURATIONS("detect.gradle.excluded.configurations", "Gradle Exclude Configurations",  "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the projects to exclude")
-    DETECT_GRADLE_EXCLUDED_PROJECTS("detect.gradle.excluded.projects", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_GRADLE_EXCLUDED_PROJECTS("detect.gradle.excluded.projects", "Gradle Exclude Projects", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the dependency configurations to include")
-    DETECT_GRADLE_INCLUDED_CONFIGURATIONS("detect.gradle.included.configurations", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_GRADLE_INCLUDED_CONFIGURATIONS("detect.gradle.included.configurations", "Gradle Include Configurations", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the projects to include")
-    DETECT_GRADLE_INCLUDED_PROJECTS("detect.gradle.included.projects", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_GRADLE_INCLUDED_PROJECTS("detect.gradle.included.projects", "Gradle Include Projects", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path to the directory containing the air gap dependencies for the gradle inspector")
-    DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH("detect.gradle.inspector.air.gap.path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
+    DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH("detect.gradle.inspector.air.gap.path", "Gradle Inspector AirGap Path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The override version of the Gradle Inspector to use. By default, detect will try to automatically determine the correct gradle version.")
-    DETECT_GRADLE_INSPECTOR_VERSION("detect.gradle.inspector.version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
+    DETECT_GRADLE_INSPECTOR_VERSION("detect.gradle.inspector.version", "Gradle Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_GRADLE)
     @HelpDescription("Path of the Gradle executable")
@@ -909,17 +909,19 @@ public enum DetectProperty {
      * DEPRECATED END
      *********************************************************************************************/
 
+    private final String propertyKey;
     private final String propertyName;
     private final PropertyType propertyType;
     private final String defaultValue;
     private final String asOf;
     private final PropertyAuthority propertyAuthority;
 
-    DetectProperty(final String propertyName, final String asOf, final PropertyType propertyType, final PropertyAuthority propertyAuthority) {
-        this(propertyName, asOf, propertyType, propertyAuthority, null);
+    DetectProperty(final String propertyKey, final String propertyName, final String asOf, final PropertyType propertyType, final PropertyAuthority propertyAuthority) {
+        this(propertyKey, propertyName, asOf, propertyType, propertyAuthority, null);
     }
 
-    DetectProperty(final String propertyName, final String asOf, final PropertyType propertyType, final PropertyAuthority propertyAuthority, final String defaultValue) {
+    DetectProperty(final String propertyKey, final String propertyName, final String asOf, final PropertyType propertyType, final PropertyAuthority propertyAuthority, final String defaultValue) {
+        this.propertyKey = propertyKey;
         this.propertyName = propertyName;
         this.asOf = asOf;
         this.propertyType = propertyType;
@@ -929,6 +931,10 @@ public enum DetectProperty {
 
     public PropertyAuthority getPropertyAuthority() {
         return propertyAuthority;
+    }
+
+    public String getPropertyKey() {
+        return propertyKey;
     }
 
     public String getPropertyName() {
