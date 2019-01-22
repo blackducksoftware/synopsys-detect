@@ -511,127 +511,127 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The detector to choose when multiple detector types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.")
-    DETECT_PROJECT_DETECTOR("detect.project.detector", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PROJECT_DETECTOR("detect.project.detector", "Project Name/Version Detector", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_GLOBAL })
     @HelpDescription("An override for the Project level matches.")
-    DETECT_PROJECT_LEVEL_ADJUSTMENTS("detect.project.level.adjustments", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+    DETECT_PROJECT_LEVEL_ADJUSTMENTS("detect.project.level.adjustments", "Allow Project Level Adjustments", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("An override for the name to use for the Black Duck project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.")
-    DETECT_PROJECT_NAME("detect.project.name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PROJECT_NAME("detect.project.name", "Project Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("If a Black Duck project tier is specified, your project will be created with this tier.")
     @AcceptableValues(value = { "1", "2", "3", "4", "5" }, caseSensitive = false, strict = false)
-    DETECT_PROJECT_TIER("detect.project.tier", "3.1.0", PropertyType.INTEGER, PropertyAuthority.None),
+    DETECT_PROJECT_TIER("detect.project.tier", "Project Tier", "3.1.0", PropertyType.INTEGER, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The tool priority for project name and version. The first tool in this list that provides a project name and version will be used.")
     @AcceptableValues(value = { "DETECTOR", "DOCKER", "BAZEL" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
-    DETECT_PROJECT_TOOL("detect.project.tool", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "DOCKER,DETECTOR,BAZEL"),
+    DETECT_PROJECT_TOOL("detect.project.tool",  "Detector Tool Priority", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "DOCKER,DETECTOR,BAZEL"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("An override for the Project Version distribution")
     @AcceptableValues(value = { "EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE" }, caseSensitive = false, strict = false)
-    DETECT_PROJECT_VERSION_DISTRIBUTION("detect.project.version.distribution", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "External"),
+    DETECT_PROJECT_VERSION_DISTRIBUTION("detect.project.version.distribution", "Version Distribution","3.0.0", PropertyType.STRING, PropertyAuthority.None, "External"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("An override for the version to use for the Black Duck project. If not supplied, detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.")
-    DETECT_PROJECT_VERSION_NAME("detect.project.version.name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PROJECT_VERSION_NAME("detect.project.version.name", "Version Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("If a project version nickname is specified, your project version will be created with this nickname.")
-    DETECT_PROJECT_VERSION_NICKNAME("detect.project.version.nickname", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PROJECT_VERSION_NICKNAME("detect.project.version.nickname", "Version Nickname", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("If project version notes are specified, your project version will be created with these notes.")
-    DETECT_PROJECT_VERSION_NOTES("detect.project.version.notes", "3.1.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PROJECT_VERSION_NOTES("detect.project.version.notes", "Version Notes", "3.1.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("An override for the Project Version phase.")
     @AcceptableValues(value = { "PLANNING", "DEVELOPMENT", "RELEASED", "DEPRECATED", "ARCHIVED" }, caseSensitive = false, strict = false)
-    DETECT_PROJECT_VERSION_PHASE("detect.project.version.phase", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "Development"),
+    DETECT_PROJECT_VERSION_PHASE("detect.project.version.phase", "Version Phase", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "Development"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("If set to true, will update the Project Version with the configured properties. See detailed help for more information.")
     @HelpDetailed("When set to true, the following properties will be updated on the Project. Project tier (detect.project.tier) and Project Level Adjustments (detect.project.level.adjustments).\r\n The following properties will also be updated on the Version. Version notes (detect.project.version.notes), phase (detect.project.version.phase), distribution (detect.project.version.distribution)")
-    DETECT_PROJECT_VERSION_UPDATE("detect.project.version.update", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_PROJECT_VERSION_UPDATE("detect.project.version.update", "Update Project Version", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PYTHON, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the Python executable")
-    DETECT_PYTHON_PATH("detect.python.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PYTHON_PATH("detect.python.path", "Python Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PYTHON, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If true will use Python 3 if available on class path")
-    DETECT_PYTHON_PYTHON3("detect.python.python3", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_PYTHON_PYTHON3("detect.python.python3", "Use Python3", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The amount of time in seconds detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
-    DETECT_REPORT_TIMEOUT("detect.report.timeout", "3.0.0", PropertyType.LONG, PropertyAuthority.None, "300"),
+    DETECT_REPORT_TIMEOUT("detect.report.timeout", "Report Generation Timeout","3.0.0", PropertyType.LONG, PropertyAuthority.None, "300"),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If set, detect will fail if it does not find the detector types supplied here.")
-    DETECT_REQUIRED_DETECTOR_TYPES("detect.required.detector.types", "4.3.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_REQUIRED_DETECTOR_TYPES("detect.required.detector.types", "Required Detect Types", "4.3.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If set to false we will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.")
-    DETECT_RESOLVE_TILDE_IN_PATHS("detect.resolve.tilde.in.paths", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+    DETECT_RESOLVE_TILDE_IN_PATHS("detect.resolve.tilde.in.paths", "Resolve Tilde in Paths", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_REPORT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_REPORT_SETTING })
     @HelpDescription("When set to true, a Black Duck risk report in PDF form will be created")
-    DETECT_RISK_REPORT_PDF("detect.risk.report.pdf", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_RISK_REPORT_PDF("detect.risk.report.pdf", "Generate Risk Report (PDF)","3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_REPORT, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The output directory for risk report in PDF. Default is the source directory")
-    DETECT_RISK_REPORT_PDF_PATH("detect.risk.report.pdf.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "."),
+    DETECT_RISK_REPORT_PDF_PATH("detect.risk.report.pdf.path", "Risk Report Output Path", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "."),
 
     @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the sbt configurations to exclude")
-    DETECT_SBT_EXCLUDED_CONFIGURATIONS("detect.sbt.excluded.configurations", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_SBT_EXCLUDED_CONFIGURATIONS("detect.sbt.excluded.configurations", "SBT Configurations Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the sbt configurations to include")
-    DETECT_SBT_INCLUDED_CONFIGURATIONS("detect.sbt.included.configurations", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_SBT_INCLUDED_CONFIGURATIONS("detect.sbt.included.configurations", "SBT Configurations Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("Depth the sbt detector will use to search for report files.")
-    DETECT_SBT_REPORT_DEPTH("detect.sbt.report.search.depth", "4.3.0", PropertyType.INTEGER, PropertyAuthority.None, "3"),
+    DETECT_SBT_REPORT_DEPTH("detect.sbt.report.search.depth", "SBT Report Search Depth", "4.3.0", PropertyType.INTEGER, PropertyAuthority.None, "3"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The output directory for all scan files. If not set, the scan files will be in a 'scan' subdirectory of the output path.")
-    DETECT_SCAN_OUTPUT_PATH("detect.scan.output.path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
+    DETECT_SCAN_OUTPUT_PATH("detect.scan.output.path", "Scan Output Path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("Source path to inspect")
-    DETECT_SOURCE_PATH("detect.source.path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
+    DETECT_SOURCE_PATH("detect.source.path", "Source Path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Test the connection to Black Duck with the current configuration")
-    DETECT_TEST_CONNECTION("detect.test.connection", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_TEST_CONNECTION("detect.test.connection", "Test Connection to Black Duck", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The tools detect should allow in a comma-separated list. Included and not excluded tools will be allowed to run if all criteria of the tool is met. Exclusion rules always win.")
     @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
-    DETECT_TOOLS("detect.tools", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_TOOLS("detect.tools", "Detect Tools Included", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The tools detect should not allow in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.")
     @AcceptableValues(value = { "BAZEL", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
-    DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "Detect Tools Excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpDescription("The path of the Yarn executable")
     @HelpGroup(primary = GROUP_YARN, additional = { SEARCH_GROUP_GLOBAL })
-    DETECT_YARN_PATH("detect.yarn.path", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_YARN_PATH("detect.yarn.path", "Yarn Executable", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpDescription("Set this to true to only scan production dependencies")
     @HelpGroup(primary = GROUP_YARN, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
-    DETECT_YARN_PROD_ONLY("detect.yarn.prod.only", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_YARN_PROD_ONLY("detect.yarn.prod.only", "Include Yarn Production Dependencies Only", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_LOGGING, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The logging level of Detect")
     @AcceptableValues(value = { "ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
-    LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION("logging.level.com.blackducksoftware.integration", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "INFO"),
+    LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION("logging.level.com.blackducksoftware.integration", "Logging Level", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "INFO"),
 
     /**********************************************************************************************
      * DEPRECATED START
@@ -641,109 +641,109 @@ public enum DetectProperty {
     @DetectDeprecation(description = "This property is not deprecated. Please use --detect.report.timeout in the future. NOTE the new property is in SECONDS not MILLISECONDS.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { GROUP_PROJECT })
     @HelpDescription("Timeout for response from Black Duck regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.")
-    DETECT_API_TIMEOUT("detect.api.timeout", "3.0.0", PropertyType.LONG, PropertyAuthority.None, "300000"),
+    DETECT_API_TIMEOUT("detect.api.timeout",  "", "3.0.0", PropertyType.LONG, PropertyAuthority.None, "300000"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.url in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("URL of the Hub server")
-    BLACKDUCK_HUB_URL("blackduck.hub.url", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_URL("blackduck.hub.url", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.timeout in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("Time to wait for rest connections to complete in seconds.")
-    BLACKDUCK_HUB_TIMEOUT("blackduck.hub.timeout", "3.0.0", PropertyType.INTEGER, PropertyAuthority.None, "120"),
+    BLACKDUCK_HUB_TIMEOUT("blackduck.hub.timeout", "", "3.0.0", PropertyType.INTEGER, PropertyAuthority.None, "120"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.username in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("Hub username")
-    BLACKDUCK_HUB_USERNAME("blackduck.hub.username", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_USERNAME("blackduck.hub.username", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.password in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("Hub password")
-    BLACKDUCK_HUB_PASSWORD("blackduck.hub.password", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PASSWORD("blackduck.hub.password", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.api.token in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("Hub API Token")
-    BLACKDUCK_HUB_API_TOKEN("blackduck.hub.api.token", "3.1.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_API_TOKEN("blackduck.hub.api.token", "", "3.1.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.host in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, GROUP_PROXY })
     @HelpDescription("Proxy host")
-    BLACKDUCK_HUB_PROXY_HOST("blackduck.hub.proxy.host", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PROXY_HOST("blackduck.hub.proxy.host", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.port in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, GROUP_PROXY })
     @HelpDescription("Proxy port")
-    BLACKDUCK_HUB_PROXY_PORT("blackduck.hub.proxy.port", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PROXY_PORT("blackduck.hub.proxy.port", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.username in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, GROUP_PROXY })
     @HelpDescription("Proxy username")
-    BLACKDUCK_HUB_PROXY_USERNAME("blackduck.hub.proxy.username", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PROXY_USERNAME("blackduck.hub.proxy.username", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.password in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, GROUP_PROXY })
     @HelpDescription("Proxy password")
-    BLACKDUCK_HUB_PROXY_PASSWORD("blackduck.hub.proxy.password", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PROXY_PASSWORD("blackduck.hub.proxy.password", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.ntlm.domain in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, GROUP_PROXY })
     @HelpDescription("Ntlm Proxy domain")
-    BLACKDUCK_HUB_PROXY_NTLM_DOMAIN("blackduck.hub.proxy.ntlm.domain", "3.1.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PROXY_NTLM_DOMAIN("blackduck.hub.proxy.ntlm.domain", "", "3.1.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.ignored.hosts in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, GROUP_PROXY })
     @HelpDescription("Comma separated list of host patterns that should not use the proxy")
-    BLACKDUCK_HUB_PROXY_IGNORED_HOSTS("blackduck.hub.proxy.ignored.hosts", "3.2.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PROXY_IGNORED_HOSTS("blackduck.hub.proxy.ignored.hosts", "", "3.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.ntlm.workstation in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, GROUP_PROXY })
     @HelpDescription("Ntlm Proxy workstation")
-    BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION("blackduck.hub.proxy.ntlm.workstation", "3.1.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION("blackduck.hub.proxy.ntlm.workstation", "", "3.1.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.trust.cert in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("If true, automatically trust the certificate for the current run of Detect only")
-    BLACKDUCK_HUB_TRUST_CERT("blackduck.hub.trust.cert", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    BLACKDUCK_HUB_TRUST_CERT("blackduck.hub.trust.cert", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.offline.mode in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, SEARCH_GROUP_OFFLINE })
     @HelpDescription("This can disable any Hub communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
-    BLACKDUCK_HUB_OFFLINE_MODE("blackduck.hub.offline.mode", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    BLACKDUCK_HUB_OFFLINE_MODE("blackduck.hub.offline.mode", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.disable.without.blackduck in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("If true, during initialization Detect will check for Hub connectivity and exit with status code 0 if it cannot connect.")
-    DETECT_DISABLE_WITHOUT_HUB("detect.disable.without.hub", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_DISABLE_WITHOUT_HUB("detect.disable.without.hub", "", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is being removed. Configuration can no longer be suppressed individually. Log level can be used.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_LOGGING)
     @HelpDescription("If true, the default behavior of printing your configuration properties at startup will be suppressed.")
-    DETECT_SUPPRESS_CONFIGURATION_OUTPUT("detect.suppress.configuration.output", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_SUPPRESS_CONFIGURATION_OUTPUT("detect.suppress.configuration.output", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is being removed. Results can no longer be suppressed individually. Log level can be used.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_LOGGING)
     @HelpDescription("If true, the default behavior of printing the Detect Results will be suppressed.")
-    DETECT_SUPPRESS_RESULTS_OUTPUT("detect.suppress.results.output", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_SUPPRESS_RESULTS_OUTPUT("detect.suppress.results.output", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.excluded.detector.types in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
@@ -756,154 +756,154 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR })
     @HelpDescription("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.")
     @HelpDetailed("If true, these directories will be excluded from the bom tool search: " + DetectorSearchExcludedDirectories.DIRECTORY_NAMES)
-    DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS("detect.bom.tool.search.exclusion.defaults", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+    DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS("detect.bom.tool.search.exclusion.defaults", "", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.detector.search.exclusion in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR })
     @HelpDescription("A comma-separated list of directory names to exclude from the bom tool search.")
-    DETECT_BOM_TOOL_SEARCH_EXCLUSION("detect.bom.tool.search.exclusion", "3.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
+    DETECT_BOM_TOOL_SEARCH_EXCLUSION("detect.bom.tool.search.exclusion", "", "3.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.included.detector.types in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_DETECTOR, additional = { GROUP_DETECTOR })
     @HelpDescription("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
-    DETECT_INCLUDED_BOM_TOOL_TYPES("detect.included.bom.tool.types", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_INCLUDED_BOM_TOOL_TYPES("detect.included.bom.tool.types", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.sbt.report.depth in the future.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
     @HelpGroup(primary = GROUP_PATHS)
     @HelpDescription("Depth from source paths to search for sbt report files.")
-    DETECT_SEARCH_DEPTH("detect.search.depth", "3.0.0", PropertyType.INTEGER, PropertyAuthority.None, "3"),
+    DETECT_SEARCH_DEPTH("detect.search.depth", "", "3.0.0", PropertyType.INTEGER, PropertyAuthority.None, "3"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.project.detector in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR })
     @HelpDescription("The detector to choose when multiple detector types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.")
-    DETECT_PROJECT_BOM_TOOL("detect.project.bom.tool", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PROJECT_BOM_TOOL("detect.project.bom.tool", "", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.detector.search.depth in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR })
     @HelpDescription("Depth from source paths to search for files to determine if a bom tool applies.")
-    DETECT_BOM_TOOL_SEARCH_DEPTH("detect.bom.tool.search.depth", "3.2.0", PropertyType.INTEGER, PropertyAuthority.None, "0"),
+    DETECT_BOM_TOOL_SEARCH_DEPTH("detect.bom.tool.search.depth", "", "3.2.0", PropertyType.INTEGER, PropertyAuthority.None, "0"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.required.detector.types in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_DETECTOR, additional = { GROUP_DETECTOR })
     @HelpDescription("If set, detect will fail if it does not find the bom tool types supplied here.")
-    DETECT_REQUIRED_BOM_TOOL_TYPES("detect.required.bom.tool.types", "4.3.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_REQUIRED_BOM_TOOL_TYPES("detect.required.bom.tool.types", "", "4.3.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.detector.search.continue in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR })
     @HelpDescription("If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.")
     @HelpDetailed("If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc.\r\nIf false, Detect will only find bom tools in subdirectories of a project if they are of a different type such as an Npm project in a subdirectory of a Gradle project.")
-    DETECT_BOM_TOOL_SEARCH_CONTINUE("detect.bom.tool.search.continue", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_BOM_TOOL_SEARCH_CONTINUE("detect.bom.tool.search.continue", "", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "In the future, the gradle inspector will no longer be downloaded from a custom repository, please use Detect Air Gap instead.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_GRADLE)
     @HelpDescription("The respository gradle should use to look for the gradle inspector dependencies")
-    DETECT_GRADLE_INSPECTOR_REPOSITORY_URL("detect.gradle.inspector.repository.url", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_GRADLE_INSPECTOR_REPOSITORY_URL("detect.gradle.inspector.repository.url", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "In the future, detect will not look for a custom named inspector.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_NUGET)
     @HelpDescription("Name of the Nuget Inspector package and the Nuget Inspector exe. (Do not include .exe)")
     @HelpDetailed("The nuget inspector (previously) could be hosted on a custom nuget feed. In this case, detect needed to know the name of the package to pull and the name of the exe file (which has to match). In the future, detect will only retreive it from Artifactory or from Air Gap so a custom name is no longer supported.")
-    DETECT_NUGET_INSPECTOR_NAME("detect.nuget.inspector.name", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "IntegrationNugetInspector"),
+    DETECT_NUGET_INSPECTOR_NAME("detect.nuget.inspector.name", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "IntegrationNugetInspector"),
 
     @Deprecated
     @DetectDeprecation(description = "In the future, detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_NUGET)
     @HelpDescription("The path of the Nuget executable. Nuget is used to download the classic inspectors nuget package.")
-    DETECT_NUGET_PATH("detect.nuget.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_NUGET_PATH("detect.nuget.path", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.dry.run in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.")
-    DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN("detect.hub.signature.scanner.dry.run", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN("detect.hub.signature.scanner.dry.run", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.snippet.mode in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.")
-    DETECT_HUB_SIGNATURE_SCANNER_SNIPPET_MODE("detect.hub.signature.scanner.snippet.mode", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_HUB_SIGNATURE_SCANNER_SNIPPET_MODE("detect.hub.signature.scanner.snippet.mode", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.patterns in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("A comma-separated list of values to be used with the Signature Scanner --exclude flag.")
-    DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS("detect.hub.signature.scanner.exclusion.patterns", "3.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
+    DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS("detect.hub.signature.scanner.exclusion.patterns", "", "3.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.paths in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("These paths and only these paths will be scanned.")
-    DETECT_HUB_SIGNATURE_SCANNER_PATHS("detect.hub.signature.scanner.paths", "3.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
+    DETECT_HUB_SIGNATURE_SCANNER_PATHS("detect.hub.signature.scanner.paths", "", "3.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.name.patterns in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("A comma-separated list of directory name patterns detect will search for and add to the Signature Scanner --exclude flag values.")
     @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns")
-    DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.hub.signature.scanner.exclusion.name.patterns", "4.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "node_modules"),
+    DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.hub.signature.scanner.exclusion.name.patterns", "", "4.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "node_modules"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.memory in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("The memory for the scanner to use.")
-    DETECT_HUB_SIGNATURE_SCANNER_MEMORY("detect.hub.signature.scanner.memory", "3.0.0", PropertyType.INTEGER, PropertyAuthority.None, "4096"),
+    DETECT_HUB_SIGNATURE_SCANNER_MEMORY("detect.hub.signature.scanner.memory", "", "3.0.0", PropertyType.INTEGER, PropertyAuthority.None, "4096"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.tools in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("Set to true to disable the Hub Signature Scanner.")
-    DETECT_HUB_SIGNATURE_SCANNER_DISABLED("detect.hub.signature.scanner.disabled", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_HUB_SIGNATURE_SCANNER_DISABLED("detect.hub.signature.scanner.disabled", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.tools in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Set to true to disable the Black Duck Signature Scanner.")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED("detect.blackduck.signature.scanner.disabled", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED("detect.blackduck.signature.scanner.disabled", "", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.offline.local.path in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_OFFLINE, SEARCH_GROUP_HUB })
     @HelpDescription("To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
-    DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH("detect.hub.signature.scanner.offline.local.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH("detect.hub.signature.scanner.offline.local.path", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.local.path in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_OFFLINE, SEARCH_GROUP_HUB })
     @HelpDescription("To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
-    DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH("detect.hub.signature.scanner.local.path", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH("detect.hub.signature.scanner.local.path", "", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.host.url in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.")
-    DETECT_HUB_SIGNATURE_SCANNER_HOST_URL("detect.hub.signature.scanner.host.url", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_HUB_SIGNATURE_SCANNER_HOST_URL("detect.hub.signature.scanner.host.url", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.parallel.processors in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
-    DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS("detect.hub.signature.scanner.parallel.processors", "3.0.0", PropertyType.INTEGER, PropertyAuthority.None, "1"),
+    DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS("detect.hub.signature.scanner.parallel.processors", "", "3.0.0", PropertyType.INTEGER, PropertyAuthority.None, "1"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.arguments in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("Additional arguments to use when running the Hub signature scanner.")
-    DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS("detect.hub.signature.scanner.arguments", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS("detect.hub.signature.scanner.arguments", "", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.tools and POLARIS in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_POLARIS)
     @HelpDescription("Set to false to disable the Synopsys Polaris Tool.")
-    DETECT_SWIP_ENABLED("detect.polaris.enabled", "4.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false");
+    DETECT_SWIP_ENABLED("detect.polaris.enabled", "", "4.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false");
 
     /**********************************************************************************************
      * DEPRECATED END
