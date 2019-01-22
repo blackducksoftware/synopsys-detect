@@ -354,160 +354,160 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_GRADLE)
     @HelpDescription("Path of the Gradle executable")
-    DETECT_GRADLE_PATH("detect.gradle.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_GRADLE_PATH("detect.gradle.path", "Gradle Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_HEX, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the rebar3 executable")
-    DETECT_HEX_REBAR3_PATH("detect.hex.rebar3.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_HEX_REBAR3_PATH("detect.hex.rebar3.path", "Rebar3 Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
-    DETECT_INCLUDED_DETECTOR_TYPES("detect.included.detector.types", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_INCLUDED_DETECTOR_TYPES("detect.included.detector.types", "Detector Types Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Path of the java executable")
-    DETECT_JAVA_PATH("detect.java.path", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_JAVA_PATH("detect.java.path", "Java Executable", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("Maven build command")
-    DETECT_MAVEN_BUILD_COMMAND("detect.maven.build.command", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_MAVEN_BUILD_COMMAND("detect.maven.build.command", "Maven Build Command", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the module to exclude")
-    DETECT_MAVEN_EXCLUDED_MODULES("detect.maven.excluded.modules", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_MAVEN_EXCLUDED_MODULES("detect.maven.excluded.modules", "Maven Modules Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the module to include")
-    DETECT_MAVEN_INCLUDED_MODULES("detect.maven.included.modules", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_MAVEN_INCLUDED_MODULES("detect.maven.included.modules", "Maven Modules Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the Maven executable")
-    DETECT_MAVEN_PATH("detect.maven.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_MAVEN_PATH("detect.maven.path", "Maven Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The name of the dependency scope to include")
-    DETECT_MAVEN_SCOPE("detect.maven.scope", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_MAVEN_SCOPE("detect.maven.scope", "Dependency Scope Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_REPORT, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("When set to true, a Black Duck notices report in text form will be created in your source directory")
-    DETECT_NOTICES_REPORT("detect.notices.report", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_NOTICES_REPORT("detect.notices.report",  "Generate Notices Report", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_REPORT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_REPORT_SETTING })
     @HelpDescription("The output directory for notices report. Default is the source directory")
-    DETECT_NOTICES_REPORT_PATH("detect.notices.report.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "."),
+    DETECT_NOTICES_REPORT_PATH("detect.notices.report.path",  "Notices Report Path", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "."),
 
     @HelpGroup(primary = GROUP_NPM, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("A space-separated list of additional arguments to use when running Detect against an NPM project")
-    DETECT_NPM_ARGUMENTS("detect.npm.arguments", "4.3.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_NPM_ARGUMENTS("detect.npm.arguments", "NPM Arguments", "4.3.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NPM, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("Set this value to false if you would like to exclude your dev dependencies when ran")
-    DETECT_NPM_INCLUDE_DEV_DEPENDENCIES("detect.npm.include.dev.dependencies", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+    DETECT_NPM_INCLUDE_DEV_DEPENDENCIES("detect.npm.include.dev.dependencies",  "Include NPM Development Dependencies", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_NPM, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the node executable that is used by Npm")
-    DETECT_NPM_NODE_PATH("detect.npm.node.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_NPM_NODE_PATH("detect.npm.node.path", "Node Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NPM, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the Npm executable")
-    DETECT_NPM_PATH("detect.npm.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_NPM_PATH("detect.npm.path", "NPM Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The path to the Nuget.Config file to supply to the nuget exe")
-    DETECT_NUGET_CONFIG_PATH("detect.nuget.config.path", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_NUGET_CONFIG_PATH("detect.nuget.config.path", "Nuget Config File", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the projects in a solution to exclude")
-    DETECT_NUGET_EXCLUDED_MODULES("detect.nuget.excluded.modules", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_NUGET_EXCLUDED_MODULES("detect.nuget.excluded.modules", "Nuget Projects Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If true errors will be logged and then ignored.")
-    DETECT_NUGET_IGNORE_FAILURE("detect.nuget.ignore.failure", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_NUGET_IGNORE_FAILURE("detect.nuget.ignore.failure", "Ignore Nuget Failures", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the projects in a solution to include (overrides exclude)")
-    DETECT_NUGET_INCLUDED_MODULES("detect.nuget.included.modules", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_NUGET_INCLUDED_MODULES("detect.nuget.included.modules", "Nuget Modules Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path to the directory containing the nuget inspector nupkg")
-    DETECT_NUGET_INSPECTOR_AIR_GAP_PATH("detect.nuget.inspector.air.gap.path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
+    DETECT_NUGET_INSPECTOR_AIR_GAP_PATH("detect.nuget.inspector.air.gap.path", "Nuget Inspector AirGap Path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Version of the Nuget Inspector. By default detect will communicate with Artifactory.")
-    DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
+    DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version",  "Nuget Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The source for nuget packages")
     @HelpDetailed("Set this to \"https://www.nuget.org/api/v2/\" if your are still using a nuget client expecting the v2 api")
-    DETECT_NUGET_PACKAGES_REPO_URL("detect.nuget.packages.repo.url", "3.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "https://api.nuget.org/v3/index.json"),
+    DETECT_NUGET_PACKAGES_REPO_URL("detect.nuget.packages.repo.url", "Nuget Packages Repository URL", "3.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "https://api.nuget.org/v3/index.json"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Output path")
-    DETECT_OUTPUT_PATH("detect.output.path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
+    DETECT_OUTPUT_PATH("detect.output.path", "Detect Output Path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_PACKAGIST, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("Set this value to false if you would like to exclude your dev requires dependencies when ran")
-    DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES("detect.packagist.include.dev.dependencies", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+    DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES("detect.packagist.include.dev.dependencies", "Include Packagist Development Dependencies", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_PEAR, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("Set to true if you would like to include only required packages")
-    DETECT_PEAR_ONLY_REQUIRED_DEPS("detect.pear.only.required.deps", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_PEAR_ONLY_REQUIRED_DEPS("detect.pear.only.required.deps", "Include Only Required Pear Dependencies", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PEAR, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the pear executable")
-    DETECT_PEAR_PATH("detect.pear.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PEAR_PATH("detect.pear.path", "Pear Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_CPAN, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the perl executable")
-    DETECT_PERL_PATH("detect.perl.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PERL_PATH("detect.perl.path", "Perl Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PIP, additional = { GROUP_SOURCE_SCAN })
     @DetectDeprecation(description = "This property is being removed. Please use --detect.project.name in the future.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
-    @HelpDescription("The name of your pip project, to be used if your project's name cannot be correctly inferred from its setup.py file")
-    DETECT_PIP_PROJECT_NAME("detect.pip.project.name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    @HelpDescription("The name of your PIP project, to be used if your project's name cannot be correctly inferred from its setup.py file")
+    DETECT_PIP_PROJECT_NAME("detect.pip.project.name", "PIP Project Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PIP, additional = { GROUP_SOURCE_SCAN })
     @DetectDeprecation(description = "This property is being removed. Please use --detect.project.version.name in the future.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
-    @HelpDescription("The version of your pip project, to be used if your project's version name cannot be correctly inferred from its setup.py file")
-    DETECT_PIP_PROJECT_VERSION_NAME("detect.pip.project.version.name", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
+    @HelpDescription("The version of your PIP project, to be used if your project's version name cannot be correctly inferred from its setup.py file")
+    DETECT_PIP_PROJECT_VERSION_NAME("detect.pip.project.version.name", "PIP Project Version Name", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PIP, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The path of the requirements.txt file")
-    DETECT_PIP_REQUIREMENTS_PATH("detect.pip.requirements.path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PIP_REQUIREMENTS_PATH("detect.pip.requirements.path", "PIP Requirements Path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PIP, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the Pipenv executable")
-    DETECT_PIPENV_PATH("detect.pipenv.path", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PIPENV_PATH("detect.pipenv.path", "Pipenv Executable", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_POLICY })
     @HelpDescription("A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.")
     @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
-    DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES("detect.policy.check.fail.on.severities", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES("detect.policy.check.fail.on.severities", "Fail on Policy Violation Severities", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("Sets the 'Application ID' project setting")
-    DETECT_PROJECT_APPLICATION_ID("detect.project.application.id", "5.2.0", PropertyType.STRING, PropertyAuthority.None, null),
+    DETECT_PROJECT_APPLICATION_ID("detect.project.application.id",  "Application ID", "5.2.0", PropertyType.STRING, PropertyAuthority.None, null),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set.")
     @AcceptableValues(value = { "COMPONENT_DATA", "VULN_DATA" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
-    DETECT_PROJECT_CLONE_CATEGORIES("detect.project.clone.categories", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "COMPONENT_DATA,VULN_DATA"),
+    DETECT_PROJECT_CLONE_CATEGORIES("detect.project.clone.categories",  "Clone Project Categories", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "COMPONENT_DATA,VULN_DATA"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_GLOBAL })
-    @HelpDescription("A prefix to the name of the codelocations created by Detect. Useful for running against the same projects on multiple machines.")
-    DETECT_PROJECT_CODELOCATION_PREFIX("detect.project.codelocation.prefix", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
+    @HelpDescription("A prefix to the name of the scans created by Detect. Useful for running against the same projects on multiple machines.")
+    DETECT_PROJECT_CODELOCATION_PREFIX("detect.project.codelocation.prefix", "Scan Name Prefix", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_GLOBAL })
-    @HelpDescription("A suffix to the name of the codelocations created by Detect.")
-    DETECT_PROJECT_CODELOCATION_SUFFIX("detect.project.codelocation.suffix", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
+    @HelpDescription("A suffix to the name of the scans created by Detect.")
+    DETECT_PROJECT_CODELOCATION_SUFFIX("detect.project.codelocation.suffix", "Scan Name Suffix", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("If set to true, unmaps all other code locations mapped to the project version produced by the current run of Detect.")
-    DETECT_PROJECT_CODELOCATION_UNMAP("detect.project.codelocation.unmap", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    @HelpDescription("If set to true, unmaps all other scans mapped to the project version produced by the current run of Detect.")
+    DETECT_PROJECT_CODELOCATION_UNMAP("detect.project.codelocation.unmap",  "Unmap All Other Scans for Project", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("If project description is specified, your project version will be created with this description.")
-    DETECT_PROJECT_DESCRIPTION("detect.project.description", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PROJECT_DESCRIPTION("detect.project.description", "Project Description", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The detector to choose when multiple detector types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.")
