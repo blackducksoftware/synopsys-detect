@@ -31,11 +31,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +69,7 @@ public class DetectorFinder {
         }
 
         for (final File directory : directoriesToSearch) {
-            if (depth > 0 && options.getExcludedDirectories().contains(directory.getName())) { // NEVER skip at depth 0.
+            if (depth > 0 && options.getDetectorSearchFilter().shouldExclude(directory)) { // NEVER skip at depth 0.
                 logger.info("Skipping excluded directory: " + directory.getPath());
                 continue;
             }
@@ -94,7 +92,7 @@ public class DetectorFinder {
             final Set<Detector> everApplied = new HashSet<>();
             everApplied.addAll(applied);
             everApplied.addAll(appliedBefore);
-            final List<File> subdirectories = getSubDirectories(directory, options.getExcludedDirectories());
+            final List<File> subdirectories = getSubDirectories(directory, options.getDetectorSearchFilter());
             final List<DetectorEvaluation> recursiveResults = findApplicableBomTools(subdirectories, everApplied, depth + 1, options);
             results.addAll(recursiveResults);
 
@@ -111,25 +109,13 @@ public class DetectorFinder {
         return evaluations;
     }
 
-    private List<File> getSubDirectories(final File directory, final List<String> excludedDirectories) throws DetectUserFriendlyException {
+    private List<File> getSubDirectories(final File directory, DetectorSearchFilter filter) throws DetectUserFriendlyException {
         Stream<Path> stream = null;
         try {
-            // only include directories that do not match the excluded directories
-            final Predicate<File> excludeDirectoriesPredicate = file -> {
-                boolean matchesExcludedDirectory = false;
-                for (final String excludedDirectory : excludedDirectories) {
-                    if (FilenameUtils.wildcardMatchOnSystem(file.getName(), excludedDirectory)) {
-                        matchesExcludedDirectory = true;
-                        break;
-                    }
-                }
-                return !matchesExcludedDirectory;
-            };
-
             stream = Files.list(directory.toPath());
             return stream.map(path -> path.toFile())
                        .filter(file -> file.isDirectory())
-                       .filter(excludeDirectoriesPredicate)
+                       .filter(filter::shouldExclude)
                        .collect(Collectors.toList());
 
         } catch (final IOException e) {
