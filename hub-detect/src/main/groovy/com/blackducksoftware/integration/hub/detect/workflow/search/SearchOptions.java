@@ -31,13 +31,15 @@ import com.blackducksoftware.integration.hub.detect.util.filter.DetectFilter;
 public class SearchOptions {
     public File searchPath;
     public final List<String> excludedDirectories;
+    public final List<String> excludedDirectoryPatterns;
     public final boolean forceNestedSearch;
     public final int maxDepth;
     public final DetectFilter detectorFilter;
 
-    public SearchOptions(File searchPath, List<String> excludedDirectories, boolean forceNestedSearch, int maxDepth, DetectFilter detectorFilter) {
+    public SearchOptions(File searchPath, List<String> excludedDirectories, List<String> excludedDirectoryPatterns, boolean forceNestedSearch, int maxDepth, DetectFilter detectorFilter) {
         this.searchPath = searchPath;
         this.excludedDirectories = excludedDirectories;
+        this.excludedDirectoryPatterns = excludedDirectoryPatterns;
         this.forceNestedSearch = forceNestedSearch;
         this.maxDepth = maxDepth;
         this.detectorFilter = detectorFilter;

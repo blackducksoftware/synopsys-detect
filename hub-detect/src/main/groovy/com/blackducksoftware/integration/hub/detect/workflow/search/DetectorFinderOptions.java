@@ -32,7 +32,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.search.rules.Detect
 
 public class DetectorFinderOptions {
 
-    private final List<String> excludedDirectories;
+    private final DetectorSearchFilter detectorSearchFilter;
     private final Boolean forceNestedSearch;
     private final int maximumDepth;
     private final DetectFilter detectorFilter;
@@ -40,9 +40,9 @@ public class DetectorFinderOptions {
     private final DetectorSearchEvaluator detectorSearchEvaluator;
     private final EventSystem eventSystem;
 
-    public DetectorFinderOptions(final List<String> excludedDirectories, final Boolean forceNestedSearch, final int maximumDepth, final DetectFilter detectorFilter,
+    public DetectorFinderOptions(DetectorSearchFilter detectorSearchFilter, final Boolean forceNestedSearch, final int maximumDepth, final DetectFilter detectorFilter,
         final DetectorSearchProvider detectorSearchProvider, final DetectorSearchEvaluator detectorSearchEvaluator, EventSystem eventSystem) {
-        this.excludedDirectories = excludedDirectories;
+        this.detectorSearchFilter = detectorSearchFilter;
         this.forceNestedSearch = forceNestedSearch;
         this.maximumDepth = maximumDepth;
         this.detectorFilter = detectorFilter;
@@ -51,8 +51,8 @@ public class DetectorFinderOptions {
         this.eventSystem = eventSystem;
     }
 
-    public List<String> getExcludedDirectories() {
-        return excludedDirectories;
+    public DetectorSearchFilter getDetectorSearchFilter() {
+        return detectorSearchFilter;
     }
 
     public Boolean getForceNestedSearch() {

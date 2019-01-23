@@ -94,12 +94,13 @@ public class DetectConfigurationFactory {
 
     public SearchOptions createSearchOptions(final File directory) {
         final List<String> excludedDirectories = Arrays.asList(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION, PropertyAuthority.None));
+        final List<String> excludedDirectoryPatterns = Arrays.asList(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS, PropertyAuthority.None));
         final boolean forceNestedSearch = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DETECTOR_SEARCH_CONTINUE, PropertyAuthority.None);
         final int maxDepth = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_DETECTOR_SEARCH_DEPTH, PropertyAuthority.None);
         final String excluded = detectConfiguration.getProperty(DetectProperty.DETECT_EXCLUDED_DETECTOR_TYPES, PropertyAuthority.None).toUpperCase();
         final String included = detectConfiguration.getProperty(DetectProperty.DETECT_INCLUDED_DETECTOR_TYPES, PropertyAuthority.None).toUpperCase();
         final DetectOverrideableFilter bomToolFilter = new DetectOverrideableFilter(excluded, included);
-        return new SearchOptions(directory, excludedDirectories, forceNestedSearch, maxDepth, bomToolFilter);
+        return new SearchOptions(directory, excludedDirectories, excludedDirectoryPatterns, forceNestedSearch, maxDepth, bomToolFilter);
     }
 
     public BdioOptions createBdioOptions() {

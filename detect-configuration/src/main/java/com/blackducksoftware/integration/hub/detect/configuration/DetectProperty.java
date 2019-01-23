@@ -264,8 +264,12 @@ public enum DetectProperty {
     DETECT_DETECTOR_SEARCH_CONTINUE("detect.detector.search.continue", "Detector Search Continue", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma-separated list of directory names to exclude from the bom tool search.")
+    @HelpDescription("A comma-separated list of directory names to exclude from detector search.")
     DETECT_DETECTOR_SEARCH_EXCLUSION("detect.detector.search.exclusion", "Detector Directory Exclusions", "3.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
+    @HelpDescription("A comma-separated list of directory name patterns to exclude from detector search.")
+    DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS("detect.detector.search.exclusion.patterns", " Detector Directory Patterns Exclusions", "3.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.")
