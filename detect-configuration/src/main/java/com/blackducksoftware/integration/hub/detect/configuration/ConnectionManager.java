@@ -31,7 +31,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
-import com.synopsys.integration.rest.connection.RestConnection;
+import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.rest.credentials.Credentials;
 import com.synopsys.integration.rest.credentials.CredentialsBuilder;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
@@ -71,12 +71,12 @@ public class ConnectionManager {
         }
     }
 
-    public RestConnection createUnauthenticatedRestConnection(final String url) throws DetectUserFriendlyException {
+    public IntHttpClient createUnauthenticatedRestConnection(final String url) throws DetectUserFriendlyException {
         IntLogger intLogger = new Slf4jIntLogger(logger);
         int timeout = detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT, PropertyAuthority.None);
         boolean alwaysTrust = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_TRUST_CERT, PropertyAuthority.None);
         ProxyInfo proxyInfo = getHubProxyInfo();
-        return new RestConnection(intLogger, timeout, alwaysTrust, proxyInfo);
+        return new IntHttpClient(intLogger, timeout, alwaysTrust, proxyInfo);
     }
 
 }
