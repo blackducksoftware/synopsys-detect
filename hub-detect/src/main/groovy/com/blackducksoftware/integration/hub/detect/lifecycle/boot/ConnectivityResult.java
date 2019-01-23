@@ -52,7 +52,7 @@ public class ConnectivityResult {
     }
 
     public static ConnectivityResult failure(String reason) {
-        return new ConnectivityResult(true, reason, null, null, null);
+        return new ConnectivityResult(false, reason, null, null, null);
     }
 
     public boolean isSuccessfullyConnected() {
