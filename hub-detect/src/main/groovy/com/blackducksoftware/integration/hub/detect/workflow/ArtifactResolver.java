@@ -40,7 +40,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.ConnectionMana
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.google.gson.Gson;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.rest.connection.RestConnection;
+import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.request.Response;
 
@@ -111,7 +111,7 @@ public class ArtifactResolver {
         String propertyUrl = apiUrl + "?properties=" + propertyKey;
         logger.debug("Downloading property: " + propertyUrl);
         final Request request = new Request.Builder().uri(propertyUrl).build();
-        final RestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(propertyUrl);
+        final IntHttpClient restConnection = connectionManager.createUnauthenticatedRestConnection(propertyUrl);
         try (final Response response = restConnection.execute(request)) {
             try (final InputStreamReader reader = new InputStreamReader(response.getContent())) {
                 logger.debug("Downloaded property, attempting to parse response.");
@@ -153,7 +153,7 @@ public class ArtifactResolver {
     public File downloadArtifact(File target, String source) throws DetectUserFriendlyException, IntegrationException, IOException {
         logger.debug(String.format("Downloading for artifact to '%s' from '%s'.", target.getAbsolutePath(), source));
         final Request request = new Request.Builder().uri(source).build();
-        final RestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(source);
+        final IntHttpClient restConnection = connectionManager.createUnauthenticatedRestConnection(source);
         try (Response response = restConnection.execute(request)) {
             logger.debug("Deleting existing file.");
             target.delete();

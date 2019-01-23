@@ -114,7 +114,7 @@ public abstract class InteractiveMode {
     public Properties optionsToProperties() {
         final Properties properties = new Properties();
         for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
-            properties.put(interactiveOption.getDetectProperty().getPropertyName(), interactiveOption.getInteractiveValue());
+            properties.put(interactiveOption.getDetectProperty().getPropertyKey(), interactiveOption.getInteractiveValue());
         }
 
         return properties;
@@ -168,14 +168,14 @@ public abstract class InteractiveMode {
     public void printOptions() {
         for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
             String fieldValue = interactiveOption.getInteractiveValue();
-            final String propertyName = interactiveOption.getDetectProperty().getPropertyName().toLowerCase();
-            if (propertyName.contains("password") || propertyName.contains("api.token")) {
+            final String propertyKey = interactiveOption.getDetectProperty().getPropertyKey().toLowerCase();
+            if (propertyKey.contains("password") || propertyKey.contains("api.token")) {
                 fieldValue = "";
                 for (int i = 0; i < interactiveOption.getInteractiveValue().length(); i++) {
                     fieldValue += "*";
                 }
             }
-            printStream.println("--" + interactiveOption.getDetectProperty().getPropertyName() + "=" + fieldValue);
+            printStream.println("--" + interactiveOption.getDetectProperty().getPropertyKey() + "=" + fieldValue);
         }
     }
 

@@ -35,7 +35,7 @@ public class DetectConfigurationReporter {
 
     private List<DetectOption> sortOptions(final List<DetectOption> detectOptions) {
         return detectOptions.stream()
-                   .sorted((o1, o2) -> o1.getDetectProperty().getPropertyName().compareTo(o2.getDetectProperty().getPropertyName()))
+                   .sorted((o1, o2) -> o1.getDetectProperty().getPropertyKey().compareTo(o2.getDetectProperty().getPropertyKey()))
                    .collect(Collectors.toList());
     }
 
@@ -48,7 +48,7 @@ public class DetectConfigurationReporter {
         final List<DetectOption> sortedOptions = sortOptions(detectOptions);
 
         for (final DetectOption option : sortedOptions) {
-            final String key = option.getDetectProperty().getPropertyName();
+            final String key = option.getDetectProperty().getPropertyKey();
             String fieldValue = option.getFinalValue();
             final DetectOption.FinalValueType fieldType = option.getFinalValueType();
             if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(fieldValue) && "metaClass" != key) {
@@ -58,7 +58,7 @@ public class DetectConfigurationReporter {
                 }
 
                 String text = "";
-                final String displayName = option.getDetectProperty().getPropertyName();
+                final String displayName = option.getDetectProperty().getPropertyKey();
                 if (fieldType == DetectOption.FinalValueType.SUPPLIED || fieldType == DetectOption.FinalValueType.DEFAULT || containsPassword) {
                     if (fieldValue.trim().length() > 0) {
                         text = displayName + " = " + fieldValue;
@@ -107,7 +107,7 @@ public class DetectConfigurationReporter {
             }
             for (final DetectOption option : allWarnings) {
                 for (final String warning : option.getWarnings()) {
-                    writer.writeLine(option.getDetectProperty().getPropertyName() + ": " + warning);
+                    writer.writeLine(option.getDetectProperty().getPropertyKey() + ": " + warning);
                 }
             }
             writer.writeLine(StringUtils.repeat("*", 60));

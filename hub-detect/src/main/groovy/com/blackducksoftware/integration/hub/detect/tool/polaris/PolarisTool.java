@@ -42,8 +42,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManag
 import com.blackducksoftware.integration.hub.detect.workflow.status.Status;
 import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.rest.connection.RestConnection;
-import com.synopsys.integration.swip.common.SwipDownloadUtility;
+import com.synopsys.integration.polaris.common.PolarisDownloadUtility;
+import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.util.CleanupZipExpander;
 
 public class PolarisTool {
@@ -70,12 +70,12 @@ public class PolarisTool {
         }
 
         logger.info("Polaris determined it should attempt to run.");
-        RestConnection restConnection = connectionManager.createUnauthenticatedRestConnection(SwipDownloadUtility.DEFAULT_SWIP_SERVER_URL);
+        IntHttpClient restConnection = connectionManager.createUnauthenticatedRestConnection(PolarisDownloadUtility.DEFAULT_POLARIS_SERVER_URL);
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(logger);
         File toolsDirectory = directoryManager.getPermanentDirectory();
 
-        SwipDownloadUtility swipDownloadUtility = new SwipDownloadUtility(logger, restConnection, cleanupZipExpander, SwipDownloadUtility.DEFAULT_SWIP_SERVER_URL, toolsDirectory);
-        Optional<String> swipCliPath = swipDownloadUtility.retrieveSwipCliExecutablePath();
+        PolarisDownloadUtility polarisDownloadUtility = new PolarisDownloadUtility(logger, restConnection, cleanupZipExpander, PolarisDownloadUtility.DEFAULT_POLARIS_SERVER_URL, toolsDirectory);
+        Optional<String> swipCliPath = polarisDownloadUtility.retrievePolarisCliExecutablePath();
 
         if (swipCliPath.isPresent()) {
             Map<String, String> environmentVariables = new HashMap<>();
