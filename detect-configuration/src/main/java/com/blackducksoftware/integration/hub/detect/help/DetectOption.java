@@ -161,20 +161,20 @@ public abstract class DetectOption {
         if (getValidValues().size() > 0) {
             description += " (" + getValidValues().stream().collect(Collectors.joining("|")) + ")";
         }
-        String propertyName = "";
+        String propertyKey = "";
         String defaultValue = "";
-        if (StringUtils.isNotBlank(detectProperty.getPropertyName())) {
-            propertyName = detectProperty.getPropertyName();
+        if (StringUtils.isNotBlank(detectProperty.getPropertyKey())) {
+            propertyKey = detectProperty.getPropertyKey();
         }
         if (StringUtils.isNotBlank(detectProperty.getDefaultValue())) {
             defaultValue = detectProperty.getDefaultValue();
         }
-        writer.printColumns("--" + propertyName, defaultValue, description);
+        writer.printColumns("--" + propertyKey, defaultValue, description);
     }
 
     public void printDetailedOption(final HelpTextWriter writer) {
         writer.println("");
-        writer.println("Detailed information for " + detectProperty.getPropertyName());
+        writer.println("Detailed information for " + detectProperty.getPropertyKey());
         writer.println("");
         if (getDetectOptionHelp().isDeprecated) {
             writer.println("Deprecated: " + getDeprecationText());
@@ -206,16 +206,16 @@ public abstract class DetectOption {
         if (getDetectOptionHelp().isDeprecated) {
             deprecationNotice = getDeprecationText() + getDetectOptionHelp().deprecation;
         }
-        String propertyName = "";
+        String propertyKey = "";
         String defaultValue = "";
-        if (StringUtils.isNotBlank(detectProperty.getPropertyName())) {
-            propertyName = detectProperty.getPropertyName();
+        if (StringUtils.isNotBlank(detectProperty.getPropertyKey())) {
+            propertyKey = detectProperty.getPropertyKey();
         }
         if (StringUtils.isNotBlank(detectProperty.getDefaultValue())) {
             defaultValue = detectProperty.getDefaultValue();
         }
 
-        final HelpHtmlOption htmlOption = new HelpHtmlOption(propertyName, defaultValue, description, acceptableValues, getDetectOptionHelp().detailedHelp, deprecationNotice);
+        final HelpHtmlOption htmlOption = new HelpHtmlOption(propertyKey, defaultValue, description, acceptableValues, getDetectOptionHelp().detailedHelp, deprecationNotice);
         return htmlOption;
     }
 
