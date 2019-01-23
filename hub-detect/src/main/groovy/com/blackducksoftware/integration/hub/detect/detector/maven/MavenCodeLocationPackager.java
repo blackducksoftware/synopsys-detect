@@ -121,7 +121,10 @@ public class MavenCodeLocationPackager {
             if (null == dependency) {
                 continue;
             }
-
+            // TODO TEMP:
+            if (dependency.externalId.name.contains("cxf-rt-bindings-xml")) {
+                logger.info(String.format("*** dependency: %s", dependency.externalId));
+            }
             if (currentMavenProject != null) {
                 if (level == 1) {
                     // a direct dependency, clear the stack and add this as a potential parent for the next line

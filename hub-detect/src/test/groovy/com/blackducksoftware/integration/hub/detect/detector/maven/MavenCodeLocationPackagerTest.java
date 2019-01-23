@@ -67,6 +67,12 @@ public class MavenCodeLocationPackagerTest {
     }
 
     @Test
+    public void extractCodeLocationsTestCompileScope() {
+        final String mavenOutputText = testUtil.getResourceAsUTF8String("/maven/compileScopeUnderTestScope.txt");
+        createNewCodeLocationTest(mavenOutputText, "/maven/compileScopeUnderTestScope.json", 3, "", "", 1);
+    }
+
+    @Test
     public void testParseProject() {
         final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
 
@@ -309,11 +315,16 @@ public class MavenCodeLocationPackagerTest {
         createNewCodeLocationTest(mavenOutputText, expectedResourcePath, 1, "", "");
     }
 
+
     private void createNewCodeLocationTest(final String mavenOutputText, final String expectedResourcePath, final int numberOfCodeLocations, final String excludedModules, final String includedModules) {
+        createNewCodeLocationTest(mavenOutputText, expectedResourcePath, numberOfCodeLocations, excludedModules, includedModules, 0);
+    }
+
+    private void createNewCodeLocationTest(final String mavenOutputText, final String expectedResourcePath, final int numberOfCodeLocations, final String excludedModules, final String includedModules, int codeLocationIndex) {
         final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
         final List<MavenParseResult> result = mavenCodeLocationPackager.extractCodeLocations("/test/path", mavenOutputText, excludedModules, includedModules);
         assertEquals(numberOfCodeLocations, result.size());
-        final DetectCodeLocation codeLocation = result.get(0).codeLocation;
+        final DetectCodeLocation codeLocation = result.get(codeLocationIndex).codeLocation;
 
         testUtil.testJsonResource(expectedResourcePath, codeLocation);
     }
