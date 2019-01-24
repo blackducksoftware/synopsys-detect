@@ -52,7 +52,7 @@ public class MavenCodeLocationPackager {
     private final ExternalIdFactory externalIdFactory;
     private List<MavenParseResult> codeLocations = new ArrayList<>();
     private MavenParseResult currentMavenProject = null;
-    private Stack<ScopedDependency> dependencyParentStack = new Stack<>();
+    private Stack<Dependency> dependencyParentStack = new Stack<>();
     private final List<Dependency> orphans = new ArrayList<>();
     private boolean parsingProjectSection;
     private int level;
@@ -178,7 +178,7 @@ public class MavenCodeLocationPackager {
         }
     }
 
-    private void addDependencyUnderParentIfInScope(final MutableDependencyGraph currentGraph, final List<Dependency> orphans, final String targetScope, final ScopedDependency parent, final ScopedDependency dependency) {
+    private void addDependencyUnderParentIfInScope(final MutableDependencyGraph currentGraph, final List<Dependency> orphans, final String targetScope, final Dependency parent, final ScopedDependency dependency) {
         if (dependency.isInScope(targetScope)) {
             if (inNonScopedTree) {
                 logger.trace(
