@@ -333,20 +333,6 @@
           "version": "2.0.0.RELEASE"
         }
       },
-      "{\"forge\":\"maven\",\"group\":\"org.yaml\",\"name\":\"snakeyaml\",\"version\":\"1.19\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "snakeyaml",
-        "version": "1.19",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.yaml",
-          "name": "snakeyaml",
-          "version": "1.19"
-        }
-      },
       "{\"forge\":\"maven\",\"group\":\"org.apache.cxf\",\"name\":\"cxf-core\",\"version\":\"3.2.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
         "name": "cxf-core",
         "version": "3.2.2",
