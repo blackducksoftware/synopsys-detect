@@ -113,10 +113,11 @@ public class DetectProjectService {
             if (projectVersionWrapper.isPresent()) {
                 return projectVersionWrapper.get().getProjectVersionView().getHref();
             } else {
+                logger.warn(String.format("Project/version %s/%s not found for cloning", cloneProjectName, cloneProjectVersionName));
                 return Optional.empty();
             }
         } catch (final IntegrationException e) {
-            throw new DetectUserFriendlyException("Unable to find clone release url for supplied clone version name.", e, ExitCodeType.FAILURE_CONFIGURATION);
+            throw new DetectUserFriendlyException(String.format("Error finding project/version (%s/%s) to clone, or getting its release url.", cloneProjectName, cloneProjectVersionName), e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
 

@@ -115,7 +115,13 @@ public class DirectoryManager {
         EnumSet.allOf(OutputDirectory.class).stream()
             .forEach(it -> outputDirectories.put(it, new File(outputDirectory, it.getDirectoryName())));
 
-        runDirectory = new File(getOutputDirectory(OutputDirectory.Runs), detectRun.getRunId());
+        File possibleRunDirectory = new File(getOutputDirectory(OutputDirectory.Runs), detectRun.getRunId());
+        if (possibleRunDirectory.exists()){
+            logger.warn("A run directory already exists with this detect run id. Will attempt to use a UUID for the run folder in addition.");
+            possibleRunDirectory = new File(getOutputDirectory(OutputDirectory.Runs), detectRun.getRunId() + "-" + java.util.UUID.randomUUID());
+        }
+        runDirectory = possibleRunDirectory;
+
         logger.info("Run directory: " + runDirectory.getAbsolutePath());
 
         EnumSet.allOf(RunDirectory.class).stream()

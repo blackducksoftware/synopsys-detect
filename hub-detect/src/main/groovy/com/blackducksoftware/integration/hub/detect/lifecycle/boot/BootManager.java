@@ -159,13 +159,13 @@ public class BootManager {
                 logger.info("Detect is capable of communicating with server.");
                 connectivityManager = ConnectivityManager.online(connectivityResult.getBlackDuckServicesFactory(), connectivityResult.getPhoneHomeManager(), connectivityResult.getBlackDuckServerConfig());
             } else {
-                logger.error(connectivityResult.getFailureReason());
                 logger.info("Detect is NOT capable of communicating with server.");
                 if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, PropertyAuthority.None)) {
+                    logger.info(connectivityResult.getFailureReason());
                     logger.info(String.format("%s is set to 'true' so Detect will simply exit.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
                     return BootResult.exit(detectConfiguration);
                 } else {
-                    throw new DetectUserFriendlyException("Could not reach the Black Duck server or the credentials were invalid.", ExitCodeType.FAILURE_HUB_CONNECTIVITY);
+                    throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + connectivityResult.getFailureReason(), ExitCodeType.FAILURE_HUB_CONNECTIVITY);
                 }
             }
         }

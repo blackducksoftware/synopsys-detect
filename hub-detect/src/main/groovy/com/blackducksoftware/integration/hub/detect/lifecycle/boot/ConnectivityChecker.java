@@ -43,6 +43,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.response.CurrentVersionView;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.configuration.ConnectionResult;
 import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
@@ -60,10 +61,12 @@ public class ConnectivityChecker {
         BlackDuckServerConfig blackDuckServerConfig = detectOptionManager.createBlackduckServerConfig();
 
         logger.info("Attempting connection to the Black Duck server");
-        
-        if (!blackDuckServerConfig.canConnect(blackduckLogger)) {
+
+        ConnectionResult connectionResult = blackDuckServerConfig.attemptConnection(blackduckLogger);
+
+        if (connectionResult.isFailure()) {
             logger.error("Failed to connect to the Black Duck server");
-            return ConnectivityResult.failure("Could not reach the Black Duck server or the credentials were invalid.");
+            return ConnectivityResult.failure(connectionResult.getErrorMessage().orElse("Could not reach the Black Duck server or the credentials were invalid."));
         }
 
         logger.info("Connection to the Black Duck server was successful");//TODO: Get a detailed reason of why canConnect failed.
