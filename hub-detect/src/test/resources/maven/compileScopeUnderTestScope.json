@@ -1072,16 +1072,6 @@
             "separator": ":",
             "kbSeparator": ":"
           },
-          "group": "org.yaml",
-          "name": "snakeyaml",
-          "version": "1.19"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
           "group": "org.springframework.boot",
           "name": "spring-boot-starter-logging",
           "version": "2.0.0.RELEASE"

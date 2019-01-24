@@ -149,45 +149,18 @@ public class MavenCodeLocationPackager {
                     if (level == previousLevel) {
                         // a sibling of the previous dependency
                         dependencyParentStack.pop();
-                        if (dependency.isInScope(targetScope)) {
-                            if (inNonScopedTree) {
-                                logger.info(String.format("&&& component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to additionalComponents", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
-                                additionalComponents.add(dependency);
-                            } else {
-                                logger.info(String.format("+++ component %s:%s:%s:%s is in scope; adding it to hierarchy", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
-                                currentGraph.addParentWithChild(dependencyParentStack.peek(), dependency);
-                            }
-                        }
+                        addDependencyUnderParentIfInScope(currentGraph, additionalComponents, targetScope, dependencyParentStack.peek(), dependency);
                         dependencyParentStack.push(dependency);
                     } else if (level > previousLevel) {
                         // a child of the previous dependency
-                        // TODO this code is duplicated exactly above, here, and below
-                        if (dependency.isInScope(targetScope)) {
-                            if (inNonScopedTree) {
-                                logger.info(String.format("&&& component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to additionalComponents", dependency.externalId.group, dependency.externalId.name,
-                                    dependency.externalId.version, dependency.scope));
-                                additionalComponents.add(dependency);
-                            } else {
-                                logger.info(String.format("+++ component %s:%s:%s:%s is in scope; adding it to hierarchy", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
-                                currentGraph.addParentWithChild(dependencyParentStack.peek(), dependency);
-                            }
-                        }
+                        addDependencyUnderParentIfInScope(currentGraph, additionalComponents, targetScope, dependencyParentStack.peek(), dependency);
                         dependencyParentStack.push(dependency);
                     } else {
                         // a child of a dependency further back than 1 line
                         for (int i = previousLevel; i >= level; i--) {
                             dependencyParentStack.pop();
                         }
-                        if (dependency.isInScope(targetScope)) {
-                            if (inNonScopedTree) {
-                                logger.info(String.format("&&& component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to additionalComponents", dependency.externalId.group, dependency.externalId.name,
-                                    dependency.externalId.version, dependency.scope));
-                                additionalComponents.add(dependency);
-                            } else {
-                                logger.info(String.format("+++ component %s:%s:%s:%s is in scope; adding it to hierarchy", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
-                                currentGraph.addParentWithChild(dependencyParentStack.peek(), dependency);
-                            }
-                        }
+                        addDependencyUnderParentIfInScope(currentGraph, additionalComponents, targetScope, dependencyParentStack.peek(), dependency);
                         dependencyParentStack.push(dependency);
                     }
                 }
@@ -195,6 +168,19 @@ public class MavenCodeLocationPackager {
         }
 
         return codeLocations;
+    }
+
+    private void addDependencyUnderParentIfInScope(final MutableDependencyGraph currentGraph, final List<ScopedDependency> additionalComponents, final String targetScope, final ScopedDependency parent, final ScopedDependency dependency) {
+        if (dependency.isInScope(targetScope)) {
+            if (inNonScopedTree) {
+                logger.info(
+                    String.format("&&& component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to additionalComponents", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
+                additionalComponents.add(dependency);
+            } else {
+                logger.info(String.format("+++ component %s:%s:%s:%s is in scope; adding it to hierarchy", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
+                currentGraph.addParentWithChild(parent, dependency);
+            }
+        }
     }
 
     private MavenParseResult createMavenParseResult(final String sourcePath, final String line, final DependencyGraph graph) {
