@@ -26,6 +26,8 @@ package com.blackducksoftware.integration.hub.detect.interactive.mode;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.configuration.ConnectionResult;
+import com.synopsys.integration.log.SilentIntLogger;
 
 public class DefaultInteractiveMode extends InteractiveMode {
     private final DetectOptionManager detectOptionManager;
@@ -83,19 +85,23 @@ public class DefaultInteractiveMode extends InteractiveMode {
 
                 final Boolean testHub = askYesOrNo("Would you like to test the Black Duck connection now?");
                 if (testHub) {
+                    ConnectionResult connectionAttempt = null;
                     try {
                         detectOptionManager.applyInteractiveOptions(getInteractiveOptions());
                         BlackDuckServerConfig blackDuckServerConfig = detectOptionManager.createBlackduckServerConfig();
-                        connected = blackDuckServerConfig.canConnect();
+                        connectionAttempt = blackDuckServerConfig.attemptConnection(new SilentIntLogger());
                     } catch (final Exception e) {
                         println("Failed to test connection.");
                         println(e.toString());
                         println("");
                     }
 
-                    if (!connected) {
+                    if (connectionAttempt != null && connectionAttempt.isSuccess()) {
+                        connected = true;
+                    } else {
+                        connected = false;
                         println("Failed to connect.");
-                        println("");
+                        println(connectionAttempt.getErrorMessage().orElse("Unknown reason."));
                         skipConnectionTest = !askYesOrNo("Would you like to retry entering Black Duck information?");
                     }
                 } else {

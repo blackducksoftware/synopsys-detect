@@ -1,15 +1,7 @@
-# Pull Request template
+# Description
 
-**Link to github issue (if applicable):**
+Please include a short description of the changes and problems fixed.
 
-*
+# Github Issues
 
-**If nothing above, what is your reason for this pull request:**
-
-*
-
-**Changes proposed in this pull request:**
-
-*
-*
-*
+(Optional) Please link to any applicable github issues.

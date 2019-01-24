@@ -73,7 +73,7 @@ public class DetectConfiguration {
         //TODO: Find a better way to do this - or - hopefully remove this if the scan cli gets better.
         String bdScanPaths = detectPropertySource.getProperty("BD_HUB_SCAN_PATH");
         if (StringUtils.isNotBlank(bdScanPaths)) {
-            logger.warn("The environment variable BD_HUB_SCAN_PATH was set but you should use --" + DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS.getPropertyName() + " instead.");
+            logger.warn("The environment variable BD_HUB_SCAN_PATH was set but you should use --" + DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS.getPropertyKey() + " instead.");
             List<String> values = new ArrayList<>();
             values.addAll(Arrays.asList(getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, PropertyAuthority.None)));
             values.addAll(Arrays.asList(bdScanPaths.split(",")));
@@ -145,11 +145,11 @@ public class DetectConfiguration {
         final Set<String> providedKeys = detectPropertySource.getBlackduckPropertyKeys();
         final Set<String> allKeys = new HashSet<>(providedKeys);
         Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
-            final String propertyName = currentProperty.getPropertyName();
-            if (propertyName.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
-                allKeys.add(propertyName);
-            } else if (propertyName.startsWith(DetectPropertySource.BLACKDUCK_PROPERTY_PREFIX) || propertyName.startsWith(DetectPropertySource.BLACKDUCK_ENVIRONMENT_PREFIX)) {
-                allKeys.add(propertyName);
+            final String propertyKey = currentProperty.getPropertyKey();
+            if (propertyKey.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyKey.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
+                allKeys.add(propertyKey);
+            } else if (propertyKey.startsWith(DetectPropertySource.BLACKDUCK_PROPERTY_PREFIX) || propertyKey.startsWith(DetectPropertySource.BLACKDUCK_ENVIRONMENT_PREFIX)) {
+                allKeys.add(propertyKey);
             }
         });
         return allKeys;
@@ -182,7 +182,7 @@ public class DetectConfiguration {
         if (!isLocked)
             return;
         if (property.getPropertyAuthority() != authority) {
-            throw new RuntimeException("Authority " + authority.toString() + " may not access " + property.getPropertyName() + " whose authority is " + property.getPropertyAuthority());
+            throw new RuntimeException("Authority " + authority.toString() + " may not access " + property.getPropertyKey() + " whose authority is " + property.getPropertyAuthority());
         }
     }
 

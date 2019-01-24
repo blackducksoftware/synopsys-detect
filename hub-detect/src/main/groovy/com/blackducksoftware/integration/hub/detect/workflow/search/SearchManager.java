@@ -57,7 +57,8 @@ public class SearchManager {
     public SearchResult performSearch() throws DetectUserFriendlyException {
         List<DetectorEvaluation> searchResults = new ArrayList<>();
         try {
-            final DetectorFinderOptions findOptions = new DetectorFinderOptions(searchOptions.excludedDirectories, searchOptions.forceNestedSearch, searchOptions.maxDepth, searchOptions.detectorFilter, detectorSearchProvider,
+            DetectorExclusionSearchFilter detectorExclusionSearchFilter = new DetectorExclusionSearchFilter(searchOptions.excludedDirectories, searchOptions.excludedDirectoryPatterns);
+            final DetectorFinderOptions findOptions = new DetectorFinderOptions(detectorExclusionSearchFilter, searchOptions.forceNestedSearch, searchOptions.maxDepth, searchOptions.detectorFilter, detectorSearchProvider,
                 detectorSearchEvaluator, eventSystem);
 
             logger.info("Starting search for detectors.");
