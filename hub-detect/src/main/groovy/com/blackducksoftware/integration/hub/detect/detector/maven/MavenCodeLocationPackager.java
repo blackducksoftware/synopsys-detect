@@ -48,21 +48,26 @@ public class MavenCodeLocationPackager {
     public static final List<String> KNOWN_SCOPES = Arrays.asList("compile", "provided", "runtime", "test", "system", "import");
 
     private static final Logger logger = LoggerFactory.getLogger(MavenCodeLocationPackager.class);
+    public static final String ORPHAN_LIST_PARENT_NODE_NAME = "Additional_Components";
+    public static final String ORPHAN_LIST_PARENT_NODE_GROUP = "none";
+    public static final String ORPHAN_LIST_PARENT_NODE_VERSION = "none";
 
     private final ExternalIdFactory externalIdFactory;
     private List<MavenParseResult> codeLocations = new ArrayList<>();
     private MavenParseResult currentMavenProject = null;
     private Stack<Dependency> dependencyParentStack = new Stack<>();
+    // in-scope components found in an out-of-scope tree go in the orphans list
     private final List<Dependency> orphans = new ArrayList<>();
     private boolean parsingProjectSection;
     private int level;
-    private boolean inNonScopedTree=false;
+    private boolean inOutOfScopeTree=false;
     private MutableDependencyGraph currentGraph = null;
 
     public MavenCodeLocationPackager(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
+    // mavenTextOutput should be the full output of mvn dependency:tree (no scope applied); scope filtering is now done by this method
     public List<MavenParseResult> extractCodeLocations(final String sourcePath, final String mavenOutputText, final String targetScope, final String excludedModules, final String includedModules) {
         final ExcludedIncludedFilter filter = new ExcludedIncludedFilter(excludedModules, includedModules);
         codeLocations = new ArrayList<>();
@@ -131,10 +136,10 @@ public class MavenCodeLocationPackager {
                     if (dependency.isInScope(targetScope)) {
                         logger.trace(String.format("Level 1 component %s:%s:%s:%s is in scope; adding it to hierarchy root", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
                         currentGraph.addChildToRoot(dependency);
-                        inNonScopedTree = false;
+                        inOutOfScopeTree = false;
                     } else {
                         logger.trace(String.format("Level 1 component %s:%s:%s:%s is a top-level out-of-scope component; entering non-scoped tree", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
-                        inNonScopedTree = true;
+                        inOutOfScopeTree = true;
                     }
                     dependencyParentStack.clear();
                     dependencyParentStack.push(dependency);
@@ -143,18 +148,18 @@ public class MavenCodeLocationPackager {
                     if (level == previousLevel) {
                         // a sibling of the previous dependency
                         dependencyParentStack.pop();
-                        addDependencyUnderParentIfInScope(currentGraph, orphans, targetScope, dependencyParentStack.peek(), dependency);
+                        addDependencyIfInScope(currentGraph, orphans, targetScope, inOutOfScopeTree, dependencyParentStack.peek(), dependency);
                         dependencyParentStack.push(dependency);
                     } else if (level > previousLevel) {
                         // a child of the previous dependency
-                        addDependencyUnderParentIfInScope(currentGraph, orphans, targetScope, dependencyParentStack.peek(), dependency);
+                        addDependencyIfInScope(currentGraph, orphans, targetScope, inOutOfScopeTree, dependencyParentStack.peek(), dependency);
                         dependencyParentStack.push(dependency);
                     } else {
                         // a child of a dependency further back than 1 line
                         for (int i = previousLevel; i >= level; i--) {
                             dependencyParentStack.pop();
                         }
-                        addDependencyUnderParentIfInScope(currentGraph, orphans, targetScope, dependencyParentStack.peek(), dependency);
+                        addDependencyIfInScope(currentGraph, orphans, targetScope, inOutOfScopeTree, dependencyParentStack.peek(), dependency);
                         dependencyParentStack.push(dependency);
                     }
                 }
@@ -178,9 +183,9 @@ public class MavenCodeLocationPackager {
         }
     }
 
-    private void addDependencyUnderParentIfInScope(final MutableDependencyGraph currentGraph, final List<Dependency> orphans, final String targetScope, final Dependency parent, final ScopedDependency dependency) {
+    private void addDependencyIfInScope(final MutableDependencyGraph currentGraph, final List<Dependency> orphans, final String targetScope, final boolean inOutOfScopeTree, final Dependency parent, final ScopedDependency dependency) {
         if (dependency.isInScope(targetScope)) {
-            if (inNonScopedTree) {
+            if (inOutOfScopeTree) {
                 logger.trace(
                     String.format("component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to orphans", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
                 orphans.add(dependency);
@@ -218,11 +223,8 @@ public class MavenCodeLocationPackager {
     }
 
     private Dependency createOrphanListParentDependency() {
-        final String group = "none";
-        final String artifact = "Additional_Components";
-        final String version = "none";
-        final ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
-        return new Dependency(artifact, version, externalId);
+        final ExternalId externalId = externalIdFactory.createMavenExternalId(ORPHAN_LIST_PARENT_NODE_GROUP, ORPHAN_LIST_PARENT_NODE_NAME, ORPHAN_LIST_PARENT_NODE_VERSION);
+        return new Dependency(ORPHAN_LIST_PARENT_NODE_NAME, ORPHAN_LIST_PARENT_NODE_VERSION, externalId);
     }
 
     ScopedDependency textToDependency(final String componentText) {
