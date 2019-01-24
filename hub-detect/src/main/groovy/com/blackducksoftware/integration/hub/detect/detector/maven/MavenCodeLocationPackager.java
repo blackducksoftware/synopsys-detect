@@ -53,7 +53,7 @@ public class MavenCodeLocationPackager {
     private List<MavenParseResult> codeLocations = new ArrayList<>();
     private MavenParseResult currentMavenProject = null;
     private Stack<ScopedDependency> dependencyParentStack = new Stack<>();
-    private final List<ScopedDependency> additionalComponents = new ArrayList<>();
+    private final List<Dependency> orphans = new ArrayList<>();
     private boolean parsingProjectSection;
     private int level;
     private boolean inNonScopedTree=false;
@@ -134,11 +134,11 @@ public class MavenCodeLocationPackager {
                 if (level == 1) {
                     // a direct dependency, clear the stack and add this as a potential parent for the next line
                     if (dependency.isInScope(targetScope)) {
-                        logger.info(String.format("+++ component %s:%s:%s:%s is in scope; adding it to hierarchy", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
+                        logger.info(String.format("111+ component %s:%s:%s:%s is in scope; adding it to hierarchy", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
                         currentGraph.addChildToRoot(dependency);
                         inNonScopedTree = false;
                     } else {
-                        logger.info(String.format("+++ component %s:%s:%s:%s is a top-level out-of-scope component; entering non-scoped tree", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
+                        logger.info(String.format("111- component %s:%s:%s:%s is a top-level out-of-scope component; entering non-scoped tree", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
                         inNonScopedTree = true;
                     }
                     logger.info(String.format("//////// Top level component: %s:%s:%s:%s", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
@@ -149,33 +149,47 @@ public class MavenCodeLocationPackager {
                     if (level == previousLevel) {
                         // a sibling of the previous dependency
                         dependencyParentStack.pop();
-                        addDependencyUnderParentIfInScope(currentGraph, additionalComponents, targetScope, dependencyParentStack.peek(), dependency);
+                        addDependencyUnderParentIfInScope(currentGraph, orphans, targetScope, dependencyParentStack.peek(), dependency);
                         dependencyParentStack.push(dependency);
                     } else if (level > previousLevel) {
                         // a child of the previous dependency
-                        addDependencyUnderParentIfInScope(currentGraph, additionalComponents, targetScope, dependencyParentStack.peek(), dependency);
+                        addDependencyUnderParentIfInScope(currentGraph, orphans, targetScope, dependencyParentStack.peek(), dependency);
                         dependencyParentStack.push(dependency);
                     } else {
                         // a child of a dependency further back than 1 line
                         for (int i = previousLevel; i >= level; i--) {
                             dependencyParentStack.pop();
                         }
-                        addDependencyUnderParentIfInScope(currentGraph, additionalComponents, targetScope, dependencyParentStack.peek(), dependency);
+                        addDependencyUnderParentIfInScope(currentGraph, orphans, targetScope, dependencyParentStack.peek(), dependency);
                         dependencyParentStack.push(dependency);
                     }
                 }
             }
         }
+        addOrphansToGraph(currentGraph, orphans);
 
         return codeLocations;
     }
 
-    private void addDependencyUnderParentIfInScope(final MutableDependencyGraph currentGraph, final List<ScopedDependency> additionalComponents, final String targetScope, final ScopedDependency parent, final ScopedDependency dependency) {
+    private void addOrphansToGraph(final MutableDependencyGraph graph, final List<Dependency> orphans) {
+        logger.info(String.format("========= # orphans: %d", orphans.size()));
+        if (orphans.size() > 0) {
+            final Dependency orphanListParent = createOrphanListParentDependency();
+            logger.info(String.format("--- adding top level comp: %s", orphanListParent.externalId.toString()));
+            graph.addChildToRoot(orphanListParent);
+            for (Dependency dependency : orphans) {
+                logger.info(String.format("--- adding sub comp: %s", dependency.externalId.toString()));
+                graph.addParentWithChild(orphanListParent, dependency);
+            }
+        }
+    }
+
+    private void addDependencyUnderParentIfInScope(final MutableDependencyGraph currentGraph, final List<Dependency> orphans, final String targetScope, final ScopedDependency parent, final ScopedDependency dependency) {
         if (dependency.isInScope(targetScope)) {
             if (inNonScopedTree) {
                 logger.info(
-                    String.format("&&& component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to additionalComponents", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
-                additionalComponents.add(dependency);
+                    String.format("&&& component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to orphans", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
+                orphans.add(dependency);
             } else {
                 logger.info(String.format("+++ component %s:%s:%s:%s is in scope; adding it to hierarchy", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
                 currentGraph.addParentWithChild(parent, dependency);
@@ -207,6 +221,14 @@ public class MavenCodeLocationPackager {
         }
 
         return cleanedLine;
+    }
+
+    private Dependency createOrphanListParentDependency() {
+        final String group = "none";
+        final String artifact = "Additional_Components";
+        final String version = "none";
+        final ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
+        return new Dependency(artifact, version, externalId);
     }
 
     ScopedDependency textToDependency(final String componentText) {
