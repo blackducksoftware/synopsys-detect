@@ -66,10 +66,6 @@ public class MavenCliExtractor {
             if (StringUtils.isNotBlank(mavenCommand)) {
                 arguments.addAll(Arrays.asList(mavenCommand.split(" ")));
             }
-            final String mavenScope = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_SCOPE, PropertyAuthority.None);
-            if (StringUtils.isNotBlank(mavenScope)) {
-                arguments.add(String.format("-Dscope=%s", mavenScope));
-            }
             arguments.add("dependency:tree");
 
             final Executable mvnExecutable = new Executable(directory, mavenExe, arguments);
