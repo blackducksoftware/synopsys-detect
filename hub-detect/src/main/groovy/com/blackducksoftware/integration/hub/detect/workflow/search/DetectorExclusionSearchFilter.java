@@ -46,10 +46,6 @@ public class DetectorExclusionSearchFilter implements DetectorSearchFilter {
             }
         }
 
-        if (fileFilter.accept(file)){
-            return false; //it was accepted, do NOT exclude
-        } else {
-            return true; //it was not accepted, exclude
-        }
+        return fileFilter.accept(file); //returns TRUE if it matches one of the file filters.
     }
 }
