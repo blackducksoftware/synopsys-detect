@@ -67,9 +67,15 @@ public class MavenCodeLocationPackagerTest {
     }
 
     @Test
+    public void extractCodeLocationsTestNoScope() {
+        final String mavenOutputText = testUtil.getResourceAsUTF8String("/maven/compileScopeUnderTestScope.txt");
+        createNewCodeLocationTest(mavenOutputText, "/maven/compileScopeUnderTestScopeNoScope.json", 3, "", "", 2, null);
+    }
+
+    @Test
     public void extractCodeLocationsTestCompileScope() {
         final String mavenOutputText = testUtil.getResourceAsUTF8String("/maven/compileScopeUnderTestScope.txt");
-        createNewCodeLocationTest(mavenOutputText, "/maven/compileScopeUnderTestScope.json", 3, "", "", 2, "compile");
+        createNewCodeLocationTest(mavenOutputText, "/maven/compileScopeUnderTestScopeCompileScope.json", 3, "", "", 2, "compile");
     }
 
     @Test
