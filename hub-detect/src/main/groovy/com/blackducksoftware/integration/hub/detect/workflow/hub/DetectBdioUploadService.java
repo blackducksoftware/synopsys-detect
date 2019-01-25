@@ -79,6 +79,10 @@ public class DetectBdioUploadService {
                 logger.error("Failed to upload code location: " + uploadOutput.getCodeLocationName());
                 logger.error("Reason: " + uploadOutput.getErrorMessage().orElse("Unknown reason."));
                 eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, uploadOutput.getErrorMessage().orElse("Failed to upload code location for an unknown reason.")));
+                if (uploadOutput.getException().isPresent()){
+                    IntegrationException e = (IntegrationException) uploadOutput.getException().get();
+                    throw e;
+                }
             }
         }
 
