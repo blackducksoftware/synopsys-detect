@@ -67,6 +67,18 @@ public class MavenCodeLocationPackagerTest {
     }
 
     @Test
+    public void extractCodeLocationsTestNoScope() {
+        final String mavenOutputText = testUtil.getResourceAsUTF8String("/maven/compileScopeUnderTestScope.txt");
+        createNewCodeLocationTest(mavenOutputText, "/maven/compileScopeUnderTestScopeNoScope.json", 3, "", "", 2, null);
+    }
+
+    @Test
+    public void extractCodeLocationsTestCompileScope() {
+        final String mavenOutputText = testUtil.getResourceAsUTF8String("/maven/compileScopeUnderTestScope.txt");
+        createNewCodeLocationTest(mavenOutputText, "/maven/compileScopeUnderTestScopeCompileScope.json", 3, "", "", 2, "compile");
+    }
+
+    @Test
     public void testParseProject() {
         final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
 
@@ -87,7 +99,7 @@ public class MavenCodeLocationPackagerTest {
     public void testParseDependency() {
         final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
 
-        Dependency dependency = mavenCodeLocationPackager.textToDependency("stuff:things:jar:0.0.1:compile");
+        ScopedDependency dependency = mavenCodeLocationPackager.textToDependency("stuff:things:jar:0.0.1:compile");
         assertNotNull(dependency);
 
         dependency = mavenCodeLocationPackager.textToDependency("stuff:things:jar:classifier:0.0.1:test");
@@ -290,8 +302,8 @@ public class MavenCodeLocationPackagerTest {
         String line = "[INFO] |  |  |  \\- org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:jar:3.8.0.v20160509-0411:pants (version selected from constraint [3.8.0,3.8.1))";
         line = mavenCodeLocationPackager.trimLogLevel(line);
         final String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
-        final Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
-        assertEquals("org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:3.8.0.v20160509-0411", dependency.externalId.createExternalId());
+        final ScopedDependency scopedDependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
+        assertEquals("org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:3.8.0.v20160509-0411", scopedDependency.externalId.createExternalId());
     }
 
     @Test
@@ -309,11 +321,20 @@ public class MavenCodeLocationPackagerTest {
         createNewCodeLocationTest(mavenOutputText, expectedResourcePath, 1, "", "");
     }
 
+
     private void createNewCodeLocationTest(final String mavenOutputText, final String expectedResourcePath, final int numberOfCodeLocations, final String excludedModules, final String includedModules) {
+        createNewCodeLocationTest(mavenOutputText, expectedResourcePath, numberOfCodeLocations, excludedModules, includedModules, 0);
+    }
+
+    private void createNewCodeLocationTest(final String mavenOutputText, final String expectedResourcePath, final int numberOfCodeLocations, final String excludedModules, final String includedModules, int codeLocationIndex) {
+    createNewCodeLocationTest(mavenOutputText, expectedResourcePath, numberOfCodeLocations, excludedModules, includedModules, codeLocationIndex, null);
+    }
+
+    private void createNewCodeLocationTest(final String mavenOutputText, final String expectedResourcePath, final int numberOfCodeLocations, final String excludedModules, final String includedModules, int codeLocationIndex, final String scope) {
         final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
-        final List<MavenParseResult> result = mavenCodeLocationPackager.extractCodeLocations("/test/path", mavenOutputText, excludedModules, includedModules);
+        final List<MavenParseResult> result = mavenCodeLocationPackager.extractCodeLocations("/test/path", mavenOutputText, scope, excludedModules, includedModules);
         assertEquals(numberOfCodeLocations, result.size());
-        final DetectCodeLocation codeLocation = result.get(0).codeLocation;
+        final DetectCodeLocation codeLocation = result.get(codeLocationIndex).codeLocation;
 
         testUtil.testJsonResource(expectedResourcePath, codeLocation);
     }

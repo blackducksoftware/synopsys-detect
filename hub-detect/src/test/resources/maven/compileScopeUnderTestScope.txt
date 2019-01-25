@@ -1,0 +1,173 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] parent
+[INFO] sub1
+[INFO] sub2
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Building parent 0.0.1
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:3.1.1:tree (default-cli) @ parent ---
+[INFO] com.compileundertest.test:parent:pom:0.0.1
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Building sub1 0.0.1
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:3.1.1:tree (default-cli) @ sub1 ---
+[INFO] com.compileundertest.test:sub1:jar:0.0.1
+[INFO] \- org.apache.cxf:cxf-spring-boot-starter-jaxws:jar:3.2.2:compile
+[INFO]    +- org.springframework.boot:spring-boot-starter:jar:2.0.0.RELEASE:compile
+[INFO]    |  +- org.springframework.boot:spring-boot:jar:2.0.0.RELEASE:compile
+[INFO]    |  |  \- org.springframework:spring-context:jar:5.0.4.RELEASE:compile
+[INFO]    |  +- org.springframework.boot:spring-boot-autoconfigure:jar:2.0.0.RELEASE:compile
+[INFO]    |  +- org.springframework.boot:spring-boot-starter-logging:jar:2.0.0.RELEASE:compile
+[INFO]    |  |  +- ch.qos.logback:logback-classic:jar:1.2.3:compile
+[INFO]    |  |  |  +- ch.qos.logback:logback-core:jar:1.2.3:compile
+[INFO]    |  |  |  \- org.slf4j:slf4j-api:jar:1.7.25:compile
+[INFO]    |  |  +- org.apache.logging.log4j:log4j-to-slf4j:jar:2.10.0:compile
+[INFO]    |  |  |  \- org.apache.logging.log4j:log4j-api:jar:2.10.0:compile
+[INFO]    |  |  \- org.slf4j:jul-to-slf4j:jar:1.7.25:compile
+[INFO]    |  +- javax.annotation:javax.annotation-api:jar:1.3.2:compile
+[INFO]    |  +- org.springframework:spring-core:jar:5.0.4.RELEASE:compile
+[INFO]    |  |  \- org.springframework:spring-jcl:jar:5.0.4.RELEASE:compile
+[INFO]    |  \- org.yaml:snakeyaml:jar:1.19:runtime
+[INFO]    +- org.springframework.boot:spring-boot-starter-web:jar:2.0.0.RELEASE:compile
+[INFO]    |  +- org.springframework.boot:spring-boot-starter-json:jar:2.0.0.RELEASE:compile
+[INFO]    |  |  +- com.fasterxml.jackson.core:jackson-databind:jar:2.9.4:compile
+[INFO]    |  |  |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.9.0:compile
+[INFO]    |  |  |  \- com.fasterxml.jackson.core:jackson-core:jar:2.9.4:compile
+[INFO]    |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.9.4:compile
+[INFO]    |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.9.4:compile
+[INFO]    |  |  \- com.fasterxml.jackson.module:jackson-module-parameter-names:jar:2.9.4:compile
+[INFO]    |  +- org.springframework.boot:spring-boot-starter-tomcat:jar:2.0.0.RELEASE:compile
+[INFO]    |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:8.5.28:compile
+[INFO]    |  |  +- org.apache.tomcat.embed:tomcat-embed-el:jar:8.5.28:compile
+[INFO]    |  |  \- org.apache.tomcat.embed:tomcat-embed-websocket:jar:8.5.28:compile
+[INFO]    |  +- org.hibernate.validator:hibernate-validator:jar:6.0.7.Final:compile
+[INFO]    |  |  +- org.jboss.logging:jboss-logging:jar:3.3.2.Final:compile
+[INFO]    |  |  \- com.fasterxml:classmate:jar:1.3.4:compile
+[INFO]    |  +- org.springframework:spring-web:jar:5.0.4.RELEASE:compile
+[INFO]    |  |  \- org.springframework:spring-beans:jar:5.0.4.RELEASE:compile
+[INFO]    |  \- org.springframework:spring-webmvc:jar:5.0.4.RELEASE:compile
+[INFO]    |     +- org.springframework:spring-aop:jar:5.0.4.RELEASE:compile
+[INFO]    |     \- org.springframework:spring-expression:jar:5.0.4.RELEASE:compile
+[INFO]    +- org.apache.cxf:cxf-spring-boot-autoconfigure:jar:3.2.2:compile
+[INFO]    +- org.apache.cxf:cxf-rt-transports-http:jar:3.2.2:compile
+[INFO]    |  \- org.apache.cxf:cxf-core:jar:3.2.2:compile
+[INFO]    |     +- com.fasterxml.woodstox:woodstox-core:jar:5.0.3:compile
+[INFO]    |     |  \- org.codehaus.woodstox:stax2-api:jar:3.1.4:compile
+[INFO]    |     \- org.apache.ws.xmlschema:xmlschema-core:jar:2.2.3:compile
+[INFO]    +- org.apache.cxf:cxf-rt-frontend-jaxws:jar:3.2.2:compile
+[INFO]    |  +- xml-resolver:xml-resolver:jar:1.2:compile
+[INFO]    |  +- org.ow2.asm:asm:jar:5.2:compile
+[INFO]    |  +- org.apache.cxf:cxf-rt-bindings-soap:jar:3.2.2:compile
+[INFO]    |  |  +- org.apache.cxf:cxf-rt-wsdl:jar:3.2.2:compile
+[INFO]    |  |  |  \- wsdl4j:wsdl4j:jar:1.6.3:compile
+[INFO]    |  |  \- org.apache.cxf:cxf-rt-databinding-jaxb:jar:3.2.2:compile
+[INFO]    |  +- org.apache.cxf:cxf-rt-bindings-xml:jar:3.2.2:compile
+[INFO]    |  +- org.apache.cxf:cxf-rt-frontend-simple:jar:3.2.2:compile
+[INFO]    |  \- org.apache.cxf:cxf-rt-ws-addr:jar:3.2.2:compile
+[INFO]    |     \- org.apache.cxf:cxf-rt-ws-policy:jar:3.2.2:compile
+[INFO]    |        \- org.apache.neethi:neethi:jar:3.1.1:compile
+[INFO]    \- javax.validation:validation-api:jar:2.0.1.Final:compile
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Building sub2 0.0.1
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:3.1.1:tree (default-cli) @ sub2 ---
+[INFO] com.compileundertest.test:sub2:jar:0.0.1
+[INFO] +- com.compileundertest.test:sub1:jar:0.0.1:compile
+[INFO] |  \- org.apache.cxf:cxf-spring-boot-starter-jaxws:jar:3.2.2:compile
+[INFO] |     +- org.springframework.boot:spring-boot-starter:jar:2.0.0.RELEASE:compile
+[INFO] |     |  +- org.springframework.boot:spring-boot:jar:2.0.0.RELEASE:compile
+[INFO] |     |  |  \- org.springframework:spring-context:jar:5.0.4.RELEASE:compile
+[INFO] |     |  +- org.springframework.boot:spring-boot-autoconfigure:jar:2.0.0.RELEASE:compile
+[INFO] |     |  +- org.springframework.boot:spring-boot-starter-logging:jar:2.0.0.RELEASE:compile
+[INFO] |     |  |  +- ch.qos.logback:logback-classic:jar:1.2.3:compile
+[INFO] |     |  |  |  \- ch.qos.logback:logback-core:jar:1.2.3:compile
+[INFO] |     |  |  +- org.apache.logging.log4j:log4j-to-slf4j:jar:2.10.0:compile
+[INFO] |     |  |  |  \- org.apache.logging.log4j:log4j-api:jar:2.10.0:compile
+[INFO] |     |  |  \- org.slf4j:jul-to-slf4j:jar:1.7.25:compile
+[INFO] |     |  +- javax.annotation:javax.annotation-api:jar:1.3.2:compile
+[INFO] |     |  +- org.springframework:spring-core:jar:5.0.4.RELEASE:compile
+[INFO] |     |  |  \- org.springframework:spring-jcl:jar:5.0.4.RELEASE:compile
+[INFO] |     |  \- org.yaml:snakeyaml:jar:1.19:runtime
+[INFO] |     +- org.springframework.boot:spring-boot-starter-web:jar:2.0.0.RELEASE:compile
+[INFO] |     |  +- org.springframework.boot:spring-boot-starter-json:jar:2.0.0.RELEASE:compile
+[INFO] |     |  |  +- com.fasterxml.jackson.core:jackson-databind:jar:2.9.4:compile
+[INFO] |     |  |  |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.9.0:compile
+[INFO] |     |  |  |  \- com.fasterxml.jackson.core:jackson-core:jar:2.9.4:compile
+[INFO] |     |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.9.4:compile
+[INFO] |     |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.9.4:compile
+[INFO] |     |  |  \- com.fasterxml.jackson.module:jackson-module-parameter-names:jar:2.9.4:compile
+[INFO] |     |  +- org.springframework.boot:spring-boot-starter-tomcat:jar:2.0.0.RELEASE:compile
+[INFO] |     |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:8.5.28:compile
+[INFO] |     |  |  +- org.apache.tomcat.embed:tomcat-embed-el:jar:8.5.28:compile
+[INFO] |     |  |  \- org.apache.tomcat.embed:tomcat-embed-websocket:jar:8.5.28:compile
+[INFO] |     |  +- org.hibernate.validator:hibernate-validator:jar:6.0.7.Final:compile
+[INFO] |     |  |  +- org.jboss.logging:jboss-logging:jar:3.3.2.Final:compile
+[INFO] |     |  |  \- com.fasterxml:classmate:jar:1.3.4:compile
+[INFO] |     |  +- org.springframework:spring-web:jar:5.0.4.RELEASE:compile
+[INFO] |     |  |  \- org.springframework:spring-beans:jar:5.0.4.RELEASE:compile
+[INFO] |     |  \- org.springframework:spring-webmvc:jar:5.0.4.RELEASE:compile
+[INFO] |     |     +- org.springframework:spring-aop:jar:5.0.4.RELEASE:compile
+[INFO] |     |     \- org.springframework:spring-expression:jar:5.0.4.RELEASE:compile
+[INFO] |     +- org.apache.cxf:cxf-spring-boot-autoconfigure:jar:3.2.2:compile
+[INFO] |     \- javax.validation:validation-api:jar:2.0.1.Final:compile
+[INFO] \- com.github.skjolber:mockito-soap-cxf:jar:1.0.3:test
+[INFO]    +- junit:junit:jar:4.12:test
+[INFO]    |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO]    +- org.mockito:mockito-core:jar:2.15.0:test
+[INFO]    |  +- net.bytebuddy:byte-buddy:jar:1.7.10:test
+[INFO]    |  +- net.bytebuddy:byte-buddy-agent:jar:1.7.10:test
+[INFO]    |  \- org.objenesis:objenesis:jar:2.6:test
+[INFO]    +- org.apache.cxf:cxf-rt-bindings-soap:jar:3.1.12:compile
+[INFO]    |  +- org.apache.cxf:cxf-rt-wsdl:jar:3.1.12:compile
+[INFO]    |  |  \- wsdl4j:wsdl4j:jar:1.6.3:compile
+[INFO]    |  \- org.apache.cxf:cxf-rt-databinding-jaxb:jar:3.1.12:compile
+[INFO]    |     +- com.sun.xml.bind:jaxb-impl:jar:2.2.11:compile
+[INFO]    |     \- com.sun.xml.bind:jaxb-core:jar:2.2.11:compile
+[INFO]    +- org.apache.cxf:cxf-rt-frontend-jaxws:jar:3.1.12:compile
+[INFO]    |  +- xml-resolver:xml-resolver:jar:1.2:compile
+[INFO]    |  +- org.ow2.asm:asm:jar:5.0.4:compile
+[INFO]    |  +- org.apache.cxf:cxf-rt-bindings-xml:jar:3.1.12:compile
+[INFO]    |  +- org.apache.cxf:cxf-rt-frontend-simple:jar:3.1.12:compile
+[INFO]    |  \- org.apache.cxf:cxf-rt-ws-addr:jar:3.1.12:compile
+[INFO]    |     \- org.apache.cxf:cxf-rt-ws-policy:jar:3.1.12:compile
+[INFO]    |        \- org.apache.neethi:neethi:jar:3.0.3:compile
+[INFO]    +- org.apache.cxf:cxf-core:jar:3.1.12:compile
+[INFO]    |  +- org.codehaus.woodstox:woodstox-core-asl:jar:4.4.1:compile
+[INFO]    |  |  \- org.codehaus.woodstox:stax2-api:jar:3.1.4:compile
+[INFO]    |  \- org.apache.ws.xmlschema:xmlschema-core:jar:2.2.2:compile
+[INFO]    +- org.apache.cxf:cxf-rt-transports-http:jar:3.1.12:compile
+[INFO]    +- org.apache.cxf:cxf-rt-transports-http-jetty:jar:3.1.12:test
+[INFO]    |  +- org.eclipse.jetty:jetty-server:jar:9.4.8.v20171121:test
+[INFO]    |  |  \- javax.servlet:javax.servlet-api:jar:3.1.0:test
+[INFO]    |  +- org.eclipse.jetty:jetty-util:jar:9.4.8.v20171121:test
+[INFO]    |  +- org.eclipse.jetty:jetty-io:jar:9.4.8.v20171121:test
+[INFO]    |  +- org.eclipse.jetty:jetty-security:jar:9.4.8.v20171121:test
+[INFO]    |  +- org.eclipse.jetty:jetty-continuation:jar:9.4.8.v20171121:test
+[INFO]    |  \- org.eclipse.jetty:jetty-http:jar:9.4.8.v20171121:test
+[INFO]    +- org.apache.cxf:cxf-rt-rs-extension-providers:jar:3.1.12:test
+[INFO]    |  \- org.apache.cxf:cxf-rt-frontend-jaxrs:jar:3.1.12:test
+[INFO]    |     \- javax.ws.rs:javax.ws.rs-api:jar:2.0.1:test
+[INFO]    +- org.slf4j:slf4j-api:jar:1.7.25:compile
+[INFO]    \- commons-io:commons-io:jar:2.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] parent ............................................. SUCCESS [  0.606 s]
+[INFO] sub1 ............................................... SUCCESS [  0.225 s]
+[INFO] sub2 ............................................... SUCCESS [  0.132 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1.447 s
+[INFO] Finished at: 2019-01-18T13:38:36-05:00
+[INFO] Final Memory: 27M/437M
+[INFO] ------------------------------------------------------------------------

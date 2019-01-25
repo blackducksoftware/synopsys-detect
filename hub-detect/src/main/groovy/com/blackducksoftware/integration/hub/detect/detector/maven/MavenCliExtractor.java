@@ -66,10 +66,6 @@ public class MavenCliExtractor {
             if (StringUtils.isNotBlank(mavenCommand)) {
                 arguments.addAll(Arrays.asList(mavenCommand.split(" ")));
             }
-            final String mavenScope = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_SCOPE, PropertyAuthority.None);
-            if (StringUtils.isNotBlank(mavenScope)) {
-                arguments.add(String.format("-Dscope=%s", mavenScope));
-            }
             arguments.add("dependency:tree");
 
             final Executable mvnExecutable = new Executable(directory, mavenExe, arguments);
@@ -77,9 +73,11 @@ public class MavenCliExtractor {
 
             if (mvnOutput.getReturnCode() == 0) {
 
+                final String mavenScope = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_SCOPE, PropertyAuthority.None);
                 final String excludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_MODULES, PropertyAuthority.None);
                 final String includedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_MODULES, PropertyAuthority.None);
-                final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
+                final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(),
+                    mavenScope, excludedModules, includedModules);
 
                 final List<DetectCodeLocation> codeLocations = mavenResults.stream()
                                                                    .map(it -> it.codeLocation)
