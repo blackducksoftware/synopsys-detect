@@ -115,7 +115,6 @@ public class DetectorFinder {
             stream = Files.list(directory.toPath());
             return stream.map(path -> path.toFile())
                        .filter(file -> file.isDirectory())
-                       .filter(filter::shouldExclude)
                        .collect(Collectors.toList());
 
         } catch (final IOException e) {
