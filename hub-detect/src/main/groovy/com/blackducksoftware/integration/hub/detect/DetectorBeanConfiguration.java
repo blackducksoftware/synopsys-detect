@@ -41,9 +41,9 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectorOption
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
+import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeArchitectureParser;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeDetector;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeExtractor;
-import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeListTasksParser;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.GraphParserTransformer;
 import com.blackducksoftware.integration.hub.detect.detector.clang.ApkPackageManager;
 import com.blackducksoftware.integration.hub.detect.detector.clang.ClangCompileCommandParser;
@@ -473,8 +473,8 @@ public class DetectorBeanConfiguration {
     }
 
     @Bean
-    public BitbakeListTasksParser bitbakeListTasksParser() {
-        return new BitbakeListTasksParser();
+    public BitbakeArchitectureParser bitbakeListTasksParser() {
+        return new BitbakeArchitectureParser();
     }
 
     //BomTools

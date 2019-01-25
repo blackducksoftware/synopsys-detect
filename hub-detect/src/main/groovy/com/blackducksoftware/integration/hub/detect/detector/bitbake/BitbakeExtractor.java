@@ -60,15 +60,15 @@ public class BitbakeExtractor {
     private final DetectFileFinder detectFileFinder;
     private final DirectoryManager directoryManager;
     private final GraphParserTransformer graphParserTransformer;
-    private final BitbakeListTasksParser bitbakeListTasksParser;
+    private final BitbakeArchitectureParser bitbakeArchitectureParser;
 
     public BitbakeExtractor(final ExecutableRunner executableRunner, final DirectoryManager directoryManager,
-        final DetectFileFinder detectFileFinder, final GraphParserTransformer graphParserTransformer, final BitbakeListTasksParser bitbakeListTasksParser) {
+        final DetectFileFinder detectFileFinder, final GraphParserTransformer graphParserTransformer, final BitbakeArchitectureParser bitbakeArchitectureParser) {
         this.executableRunner = executableRunner;
         this.directoryManager = directoryManager;
         this.detectFileFinder = detectFileFinder;
         this.graphParserTransformer = graphParserTransformer;
-        this.bitbakeListTasksParser = bitbakeListTasksParser;
+        this.bitbakeArchitectureParser = bitbakeArchitectureParser;
     }
 
     public Extraction extract(final ExtractionId extractionId, final File buildEnvScript, final File sourcePath, String[] packageNames, File bash) {
@@ -140,7 +140,7 @@ public class BitbakeExtractor {
         String targetArchitecture = null;
 
         if (returnCode == 0) {
-            targetArchitecture = bitbakeListTasksParser.parseTargetArchitecture(executableOutput.getStandardOutput()).orElse(null);
+            targetArchitecture = bitbakeArchitectureParser.architectureFromOutput(executableOutput.getStandardOutput()).orElse(null);
         } else {
             logger.error(String.format("Executing command '%s' returned a non-zero exit code %s", bitbakeCommand, returnCode));
         }

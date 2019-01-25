@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bitbake;
+package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
 import java.util.Map;
 import java.util.Optional;
@@ -37,36 +37,28 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
 import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 
 public class GraphParserTransformer {
-    public DependencyGraph transform(final GraphParser graphParser, final String targetArchitecture) {
-        final Map<String, GraphNode> nodes = graphParser.getNodes();
-        final Map<String, GraphEdge> edges = graphParser.getEdges();
-        final LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
+    ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
-        for (final GraphNode graphNode : nodes.values()) {
+    public BitbakeGraph transform(final GraphParser graphParser) {
+        BitbakeGraph bitbakeGraph = new BitbakeGraph();
+
+        for (final GraphNode graphNode : graphParser.getNodes().values()) {
             final String name = getNameFromNode(graphNode);
-            final DependencyId dependencyId = new NameDependencyId(name);
             final Optional<String> version = getVersionFromNode(graphNode);
-
-            if (version.isPresent()) {
-                final ExternalId externalId = new ExternalId(Forge.YOCTO);
-                externalId.name = name;
-                externalId.version = version.get();
-                externalId.architecture = targetArchitecture;
-                graphBuilder.setDependencyInfo(dependencyId, name, version.get(), externalId);
-            }
-
-            graphBuilder.addChildToRoot(dependencyId);
+            bitbakeGraph.addNode(name, version);
         }
 
-        for (final GraphEdge graphEdge : edges.values()) {
-            final DependencyId node1 = new NameDependencyId(getNameFromNode(graphEdge.getNode1()));
-            final DependencyId node2 = new NameDependencyId(getNameFromNode(graphEdge.getNode2()));
-            graphBuilder.addParentWithChild(node1, node2);
+        for (final GraphEdge graphEdge : graphParser.getEdges().values()) {
+            String parent = getNameFromNode(graphEdge.getNode1());
+            String child = getNameFromNode(graphEdge.getNode2());
+            bitbakeGraph.addChild(parent, child);
         }
 
-        return graphBuilder.build();
+        return bitbakeGraph;
     }
 
     private String getNameFromNode(final GraphNode graphNode) {
@@ -75,7 +67,6 @@ public class GraphParserTransformer {
 
     private Optional<String> getVersionFromNode(final GraphNode graphNode) {
         final Optional<String> attribute = getLabelAttribute(graphNode);
-
         return attribute.map(this::getVersionFromLabel);
     }
 

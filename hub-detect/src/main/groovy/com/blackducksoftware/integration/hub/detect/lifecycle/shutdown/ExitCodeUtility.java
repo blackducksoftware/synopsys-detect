@@ -63,7 +63,7 @@ public class ExitCodeUtility {
                 String message = jsonData.getAsJsonPrimitive(ERROR_MESSAGE_STRING_LITERAL_WRAPPER_MEMBER_NAME_VARIABLE).getAsString();
                 logger.error(message);
             } else {
-                logger.debug("Did not find an error message in the integration exception.");
+                logger.debug("Did not find an error message in the exception.");
             }
 
             exceptionExitCodeType = ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR;

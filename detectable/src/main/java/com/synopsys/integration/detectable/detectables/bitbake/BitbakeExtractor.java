@@ -47,6 +47,10 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeArchitectureParser;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BitbakeExtractor {
@@ -57,14 +61,17 @@ public class BitbakeExtractor {
     private final ExecutableRunner executableRunner;
     private final FileFinder fileFinder;
     private final GraphParserTransformer graphParserTransformer;
-    private final BitbakeListTasksParser bitbakeListTasksParser;
+    private final BitbakeGraphTransformer bitbakeGraphTransformer;
+    private final BitbakeArchitectureParser bitbakeArchitectureParser;
 
     public BitbakeExtractor(final ExecutableRunner executableRunner,
-        final FileFinder fileFinder, final GraphParserTransformer graphParserTransformer, final BitbakeListTasksParser bitbakeListTasksParser) {
+        final FileFinder fileFinder, final GraphParserTransformer graphParserTransformer, final BitbakeGraphTransformer bitbakeGraphTransformer,
+        final BitbakeArchitectureParser bitbakeArchitectureParser) {
         this.executableRunner = executableRunner;
         this.fileFinder = fileFinder;
         this.graphParserTransformer = graphParserTransformer;
-        this.bitbakeListTasksParser = bitbakeListTasksParser;
+        this.bitbakeGraphTransformer = bitbakeGraphTransformer;
+        this.bitbakeArchitectureParser = bitbakeArchitectureParser;
     }
 
     public Extraction extract(final ExtractionEnvironment extractionEnvironment, final File buildEnvScript, final File sourcePath, String[] packageNames, File bash) {
@@ -88,7 +95,9 @@ public class BitbakeExtractor {
                 logger.debug(FileUtils.readFileToString(dependsFile, Charset.defaultCharset()));
                 final InputStream recipeDependsInputStream = FileUtils.openInputStream(dependsFile);
                 final GraphParser graphParser = new GraphParser(recipeDependsInputStream);
-                final DependencyGraph dependencyGraph = graphParserTransformer.transform(graphParser, targetArchitecture);
+                final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser);
+                final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, targetArchitecture);
+
                 final ExternalId externalId = new ExternalId(Forge.YOCTO);
                 final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.BITBAKE, sourcePath.getCanonicalPath(), externalId, dependencyGraph).build();
 
@@ -136,7 +145,7 @@ public class BitbakeExtractor {
         String targetArchitecture = null;
 
         if (returnCode == 0) {
-            targetArchitecture = bitbakeListTasksParser.parseTargetArchitecture(executableOutput.getStandardOutput()).orElse(null);
+            targetArchitecture = bitbakeArchitectureParser.architectureFromOutput(executableOutput.getStandardOutput()).orElse(null);
         } else {
             logger.error(String.format("Executing command '%s' returned a non-zero exit code %s", bitbakeCommand, returnCode));
         }

@@ -71,6 +71,18 @@ public class Extraction {
         private String projectName;
         private Map<String, Object> metaData = new HashMap<>();
 
+        public Builder fromDetectableExtraction(com.synopsys.integration.detectable.Extraction extraction){
+            //TODO: OH DEAR GOD FIX THIS
+            if (extraction.result == com.synopsys.integration.detectable.Extraction.ExtractionResultType.SUCCESS){
+                result = ExtractionResultType.SUCCESS;
+            }else if (extraction.result == com.synopsys.integration.detectable.Extraction.ExtractionResultType.FAILURE) {
+                result = ExtractionResultType.FAILURE;
+            }else if (extraction.result == com.synopsys.integration.detectable.Extraction.ExtractionResultType.EXCEPTION) {
+                result = ExtractionResultType.EXCEPTION;
+            }
+            //codeLocations = extraction.codeLocations;
+        }
+
         public Builder projectName(final String projectName) {
             this.projectName = projectName;
             return this;

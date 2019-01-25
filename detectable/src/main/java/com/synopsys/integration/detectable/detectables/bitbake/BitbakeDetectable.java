@@ -30,7 +30,7 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableFinder;
+import com.synopsys.integration.detectable.detectable.executable.SystemExecutableFinder;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -43,18 +43,18 @@ public class BitbakeDetectable extends Detectable {
     private final BitbakeDetectableOptions bitbakeDetectableOptions;
     private final FileFinder fileFinder;
     private final BitbakeExtractor bitbakeExtractor;
-    private final ExecutableFinder executableFinder;
+    private final SystemExecutableFinder systemExecutableFinder;
 
     private File foundBuildEnvScript;
     private File bashExe;
 
     public BitbakeDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder, final BitbakeDetectableOptions bitbakeDetectableOptions, final BitbakeExtractor bitbakeExtractor,
-        final ExecutableFinder executableFinder) {
+        final SystemExecutableFinder systemExecutableFinder) {
         super(detectableEnvironment, "Bitbake", "Bitbake");
         this.fileFinder = fileFinder;
         this.bitbakeDetectableOptions = bitbakeDetectableOptions;
         this.bitbakeExtractor = bitbakeExtractor;
-        this.executableFinder = executableFinder;
+        this.systemExecutableFinder = systemExecutableFinder;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class BitbakeDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        bashExe = executableFinder.findExecutable(ExecutableType.BASH);
+        bashExe = systemExecutableFinder.findExecutable(ExecutableType.BASH);
         if (bashExe == null) {
             return new ExecutableNotFoundDetectableResult("bash");
         }
