@@ -33,11 +33,17 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
+import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
+import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.BdioUploadCodeLocationCreationRequest;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.BdioUploadService;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatch;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadOutput;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.blackduck.service.CodeLocationService;
 import com.synopsys.integration.exception.IntegrationException;
@@ -47,10 +53,12 @@ public class DetectBdioUploadService {
 
     private final DetectConfiguration detectConfiguration;
     private final BdioUploadService bdioUploadService;
+    private final EventSystem eventSystem;
 
-    public DetectBdioUploadService(final DetectConfiguration detectConfiguration, final BdioUploadService bdioUploadService) {
+    public DetectBdioUploadService(final DetectConfiguration detectConfiguration, final BdioUploadService bdioUploadService, EventSystem eventSystem) {
         this.detectConfiguration = detectConfiguration;
         this.bdioUploadService = bdioUploadService;
+        this.eventSystem = eventSystem;
     }
 
     public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(List<UploadTarget> uploadTargets) throws IntegrationException {
@@ -61,7 +69,20 @@ public class DetectBdioUploadService {
         }
 
         BdioUploadCodeLocationCreationRequest uploadRequest = bdioUploadService.createUploadRequest(uploadBatch);
-        return bdioUploadService.uploadBdio(uploadRequest);
+        CodeLocationCreationData<UploadBatchOutput> response = bdioUploadService.uploadBdio(uploadRequest);
+        UploadBatchOutput batchOutput = response.getOutput();
+        List<UploadOutput> uploadOutputs = batchOutput.getOutputs();
+
+        for (UploadOutput uploadOutput : uploadOutputs){
+            Result result = uploadOutput.getResult();
+            if (result == Result.FAILURE){
+                logger.error("Failed to upload code location: " + uploadOutput.getCodeLocationName());
+                logger.error("Reason: " + uploadOutput.getErrorMessage().orElse("Unknown reason."));
+                eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, uploadOutput.getErrorMessage().orElse("Failed to upload code location for an unknown reason.")));
+            }
+        }
+
+        return response;
     }
 
 }
