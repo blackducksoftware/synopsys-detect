@@ -106,6 +106,8 @@ public class BlackduckPostActions {
                     logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
                 }
             }
+        } catch (final DetectUserFriendlyException e) {
+            throw e;
         } catch (final IllegalArgumentException e) {
             throw new DetectUserFriendlyException(String.format("Your Black Duck configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
         } catch (final IntegrationRestException e) {
