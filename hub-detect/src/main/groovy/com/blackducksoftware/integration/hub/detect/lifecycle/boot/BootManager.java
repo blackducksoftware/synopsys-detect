@@ -160,6 +160,7 @@ public class BootManager {
                 connectivityManager = ConnectivityManager.online(connectivityResult.getBlackDuckServicesFactory(), connectivityResult.getPhoneHomeManager(), connectivityResult.getBlackDuckServerConfig());
             } else {
                 logger.info("Detect is NOT capable of communicating with server.");
+                logger.info("Please double check the Detect documentation: https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/622633/Hub+Detect");
                 if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, PropertyAuthority.None)) {
                     logger.info(connectivityResult.getFailureReason());
                     logger.info(String.format("%s is set to 'true' so Detect will simply exit.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
