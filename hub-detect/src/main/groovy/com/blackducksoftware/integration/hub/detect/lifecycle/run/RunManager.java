@@ -43,6 +43,7 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.tool.ToolRunner;
+import com.blackducksoftware.integration.hub.detect.tool.binaryscanner.BinaryScanToolResult;
 import com.blackducksoftware.integration.hub.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorToolResult;
@@ -232,7 +233,10 @@ public class RunManager {
             if (connectivityManager.isDetectOnline() && connectivityManager.getBlackDuckServicesFactory().isPresent()) {
                 final BlackDuckServicesFactory blackDuckServicesFactory = connectivityManager.getBlackDuckServicesFactory().get();
                 final BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, detectConfiguration, blackDuckServicesFactory);
-                blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
+                BinaryScanToolResult result = blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
+                if (result.isSuccessful()){
+                    codeLocationWaitData.setFromBinaryScan(result.getNotificationTaskRange(), result.getCodeLocationNames());
+                }
             }
             logger.info("Binary scanner actions finished.");
         } else {

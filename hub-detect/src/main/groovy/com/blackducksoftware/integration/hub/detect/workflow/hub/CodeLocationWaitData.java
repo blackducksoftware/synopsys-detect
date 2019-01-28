@@ -40,6 +40,10 @@ public class CodeLocationWaitData {
     private Set<String> signatureScanCodeLocationNames;
     private boolean hasScanResults;
 
+    private NotificationTaskRange binaryScanRange;
+    private Set<String> binaryScanCodeLocationNames;
+    private boolean hasBinaryResults;
+
     public void setFromBdioCodeLocationCreationData(CodeLocationCreationData<UploadBatchOutput> bdioCodeLocationCreationData) {
         bdioUploadRange = bdioCodeLocationCreationData.getNotificationTaskRange();
         bdioUploadCodeLocationNames = bdioCodeLocationCreationData.getOutput().getSuccessfulCodeLocationNames();
@@ -50,6 +54,12 @@ public class CodeLocationWaitData {
         signatureScanRange = scanCodeLocationCreationData.getNotificationTaskRange();
         signatureScanCodeLocationNames = scanCodeLocationCreationData.getOutput().getSuccessfulCodeLocationNames();
         hasScanResults = true;
+    }
+
+    public void setFromBinaryScan(NotificationTaskRange notificationTaskRange, Set<String> codeLocationNames) {
+        binaryScanRange = notificationTaskRange;
+        binaryScanCodeLocationNames = codeLocationNames;
+        hasBinaryResults = true;
     }
 
     public NotificationTaskRange getBdioUploadRange() {
@@ -74,6 +84,18 @@ public class CodeLocationWaitData {
 
     public boolean hasScanResults() {
         return hasScanResults;
+    }
+
+    public NotificationTaskRange getBinaryScanRange() {
+        return binaryScanRange;
+    }
+
+    public Set<String> getBinaryScanCodeLocationNames() {
+        return binaryScanCodeLocationNames;
+    }
+
+    public boolean hasBinaryScanResults() {
+        return hasBinaryResults;
     }
 
 }

@@ -65,6 +65,9 @@ public class BlackduckPostActions {
                 if (codeLocationWaitData.hasScanResults()) {
                     codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getSignatureScanRange(), codeLocationWaitData.getSignatureScanCodeLocationNames(), timeoutInSeconds);
                 }
+                if (codeLocationWaitData.hasBinaryScanResults()) {
+                    codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getBinaryScanRange(), codeLocationWaitData.getBinaryScanCodeLocationNames(), timeoutInSeconds);
+                }
             }
 
             if (policyCheckOptions.shouldPerformPolicyCheck()) {
