@@ -77,8 +77,8 @@ public class BlackduckPostActions {
                     CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getBinaryScanRange(), codeLocationWaitData.getBinaryScanCodeLocationNames(), timeoutInSeconds);
                     results.add(result);
                 }
-                for (CodeLocationWaitResult result : results){
-                    if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL){
+                for (CodeLocationWaitResult result : results) {
+                    if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
                         throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
                     }
                 }
