@@ -76,7 +76,7 @@ public class AggregateBdioCreator {
             return Optional.empty();
         }
 
-        final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "/", ""), projectNameVersion.getName(), projectNameVersion.getVersion());
+        final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
         final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
         final SimpleBdioDocument aggregateBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectNameVersion.getName(), projectNameVersion.getVersion(), projectExternalId, aggregateDependencyGraph);
 

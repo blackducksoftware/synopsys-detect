@@ -56,6 +56,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.blackducksoftware.integration.hub.detect.workflow.report.ReportManager;
 import com.blackducksoftware.integration.hub.detect.workflow.status.DetectStatusManager;
+import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
 //@SpringBootApplication
@@ -115,7 +116,11 @@ public class Application implements ApplicationRunner {
                 runResult = Optional.ofNullable(runManager.run());
                 logger.info("Detect run completed.");
             } catch (final Exception e) {
-                logger.error("Detect run failed: " + e.getMessage());
+                if (e.getMessage() != null){
+                    logger.error("Detect run failed: " + e.getMessage());
+                } else {
+                    logger.error("Detect run failed: " + e.getClass().getSimpleName());
+                }
                 logger.debug("An exception was thrown during the detect run.", e);
                 exitCodeManager.requestExitCode(e);
             }

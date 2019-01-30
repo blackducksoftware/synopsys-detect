@@ -572,7 +572,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The amount of time in seconds detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
-    DETECT_REPORT_TIMEOUT("detect.report.timeout", "Report Generation Timeout","3.0.0", PropertyType.LONG, PropertyAuthority.None, "300"),
+    DETECT_REPORT_TIMEOUT("detect.report.timeout", "Report Generation Timeout","5.2.0", PropertyType.LONG, PropertyAuthority.None, "300"),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If set, detect will fail if it does not find the detector types supplied here.")

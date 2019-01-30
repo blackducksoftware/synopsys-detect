@@ -30,6 +30,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
@@ -47,6 +48,16 @@ public class ExitCodeUtility {
             }
             final DetectUserFriendlyException friendlyException = (DetectUserFriendlyException) e;
             exceptionExitCodeType = friendlyException.getExitCodeType();
+        } else if (e instanceof BlackDuckApiException) {
+            BlackDuckApiException be = (BlackDuckApiException) e;
+
+            logger.error("A Black Duck Api exception was thrown.");
+            logger.error(be.getBlackDuckErrorMessage());
+            logger.debug(be.getBlackDuckErrorCode());
+
+            logger.error(be.getOriginalIntegrationRestException().getMessage());
+
+            exceptionExitCodeType = ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR;
         } else if (e instanceof IntegrationRestException) {
             logger.error(BLACDUCK_ERROR_MESSAGE);
             logger.debug(e.getMessage(), e);
@@ -85,7 +96,9 @@ public class ExitCodeUtility {
             }
             exceptionExitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
-        logger.error(e.getMessage());
+        if (e.getMessage() != null) {
+            logger.error(e.getMessage());
+        }
 
         return exceptionExitCodeType;
     }

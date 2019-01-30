@@ -24,6 +24,9 @@
 package com.blackducksoftware.integration.hub.detect.workflow.hub;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,9 +34,11 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.workflow.event.EventSystem;
+import com.blackducksoftware.integration.hub.detect.workflow.status.StatusType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationWaitResult;
 import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ReportService;
@@ -59,11 +64,23 @@ public class BlackduckPostActions {
             if (policyCheckOptions.shouldPerformPolicyCheck() || blackduckReportOptions.shouldGenerateAnyReport()) {
                 logger.info("Detect must wait for bom tool calculations to finish.");
                 CodeLocationCreationService codeLocationCreationService = blackDuckServicesFactory.createCodeLocationCreationService();
+                List<CodeLocationWaitResult> results = new ArrayList<>();
                 if (codeLocationWaitData.hasBdioResults()) {
-                    codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getBdioUploadRange(), codeLocationWaitData.getBdioUploadCodeLocationNames(), timeoutInSeconds);
+                    CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getBdioUploadRange(), codeLocationWaitData.getBdioUploadCodeLocationNames(), timeoutInSeconds);
+                    results.add(result);
                 }
                 if (codeLocationWaitData.hasScanResults()) {
-                    codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getSignatureScanRange(), codeLocationWaitData.getSignatureScanCodeLocationNames(), timeoutInSeconds);
+                    CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getSignatureScanRange(), codeLocationWaitData.getSignatureScanCodeLocationNames(), timeoutInSeconds);
+                    results.add(result);
+                }
+                if (codeLocationWaitData.hasBinaryScanResults()) {
+                    CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getBinaryScanRange(), codeLocationWaitData.getBinaryScanCodeLocationNames(), timeoutInSeconds);
+                    results.add(result);
+                }
+                for (CodeLocationWaitResult result : results) {
+                    if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
+                        throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
+                    }
                 }
             }
 
@@ -89,6 +106,8 @@ public class BlackduckPostActions {
                     logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
                 }
             }
+        } catch (final DetectUserFriendlyException e) {
+            throw e;
         } catch (final IllegalArgumentException e) {
             throw new DetectUserFriendlyException(String.format("Your Black Duck configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
         } catch (final IntegrationRestException e) {
