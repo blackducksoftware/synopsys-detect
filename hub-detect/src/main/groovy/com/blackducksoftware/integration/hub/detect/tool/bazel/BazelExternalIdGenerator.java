@@ -34,6 +34,7 @@ import java.util.Optional;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -125,6 +126,10 @@ public class BazelExternalIdGenerator {
         }
         final String targetDependenciesQueryOutput = targetDependenciesQueryResults.getStandardOutput();
         logger.debug(String.format("Bazel targetDependenciesQuery returned %d; output: %s", targetDependenciesQueryReturnCode, targetDependenciesQueryOutput));
+        if (StringUtils.isBlank(targetDependenciesQueryOutput)) {
+            logger.debug("Bazel targetDependenciesQuery found no dependencies");
+            return Optional.empty();
+        }
         final String[] rawDependencies = targetDependenciesQueryOutput.split("\\s+");
         return Optional.of(rawDependencies);
     }
