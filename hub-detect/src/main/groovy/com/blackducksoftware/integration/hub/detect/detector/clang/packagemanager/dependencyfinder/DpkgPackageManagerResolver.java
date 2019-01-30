@@ -21,36 +21,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.clang;
+package com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.detector.clang.PackageDetails;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
-import com.synopsys.integration.bdio.model.Forge;
 
-public class DpkgPackageManager extends ClangLinuxPackageManager {
-    private static final String PKG_MGR_NAME = "dpkg";
-    private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
-    private static final String VERSION_OUTPUT_EXPECTED_TEXT = "package management program version";
-    private static final String WHO_OWNS_OPTION = "-S";
-    private static final String GET_PKG_INFO_OPTION = "-s";
-    private static final Logger logger = LoggerFactory.getLogger(DpkgPackageManager.class);
-
-    public DpkgPackageManager() {
-        super(logger, PKG_MGR_NAME, PKG_MGR_NAME, Arrays.asList(Forge.UBUNTU, Forge.DEBIAN), VERSION_COMMAND_ARGS,
-            VERSION_OUTPUT_EXPECTED_TEXT, Arrays.asList(WHO_OWNS_OPTION));
-    }
+public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    protected void addToPackageList(final ExecutableRunner executableRunner, File workingDirectory, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
+    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException {
+        List<PackageDetails> packageDetailsList = new ArrayList<>();
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
             if (!valid(packageLine)) {
@@ -62,28 +54,26 @@ public class DpkgPackageManager extends ClangLinuxPackageManager {
             final String packageName = packageNameArchParts[0];
             final String packageArch = packageNameArchParts[1];
             logger.debug(String.format("package name: %s; arch: %s", packageName, packageArch));
-            final Optional<String> packageVersion = getPackageVersion(executableRunner, workingDirectory, packageName);
+            final Optional<String> packageVersion = getPackageVersion(currentPackageManager, executableRunner, workingDirectory, packageName);
             final PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion.orElse(null), packageArch);
-            dependencyDetailsList.add(dependencyDetails);
+            packageDetailsList.add(dependencyDetails);
         }
-    }
-
-    @Override
-    public Forge getDefaultForge() {
-        return Forge.UBUNTU;
+        return packageDetailsList;
     }
 
     private boolean valid(final String packageLine) {
         return packageLine.matches(".+:.+: .+");
     }
 
-    private Optional<String> getPackageVersion(final ExecutableRunner executableRunner, File workingDirectory, final String packageName) {
+    private Optional<String> getPackageVersion(ClangPackageManagerInfo currentPackageManager, final ExecutableRunner executableRunner, File workingDirectory, final String packageName) {
         try {
-            final ExecutableOutput packageStatusOutput = executableRunner.executeQuietly(workingDirectory, PKG_MGR_NAME, GET_PKG_INFO_OPTION, packageName);
+            List<String> args = new ArrayList<>(currentPackageManager.getPkgInfoArgs().get());
+            args.add(packageName);
+            final ExecutableOutput packageStatusOutput = executableRunner.executeQuietly(workingDirectory, currentPackageManager.getPkgMgrCmdString(), args);
             logger.debug(String.format("packageStatusOutput: %s", packageStatusOutput));
             return getPackageVersionFromStatusOutput(packageName, packageStatusOutput.getStandardOutput());
         } catch (final ExecutableRunnerException e) {
-            logger.error(String.format("Error executing %s to get package info: %s", PKG_MGR_NAME, e.getMessage()));
+            logger.error(String.format("Error executing %s to get package info: %s", currentPackageManager.getPkgMgrName(), e.getMessage()));
         }
         return Optional.empty();
     }

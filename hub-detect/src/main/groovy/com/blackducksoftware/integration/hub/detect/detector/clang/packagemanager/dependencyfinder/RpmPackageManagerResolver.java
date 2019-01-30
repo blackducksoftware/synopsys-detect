@@ -21,33 +21,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.clang;
+package com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.detector.clang.PackageDetails;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.synopsys.integration.bdio.model.Forge;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public class RpmPackageManager extends ClangLinuxPackageManager {
-    private static final String PKG_MGR_NAME = "rpm";
-    private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
-    private static final String VERSION_OUTPUT_EXPECTED_TEXT = "RPM version";
-    private static final String GET_PKG_INFO_OPTION = "-qf";
-
-    private static final Logger logger = LoggerFactory.getLogger(RpmPackageManager.class);
-
-    public RpmPackageManager() {
-        super(logger, PKG_MGR_NAME, PKG_MGR_NAME, Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT), VERSION_COMMAND_ARGS,
-            VERSION_OUTPUT_EXPECTED_TEXT, Arrays.asList(GET_PKG_INFO_OPTION));
-    }
+public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    protected void addToPackageList(final ExecutableRunner executableRunner, File workingDirectory, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
+    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException {
+        List<PackageDetails> packageDetailsList = new ArrayList<>();
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
             if (!valid(packageLine)) {
@@ -62,13 +56,9 @@ public class RpmPackageManager extends ClangLinuxPackageManager {
             final String versionRelease = packageLine.substring(secondToLastDashIndex + 1, lastDotIndex);
             final String artifact = packageLine.substring(0, secondToLastDashIndex);
             final PackageDetails dependencyDetails = new PackageDetails(artifact, versionRelease, arch);
-            dependencyDetailsList.add(dependencyDetails);
+            packageDetailsList.add(dependencyDetails);
         }
-    }
-
-    @Override
-    public Forge getDefaultForge() {
-        return Forge.CENTOS;
+        return packageDetailsList;
     }
 
     private boolean valid(final String packageLine) {
@@ -77,5 +67,4 @@ public class RpmPackageManager extends ClangLinuxPackageManager {
         }
         return packageLine.matches(".+-.+-.+\\..*");
     }
-
 }

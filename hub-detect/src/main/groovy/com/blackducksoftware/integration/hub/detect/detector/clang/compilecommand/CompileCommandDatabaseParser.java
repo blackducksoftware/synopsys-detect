@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.clang;
+package com.blackducksoftware.integration.hub.detect.detector.clang.compilecommand;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,16 +29,21 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 
 import com.google.gson.Gson;
 
-public class CompileCommandsJsonFile {
+public class CompileCommandDatabaseParser {
 
-    public static List<CompileCommand> parseJsonCompilationDatabaseFile(final Gson gson, final File compileCommandsJsonFile) throws IOException {
-        final String compileCommandsJson = FileUtils.readFileToString(compileCommandsJsonFile, StandardCharsets.UTF_8);
-        final CompileCommandJsonData[] compileCommands = gson.fromJson(compileCommandsJson, CompileCommandJsonData[].class);
-        return Arrays.stream(compileCommands).map(rawCommand -> new CompileCommand(rawCommand)).collect(Collectors.toList());
+    final Gson gson;
+
+    public CompileCommandDatabaseParser(final Gson gson) {this.gson = gson;}
+
+    public List<CompileCommand> parseCompileCommandDatabase(final File compileCommandsDatabaseFile) throws IOException {
+        final String compileCommandsJson = FileUtils.readFileToString(compileCommandsDatabaseFile, StandardCharsets.UTF_8);
+        final CompileCommand[] compileCommands = gson.fromJson(compileCommandsJson, CompileCommand[].class);
+        return Arrays.asList(compileCommands);
     }
 }

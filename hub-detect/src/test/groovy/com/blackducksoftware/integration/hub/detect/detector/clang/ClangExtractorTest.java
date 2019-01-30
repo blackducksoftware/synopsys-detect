@@ -20,6 +20,8 @@ import org.mockito.Mockito;
 
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.detector.clang.compilecommand.CompileCommand;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangLinuxPackageManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -53,15 +55,15 @@ public class ClangExtractorTest {
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
-        final DependenciesListFileManager dependenciesListFileManager = Mockito.mock(DependenciesListFileManager.class);
+        final FilePathGenerator filePathGenerator = Mockito.mock(FilePathGenerator.class);
 
-        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapper, true)).thenReturn(dependencyFilePaths);
+        Mockito.when(filePathGenerator.generateDependencyFilePaths(outputDir, compileCommandWrapper, true)).thenReturn(dependencyFilePaths);
         Mockito.when(executableRunner.executeFromDirQuietly(Mockito.any(File.class), Mockito.anyString(), Mockito.anyList())).thenReturn(new ExecutableOutput(0, "", ""));
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
         final ClangExtractor extractor = new ClangExtractor(null, executableRunner, gson, new DetectFileFinder(),
-            directoryManager, dependenciesListFileManager,
+            directoryManager, filePathGenerator,
             codeLocationAssembler);
 
         final ClangLinuxPackageManager pkgMgr = Mockito.mock(ClangLinuxPackageManager.class);
@@ -95,17 +97,17 @@ public class ClangExtractorTest {
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
-        final DependenciesListFileManager dependenciesListFileManager = Mockito.mock(DependenciesListFileManager.class);
+        final FilePathGenerator filePathGenerator = Mockito.mock(FilePathGenerator.class);
 
-        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapperHelloWorld, true)).thenReturn(dependencyFilePathsHelloWorld);
-        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapperGoodbyeWorld, true)).thenReturn(dependencyFilePathsGoodbyeWorld);
+        Mockito.when(filePathGenerator.generateDependencyFilePaths(outputDir, compileCommandWrapperHelloWorld, true)).thenReturn(dependencyFilePathsHelloWorld);
+        Mockito.when(filePathGenerator.generateDependencyFilePaths(outputDir, compileCommandWrapperGoodbyeWorld, true)).thenReturn(dependencyFilePathsGoodbyeWorld);
 
         Mockito.when(executableRunner.executeFromDirQuietly(Mockito.any(File.class), Mockito.anyString(), Mockito.anyList())).thenReturn(new ExecutableOutput(0, "", ""));
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
         final ClangExtractor extractor = new ClangExtractor(null, executableRunner, gson, new DetectFileFinder(),
-            directoryManager, dependenciesListFileManager,
+            directoryManager, filePathGenerator,
             codeLocationAssembler);
 
         final ClangLinuxPackageManager pkgMgr = Mockito.mock(ClangLinuxPackageManager.class);
@@ -143,16 +145,16 @@ public class ClangExtractorTest {
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
-        final DependenciesListFileManager dependenciesListFileManager = Mockito.mock(DependenciesListFileManager.class);
+        final FilePathGenerator filePathGenerator = Mockito.mock(FilePathGenerator.class);
 
-        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapperHelloWorld, true)).thenReturn(dependencyFilePathsHelloWorld);
-        Mockito.when(dependenciesListFileManager.generateDependencyFilePaths(outputDir, compileCommandWrapperGoodbyeWorld, true)).thenReturn(dependencyFilePathsGoodbyeWorld);
+        Mockito.when(filePathGenerator.generateDependencyFilePaths(outputDir, compileCommandWrapperHelloWorld, true)).thenReturn(dependencyFilePathsHelloWorld);
+        Mockito.when(filePathGenerator.generateDependencyFilePaths(outputDir, compileCommandWrapperGoodbyeWorld, true)).thenReturn(dependencyFilePathsGoodbyeWorld);
         Mockito.when(executableRunner.executeFromDirQuietly(Mockito.any(File.class), Mockito.anyString(), Mockito.anyList())).thenReturn(new ExecutableOutput(0, "", ""));
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
         final ClangExtractor extractor = new ClangExtractor(null, executableRunner, gson, new DetectFileFinder(),
-            directoryManager, dependenciesListFileManager,
+            directoryManager, filePathGenerator,
             codeLocationAssembler);
 
         final ClangLinuxPackageManager pkgMgr = Mockito.mock(ClangLinuxPackageManager.class);
@@ -229,12 +231,12 @@ public class ClangExtractorTest {
     }
 
     private CompileCommand createCompileCommand(String file, String command, String[] arguments) {
-        final CompileCommandJsonData compileCommandJsonData = new CompileCommandJsonData();
-        compileCommandJsonData.directory = "src/test/resources/clang/source";
-        compileCommandJsonData.file = file;
-        compileCommandJsonData.command = command;
-        compileCommandJsonData.arguments = arguments;
-        return new CompileCommand(compileCommandJsonData);
+        final CompileCommand compileCommand = new CompileCommand();
+        compileCommand.directory = "src/test/resources/clang/source";
+        compileCommand.file = file;
+        compileCommand.command = command;
+        compileCommand.arguments = arguments;
+        return new CompileCommand(compileCommand);
     }
 
 }

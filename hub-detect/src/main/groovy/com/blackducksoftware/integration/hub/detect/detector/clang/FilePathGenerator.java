@@ -24,10 +24,9 @@
 package com.blackducksoftware.integration.hub.detect.detector.clang;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,15 +35,16 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.detector.clang.compilecommand.CompileCommandParser;
+import com.blackducksoftware.integration.hub.detect.detector.clang.compilecommand.CompileCommand;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public class DependenciesListFileManager {
+public class FilePathGenerator {
     private static final String COMPILER_OUTPUT_FILE_OPTION = "-o";
     private static final String REPLACEMENT_OUTPUT_FILENAME = "/dev/null";
     private static final String DEPS_MK_FILENAME_PATTERN = "deps_%s_%d.mk";
@@ -52,75 +52,50 @@ public class DependenciesListFileManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final Random random = new Random();
     private final ExecutableRunner executableRunner;
-    private final ClangCompileCommandParser compileCommandParser;
+    private final CompileCommandParser compileCommandParser;
+    private final DepsMkFileParser depsMkFileParser;
 
-    public DependenciesListFileManager(final ExecutableRunner executableRunner, final ClangCompileCommandParser compileCommandParser) {
+    public FilePathGenerator(final ExecutableRunner executableRunner, final CompileCommandParser compileCommandParser, final DepsMkFileParser depsMkFileParser) {
         this.executableRunner = executableRunner;
         this.compileCommandParser = compileCommandParser;
+        this.depsMkFileParser = depsMkFileParser;
     }
 
-    public Set<String> generateDependencyFilePaths(final File workingDir, final CompileCommand compileCommand, final boolean cleanup) {
+    public List<String> fromCompileCommand(final File workingDir, final CompileCommand compileCommand, final boolean cleanup) {
         final Set<String> dependencyFilePaths = new HashSet<>();
-        final Optional<File> depsMkFile = generate(workingDir, compileCommand);
-        dependencyFilePaths.addAll(parse(depsMkFile.orElse(null)));
-        if (cleanup) {
-            depsMkFile.ifPresent(File::delete);
+        final Optional<File> depsMkFile = generateDepsMkFile(workingDir, compileCommand);
+        if (depsMkFile.isPresent()) {
+            List<String> files = depsMkFileParser.parseDepsMk(depsMkFile.get());
+            if (cleanup) {
+                depsMkFile.get().delete();
+            }
+            return files;
+        } else {
+            return Collections.emptyList();
         }
-        return dependencyFilePaths;
     }
 
-    private Optional<File> generate(final File workingDir,
-        final CompileCommand compileCommand) {
+    private Optional<File> generateDepsMkFile(final File workingDir, final CompileCommand compileCommand) {
         final String depsMkFilename = deriveDependenciesListFilename(compileCommand);
         final File depsMkFile = new File(workingDir, depsMkFilename);
         Map<String, String> optionOverrides = new HashMap<>(1);
         optionOverrides.put(COMPILER_OUTPUT_FILE_OPTION, REPLACEMENT_OUTPUT_FILENAME);
         try {
-            executableRunner.executeFromDirQuietly(new File(compileCommand.getDirectory()), compileCommandParser.getCompilerCommand(compileCommand.getCommand()),
-                compileCommandParser.getCompilerArgsForGeneratingDepsMkFile(compileCommand.getCommand(), depsMkFile.getAbsolutePath(), optionOverrides));
+            File compileCommandDirectory = new File(compileCommand.directory);
+            String command = compileCommandParser.parseActualCommand(compileCommand);
+            List<String> args = compileCommandParser.parseArguments(compileCommand, optionOverrides);
+            args.addAll(Arrays.asList("-M", "-MF", depsMkFile.getAbsolutePath()));
+            executableRunner.executeFromDirQuietly(compileCommandDirectory, command, args);
         } catch (final ExecutableRunnerException e) {
-            logger.debug(String.format("Error generating dependencies file for command '%s': %s", compileCommand.getCommand(), e.getMessage()));
+            logger.debug(String.format("Error generating dependencies file for command '%s': %s", compileCommand.command, e.getMessage()));
             return Optional.empty();
         }
         return Optional.of(depsMkFile);
     }
 
-    private List<String> parse(final File depsMkFile) {
-        if (depsMkFile == null) {
-            return new ArrayList<>(0);
-        }
-        List<String> dependencyFilePaths;
-        try {
-            final String depsDecl = FileUtils.readFileToString(depsMkFile, StandardCharsets.UTF_8);
-            final String[] depsDeclParts = depsDecl.split(": ");
-            if (depsDeclParts.length != 2) {
-                logger.warn(String.format("Unable to parse %s contents: %s", depsMkFile.getAbsolutePath(), depsDecl));
-                return new ArrayList<>(0);
-            }
-            String depsListString = depsDeclParts[1];
-            logger.trace(String.format("dependencies: %s", depsListString));
-
-            depsListString = depsListString.replaceAll("\n", " ");
-            logger.trace(String.format("dependencies, newlines removed: %s", depsListString));
-
-            depsListString = depsListString.replaceAll("\\\\", " ");
-            logger.trace(String.format("dependencies, backslashes removed: %s", depsListString));
-
-            final String[] deps = depsListString.split("\\s+");
-            for (final String includeFile : deps) {
-                logger.trace(String.format("\t%s", includeFile));
-            }
-            dependencyFilePaths = Arrays.asList(deps);
-        } catch (final Exception e) {
-            logger.warn(String.format("Error getting dependency file paths from '%s': %s", depsMkFile.getAbsolutePath(), e.getMessage()));
-            return new ArrayList<>(0);
-        }
-        return dependencyFilePaths;
-    }
-
     private String deriveDependenciesListFilename(final CompileCommand compileCommand) {
         final int randomInt = random.nextInt(1000);
-        final String sourceFilenameBase = getFilenameBase(compileCommand.getFile());
+        final String sourceFilenameBase = getFilenameBase(compileCommand.file);
         return String.format(DEPS_MK_FILENAME_PATTERN, sourceFilenameBase, randomInt);
     }
 

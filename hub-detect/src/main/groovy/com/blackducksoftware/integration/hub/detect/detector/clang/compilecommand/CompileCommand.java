@@ -21,12 +21,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.clang;
+package com.blackducksoftware.integration.hub.detect.detector.clang.compilecommand;
 
 import com.synopsys.integration.util.Stringable;
 
 // Loaded from json via Gson
-public class CompileCommandJsonData extends Stringable {
+public class CompileCommand extends Stringable {
     public String directory;
     public String command;
     public String[] arguments;

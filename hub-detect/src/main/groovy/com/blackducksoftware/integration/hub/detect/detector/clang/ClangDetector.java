@@ -31,6 +31,8 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangLinuxPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
@@ -43,19 +45,24 @@ import com.synopsys.integration.exception.IntegrationException;
 public class ClangDetector extends Detector {
     private static final String JSON_COMPILATION_DATABASE_FILENAME = "compile_commands.json";
     private final ClangExtractor clangExtractor;
+    private final boolean cleanup;
     private File jsonCompilationDatabaseFile = null;
     private final DetectFileFinder fileFinder;
     private final ExecutableRunner executableRunner;
-    private final List<ClangLinuxPackageManager> availablePkgMgrs;
+    private final List<ClangPackageManagerInfo> availablePkgMgrs;
+    private final ClangLinuxPackageManager pkgMngr;
 
-    private ClangLinuxPackageManager selectedPkgMgr;
+    private ClangPackageManagerInfo selectedPkgMgr;
 
-    public ClangDetector(final DetectorEnvironment environment, final ExecutableRunner executableRunner, final DetectFileFinder fileFinder, final List<ClangLinuxPackageManager> pkgMgrs, final ClangExtractor clangExtractor) {
+    public ClangDetector(final DetectorEnvironment environment, final ExecutableRunner executableRunner, final DetectFileFinder fileFinder, final List<ClangPackageManagerInfo> availablePkgMgrs, final ClangExtractor clangExtractor,
+        boolean cleanup, final ClangLinuxPackageManager pkgMngr) {
         super(environment, "Clang", DetectorType.CLANG);
         this.fileFinder = fileFinder;
-        this.availablePkgMgrs = pkgMgrs;
+        this.availablePkgMgrs = availablePkgMgrs;
         this.executableRunner = executableRunner;
         this.clangExtractor = clangExtractor;
+        this.cleanup = cleanup;
+        this.pkgMngr = pkgMngr;
     }
 
     @Override
@@ -80,12 +87,12 @@ public class ClangDetector extends Detector {
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         addRelevantDiagnosticFile(jsonCompilationDatabaseFile);
-        return clangExtractor.extract(selectedPkgMgr, environment.getDirectory(), environment.getDepth(), extractionId, jsonCompilationDatabaseFile);
+        return clangExtractor.extract(selectedPkgMgr, pkgMngr, environment.getDirectory(), environment.getDepth(), extractionId, jsonCompilationDatabaseFile, cleanup);
     }
 
-    private ClangLinuxPackageManager findPkgMgr(File workingDirectory) throws IntegrationException {
-        for (final ClangLinuxPackageManager pkgMgrCandidate : availablePkgMgrs) {
-            if (pkgMgrCandidate.applies(workingDirectory, executableRunner)) {
+    private ClangPackageManagerInfo findPkgMgr(File workingDirectory) throws IntegrationException {
+        for (final ClangPackageManagerInfo pkgMgrCandidate : availablePkgMgrs) {
+            if (pkgMngr.applies(pkgMgrCandidate, workingDirectory, executableRunner)) {
                 return pkgMgrCandidate;
             }
         }

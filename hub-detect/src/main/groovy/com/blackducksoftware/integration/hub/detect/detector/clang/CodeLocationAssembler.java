@@ -24,8 +24,15 @@
 package com.blackducksoftware.integration.hub.detect.detector.clang;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
@@ -36,13 +43,40 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class CodeLocationAssembler {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
 
     public CodeLocationAssembler(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DetectCodeLocation generateCodeLocation(final Forge defaultForge, final File rootDir, final List<Dependency> bdioComponents) {
+    public DetectCodeLocation generateCodeLocation(final Forge codeLocationForge, List<Forge> dependencyForges, final File rootDir, final Set<PackageDetails> packages) {
+        final List<Dependency> dependencies = packages.parallelStream()
+                                                  .flatMap(pkg -> toDependency(dependencyForges, pkg).stream())
+                                                  .collect(Collectors.toList());
+        logger.trace("Generated : " + dependencies.size() + " dependencies.");
+
+        return generateCodeLocation(codeLocationForge, rootDir, dependencies);
+    }
+
+    private List<Dependency> toDependency(final List<Forge> forges, PackageDetails details) {
+        final String name  = details.getPackageName();
+        final String version = details.getPackageVersion();
+        final String arch = details.getPackageArch();
+
+        final List<Dependency> dependencies = new ArrayList<>();
+        final String externalId = String.format("%s/%s/%s", name, version, arch);
+        logger.trace(String.format("Constructed externalId: %s", externalId));
+        for (final Forge forge : forges) {
+            final ExternalId extId = externalIdFactory.createArchitectureExternalId(forge, name, version, arch);
+            final Dependency dep = new Dependency(name, version, extId);
+            logger.debug(String.format("forge: %s: adding %s version %s as child to dependency node tree; externalId: %s", forge.getName(), dep.name, dep.version, dep.externalId.createBdioId()));
+            dependencies.add(dep);
+        }
+        return dependencies;
+    }
+
+    private DetectCodeLocation generateCodeLocation(final Forge defaultForge, final File rootDir, final List<Dependency> bdioComponents) {
         final MutableDependencyGraph dependencyGraph = populateGraph(bdioComponents);
         final ExternalId externalId = externalIdFactory.createPathExternalId(defaultForge, rootDir.toString());
         return new DetectCodeLocation.Builder(DetectCodeLocationType.CLANG, rootDir.toString(), externalId, dependencyGraph).build();

@@ -45,15 +45,15 @@ import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeArch
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeDetector;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.GraphParserTransformer;
-import com.blackducksoftware.integration.hub.detect.detector.clang.ApkPackageManager;
-import com.blackducksoftware.integration.hub.detect.detector.clang.ClangCompileCommandParser;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ApkPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.compilecommand.CompileCommandParser;
 import com.blackducksoftware.integration.hub.detect.detector.clang.ClangDetector;
 import com.blackducksoftware.integration.hub.detect.detector.clang.ClangExtractor;
-import com.blackducksoftware.integration.hub.detect.detector.clang.ClangLinuxPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangLinuxPackageManager;
 import com.blackducksoftware.integration.hub.detect.detector.clang.CodeLocationAssembler;
-import com.blackducksoftware.integration.hub.detect.detector.clang.DependenciesListFileManager;
-import com.blackducksoftware.integration.hub.detect.detector.clang.DpkgPackageManager;
-import com.blackducksoftware.integration.hub.detect.detector.clang.RpmPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.FilePathGenerator;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.DpkgPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.RpmPackageManager;
 import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockParser;
@@ -196,13 +196,13 @@ public class DetectorBeanConfiguration {
     //All detector support classes. These are classes not actually used outside of the bom tools but are necessary for some bom tools.
 
     @Bean
-    public DependenciesListFileManager clangDependenciesListFileParser() {
-        return new DependenciesListFileManager(executableRunner, clangCompileCommandParser());
+    public FilePathGenerator clangDependenciesListFileParser() {
+        return new FilePathGenerator(executableRunner, clangCompileCommandParser(), parser);
     }
 
     @Bean
-    ClangCompileCommandParser clangCompileCommandParser() {
-        return new ClangCompileCommandParser();
+    CompileCommandParser clangCompileCommandParser() {
+        return new CompileCommandParser();
     }
 
     @Bean

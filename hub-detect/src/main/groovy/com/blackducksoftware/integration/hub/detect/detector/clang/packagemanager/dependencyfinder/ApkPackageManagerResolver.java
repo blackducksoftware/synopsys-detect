@@ -21,9 +21,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.clang;
+package com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -31,31 +32,18 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.detector.clang.PackageDetails;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
-import com.synopsys.integration.bdio.model.Forge;
 
-public class ApkPackageManager extends ClangLinuxPackageManager {
-    private static final String PKG_MGR_NAME = "apk";
-    private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
-    private static final String VERSION_OUTPUT_EXPECTED_TEXT = "apk-tools ";
-    private static final String INFO_SUBCOMMAND = "info";
-    private static final String WHO_OWNS_OPTION = "--who-owns";
-    private static final String GET_ARCHITECTURE_OPTION = "--print-arch";
-    private static final Logger logger = LoggerFactory.getLogger(ApkPackageManager.class);
-    private String architecture = null;
-
-    public ApkPackageManager() {
-        super(logger, PKG_MGR_NAME, PKG_MGR_NAME, Arrays.asList(Forge.ALPINE), VERSION_COMMAND_ARGS,
-            VERSION_OUTPUT_EXPECTED_TEXT, Arrays.asList(INFO_SUBCOMMAND, WHO_OWNS_OPTION));
-    }
+public class ApkPackageManagerResolver implements ClangPackageManagerResolver {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    protected void addToPackageList(final ExecutableRunner executableRunner, File workingDirectory, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) throws ExecutableRunnerException {
-        if (architecture == null) {
-            architecture = executableRunner.executeQuietly(workingDirectory, PKG_MGR_NAME, INFO_SUBCOMMAND, GET_ARCHITECTURE_OPTION).getStandardOutput().trim();
-            logger.debug(String.format("architecture: %s", architecture));
-        }
+    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException {
+        Optional<String> architecture = findArchitecture(currentPackageManager, workingDirectory, executableRunner);
+        List<PackageDetails> packageDetailsList = new ArrayList<>();
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
             final Optional<List<String>> pkgNameVersionParts = parseIsOwnedByOutputLine(packageLine);
@@ -65,18 +53,23 @@ public class ApkPackageManager extends ClangLinuxPackageManager {
                 final Optional<String> component = deriveComponent(pkgNameVersionParts.get());
                 logger.trace(String.format("component: %s", component));
                 if (component.isPresent()) {
-                    final String externalId = String.format("%s/%s/%s", component, version, architecture);
+                    final String externalId = String.format("%s/%s/%s", component, version, architecture.get());
                     logger.debug(String.format("Constructed externalId: %s", externalId));
-                    final PackageDetails dependencyDetails = new PackageDetails(component.get(), version, architecture);
-                    dependencyDetailsList.add(dependencyDetails);
+                    final PackageDetails dependencyDetails = new PackageDetails(component.get(), version, architecture.get());
+                    packageDetailsList.add(dependencyDetails);
                 }
             }
         }
+        return packageDetailsList;
     }
 
-    @Override
-    public Forge getDefaultForge() {
-        return Forge.ALPINE;
+
+    private Optional<String> findArchitecture(ClangPackageManagerInfo currentPackageManager, File workingDirectory, ExecutableRunner executableRunner) throws ExecutableRunnerException {
+        if (currentPackageManager.getPkgArchitectureArgs().isPresent()){
+            List<String> args = currentPackageManager.getPkgArchitectureArgs().get();
+            return Optional.ofNullable(executableRunner.executeQuietly(workingDirectory, currentPackageManager.getPkgMgrCmdString(), args).getStandardOutput().trim());
+        }
+        return Optional.empty();
     }
 
     private String deriveVersion(final List<String> pkgParts) {
