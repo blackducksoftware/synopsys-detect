@@ -40,6 +40,10 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private final DpkgVersionResolver versionResolver;
+    public DpkgPackageManagerResolver(DpkgVersionResolver versionResolver){
+        this.versionResolver = versionResolver;
+    }
     @Override
     public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException {
         List<PackageDetails> packageDetailsList = new ArrayList<>();
@@ -54,7 +58,7 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
             final String packageName = packageNameArchParts[0];
             final String packageArch = packageNameArchParts[1];
             logger.debug(String.format("package name: %s; arch: %s", packageName, packageArch));
-            final Optional<String> packageVersion = getPackageVersion(currentPackageManager, executableRunner, workingDirectory, packageName);
+            final Optional<String> packageVersion = versionResolver.resolvePackageVersion(currentPackageManager, executableRunner, workingDirectory, packageName);
             final PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion.orElse(null), packageArch);
             packageDetailsList.add(dependencyDetails);
         }
@@ -63,35 +67,5 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
 
     private boolean valid(final String packageLine) {
         return packageLine.matches(".+:.+: .+");
-    }
-
-    private Optional<String> getPackageVersion(ClangPackageManagerInfo currentPackageManager, final ExecutableRunner executableRunner, File workingDirectory, final String packageName) {
-        try {
-            List<String> args = new ArrayList<>(currentPackageManager.getPkgInfoArgs().get());
-            args.add(packageName);
-            final ExecutableOutput packageStatusOutput = executableRunner.executeQuietly(workingDirectory, currentPackageManager.getPkgMgrCmdString(), args);
-            logger.debug(String.format("packageStatusOutput: %s", packageStatusOutput));
-            return getPackageVersionFromStatusOutput(packageName, packageStatusOutput.getStandardOutput());
-        } catch (final ExecutableRunnerException e) {
-            logger.error(String.format("Error executing %s to get package info: %s", currentPackageManager.getPkgMgrName(), e.getMessage()));
-        }
-        return Optional.empty();
-    }
-
-    private Optional<String> getPackageVersionFromStatusOutput(final String packageName, final String packageStatusOutput) {
-        final String[] packageStatusOutputLines = packageStatusOutput.split("\\n");
-        for (final String packageStatusOutputLine : packageStatusOutputLines) {
-            final String[] packageStatusOutputLineNameValue = packageStatusOutputLine.split(":\\s+");
-            final String label = packageStatusOutputLineNameValue[0];
-            final String value = packageStatusOutputLineNameValue[1];
-            if ("Status".equals(label.trim()) && !value.contains("installed")) {
-                logger.debug(String.format("%s is not installed; Status is: %s", packageName, value));
-                return Optional.empty();
-            }
-            if ("Version".equals(label)) {
-                return Optional.of(value);
-            }
-        }
-        return Optional.empty();
     }
 }

@@ -45,15 +45,15 @@ import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeArch
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeDetector;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.bitbake.GraphParserTransformer;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ApkPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.DepsMkFileParser;
 import com.blackducksoftware.integration.hub.detect.detector.clang.compilecommand.CompileCommandParser;
 import com.blackducksoftware.integration.hub.detect.detector.clang.ClangDetector;
 import com.blackducksoftware.integration.hub.detect.detector.clang.ClangExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangLinuxPackageManager;
 import com.blackducksoftware.integration.hub.detect.detector.clang.CodeLocationAssembler;
 import com.blackducksoftware.integration.hub.detect.detector.clang.FilePathGenerator;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.DpkgPackageManager;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.RpmPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerFactory;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockParser;
@@ -197,7 +197,12 @@ public class DetectorBeanConfiguration {
 
     @Bean
     public FilePathGenerator clangDependenciesListFileParser() {
-        return new FilePathGenerator(executableRunner, clangCompileCommandParser(), parser);
+        return new FilePathGenerator(executableRunner, clangCompileCommandParser(), depsMkParser());
+    }
+
+    @Bean
+    public DepsMkFileParser depsMkParser() {
+        return new DepsMkFileParser();
     }
 
     @Bean
@@ -221,15 +226,16 @@ public class DetectorBeanConfiguration {
 
     @Bean
     public ClangExtractor clangExtractor() {
-        return new ClangExtractor(detectConfiguration, executableRunner, gson, detectFileFinder, directoryManager, clangDependenciesListFileParser(), codeLocationAssembler());
+        return new ClangExtractor(executableRunner, gson, detectFileFinder, directoryManager, clangDependenciesListFileParser(), codeLocationAssembler());
     }
 
-    public List<ClangLinuxPackageManager> clangLinuxPackageManagers() {
-        final List<ClangLinuxPackageManager> clangLinuxPackageManagers = new ArrayList<>();
-        clangLinuxPackageManagers.add(new ApkPackageManager());
-        clangLinuxPackageManagers.add(new DpkgPackageManager());
-        clangLinuxPackageManagers.add(new RpmPackageManager());
-        return clangLinuxPackageManagers;
+    public ClangLinuxPackageManager clangLinuxPackageManager() {
+        return new ClangLinuxPackageManager();
+    }
+
+    public List<ClangPackageManagerInfo> clangLinuxPackageManagers() {
+        ClangPackageManagerFactory factory  = new ClangPackageManagerFactory();
+        return factory.createPackageManagers();
     }
 
     @Bean
@@ -497,7 +503,7 @@ public class DetectorBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public ClangDetector clangBomTool(final DetectorEnvironment environment) {
-        return new ClangDetector(environment, executableRunner, detectFileFinder, clangLinuxPackageManagers(), clangExtractor());
+        return new ClangDetector(environment, executableRunner, detectFileFinder, clangLinuxPackageManagers(), clangExtractor(), detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.None), clangLinuxPackageManager());
     }
 
     @Bean

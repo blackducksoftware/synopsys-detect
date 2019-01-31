@@ -17,13 +17,14 @@ public class ClangPackageManagerBuilder {
     private List<String> pkgMgrGetOwnerCmdArgs;
     private ClangPackageManagerResolver packageOutputParser;
     private List<String> architectureArguments;
+    private List<String> pkgInfoArgs;
 
     public ClangPackageManagerBuilder setName(String name) {
         this.pkgMgrName = name;
         return this;
     }
 
-    public ClangPackageManagerBuilder setCmd(String name) {
+    public ClangPackageManagerBuilder setCmd(String pkgMgrCmdString) {
         this.pkgMgrCmdString = pkgMgrCmdString;
         return this;
     }
@@ -81,6 +82,15 @@ public class ClangPackageManagerBuilder {
 
     public ClangPackageManagerBuilder setArchitectureArguments(String... architectureArguments) {
         return setArchitectureArguments(Arrays.asList(architectureArguments));
+    }
+
+    public ClangPackageManagerBuilder setPackageInfoArguments(List<String> pkgInfoArgs) {
+        this.pkgInfoArgs = pkgInfoArgs;
+        return this;
+    }
+
+    public ClangPackageManagerBuilder setPackageInfoArguments(String... pkgInfoArgs) {
+        return setPackageInfoArguments(Arrays.asList(pkgInfoArgs));
     }
 
     public ClangPackageManagerInfo build() {

@@ -13,7 +13,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -22,6 +21,8 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.detector.clang.compilecommand.CompileCommand;
 import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangLinuxPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerFactory;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -38,35 +39,31 @@ public class ClangExtractorTest {
     private final Gson gson = new Gson();
     private final File outputDir = new File("src/test/resources/clang/output");
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    }
+    @Test
+    public void testFilePath() throws ExecutableRunnerException {
 
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
     }
 
     @Test
     public void testSimple() throws ExecutableRunnerException {
-        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
-
-        final CompileCommand compileCommandWrapper = createCompileCommand("src/test/resources/clang/source/hello_world.cpp", "gcc hello_world.cpp", null);
-        final Set<String> dependencyFilePaths = createDependencyFilePaths(new File("/usr/include/nonexistentfile1.h"), new File("src/test/resources/clang/source/myinclude.h"));
+        final CompileCommand compileCommand = createCompileCommand("src/test/resources/clang/source/hello_world.cpp", "gcc hello_world.cpp", null);
+        final List<String> dependencyFilePaths = createDependencyFilePaths(new File("/usr/include/nonexistentfile1.h"), new File("src/test/resources/clang/source/myinclude.h"));
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
         final FilePathGenerator filePathGenerator = Mockito.mock(FilePathGenerator.class);
 
-        Mockito.when(filePathGenerator.generateDependencyFilePaths(outputDir, compileCommandWrapper, true)).thenReturn(dependencyFilePaths);
+        Mockito.when(filePathGenerator.fromCompileCommand(outputDir, compileCommand, true)).thenReturn(dependencyFilePaths);
         Mockito.when(executableRunner.executeFromDirQuietly(Mockito.any(File.class), Mockito.anyString(), Mockito.anyList())).thenReturn(new ExecutableOutput(0, "", ""));
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
-        final ClangExtractor extractor = new ClangExtractor(null, executableRunner, gson, new DetectFileFinder(),
-            directoryManager, filePathGenerator,
-            codeLocationAssembler);
+        final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(), directoryManager, filePathGenerator, codeLocationAssembler);
 
+
+        final ClangPackageManagerInfo pkgMgrInfo = Mockito.mock(ClangPackageManagerInfo.class);
         final ClangLinuxPackageManager pkgMgr = Mockito.mock(ClangLinuxPackageManager.class);
+
         final File givenDir = new File("src/test/resources/clang/source/build");
         final int depth = 1;
         final ExtractionId extractionId = new ExtractionId(DetectorType.CLANG, EXTRACTION_ID);
@@ -76,41 +73,40 @@ public class ClangExtractorTest {
 
         final List<PackageDetails> packages = new ArrayList<>();
         packages.add(new PackageDetails("testPackageName", "testPackageVersion", "testPackageArch"));
+        Mockito.when(pkgMgr.getPackages(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(packages);
 
-        Mockito.when(pkgMgr.getDefaultForge()).thenReturn(Forge.UBUNTU);
-        Mockito.when(pkgMgr.getPackages(Mockito.any(File.class), Mockito.any(ExecutableRunner.class), Mockito.any(Set.class), Mockito.any(DependencyFileDetails.class))).thenReturn(packages);
-        Mockito.when(pkgMgr.getForges()).thenReturn(Arrays.asList(Forge.UBUNTU, Forge.DEBIAN));
-        final Extraction extraction = extractor.extract(pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile);
+        Mockito.when(pkgMgrInfo.getDefaultForge()).thenReturn(Forge.UBUNTU);
+        Mockito.when(pkgMgrInfo.getForges()).thenReturn(Arrays.asList(Forge.UBUNTU, Forge.DEBIAN));
+        final Extraction extraction = extractor.extract(pkgMgrInfo, pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile, true);
 
         checkGeneratedDependenciesSimple(extraction);
     }
 
     @Test
     public void testMultipleCommandsDependenciesPackages() throws ExecutableRunnerException {
-        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         final CompileCommand compileCommandWrapperHelloWorld = createCompileCommand("src/test/resources/clang/source/hello_world.cpp", "gcc hello_world.cpp", null);
         final CompileCommand compileCommandWrapperGoodbyeWorld = createCompileCommand("src/test/resources/clang/source/goodbye_world.cpp", "gcc goodbye_world.cpp", null);
 
-        final Set<String> dependencyFilePathsHelloWorld = createDependencyFilePaths(new File("src/test/resources/clang/source/myinclude.h"), new File("/usr/include/nonexistentfile1.h"), new File("/usr/include/nonexistentfile2.h"));
-        final Set<String> dependencyFilePathsGoodbyeWorld = createDependencyFilePaths(new File("/usr/include/nonexistentfile4.h"), new File("/usr/include/nonexistentfile3.h"));
+        final List<String> dependencyFilePathsHelloWorld = createDependencyFilePaths(new File("src/test/resources/clang/source/myinclude.h"), new File("/usr/include/nonexistentfile1.h"), new File("/usr/include/nonexistentfile2.h"));
+        final List<String> dependencyFilePathsGoodbyeWorld = createDependencyFilePaths(new File("/usr/include/nonexistentfile4.h"), new File("/usr/include/nonexistentfile3.h"));
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
         final FilePathGenerator filePathGenerator = Mockito.mock(FilePathGenerator.class);
 
-        Mockito.when(filePathGenerator.generateDependencyFilePaths(outputDir, compileCommandWrapperHelloWorld, true)).thenReturn(dependencyFilePathsHelloWorld);
-        Mockito.when(filePathGenerator.generateDependencyFilePaths(outputDir, compileCommandWrapperGoodbyeWorld, true)).thenReturn(dependencyFilePathsGoodbyeWorld);
+        Mockito.when(filePathGenerator.fromCompileCommand(outputDir, compileCommandWrapperHelloWorld, true)).thenReturn(dependencyFilePathsHelloWorld);
+        Mockito.when(filePathGenerator.fromCompileCommand(outputDir, compileCommandWrapperGoodbyeWorld, true)).thenReturn(dependencyFilePathsGoodbyeWorld);
 
         Mockito.when(executableRunner.executeFromDirQuietly(Mockito.any(File.class), Mockito.anyString(), Mockito.anyList())).thenReturn(new ExecutableOutput(0, "", ""));
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
-        final ClangExtractor extractor = new ClangExtractor(null, executableRunner, gson, new DetectFileFinder(),
-            directoryManager, filePathGenerator,
-            codeLocationAssembler);
+        final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(), directoryManager, filePathGenerator, codeLocationAssembler);
 
         final ClangLinuxPackageManager pkgMgr = Mockito.mock(ClangLinuxPackageManager.class);
+        final ClangPackageManagerInfo pkgMgrInfo = Mockito.mock(ClangPackageManagerInfo.class);
+
         final File givenDir = new File("src/test/resources/clang/source/build");
         final int depth = 1;
         final ExtractionId extractionId = new ExtractionId(DetectorType.CLANG, EXTRACTION_ID);
@@ -122,42 +118,42 @@ public class ClangExtractorTest {
         packages.add(new PackageDetails("testPackageName1", "testPackageVersion1", "testPackageArch1"));
         packages.add(new PackageDetails("testPackageName2", "testPackageVersion2", "testPackageArch2"));
 
-        Mockito.when(pkgMgr.getDefaultForge()).thenReturn(Forge.CENTOS);
-        Mockito.when(pkgMgr.getPackages(Mockito.any(File.class), Mockito.any(ExecutableRunner.class), Mockito.any(Set.class), Mockito.any(DependencyFileDetails.class))).thenReturn(packages);
-        Mockito.when(pkgMgr.getForges()).thenReturn(Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT));
-        final Extraction extraction = extractor.extract(pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile);
+        Mockito.when(pkgMgrInfo.getDefaultForge()).thenReturn(Forge.CENTOS);
+        Mockito.when(pkgMgr.getPackages(Mockito.any(), Mockito.any(File.class), Mockito.any(ExecutableRunner.class), Mockito.any(Set.class), Mockito.any(DependencyFileDetails.class))).thenReturn(packages);
+        Mockito.when(pkgMgrInfo.getForges()).thenReturn(Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT));
+        final Extraction extraction = extractor.extract(pkgMgrInfo, pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile, true);
 
         checkGeneratedDependenciesComplex(extraction);
     }
 
     @Test
     public void testJsonWithArgumentsNotCommand() throws ExecutableRunnerException {
-        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         final String[] argsHello = { "gcc", "hello_world.cpp" };
         final CompileCommand compileCommandWrapperHelloWorld = createCompileCommand("src/test/resources/clang/source/hello_world.cpp", null, argsHello);
         final String[] argsGoodbye = { "gcc", "goodbye_world.cpp" };
         final CompileCommand compileCommandWrapperGoodbyeWorld = createCompileCommand("src/test/resources/clang/source/goodbye_world.cpp", null, argsGoodbye);
 
-        final Set<String> dependencyFilePathsHelloWorld = createDependencyFilePaths(new File("src/test/resources/clang/source/myinclude.h"), new File("/usr/include/nonexistentfile1.h"), new File("/usr/include/nonexistentfile2.h"));
-        final Set<String> dependencyFilePathsGoodbyeWorld = createDependencyFilePaths(new File("/usr/include/nonexistentfile4.h"), new File("/usr/include/nonexistentfile3.h"));
-        ;
+        final List<String> dependencyFilePathsHelloWorld = createDependencyFilePaths(new File("src/test/resources/clang/source/myinclude.h"), new File("/usr/include/nonexistentfile1.h"), new File("/usr/include/nonexistentfile2.h"));
+        final List<String> dependencyFilePathsGoodbyeWorld = createDependencyFilePaths(new File("/usr/include/nonexistentfile4.h"), new File("/usr/include/nonexistentfile3.h"));
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
         final FilePathGenerator filePathGenerator = Mockito.mock(FilePathGenerator.class);
 
-        Mockito.when(filePathGenerator.generateDependencyFilePaths(outputDir, compileCommandWrapperHelloWorld, true)).thenReturn(dependencyFilePathsHelloWorld);
-        Mockito.when(filePathGenerator.generateDependencyFilePaths(outputDir, compileCommandWrapperGoodbyeWorld, true)).thenReturn(dependencyFilePathsGoodbyeWorld);
+        Mockito.when(filePathGenerator.fromCompileCommand(outputDir, compileCommandWrapperHelloWorld, true)).thenReturn(dependencyFilePathsHelloWorld);
+        Mockito.when(filePathGenerator.fromCompileCommand(outputDir, compileCommandWrapperGoodbyeWorld, true)).thenReturn(dependencyFilePathsGoodbyeWorld);
         Mockito.when(executableRunner.executeFromDirQuietly(Mockito.any(File.class), Mockito.anyString(), Mockito.anyList())).thenReturn(new ExecutableOutput(0, "", ""));
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
-        final ClangExtractor extractor = new ClangExtractor(null, executableRunner, gson, new DetectFileFinder(),
+        final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(),
             directoryManager, filePathGenerator,
             codeLocationAssembler);
 
         final ClangLinuxPackageManager pkgMgr = Mockito.mock(ClangLinuxPackageManager.class);
+        final ClangPackageManagerInfo pkgMgrInfo = Mockito.mock(ClangPackageManagerInfo.class);
+
         final File givenDir = new File("src/test/resources/clang/source/build");
         final int depth = 1;
         final ExtractionId extractionId = new ExtractionId(DetectorType.CLANG, EXTRACTION_ID);
@@ -169,10 +165,10 @@ public class ClangExtractorTest {
         packages.add(new PackageDetails("testPackageName1", "testPackageVersion1", "testPackageArch1"));
         packages.add(new PackageDetails("testPackageName2", "testPackageVersion2", "testPackageArch2"));
 
-        Mockito.when(pkgMgr.getDefaultForge()).thenReturn(Forge.CENTOS);
-        Mockito.when(pkgMgr.getPackages(Mockito.any(File.class), Mockito.any(ExecutableRunner.class), Mockito.any(Set.class), Mockito.any(DependencyFileDetails.class))).thenReturn(packages);
-        Mockito.when(pkgMgr.getForges()).thenReturn(Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT));
-        final Extraction extraction = extractor.extract(pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile);
+        Mockito.when(pkgMgrInfo.getDefaultForge()).thenReturn(Forge.CENTOS);
+        Mockito.when(pkgMgr.getPackages(Mockito.any(), Mockito.any(File.class), Mockito.any(ExecutableRunner.class), Mockito.any(Set.class), Mockito.any(DependencyFileDetails.class))).thenReturn(packages);
+        Mockito.when(pkgMgrInfo.getForges()).thenReturn(Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT));
+        final Extraction extraction = extractor.extract(pkgMgrInfo, pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile, true);
 
         checkGeneratedDependenciesComplex(extraction);
     }
@@ -222,8 +218,8 @@ public class ClangExtractorTest {
         }
     }
 
-    private Set<String> createDependencyFilePaths(File... dependencyFiles) {
-        Set<String> dependencyFilePaths = new HashSet<>();
+    private List<String> createDependencyFilePaths(File... dependencyFiles) {
+        List<String> dependencyFilePaths = new ArrayList<>();
         for (File dependencyFile : dependencyFiles) {
             dependencyFilePaths.add(dependencyFile.getAbsolutePath());
         }
@@ -236,7 +232,7 @@ public class ClangExtractorTest {
         compileCommand.file = file;
         compileCommand.command = command;
         compileCommand.arguments = arguments;
-        return new CompileCommand(compileCommand);
+        return compileCommand;
     }
 
 }

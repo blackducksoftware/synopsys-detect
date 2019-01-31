@@ -39,10 +39,15 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 public class ApkPackageManagerResolver implements ClangPackageManagerResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final ApkArchitectureResolver architectureResolver;
+
+    public ApkPackageManagerResolver(final ApkArchitectureResolver architectureResolver) {
+        this.architectureResolver = architectureResolver;
+    }
 
     @Override
     public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException {
-        Optional<String> architecture = findArchitecture(currentPackageManager, workingDirectory, executableRunner);
+        Optional<String> architecture = architectureResolver.resolveArchitecture(currentPackageManager, workingDirectory, executableRunner);
         List<PackageDetails> packageDetailsList = new ArrayList<>();
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
@@ -61,15 +66,6 @@ public class ApkPackageManagerResolver implements ClangPackageManagerResolver {
             }
         }
         return packageDetailsList;
-    }
-
-
-    private Optional<String> findArchitecture(ClangPackageManagerInfo currentPackageManager, File workingDirectory, ExecutableRunner executableRunner) throws ExecutableRunnerException {
-        if (currentPackageManager.getPkgArchitectureArgs().isPresent()){
-            List<String> args = currentPackageManager.getPkgArchitectureArgs().get();
-            return Optional.ofNullable(executableRunner.executeQuietly(workingDirectory, currentPackageManager.getPkgMgrCmdString(), args).getStandardOutput().trim());
-        }
-        return Optional.empty();
     }
 
     private String deriveVersion(final List<String> pkgParts) {
