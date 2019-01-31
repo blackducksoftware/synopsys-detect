@@ -1,5 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.workflow.search.result;
-
+/*
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 
 public class DetectableDetectorResult extends DetectorResult {
@@ -20,3 +20,4 @@ public class DetectableDetectorResult extends DetectorResult {
     }
 }
 
+*/

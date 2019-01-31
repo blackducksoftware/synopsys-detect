@@ -31,7 +31,8 @@ import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment
 import com.blackducksoftware.integration.hub.detect.detector.DetectorException;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangLinuxPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerRunner;
 import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
@@ -49,20 +50,20 @@ public class ClangDetector extends Detector {
     private File jsonCompilationDatabaseFile = null;
     private final DetectFileFinder fileFinder;
     private final ExecutableRunner executableRunner;
-    private final List<ClangPackageManagerInfo> availablePkgMgrs;
-    private final ClangLinuxPackageManager pkgMngr;
+    private final List<ClangPackageManager> availablePackageManagers;
+    private final ClangPackageManagerRunner packageManagerRunner;
 
-    private ClangPackageManagerInfo selectedPkgMgr;
+    private ClangPackageManager selectedPackageManager;
 
-    public ClangDetector(final DetectorEnvironment environment, final ExecutableRunner executableRunner, final DetectFileFinder fileFinder, final List<ClangPackageManagerInfo> availablePkgMgrs, final ClangExtractor clangExtractor,
-        boolean cleanup, final ClangLinuxPackageManager pkgMngr) {
+    public ClangDetector(final DetectorEnvironment environment, final ExecutableRunner executableRunner, final DetectFileFinder fileFinder, final List<ClangPackageManager> availablePackageManagers, final ClangExtractor clangExtractor,
+        boolean cleanup, final ClangPackageManagerRunner packageManagerRunner) {
         super(environment, "Clang", DetectorType.CLANG);
         this.fileFinder = fileFinder;
-        this.availablePkgMgrs = availablePkgMgrs;
+        this.availablePackageManagers = availablePackageManagers;
         this.executableRunner = executableRunner;
         this.clangExtractor = clangExtractor;
         this.cleanup = cleanup;
-        this.pkgMngr = pkgMngr;
+        this.packageManagerRunner = packageManagerRunner;
     }
 
     @Override
@@ -77,7 +78,7 @@ public class ClangDetector extends Detector {
     @Override
     public DetectorResult extractable() throws DetectorException {
         try {
-            selectedPkgMgr = findPkgMgr(environment.getDirectory());
+            selectedPackageManager = findPkgMgr(environment.getDirectory());
         } catch (final IntegrationException e) {
             return new ExecutableNotFoundDetectorResult("supported Linux package manager");
         }
@@ -87,12 +88,12 @@ public class ClangDetector extends Detector {
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         addRelevantDiagnosticFile(jsonCompilationDatabaseFile);
-        return clangExtractor.extract(selectedPkgMgr, pkgMngr, environment.getDirectory(), environment.getDepth(), extractionId, jsonCompilationDatabaseFile, cleanup);
+        return clangExtractor.extract(selectedPackageManager, packageManagerRunner, environment.getDirectory(), environment.getDepth(), extractionId, jsonCompilationDatabaseFile, cleanup);
     }
 
-    private ClangPackageManagerInfo findPkgMgr(File workingDirectory) throws IntegrationException {
-        for (final ClangPackageManagerInfo pkgMgrCandidate : availablePkgMgrs) {
-            if (pkgMngr.applies(pkgMgrCandidate, workingDirectory, executableRunner)) {
+    private ClangPackageManager findPkgMgr(File workingDirectory) throws IntegrationException {
+        for (final ClangPackageManager pkgMgrCandidate : availablePackageManagers) {
+            if (packageManagerRunner.applies(pkgMgrCandidate, workingDirectory, executableRunner)) {
                 return pkgMgrCandidate;
             }
         }

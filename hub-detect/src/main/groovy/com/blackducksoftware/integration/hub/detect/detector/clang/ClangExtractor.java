@@ -24,25 +24,20 @@
 package com.blackducksoftware.integration.hub.detect.detector.clang;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.detector.clang.compilecommand.CompileCommand;
 import com.blackducksoftware.integration.hub.detect.detector.clang.compilecommand.CompileCommandDatabaseParser;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangLinuxPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerRunner;
 import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
@@ -51,9 +46,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFind
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
 public class ClangExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -78,7 +70,7 @@ public class ClangExtractor {
         this.bdioFactory = new SimpleBdioFactory();
     }
 
-    public Extraction extract(ClangPackageManagerInfo currentPackageManager, final ClangLinuxPackageManager pkgMgr, final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile, boolean cleanup) {
+    public Extraction extract(ClangPackageManager currentPackageManager, final ClangPackageManagerRunner packageManagerRunner, final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile, boolean cleanup) {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final File rootDir = fileFinder.findContainingDir(givenDir, depth);
@@ -99,11 +91,11 @@ public class ClangExtractor {
 
             final Set<PackageDetails> packages = filePaths.parallelStream()
                                                             .map(file -> new DependencyFileDetails(fileFinder.isFileUnderDir(rootDir, file), file))
-                                                            .flatMap(detailedFile -> pkgMgr.getPackages(currentPackageManager, rootDir, executableRunner, unManagedDependencyFiles, detailedFile).stream())
+                                                            .flatMap(detailedFile -> packageManagerRunner.getPackages(currentPackageManager, rootDir, executableRunner, unManagedDependencyFiles, detailedFile).stream())
                                                             .collect(Collectors.toSet());
             logger.trace("Found : " + packages.size() + " packages to process.");
 
-            final DetectCodeLocation detectCodeLocation = codeLocationAssembler.generateCodeLocation(currentPackageManager.getDefaultForge(), currentPackageManager.getForges(), rootDir, packages);
+            final DetectCodeLocation detectCodeLocation = codeLocationAssembler.generateCodeLocation(currentPackageManager.getPackageManagerInfo().getDefaultForge(), currentPackageManager.getPackageManagerInfo().getForges(), rootDir, packages);
             logSummary(unManagedDependencyFiles);
 
             return new Extraction.Builder().success(detectCodeLocation).build();

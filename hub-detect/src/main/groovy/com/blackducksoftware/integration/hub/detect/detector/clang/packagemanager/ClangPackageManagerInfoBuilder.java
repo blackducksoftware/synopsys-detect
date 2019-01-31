@@ -7,7 +7,7 @@ import java.util.List;
 import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder.ClangPackageManagerResolver;
 import com.synopsys.integration.bdio.model.Forge;
 
-public class ClangPackageManagerBuilder {
+public class ClangPackageManagerInfoBuilder {
     private String pkgMgrName;
     private String pkgMgrCmdString;
     private List<Forge> forges;
@@ -15,85 +15,79 @@ public class ClangPackageManagerBuilder {
     private List<String> checkPresenceCommandArgs;
     private String checkPresenceCommandOutputExpectedText;
     private List<String> pkgMgrGetOwnerCmdArgs;
-    private ClangPackageManagerResolver packageOutputParser;
     private List<String> architectureArguments;
     private List<String> pkgInfoArgs;
 
-    public ClangPackageManagerBuilder setName(String name) {
+    public ClangPackageManagerInfoBuilder setName(String name) {
         this.pkgMgrName = name;
         return this;
     }
 
-    public ClangPackageManagerBuilder setCmd(String pkgMgrCmdString) {
+    public ClangPackageManagerInfoBuilder setCmd(String pkgMgrCmdString) {
         this.pkgMgrCmdString = pkgMgrCmdString;
         return this;
     }
 
-    public ClangPackageManagerBuilder setForge(Forge defaultForge, Forge... additionalForges) {
+    public ClangPackageManagerInfoBuilder setForge(Forge defaultForge, Forge... additionalForges) {
         List<Forge> forges = new ArrayList<>(Arrays.asList(additionalForges));
         forges.add(defaultForge);
         return setDefaultForge(defaultForge).setForges(forges);
     }
 
 
-    public ClangPackageManagerBuilder setForges(List<Forge> forges) {
+    public ClangPackageManagerInfoBuilder setForges(List<Forge> forges) {
         this.forges = forges;
         return this;
     }
 
-    public ClangPackageManagerBuilder setDefaultForge(Forge defaultForge) {
+    public ClangPackageManagerInfoBuilder setDefaultForge(Forge defaultForge) {
         this.defaultForge = defaultForge;
         return this;
     }
 
 
-    public ClangPackageManagerBuilder setPresenceCheckArguments(List<String> checkPresenceCommandArgs) {
+    public ClangPackageManagerInfoBuilder setPresenceCheckArguments(List<String> checkPresenceCommandArgs) {
         this.checkPresenceCommandArgs = checkPresenceCommandArgs;
         return this;
     }
 
-    public ClangPackageManagerBuilder setPresenceCheckArguments(String... checkPresenceCommandArgs) {
+    public ClangPackageManagerInfoBuilder setPresenceCheckArguments(String... checkPresenceCommandArgs) {
         return setPresenceCheckArguments(Arrays.asList(checkPresenceCommandArgs));
     }
 
-    public ClangPackageManagerBuilder setPresenceCheckExpectedText(String checkPresenceCommandOutputExpectedText) {
+    public ClangPackageManagerInfoBuilder setPresenceCheckExpectedText(String checkPresenceCommandOutputExpectedText) {
         this.checkPresenceCommandOutputExpectedText = checkPresenceCommandOutputExpectedText;
         return this;
     }
 
-    public ClangPackageManagerBuilder setGetOwnerArguments(List<String> pkgMgrGetOwnerCmdArgs) {
+    public ClangPackageManagerInfoBuilder setGetOwnerArguments(List<String> pkgMgrGetOwnerCmdArgs) {
         this.pkgMgrGetOwnerCmdArgs = pkgMgrGetOwnerCmdArgs;
         return this;
     }
 
-    public ClangPackageManagerBuilder setGetOwnerArguments(String... pkgMgrGetOwnerCmdArgs) {
+    public ClangPackageManagerInfoBuilder setGetOwnerArguments(String... pkgMgrGetOwnerCmdArgs) {
         return setGetOwnerArguments(Arrays.asList(pkgMgrGetOwnerCmdArgs));
     }
 
-    public ClangPackageManagerBuilder setPackageOutputParser(ClangPackageManagerResolver packageOutputParser) {
-        this.packageOutputParser = packageOutputParser;
-        return this;
-    }
-
-    public ClangPackageManagerBuilder setArchitectureArguments(List<String> architectureArguments) {
+    public ClangPackageManagerInfoBuilder setArchitectureArguments(List<String> architectureArguments) {
         this.architectureArguments = architectureArguments;
         return this;
     }
 
-    public ClangPackageManagerBuilder setArchitectureArguments(String... architectureArguments) {
+    public ClangPackageManagerInfoBuilder setArchitectureArguments(String... architectureArguments) {
         return setArchitectureArguments(Arrays.asList(architectureArguments));
     }
 
-    public ClangPackageManagerBuilder setPackageInfoArguments(List<String> pkgInfoArgs) {
+    public ClangPackageManagerInfoBuilder setPackageInfoArguments(List<String> pkgInfoArgs) {
         this.pkgInfoArgs = pkgInfoArgs;
         return this;
     }
 
-    public ClangPackageManagerBuilder setPackageInfoArguments(String... pkgInfoArgs) {
+    public ClangPackageManagerInfoBuilder setPackageInfoArguments(String... pkgInfoArgs) {
         return setPackageInfoArguments(Arrays.asList(pkgInfoArgs));
     }
 
     public ClangPackageManagerInfo build() {
-        return new ClangPackageManagerInfo(pkgMgrName, pkgMgrCmdString, forges, defaultForge, checkPresenceCommandArgs, checkPresenceCommandOutputExpectedText, pkgMgrGetOwnerCmdArgs, architectureArguments, pkgInfoArgs, packageOutputParser);
+        return new ClangPackageManagerInfo(pkgMgrName, pkgMgrCmdString, forges, defaultForge, checkPresenceCommandArgs, checkPresenceCommandOutputExpectedText, pkgMgrGetOwnerCmdArgs, architectureArguments, pkgInfoArgs);
     }
 }

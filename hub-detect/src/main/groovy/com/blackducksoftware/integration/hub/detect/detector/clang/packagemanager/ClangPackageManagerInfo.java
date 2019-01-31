@@ -16,11 +16,9 @@ public class ClangPackageManagerInfo {
     private List<String> pkgMgrGetOwnerCmdArgs;
     private List<String> pkgArchitectureArgs;
     private List<String> pkgInfoArgs;
-    private ClangPackageManagerResolver packageOutputParser;
 
     public ClangPackageManagerInfo(final String pkgMgrName, final String pkgMgrCmdString, final List<Forge> forges, final Forge defaultForge, final List<String> checkPresenceCommandArgs,
-        final String checkPresenceCommandOutputExpectedText, final List<String> pkgMgrGetOwnerCmdArgs, final List<String> pkgArchitectureArgs, final List<String> pkgInfoArgs,
-        final ClangPackageManagerResolver packageOutputParser) {
+        final String checkPresenceCommandOutputExpectedText, final List<String> pkgMgrGetOwnerCmdArgs, final List<String> pkgArchitectureArgs, final List<String> pkgInfoArgs) {
         this.pkgMgrName = pkgMgrName;
         this.pkgMgrCmdString = pkgMgrCmdString;
         this.forges = forges;
@@ -30,7 +28,6 @@ public class ClangPackageManagerInfo {
         this.pkgMgrGetOwnerCmdArgs = pkgMgrGetOwnerCmdArgs;
         this.pkgArchitectureArgs = pkgArchitectureArgs;
         this.pkgInfoArgs = pkgInfoArgs;
-        this.packageOutputParser = packageOutputParser;
     }
 
     public String getPkgMgrName() {
@@ -59,10 +56,6 @@ public class ClangPackageManagerInfo {
 
     public List<String> getPkgMgrGetOwnerCmdArgs() {
         return pkgMgrGetOwnerCmdArgs;
-    }
-
-    public ClangPackageManagerResolver getPackageOutputParser() {
-        return packageOutputParser;
     }
 
     public Optional<List<String>> getPkgArchitectureArgs() {

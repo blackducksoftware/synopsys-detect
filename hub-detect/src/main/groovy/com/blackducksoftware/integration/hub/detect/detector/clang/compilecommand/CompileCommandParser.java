@@ -60,7 +60,7 @@ public class CompileCommandParser {
         return parts[0];
     }
 
-    public List<String> parseArguments(CompileCommand compileCommand, final Map<String, String> optionOverrides) {
+    public List<String> parseArguments(CompileCommand compileCommand, final Map<String, String> optionOverrides) { //TODO: Shouldn't this method also take into account "command.arguments"?
         logger.trace(String.format("origCompileCommand         : %s", compileCommand.command));
         String quotesRemovedCompileCommand = escapeQuotedWhitespace(compileCommand.command.trim());
         logger.trace(String.format("quotesRemovedCompileCommand: %s", quotesRemovedCompileCommand));

@@ -6,22 +6,18 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.blackducksoftware.integration.hub.detect.detector.DetectorType;
 import com.blackducksoftware.integration.hub.detect.detector.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.detector.clang.compilecommand.CompileCommand;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangLinuxPackageManager;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerFactory;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerRunner;
 import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -44,6 +40,10 @@ public class ClangExtractorTest {
 
     }
 
+    //I'm not sure what this is testing... seems like only the codeLocationAssembler is not mocked, so if all it is testing is the assembler, why go through all this trouble?
+    //I'm not sure we generally want to test extractors unless they are easy to test - and even then, what benefit do we gain? that we called an executable correctly?
+    //I think we should focus on testing our parsers / conversion logic.
+    // - jordan
     @Test
     public void testSimple() throws ExecutableRunnerException {
         final CompileCommand compileCommand = createCompileCommand("src/test/resources/clang/source/hello_world.cpp", "gcc hello_world.cpp", null);
@@ -61,8 +61,18 @@ public class ClangExtractorTest {
         final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(), directoryManager, filePathGenerator, codeLocationAssembler);
 
 
-        final ClangPackageManagerInfo pkgMgrInfo = Mockito.mock(ClangPackageManagerInfo.class);
-        final ClangLinuxPackageManager pkgMgr = Mockito.mock(ClangLinuxPackageManager.class);
+        final ClangPackageManager packageManager = Mockito.mock(ClangPackageManager.class);
+        final ClangPackageManagerInfo packageManagerInfo = Mockito.mock(ClangPackageManagerInfo.class);
+
+        Mockito.when(packageManager.getPackageManagerInfo()).thenReturn(packageManagerInfo);
+        Mockito.when(packageManagerInfo.getDefaultForge()).thenReturn(Forge.UBUNTU);
+        Mockito.when(packageManagerInfo.getForges()).thenReturn(Arrays.asList(Forge.UBUNTU, Forge.DEBIAN));
+
+        final ClangPackageManagerRunner packageManagerRunner = Mockito.mock(ClangPackageManagerRunner.class);
+        final List<PackageDetails> packages = new ArrayList<>();
+        packages.add(new PackageDetails("testPackageName", "testPackageVersion", "testPackageArch"));
+        Mockito.when(packageManagerRunner.getPackages(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(packages);
+
 
         final File givenDir = new File("src/test/resources/clang/source/build");
         final int depth = 1;
@@ -71,13 +81,8 @@ public class ClangExtractorTest {
 
         Mockito.when(directoryManager.getExtractionOutputDirectory(Mockito.any(ExtractionId.class))).thenReturn(outputDir);
 
-        final List<PackageDetails> packages = new ArrayList<>();
-        packages.add(new PackageDetails("testPackageName", "testPackageVersion", "testPackageArch"));
-        Mockito.when(pkgMgr.getPackages(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(packages);
 
-        Mockito.when(pkgMgrInfo.getDefaultForge()).thenReturn(Forge.UBUNTU);
-        Mockito.when(pkgMgrInfo.getForges()).thenReturn(Arrays.asList(Forge.UBUNTU, Forge.DEBIAN));
-        final Extraction extraction = extractor.extract(pkgMgrInfo, pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile, true);
+        final Extraction extraction = extractor.extract(packageManager, packageManagerRunner, givenDir, depth, extractionId, jsonCompilationDatabaseFile, true);
 
         checkGeneratedDependenciesSimple(extraction);
     }
@@ -104,8 +109,18 @@ public class ClangExtractorTest {
         final CodeLocationAssembler codeLocationAssembler = new CodeLocationAssembler(externalIdFactory);
         final ClangExtractor extractor = new ClangExtractor(executableRunner, gson, new DetectFileFinder(), directoryManager, filePathGenerator, codeLocationAssembler);
 
-        final ClangLinuxPackageManager pkgMgr = Mockito.mock(ClangLinuxPackageManager.class);
-        final ClangPackageManagerInfo pkgMgrInfo = Mockito.mock(ClangPackageManagerInfo.class);
+        final ClangPackageManager packageManager = Mockito.mock(ClangPackageManager.class);
+        final ClangPackageManagerInfo packageManagerInfo = Mockito.mock(ClangPackageManagerInfo.class);
+
+        Mockito.when(packageManager.getPackageManagerInfo()).thenReturn(packageManagerInfo);
+        Mockito.when(packageManagerInfo.getDefaultForge()).thenReturn(Forge.CENTOS);
+        Mockito.when(packageManagerInfo.getForges()).thenReturn(Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT));
+
+        final ClangPackageManagerRunner packageManagerRunner = Mockito.mock(ClangPackageManagerRunner.class);
+        final List<PackageDetails> packages = new ArrayList<>();
+        packages.add(new PackageDetails("testPackageName1", "testPackageVersion1", "testPackageArch1"));
+        packages.add(new PackageDetails("testPackageName2", "testPackageVersion2", "testPackageArch2"));
+        Mockito.when(packageManagerRunner.getPackages(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(packages);
 
         final File givenDir = new File("src/test/resources/clang/source/build");
         final int depth = 1;
@@ -114,14 +129,7 @@ public class ClangExtractorTest {
 
         Mockito.when(directoryManager.getExtractionOutputDirectory(Mockito.any(ExtractionId.class))).thenReturn(outputDir);
 
-        final List<PackageDetails> packages = new ArrayList<>();
-        packages.add(new PackageDetails("testPackageName1", "testPackageVersion1", "testPackageArch1"));
-        packages.add(new PackageDetails("testPackageName2", "testPackageVersion2", "testPackageArch2"));
-
-        Mockito.when(pkgMgrInfo.getDefaultForge()).thenReturn(Forge.CENTOS);
-        Mockito.when(pkgMgr.getPackages(Mockito.any(), Mockito.any(File.class), Mockito.any(ExecutableRunner.class), Mockito.any(Set.class), Mockito.any(DependencyFileDetails.class))).thenReturn(packages);
-        Mockito.when(pkgMgrInfo.getForges()).thenReturn(Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT));
-        final Extraction extraction = extractor.extract(pkgMgrInfo, pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile, true);
+        final Extraction extraction = extractor.extract(packageManager, packageManagerRunner, givenDir, depth, extractionId, jsonCompilationDatabaseFile, true);
 
         checkGeneratedDependenciesComplex(extraction);
     }
@@ -151,8 +159,18 @@ public class ClangExtractorTest {
             directoryManager, filePathGenerator,
             codeLocationAssembler);
 
-        final ClangLinuxPackageManager pkgMgr = Mockito.mock(ClangLinuxPackageManager.class);
-        final ClangPackageManagerInfo pkgMgrInfo = Mockito.mock(ClangPackageManagerInfo.class);
+        final ClangPackageManager packageManager = Mockito.mock(ClangPackageManager.class);
+        final ClangPackageManagerInfo packageManagerInfo = Mockito.mock(ClangPackageManagerInfo.class);
+
+        Mockito.when(packageManager.getPackageManagerInfo()).thenReturn(packageManagerInfo);
+        Mockito.when(packageManagerInfo.getDefaultForge()).thenReturn(Forge.CENTOS);
+        Mockito.when(packageManagerInfo.getForges()).thenReturn(Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT));
+
+        final ClangPackageManagerRunner packageManagerRunner = Mockito.mock(ClangPackageManagerRunner.class);
+        final List<PackageDetails> packages = new ArrayList<>();
+        packages.add(new PackageDetails("testPackageName1", "testPackageVersion1", "testPackageArch1"));
+        packages.add(new PackageDetails("testPackageName2", "testPackageVersion2", "testPackageArch2"));
+        Mockito.when(packageManagerRunner.getPackages(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(packages);
 
         final File givenDir = new File("src/test/resources/clang/source/build");
         final int depth = 1;
@@ -161,14 +179,7 @@ public class ClangExtractorTest {
 
         Mockito.when(directoryManager.getExtractionOutputDirectory(Mockito.any(ExtractionId.class))).thenReturn(outputDir);
 
-        final List<PackageDetails> packages = new ArrayList<>();
-        packages.add(new PackageDetails("testPackageName1", "testPackageVersion1", "testPackageArch1"));
-        packages.add(new PackageDetails("testPackageName2", "testPackageVersion2", "testPackageArch2"));
-
-        Mockito.when(pkgMgrInfo.getDefaultForge()).thenReturn(Forge.CENTOS);
-        Mockito.when(pkgMgr.getPackages(Mockito.any(), Mockito.any(File.class), Mockito.any(ExecutableRunner.class), Mockito.any(Set.class), Mockito.any(DependencyFileDetails.class))).thenReturn(packages);
-        Mockito.when(pkgMgrInfo.getForges()).thenReturn(Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT));
-        final Extraction extraction = extractor.extract(pkgMgrInfo, pkgMgr, givenDir, depth, extractionId, jsonCompilationDatabaseFile, true);
+        final Extraction extraction = extractor.extract(packageManager, packageManagerRunner, givenDir, depth, extractionId, jsonCompilationDatabaseFile, true);
 
         checkGeneratedDependenciesComplex(extraction);
     }
