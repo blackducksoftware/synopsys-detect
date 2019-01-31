@@ -21,8 +21,7 @@ public class BazelCodeLocationBuilderTest {
             .build();
 
         assertEquals(1, codeLocations.size());
-        assertEquals("multiLevel", codeLocations.get(0).getExternalId().name);
-        assertEquals("unknown", codeLocations.get(0).getExternalId().version);
+        assertEquals("src/test/resources/bazel/multiLevel", codeLocations.get(0).getExternalId().path);
         assertEquals(1, codeLocations.get(0).getDependencyGraph().getRootDependencies().size());
 
         Dependency dep = codeLocations.get(0).getDependencyGraph().getRootDependencies().iterator().next();
