@@ -12,8 +12,8 @@ import org.mockito.Mockito;
 
 import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfoFactory;
 import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder.ApkArchitectureResolver;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder.ApkPackageManagerResolver;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.resolver.ApkArchitectureResolver;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.resolver.ApkPackageManagerResolver;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;

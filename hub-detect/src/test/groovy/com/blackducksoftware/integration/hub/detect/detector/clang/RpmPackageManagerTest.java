@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfoFactory;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder.RpmPackageManagerResolver;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.resolver.RpmPackageManagerResolver;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 public class RpmPackageManagerTest {

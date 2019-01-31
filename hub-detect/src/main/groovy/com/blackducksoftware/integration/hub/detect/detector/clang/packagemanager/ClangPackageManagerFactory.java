@@ -6,11 +6,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder.ApkArchitectureResolver;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder.ApkPackageManagerResolver;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder.DpkgPackageManagerResolver;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder.DpkgVersionResolver;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder.RpmPackageManagerResolver;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.resolver.ApkArchitectureResolver;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.resolver.ApkPackageManagerResolver;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.resolver.DpkgPackageManagerResolver;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.resolver.DpkgVersionResolver;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.resolver.RpmPackageManagerResolver;
 
 public class ClangPackageManagerFactory {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

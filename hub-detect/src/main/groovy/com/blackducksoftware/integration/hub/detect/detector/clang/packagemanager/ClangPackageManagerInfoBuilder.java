@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder.ClangPackageManagerResolver;
 import com.synopsys.integration.bdio.model.Forge;
 
 public class ClangPackageManagerInfoBuilder {

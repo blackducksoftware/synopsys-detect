@@ -1,6 +1,6 @@
 package com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager;
 
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder.ClangPackageManagerResolver;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.resolver.ClangPackageManagerResolver;
 
 public class ClangPackageManager {
     private final ClangPackageManagerInfo packageManagerInfo;

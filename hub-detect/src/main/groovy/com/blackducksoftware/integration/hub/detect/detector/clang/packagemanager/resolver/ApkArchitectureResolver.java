@@ -1,10 +1,8 @@
-package com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder;
+package com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.resolver;
 
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
-
-import javax.swing.text.html.Option;
 
 import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;

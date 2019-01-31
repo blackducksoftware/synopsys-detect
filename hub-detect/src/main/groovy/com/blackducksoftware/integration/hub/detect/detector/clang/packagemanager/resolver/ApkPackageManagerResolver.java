@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder;
+package com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.resolver;
 
 import java.io.File;
 import java.util.ArrayList;

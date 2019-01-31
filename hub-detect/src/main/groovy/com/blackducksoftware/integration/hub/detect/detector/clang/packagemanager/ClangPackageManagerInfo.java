@@ -3,7 +3,6 @@ package com.blackducksoftware.integration.hub.detect.detector.clang.packagemanag
 import java.util.List;
 import java.util.Optional;
 
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.dependencyfinder.ClangPackageManagerResolver;
 import com.synopsys.integration.bdio.model.Forge;
 
 public class ClangPackageManagerInfo {
