@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.workflow.event.Event;
@@ -61,7 +62,7 @@ public class DetectBdioUploadService {
         this.eventSystem = eventSystem;
     }
 
-    public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(List<UploadTarget> uploadTargets) throws IntegrationException {
+    public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(List<UploadTarget> uploadTargets) throws IntegrationException, DetectUserFriendlyException {
         UploadBatch uploadBatch = new UploadBatch();
         for (UploadTarget uploadTarget : uploadTargets) {
             logger.info(String.format("uploading %s to %s", uploadTarget.getUploadFile().getName(), detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None)));
@@ -70,19 +71,11 @@ public class DetectBdioUploadService {
 
         BdioUploadCodeLocationCreationRequest uploadRequest = bdioUploadService.createUploadRequest(uploadBatch);
         CodeLocationCreationData<UploadBatchOutput> response = bdioUploadService.uploadBdio(uploadRequest);
-        UploadBatchOutput batchOutput = response.getOutput();
-        List<UploadOutput> uploadOutputs = batchOutput.getOutputs();
-
-        for (UploadOutput uploadOutput : uploadOutputs){
-            Result result = uploadOutput.getResult();
-            if (result == Result.FAILURE){
+        for (UploadOutput uploadOutput : response.getOutput()){
+            if (uploadOutput.getResult() == Result.FAILURE){
                 logger.error("Failed to upload code location: " + uploadOutput.getCodeLocationName());
                 logger.error("Reason: " + uploadOutput.getErrorMessage().orElse("Unknown reason."));
-                eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, uploadOutput.getErrorMessage().orElse("Failed to upload code location for an unknown reason.")));
-                if (uploadOutput.getException().isPresent()){
-                    IntegrationException e = (IntegrationException) uploadOutput.getException().get();
-                    throw e;
-                }
+                throw new DetectUserFriendlyException("An error occurred uploading a bdio file.", uploadOutput.getException().orElse(null), ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
         }
 
