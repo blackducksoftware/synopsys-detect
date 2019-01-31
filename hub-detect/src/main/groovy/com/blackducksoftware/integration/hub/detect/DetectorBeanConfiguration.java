@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -49,10 +48,12 @@ import com.blackducksoftware.integration.hub.detect.detector.clang.DepsMkFilePar
 import com.blackducksoftware.integration.hub.detect.detector.clang.compilecommand.CompileCommandParser;
 import com.blackducksoftware.integration.hub.detect.detector.clang.ClangDetector;
 import com.blackducksoftware.integration.hub.detect.detector.clang.ClangExtractor;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangLinuxPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManager;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerFactory;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerRunner;
 import com.blackducksoftware.integration.hub.detect.detector.clang.CodeLocationAssembler;
 import com.blackducksoftware.integration.hub.detect.detector.clang.FilePathGenerator;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerFactory;
+import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfoFactory;
 import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockExtractor;
@@ -229,13 +230,12 @@ public class DetectorBeanConfiguration {
         return new ClangExtractor(executableRunner, gson, detectFileFinder, directoryManager, clangDependenciesListFileParser(), codeLocationAssembler());
     }
 
-    public ClangLinuxPackageManager clangLinuxPackageManager() {
-        return new ClangLinuxPackageManager();
+    public ClangPackageManagerRunner clangLinuxPackageManager() {
+        return new ClangPackageManagerRunner();
     }
 
-    public List<ClangPackageManagerInfo> clangLinuxPackageManagers() {
-        ClangPackageManagerFactory factory  = new ClangPackageManagerFactory();
-        return factory.createPackageManagers();
+    public List<ClangPackageManager> clangLinuxPackageManagers() {
+        return ClangPackageManagerFactory.standardFactory().createPackageManagers();
     }
 
     @Bean
