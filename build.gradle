@@ -42,6 +42,11 @@ configure(subprojects) { project ->
         }
     }
 
+    repositories {
+        // TODO: Don't use the snapshot repo in production
+        maven { url "https://repo.blackducksoftware.com/artifactory/bds-integrations-snapshot" }
+    }
+
     dependencies {
         implementation 'com.blackducksoftware.integration:blackduck-common:41.2.0-SNAPSHOT'
         implementation 'com.paypal.digraph:digraph-parser:1.0'
