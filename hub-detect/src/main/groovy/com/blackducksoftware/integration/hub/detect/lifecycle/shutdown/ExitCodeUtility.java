@@ -28,15 +28,13 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class ExitCodeUtility {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private static String BLACDUCK_ERROR_MESSAGE = "An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg";
+    private static String BLACKDUCK_ERROR_MESSAGE = "An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg";
 
     public ExitCodeType getExitCodeFromExceptionDetails(final Exception e) {
         final ExitCodeType exceptionExitCodeType;
@@ -50,19 +48,19 @@ public class ExitCodeUtility {
         } else if (e instanceof BlackDuckApiException) {
             BlackDuckApiException be = (BlackDuckApiException) e;
 
-            logger.error(BLACDUCK_ERROR_MESSAGE);
+            logger.error(BLACKDUCK_ERROR_MESSAGE);
             logger.error(be.getMessage());
             logger.debug(be.getBlackDuckErrorCode());
             logger.error(be.getOriginalIntegrationRestException().getMessage());
 
             exceptionExitCodeType = ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR;
         } else if (e instanceof IntegrationRestException) {
-            logger.error(BLACDUCK_ERROR_MESSAGE);
+            logger.error(BLACKDUCK_ERROR_MESSAGE);
             logger.debug(e.getMessage(), e);
 
             exceptionExitCodeType = ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR;
         } else if (e instanceof IntegrationException) {
-            logger.error(BLACDUCK_ERROR_MESSAGE);
+            logger.error(BLACKDUCK_ERROR_MESSAGE);
             logger.debug(e.getMessage(), e);
             exceptionExitCodeType = ExitCodeType.FAILURE_GENERAL_ERROR;
         } else {
