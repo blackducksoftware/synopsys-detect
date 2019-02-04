@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.workflow.codelocation;
 
 public enum DetectCodeLocationType {
+    BAZEL,
     BITBAKE,
     COCOAPODS,
     CONDA,
