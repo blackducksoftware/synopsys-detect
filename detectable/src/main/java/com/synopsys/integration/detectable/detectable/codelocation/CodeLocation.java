@@ -35,16 +35,20 @@ public class CodeLocation {
 
     public static class Builder {
         private final CodeLocationType codeLocationType;
-        private final String sourcePath;
+        private String sourcePath;
         private String dockerImage;
-        private final ExternalId externalId;
+        private ExternalId externalId;
         private final DependencyGraph dependencyGraph;
 
-        public Builder(final CodeLocationType codeLocationType, final String sourcePath, final ExternalId externalId, final DependencyGraph dependencyGraph) {
+        public Builder(final CodeLocationType codeLocationType, final DependencyGraph dependencyGraph) {
             this.codeLocationType = codeLocationType;
-            this.sourcePath = sourcePath;
-            this.externalId = externalId;
             this.dependencyGraph = dependencyGraph;
+        }
+
+        public Builder(final CodeLocationType codeLocationType, final DependencyGraph dependencyGraph, ExternalId externalId) {
+            this.codeLocationType = codeLocationType;
+            this.dependencyGraph = dependencyGraph;
+            this.externalId = externalId;
         }
 
         public Builder dockerImage(final String dockerImage) {

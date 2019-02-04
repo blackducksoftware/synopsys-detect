@@ -26,7 +26,7 @@ package com.synopsys.integration.detectable.detectable.executable;
 public class ExecutableRunnerException extends Exception {
     private static final long serialVersionUID = -4117278710469900787L;
 
-    ExecutableRunnerException(final Throwable innerException) {
+    public ExecutableRunnerException(final Throwable innerException) {
         super(innerException);
     }
 }

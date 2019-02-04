@@ -27,7 +27,7 @@ import java.io.File;
 
 import org.antlr.v4.runtime.misc.Nullable;
 
-public interface SystemExecutableFinder {
+public interface LocalExecutableFinder {
     @Nullable
-    File findExecutable(String executable);
+    File findExecutable(String executable, File location);
 }

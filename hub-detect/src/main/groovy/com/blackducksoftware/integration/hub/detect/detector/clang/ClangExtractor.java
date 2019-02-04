@@ -38,14 +38,12 @@ import com.blackducksoftware.integration.hub.detect.detector.clang.compilecomman
 import com.blackducksoftware.integration.hub.detect.detector.clang.compilecommand.CompileCommandDatabaseParser;
 import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManager;
 import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerRunner;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.file.DirectoryManager;
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.SimpleBdioFactory;
 
 public class ClangExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -56,7 +54,6 @@ public class ClangExtractor {
     private final FilePathGenerator filePathGenerator;
     private final DirectoryManager directoryManager;
     private final CodeLocationAssembler codeLocationAssembler;
-    private final SimpleBdioFactory bdioFactory;
 
     public ClangExtractor(final ExecutableRunner executableRunner, final Gson gson, final DetectFileFinder fileFinder,
         final DirectoryManager directoryManager, final FilePathGenerator filePathGenerator,
@@ -67,7 +64,6 @@ public class ClangExtractor {
         this.directoryManager = directoryManager;
         this.filePathGenerator = filePathGenerator;
         this.codeLocationAssembler = codeLocationAssembler;
-        this.bdioFactory = new SimpleBdioFactory();
     }
 
     public Extraction extract(ClangPackageManager currentPackageManager, final ClangPackageManagerRunner packageManagerRunner, final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile, boolean cleanup) {

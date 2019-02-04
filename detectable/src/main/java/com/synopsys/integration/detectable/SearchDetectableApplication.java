@@ -21,13 +21,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.executable;
+package com.synopsys.integration.detectable;
 
-import java.io.File;
-
-import org.antlr.v4.runtime.misc.Nullable;
-
-public interface SystemExecutableFinder {
-    @Nullable
-    File findExecutable(String executable);
+//This sample application will build all 'searchable' detectables and execute them against the current folder.
+public class SearchDetectableApplication {
+    public static void main(String[] args) {
+        System.out.println("Hello World!"); // Display the string.
+    }
 }

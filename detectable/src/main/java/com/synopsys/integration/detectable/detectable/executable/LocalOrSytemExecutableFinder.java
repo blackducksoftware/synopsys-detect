@@ -21,8 +21,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable;
+package com.synopsys.integration.detectable.detectable.executable;
 
-//This sample application will build all 'straight searchable' detectables and execute them against the current folder.
-public class Application {
+import java.io.File;
+
+import org.antlr.v4.runtime.misc.Nullable;
+
+public interface LocalOrSytemExecutableFinder {
+    @Nullable
+    File findExecutable(String executable, File location);
 }

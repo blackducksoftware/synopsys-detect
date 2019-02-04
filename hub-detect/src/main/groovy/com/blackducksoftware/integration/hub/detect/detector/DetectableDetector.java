@@ -1,5 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.detector;
-
+/*
 import java.io.File;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
@@ -47,3 +47,4 @@ public class DetectableDetector extends Detector {
         return detectable.extract(extractionEnvironment);
     }
 }
+*/

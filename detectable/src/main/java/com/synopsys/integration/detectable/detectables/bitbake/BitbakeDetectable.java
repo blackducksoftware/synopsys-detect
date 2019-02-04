@@ -73,7 +73,7 @@ public class BitbakeDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        bashExe = systemExecutableFinder.findExecutable(ExecutableType.BASH);
+        bashExe = systemExecutableFinder.findExecutable(ExecutableType.BASH.getExecutable());
         if (bashExe == null) {
             return new ExecutableNotFoundDetectableResult("bash");
         }

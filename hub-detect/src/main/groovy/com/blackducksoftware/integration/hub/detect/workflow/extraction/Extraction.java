@@ -71,6 +71,7 @@ public class Extraction {
         private String projectName;
         private Map<String, Object> metaData = new HashMap<>();
 
+        /*
         public Builder fromDetectableExtraction(com.synopsys.integration.detectable.Extraction extraction){
             //TODO: OH DEAR GOD FIX THIS
             if (extraction.result == com.synopsys.integration.detectable.Extraction.ExtractionResultType.SUCCESS){
@@ -81,7 +82,7 @@ public class Extraction {
                 result = ExtractionResultType.EXCEPTION;
             }
             //codeLocations = extraction.codeLocations;
-        }
+        }*/
 
         public Builder projectName(final String projectName) {
             this.projectName = projectName;
