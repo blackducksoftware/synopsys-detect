@@ -2,10 +2,12 @@ package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.detectable.detectables.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeArchitectureParser;
 
+@UnitTest
 public class BitbakeArchitectureParserTest {
     @Test
     public void parseTargetArchitectureTest() {

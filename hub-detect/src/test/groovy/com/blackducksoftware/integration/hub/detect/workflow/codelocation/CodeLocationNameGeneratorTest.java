@@ -27,11 +27,11 @@ public class CodeLocationNameGeneratorTest {
         final String expected = "hub-common-rest/target/hub-common-rest/2.5.1-SNAPSHOT scan";
 
         final DetectFileFinder detectFileFinder = mock(DetectFileFinder.class);
-        when(detectFileFinder.extractFinalPieceFromPath("/Users/ekerwin/Documents/source/funtional/hub-common-rest")).thenReturn("hub-common-rest");
+        when(detectFileFinder.extractFinalPieceFromPath("/Users/ekerwin/Documents/source/functional/hub-common-rest")).thenReturn("hub-common-rest");
         final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectFileFinder);
 
-        final String sourcePath = "/Users/ekerwin/Documents/source/funtional/hub-common-rest";
-        final String scanTargetPath = "/Users/ekerwin/Documents/source/funtional/hub-common-rest/target";
+        final String sourcePath = "/Users/ekerwin/Documents/source/functional/hub-common-rest";
+        final String scanTargetPath = "/Users/ekerwin/Documents/source/functional/hub-common-rest/target";
         final String projectName = "hub-common-rest";
         final String projectVersionName = "2.5.1-SNAPSHOT";
         final String prefix = "";
@@ -69,8 +69,8 @@ public class CodeLocationNameGeneratorTest {
         final DetectFileFinder detectFileFinder = new DetectFileFinder();
         final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectFileFinder);
 
-        final String sourcePath = "/Users/ekerwin/Documents/source/funtional/hub-common-rest";
-        final String codeLocationPath = "/Users/ekerwin/Documents/source/funtional/hub-common-rest/child";
+        final String sourcePath = "/Users/ekerwin/Documents/source/functional/hub-common-rest";
+        final String codeLocationPath = "/Users/ekerwin/Documents/source/functional/hub-common-rest/child";
 
         final String prefix = "";
         final String suffix = "";
@@ -88,8 +88,8 @@ public class CodeLocationNameGeneratorTest {
         final DetectFileFinder detectFileFinder = new DetectFileFinder();
         final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectFileFinder);
 
-        final String sourcePath = "/Users/ekerwin/Documents/source/funtional/hub-common-rest";
-        final String codeLocationPath = "/Users/ekerwin/Documents/source/funtional/hub-common-rest/hub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-rest";
+        final String sourcePath = "/Users/ekerwin/Documents/source/functional/hub-common-rest";
+        final String codeLocationPath = "/Users/ekerwin/Documents/source/functional/hub-common-rest/hub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-rest";
         final String prefix = "";
         final String suffix = "";
         final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, externalId, DetectCodeLocationType.NPM, prefix, suffix);

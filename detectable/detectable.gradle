@@ -5,13 +5,25 @@ plugins {
 version '5.2.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
+project.ext.junitShowStandardStreams = 'true'
 
 repositories {
     jcenter()
     mavenCentral()
 }
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    testCompile "org.mockito:mockito-core:2.+"
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.5'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testImplementation "org.mockito:mockito-core:2.+"
+
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.3.1'
+
+    testRuntime 'org.slf4j:slf4j-simple:1.7.25'
 }
