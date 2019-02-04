@@ -1,0 +1,413 @@
+{
+  "rootExternalDataIds": [
+    "http:cocoapods/AppHub/0_5_1",
+    "http:cocoapods/ALPValidator/0_0_3",
+    "http:cocoapods/JWTDecode/2_0_0",
+    "http:cocoapods/SSFadingScrollView/1_1_0",
+    "http:cocoapods/AFNetworkActivityLogger/2_0_4",
+    "http:cocoapods/FBSDKLoginKit/4_10_1",
+    "http:cocoapods/Extraction/1_2_3",
+    "http:cocoapods/ObjectiveSugar/1_1_0",
+    "http:cocoapods/OHHTTPStubs/3_1_2",
+    "http:cocoapods/JSDecoupledAppDelegate/1_2_0",
+    "http:cocoapods/Specta/1_0_5",
+    "http:cocoapods/Forgeries/1_0_0",
+    "http:cocoapods/NPKeyboardLayoutGuide/1_0_0",
+    "http:cocoapods/Analytics/3_0_7",
+    "http:cocoapods/FLKAutoLayout/1_0_0",
+    "http:cocoapods/Artsy_UILabels/2_2_0",
+    "http:cocoapods/VCRURLConnection/0_2_0",
+    "http:cocoapods/Artsy_UIFonts/3_1_1",
+    "http:cocoapods/React/0_34_1",
+    "http:cocoapods/SDWebImage/3_7_3",
+    "http:cocoapods/iRate/1_10_2",
+    "http:cocoapods/UIAlertView_Blocks/0_8",
+    "http:cocoapods/Aerodramus/0_3_1",
+    "http:cocoapods/Then/2_1_0",
+    "http:cocoapods/JSBadgeView/1_4_1",
+    "http:cocoapods/SwiftyJSON/3_1_4",
+    "http:cocoapods/OCMock/2_2_4",
+    "http:cocoapods/Emission/1_2_3",
+    "http:cocoapods/JLRoutes/2_0_0",
+    "http:cocoapods/ARTiledImageView/1_2_0",
+    "http:cocoapods/AFOAuth1Client/0_4_0",
+    "http:cocoapods/Mantle/1_5_6",
+    "http:cocoapods/Quick/0_10_0",
+    "http:cocoapods/AFNetworking/2_5_4",
+    "http:cocoapods/UIView_BooleanAnimations/1_0_2",
+    "http:cocoapods/MultiDelegate/0_0_2",
+    "http:cocoapods/Starscream/2_0_2",
+    "http:cocoapods/ARGenericTableViewController/1_0_2",
+    "http:cocoapods/DHCShakeNotifier/0_2_0",
+    "http:cocoapods/ARCollectionViewMasonryLayout/2_1_2",
+    "http:cocoapods/Artsy_UIButtons/2_1_0",
+    "http:cocoapods/ORStackView/2_0_3",
+    "http:cocoapods/Expecta_Snapshots/3_0_0",
+    "http:cocoapods/Artsy_UIColors/3_1_0",
+    "http:cocoapods/UICKeyChainStore/1_0_5",
+    "http:cocoapods/ARAnalytics/3_9_0",
+    "http:cocoapods/FXBlurView/1_6_1",
+    "http:cocoapods/ReactiveCocoa/2_5",
+    "http:cocoapods/Nimble/5_1_1",
+    "http:cocoapods/FBSDKCoreKit/4_10_1",
+    "http:cocoapods/CocoaLumberjack/2_0_1",
+    "http:cocoapods/MMMarkdown/0_4",
+    "http:cocoapods/KSDeferred/0_2_0",
+    "http:cocoapods/ORKeyboardReactingApplication/0_5_3",
+    "http:cocoapods/MARKRangeSlider/1_0_1",
+    "http:cocoapods/FBSnapshotTestCase/2_1_4",
+    "http:cocoapods/XCTest_OHHTTPStubSuiteCleanUp/1_0_0",
+    "http:cocoapods/Nimble_Snapshots/4_3_0",
+    "http:cocoapods/ISO8601DateFormatter/0_7_1",
+    "http:cocoapods/Expecta/1_0_5",
+    "http:cocoapods/NAMapKit/3_2_0",
+    "http:cocoapods/EDColor/1_0_0",
+    "http:cocoapods/Interstellar/2_0_0"
+  ],
+  "externalDataIdRelationships": {
+    "http:cocoapods/ARTiledImageView/1_2_0": [
+      "http:cocoapods/SDWebImage/3_7_3"
+    ],
+    "http:cocoapods/AppHub/0_5_1": [
+      "http:cocoapods/React/0_34_1"
+    ],
+    "http:cocoapods/AFOAuth1Client/0_4_0": [
+      "http:cocoapods/AFNetworking/2_5_4"
+    ],
+    "http:cocoapods/AFNetworkActivityLogger/2_0_4": [
+      "http:cocoapods/AFNetworking/2_5_4"
+    ],
+    "http:cocoapods/FBSDKLoginKit/4_10_1": [
+      "http:cocoapods/FBSDKCoreKit/4_10_1"
+    ],
+    "http:cocoapods/Extraction/1_2_3": [
+      "http:cocoapods/Artsy_UIButtons/2_1_0",
+      "http:cocoapods/ORStackView/2_0_3",
+      "http:cocoapods/UIView_BooleanAnimations/1_0_2",
+      "http:cocoapods/Artsy_UIColors/3_1_0",
+      "http:cocoapods/FLKAutoLayout/1_0_0",
+      "http:cocoapods/Artsy_UIFonts/3_1_1"
+    ],
+    "http:cocoapods/Artsy_UIButtons/2_1_0": [
+      "http:cocoapods/UIView_BooleanAnimations/1_0_2",
+      "http:cocoapods/Artsy_UIColors/3_1_0",
+      "http:cocoapods/Artsy_UIFonts/3_1_1"
+    ],
+    "http:cocoapods/XCTest_OHHTTPStubSuiteCleanUp/1_0_0": [
+      "http:cocoapods/OHHTTPStubs/3_1_2"
+    ],
+    "http:cocoapods/ORStackView/2_0_3": [
+      "http:cocoapods/FLKAutoLayout/1_0_0"
+    ],
+    "http:cocoapods/Expecta_Snapshots/3_0_0": [
+      "http:cocoapods/Specta/1_0_5",
+      "http:cocoapods/FBSnapshotTestCase/2_1_4",
+      "http:cocoapods/Expecta/1_0_5"
+    ],
+    "http:cocoapods/Nimble_Snapshots/4_3_0": [
+      "http:cocoapods/FBSnapshotTestCase/2_1_4",
+      "http:cocoapods/Quick/0_10_0",
+      "http:cocoapods/Nimble/5_1_1"
+    ],
+    "http:cocoapods/Forgeries/1_0_0": [
+      "http:cocoapods/OCMock/2_2_4"
+    ],
+    "http:cocoapods/Aerodramus/0_3_1": [
+      "http:cocoapods/ISO8601DateFormatter/0_7_1"
+    ],
+    "http:cocoapods/NAMapKit/3_2_0": [
+      "http:cocoapods/ARTiledImageView/1_2_0",
+      "http:cocoapods/SDWebImage/3_7_3"
+    ],
+    "http:cocoapods/Emission/1_2_3": [
+      "http:cocoapods/SDWebImage/3_7_3",
+      "http:cocoapods/Extraction/1_2_3",
+      "http:cocoapods/Artsy_UIFonts/3_1_1",
+      "http:cocoapods/React/0_34_1"
+    ],
+    "http:cocoapods/ARAnalytics/3_9_0": [
+      "http:cocoapods/Adjust/4_11_0",
+      "http:cocoapods/HockeySDK_Source/3_8_5",
+      "http:cocoapods/RSSwizzle/0_1_0",
+      "http:cocoapods/Analytics/3_0_7",
+      "http:cocoapods/ReactiveCocoa/2_5"
+    ],
+    "http:cocoapods/FBSDKCoreKit/4_10_1": [
+      "http:cocoapods/Bolts/1_7_0"
+    ],
+    "http:cocoapods/Artsy_UILabels/2_2_0": [
+      "http:cocoapods/Artsy_UIColors/3_1_0",
+      "http:cocoapods/Artsy_UIFonts/3_1_1"
+    ]
+  },
+  "dependencySummaries": {
+    "http:cocoapods/AppHub/0_5_1": {
+      "name": "AppHub",
+      "version": "0.5.1"
+    },
+    "http:cocoapods/Adjust/4_11_0": {
+      "name": "Adjust",
+      "version": "4.11.0"
+    },
+    "http:cocoapods/ALPValidator/0_0_3": {
+      "name": "ALPValidator",
+      "version": "0.0.3"
+    },
+    "http:cocoapods/JWTDecode/2_0_0": {
+      "name": "JWTDecode",
+      "version": "2.0.0"
+    },
+    "http:cocoapods/SSFadingScrollView/1_1_0": {
+      "name": "SSFadingScrollView",
+      "version": "1.1.0"
+    },
+    "http:cocoapods/AFNetworkActivityLogger/2_0_4": {
+      "name": "AFNetworkActivityLogger",
+      "version": "2.0.4"
+    },
+    "http:cocoapods/FBSDKLoginKit/4_10_1": {
+      "name": "FBSDKLoginKit",
+      "version": "4.10.1"
+    },
+    "http:cocoapods/Extraction/1_2_3": {
+      "name": "Extraction",
+      "version": "1.2.3"
+    },
+    "http:cocoapods/OHHTTPStubs/3_1_2": {
+      "name": "OHHTTPStubs",
+      "version": "3.1.2"
+    },
+    "http:cocoapods/ObjectiveSugar/1_1_0": {
+      "name": "ObjectiveSugar",
+      "version": "1.1.0"
+    },
+    "http:cocoapods/JSDecoupledAppDelegate/1_2_0": {
+      "name": "JSDecoupledAppDelegate",
+      "version": "1.2.0"
+    },
+    "http:cocoapods/Specta/1_0_5": {
+      "name": "Specta",
+      "version": "1.0.5"
+    },
+    "http:cocoapods/Forgeries/1_0_0": {
+      "name": "Forgeries",
+      "version": "1.0.0"
+    },
+    "http:cocoapods/NPKeyboardLayoutGuide/1_0_0": {
+      "name": "NPKeyboardLayoutGuide",
+      "version": "1.0.0"
+    },
+    "http:cocoapods/Analytics/3_0_7": {
+      "name": "Analytics",
+      "version": "3.0.7"
+    },
+    "http:cocoapods/FLKAutoLayout/1_0_0": {
+      "name": "FLKAutoLayout",
+      "version": "1.0.0"
+    },
+    "http:cocoapods/Artsy_UILabels/2_2_0": {
+      "name": "Artsy+UILabels",
+      "version": "2.2.0"
+    },
+    "http:cocoapods/VCRURLConnection/0_2_0": {
+      "name": "VCRURLConnection",
+      "version": "0.2.0"
+    },
+    "http:cocoapods/Artsy_UIFonts/3_1_1": {
+      "name": "Artsy+UIFonts",
+      "version": "3.1.1"
+    },
+    "http:cocoapods/React/0_34_1": {
+      "name": "React",
+      "version": "0.34.1"
+    },
+    "http:cocoapods/Bolts/1_7_0": {
+      "name": "Bolts",
+      "version": "1.7.0"
+    },
+    "http:cocoapods/SDWebImage/3_7_3": {
+      "name": "SDWebImage",
+      "version": "3.7.3"
+    },
+    "http:cocoapods/iRate/1_10_2": {
+      "name": "iRate",
+      "version": "1.10.2"
+    },
+    "http:cocoapods/UIAlertView_Blocks/0_8": {
+      "name": "UIAlertView+Blocks",
+      "version": "0.8"
+    },
+    "http:cocoapods/RSSwizzle/0_1_0": {
+      "name": "RSSwizzle",
+      "version": "0.1.0"
+    },
+    "http:cocoapods/Aerodramus/0_3_1": {
+      "name": "Aerodramus",
+      "version": "0.3.1"
+    },
+    "http:cocoapods/Then/2_1_0": {
+      "name": "Then",
+      "version": "2.1.0"
+    },
+    "http:cocoapods/JSBadgeView/1_4_1": {
+      "name": "JSBadgeView",
+      "version": "1.4.1"
+    },
+    "http:cocoapods/OCMock/2_2_4": {
+      "name": "OCMock",
+      "version": "2.2.4"
+    },
+    "http:cocoapods/SwiftyJSON/3_1_4": {
+      "name": "SwiftyJSON",
+      "version": "3.1.4"
+    },
+    "http:cocoapods/Emission/1_2_3": {
+      "name": "Emission",
+      "version": "1.2.3"
+    },
+    "http:cocoapods/JLRoutes/2_0_0": {
+      "name": "JLRoutes",
+      "version": "2.0.0"
+    },
+    "http:cocoapods/ARTiledImageView/1_2_0": {
+      "name": "ARTiledImageView",
+      "version": "1.2.0"
+    },
+    "http:cocoapods/AFOAuth1Client/0_4_0": {
+      "name": "AFOAuth1Client",
+      "version": "0.4.0"
+    },
+    "http:cocoapods/Mantle/1_5_6": {
+      "name": "Mantle",
+      "version": "1.5.6"
+    },
+    "http:cocoapods/Quick/0_10_0": {
+      "name": "Quick",
+      "version": "0.10.0"
+    },
+    "http:cocoapods/HockeySDK_Source/3_8_5": {
+      "name": "HockeySDK-Source",
+      "version": "3.8.5"
+    },
+    "http:cocoapods/AFNetworking/2_5_4": {
+      "name": "AFNetworking",
+      "version": "2.5.4"
+    },
+    "http:cocoapods/UIView_BooleanAnimations/1_0_2": {
+      "name": "UIView+BooleanAnimations",
+      "version": "1.0.2"
+    },
+    "http:cocoapods/MultiDelegate/0_0_2": {
+      "name": "MultiDelegate",
+      "version": "0.0.2"
+    },
+    "http:cocoapods/Starscream/2_0_2": {
+      "name": "Starscream",
+      "version": "2.0.2"
+    },
+    "http:cocoapods/ARGenericTableViewController/1_0_2": {
+      "name": "ARGenericTableViewController",
+      "version": "1.0.2"
+    },
+    "http:cocoapods/DHCShakeNotifier/0_2_0": {
+      "name": "DHCShakeNotifier",
+      "version": "0.2.0"
+    },
+    "http:cocoapods/Artsy_UIButtons/2_1_0": {
+      "name": "Artsy-UIButtons",
+      "version": "2.1.0"
+    },
+    "http:cocoapods/ARCollectionViewMasonryLayout/2_1_2": {
+      "name": "ARCollectionViewMasonryLayout",
+      "version": "2.1.2"
+    },
+    "http:cocoapods/ORStackView/2_0_3": {
+      "name": "ORStackView",
+      "version": "2.0.3"
+    },
+    "http:cocoapods/Expecta_Snapshots/3_0_0": {
+      "name": "Expecta+Snapshots",
+      "version": "3.0.0"
+    },
+    "http:cocoapods/Artsy_UIColors/3_1_0": {
+      "name": "Artsy+UIColors",
+      "version": "3.1.0"
+    },
+    "http:cocoapods/UICKeyChainStore/1_0_5": {
+      "name": "UICKeyChainStore",
+      "version": "1.0.5"
+    },
+    "http:cocoapods/ARAnalytics/3_9_0": {
+      "name": "ARAnalytics",
+      "version": "3.9.0"
+    },
+    "http:cocoapods/FXBlurView/1_6_1": {
+      "name": "FXBlurView",
+      "version": "1.6.1"
+    },
+    "http:cocoapods/ReactiveCocoa/2_5": {
+      "name": "ReactiveCocoa",
+      "version": "2.5"
+    },
+    "http:cocoapods/FBSDKCoreKit/4_10_1": {
+      "name": "FBSDKCoreKit",
+      "version": "4.10.1"
+    },
+    "http:cocoapods/Nimble/5_1_1": {
+      "name": "Nimble",
+      "version": "5.1.1"
+    },
+    "http:cocoapods/CocoaLumberjack/2_0_1": {
+      "name": "CocoaLumberjack",
+      "version": "2.0.1"
+    },
+    "http:cocoapods/KSDeferred/0_2_0": {
+      "name": "KSDeferred",
+      "version": "0.2.0"
+    },
+    "http:cocoapods/MMMarkdown/0_4": {
+      "name": "MMMarkdown",
+      "version": "0.4"
+    },
+    "http:cocoapods/ORKeyboardReactingApplication/0_5_3": {
+      "name": "ORKeyboardReactingApplication",
+      "version": "0.5.3"
+    },
+    "http:cocoapods/MARKRangeSlider/1_0_1": {
+      "name": "MARKRangeSlider",
+      "version": "1.0.1"
+    },
+    "http:cocoapods/FBSnapshotTestCase/2_1_4": {
+      "name": "FBSnapshotTestCase",
+      "version": "2.1.4"
+    },
+    "http:cocoapods/XCTest_OHHTTPStubSuiteCleanUp/1_0_0": {
+      "name": "XCTest+OHHTTPStubSuiteCleanUp",
+      "version": "1.0.0"
+    },
+    "http:cocoapods/Nimble_Snapshots/4_3_0": {
+      "name": "Nimble-Snapshots",
+      "version": "4.3.0"
+    },
+    "http:cocoapods/ISO8601DateFormatter/0_7_1": {
+      "name": "ISO8601DateFormatter",
+      "version": "0.7.1"
+    },
+    "http:cocoapods/Expecta/1_0_5": {
+      "name": "Expecta",
+      "version": "1.0.5"
+    },
+    "http:cocoapods/NAMapKit/3_2_0": {
+      "name": "NAMapKit",
+      "version": "3.2.0"
+    },
+    "http:cocoapods/EDColor/1_0_0": {
+      "name": "EDColor",
+      "version": "1.0.0"
+    },
+    "http:cocoapods/Interstellar/2_0_0": {
+      "name": "Interstellar",
+      "version": "2.0.0"
+    }
+  }
+}

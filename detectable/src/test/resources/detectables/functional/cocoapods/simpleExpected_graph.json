@@ -1,0 +1,33 @@
+{
+  "externalDataIdRelationships": {
+    "http:cocoapods/Allihoopa_macOS/1_1_0": [
+      "http:cocoapods/AllihoopaCore/1_1_0"
+    ],
+    "http:cocoapods/AllihoopaCore/1_1_0": [],
+    "http:cocoapods/Mapbox_macOS_SDK/0_4_1": [],
+    "http:cocoapods/RepliesSDK_macOS/0_2_22": []
+  },
+  "dependencySummaries": {
+    "http:cocoapods/Allihoopa_macOS/1_1_0": {
+      "name": "Allihoopa-macOS",
+      "version": "1.1.0"
+    },
+    "http:cocoapods/AllihoopaCore/1_1_0": {
+      "name": "AllihoopaCore",
+      "version": "1.1.0"
+    },
+    "http:cocoapods/Mapbox_macOS_SDK/0_4_1": {
+      "name": "Mapbox-macOS-SDK",
+      "version": "0.4.1"
+    },
+    "http:cocoapods/RepliesSDK_macOS/0_2_22": {
+      "name": "RepliesSDK-macOS",
+      "version": "0.2.22"
+    }
+  },
+  "rootExternalDataIds": [
+    "http:cocoapods/Allihoopa_macOS/1_1_0",
+    "http:cocoapods/Mapbox_macOS_SDK/0_4_1",
+    "http:cocoapods/RepliesSDK_macOS/0_2_22"
+  ]
+}

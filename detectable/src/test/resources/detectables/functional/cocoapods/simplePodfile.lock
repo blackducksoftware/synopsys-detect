@@ -1,0 +1,21 @@
+PODS:
+  - Allihoopa-macOS (1.1.0):
+    - AllihoopaCore (~> 1.1.0)
+  - AllihoopaCore (1.1.0)
+  - Mapbox-macOS-SDK (0.4.1)
+  - RepliesSDK-macOS (0.2.22)
+
+DEPENDENCIES:
+  - Allihoopa-macOS (~> 1.1)
+  - Mapbox-macOS-SDK (~> 0.4)
+  - RepliesSDK-macOS (~> 0.2)
+
+SPEC CHECKSUMS:
+  Allihoopa-macOS: 5c2fb29ed9d4266bc3ba0b3ec3ef7d937cd856f6
+  AllihoopaCore: 78c8c6695856b376ae4c6bb2385bcd8de099dfbc
+  Mapbox-macOS-SDK: 942319f0f1567b7fc9f5bb452428331a4ba4990a
+  RepliesSDK-macOS: 42c5f6956a1cebb259e8334e21cb6d04e70813a7
+
+PODFILE CHECKSUM: cf96735ee6b7cfa92b1189e11efbd4406137e30f
+
+COCOAPODS: 1.2.0

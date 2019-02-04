@@ -1,0 +1,1406 @@
+{
+  "externalDataIdRelationships": {
+    "http:anaconda/appnope/0_1_0_py27_0_osx_64": [],
+    "http:anaconda/backports_shutil_get_terminal_size/1_0_0_py27_1_osx_64": [],
+    "http:anaconda/backports_abc/0_5_py27_0_osx_64": [],
+    "http:anaconda/bleach/1_5_0_py27_0_osx_64": [],
+    "http:anaconda/ca_certificates/2017_4_17_0_osx_64": [],
+    "http:anaconda/cairo/1_14_6_4_osx_64": [],
+    "http:anaconda/certifi/2017_4_17_py27_0_osx_64": [],
+    "http:anaconda/configparser/3_5_0_py27_0_osx_64": [],
+    "http:anaconda/curl/7_54_1_0_osx_64": [],
+    "http:anaconda/cycler/0_10_0_py27_0_osx_64": [],
+    "http:anaconda/dbus/1_10_10_3_osx_64": [],
+    "http:anaconda/decorator/4_1_1_py27_0_osx_64": [],
+    "http:anaconda/eigen/3_3_3_0_osx_64": [],
+    "http:anaconda/entrypoints/0_2_3_py27_1_osx_64": [],
+    "http:anaconda/enum34/1_1_6_py27_1_osx_64": [],
+    "http:anaconda/expat/2_2_1_0_osx_64": [],
+    "http:anaconda/fontconfig/2_12_1_4_osx_64": [],
+    "http:anaconda/freetype/2_7_1_osx_64": [],
+    "http:anaconda/functools32/3_2_3_2_py27_1_osx_64": [],
+    "http:anaconda/gettext/0_19_8_1_0_osx_64": [],
+    "http:anaconda/glib/2_51_4_0_osx_64": [],
+    "http:anaconda/graphite2/1_3_9_0_osx_64": [],
+    "http:anaconda/gsl/2_1_2_osx_64": [],
+    "http:anaconda/harfbuzz/1_4_3_0_osx_64": [],
+    "http:anaconda/html5lib/0_9999999_py27_0_osx_64": [],
+    "http:anaconda/icu/58_1_1_osx_64": [],
+    "http:anaconda/ipykernel/4_6_1_py27_0_osx_64": [],
+    "http:anaconda/ipython/5_4_1_py27_0_osx_64": [],
+    "http:anaconda/ipython_genutils/0_2_0_py27_0_osx_64": [],
+    "http:anaconda/ipywidgets/6_0_0_py27_0_osx_64": [],
+    "http:anaconda/jinja2/2_9_5_py27_0_osx_64": [],
+    "http:anaconda/jpeg/9b_0_osx_64": [],
+    "http:anaconda/jsonschema/2_5_1_py27_0_osx_64": [],
+    "http:anaconda/jupyter/1_0_0_py27_0_osx_64": [],
+    "http:anaconda/jupyter_client/5_1_0_py27_0_osx_64": [],
+    "http:anaconda/jupyter_console/5_1_0_py27_0_osx_64": [],
+    "http:anaconda/jupyter_contrib_core/0_3_1_py27_0_osx_64": [],
+    "http:anaconda/jupyter_contrib_nbextensions/0_2_8_py27_1_osx_64": [],
+    "http:anaconda/jupyter_core/4_3_0_py27_0_osx_64": [],
+    "http:anaconda/jupyter_highlight_selected_word/0_0_11_py27_0_osx_64": [],
+    "http:anaconda/jupyter_latex_envs/1_3_8_2_py27_1_osx_64": [],
+    "http:anaconda/jupyter_nbextensions_configurator/0_2_5_py27_0_osx_64": [],
+    "http:anaconda/krb5/1_14_2_0_osx_64": [],
+    "http:anaconda/libboost/1_61_0_py27_0_osx_64": [],
+    "http:anaconda/libffi/3_2_1_3_osx_64": [],
+    "http:anaconda/libgcc/4_8_5_1_osx_64": [],
+    "http:anaconda/libiconv/1_14_4_osx_64": [],
+    "http:anaconda/libpng/1_6_28_1_osx_64": [],
+    "http:anaconda/librun/1_0_0_py27_0_osx_64": [],
+    "http:anaconda/libsodium/1_0_10_0_osx_64": [],
+    "http:anaconda/libssh2/1_8_0_1_osx_64": [],
+    "http:anaconda/libstatiskit_core/1_0_0_0_osx_64": [],
+    "http:anaconda/libstatiskit_glm/1_0_0_0_osx_64": [],
+    "http:anaconda/libstatiskit_linalg/3_3_1_0_osx_64": [],
+    "http:anaconda/libstatiskit_stl/1_0_0_0_osx_64": [],
+    "http:anaconda/libtiff/4_0_6_7_osx_64": [],
+    "http:anaconda/libxml2/2_9_4_4_osx_64": [],
+    "http:anaconda/markupsafe/1_0_py27_0_osx_64": [],
+    "http:anaconda/matplotlib/2_0_2_np113py27_0_osx_64": [],
+    "http:anaconda/mistune/0_7_4_py27_0_osx_64": [],
+    "http:anaconda/mkl/2017_0_3_0_osx_64": [],
+    "http:anaconda/nbconvert/5_2_1_py27_1_osx_64": [],
+    "http:anaconda/nbformat/4_3_0_py27_0_osx_64": [],
+    "http:anaconda/ncurses/5_9_10_osx_64": [],
+    "http:anaconda/nlopt/2_4_2_py27_1_osx_64": [],
+    "http:anaconda/notebook/5_0_0_py27_0_osx_64": [],
+    "http:anaconda/numpy/1_13_1_py27_0_osx_64": [],
+    "http:anaconda/openssl/1_0_2l_0_osx_64": [],
+    "http:anaconda/pandas/0_20_3_py27_1_osx_64": [],
+    "http:anaconda/pandoc/1_19_2_0_osx_64": [],
+    "http:anaconda/pandocfilters/1_4_1_py27_0_osx_64": [],
+    "http:anaconda/pango/1_40_4_0_osx_64": [],
+    "http:anaconda/pathlib2/2_3_0_py27_0_osx_64": [],
+    "http:anaconda/pcre/8_39_0_osx_64": [],
+    "http:anaconda/pexpect/4_2_1_py27_0_osx_64": [],
+    "http:anaconda/pickleshare/0_7_3_py27_0_osx_64": [],
+    "http:anaconda/pip/9_0_1_py27_0_osx_64": [],
+    "http:anaconda/pixman/0_34_0_0_osx_64": [],
+    "http:anaconda/prompt_toolkit/1_0_14_py27_0_osx_64": [],
+    "http:anaconda/psutil/5_2_1_py27_0_osx_64": [],
+    "http:anaconda/ptyprocess/0_5_2_py27_0_osx_64": [],
+    "http:anaconda/pygments/2_2_0_py27_0_osx_64": [],
+    "http:anaconda/pyparsing/2_2_0_py27_0_osx_64": [],
+    "http:anaconda/pyqt/5_6_0_py27_4_osx_64": [],
+    "http:anaconda/python/2_7_13_1_osx_64": [],
+    "http:anaconda/python_dateutil/2_6_1_py27_0_osx_64": [],
+    "http:anaconda/python_statiskit_core/1_0_0_py27_0_osx_64": [],
+    "http:anaconda/python_statiskit_glm/1_0_0_py27_0_osx_64": [],
+    "http:anaconda/python_statiskit_linalg/3_3_1_py27_0_osx_64": [],
+    "http:anaconda/python_statiskit_stl/3_3_1_py27_0_osx_64": [],
+    "http:anaconda/pytz/2017_2_py27_0_osx_64": [],
+    "http:anaconda/pyyaml/3_12_py27_1_osx_64": [],
+    "http:anaconda/pyzmq/16_0_2_py27_0_osx_64": [],
+    "http:anaconda/qt/5_6_2_1_osx_64": [],
+    "http:anaconda/qtconsole/4_3_0_py27_0_osx_64": [],
+    "http:anaconda/r_assertthat/0_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_backports/1_0_5_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_base/3_3_2_5_osx_64": [],
+    "http:anaconda/r_base64enc/0_1_3_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_bh/1_62_0_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_bitops/1_0_6_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_bivpois/0_50_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_boot/1_3_18_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_broom/0_4_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_car/2_1_4_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_caret/6_0_76_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_catools/1_17_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_cellranger/1_1_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_class/7_3_14_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_cluster/2_0_6_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_codetools/0_2_15_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_colorspace/1_3_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_crayon/1_3_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_curl/2_4_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_data_table/1_10_4_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_dbi/0_6_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_dichromat/2_0_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_digest/0_6_10_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_dplyr/0_5_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_essentials/1_5_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_evaluate/0_10_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_forcats/0_2_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_foreach/1_4_3_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_foreign/0_8_67_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_formatr/1_4_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_ggplot2/2_2_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_gistr/0_4_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_glmnet/2_0_5_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_gtable/0_2_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_haven/1_0_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_hexbin/1_27_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_highr/0_6_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_hms/0_3_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_htmltools/0_3_6_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_htmlwidgets/0_8_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_httpuv/1_3_3_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_httr/1_2_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_irdisplay/0_4_4_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_irkernel/0_8_7_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_iterators/1_0_8_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_jsonlite/1_4_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_kernsmooth/2_23_15_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_knitr/1_16_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_labeling/0_3_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_lattice/0_20_34_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_lazyeval/0_2_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_lme4/1_1_13_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_lubridate/1_6_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_magrittr/1_5_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_maps/3_1_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_markdown/0_8_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_mass/7_3_45_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_matrix/1_2_7_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_matrixmodels/0_4_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_mgcv/1_8_17_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_mglm/0_0_8_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_mime/0_5_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_minqa/1_2_4_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_mnormt/1_5_5_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_modelmetrics/1_1_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_modelr/0_1_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_munsell/0_4_3_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_nlme/3_1_131_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_nloptr/1_0_4_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_nnet/7_3_12_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_openssl/0_9_6_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_pbdzmq/0_2_4_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_pbkrtest/0_4_7_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_plyr/1_8_4_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_pryr/0_1_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_psych/1_7_3_21_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_purrr/0_2_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_quantmod/0_4_8_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_quantreg/5_33_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_r6/2_2_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_randomforest/4_6_12_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_rbokeh/0_5_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_rcolorbrewer/1_1_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_rcpp/0_12_10_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_rcppeigen/0_3_2_9_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_readr/1_1_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_readxl/1_0_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_recommended/3_3_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_rematch/1_0_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_repr/0_10_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_reshape2/1_4_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_rmarkdown/1_6_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_rpart/4_1_10_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_rprojroot/1_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_rvest/0_3_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_scales/0_4_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_selectr/0_3_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_shiny/1_0_3_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_sourcetools/0_1_6_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_sparsem/1_76_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_spatial/7_3_11_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_stringi/1_1_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_stringr/1_1_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_survival/2_40_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_tibble/1_3_0_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_tidyr/0_6_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_tidyverse/1_1_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_ttr/0_23_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_uuid/0_1_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_xml2/1_1_1_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_xtable/1_8_2_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_xts/0_9_7_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_yaml/2_1_14_r3_3_2_0_osx_64": [],
+    "http:anaconda/r_zoo/1_7_14_r3_3_2_0_osx_64": [],
+    "http:anaconda/readline/6_2_0_osx_64": [],
+    "http:anaconda/rpy2/2_8_5_py27r3_3_2_0_osx_64": [],
+    "http:anaconda/scandir/1_5_py27_1_osx_64": [],
+    "http:anaconda/setuptools/33_1_1_py27_0_osx_64": [],
+    "http:anaconda/simplegeneric/0_8_1_py27_0_osx_64": [],
+    "http:anaconda/singledispatch/3_4_0_3_py27_0_osx_64": [],
+    "http:anaconda/sip/4_18_py27_1_osx_64": [],
+    "http:anaconda/six/1_10_0_py27_1_osx_64": [],
+    "http:anaconda/sqlite/3_13_0_1_osx_64": [],
+    "http:anaconda/ssl_match_hostname/3_5_0_1_py27_1_osx_64": [],
+    "http:anaconda/subprocess32/3_2_7_py27_0_osx_64": [],
+    "http:anaconda/terminado/0_6_py27_0_osx_64": [],
+    "http:anaconda/testpath/0_3_py27_0_osx_64": [],
+    "http:anaconda/tk/8_5_19_1_osx_64": [],
+    "http:anaconda/tornado/4_5_1_py27_0_osx_64": [],
+    "http:anaconda/traitlets/4_3_2_py27_0_osx_64": [],
+    "http:anaconda/wcwidth/0_1_7_py27_0_osx_64": [],
+    "http:anaconda/webencodings/0_5_py27_0_osx_64": [],
+    "http:anaconda/wheel/0_29_0_py27_0_osx_64": [],
+    "http:anaconda/widgetsnbextension/2_0_0_py27_0_osx_64": [],
+    "http:anaconda/xz/5_2_2_0_osx_64": [],
+    "http:anaconda/yaml/0_1_6_0_osx_64": [],
+    "http:anaconda/zeromq/4_1_5_0_osx_64": [],
+    "http:anaconda/zlib/1_2_8_3_osx_64": []
+  },
+  "dependencySummaries": {
+    "http:anaconda/appnope/0_1_0_py27_0_osx_64": {
+      "name": "appnope",
+      "version": "0.1.0-py27_0-osx-64"
+    },
+    "http:anaconda/backports_shutil_get_terminal_size/1_0_0_py27_1_osx_64": {
+      "name": "backports.shutil_get_terminal_size",
+      "version": "1.0.0-py27_1-osx-64"
+    },
+    "http:anaconda/backports_abc/0_5_py27_0_osx_64": {
+      "name": "backports_abc",
+      "version": "0.5-py27_0-osx-64"
+    },
+    "http:anaconda/bleach/1_5_0_py27_0_osx_64": {
+      "name": "bleach",
+      "version": "1.5.0-py27_0-osx-64"
+    },
+    "http:anaconda/ca_certificates/2017_4_17_0_osx_64": {
+      "name": "ca-certificates",
+      "version": "2017.4.17-0-osx-64"
+    },
+    "http:anaconda/cairo/1_14_6_4_osx_64": {
+      "name": "cairo",
+      "version": "1.14.6-4-osx-64"
+    },
+    "http:anaconda/certifi/2017_4_17_py27_0_osx_64": {
+      "name": "certifi",
+      "version": "2017.4.17-py27_0-osx-64"
+    },
+    "http:anaconda/configparser/3_5_0_py27_0_osx_64": {
+      "name": "configparser",
+      "version": "3.5.0-py27_0-osx-64"
+    },
+    "http:anaconda/curl/7_54_1_0_osx_64": {
+      "name": "curl",
+      "version": "7.54.1-0-osx-64"
+    },
+    "http:anaconda/cycler/0_10_0_py27_0_osx_64": {
+      "name": "cycler",
+      "version": "0.10.0-py27_0-osx-64"
+    },
+    "http:anaconda/dbus/1_10_10_3_osx_64": {
+      "name": "dbus",
+      "version": "1.10.10-3-osx-64"
+    },
+    "http:anaconda/decorator/4_1_1_py27_0_osx_64": {
+      "name": "decorator",
+      "version": "4.1.1-py27_0-osx-64"
+    },
+    "http:anaconda/eigen/3_3_3_0_osx_64": {
+      "name": "eigen",
+      "version": "3.3.3-0-osx-64"
+    },
+    "http:anaconda/entrypoints/0_2_3_py27_1_osx_64": {
+      "name": "entrypoints",
+      "version": "0.2.3-py27_1-osx-64"
+    },
+    "http:anaconda/enum34/1_1_6_py27_1_osx_64": {
+      "name": "enum34",
+      "version": "1.1.6-py27_1-osx-64"
+    },
+    "http:anaconda/expat/2_2_1_0_osx_64": {
+      "name": "expat",
+      "version": "2.2.1-0-osx-64"
+    },
+    "http:anaconda/fontconfig/2_12_1_4_osx_64": {
+      "name": "fontconfig",
+      "version": "2.12.1-4-osx-64"
+    },
+    "http:anaconda/freetype/2_7_1_osx_64": {
+      "name": "freetype",
+      "version": "2.7-1-osx-64"
+    },
+    "http:anaconda/functools32/3_2_3_2_py27_1_osx_64": {
+      "name": "functools32",
+      "version": "3.2.3.2-py27_1-osx-64"
+    },
+    "http:anaconda/gettext/0_19_8_1_0_osx_64": {
+      "name": "gettext",
+      "version": "0.19.8.1-0-osx-64"
+    },
+    "http:anaconda/glib/2_51_4_0_osx_64": {
+      "name": "glib",
+      "version": "2.51.4-0-osx-64"
+    },
+    "http:anaconda/graphite2/1_3_9_0_osx_64": {
+      "name": "graphite2",
+      "version": "1.3.9-0-osx-64"
+    },
+    "http:anaconda/gsl/2_1_2_osx_64": {
+      "name": "gsl",
+      "version": "2.1-2-osx-64"
+    },
+    "http:anaconda/harfbuzz/1_4_3_0_osx_64": {
+      "name": "harfbuzz",
+      "version": "1.4.3-0-osx-64"
+    },
+    "http:anaconda/html5lib/0_9999999_py27_0_osx_64": {
+      "name": "html5lib",
+      "version": "0.9999999-py27_0-osx-64"
+    },
+    "http:anaconda/icu/58_1_1_osx_64": {
+      "name": "icu",
+      "version": "58.1-1-osx-64"
+    },
+    "http:anaconda/ipykernel/4_6_1_py27_0_osx_64": {
+      "name": "ipykernel",
+      "version": "4.6.1-py27_0-osx-64"
+    },
+    "http:anaconda/ipython/5_4_1_py27_0_osx_64": {
+      "name": "ipython",
+      "version": "5.4.1-py27_0-osx-64"
+    },
+    "http:anaconda/ipython_genutils/0_2_0_py27_0_osx_64": {
+      "name": "ipython_genutils",
+      "version": "0.2.0-py27_0-osx-64"
+    },
+    "http:anaconda/ipywidgets/6_0_0_py27_0_osx_64": {
+      "name": "ipywidgets",
+      "version": "6.0.0-py27_0-osx-64"
+    },
+    "http:anaconda/jinja2/2_9_5_py27_0_osx_64": {
+      "name": "jinja2",
+      "version": "2.9.5-py27_0-osx-64"
+    },
+    "http:anaconda/jpeg/9b_0_osx_64": {
+      "name": "jpeg",
+      "version": "9b-0-osx-64"
+    },
+    "http:anaconda/jsonschema/2_5_1_py27_0_osx_64": {
+      "name": "jsonschema",
+      "version": "2.5.1-py27_0-osx-64"
+    },
+    "http:anaconda/jupyter/1_0_0_py27_0_osx_64": {
+      "name": "jupyter",
+      "version": "1.0.0-py27_0-osx-64"
+    },
+    "http:anaconda/jupyter_client/5_1_0_py27_0_osx_64": {
+      "name": "jupyter_client",
+      "version": "5.1.0-py27_0-osx-64"
+    },
+    "http:anaconda/jupyter_console/5_1_0_py27_0_osx_64": {
+      "name": "jupyter_console",
+      "version": "5.1.0-py27_0-osx-64"
+    },
+    "http:anaconda/jupyter_contrib_core/0_3_1_py27_0_osx_64": {
+      "name": "jupyter_contrib_core",
+      "version": "0.3.1-py27_0-osx-64"
+    },
+    "http:anaconda/jupyter_contrib_nbextensions/0_2_8_py27_1_osx_64": {
+      "name": "jupyter_contrib_nbextensions",
+      "version": "0.2.8-py27_1-osx-64"
+    },
+    "http:anaconda/jupyter_core/4_3_0_py27_0_osx_64": {
+      "name": "jupyter_core",
+      "version": "4.3.0-py27_0-osx-64"
+    },
+    "http:anaconda/jupyter_highlight_selected_word/0_0_11_py27_0_osx_64": {
+      "name": "jupyter_highlight_selected_word",
+      "version": "0.0.11-py27_0-osx-64"
+    },
+    "http:anaconda/jupyter_latex_envs/1_3_8_2_py27_1_osx_64": {
+      "name": "jupyter_latex_envs",
+      "version": "1.3.8.2-py27_1-osx-64"
+    },
+    "http:anaconda/jupyter_nbextensions_configurator/0_2_5_py27_0_osx_64": {
+      "name": "jupyter_nbextensions_configurator",
+      "version": "0.2.5-py27_0-osx-64"
+    },
+    "http:anaconda/krb5/1_14_2_0_osx_64": {
+      "name": "krb5",
+      "version": "1.14.2-0-osx-64"
+    },
+    "http:anaconda/libboost/1_61_0_py27_0_osx_64": {
+      "name": "libboost",
+      "version": "1.61.0-py27_0-osx-64"
+    },
+    "http:anaconda/libffi/3_2_1_3_osx_64": {
+      "name": "libffi",
+      "version": "3.2.1-3-osx-64"
+    },
+    "http:anaconda/libgcc/4_8_5_1_osx_64": {
+      "name": "libgcc",
+      "version": "4.8.5-1-osx-64"
+    },
+    "http:anaconda/libiconv/1_14_4_osx_64": {
+      "name": "libiconv",
+      "version": "1.14-4-osx-64"
+    },
+    "http:anaconda/libpng/1_6_28_1_osx_64": {
+      "name": "libpng",
+      "version": "1.6.28-1-osx-64"
+    },
+    "http:anaconda/librun/1_0_0_py27_0_osx_64": {
+      "name": "librun",
+      "version": "1.0.0-py27_0-osx-64"
+    },
+    "http:anaconda/libsodium/1_0_10_0_osx_64": {
+      "name": "libsodium",
+      "version": "1.0.10-0-osx-64"
+    },
+    "http:anaconda/libssh2/1_8_0_1_osx_64": {
+      "name": "libssh2",
+      "version": "1.8.0-1-osx-64"
+    },
+    "http:anaconda/libstatiskit_core/1_0_0_0_osx_64": {
+      "name": "libstatiskit_core",
+      "version": "1.0.0-0-osx-64"
+    },
+    "http:anaconda/libstatiskit_glm/1_0_0_0_osx_64": {
+      "name": "libstatiskit_glm",
+      "version": "1.0.0-0-osx-64"
+    },
+    "http:anaconda/libstatiskit_linalg/3_3_1_0_osx_64": {
+      "name": "libstatiskit_linalg",
+      "version": "3.3.1-0-osx-64"
+    },
+    "http:anaconda/libstatiskit_stl/1_0_0_0_osx_64": {
+      "name": "libstatiskit_stl",
+      "version": "1.0.0-0-osx-64"
+    },
+    "http:anaconda/libtiff/4_0_6_7_osx_64": {
+      "name": "libtiff",
+      "version": "4.0.6-7-osx-64"
+    },
+    "http:anaconda/libxml2/2_9_4_4_osx_64": {
+      "name": "libxml2",
+      "version": "2.9.4-4-osx-64"
+    },
+    "http:anaconda/markupsafe/1_0_py27_0_osx_64": {
+      "name": "markupsafe",
+      "version": "1.0-py27_0-osx-64"
+    },
+    "http:anaconda/matplotlib/2_0_2_np113py27_0_osx_64": {
+      "name": "matplotlib",
+      "version": "2.0.2-np113py27_0-osx-64"
+    },
+    "http:anaconda/mistune/0_7_4_py27_0_osx_64": {
+      "name": "mistune",
+      "version": "0.7.4-py27_0-osx-64"
+    },
+    "http:anaconda/mkl/2017_0_3_0_osx_64": {
+      "name": "mkl",
+      "version": "2017.0.3-0-osx-64"
+    },
+    "http:anaconda/nbconvert/5_2_1_py27_1_osx_64": {
+      "name": "nbconvert",
+      "version": "5.2.1-py27_1-osx-64"
+    },
+    "http:anaconda/nbformat/4_3_0_py27_0_osx_64": {
+      "name": "nbformat",
+      "version": "4.3.0-py27_0-osx-64"
+    },
+    "http:anaconda/ncurses/5_9_10_osx_64": {
+      "name": "ncurses",
+      "version": "5.9-10-osx-64"
+    },
+    "http:anaconda/nlopt/2_4_2_py27_1_osx_64": {
+      "name": "nlopt",
+      "version": "2.4.2-py27_1-osx-64"
+    },
+    "http:anaconda/notebook/5_0_0_py27_0_osx_64": {
+      "name": "notebook",
+      "version": "5.0.0-py27_0-osx-64"
+    },
+    "http:anaconda/numpy/1_13_1_py27_0_osx_64": {
+      "name": "numpy",
+      "version": "1.13.1-py27_0-osx-64"
+    },
+    "http:anaconda/openssl/1_0_2l_0_osx_64": {
+      "name": "openssl",
+      "version": "1.0.2l-0-osx-64"
+    },
+    "http:anaconda/pandas/0_20_3_py27_1_osx_64": {
+      "name": "pandas",
+      "version": "0.20.3-py27_1-osx-64"
+    },
+    "http:anaconda/pandoc/1_19_2_0_osx_64": {
+      "name": "pandoc",
+      "version": "1.19.2-0-osx-64"
+    },
+    "http:anaconda/pandocfilters/1_4_1_py27_0_osx_64": {
+      "name": "pandocfilters",
+      "version": "1.4.1-py27_0-osx-64"
+    },
+    "http:anaconda/pango/1_40_4_0_osx_64": {
+      "name": "pango",
+      "version": "1.40.4-0-osx-64"
+    },
+    "http:anaconda/pathlib2/2_3_0_py27_0_osx_64": {
+      "name": "pathlib2",
+      "version": "2.3.0-py27_0-osx-64"
+    },
+    "http:anaconda/pcre/8_39_0_osx_64": {
+      "name": "pcre",
+      "version": "8.39-0-osx-64"
+    },
+    "http:anaconda/pexpect/4_2_1_py27_0_osx_64": {
+      "name": "pexpect",
+      "version": "4.2.1-py27_0-osx-64"
+    },
+    "http:anaconda/pickleshare/0_7_3_py27_0_osx_64": {
+      "name": "pickleshare",
+      "version": "0.7.3-py27_0-osx-64"
+    },
+    "http:anaconda/pip/9_0_1_py27_0_osx_64": {
+      "name": "pip",
+      "version": "9.0.1-py27_0-osx-64"
+    },
+    "http:anaconda/pixman/0_34_0_0_osx_64": {
+      "name": "pixman",
+      "version": "0.34.0-0-osx-64"
+    },
+    "http:anaconda/prompt_toolkit/1_0_14_py27_0_osx_64": {
+      "name": "prompt_toolkit",
+      "version": "1.0.14-py27_0-osx-64"
+    },
+    "http:anaconda/psutil/5_2_1_py27_0_osx_64": {
+      "name": "psutil",
+      "version": "5.2.1-py27_0-osx-64"
+    },
+    "http:anaconda/ptyprocess/0_5_2_py27_0_osx_64": {
+      "name": "ptyprocess",
+      "version": "0.5.2-py27_0-osx-64"
+    },
+    "http:anaconda/pygments/2_2_0_py27_0_osx_64": {
+      "name": "pygments",
+      "version": "2.2.0-py27_0-osx-64"
+    },
+    "http:anaconda/pyparsing/2_2_0_py27_0_osx_64": {
+      "name": "pyparsing",
+      "version": "2.2.0-py27_0-osx-64"
+    },
+    "http:anaconda/pyqt/5_6_0_py27_4_osx_64": {
+      "name": "pyqt",
+      "version": "5.6.0-py27_4-osx-64"
+    },
+    "http:anaconda/python/2_7_13_1_osx_64": {
+      "name": "python",
+      "version": "2.7.13-1-osx-64"
+    },
+    "http:anaconda/python_dateutil/2_6_1_py27_0_osx_64": {
+      "name": "python-dateutil",
+      "version": "2.6.1-py27_0-osx-64"
+    },
+    "http:anaconda/python_statiskit_core/1_0_0_py27_0_osx_64": {
+      "name": "python-statiskit_core",
+      "version": "1.0.0-py27_0-osx-64"
+    },
+    "http:anaconda/python_statiskit_glm/1_0_0_py27_0_osx_64": {
+      "name": "python-statiskit_glm",
+      "version": "1.0.0-py27_0-osx-64"
+    },
+    "http:anaconda/python_statiskit_linalg/3_3_1_py27_0_osx_64": {
+      "name": "python-statiskit_linalg",
+      "version": "3.3.1-py27_0-osx-64"
+    },
+    "http:anaconda/python_statiskit_stl/3_3_1_py27_0_osx_64": {
+      "name": "python-statiskit_stl",
+      "version": "3.3.1-py27_0-osx-64"
+    },
+    "http:anaconda/pytz/2017_2_py27_0_osx_64": {
+      "name": "pytz",
+      "version": "2017.2-py27_0-osx-64"
+    },
+    "http:anaconda/pyyaml/3_12_py27_1_osx_64": {
+      "name": "pyyaml",
+      "version": "3.12-py27_1-osx-64"
+    },
+    "http:anaconda/pyzmq/16_0_2_py27_0_osx_64": {
+      "name": "pyzmq",
+      "version": "16.0.2-py27_0-osx-64"
+    },
+    "http:anaconda/qt/5_6_2_1_osx_64": {
+      "name": "qt",
+      "version": "5.6.2-1-osx-64"
+    },
+    "http:anaconda/qtconsole/4_3_0_py27_0_osx_64": {
+      "name": "qtconsole",
+      "version": "4.3.0-py27_0-osx-64"
+    },
+    "http:anaconda/r_assertthat/0_1_r3_3_2_0_osx_64": {
+      "name": "r-assertthat",
+      "version": "0.1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_backports/1_0_5_r3_3_2_0_osx_64": {
+      "name": "r-backports",
+      "version": "1.0.5-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_base/3_3_2_5_osx_64": {
+      "name": "r-base",
+      "version": "3.3.2-5-osx-64"
+    },
+    "http:anaconda/r_base64enc/0_1_3_r3_3_2_0_osx_64": {
+      "name": "r-base64enc",
+      "version": "0.1_3-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_bh/1_62_0_1_r3_3_2_0_osx_64": {
+      "name": "r-bh",
+      "version": "1.62.0_1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_bitops/1_0_6_r3_3_2_0_osx_64": {
+      "name": "r-bitops",
+      "version": "1.0_6-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_bivpois/0_50_2_r3_3_2_0_osx_64": {
+      "name": "r-bivpois",
+      "version": "0.50.2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_boot/1_3_18_r3_3_2_0_osx_64": {
+      "name": "r-boot",
+      "version": "1.3_18-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_broom/0_4_2_r3_3_2_0_osx_64": {
+      "name": "r-broom",
+      "version": "0.4.2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_car/2_1_4_r3_3_2_0_osx_64": {
+      "name": "r-car",
+      "version": "2.1_4-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_caret/6_0_76_r3_3_2_0_osx_64": {
+      "name": "r-caret",
+      "version": "6.0_76-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_catools/1_17_1_r3_3_2_0_osx_64": {
+      "name": "r-catools",
+      "version": "1.17.1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_cellranger/1_1_0_r3_3_2_0_osx_64": {
+      "name": "r-cellranger",
+      "version": "1.1.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_class/7_3_14_r3_3_2_0_osx_64": {
+      "name": "r-class",
+      "version": "7.3_14-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_cluster/2_0_6_r3_3_2_0_osx_64": {
+      "name": "r-cluster",
+      "version": "2.0.6-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_codetools/0_2_15_r3_3_2_0_osx_64": {
+      "name": "r-codetools",
+      "version": "0.2_15-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_colorspace/1_3_2_r3_3_2_0_osx_64": {
+      "name": "r-colorspace",
+      "version": "1.3_2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_crayon/1_3_2_r3_3_2_0_osx_64": {
+      "name": "r-crayon",
+      "version": "1.3.2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_curl/2_4_r3_3_2_0_osx_64": {
+      "name": "r-curl",
+      "version": "2.4-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_data_table/1_10_4_r3_3_2_0_osx_64": {
+      "name": "r-data.table",
+      "version": "1.10.4-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_dbi/0_6_1_r3_3_2_0_osx_64": {
+      "name": "r-dbi",
+      "version": "0.6_1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_dichromat/2_0_0_r3_3_2_0_osx_64": {
+      "name": "r-dichromat",
+      "version": "2.0_0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_digest/0_6_10_r3_3_2_0_osx_64": {
+      "name": "r-digest",
+      "version": "0.6.10-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_dplyr/0_5_0_r3_3_2_0_osx_64": {
+      "name": "r-dplyr",
+      "version": "0.5.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_essentials/1_5_2_r3_3_2_0_osx_64": {
+      "name": "r-essentials",
+      "version": "1.5.2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_evaluate/0_10_r3_3_2_0_osx_64": {
+      "name": "r-evaluate",
+      "version": "0.10-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_forcats/0_2_0_r3_3_2_0_osx_64": {
+      "name": "r-forcats",
+      "version": "0.2.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_foreach/1_4_3_r3_3_2_0_osx_64": {
+      "name": "r-foreach",
+      "version": "1.4.3-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_foreign/0_8_67_r3_3_2_0_osx_64": {
+      "name": "r-foreign",
+      "version": "0.8_67-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_formatr/1_4_r3_3_2_0_osx_64": {
+      "name": "r-formatr",
+      "version": "1.4-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_ggplot2/2_2_1_r3_3_2_0_osx_64": {
+      "name": "r-ggplot2",
+      "version": "2.2.1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_gistr/0_4_0_r3_3_2_0_osx_64": {
+      "name": "r-gistr",
+      "version": "0.4.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_glmnet/2_0_5_r3_3_2_0_osx_64": {
+      "name": "r-glmnet",
+      "version": "2.0_5-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_gtable/0_2_0_r3_3_2_0_osx_64": {
+      "name": "r-gtable",
+      "version": "0.2.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_haven/1_0_0_r3_3_2_0_osx_64": {
+      "name": "r-haven",
+      "version": "1.0.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_hexbin/1_27_1_r3_3_2_0_osx_64": {
+      "name": "r-hexbin",
+      "version": "1.27.1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_highr/0_6_r3_3_2_0_osx_64": {
+      "name": "r-highr",
+      "version": "0.6-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_hms/0_3_r3_3_2_0_osx_64": {
+      "name": "r-hms",
+      "version": "0.3-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_htmltools/0_3_6_r3_3_2_0_osx_64": {
+      "name": "r-htmltools",
+      "version": "0.3.6-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_htmlwidgets/0_8_r3_3_2_0_osx_64": {
+      "name": "r-htmlwidgets",
+      "version": "0.8-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_httpuv/1_3_3_r3_3_2_0_osx_64": {
+      "name": "r-httpuv",
+      "version": "1.3.3-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_httr/1_2_1_r3_3_2_0_osx_64": {
+      "name": "r-httr",
+      "version": "1.2.1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_irdisplay/0_4_4_r3_3_2_0_osx_64": {
+      "name": "r-irdisplay",
+      "version": "0.4.4-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_irkernel/0_8_7_r3_3_2_0_osx_64": {
+      "name": "r-irkernel",
+      "version": "0.8.7-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_iterators/1_0_8_r3_3_2_0_osx_64": {
+      "name": "r-iterators",
+      "version": "1.0.8-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_jsonlite/1_4_r3_3_2_0_osx_64": {
+      "name": "r-jsonlite",
+      "version": "1.4-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_kernsmooth/2_23_15_r3_3_2_0_osx_64": {
+      "name": "r-kernsmooth",
+      "version": "2.23_15-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_knitr/1_16_r3_3_2_0_osx_64": {
+      "name": "r-knitr",
+      "version": "1.16-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_labeling/0_3_r3_3_2_0_osx_64": {
+      "name": "r-labeling",
+      "version": "0.3-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_lattice/0_20_34_r3_3_2_0_osx_64": {
+      "name": "r-lattice",
+      "version": "0.20_34-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_lazyeval/0_2_0_r3_3_2_0_osx_64": {
+      "name": "r-lazyeval",
+      "version": "0.2.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_lme4/1_1_13_r3_3_2_0_osx_64": {
+      "name": "r-lme4",
+      "version": "1.1_13-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_lubridate/1_6_0_r3_3_2_0_osx_64": {
+      "name": "r-lubridate",
+      "version": "1.6.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_magrittr/1_5_r3_3_2_0_osx_64": {
+      "name": "r-magrittr",
+      "version": "1.5-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_maps/3_1_1_r3_3_2_0_osx_64": {
+      "name": "r-maps",
+      "version": "3.1.1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_markdown/0_8_r3_3_2_0_osx_64": {
+      "name": "r-markdown",
+      "version": "0.8-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_mass/7_3_45_r3_3_2_0_osx_64": {
+      "name": "r-mass",
+      "version": "7.3_45-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_matrix/1_2_7_1_r3_3_2_0_osx_64": {
+      "name": "r-matrix",
+      "version": "1.2_7.1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_matrixmodels/0_4_1_r3_3_2_0_osx_64": {
+      "name": "r-matrixmodels",
+      "version": "0.4_1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_mgcv/1_8_17_r3_3_2_0_osx_64": {
+      "name": "r-mgcv",
+      "version": "1.8_17-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_mglm/0_0_8_r3_3_2_0_osx_64": {
+      "name": "r-mglm",
+      "version": "0.0.8-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_mime/0_5_r3_3_2_0_osx_64": {
+      "name": "r-mime",
+      "version": "0.5-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_minqa/1_2_4_r3_3_2_0_osx_64": {
+      "name": "r-minqa",
+      "version": "1.2.4-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_mnormt/1_5_5_r3_3_2_0_osx_64": {
+      "name": "r-mnormt",
+      "version": "1.5_5-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_modelmetrics/1_1_0_r3_3_2_0_osx_64": {
+      "name": "r-modelmetrics",
+      "version": "1.1.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_modelr/0_1_0_r3_3_2_0_osx_64": {
+      "name": "r-modelr",
+      "version": "0.1.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_munsell/0_4_3_r3_3_2_0_osx_64": {
+      "name": "r-munsell",
+      "version": "0.4.3-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_nlme/3_1_131_r3_3_2_0_osx_64": {
+      "name": "r-nlme",
+      "version": "3.1_131-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_nloptr/1_0_4_r3_3_2_0_osx_64": {
+      "name": "r-nloptr",
+      "version": "1.0.4-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_nnet/7_3_12_r3_3_2_0_osx_64": {
+      "name": "r-nnet",
+      "version": "7.3_12-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_openssl/0_9_6_r3_3_2_0_osx_64": {
+      "name": "r-openssl",
+      "version": "0.9.6-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_pbdzmq/0_2_4_r3_3_2_0_osx_64": {
+      "name": "r-pbdzmq",
+      "version": "0.2_4-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_pbkrtest/0_4_7_r3_3_2_0_osx_64": {
+      "name": "r-pbkrtest",
+      "version": "0.4_7-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_plyr/1_8_4_r3_3_2_0_osx_64": {
+      "name": "r-plyr",
+      "version": "1.8.4-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_pryr/0_1_2_r3_3_2_0_osx_64": {
+      "name": "r-pryr",
+      "version": "0.1.2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_psych/1_7_3_21_r3_3_2_0_osx_64": {
+      "name": "r-psych",
+      "version": "1.7.3.21-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_purrr/0_2_2_r3_3_2_0_osx_64": {
+      "name": "r-purrr",
+      "version": "0.2.2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_quantmod/0_4_8_r3_3_2_0_osx_64": {
+      "name": "r-quantmod",
+      "version": "0.4_8-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_quantreg/5_33_r3_3_2_0_osx_64": {
+      "name": "r-quantreg",
+      "version": "5.33-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_r6/2_2_0_r3_3_2_0_osx_64": {
+      "name": "r-r6",
+      "version": "2.2.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_randomforest/4_6_12_r3_3_2_0_osx_64": {
+      "name": "r-randomforest",
+      "version": "4.6_12-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_rbokeh/0_5_0_r3_3_2_0_osx_64": {
+      "name": "r-rbokeh",
+      "version": "0.5.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_rcolorbrewer/1_1_2_r3_3_2_0_osx_64": {
+      "name": "r-rcolorbrewer",
+      "version": "1.1_2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_rcpp/0_12_10_r3_3_2_0_osx_64": {
+      "name": "r-rcpp",
+      "version": "0.12.10-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_rcppeigen/0_3_2_9_1_r3_3_2_0_osx_64": {
+      "name": "r-rcppeigen",
+      "version": "0.3.2.9.1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_readr/1_1_0_r3_3_2_0_osx_64": {
+      "name": "r-readr",
+      "version": "1.1.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_readxl/1_0_0_r3_3_2_0_osx_64": {
+      "name": "r-readxl",
+      "version": "1.0.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_recommended/3_3_2_r3_3_2_0_osx_64": {
+      "name": "r-recommended",
+      "version": "3.3.2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_rematch/1_0_1_r3_3_2_0_osx_64": {
+      "name": "r-rematch",
+      "version": "1.0.1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_repr/0_10_r3_3_2_0_osx_64": {
+      "name": "r-repr",
+      "version": "0.10-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_reshape2/1_4_2_r3_3_2_0_osx_64": {
+      "name": "r-reshape2",
+      "version": "1.4.2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_rmarkdown/1_6_r3_3_2_0_osx_64": {
+      "name": "r-rmarkdown",
+      "version": "1.6-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_rpart/4_1_10_r3_3_2_0_osx_64": {
+      "name": "r-rpart",
+      "version": "4.1_10-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_rprojroot/1_2_r3_3_2_0_osx_64": {
+      "name": "r-rprojroot",
+      "version": "1.2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_rvest/0_3_2_r3_3_2_0_osx_64": {
+      "name": "r-rvest",
+      "version": "0.3.2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_scales/0_4_1_r3_3_2_0_osx_64": {
+      "name": "r-scales",
+      "version": "0.4.1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_selectr/0_3_1_r3_3_2_0_osx_64": {
+      "name": "r-selectr",
+      "version": "0.3_1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_shiny/1_0_3_r3_3_2_0_osx_64": {
+      "name": "r-shiny",
+      "version": "1.0.3-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_sourcetools/0_1_6_r3_3_2_0_osx_64": {
+      "name": "r-sourcetools",
+      "version": "0.1.6-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_sparsem/1_76_r3_3_2_0_osx_64": {
+      "name": "r-sparsem",
+      "version": "1.76-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_spatial/7_3_11_r3_3_2_0_osx_64": {
+      "name": "r-spatial",
+      "version": "7.3_11-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_stringi/1_1_2_r3_3_2_0_osx_64": {
+      "name": "r-stringi",
+      "version": "1.1.2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_stringr/1_1_0_r3_3_2_0_osx_64": {
+      "name": "r-stringr",
+      "version": "1.1.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_survival/2_40_1_r3_3_2_0_osx_64": {
+      "name": "r-survival",
+      "version": "2.40_1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_tibble/1_3_0_r3_3_2_0_osx_64": {
+      "name": "r-tibble",
+      "version": "1.3.0-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_tidyr/0_6_1_r3_3_2_0_osx_64": {
+      "name": "r-tidyr",
+      "version": "0.6.1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_tidyverse/1_1_1_r3_3_2_0_osx_64": {
+      "name": "r-tidyverse",
+      "version": "1.1.1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_ttr/0_23_1_r3_3_2_0_osx_64": {
+      "name": "r-ttr",
+      "version": "0.23_1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_uuid/0_1_2_r3_3_2_0_osx_64": {
+      "name": "r-uuid",
+      "version": "0.1_2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_xml2/1_1_1_r3_3_2_0_osx_64": {
+      "name": "r-xml2",
+      "version": "1.1.1-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_xtable/1_8_2_r3_3_2_0_osx_64": {
+      "name": "r-xtable",
+      "version": "1.8_2-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_xts/0_9_7_r3_3_2_0_osx_64": {
+      "name": "r-xts",
+      "version": "0.9_7-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_yaml/2_1_14_r3_3_2_0_osx_64": {
+      "name": "r-yaml",
+      "version": "2.1.14-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/r_zoo/1_7_14_r3_3_2_0_osx_64": {
+      "name": "r-zoo",
+      "version": "1.7_14-r3.3.2_0-osx-64"
+    },
+    "http:anaconda/readline/6_2_0_osx_64": {
+      "name": "readline",
+      "version": "6.2-0-osx-64"
+    },
+    "http:anaconda/rpy2/2_8_5_py27r3_3_2_0_osx_64": {
+      "name": "rpy2",
+      "version": "2.8.5-py27r3.3.2_0-osx-64"
+    },
+    "http:anaconda/scandir/1_5_py27_1_osx_64": {
+      "name": "scandir",
+      "version": "1.5-py27_1-osx-64"
+    },
+    "http:anaconda/setuptools/33_1_1_py27_0_osx_64": {
+      "name": "setuptools",
+      "version": "33.1.1-py27_0-osx-64"
+    },
+    "http:anaconda/simplegeneric/0_8_1_py27_0_osx_64": {
+      "name": "simplegeneric",
+      "version": "0.8.1-py27_0-osx-64"
+    },
+    "http:anaconda/singledispatch/3_4_0_3_py27_0_osx_64": {
+      "name": "singledispatch",
+      "version": "3.4.0.3-py27_0-osx-64"
+    },
+    "http:anaconda/sip/4_18_py27_1_osx_64": {
+      "name": "sip",
+      "version": "4.18-py27_1-osx-64"
+    },
+    "http:anaconda/six/1_10_0_py27_1_osx_64": {
+      "name": "six",
+      "version": "1.10.0-py27_1-osx-64"
+    },
+    "http:anaconda/sqlite/3_13_0_1_osx_64": {
+      "name": "sqlite",
+      "version": "3.13.0-1-osx-64"
+    },
+    "http:anaconda/ssl_match_hostname/3_5_0_1_py27_1_osx_64": {
+      "name": "ssl_match_hostname",
+      "version": "3.5.0.1-py27_1-osx-64"
+    },
+    "http:anaconda/subprocess32/3_2_7_py27_0_osx_64": {
+      "name": "subprocess32",
+      "version": "3.2.7-py27_0-osx-64"
+    },
+    "http:anaconda/terminado/0_6_py27_0_osx_64": {
+      "name": "terminado",
+      "version": "0.6-py27_0-osx-64"
+    },
+    "http:anaconda/testpath/0_3_py27_0_osx_64": {
+      "name": "testpath",
+      "version": "0.3-py27_0-osx-64"
+    },
+    "http:anaconda/tk/8_5_19_1_osx_64": {
+      "name": "tk",
+      "version": "8.5.19-1-osx-64"
+    },
+    "http:anaconda/tornado/4_5_1_py27_0_osx_64": {
+      "name": "tornado",
+      "version": "4.5.1-py27_0-osx-64"
+    },
+    "http:anaconda/traitlets/4_3_2_py27_0_osx_64": {
+      "name": "traitlets",
+      "version": "4.3.2-py27_0-osx-64"
+    },
+    "http:anaconda/wcwidth/0_1_7_py27_0_osx_64": {
+      "name": "wcwidth",
+      "version": "0.1.7-py27_0-osx-64"
+    },
+    "http:anaconda/webencodings/0_5_py27_0_osx_64": {
+      "name": "webencodings",
+      "version": "0.5-py27_0-osx-64"
+    },
+    "http:anaconda/wheel/0_29_0_py27_0_osx_64": {
+      "name": "wheel",
+      "version": "0.29.0-py27_0-osx-64"
+    },
+    "http:anaconda/widgetsnbextension/2_0_0_py27_0_osx_64": {
+      "name": "widgetsnbextension",
+      "version": "2.0.0-py27_0-osx-64"
+    },
+    "http:anaconda/xz/5_2_2_0_osx_64": {
+      "name": "xz",
+      "version": "5.2.2-0-osx-64"
+    },
+    "http:anaconda/yaml/0_1_6_0_osx_64": {
+      "name": "yaml",
+      "version": "0.1.6-0-osx-64"
+    },
+    "http:anaconda/zeromq/4_1_5_0_osx_64": {
+      "name": "zeromq",
+      "version": "4.1.5-0-osx-64"
+    },
+    "http:anaconda/zlib/1_2_8_3_osx_64": {
+      "name": "zlib",
+      "version": "1.2.8-3-osx-64"
+    }
+  },
+  "rootExternalDataIds": [
+    "http:anaconda/appnope/0_1_0_py27_0_osx_64",
+    "http:anaconda/backports_shutil_get_terminal_size/1_0_0_py27_1_osx_64",
+    "http:anaconda/backports_abc/0_5_py27_0_osx_64",
+    "http:anaconda/bleach/1_5_0_py27_0_osx_64",
+    "http:anaconda/ca_certificates/2017_4_17_0_osx_64",
+    "http:anaconda/cairo/1_14_6_4_osx_64",
+    "http:anaconda/certifi/2017_4_17_py27_0_osx_64",
+    "http:anaconda/configparser/3_5_0_py27_0_osx_64",
+    "http:anaconda/curl/7_54_1_0_osx_64",
+    "http:anaconda/cycler/0_10_0_py27_0_osx_64",
+    "http:anaconda/dbus/1_10_10_3_osx_64",
+    "http:anaconda/decorator/4_1_1_py27_0_osx_64",
+    "http:anaconda/eigen/3_3_3_0_osx_64",
+    "http:anaconda/entrypoints/0_2_3_py27_1_osx_64",
+    "http:anaconda/enum34/1_1_6_py27_1_osx_64",
+    "http:anaconda/expat/2_2_1_0_osx_64",
+    "http:anaconda/fontconfig/2_12_1_4_osx_64",
+    "http:anaconda/freetype/2_7_1_osx_64",
+    "http:anaconda/functools32/3_2_3_2_py27_1_osx_64",
+    "http:anaconda/gettext/0_19_8_1_0_osx_64",
+    "http:anaconda/glib/2_51_4_0_osx_64",
+    "http:anaconda/graphite2/1_3_9_0_osx_64",
+    "http:anaconda/gsl/2_1_2_osx_64",
+    "http:anaconda/harfbuzz/1_4_3_0_osx_64",
+    "http:anaconda/html5lib/0_9999999_py27_0_osx_64",
+    "http:anaconda/icu/58_1_1_osx_64",
+    "http:anaconda/ipykernel/4_6_1_py27_0_osx_64",
+    "http:anaconda/ipython/5_4_1_py27_0_osx_64",
+    "http:anaconda/ipython_genutils/0_2_0_py27_0_osx_64",
+    "http:anaconda/ipywidgets/6_0_0_py27_0_osx_64",
+    "http:anaconda/jinja2/2_9_5_py27_0_osx_64",
+    "http:anaconda/jpeg/9b_0_osx_64",
+    "http:anaconda/jsonschema/2_5_1_py27_0_osx_64",
+    "http:anaconda/jupyter/1_0_0_py27_0_osx_64",
+    "http:anaconda/jupyter_client/5_1_0_py27_0_osx_64",
+    "http:anaconda/jupyter_console/5_1_0_py27_0_osx_64",
+    "http:anaconda/jupyter_contrib_core/0_3_1_py27_0_osx_64",
+    "http:anaconda/jupyter_contrib_nbextensions/0_2_8_py27_1_osx_64",
+    "http:anaconda/jupyter_core/4_3_0_py27_0_osx_64",
+    "http:anaconda/jupyter_highlight_selected_word/0_0_11_py27_0_osx_64",
+    "http:anaconda/jupyter_latex_envs/1_3_8_2_py27_1_osx_64",
+    "http:anaconda/jupyter_nbextensions_configurator/0_2_5_py27_0_osx_64",
+    "http:anaconda/krb5/1_14_2_0_osx_64",
+    "http:anaconda/libboost/1_61_0_py27_0_osx_64",
+    "http:anaconda/libffi/3_2_1_3_osx_64",
+    "http:anaconda/libgcc/4_8_5_1_osx_64",
+    "http:anaconda/libiconv/1_14_4_osx_64",
+    "http:anaconda/libpng/1_6_28_1_osx_64",
+    "http:anaconda/librun/1_0_0_py27_0_osx_64",
+    "http:anaconda/libsodium/1_0_10_0_osx_64",
+    "http:anaconda/libssh2/1_8_0_1_osx_64",
+    "http:anaconda/libstatiskit_core/1_0_0_0_osx_64",
+    "http:anaconda/libstatiskit_glm/1_0_0_0_osx_64",
+    "http:anaconda/libstatiskit_linalg/3_3_1_0_osx_64",
+    "http:anaconda/libstatiskit_stl/1_0_0_0_osx_64",
+    "http:anaconda/libtiff/4_0_6_7_osx_64",
+    "http:anaconda/libxml2/2_9_4_4_osx_64",
+    "http:anaconda/markupsafe/1_0_py27_0_osx_64",
+    "http:anaconda/matplotlib/2_0_2_np113py27_0_osx_64",
+    "http:anaconda/mistune/0_7_4_py27_0_osx_64",
+    "http:anaconda/mkl/2017_0_3_0_osx_64",
+    "http:anaconda/nbconvert/5_2_1_py27_1_osx_64",
+    "http:anaconda/nbformat/4_3_0_py27_0_osx_64",
+    "http:anaconda/ncurses/5_9_10_osx_64",
+    "http:anaconda/nlopt/2_4_2_py27_1_osx_64",
+    "http:anaconda/notebook/5_0_0_py27_0_osx_64",
+    "http:anaconda/numpy/1_13_1_py27_0_osx_64",
+    "http:anaconda/openssl/1_0_2l_0_osx_64",
+    "http:anaconda/pandas/0_20_3_py27_1_osx_64",
+    "http:anaconda/pandoc/1_19_2_0_osx_64",
+    "http:anaconda/pandocfilters/1_4_1_py27_0_osx_64",
+    "http:anaconda/pango/1_40_4_0_osx_64",
+    "http:anaconda/pathlib2/2_3_0_py27_0_osx_64",
+    "http:anaconda/pcre/8_39_0_osx_64",
+    "http:anaconda/pexpect/4_2_1_py27_0_osx_64",
+    "http:anaconda/pickleshare/0_7_3_py27_0_osx_64",
+    "http:anaconda/pip/9_0_1_py27_0_osx_64",
+    "http:anaconda/pixman/0_34_0_0_osx_64",
+    "http:anaconda/prompt_toolkit/1_0_14_py27_0_osx_64",
+    "http:anaconda/psutil/5_2_1_py27_0_osx_64",
+    "http:anaconda/ptyprocess/0_5_2_py27_0_osx_64",
+    "http:anaconda/pygments/2_2_0_py27_0_osx_64",
+    "http:anaconda/pyparsing/2_2_0_py27_0_osx_64",
+    "http:anaconda/pyqt/5_6_0_py27_4_osx_64",
+    "http:anaconda/python/2_7_13_1_osx_64",
+    "http:anaconda/python_dateutil/2_6_1_py27_0_osx_64",
+    "http:anaconda/python_statiskit_core/1_0_0_py27_0_osx_64",
+    "http:anaconda/python_statiskit_glm/1_0_0_py27_0_osx_64",
+    "http:anaconda/python_statiskit_linalg/3_3_1_py27_0_osx_64",
+    "http:anaconda/python_statiskit_stl/3_3_1_py27_0_osx_64",
+    "http:anaconda/pytz/2017_2_py27_0_osx_64",
+    "http:anaconda/pyyaml/3_12_py27_1_osx_64",
+    "http:anaconda/pyzmq/16_0_2_py27_0_osx_64",
+    "http:anaconda/qt/5_6_2_1_osx_64",
+    "http:anaconda/qtconsole/4_3_0_py27_0_osx_64",
+    "http:anaconda/r_assertthat/0_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_backports/1_0_5_r3_3_2_0_osx_64",
+    "http:anaconda/r_base/3_3_2_5_osx_64",
+    "http:anaconda/r_base64enc/0_1_3_r3_3_2_0_osx_64",
+    "http:anaconda/r_bh/1_62_0_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_bitops/1_0_6_r3_3_2_0_osx_64",
+    "http:anaconda/r_bivpois/0_50_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_boot/1_3_18_r3_3_2_0_osx_64",
+    "http:anaconda/r_broom/0_4_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_car/2_1_4_r3_3_2_0_osx_64",
+    "http:anaconda/r_caret/6_0_76_r3_3_2_0_osx_64",
+    "http:anaconda/r_catools/1_17_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_cellranger/1_1_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_class/7_3_14_r3_3_2_0_osx_64",
+    "http:anaconda/r_cluster/2_0_6_r3_3_2_0_osx_64",
+    "http:anaconda/r_codetools/0_2_15_r3_3_2_0_osx_64",
+    "http:anaconda/r_colorspace/1_3_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_crayon/1_3_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_curl/2_4_r3_3_2_0_osx_64",
+    "http:anaconda/r_data_table/1_10_4_r3_3_2_0_osx_64",
+    "http:anaconda/r_dbi/0_6_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_dichromat/2_0_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_digest/0_6_10_r3_3_2_0_osx_64",
+    "http:anaconda/r_dplyr/0_5_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_essentials/1_5_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_evaluate/0_10_r3_3_2_0_osx_64",
+    "http:anaconda/r_forcats/0_2_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_foreach/1_4_3_r3_3_2_0_osx_64",
+    "http:anaconda/r_foreign/0_8_67_r3_3_2_0_osx_64",
+    "http:anaconda/r_formatr/1_4_r3_3_2_0_osx_64",
+    "http:anaconda/r_ggplot2/2_2_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_gistr/0_4_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_glmnet/2_0_5_r3_3_2_0_osx_64",
+    "http:anaconda/r_gtable/0_2_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_haven/1_0_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_hexbin/1_27_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_highr/0_6_r3_3_2_0_osx_64",
+    "http:anaconda/r_hms/0_3_r3_3_2_0_osx_64",
+    "http:anaconda/r_htmltools/0_3_6_r3_3_2_0_osx_64",
+    "http:anaconda/r_htmlwidgets/0_8_r3_3_2_0_osx_64",
+    "http:anaconda/r_httpuv/1_3_3_r3_3_2_0_osx_64",
+    "http:anaconda/r_httr/1_2_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_irdisplay/0_4_4_r3_3_2_0_osx_64",
+    "http:anaconda/r_irkernel/0_8_7_r3_3_2_0_osx_64",
+    "http:anaconda/r_iterators/1_0_8_r3_3_2_0_osx_64",
+    "http:anaconda/r_jsonlite/1_4_r3_3_2_0_osx_64",
+    "http:anaconda/r_kernsmooth/2_23_15_r3_3_2_0_osx_64",
+    "http:anaconda/r_knitr/1_16_r3_3_2_0_osx_64",
+    "http:anaconda/r_labeling/0_3_r3_3_2_0_osx_64",
+    "http:anaconda/r_lattice/0_20_34_r3_3_2_0_osx_64",
+    "http:anaconda/r_lazyeval/0_2_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_lme4/1_1_13_r3_3_2_0_osx_64",
+    "http:anaconda/r_lubridate/1_6_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_magrittr/1_5_r3_3_2_0_osx_64",
+    "http:anaconda/r_maps/3_1_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_markdown/0_8_r3_3_2_0_osx_64",
+    "http:anaconda/r_mass/7_3_45_r3_3_2_0_osx_64",
+    "http:anaconda/r_matrix/1_2_7_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_matrixmodels/0_4_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_mgcv/1_8_17_r3_3_2_0_osx_64",
+    "http:anaconda/r_mglm/0_0_8_r3_3_2_0_osx_64",
+    "http:anaconda/r_mime/0_5_r3_3_2_0_osx_64",
+    "http:anaconda/r_minqa/1_2_4_r3_3_2_0_osx_64",
+    "http:anaconda/r_mnormt/1_5_5_r3_3_2_0_osx_64",
+    "http:anaconda/r_modelmetrics/1_1_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_modelr/0_1_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_munsell/0_4_3_r3_3_2_0_osx_64",
+    "http:anaconda/r_nlme/3_1_131_r3_3_2_0_osx_64",
+    "http:anaconda/r_nloptr/1_0_4_r3_3_2_0_osx_64",
+    "http:anaconda/r_nnet/7_3_12_r3_3_2_0_osx_64",
+    "http:anaconda/r_openssl/0_9_6_r3_3_2_0_osx_64",
+    "http:anaconda/r_pbdzmq/0_2_4_r3_3_2_0_osx_64",
+    "http:anaconda/r_pbkrtest/0_4_7_r3_3_2_0_osx_64",
+    "http:anaconda/r_plyr/1_8_4_r3_3_2_0_osx_64",
+    "http:anaconda/r_pryr/0_1_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_psych/1_7_3_21_r3_3_2_0_osx_64",
+    "http:anaconda/r_purrr/0_2_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_quantmod/0_4_8_r3_3_2_0_osx_64",
+    "http:anaconda/r_quantreg/5_33_r3_3_2_0_osx_64",
+    "http:anaconda/r_r6/2_2_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_randomforest/4_6_12_r3_3_2_0_osx_64",
+    "http:anaconda/r_rbokeh/0_5_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_rcolorbrewer/1_1_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_rcpp/0_12_10_r3_3_2_0_osx_64",
+    "http:anaconda/r_rcppeigen/0_3_2_9_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_readr/1_1_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_readxl/1_0_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_recommended/3_3_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_rematch/1_0_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_repr/0_10_r3_3_2_0_osx_64",
+    "http:anaconda/r_reshape2/1_4_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_rmarkdown/1_6_r3_3_2_0_osx_64",
+    "http:anaconda/r_rpart/4_1_10_r3_3_2_0_osx_64",
+    "http:anaconda/r_rprojroot/1_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_rvest/0_3_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_scales/0_4_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_selectr/0_3_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_shiny/1_0_3_r3_3_2_0_osx_64",
+    "http:anaconda/r_sourcetools/0_1_6_r3_3_2_0_osx_64",
+    "http:anaconda/r_sparsem/1_76_r3_3_2_0_osx_64",
+    "http:anaconda/r_spatial/7_3_11_r3_3_2_0_osx_64",
+    "http:anaconda/r_stringi/1_1_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_stringr/1_1_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_survival/2_40_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_tibble/1_3_0_r3_3_2_0_osx_64",
+    "http:anaconda/r_tidyr/0_6_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_tidyverse/1_1_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_ttr/0_23_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_uuid/0_1_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_xml2/1_1_1_r3_3_2_0_osx_64",
+    "http:anaconda/r_xtable/1_8_2_r3_3_2_0_osx_64",
+    "http:anaconda/r_xts/0_9_7_r3_3_2_0_osx_64",
+    "http:anaconda/r_yaml/2_1_14_r3_3_2_0_osx_64",
+    "http:anaconda/r_zoo/1_7_14_r3_3_2_0_osx_64",
+    "http:anaconda/readline/6_2_0_osx_64",
+    "http:anaconda/rpy2/2_8_5_py27r3_3_2_0_osx_64",
+    "http:anaconda/scandir/1_5_py27_1_osx_64",
+    "http:anaconda/setuptools/33_1_1_py27_0_osx_64",
+    "http:anaconda/simplegeneric/0_8_1_py27_0_osx_64",
+    "http:anaconda/singledispatch/3_4_0_3_py27_0_osx_64",
+    "http:anaconda/sip/4_18_py27_1_osx_64",
+    "http:anaconda/six/1_10_0_py27_1_osx_64",
+    "http:anaconda/sqlite/3_13_0_1_osx_64",
+    "http:anaconda/ssl_match_hostname/3_5_0_1_py27_1_osx_64",
+    "http:anaconda/subprocess32/3_2_7_py27_0_osx_64",
+    "http:anaconda/terminado/0_6_py27_0_osx_64",
+    "http:anaconda/testpath/0_3_py27_0_osx_64",
+    "http:anaconda/tk/8_5_19_1_osx_64",
+    "http:anaconda/tornado/4_5_1_py27_0_osx_64",
+    "http:anaconda/traitlets/4_3_2_py27_0_osx_64",
+    "http:anaconda/wcwidth/0_1_7_py27_0_osx_64",
+    "http:anaconda/webencodings/0_5_py27_0_osx_64",
+    "http:anaconda/wheel/0_29_0_py27_0_osx_64",
+    "http:anaconda/widgetsnbextension/2_0_0_py27_0_osx_64",
+    "http:anaconda/xz/5_2_2_0_osx_64",
+    "http:anaconda/yaml/0_1_6_0_osx_64",
+    "http:anaconda/zeromq/4_1_5_0_osx_64",
+    "http:anaconda/zlib/1_2_8_3_osx_64"
+  ]
+}
