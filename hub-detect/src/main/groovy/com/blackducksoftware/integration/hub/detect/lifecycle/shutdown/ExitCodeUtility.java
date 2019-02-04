@@ -52,7 +52,7 @@ public class ExitCodeUtility {
             BlackDuckApiException be = (BlackDuckApiException) e;
 
             logger.error("A Black Duck Api exception was thrown.");
-            logger.error(be.getBlackDuckErrorMessage());
+            logger.error(be.getMessage());
             logger.debug(be.getBlackDuckErrorCode());
 
             logger.error(be.getOriginalIntegrationRestException().getMessage());
