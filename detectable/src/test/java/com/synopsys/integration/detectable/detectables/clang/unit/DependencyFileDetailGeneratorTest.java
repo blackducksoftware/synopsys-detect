@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.clang.functional;
+package com.synopsys.integration.detectable.detectables.clang.unit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -12,34 +12,21 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetailGenerator;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetails;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.FilePathGenerator;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 
-public class ClangExtractorTest {
-    private static final String EXTRACTION_ID = "testExtractionId";
-    private final Gson gson = new Gson();
-    private final File outputDir = new File("src/test/resources/clang/output");
-
+public class DependencyFileDetailGeneratorTest {
     @Test
-    public void testFilePath() throws ExecutableRunnerException {
-
-    }
-
-    //I'm not sure what this is testing... seems like only the codeLocationAssembler is not mocked, so if all it is testing is the assembler, why go through all this trouble?
-    //I'm not sure we generally want to test extractors unless they are easy to test - and even then, what benefit do we gain? that we called an executable correctly?
-    //I think we should focus on testing our parsers / conversion logic.
-    // - jordan
-    @Test
-    public void testFileNotExistSkipped() throws ExecutableRunnerException {
+    public void testFileThatDoesNotExistIsSkipped() throws ExecutableRunnerException {
         File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.toString()).thenReturn("Example");
 
@@ -48,19 +35,22 @@ public class ClangExtractorTest {
 
         DependencyFileDetailGenerator dependencyFileDetailGenerator = new DependencyFileDetailGenerator(filePathGenerator);
 
-        Set<DependencyFileDetails> fileDetailsSet = dependencyFileDetailGenerator.fromCompileCommands(Arrays.asList(null), null, true);
+        Set<DependencyFileDetails> fileDetailsSet = dependencyFileDetailGenerator.fromCompileCommands(Arrays.asList(new CompileCommand()), null, true);
         Assert.assertEquals(0, fileDetailsSet.size());
     }
 
     @Test
-    public void testJsonWithArgumentsNotCommand() throws ExecutableRunnerException {
+    public void testDependencyCreatedWithEachForge() throws ExecutableRunnerException {
+        File mockFile = Mockito.mock(File.class);
+        Mockito.when(mockFile.toString()).thenReturn("Example");
+
         final Set<PackageDetails> packages = new HashSet<>();
         packages.add(new PackageDetails("testPackageName1", "testPackageVersion1", "testPackageArch1"));
         packages.add(new PackageDetails("testPackageName2", "testPackageVersion2", "testPackageArch2"));
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final ClangPackageDetailsTransformer clangPackageDetailsTransformer = new ClangPackageDetailsTransformer(externalIdFactory);
-        final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(Forge.CENTOS, Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT), null, packages);
+        final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(Forge.CENTOS, Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT), mockFile, packages);
 
         final Set<Dependency> dependencies = codeLocation.getDependencyGraph().getRootDependencies();
         assertEquals(6, dependencies.size());

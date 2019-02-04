@@ -3,7 +3,6 @@ package com.synopsys.integration.detectable.detectables.clang.unit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +50,7 @@ public class ApkPackageManagerTest {
         String exampleOutput = "x86_64\n";
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        Mockito.when(executableRunner.execute(null, new File("apk"), Arrays.asList("info", "--print-arch"))).thenReturn(new ExecutableOutput(0, exampleOutput, ""));
+        Mockito.when(executableRunner.execute(null, "apk", Arrays.asList("info", "--print-arch"))).thenReturn(new ExecutableOutput(0, exampleOutput, ""));
 
         final ApkArchitectureResolver architectureResolver = new ApkArchitectureResolver();
         Optional<String> architecture = architectureResolver.resolveArchitecture(new ClangPackageManagerInfoFactory().apk(), null, executableRunner);

@@ -27,8 +27,8 @@ import com.synopsys.integration.util.Stringable;
 
 // Loaded from json via Gson
 public class CompileCommand extends Stringable {
-    public String directory;
-    public String command;
-    public String[] arguments;
-    public String file;
+    public String directory = "";
+    public String command = "";
+    public String[] arguments = new String[] {};
+    public String file = "";
 }
