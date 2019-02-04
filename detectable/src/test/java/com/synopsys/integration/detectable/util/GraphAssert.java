@@ -10,10 +10,14 @@ public class GraphAssert {
     private final DependencyGraph graph;
     private ExternalIdFactory externalIdFactory;
 
-    public  GraphAssert(final Forge forge, DependencyGraph graph) {
+    public GraphAssert(final Forge forge, DependencyGraph graph) {
         this.forge = forge;
         this.graph = graph;
         this.externalIdFactory = new ExternalIdFactory();
+    }
+
+    public static void assertGraph(final String s, final DependencyGraph projectDependencies) {
+        // TODO: Implement me
     }
 
     public ExternalId hasDependency(String name, String version, String architecture) {
@@ -28,15 +32,15 @@ public class GraphAssert {
         return id;
     }
 
-    public void hasParentChildRelationship(ExternalId parent, ExternalId child){
+    public void hasParentChildRelationship(ExternalId parent, ExternalId child) {
         assert graph.getChildrenExternalIdsForParent(parent).contains(child);
     }
 
-    public void relationshipCount(ExternalId parent, int count){
+    public void relationshipCount(ExternalId parent, int count) {
         assert graph.getChildrenExternalIdsForParent(parent).size() == count;
     }
 
-    public void rootSize(int size){
+    public void rootSize(int size) {
         assert graph.getRootDependencies().size() == size;
     }
 
