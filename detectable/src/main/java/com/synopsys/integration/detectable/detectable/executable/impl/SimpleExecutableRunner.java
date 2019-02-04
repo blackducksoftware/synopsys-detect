@@ -18,13 +18,23 @@ public class SimpleExecutableRunner implements ExecutableRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public ExecutableOutput execute(final File workingDirectory, final File exePath, final String... args) throws ExecutableRunnerException {
-        return execute(new Executable(workingDirectory, null, exePath, Arrays.asList(args)));
+    public ExecutableOutput execute(final File workingDirectory, final String exeCmd, final String... args) throws ExecutableRunnerException {
+        return execute(new Executable(workingDirectory, null, exeCmd, Arrays.asList(args)));
     }
 
     @Override
-    public ExecutableOutput execute(final File workingDirectory, final File exePath, final List<String> args) throws ExecutableRunnerException {
-        return execute(new Executable(workingDirectory, null, exePath, args));
+    public ExecutableOutput execute(final File workingDirectory, final String exeCmd, final List<String> args) throws ExecutableRunnerException {
+        return execute(new Executable(workingDirectory, null, exeCmd, args));
+    }
+
+    @Override
+    public ExecutableOutput execute(final File workingDirectory, final File exeFile, final String... args) throws ExecutableRunnerException {
+        return execute(new Executable(workingDirectory, null, exeFile.getAbsolutePath(), Arrays.asList(args)));
+    }
+
+    @Override
+    public ExecutableOutput execute(final File workingDirectory, final File exeFile, final List<String> args) throws ExecutableRunnerException {
+        return execute(new Executable(workingDirectory, null, exeFile.getAbsolutePath(), args));
     }
 
     @Override

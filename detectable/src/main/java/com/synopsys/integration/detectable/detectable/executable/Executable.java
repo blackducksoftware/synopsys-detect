@@ -34,13 +34,13 @@ import org.apache.commons.lang3.StringUtils;
 public class Executable {
     private final File workingDirectory;
     private final Map<String, String> environmentVariables = new HashMap<>();
-    private final String executablePath;
+    private final String exeCmd;
     private final List<String> executableArguments = new ArrayList<>();
 
-    public Executable(final File workingDirectory, final Map<String, String> environmentVariables, final File executablePath, final List<String> executableArguments) {
+    public Executable(final File workingDirectory, final Map<String, String> environmentVariables, final String exeCmd, final List<String> executableArguments) {
         this.workingDirectory = workingDirectory;
         this.environmentVariables.putAll(environmentVariables);
-        this.executablePath = executablePath.toString();
+        this.exeCmd = exeCmd.toString();
         this.executableArguments.addAll(executableArguments);
     }
 
@@ -79,9 +79,9 @@ public class Executable {
     private List<String> createProcessBuilderArguments() {
         // ProcessBuilder can only be called with a List<java.lang.String> so do any needed conversion
         final List<String> processBuilderArguments = new ArrayList<>();
-        processBuilderArguments.add(executablePath.toString());
+        processBuilderArguments.add(exeCmd);
         for (final String arg : executableArguments) {
-            processBuilderArguments.add(arg.toString());
+            processBuilderArguments.add(arg);
         }
         return processBuilderArguments;
     }

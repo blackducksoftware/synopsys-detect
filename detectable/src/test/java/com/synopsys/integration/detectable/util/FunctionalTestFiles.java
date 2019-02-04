@@ -1,10 +1,14 @@
 package com.synopsys.integration.detectable.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+
+import org.junit.Assert;
 
 import com.synopsys.integration.util.ResourceUtil;
 
@@ -23,5 +27,16 @@ public class FunctionalTestFiles {
 
     public static InputStream asInputStream(final String relativeResourcePath) {
         return FunctionalTestFiles.class.getResourceAsStream(resourcePrefix + relativeResourcePath);
+    }
+
+    public static String resolvePath(String relativeResourcePath) {
+        return FunctionalTestFiles.asFile(relativeResourcePath).getAbsolutePath();
+    }
+
+    public static File asFile(String relativeResourcePath) {
+        URL resource = FunctionalTestFiles.class.getResource(resourcePrefix + relativeResourcePath);
+        File file = new File(resource.getFile());
+        Assert.assertTrue(file.exists());
+        return file;
     }
 }

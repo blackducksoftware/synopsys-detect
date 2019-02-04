@@ -99,7 +99,7 @@ public class BitbakeExtractor {
                 final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, targetArchitecture);
 
                 final ExternalId externalId = new ExternalId(Forge.YOCTO);
-                final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.BITBAKE, sourcePath.getCanonicalPath(), externalId, dependencyGraph).build();
+                final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.BITBAKE, dependencyGraph, externalId).build();//TODO: Source path: sourcePath.getCanonicalPath()
 
                 codeLocations.add(codeLocation);
             } catch (final IOException | IntegrationException e) {

@@ -27,8 +27,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
-import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeDetector;
-import com.blackducksoftware.integration.hub.detect.detector.clang.ClangDetector;
 import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.conda.CondaCliDetector;
 import com.blackducksoftware.integration.hub.detect.detector.cpan.CpanCliDetector;
@@ -55,6 +53,8 @@ import com.blackducksoftware.integration.hub.detect.detector.sbt.SbtResolutionCa
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockDetector;
 import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelDetector;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerDetector;
+import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
+import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 
 public class DetectorFactory implements BeanFactoryAware {
 
@@ -73,12 +73,14 @@ public class DetectorFactory implements BeanFactoryAware {
         return beanFactory.getBean(DockerDetector.class, environment);
     }
 
-    public BitbakeDetector createBitbakeBomTool(final DetectorEnvironment environment) {
-        return beanFactory.getBean(BitbakeDetector.class, environment);
+    public Detector createBitbakeBomTool(final DetectorEnvironment environment) {
+        return null;
+        //return new DetectableDetector(beanFactory.getBean(BitbakeDetectable.class, environment));
     }
 
-    public ClangDetector createClangBomTool(final DetectorEnvironment environment) {
-        return beanFactory.getBean(ClangDetector.class, environment);
+    public Detector createClangBomTool(final DetectorEnvironment environment) {
+        return null;
+        //return beanFactory.getBean(ClangDetectable.class, environment);
     }
 
     public ComposerLockDetector createComposerLockBomTool(final DetectorEnvironment environment) {

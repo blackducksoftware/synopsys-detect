@@ -30,10 +30,16 @@ import org.antlr.v4.runtime.misc.NotNull;
 
 public interface ExecutableRunner {
     @NotNull
-    ExecutableOutput execute(File workingDirectory, final File exePath, final String... args) throws ExecutableRunnerException;
+    ExecutableOutput execute(File workingDirectory, final String exeCmd, final String... args) throws ExecutableRunnerException;
 
     @NotNull
-    ExecutableOutput execute(File workingDirectory, final File exePath, final List<String> args) throws ExecutableRunnerException;
+    ExecutableOutput execute(File workingDirectory, final String exeCmd, final List<String> args) throws ExecutableRunnerException;
+
+    @NotNull
+    ExecutableOutput execute(File workingDirectory, final File exeFile, final String... args) throws ExecutableRunnerException;
+
+    @NotNull
+    ExecutableOutput execute(File workingDirectory, final File exeFile, final List<String> args) throws ExecutableRunnerException;
 
     @NotNull
     ExecutableOutput execute(Executable executable) throws ExecutableRunnerException;

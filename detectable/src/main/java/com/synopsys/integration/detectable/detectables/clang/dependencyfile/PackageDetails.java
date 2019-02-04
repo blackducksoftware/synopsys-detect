@@ -21,18 +21,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.configuration;
+package com.synopsys.integration.detectable.detectables.clang.dependencyfile;
 
+import com.synopsys.integration.util.Stringable;
 
-public class DetectorOptionFactory {
-    private DetectConfiguration detectConfiguration;
+public class PackageDetails extends Stringable {
+    private final String packageName;
+    private final String packageVersion;
+    private final String packageArch;
 
-    public DetectorOptionFactory(final DetectConfiguration detectConfiguration) {this.detectConfiguration = detectConfiguration;}
+    public PackageDetails(final String packageName, final String packageVersion, final String packageArch) {
+        this.packageName = packageName;
+        this.packageVersion = packageVersion;
+        this.packageArch = packageArch;
+    }
 
-    //public BitbakeDetectorOptions createBitbakeDetectorOptions() {
-    //    String buildEnvName = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_BUILD_ENV_NAME, PropertyAuthority.None);
-    //    String[] bitbakePackageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES, PropertyAuthority.None);
-    //    return new BitbakeDetectorOptions(buildEnvName, bitbakePackageNames);
-    //}
+    public String getPackageName() {
+        return packageName;
+    }
 
+    public String getPackageVersion() {
+        return packageVersion;
+    }
+
+    public String getPackageArch() {
+        return packageArch;
+    }
 }

@@ -21,18 +21,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.configuration;
+package com.synopsys.integration.detectable.detectables.clang.dependencyfile;
 
+import java.io.File;
 
-public class DetectorOptionFactory {
-    private DetectConfiguration detectConfiguration;
+public class DependencyFileDetails {
+    private final boolean inBuildDir;
+    private final File file;
 
-    public DetectorOptionFactory(final DetectConfiguration detectConfiguration) {this.detectConfiguration = detectConfiguration;}
+    public DependencyFileDetails(final boolean inBuildDir, final File file) {
+        this.inBuildDir = inBuildDir;
+        this.file = file;
+    }
 
-    //public BitbakeDetectorOptions createBitbakeDetectorOptions() {
-    //    String buildEnvName = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_BUILD_ENV_NAME, PropertyAuthority.None);
-    //    String[] bitbakePackageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES, PropertyAuthority.None);
-    //    return new BitbakeDetectorOptions(buildEnvName, bitbakePackageNames);
-    //}
+    public boolean isInBuildDir() {
+        return inBuildDir;
+    }
 
+    public File getFile() {
+        return file;
+    }
 }

@@ -21,18 +21,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.configuration;
+package com.synopsys.integration.detectable.detectables.clang.compilecommand;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
-public class DetectorOptionFactory {
-    private DetectConfiguration detectConfiguration;
+import org.apache.commons.io.FileUtils;
 
-    public DetectorOptionFactory(final DetectConfiguration detectConfiguration) {this.detectConfiguration = detectConfiguration;}
+import com.google.gson.Gson;
 
-    //public BitbakeDetectorOptions createBitbakeDetectorOptions() {
-    //    String buildEnvName = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_BUILD_ENV_NAME, PropertyAuthority.None);
-    //    String[] bitbakePackageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES, PropertyAuthority.None);
-    //    return new BitbakeDetectorOptions(buildEnvName, bitbakePackageNames);
-    //}
+public class CompileCommandDatabaseParser {
 
+    final Gson gson;
+
+    public CompileCommandDatabaseParser(final Gson gson) {this.gson = gson;}
+
+    public List<CompileCommand> parseCompileCommandDatabase(final File compileCommandsDatabaseFile) throws IOException {
+        final String compileCommandsJson = FileUtils.readFileToString(compileCommandsDatabaseFile, StandardCharsets.UTF_8);
+        final CompileCommand[] compileCommands = gson.fromJson(compileCommandsJson, CompileCommand[].class);
+        return Arrays.asList(compileCommands);
+    }
 }

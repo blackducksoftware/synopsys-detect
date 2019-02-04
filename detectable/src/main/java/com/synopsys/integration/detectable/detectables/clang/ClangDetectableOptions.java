@@ -1,0 +1,11 @@
+package com.synopsys.integration.detectable.detectables.clang;
+
+public class ClangDetectableOptions {
+    private final boolean cleanup;
+
+    public ClangDetectableOptions(final boolean cleanup) {this.cleanup = cleanup;}
+
+    public boolean isCleanup() {
+        return cleanup;
+    }
+}

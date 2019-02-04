@@ -40,21 +40,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectorOption
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
-import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeArchitectureParser;
-import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeDetector;
-import com.blackducksoftware.integration.hub.detect.detector.bitbake.BitbakeExtractor;
-import com.blackducksoftware.integration.hub.detect.detector.bitbake.GraphParserTransformer;
-import com.blackducksoftware.integration.hub.detect.detector.clang.DepsMkFileParser;
-import com.blackducksoftware.integration.hub.detect.detector.clang.compilecommand.CompileCommandParser;
-import com.blackducksoftware.integration.hub.detect.detector.clang.ClangDetector;
-import com.blackducksoftware.integration.hub.detect.detector.clang.ClangExtractor;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManager;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerFactory;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerRunner;
-import com.blackducksoftware.integration.hub.detect.detector.clang.CodeLocationAssembler;
-import com.blackducksoftware.integration.hub.detect.detector.clang.FilePathGenerator;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfoFactory;
-import com.blackducksoftware.integration.hub.detect.detector.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockParser;
@@ -197,45 +182,12 @@ public class DetectorBeanConfiguration {
     //All detector support classes. These are classes not actually used outside of the bom tools but are necessary for some bom tools.
 
     @Bean
-    public FilePathGenerator clangDependenciesListFileParser() {
-        return new FilePathGenerator(executableRunner, clangCompileCommandParser(), depsMkParser());
-    }
-
-    @Bean
-    public DepsMkFileParser depsMkParser() {
-        return new DepsMkFileParser();
-    }
-
-    @Bean
-    CompileCommandParser clangCompileCommandParser() {
-        return new CompileCommandParser();
-    }
-
-    @Bean
-    public CodeLocationAssembler codeLocationAssembler() {
-        return new CodeLocationAssembler(externalIdFactory);
-    }
-
-    @Bean
     public BazelExtractor bazelExtractor() {
         BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
         BazelExternalIdExtractionSimpleRules rules = new BazelExternalIdExtractionSimpleRules(detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None));
         BazelCodeLocationBuilder codeLocationGenerator = new BazelCodeLocationBuilder(externalIdFactory);
         BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor = new BazelExternalIdExtractionFullRuleJsonProcessor(gson);
         return new BazelExtractor(detectConfiguration, executableRunner, parser, rules, codeLocationGenerator, bazelExternalIdExtractionFullRuleJsonProcessor);
-    }
-
-    @Bean
-    public ClangExtractor clangExtractor() {
-        return new ClangExtractor(executableRunner, gson, detectFileFinder, directoryManager, clangDependenciesListFileParser(), codeLocationAssembler());
-    }
-
-    public ClangPackageManagerRunner clangLinuxPackageManager() {
-        return new ClangPackageManagerRunner();
-    }
-
-    public List<ClangPackageManager> clangLinuxPackageManagers() {
-        return ClangPackageManagerFactory.standardFactory().createPackageManagers();
     }
 
     @Bean
@@ -468,21 +420,6 @@ public class DetectorBeanConfiguration {
         return new YarnLockExtractor(externalIdFactory, yarnListParser(), executableRunner, detectConfiguration);
     }
 
-    @Bean
-    public GraphParserTransformer graphParserTransformer() {
-        return new GraphParserTransformer();
-    }
-
-    @Bean
-    public BitbakeExtractor bitbakeExtractor() {
-        return new BitbakeExtractor(executableRunner, directoryManager, detectFileFinder, graphParserTransformer(), bitbakeListTasksParser());
-    }
-
-    @Bean
-    public BitbakeArchitectureParser bitbakeListTasksParser() {
-        return new BitbakeArchitectureParser();
-    }
-
     //BomTools
     //Should be scoped to Prototype so a new Detector is created every time one is needed.
     //Should only be accessed through the DetectorFactory.
@@ -494,6 +431,8 @@ public class DetectorBeanConfiguration {
         return new BazelDetector(environment, bazelExtractor(), bazelExecutableFinder(), detectConfiguration);
     }
 
+    //TODO: Resurrect
+    /*
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public BitbakeDetector bitbakeBomTool(final DetectorEnvironment environment) {
@@ -505,7 +444,7 @@ public class DetectorBeanConfiguration {
     public ClangDetector clangBomTool(final DetectorEnvironment environment) {
         return new ClangDetector(environment, executableRunner, detectFileFinder, clangLinuxPackageManagers(), clangExtractor(), detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.None), clangLinuxPackageManager());
     }
-
+    */
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public ComposerLockDetector composerLockBomTool(final DetectorEnvironment environment) {
