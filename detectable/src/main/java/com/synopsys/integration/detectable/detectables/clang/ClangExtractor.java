@@ -26,43 +26,37 @@ package com.synopsys.integration.detectable.detectables.clang;
 import java.io.File;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
+import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
+import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetailGenerator;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetails;
-import com.synopsys.integration.detectable.detectables.clang.dependencyfile.FilePathGenerator;
-import com.synopsys.integration.detectable.detectables.clang.dependencyfile.PackageDetails;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManager;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerRunner;
+import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetailsResult;
 
 public class ClangExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ExecutableRunner executableRunner;
-    private final Gson gson;
-    private final FileFinder fileFinder;
-    private final FilePathGenerator filePathGenerator;
+    private final DependencyFileDetailGenerator dependencyFileDetailGenerator;
     private final ClangPackageDetailsTransformer clangPackageDetailsTransformer;
+    private final CompileCommandDatabaseParser compileCommandDatabaseParser;
 
-    public ClangExtractor(final ExecutableRunner executableRunner, final Gson gson, final FileFinder fileFinder, final FilePathGenerator filePathGenerator,
-        final ClangPackageDetailsTransformer clangPackageDetailsTransformer) {
+    public ClangExtractor(final ExecutableRunner executableRunner, final DependencyFileDetailGenerator dependencyFileDetailGenerator,
+        final ClangPackageDetailsTransformer clangPackageDetailsTransformer, CompileCommandDatabaseParser compileCommandDatabaseParser) {
         this.executableRunner = executableRunner;
-        this.gson = gson;
-        this.fileFinder = fileFinder;
-        this.filePathGenerator = filePathGenerator;
+        this.dependencyFileDetailGenerator = dependencyFileDetailGenerator;
         this.clangPackageDetailsTransformer = clangPackageDetailsTransformer;
+        this.compileCommandDatabaseParser = compileCommandDatabaseParser;
     }
 
     public Extraction extract(ClangPackageManager currentPackageManager, final ClangPackageManagerRunner packageManagerRunner, final File givenDir, final int depth, File outputDirectory, final File jsonCompilationDatabaseFile,
@@ -72,28 +66,19 @@ public class ClangExtractor {
             //final File rootDir = fileFinder.findContainingDir(givenDir, depth); //TODO: FIX
             final File rootDir = new File("");//TODO: FIX
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
-            final Set<File> unManagedDependencyFiles = ConcurrentHashMap.newKeySet(64);
 
-            CompileCommandDatabaseParser databaseParser = new CompileCommandDatabaseParser(gson);
-            final List<CompileCommand> compileCommands = databaseParser.parseCompileCommandDatabase(jsonCompilationDatabaseFile);
+            final List<CompileCommand> compileCommands = compileCommandDatabaseParser.parseCompileCommandDatabase(jsonCompilationDatabaseFile);
+            final Set<DependencyFileDetails> dependencyFileDetails = dependencyFileDetailGenerator.fromCompileCommands(compileCommands, outputDirectory, cleanup);
+            final PackageDetailsResult results = packageManagerRunner.getAllPackages(currentPackageManager, rootDir, executableRunner, dependencyFileDetails);
 
-            final Set<File> filePaths = compileCommands.parallelStream()
-                                            .flatMap(command -> filePathGenerator.fromCompileCommand(outputDirectory, command, cleanup).stream())
-                                            .filter(StringUtils::isNotBlank)
-                                            .map(File::new)
-                                            .filter(File::exists)
-                                            .collect(Collectors.toSet());
-            
-            logger.trace("Found : " + filePaths.size() + " files to process.");
+            logger.trace("Found : " + results.getFoundPackages() + " packages.");
+            logger.trace("Found : " + results.getUnmanagedDependencies() + " unmanaged files.");
 
-            final Set<PackageDetails> packages = filePaths.parallelStream()
-                                                     .map(file -> new DependencyFileDetails(true, file))//fileFinder.isFileUnderDir(rootDir, file)
-                                                     .flatMap(detailedFile -> packageManagerRunner.getPackages(currentPackageManager, rootDir, executableRunner, unManagedDependencyFiles, detailedFile).stream())
-                                                     .collect(Collectors.toSet());
-            logger.trace("Found : " + packages.size() + " packages to process.");
+            Forge defaultForge = currentPackageManager.getPackageManagerInfo().getDefaultForge();
+            List<Forge> packageForges = currentPackageManager.getPackageManagerInfo().getForges();
+            final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(defaultForge, packageForges, rootDir, results.getFoundPackages());
 
-            final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(currentPackageManager.getPackageManagerInfo().getDefaultForge(), currentPackageManager.getPackageManagerInfo().getForges(), rootDir, packages);
-            logSummary(unManagedDependencyFiles);
+            logSummary(results.getUnmanagedDependencies());
 
             return new Extraction.Builder().success(codeLocation).build();
         } catch (final Exception e) {

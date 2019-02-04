@@ -11,8 +11,8 @@ import org.mockito.Mockito;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectables.clang.dependencyfile.PackageDetails;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfoFactory;
+import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPackageManagerResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgVersionResolver;
 

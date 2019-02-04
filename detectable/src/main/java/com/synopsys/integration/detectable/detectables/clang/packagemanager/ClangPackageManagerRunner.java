@@ -25,6 +25,8 @@ package com.synopsys.integration.detectable.detectables.clang.packagemanager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +37,6 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetails;
-import com.synopsys.integration.detectable.detectables.clang.dependencyfile.PackageDetails;
 
 public class ClangPackageManagerRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -49,24 +50,41 @@ public class ClangPackageManagerRunner {
                 logger.info(String.format("Found package manager %s", packageManagerInfo.getPkgMgrName()));
                 return true;
             }
-            logger.debug(String.format("Output of %s %s does not look right; concluding that the %s package manager is not present. The output: %s", packageManagerInfo.getPkgMgrName(), packageManagerInfo.getCheckPresenceCommandArgs(), packageManagerInfo.getPkgMgrName(), versionOutput));
+            logger.debug(String.format("Output of %s %s does not look right; concluding that the %s package manager is not present. The output: %s", packageManagerInfo.getPkgMgrName(), packageManagerInfo.getCheckPresenceCommandArgs(),
+                packageManagerInfo.getPkgMgrName(), versionOutput));
         } catch (final ExecutableRunnerException e) {
-            logger.debug(String.format("Error executing %s %s; concluding that the %s package manager is not present. The error: %s", packageManagerInfo.getPkgMgrName(), packageManagerInfo.getCheckPresenceCommandArgs(), packageManagerInfo.getPkgMgrName(), e.getMessage()));
+            logger.debug(String.format("Error executing %s %s; concluding that the %s package manager is not present. The error: %s", packageManagerInfo.getPkgMgrName(), packageManagerInfo.getCheckPresenceCommandArgs(),
+                packageManagerInfo.getPkgMgrName(), e.getMessage()));
             return false;
         }
         return false;
     }
 
-    public List<PackageDetails> getPackages(ClangPackageManager currentPackageManager, File workingDirectory, final ExecutableRunner executableRunner, final Set<File> unManagedDependencyFiles, final DependencyFileDetails dependencyFile) {
+    public PackageDetailsResult getAllPackages(ClangPackageManager currentPackageManager, File workingDirectory, final ExecutableRunner executableRunner, final Set<DependencyFileDetails> dependencyFiles) {
+        return dependencyFiles.parallelStream().map(dependencyFile -> getPackages(currentPackageManager, workingDirectory, executableRunner, dependencyFile))
+                   .collect(() -> new PackageDetailsResult(Collections.emptySet(), Collections.emptySet()),
+                       (r, o) -> {
+                           r.getFoundPackages().addAll(o.getFoundPackages());
+                           r.getUnmanagedDependencies().addAll(o.getUnmanagedDependencies());
+                       },
+                       (r, r2) -> {
+                           r.getFoundPackages().addAll(r2.getFoundPackages());
+                           r.getUnmanagedDependencies().addAll(r2.getUnmanagedDependencies());
+                       });
+
+    }
+
+    public PackageDetailsResult getPackages(ClangPackageManager currentPackageManager, File workingDirectory, final ExecutableRunner executableRunner, final DependencyFileDetails dependencyFile) {
         ClangPackageManagerInfo packageManagerInfo = currentPackageManager.getPackageManagerInfo();
-        final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
+        final Set<PackageDetails> dependencyDetails = new HashSet<>();
+        final Set<File> unManagedDependencyFiles = new HashSet<>();
         try {
             final List<String> fileSpecificGetOwnerArgs = new ArrayList<>(packageManagerInfo.getPkgMgrGetOwnerCmdArgs());
             fileSpecificGetOwnerArgs.add(dependencyFile.getFile().getAbsolutePath());
             final ExecutableOutput queryPackageOutput = executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetOwnerArgs);
             logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput));
-            this.addToPackageList(currentPackageManager, executableRunner, workingDirectory, dependencyDetailsList, queryPackageOutput.getStandardOutput());
-            return dependencyDetailsList;
+
+            dependencyDetails.addAll(currentPackageManager.getPackageResolver().resolvePackages(currentPackageManager.getPackageManagerInfo(), executableRunner, workingDirectory, queryPackageOutput.getStandardOutput()));
         } catch (final ExecutableRunnerException e) {
             logger.error(String.format("Error executing %s: %s", packageManagerInfo.getPkgMgrCmdString(), e.getMessage()));
             if (!dependencyFile.isInBuildDir()) {
@@ -75,13 +93,8 @@ public class ClangPackageManagerRunner {
             } else {
                 logger.debug(String.format("%s is not managed by %s, but it's in the source.dir", dependencyFile.getFile().getAbsolutePath(), packageManagerInfo.getPkgMgrCmdString()));
             }
-            return dependencyDetailsList;
         }
-    }
-
-    protected void addToPackageList(ClangPackageManager currentPackageManager, final ExecutableRunner executableRunner, File workingDirectory, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) throws ExecutableRunnerException {
-        List<PackageDetails> parsed = currentPackageManager.getPackageResolver().resolvePackages(currentPackageManager.getPackageManagerInfo(), executableRunner, workingDirectory, queryPackageOutput);
-        dependencyDetailsList.addAll(parsed);
+        return new PackageDetailsResult(dependencyDetails, unManagedDependencyFiles);
     }
 
 }

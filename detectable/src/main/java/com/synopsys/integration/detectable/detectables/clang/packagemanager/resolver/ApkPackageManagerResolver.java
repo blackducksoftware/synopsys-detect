@@ -34,8 +34,8 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectables.clang.dependencyfile.PackageDetails;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
+import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 
 public class ApkPackageManagerResolver implements ClangPackageManagerResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

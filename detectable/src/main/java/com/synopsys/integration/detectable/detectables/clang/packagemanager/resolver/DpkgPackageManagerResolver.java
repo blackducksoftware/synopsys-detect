@@ -33,16 +33,18 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectables.clang.dependencyfile.PackageDetails;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
+import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 
 public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DpkgVersionResolver versionResolver;
-    public DpkgPackageManagerResolver(DpkgVersionResolver versionResolver){
+
+    public DpkgPackageManagerResolver(DpkgVersionResolver versionResolver) {
         this.versionResolver = versionResolver;
     }
+
     @Override
     public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException {
         List<PackageDetails> packageDetailsList = new ArrayList<>();

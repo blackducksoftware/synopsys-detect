@@ -40,6 +40,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
+import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 
 public class ClangPackageDetailsTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -59,7 +60,7 @@ public class ClangPackageDetailsTransformer {
     }
 
     private List<Dependency> toDependency(final List<Forge> forges, PackageDetails details) {
-        final String name  = details.getPackageName();
+        final String name = details.getPackageName();
         final String version = details.getPackageVersion();
         final String arch = details.getPackageArch();
 
