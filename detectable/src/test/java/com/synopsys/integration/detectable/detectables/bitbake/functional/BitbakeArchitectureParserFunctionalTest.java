@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.annotations.FunctionalTest;
+import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeArchitectureParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 

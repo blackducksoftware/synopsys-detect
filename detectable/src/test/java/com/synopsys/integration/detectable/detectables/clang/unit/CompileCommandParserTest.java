@@ -1,9 +1,7 @@
 package com.synopsys.integration.detectable.detectables.clang.unit;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -12,10 +10,12 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
 
+@UnitTest
 public class CompileCommandParserTest {
     @Test
     public void testGetCompilerCmd() {
@@ -44,7 +44,7 @@ public class CompileCommandParserTest {
         }
 
         assertEquals(5, result.size());
-        int i=0;
+        int i = 0;
         assertEquals("-DDOUBLEQUOTED=A value for the compiler", result.get(i++));
         assertEquals("-DSINGLEQUOTED=Another value for the compiler", result.get(i++));
         assertEquals("file.c", result.get(i++));
@@ -64,14 +64,16 @@ public class CompileCommandParserTest {
         List<String> result = compileCommandParser.parseArguments(command, new HashMap<>());
 
         assertEquals(65, result.size());
-        int i=0;
+        int i = 0;
         assertEquals("CCACHE_CPP2=yes", result.get(i++));
         assertEquals("/usr/bin/ccache", result.get(i++));
         assertEquals("/usr/bin/clang++-3.6", result.get(i++));
         assertEquals("-DAVX2=1", result.get(i++));
         assertEquals("-DCMAKE_BUILD_TYPE=\"Debug\"", result.get(i++));
         assertEquals("-DCMAKE_CC_FLAGS=\" -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -fopenmp --std=c11 -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC --std=c11\"", result.get(i++));
-        assertEquals("-DCMAKE_CXX_FLAGS=\" -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -fopenmp -stdlib=libc++ -std=c++14 -DLOG_INTERNAL_ERROR=LOG_DEBUG -mcx16 -msse4.2 -mavx2  -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -stdlib=libc++ -std=c++14 -DLOG_INTERNAL_ERROR=LOG_DEBUG\"", result.get(i++));
+        assertEquals(
+            "-DCMAKE_CXX_FLAGS=\" -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -fopenmp -stdlib=libc++ -std=c++14 -DLOG_INTERNAL_ERROR=LOG_DEBUG -mcx16 -msse4.2 -mavx2  -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -stdlib=libc++ -std=c++14 -DLOG_INTERNAL_ERROR=LOG_DEBUG\"",
+            result.get(i++));
         assertEquals("-DCMAKE_CXX_FLAGS_DEBUG=\" -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -fopenmp -stdlib=libc++ -std=c++14 -DLOG_INTERNAL_ERROR=LOG_DEBUG -mcx16 -msse4.2 -mavx2  \"", result.get(i++));
         assertEquals("-DCMAKE_CXX_FLAGS_RELEASE=\"-O3 -DNDEBUG -O3 \"", result.get(i++));
         assertEquals("-DCMAKE_VERSION=\"3.5.1\"", result.get(i++));
