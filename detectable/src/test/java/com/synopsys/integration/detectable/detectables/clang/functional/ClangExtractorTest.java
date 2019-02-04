@@ -18,6 +18,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
@@ -32,6 +33,7 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Clan
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerRunner;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
+@FunctionalTest
 public class ClangExtractorTest {
     private static final String EXTRACTION_ID = "testExtractionId";
     private final Gson gson = new Gson();

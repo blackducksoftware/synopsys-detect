@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
@@ -16,6 +17,7 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Clan
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPackageManagerResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgVersionResolver;
 
+@UnitTest
 public class DpkgPackageManagerTest {
 
     //TODO: Split into 2 tests - one for VersionResolution and one for FullResolution

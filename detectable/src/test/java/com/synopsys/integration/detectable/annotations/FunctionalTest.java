@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.annotations;
+package com.synopsys.integration.detectable.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

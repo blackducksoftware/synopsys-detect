@@ -9,7 +9,7 @@ import org.mockito.Mockito;
 import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
-import com.synopsys.integration.detectable.detectables.annotations.UnitTest;
+import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 

@@ -6,11 +6,13 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.PackageDetails;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfoFactory;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.RpmPackageManagerResolver;
 
+@UnitTest
 public class RpmPackageManagerTest {
 
     @Test

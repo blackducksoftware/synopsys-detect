@@ -8,7 +8,7 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.annotations.UnitTest;
+import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.util.GraphAssert;
