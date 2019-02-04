@@ -97,7 +97,7 @@ public class BitbakeExtractor {
                 final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.BITBAKE, sourcePath.getCanonicalPath(), externalId, dependencyGraph).build();
 
                 detectCodeLocations.add(detectCodeLocation);
-            } catch (final IOException | IntegrationException e) {
+            } catch (final IOException | IntegrationException | NullPointerException e) {
                 logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s'", packageName));
                 logger.debug(e.getMessage(), e);
             }
