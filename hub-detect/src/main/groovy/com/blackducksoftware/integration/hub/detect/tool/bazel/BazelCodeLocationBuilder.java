@@ -34,6 +34,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -67,9 +68,9 @@ public class BazelCodeLocationBuilder {
     }
 
     public List<DetectCodeLocation> build() {
-        Dependency projectDependency = gavToProject("unknown", workspaceDir.getName(), "unknown");
-        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.MAVEN, workspaceDir.getAbsolutePath(),
-            projectDependency.externalId, dependencyGraph).build();
+        Forge forge = new Forge("/", "/", "DETECT");
+         final ExternalId externalId = externalIdFactory.createPathExternalId(forge, workspaceDir.toString());
+         final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.BAZEL, workspaceDir.toString(), externalId, dependencyGraph).build();
         List<DetectCodeLocation> codeLocations = new ArrayList<>(1);
         codeLocations.add(codeLocation);
         return codeLocations;
