@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detectable.detectable.file.FileUtils;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
 
 public class DependencyFileDetailGenerator {
@@ -18,14 +19,14 @@ public class DependencyFileDetailGenerator {
 
     public DependencyFileDetailGenerator(final FilePathGenerator filePathGenerator) {this.filePathGenerator = filePathGenerator;}
 
-    public Set<DependencyFileDetails> fromCompileCommands(List<CompileCommand> compileCommands, File outputDirectory, boolean cleanup) {
+    public Set<DependencyFileDetails> fromCompileCommands(List<CompileCommand> compileCommands, File rootDir, File outputDirectory, boolean cleanup) {
 
         final Set<DependencyFileDetails> dependencyFileDetails = compileCommands.parallelStream()
                                                                      .flatMap(command -> filePathGenerator.fromCompileCommand(outputDirectory, command, cleanup).stream())
                                                                      .filter(StringUtils::isNotBlank)
                                                                      .map(File::new)
                                                                      .filter(File::exists)
-                                                                     .map(file -> new DependencyFileDetails(true, file))//fileFinder.isFileUnderDir(rootDir, file)
+                                                                     .map(file -> new DependencyFileDetails(FileUtils.isFileChildOfDirectory(file, rootDir), file))//TODO: check this works the same as fileFinder.isFileUnderDir(rootDir, file)
                                                                      .collect(Collectors.toSet());
 
         logger.trace("Found : " + dependencyFileDetails.size() + " files to process.");

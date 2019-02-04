@@ -34,6 +34,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.file.FileUtils;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
@@ -63,12 +64,11 @@ public class ClangExtractor {
         boolean cleanup) {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
-            //final File rootDir = fileFinder.findContainingDir(givenDir, depth); //TODO: FIX
-            final File rootDir = new File("");//TODO: FIX
+            final File rootDir = FileUtils.getParent(givenDir, depth);//TODO: Make sure we need this
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
 
             final List<CompileCommand> compileCommands = compileCommandDatabaseParser.parseCompileCommandDatabase(jsonCompilationDatabaseFile);
-            final Set<DependencyFileDetails> dependencyFileDetails = dependencyFileDetailGenerator.fromCompileCommands(compileCommands, outputDirectory, cleanup);
+            final Set<DependencyFileDetails> dependencyFileDetails = dependencyFileDetailGenerator.fromCompileCommands(compileCommands, rootDir, outputDirectory, cleanup);
             final PackageDetailsResult results = packageManagerRunner.getAllPackages(currentPackageManager, rootDir, executableRunner, dependencyFileDetails);
 
             logger.trace("Found : " + results.getFoundPackages() + " packages.");
