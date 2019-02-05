@@ -23,6 +23,11 @@
  */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +41,7 @@ import com.synopsys.integration.rest.credentials.Credentials;
 import com.synopsys.integration.rest.credentials.CredentialsBuilder;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.proxy.ProxyInfoBuilder;
+import com.synopsys.integration.util.proxy.ProxyUtil;
 
 public class ConnectionManager {
     private final DetectConfiguration detectConfiguration;
@@ -57,6 +63,7 @@ public class ConnectionManager {
         }
 
         final ProxyInfoBuilder proxyInfoBuilder = new ProxyInfoBuilder();
+
         proxyInfoBuilder.setCredentials(proxyCredentials);
         proxyInfoBuilder.setHost(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_HOST, PropertyAuthority.None));
         String proxyPortFromConfiguration = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PORT, PropertyAuthority.None);
@@ -72,11 +79,23 @@ public class ConnectionManager {
     }
 
     public IntHttpClient createUnauthenticatedRestConnection(final String url) throws DetectUserFriendlyException {
+        final List<Pattern> ignoredProxyHostPatterns = ProxyUtil.getIgnoredProxyHostPatterns(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS, PropertyAuthority.None));
+        boolean ignoreProxy;
+        try {
+            ignoreProxy = ProxyUtil.shouldIgnoreHost(new URL(url).getHost(), ignoredProxyHostPatterns);
+        } catch (MalformedURLException e) {
+            throw new DetectUserFriendlyException("Unable to decide if proxy should be used for a given host.", e, ExitCodeType.FAILURE_CONFIGURATION);
+        }
+
         IntLogger intLogger = new Slf4jIntLogger(logger);
         int timeout = detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT, PropertyAuthority.None);
         boolean alwaysTrust = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_TRUST_CERT, PropertyAuthority.None);
-        ProxyInfo proxyInfo = getHubProxyInfo();
-        return new IntHttpClient(intLogger, timeout, alwaysTrust, proxyInfo);
+
+        if (ignoreProxy) {
+            return new IntHttpClient(intLogger, timeout, alwaysTrust, ProxyInfo.NO_PROXY_INFO);
+        } else {
+            return new IntHttpClient(intLogger, timeout, alwaysTrust, getHubProxyInfo());
+        }
     }
 
 }
