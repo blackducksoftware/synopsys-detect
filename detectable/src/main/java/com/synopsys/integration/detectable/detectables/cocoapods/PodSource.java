@@ -30,11 +30,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PodSource {
     @JsonIgnore
-    public String name;
+    private String name;
 
     @JsonProperty(":git")
-    public String git;
+    private String git;
 
     @JsonProperty(":path")
-    public String path;
+    private String path;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public String getGit() {
+        return git;
+    }
+
+    public String getPath() {
+        return path;
+    }
 }

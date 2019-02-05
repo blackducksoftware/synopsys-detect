@@ -29,11 +29,15 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 
 public class ExternalSources {
-    public List<PodSource> sources = new ArrayList<>();
+    private final List<PodSource> sources = new ArrayList<>();
 
     @JsonAnySetter
     public void setDynamicProperty(final String name, final PodSource podSource) {
-        podSource.name = name;
+        podSource.setName(name);
         sources.add(podSource);
+    }
+
+    public List<PodSource> getSources() {
+        return sources;
     }
 }
