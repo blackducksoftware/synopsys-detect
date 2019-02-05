@@ -27,21 +27,21 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Pack
 public class DependencyFileDetailGeneratorTest {
     @Test
     public void testFileThatDoesNotExistIsSkipped() throws ExecutableRunnerException {
-        File mockFile = Mockito.mock(File.class);
+        final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.toString()).thenReturn("Example");
 
-        FilePathGenerator filePathGenerator = Mockito.mock(FilePathGenerator.class);
+        final FilePathGenerator filePathGenerator = Mockito.mock(FilePathGenerator.class);
         Mockito.when(filePathGenerator.fromCompileCommand(mockFile, null, true)).thenReturn(Arrays.asList("does_not_exist.h"));
 
-        DependencyFileDetailGenerator dependencyFileDetailGenerator = new DependencyFileDetailGenerator(filePathGenerator);
+        final DependencyFileDetailGenerator dependencyFileDetailGenerator = new DependencyFileDetailGenerator(filePathGenerator);
 
-        Set<DependencyFileDetails> fileDetailsSet = dependencyFileDetailGenerator.fromCompileCommands(Arrays.asList(new CompileCommand()), null, true);
+        final Set<DependencyFileDetails> fileDetailsSet = dependencyFileDetailGenerator.fromCompileCommands(Arrays.asList(new CompileCommand()), null, null, true);
         Assert.assertEquals(0, fileDetailsSet.size());
     }
 
     @Test
     public void testDependencyCreatedWithEachForge() throws ExecutableRunnerException {
-        File mockFile = Mockito.mock(File.class);
+        final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.toString()).thenReturn("Example");
 
         final Set<PackageDetails> packages = new HashSet<>();

@@ -50,7 +50,7 @@ public class PodlockExtractor {
     }
 
     public Extraction extract(final File directory, final File podlock) {
-        String podLockText;
+        final String podLockText;
         try {
             logger.trace(String.format("Reading from the pod lock file %s", podlock.getAbsolutePath()));
             podLockText = FileUtils.readFileToString(podlock, StandardCharsets.UTF_8);
@@ -60,7 +60,7 @@ public class PodlockExtractor {
             return new Extraction.Builder().exception(e).build();
         }
 
-        DependencyGraph dependencyGraph;
+        final DependencyGraph dependencyGraph;
         try {
             logger.trace("Attempting to create the dependency graph from the pod lock file.");
             dependencyGraph = podlockParser.extractDependencyGraph(podLockText);

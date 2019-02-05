@@ -29,9 +29,9 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 
 public class Pod {
-    public String name;
-    public String cleanName;
-    public List<String> dependencies = new ArrayList<>();
+    private String name;
+    private String cleanName;
+    private List<String> dependencies = new ArrayList<>();
 
     public Pod() {
     }
@@ -44,5 +44,17 @@ public class Pod {
     public void setDynamicProperty(final String name, final List<String> dependencies) {
         this.name = name;
         this.dependencies = dependencies;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCleanName() {
+        return cleanName;
+    }
+
+    public List<String> getDependencies() {
+        return dependencies;
     }
 }

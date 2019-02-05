@@ -31,11 +31,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PodfileLock {
     @JsonProperty("PODS")
-    public List<Pod> pods;
+    private List<Pod> pods;
 
     @JsonProperty("DEPENDENCIES")
-    public List<Pod> dependencies;
+    private List<Pod> dependencies;
 
     @JsonProperty("EXTERNAL SOURCES")
-    public ExternalSources externalSources;
+    private ExternalSources externalSources;
+
+    public List<Pod> getPods() {
+        return pods;
+    }
+
+    public List<Pod> getDependencies() {
+        return dependencies;
+    }
+
+    public ExternalSources getExternalSources() {
+        return externalSources;
+    }
 }
