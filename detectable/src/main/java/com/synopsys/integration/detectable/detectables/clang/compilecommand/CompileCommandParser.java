@@ -52,6 +52,14 @@ public class CompileCommandParser {
     }
 
     public List<String> parseArguments(CompileCommand compileCommand, final Map<String, String> optionOverrides) { //TODO: Shouldn't this method also take into account "command.arguments"?
+        //TODO: make arguments
+/*
+if (StringUtils.isNotBlank(rawCompileCommand.command)) {
+            return rawCompileCommand.command;
+        } else {
+            return String.join(" ", rawCompileCommand.arguments);
+        }
+ */
         logger.trace(String.format("origCompileCommand         : %s", compileCommand.command));
         String quotesRemovedCompileCommand = escapeQuotedWhitespace(compileCommand.command.trim());
         logger.trace(String.format("quotesRemovedCompileCommand: %s", quotesRemovedCompileCommand));
@@ -98,7 +106,7 @@ public class CompileCommandParser {
         boolean lastCharWasEscapeChar = false;
         boolean inQuotes = false;
         boolean quoteTypeIsDouble = false;
-        for (int i=0; i < givenString.length(); i++) {
+        for (int i = 0; i < givenString.length(); i++) {
             char c = givenString.charAt(i);
             if (!inQuotes) {
                 if (!lastCharWasEscapeChar && (c == SINGLE_QUOTE_CHAR)) {

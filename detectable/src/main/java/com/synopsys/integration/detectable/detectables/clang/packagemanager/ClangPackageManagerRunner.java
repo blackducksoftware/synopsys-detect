@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,17 +62,41 @@ public class ClangPackageManagerRunner {
     }
 
     public PackageDetailsResult getAllPackages(ClangPackageManager currentPackageManager, File workingDirectory, final ExecutableRunner executableRunner, final Set<DependencyFileDetails> dependencyFiles) {
-        return dependencyFiles.parallelStream().map(dependencyFile -> getPackages(currentPackageManager, workingDirectory, executableRunner, dependencyFile))
-                   .collect(() -> new PackageDetailsResult(Collections.emptySet(), Collections.emptySet()),
-                       (r, o) -> {
-                           r.getFoundPackages().addAll(o.getFoundPackages());
-                           r.getUnmanagedDependencies().addAll(o.getUnmanagedDependencies());
-                       },
-                       (r, r2) -> {
-                           r.getFoundPackages().addAll(r2.getFoundPackages());
-                           r.getUnmanagedDependencies().addAll(r2.getUnmanagedDependencies());
-                       });
 
+        List<PackageDetailsResult> packageDetailsResults = dependencyFiles.parallelStream()
+                                                               .map(dependencyFile -> getPackages(currentPackageManager, workingDirectory, executableRunner, dependencyFile))
+                                                               .collect(Collectors.toList());
+        //Option 1: custom collect
+        packageDetailsResults.parallelStream()
+            .collect(() -> new PackageDetailsResult(Collections.emptySet(), Collections.emptySet()),
+                (r, o) -> {
+                    r.getFoundPackages().addAll(o.getFoundPackages());
+                    r.getUnmanagedDependencies().addAll(o.getUnmanagedDependencies());
+                },
+                (r, r2) -> {
+                    r.getFoundPackages().addAll(r2.getFoundPackages());
+                    r.getUnmanagedDependencies().addAll(r2.getUnmanagedDependencies());
+                });
+
+        //Option 2: map it
+        Set<PackageDetails> packageDetails = packageDetailsResults.parallelStream()
+                                                 .flatMap(packageDetailsResult -> packageDetailsResult.getFoundPackages().stream())
+                                                 .collect(Collectors.toSet());
+
+        Set<File> unmanagedDependencies = packageDetailsResults.parallelStream()
+                                              .flatMap(packageDetailsResult -> packageDetailsResult.getUnmanagedDependencies().stream())
+                                              .collect(Collectors.toSet());
+
+        //Option 3: iterate
+        Set<PackageDetails> packageDetails3 = new HashSet<>();
+        Set<File> unmanagedDependencies3 = new HashSet<>();
+        for (PackageDetailsResult packageDetailsResult : packageDetailsResults) {
+            packageDetails3.addAll(packageDetailsResult.getFoundPackages());
+            unmanagedDependencies3.addAll(packageDetailsResult.getUnmanagedDependencies());
+        }
+
+        //Option 4???
+        return new PackageDetailsResult(packageDetails, unmanagedDependencies);
     }
 
     public PackageDetailsResult getPackages(ClangPackageManager currentPackageManager, File workingDirectory, final ExecutableRunner executableRunner, final DependencyFileDetails dependencyFile) {

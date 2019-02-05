@@ -25,7 +25,7 @@ package com.synopsys.integration.detectable.detectables.clang.dependencyfile;
 
 import java.io.File;
 
-public class DependencyFileDetails {
+public class DependencyFileDetails { //TODO: he may need a good hash code
     private final boolean inBuildDir;
     private final File file;
 

@@ -35,7 +35,7 @@ public class DependencyFileDetailGeneratorTest {
 
         DependencyFileDetailGenerator dependencyFileDetailGenerator = new DependencyFileDetailGenerator(filePathGenerator);
 
-        Set<DependencyFileDetails> fileDetailsSet = dependencyFileDetailGenerator.fromCompileCommands(Arrays.asList(new CompileCommand()), null, true);
+        Set<DependencyFileDetails> fileDetailsSet = dependencyFileDetailGenerator.fromCompileCommands(Arrays.asList(new CompileCommand()), null, null, true);
         Assert.assertEquals(0, fileDetailsSet.size());
     }
 
