@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.gradle;
+package com.synopsys.integration.detectable.detectables.gradle;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -35,14 +35,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.util.DependencyHistory;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
+import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
 import com.synopsys.integration.util.NameVersion;
 
 public class GradleReportParser {
@@ -65,8 +65,8 @@ public class GradleReportParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Optional<DetectCodeLocation> parseDependencies(final File codeLocationFile) {
-        DetectCodeLocation codeLocation = null;
+    public Optional<CodeLocation> parseDependencies(final File codeLocationFile) {
+        CodeLocation codeLocation = null;
         String projectSourcePath = "";
         String projectGroup = "";
         String projectName = "";
@@ -131,7 +131,7 @@ public class GradleReportParser {
             }
 
             final ExternalId id = externalIdFactory.createMavenExternalId(projectGroup, projectName, projectVersionName);
-            codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.GRADLE, projectSourcePath, id, graph).build();
+            codeLocation = new CodeLocation.Builder(CodeLocationType.GRADLE, graph, id).build(); //TODO: Source Path?
         } catch (final IOException e) {
             codeLocation = null;
         }

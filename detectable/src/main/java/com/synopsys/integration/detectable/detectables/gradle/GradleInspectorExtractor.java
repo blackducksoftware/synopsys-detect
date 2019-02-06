@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.gradle;
+package com.synopsys.integration.detectable.detectables.gradle;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,36 +33,29 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.workflow.file.DetectFileFinder;
+import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.util.NameVersion;
 
 public class GradleInspectorExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ExecutableRunner executableRunner;
-    private final DetectFileFinder detectFileFinder;
+    private final FileFinder fileFinder;
     private final GradleReportParser gradleReportParser;
-    private final DetectConfiguration detectConfiguration;
 
-    public GradleInspectorExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder,
-        final GradleReportParser gradleReportParser, final DetectConfiguration detectConfiguration) {
+    public GradleInspectorExtractor(final ExecutableRunner executableRunner, final FileFinder fileFinder,
+        final GradleReportParser gradleReportParser) {
         this.executableRunner = executableRunner;
-        this.detectFileFinder = detectFileFinder;
+        this.fileFinder = fileFinder;
         this.gradleReportParser = gradleReportParser;
-        this.detectConfiguration = detectConfiguration;
     }
 
-    public Extraction extract(final File directory, final String gradleExe, final String gradleInspector, final File outputDirectory) {
+    public Extraction extract(final File directory, final File gradleExe, String gradleCommand, final File gradleInspector, final File outputDirectory) {
         try {
-            String gradleCommand = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND, PropertyAuthority.None);
 
             final List<String> arguments = new ArrayList<>();
             if (StringUtils.isNotBlank(gradleCommand)) {
@@ -74,14 +67,13 @@ public class GradleInspectorExtractor {
             arguments.add(String.format("-DGRADLEEXTRACTIONDIR=%s", outputDirectory.getCanonicalPath()));
             arguments.add("--info");
 
-            final Executable executable = new Executable(directory, gradleExe, arguments);
-            final ExecutableOutput output = executableRunner.execute(executable);
+            final ExecutableOutput output = executableRunner.execute(directory, gradleExe, arguments);
 
             if (output.getReturnCode() == 0) {
-                final File rootProjectMetadataFile = detectFileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
-                final List<File> codeLocationFiles = detectFileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
+                final File rootProjectMetadataFile = fileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
+                final List<File> codeLocationFiles = fileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
 
-                final List<DetectCodeLocation> codeLocations = new ArrayList<>();
+                final List<CodeLocation> codeLocations = new ArrayList<>();
                 String projectName = null;
                 String projectVersion = null;
                 if (codeLocationFiles != null) {

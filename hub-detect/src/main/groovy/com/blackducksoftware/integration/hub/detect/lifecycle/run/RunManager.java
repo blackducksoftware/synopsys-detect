@@ -42,7 +42,6 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.lifecycle.DetectContext;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.blackducksoftware.integration.hub.detect.tool.ToolRunner;
 import com.blackducksoftware.integration.hub.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorTool;
 import com.blackducksoftware.integration.hub.detect.tool.detector.DetectorToolResult;
@@ -112,11 +111,13 @@ public class RunManager {
 
         final RunResult runResult = new RunResult();
         final RunOptions runOptions = detectConfigurationFactory.createRunOptions();
-        
+
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
         DetectorEnvironment detectorEnvironment = new DetectorEnvironment(directoryManager.getSourceDirectory(), Collections.emptySet(), 0, null, false);
         DetectorFactory detectorFactory = detectContext.getBean(DetectorFactory.class);
         logger.info(ReportConstants.RUN_SEPARATOR);
+
+        /* TODO: Resurrect
         if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the docker tool.");
             ToolRunner toolRunner = new ToolRunner(eventSystem, detectorFactory.createDockerDetector(detectorEnvironment));
@@ -135,7 +136,7 @@ public class RunManager {
         } else {
             logger.info("Bazel tool will not be run.");
         }
-
+        */
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
             logger.info("Will include the detector tool.");

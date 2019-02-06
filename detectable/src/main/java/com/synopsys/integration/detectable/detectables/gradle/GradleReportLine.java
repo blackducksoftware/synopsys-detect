@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.gradle;
+package com.synopsys.integration.detectable.detectables.gradle;
 
 import java.util.ArrayList;
 import java.util.Arrays;

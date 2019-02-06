@@ -11,7 +11,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
-import com.synopsys.integration.detectable.util.GraphAssert;
+import com.synopsys.integration.detectable.util.graph.ArchitectureGraphAssert;
 
 @UnitTest
 public class BitbakeGraphTransformerTest {
@@ -25,7 +25,7 @@ public class BitbakeGraphTransformerTest {
         BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
         DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, "archy");
 
-        GraphAssert graphAssert = new GraphAssert(Forge.YOCTO, dependencyGraph);
+        ArchitectureGraphAssert graphAssert = new ArchitectureGraphAssert(Forge.YOCTO, dependencyGraph);
 
         ExternalId foobar = graphAssert.hasDependency("foobar", "12", "archy");
         ExternalId example = graphAssert.hasDependency("example", "75", "archy");
@@ -42,7 +42,7 @@ public class BitbakeGraphTransformerTest {
         BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
         DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, "archy");
 
-        GraphAssert graphAssert = new GraphAssert(Forge.YOCTO, dependencyGraph);
+        ArchitectureGraphAssert graphAssert = new ArchitectureGraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.rootSize(1);
         ExternalId externalId = graphAssert.hasDependency("example", "75", "archy");
         graphAssert.relationshipCount(externalId, 0);
@@ -56,7 +56,7 @@ public class BitbakeGraphTransformerTest {
         BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
         DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, "archy");
 
-        GraphAssert graphAssert = new GraphAssert(Forge.YOCTO, dependencyGraph);
+        ArchitectureGraphAssert graphAssert = new ArchitectureGraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.noDependency("example", null, "archy");
         graphAssert.rootSize(0);
     }

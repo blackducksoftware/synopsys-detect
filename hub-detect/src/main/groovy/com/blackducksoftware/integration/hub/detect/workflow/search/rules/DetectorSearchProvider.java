@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.search.rules;
 
-import com.blackducksoftware.integration.hub.detect.detector.Detector;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
 
@@ -36,7 +35,7 @@ public class DetectorSearchProvider {
 
     public DetectorSearchRuleSet createBomToolSearchRuleSet(final DetectorEnvironment environment) {
         final DetectorSearchRuleSetBuilder searchRuleSet = new DetectorSearchRuleSetBuilder(environment);
-
+/* TODO: Resurrect
         searchRuleSet.addBomTool(detectorFactory.createBitbakeBomTool(environment)).defaultNotNested();
 
         //searchRuleSet.addBomTool(detectorFactory.createPodLockBomTool(environment)).defaultNested();
@@ -104,7 +103,7 @@ public class DetectorSearchProvider {
         searchRuleSet.addBomTool(detectorFactory.createPearCliBomTool(environment)).defaultNotNested();
 
         searchRuleSet.addBomTool(detectorFactory.createClangBomTool(environment)).defaultNested();
-
+*/
         return searchRuleSet.build();
     }
 }
