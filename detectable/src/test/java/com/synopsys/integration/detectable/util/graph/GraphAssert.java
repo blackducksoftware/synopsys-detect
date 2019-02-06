@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.util;
+package com.synopsys.integration.detectable.util.graph;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -17,9 +17,9 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class GraphAssert {
-    private final Forge forge;
-    private final DependencyGraph graph;
-    private final ExternalIdFactory externalIdFactory;
+    protected final Forge forge;
+    protected final DependencyGraph graph;
+    protected final ExternalIdFactory externalIdFactory;
 
     public GraphAssert(final Forge forge, final DependencyGraph graph) {
         this.forge = forge;
@@ -80,16 +80,19 @@ public class GraphAssert {
         assertTrue(title + ": Found extra actual " + extraActual.toString(), extraActual.size() == 0);
     }
 
-    public ExternalId hasDependency(final String name, final String version, final String architecture) {
-        final ExternalId id = externalIdFactory.createArchitectureExternalId(forge, name, version, architecture);
-        assert graph.hasDependency(id);
-        return id;
+    public ExternalId hasRootDependency(ExternalId externalId) {
+        assert graph.getRootDependencyExternalIds().contains(externalId);
+        return externalId;
     }
 
-    public ExternalId noDependency(final String name, final String version, final String architecture) {
-        final ExternalId id = externalIdFactory.createArchitectureExternalId(forge, name, version, architecture);
-        assert !graph.hasDependency(id);
-        return id;
+    public ExternalId hasDependency(ExternalId externalId) {
+        assert graph.hasDependency(externalId);
+        return externalId;
+    }
+
+    public ExternalId noDependency(ExternalId externalId) {
+        assert !graph.hasDependency(externalId);
+        return externalId;
     }
 
     public void hasParentChildRelationship(final ExternalId parent, final ExternalId child) {
@@ -104,7 +107,4 @@ public class GraphAssert {
         assert graph.getRootDependencies().size() == size;
     }
 
-    public static void dependency(final Forge forge, final DependencyGraph graph, final String name, final String version, final String architecture) {
-        new GraphAssert(forge, graph).hasDependency(name, version, architecture);
-    }
 }

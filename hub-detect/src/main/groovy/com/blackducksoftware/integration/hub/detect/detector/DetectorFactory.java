@@ -27,30 +27,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
-import com.blackducksoftware.integration.hub.detect.detector.cran.PackratLockDetector;
-import com.blackducksoftware.integration.hub.detect.detector.go.GoCliDetector;
-import com.blackducksoftware.integration.hub.detect.detector.go.GoLockDetector;
-import com.blackducksoftware.integration.hub.detect.detector.go.GoVendorDetector;
-import com.blackducksoftware.integration.hub.detect.detector.go.GoVndrDetector;
-import com.blackducksoftware.integration.hub.detect.detector.gradle.GradleInspectorDetector;
-import com.blackducksoftware.integration.hub.detect.detector.hex.RebarDetector;
-import com.blackducksoftware.integration.hub.detect.detector.maven.MavenPomDetector;
-import com.blackducksoftware.integration.hub.detect.detector.maven.MavenPomWrapperDetector;
-import com.blackducksoftware.integration.hub.detect.detector.npm.NpmCliDetector;
-import com.blackducksoftware.integration.hub.detect.detector.npm.NpmPackageLockDetector;
-import com.blackducksoftware.integration.hub.detect.detector.npm.NpmShrinkwrapDetector;
-import com.blackducksoftware.integration.hub.detect.detector.nuget.NugetProjectDetector;
-import com.blackducksoftware.integration.hub.detect.detector.nuget.NugetSolutionDetector;
-import com.blackducksoftware.integration.hub.detect.detector.packagist.ComposerLockDetector;
-import com.blackducksoftware.integration.hub.detect.detector.pear.PearCliDetector;
-import com.blackducksoftware.integration.hub.detect.detector.pip.PipInspectorDetector;
-import com.blackducksoftware.integration.hub.detect.detector.pip.PipenvDetector;
-import com.blackducksoftware.integration.hub.detect.detector.rubygems.GemlockDetector;
-import com.blackducksoftware.integration.hub.detect.detector.sbt.SbtResolutionCacheDetector;
-import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockDetector;
-import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelDetector;
-import com.blackducksoftware.integration.hub.detect.tool.docker.DockerDetector;
-
 public class DetectorFactory implements BeanFactoryAware {
 
     private BeanFactory beanFactory;
@@ -60,6 +36,7 @@ public class DetectorFactory implements BeanFactoryAware {
         this.beanFactory = beanFactory;
     }
 
+    /* TODO: Restore after detectable move.
     public BazelDetector createBazelDetector(final DetectorEnvironment environment) {
         return beanFactory.getBean(BazelDetector.class, environment);
     }
@@ -162,5 +139,6 @@ public class DetectorFactory implements BeanFactoryAware {
     public YarnLockDetector createYarnLockBomTool(final DetectorEnvironment environment) {
         return beanFactory.getBean(YarnLockDetector.class, environment);
     }
+    */
 
 }

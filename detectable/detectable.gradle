@@ -18,6 +18,7 @@ test {
 
 dependencies {
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.5'
+    implementation 'org.freemarker:freemarker:2.3.26-incubating'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testImplementation "org.mockito:mockito-core:2.+"

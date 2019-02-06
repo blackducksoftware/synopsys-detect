@@ -1,10 +1,11 @@
-package com.blackducksoftware.integration.hub.detect.detector.gradle;
+package com.synopsys.integration.detectable.detectables.gradle.unit;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectables.gradle.GradleReportLine;
 
 public class GradleReportLineTest {
     @Test

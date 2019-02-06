@@ -1,5 +1,5 @@
 /**
- * detectable
+ * hub-detect
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,18 +21,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.file;
+package com.synopsys.integration.detectable.detectables.gradle;
 
 import java.io.File;
-import java.util.List;
 
-import org.antlr.v4.runtime.misc.Nullable;
-
-public interface FileFinder {
-    @Nullable
-    File findFile(File directoryToSearch, String filePattern);
-
-    @Nullable
-    List<File> findFiles(File directoryToSearch, String filePattern);
-
+public interface GradleInspectorResolver {
+    File resolveGradleInspector();
 }
