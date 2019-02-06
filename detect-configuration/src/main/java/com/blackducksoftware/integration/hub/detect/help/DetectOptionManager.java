@@ -112,7 +112,7 @@ public class DetectOptionManager {
 
         final Map<String, String> blackduckBlackDuckProperties = detectConfiguration.getBlackduckProperties();
         final Map<String, String> blackduckBlackDuckPropertiesNoProxy = blackduckBlackDuckProperties.entrySet().stream()
-                                                                            .filter(it -> it.getKey().toLowerCase().contains("proxy"))
+                                                                            .filter(it -> !it.getKey().toLowerCase().contains("proxy"))
                                                                             .collect(Collectors.toMap(it -> it.getKey(), it -> it.getValue()));
 
         final List<Pattern> ignoredProxyHostPatterns = ProxyUtil.getIgnoredProxyHostPatterns(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS, PropertyAuthority.None));
