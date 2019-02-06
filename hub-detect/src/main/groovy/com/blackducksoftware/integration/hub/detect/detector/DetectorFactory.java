@@ -27,9 +27,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
-import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockDetector;
-import com.blackducksoftware.integration.hub.detect.detector.conda.CondaCliDetector;
-import com.blackducksoftware.integration.hub.detect.detector.cpan.CpanCliDetector;
 import com.blackducksoftware.integration.hub.detect.detector.cran.PackratLockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.go.GoCliDetector;
 import com.blackducksoftware.integration.hub.detect.detector.go.GoLockDetector;
@@ -53,8 +50,6 @@ import com.blackducksoftware.integration.hub.detect.detector.sbt.SbtResolutionCa
 import com.blackducksoftware.integration.hub.detect.detector.yarn.YarnLockDetector;
 import com.blackducksoftware.integration.hub.detect.tool.bazel.BazelDetector;
 import com.blackducksoftware.integration.hub.detect.tool.docker.DockerDetector;
-import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
-import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 
 public class DetectorFactory implements BeanFactoryAware {
 
@@ -85,14 +80,6 @@ public class DetectorFactory implements BeanFactoryAware {
 
     public ComposerLockDetector createComposerLockBomTool(final DetectorEnvironment environment) {
         return beanFactory.getBean(ComposerLockDetector.class, environment);
-    }
-
-    public CondaCliDetector createCondaBomTool(final DetectorEnvironment environment) {
-        return beanFactory.getBean(CondaCliDetector.class, environment);
-    }
-
-    public CpanCliDetector createCpanCliBomTool(final DetectorEnvironment environment) {
-        return beanFactory.getBean(CpanCliDetector.class, environment);
     }
 
     public GemlockDetector createGemlockBomTool(final DetectorEnvironment environment) {
@@ -162,10 +149,6 @@ public class DetectorFactory implements BeanFactoryAware {
     public PipInspectorDetector createPipInspectorBomTool(final DetectorEnvironment environment) {
         //final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None);
         return beanFactory.getBean(PipInspectorDetector.class, environment);
-    }
-
-    public PodlockDetector createPodLockBomTool(final DetectorEnvironment environment) {
-        return beanFactory.getBean(PodlockDetector.class, environment);
     }
 
     public RebarDetector createRebarBomTool(final DetectorEnvironment environment) {

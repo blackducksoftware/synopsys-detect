@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect;
 
-import java.util.List;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -40,15 +38,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectorOption
 import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorEnvironment;
 import com.blackducksoftware.integration.hub.detect.detector.DetectorFactory;
-import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockDetector;
-import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockExtractor;
-import com.blackducksoftware.integration.hub.detect.detector.cocoapods.PodlockParser;
-import com.blackducksoftware.integration.hub.detect.detector.conda.CondaCliDetector;
-import com.blackducksoftware.integration.hub.detect.detector.conda.CondaCliExtractor;
-import com.blackducksoftware.integration.hub.detect.detector.conda.CondaListParser;
-import com.blackducksoftware.integration.hub.detect.detector.cpan.CpanCliDetector;
-import com.blackducksoftware.integration.hub.detect.detector.cpan.CpanCliExtractor;
-import com.blackducksoftware.integration.hub.detect.detector.cpan.CpanListParser;
 import com.blackducksoftware.integration.hub.detect.detector.cran.PackratLockDetector;
 import com.blackducksoftware.integration.hub.detect.detector.cran.PackratLockExtractor;
 import com.blackducksoftware.integration.hub.detect.detector.cran.PackratPackager;
@@ -188,36 +177,6 @@ public class DetectorBeanConfiguration {
         BazelCodeLocationBuilder codeLocationGenerator = new BazelCodeLocationBuilder(externalIdFactory);
         BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor = new BazelExternalIdExtractionFullRuleJsonProcessor(gson);
         return new BazelExtractor(detectConfiguration, executableRunner, parser, rules, codeLocationGenerator, bazelExternalIdExtractionFullRuleJsonProcessor);
-    }
-
-    @Bean
-    public PodlockParser podlockParser() {
-        return new PodlockParser(externalIdFactory);
-    }
-
-    @Bean
-    public PodlockExtractor podlockExtractor() {
-        return new PodlockExtractor(podlockParser(), externalIdFactory);
-    }
-
-    @Bean
-    public CondaListParser condaListParser() {
-        return new CondaListParser(gson, externalIdFactory);
-    }
-
-    @Bean
-    public CondaCliExtractor condaCliExtractor() {
-        return new CondaCliExtractor(condaListParser(), externalIdFactory, executableRunner, detectConfiguration, directoryManager);
-    }
-
-    @Bean
-    public CpanListParser cpanListParser() {
-        return new CpanListParser(externalIdFactory);
-    }
-
-    @Bean
-    public CpanCliExtractor cpanCliExtractor() {
-        return new CpanCliExtractor(cpanListParser(), externalIdFactory, executableRunner, directoryManager);
     }
 
     @Bean
@@ -424,7 +383,6 @@ public class DetectorBeanConfiguration {
     //Should be scoped to Prototype so a new Detector is created every time one is needed.
     //Should only be accessed through the DetectorFactory.
 
-
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public BazelDetector bazelDetector(final DetectorEnvironment environment) {
@@ -449,18 +407,6 @@ public class DetectorBeanConfiguration {
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public ComposerLockDetector composerLockBomTool(final DetectorEnvironment environment) {
         return new ComposerLockDetector(environment, detectFileFinder, composerLockExtractor());
-    }
-
-    @Bean
-    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public CondaCliDetector condaBomTool(final DetectorEnvironment environment) {
-        return new CondaCliDetector(environment, detectFileFinder, cacheableExecutableFinder, condaCliExtractor());
-    }
-
-    @Bean
-    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public CpanCliDetector cpanCliBomTool(final DetectorEnvironment environment) {
-        return new CpanCliDetector(environment, detectFileFinder, cacheableExecutableFinder, cpanCliExtractor());
     }
 
     @Bean
@@ -565,12 +511,6 @@ public class DetectorBeanConfiguration {
         //final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None);
         return new PipInspectorDetector(environment, detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None), detectFileFinder, pythonExecutableFinder(), pipInspectorManager(),
             pipInspectorExtractor());
-    }
-
-    @Bean
-    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public PodlockDetector podLockBomTool(final DetectorEnvironment environment) {
-        return new PodlockDetector(environment, detectFileFinder, podlockExtractor());
     }
 
     @Bean

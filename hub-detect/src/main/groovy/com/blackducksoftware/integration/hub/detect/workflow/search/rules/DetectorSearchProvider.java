@@ -39,9 +39,9 @@ public class DetectorSearchProvider {
 
         searchRuleSet.addBomTool(detectorFactory.createBitbakeBomTool(environment)).defaultNotNested();
 
-        searchRuleSet.addBomTool(detectorFactory.createPodLockBomTool(environment)).defaultNested();
-        searchRuleSet.addBomTool(detectorFactory.createCondaBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(detectorFactory.createCpanCliBomTool(environment)).defaultNotNested();
+        //searchRuleSet.addBomTool(detectorFactory.createPodLockBomTool(environment)).defaultNested();
+        //searchRuleSet.addBomTool(detectorFactory.createCondaBomTool(environment)).defaultNotNested();
+        //searchRuleSet.addBomTool(detectorFactory.createCpanCliBomTool(environment)).defaultNotNested();
         searchRuleSet.addBomTool(detectorFactory.createPackratLockBomTool(environment)).defaultNotNested();
 
         Detector goCli = detectorFactory.createGoCliBomTool(environment);
