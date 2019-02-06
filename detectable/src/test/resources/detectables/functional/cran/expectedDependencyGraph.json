@@ -1,0 +1,1739 @@
+{
+  "rootExternalDataIds": [
+    "http:cran/lambda_r/1_2_3",
+    "http:cran/knitr/1_20",
+    "http:cran/CodeDepends/0_6_5",
+    "http:cran/xfun/0_3",
+    "http:cran/gstat/1_1_6",
+    "http:cran/automagic/0_3",
+    "http:cran/nlme/3_1_137",
+    "http:cran/lwgeom/0_1_6",
+    "http:cran/mco/1_0_15_1",
+    "http:cran/utf8/1_1_4",
+    "http:cran/viridis/0_5_1",
+    "http:cran/gmodels/2_18_1",
+    "http:cran/gtools/3_8_1",
+    "http:cran/memuse/4_0_0",
+    "http:cran/visNetwork/2_0_5",
+    "http:cran/tibble/1_4_2",
+    "http:cran/ggsignif/0_4_0",
+    "http:cran/Rcpp/1_0_0",
+    "http:cran/rgeos/0_3_28",
+    "http:cran/rjson/0_2_20",
+    "http:cran/scales/0_5_0",
+    "http:cran/fastmatch/1_1_0",
+    "http:cran/BiocGenerics/0_28_0",
+    "http:cran/misc3d/0_8_4",
+    "http:cran/viridisLite/0_3_0",
+    "http:cran/memoise/1_1_0",
+    "http:cran/BiocVersion/3_8_0",
+    "http:cran/yaml/2_2_0",
+    "http:cran/htmlTable/1_12",
+    "http:cran/pacman/0_5_0",
+    "http:cran/e1071/1_7_0",
+    "http:cran/openssl/1_1",
+    "http:cran/praise/1_0_0",
+    "http:cran/pgirmess/1_6_9",
+    "http:cran/shapefiles/0_7",
+    "http:cran/Matrix/1_2_14",
+    "http:cran/intervals/0_15_1",
+    "http:cran/polynom/1_3_9",
+    "http:cran/aqp/1_16_3",
+    "http:cran/maptools/0_9_2",
+    "http:cran/git2r/0_23_0",
+    "http:cran/futile_options/1_0_1",
+    "http:cran/igraph/1_2_2",
+    "http:cran/R6/2_2_2",
+    "http:cran/digest/0_6_15",
+    "http:cran/MASS/7_3_50",
+    "http:cran/coda/0_19_1",
+    "http:cran/pixmap/0_4_11",
+    "http:cran/clisymbols/1_2_0",
+    "http:cran/units/0_6_2",
+    "http:cran/rprojroot/1_3_2",
+    "http:cran/purrr/0_2_5",
+    "http:cran/whisker/0_3_2",
+    "http:cran/pkgbuild/1_0_2",
+    "http:cran/semver/0_2_0",
+    "http:cran/xopen/1_0_0",
+    "http:cran/xts/0_11_0",
+    "http:cran/rgdal/1_3_3",
+    "http:cran/munsell/0_5_0",
+    "http:cran/highr/0_7",
+    "http:cran/RSAGA/1_3_0",
+    "http:cran/assertthat/0_2_0",
+    "http:cran/colorspace/1_3_2",
+    "http:cran/crayon/1_3_4",
+    "http:cran/lattice/0_20_35",
+    "http:cran/backports/1_1_2",
+    "http:cran/ggplot2/3_0_0",
+    "http:cran/mgcv/1_8_24",
+    "http:cran/jsonlite/1_5",
+    "http:cran/needs/0_0_3",
+    "http:cran/plotly/4_8_0",
+    "http:cran/FNN/1_1",
+    "http:cran/XML/3_98_1_16",
+    "http:cran/RColorBrewer/1_1_2",
+    "http:cran/dplyr/0_7_8",
+    "http:cran/base64enc/0_1_3",
+    "http:cran/raster/2_8_4",
+    "http:cran/hexbin/1_27_2",
+    "http:cran/markdown/0_8",
+    "http:cran/BiocManager/1_30_4",
+    "http:cran/glue/1_3_0",
+    "http:cran/gridExtra/2_3",
+    "http:cran/containerit/0_5_0_9003",
+    "http:cran/classInt/0_2_3",
+    "http:cran/labeling/0_3",
+    "http:cran/plot3D/1_1_1",
+    "http:cran/packrat/0_4_9_3",
+    "http:cran/tidyr/0_8_1",
+    "http:cran/fansi/0_2_3",
+    "http:cran/rlang/0_3_0_1",
+    "http:cran/DBI/1_0_0",
+    "http:cran/futile_logger/1_4_3",
+    "http:cran/deldir/0_1_15",
+    "http:cran/stringr/1_3_1",
+    "http:cran/RcppArmadillo/0_9_200_5_0",
+    "http:cran/httr/1_3_1",
+    "http:cran/GSIF/0_5_4",
+    "http:cran/prettyunits/1_0_2",
+    "http:cran/zoo/1_8_3",
+    "http:cran/ggsci/2_9",
+    "http:cran/splancs/2_01_40",
+    "http:cran/cli/1_0_0",
+    "http:cran/reshape2/1_4_3",
+    "http:cran/sysreqs/1_0_0_9000",
+    "http:cran/processx/3_2_1",
+    "http:cran/lhs/0_16",
+    "http:cran/remotes/2_0_2",
+    "http:cran/colorout/1_2_0",
+    "http:cran/drake/6_2_1",
+    "http:cran/pkgload/1_0_2",
+    "http:cran/promises/1_0_1",
+    "http:cran/pillar/1_3_0",
+    "http:cran/withr/2_1_2",
+    "http:cran/ini/0_3_1",
+    "http:cran/htmltools/0_3_6",
+    "http:cran/sf/0_7_1",
+    "http:cran/pkgconfig/2_0_1",
+    "http:cran/RJSONIO/1_3_1_1",
+    "http:cran/latticeExtra/0_6_28",
+    "http:cran/xtable/1_8_3",
+    "http:cran/plogr/0_2_0",
+    "http:cran/BH/1_66_0_1",
+    "http:cran/dichromat/2_0_0",
+    "http:cran/parallelMap/1_3",
+    "http:cran/testthat/2_0_1",
+    "http:cran/sp/1_3_1",
+    "http:cran/ggrepel/0_8_0",
+    "http:cran/checkmate/1_8_5",
+    "http:cran/plotrix/3_7_4",
+    "http:cran/sessioninfo/1_1_1",
+    "http:cran/spacetime/1_2_2",
+    "http:cran/Hmisc/4_1_1",
+    "http:cran/expm/0_999_2",
+    "http:cran/mlrMBO/1_1_2",
+    "http:cran/storr/1_2_1",
+    "http:cran/prompt/1_0_0",
+    "http:cran/evaluate/0_11",
+    "http:cran/rasterVis/0_45",
+    "http:cran/callr/3_1_0",
+    "http:cran/dismo/1_1_4",
+    "http:cran/rcmdcheck/1_3_2",
+    "http:cran/graph/1_60_0",
+    "http:cran/forcats/0_3_0",
+    "http:cran/plyr/1_8_4",
+    "http:cran/data_table/1_11_8",
+    "http:cran/spData/0_2_9_0",
+    "http:cran/ggpubr/0_2",
+    "http:cran/httpuv/1_4_5",
+    "http:cran/ps/1_2_1",
+    "http:cran/boot/1_3_20",
+    "http:cran/desc/1_2_0",
+    "http:cran/BBmisc/1_11",
+    "http:cran/usethis/1_4_0",
+    "http:cran/stevedore/0_9_0",
+    "http:cran/shiny/1_2_0",
+    "http:cran/debugme/1_1_0",
+    "http:cran/R_utils/2_7_0",
+    "http:cran/later/0_7_5",
+    "http:cran/smoof/1_5_1",
+    "http:cran/crosstalk/1_0_0",
+    "http:cran/ParamHelpers/1_11",
+    "http:cran/acepack/1_4_1",
+    "http:cran/LearnBayes/2_15_1",
+    "http:cran/fs/1_2_6",
+    "http:cran/tidyselect/0_2_4",
+    "http:cran/gdata/2_18_0",
+    "http:cran/mockery/0_4_1_1",
+    "http:cran/R_oo/1_22_0",
+    "http:cran/clipr/0_4_1",
+    "http:cran/reshape/0_8_8",
+    "http:cran/cowplot/0_9_3",
+    "http:cran/versions/0_3",
+    "http:cran/gtable/0_2_0",
+    "http:cran/startup/0_11_0",
+    "http:cran/foreign/0_8_71",
+    "http:cran/devtools/2_0_1",
+    "http:cran/gh/1_0_1",
+    "http:cran/mlr/2_13",
+    "http:cran/rmarkdown/1_10",
+    "http:cran/Formula/1_2_3",
+    "http:cran/curl/3_2",
+    "http:cran/stringi/1_2_4",
+    "http:cran/plotKML/0_5_8",
+    "http:cran/colorRamps/2_3",
+    "http:cran/lazyeval/0_2_1",
+    "http:cran/spdep/0_7_7",
+    "http:cran/sourcetools/0_1_7",
+    "http:cran/bindrcpp/0_2_2",
+    "http:cran/magrittr/1_5",
+    "http:cran/lubridate/1_7_4",
+    "http:cran/githubinstall/0_2_2",
+    "http:cran/htmlwidgets/1_3",
+    "http:cran/rstudioapi/0_8",
+    "http:cran/formatR/1_5",
+    "http:cran/R_methodsS3/1_7_1",
+    "http:cran/bindr/0_1_1",
+    "http:cran/mime/0_5",
+    "http:cran/tinytex/0_6"
+  ],
+  "externalDataIdRelationships": {
+    "http:cran/lambda_r/1_2_3": [
+      "http:cran/formatR/1_5"
+    ],
+    "http:cran/CodeDepends/0_6_5": [
+      "http:cran/graph/1_60_0",
+      "http:cran/XML/3_98_1_16"
+    ],
+    "http:cran/knitr/1_20": [
+      "http:cran/markdown/0_8",
+      "http:cran/highr/0_7",
+      "http:cran/evaluate/0_11",
+      "http:cran/yaml/2_2_0",
+      "http:cran/stringr/1_3_1"
+    ],
+    "http:cran/httr/1_3_1": [
+      "http:cran/mime/0_5",
+      "http:cran/openssl/1_1",
+      "http:cran/curl/3_2",
+      "http:cran/jsonlite/1_5",
+      "http:cran/R6/2_2_2"
+    ],
+    "http:cran/GSIF/0_5_4": [
+      "http:cran/rgdal/1_3_3",
+      "http:cran/plyr/1_8_4",
+      "http:cran/sp/1_3_1",
+      "http:cran/aqp/1_16_3",
+      "http:cran/RSAGA/1_3_0",
+      "http:cran/raster/2_8_4",
+      "http:cran/gstat/1_1_6",
+      "http:cran/plotKML/0_5_8",
+      "http:cran/scales/0_5_0",
+      "http:cran/dismo/1_1_4"
+    ],
+    "http:cran/prettyunits/1_0_2": [
+      "http:cran/magrittr/1_5",
+      "http:cran/assertthat/0_2_0"
+    ],
+    "http:cran/gstat/1_1_6": [
+      "http:cran/lattice/0_20_35",
+      "http:cran/sp/1_3_1",
+      "http:cran/FNN/1_1",
+      "http:cran/zoo/1_8_3",
+      "http:cran/spacetime/1_2_2"
+    ],
+    "http:cran/zoo/1_8_3": [
+      "http:cran/lattice/0_20_35"
+    ],
+    "http:cran/ggsci/2_9": [
+      "http:cran/ggplot2/3_0_0",
+      "http:cran/scales/0_5_0"
+    ],
+    "http:cran/splancs/2_01_40": [
+      "http:cran/sp/1_3_1"
+    ],
+    "http:cran/automagic/0_3": [
+      "http:cran/githubinstall/0_2_2",
+      "http:cran/pacman/0_5_0",
+      "http:cran/purrr/0_2_5",
+      "http:cran/devtools/2_0_1",
+      "http:cran/magrittr/1_5",
+      "http:cran/remotes/2_0_2",
+      "http:cran/formatR/1_5",
+      "http:cran/dplyr/0_7_8",
+      "http:cran/knitr/1_20",
+      "http:cran/yaml/2_2_0"
+    ],
+    "http:cran/cli/1_0_0": [
+      "http:cran/assertthat/0_2_0",
+      "http:cran/crayon/1_3_4"
+    ],
+    "http:cran/reshape2/1_4_3": [
+      "http:cran/plyr/1_8_4",
+      "http:cran/Rcpp/1_0_0",
+      "http:cran/stringr/1_3_1"
+    ],
+    "http:cran/sysreqs/1_0_0_9000": [
+      "http:cran/debugme/1_1_0",
+      "http:cran/desc/1_2_0"
+    ],
+    "http:cran/processx/3_2_1": [
+      "http:cran/ps/1_2_1",
+      "http:cran/R6/2_2_2"
+    ],
+    "http:cran/nlme/3_1_137": [
+      "http:cran/lattice/0_20_35"
+    ],
+    "http:cran/lwgeom/0_1_6": [
+      "http:cran/units/0_6_2",
+      "http:cran/sf/0_7_1",
+      "http:cran/Rcpp/1_0_0"
+    ],
+    "http:cran/viridis/0_5_1": [
+      "http:cran/gridExtra/2_3",
+      "http:cran/viridisLite/0_3_0",
+      "http:cran/ggplot2/3_0_0"
+    ],
+    "http:cran/gmodels/2_18_1": [
+      "http:cran/gdata/2_18_0",
+      "http:cran/MASS/7_3_50"
+    ],
+    "http:cran/drake/6_2_1": [
+      "http:cran/formatR/1_5",
+      "http:cran/storr/1_2_1",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/igraph/1_2_2",
+      "http:cran/digest/0_6_15",
+      "http:cran/pkgconfig/2_0_1",
+      "http:cran/tibble/1_4_2"
+    ],
+    "http:cran/pkgload/1_0_2": [
+      "http:cran/pkgbuild/1_0_2",
+      "http:cran/rstudioapi/0_8",
+      "http:cran/rprojroot/1_3_2",
+      "http:cran/desc/1_2_0",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/withr/2_1_2"
+    ],
+    "http:cran/promises/1_0_1": [
+      "http:cran/magrittr/1_5",
+      "http:cran/later/0_7_5",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/Rcpp/1_0_0",
+      "http:cran/R6/2_2_2"
+    ],
+    "http:cran/pillar/1_3_0": [
+      "http:cran/utf8/1_1_4",
+      "http:cran/fansi/0_2_3",
+      "http:cran/cli/1_0_0",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/crayon/1_3_4"
+    ],
+    "http:cran/visNetwork/2_0_5": [
+      "http:cran/htmltools/0_3_6",
+      "http:cran/htmlwidgets/1_3",
+      "http:cran/magrittr/1_5",
+      "http:cran/jsonlite/1_5"
+    ],
+    "http:cran/tibble/1_4_2": [
+      "http:cran/cli/1_0_0",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/pillar/1_3_0",
+      "http:cran/crayon/1_3_4"
+    ],
+    "http:cran/htmltools/0_3_6": [
+      "http:cran/Rcpp/1_0_0",
+      "http:cran/digest/0_6_15"
+    ],
+    "http:cran/sf/0_7_1": [
+      "http:cran/magrittr/1_5",
+      "http:cran/units/0_6_2",
+      "http:cran/classInt/0_2_3",
+      "http:cran/DBI/1_0_0",
+      "http:cran/Rcpp/1_0_0"
+    ],
+    "http:cran/ggsignif/0_4_0": [
+      "http:cran/ggplot2/3_0_0"
+    ],
+    "http:cran/rgeos/0_3_28": [
+      "http:cran/sp/1_3_1"
+    ],
+    "http:cran/scales/0_5_0": [
+      "http:cran/plyr/1_8_4",
+      "http:cran/munsell/0_5_0",
+      "http:cran/viridisLite/0_3_0",
+      "http:cran/RColorBrewer/1_1_2",
+      "http:cran/labeling/0_3",
+      "http:cran/Rcpp/1_0_0",
+      "http:cran/R6/2_2_2",
+      "http:cran/dichromat/2_0_0"
+    ],
+    "http:cran/latticeExtra/0_6_28": [
+      "http:cran/lattice/0_20_35",
+      "http:cran/RColorBrewer/1_1_2"
+    ],
+    "http:cran/memoise/1_1_0": [
+      "http:cran/digest/0_6_15"
+    ],
+    "http:cran/htmlTable/1_12": [
+      "http:cran/htmltools/0_3_6",
+      "http:cran/htmlwidgets/1_3",
+      "http:cran/magrittr/1_5",
+      "http:cran/rstudioapi/0_8",
+      "http:cran/checkmate/1_8_5",
+      "http:cran/knitr/1_20",
+      "http:cran/stringr/1_3_1"
+    ],
+    "http:cran/parallelMap/1_3": [
+      "http:cran/checkmate/1_8_5",
+      "http:cran/BBmisc/1_11"
+    ],
+    "http:cran/testthat/2_0_1": [
+      "http:cran/magrittr/1_5",
+      "http:cran/cli/1_0_0",
+      "http:cran/praise/1_0_0",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/R6/2_2_2",
+      "http:cran/withr/2_1_2",
+      "http:cran/digest/0_6_15",
+      "http:cran/crayon/1_3_4"
+    ],
+    "http:cran/pacman/0_5_0": [
+      "http:cran/remotes/2_0_2"
+    ],
+    "http:cran/sp/1_3_1": [
+      "http:cran/lattice/0_20_35"
+    ],
+    "http:cran/ggrepel/0_8_0": [
+      "http:cran/ggplot2/3_0_0",
+      "http:cran/Rcpp/1_0_0",
+      "http:cran/scales/0_5_0"
+    ],
+    "http:cran/checkmate/1_8_5": [
+      "http:cran/backports/1_1_2"
+    ],
+    "http:cran/pgirmess/1_6_9": [
+      "http:cran/splancs/2_01_40",
+      "http:cran/rgdal/1_3_3",
+      "http:cran/sp/1_3_1",
+      "http:cran/maptools/0_9_2",
+      "http:cran/boot/1_3_20",
+      "http:cran/rgeos/0_3_28",
+      "http:cran/spdep/0_7_7"
+    ],
+    "http:cran/sessioninfo/1_1_1": [
+      "http:cran/cli/1_0_0",
+      "http:cran/withr/2_1_2"
+    ],
+    "http:cran/spacetime/1_2_2": [
+      "http:cran/lattice/0_20_35",
+      "http:cran/sp/1_3_1",
+      "http:cran/intervals/0_15_1",
+      "http:cran/zoo/1_8_3",
+      "http:cran/xts/0_11_0"
+    ],
+    "http:cran/shapefiles/0_7": [
+      "http:cran/foreign/0_8_71"
+    ],
+    "http:cran/Hmisc/4_1_1": [
+      "http:cran/gtable/0_2_0",
+      "http:cran/lattice/0_20_35",
+      "http:cran/latticeExtra/0_6_28",
+      "http:cran/gridExtra/2_3",
+      "http:cran/data_table/1_11_8",
+      "http:cran/foreign/0_8_71",
+      "http:cran/viridis/0_5_1",
+      "http:cran/ggplot2/3_0_0",
+      "http:cran/acepack/1_4_1",
+      "http:cran/htmlTable/1_12",
+      "http:cran/htmltools/0_3_6",
+      "http:cran/base64enc/0_1_3",
+      "http:cran/Formula/1_2_3"
+    ],
+    "http:cran/expm/0_999_2": [
+      "http:cran/Matrix/1_2_14"
+    ],
+    "http:cran/Matrix/1_2_14": [
+      "http:cran/lattice/0_20_35"
+    ],
+    "http:cran/mlrMBO/1_1_2": [
+      "http:cran/ParamHelpers/1_11",
+      "http:cran/data_table/1_11_8",
+      "http:cran/backports/1_1_2",
+      "http:cran/mlr/2_13",
+      "http:cran/checkmate/1_8_5",
+      "http:cran/BBmisc/1_11",
+      "http:cran/parallelMap/1_3",
+      "http:cran/smoof/1_5_1",
+      "http:cran/lhs/0_16"
+    ],
+    "http:cran/storr/1_2_1": [
+      "http:cran/R6/2_2_2",
+      "http:cran/digest/0_6_15"
+    ],
+    "http:cran/prompt/1_0_0": [
+      "http:cran/clisymbols/1_2_0",
+      "http:cran/crayon/1_3_4"
+    ],
+    "http:cran/aqp/1_16_3": [
+      "http:cran/lattice/0_20_35",
+      "http:cran/plyr/1_8_4",
+      "http:cran/sp/1_3_1",
+      "http:cran/reshape/0_8_8",
+      "http:cran/RColorBrewer/1_1_2",
+      "http:cran/MASS/7_3_50",
+      "http:cran/digest/0_6_15",
+      "http:cran/stringr/1_3_1",
+      "http:cran/plotrix/3_7_4",
+      "http:cran/scales/0_5_0",
+      "http:cran/Hmisc/4_1_1"
+    ],
+    "http:cran/evaluate/0_11": [
+      "http:cran/stringr/1_3_1"
+    ],
+    "http:cran/maptools/0_9_2": [
+      "http:cran/lattice/0_20_35",
+      "http:cran/sp/1_3_1",
+      "http:cran/foreign/0_8_71"
+    ],
+    "http:cran/igraph/1_2_2": [
+      "http:cran/Matrix/1_2_14",
+      "http:cran/magrittr/1_5",
+      "http:cran/pkgconfig/2_0_1"
+    ],
+    "http:cran/rasterVis/0_45": [
+      "http:cran/lattice/0_20_35",
+      "http:cran/latticeExtra/0_6_28",
+      "http:cran/sp/1_3_1",
+      "http:cran/viridisLite/0_3_0",
+      "http:cran/RColorBrewer/1_1_2",
+      "http:cran/hexbin/1_27_2",
+      "http:cran/raster/2_8_4",
+      "http:cran/zoo/1_8_3"
+    ],
+    "http:cran/dismo/1_1_4": [
+      "http:cran/sp/1_3_1",
+      "http:cran/raster/2_8_4"
+    ],
+    "http:cran/callr/3_1_0": [
+      "http:cran/processx/3_2_1",
+      "http:cran/R6/2_2_2"
+    ],
+    "http:cran/rcmdcheck/1_3_2": [
+      "http:cran/pkgbuild/1_0_2",
+      "http:cran/xopen/1_0_0",
+      "http:cran/cli/1_0_0",
+      "http:cran/rprojroot/1_3_2",
+      "http:cran/desc/1_2_0",
+      "http:cran/prettyunits/1_0_2",
+      "http:cran/R6/2_2_2",
+      "http:cran/withr/2_1_2",
+      "http:cran/digest/0_6_15",
+      "http:cran/sessioninfo/1_1_1",
+      "http:cran/crayon/1_3_4",
+      "http:cran/callr/3_1_0"
+    ],
+    "http:cran/graph/1_60_0": [
+      "http:cran/BiocGenerics/0_28_0"
+    ],
+    "http:cran/plyr/1_8_4": [
+      "http:cran/Rcpp/1_0_0"
+    ],
+    "http:cran/forcats/0_3_0": [
+      "http:cran/magrittr/1_5",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/tibble/1_4_2"
+    ],
+    "http:cran/ggpubr/0_2": [
+      "http:cran/purrr/0_2_5",
+      "http:cran/glue/1_3_0",
+      "http:cran/gridExtra/2_3",
+      "http:cran/magrittr/1_5",
+      "http:cran/ggplot2/3_0_0",
+      "http:cran/ggsci/2_9",
+      "http:cran/tidyr/0_8_1",
+      "http:cran/ggrepel/0_8_0",
+      "http:cran/polynom/1_3_9",
+      "http:cran/dplyr/0_7_8",
+      "http:cran/ggsignif/0_4_0",
+      "http:cran/scales/0_5_0",
+      "http:cran/cowplot/0_9_3"
+    ],
+    "http:cran/httpuv/1_4_5": [
+      "http:cran/BH/1_66_0_1",
+      "http:cran/later/0_7_5",
+      "http:cran/Rcpp/1_0_0",
+      "http:cran/promises/1_0_1"
+    ],
+    "http:cran/desc/1_2_0": [
+      "http:cran/rprojroot/1_3_2",
+      "http:cran/assertthat/0_2_0",
+      "http:cran/R6/2_2_2",
+      "http:cran/crayon/1_3_4"
+    ],
+    "http:cran/BBmisc/1_11": [
+      "http:cran/checkmate/1_8_5"
+    ],
+    "http:cran/coda/0_19_1": [
+      "http:cran/lattice/0_20_35"
+    ],
+    "http:cran/usethis/1_4_0": [
+      "http:cran/whisker/0_3_2",
+      "http:cran/glue/1_3_0",
+      "http:cran/desc/1_2_0",
+      "http:cran/fs/1_2_6",
+      "http:cran/clisymbols/1_2_0",
+      "http:cran/clipr/0_4_1",
+      "http:cran/gh/1_0_1",
+      "http:cran/rstudioapi/0_8",
+      "http:cran/rprojroot/1_3_2",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/git2r/0_23_0",
+      "http:cran/curl/3_2",
+      "http:cran/crayon/1_3_4"
+    ],
+    "http:cran/stevedore/0_9_0": [
+      "http:cran/yaml/2_2_0",
+      "http:cran/curl/3_2",
+      "http:cran/jsonlite/1_5",
+      "http:cran/crayon/1_3_4"
+    ],
+    "http:cran/shiny/1_2_0": [
+      "http:cran/sourcetools/0_1_7",
+      "http:cran/xtable/1_8_3",
+      "http:cran/htmltools/0_3_6",
+      "http:cran/httpuv/1_4_5",
+      "http:cran/mime/0_5",
+      "http:cran/later/0_7_5",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/jsonlite/1_5",
+      "http:cran/R6/2_2_2",
+      "http:cran/promises/1_0_1",
+      "http:cran/digest/0_6_15",
+      "http:cran/crayon/1_3_4"
+    ],
+    "http:cran/debugme/1_1_0": [
+      "http:cran/crayon/1_3_4"
+    ],
+    "http:cran/units/0_6_2": [
+      "http:cran/Rcpp/1_0_0"
+    ],
+    "http:cran/rprojroot/1_3_2": [
+      "http:cran/backports/1_1_2"
+    ],
+    "http:cran/R_utils/2_7_0": [
+      "http:cran/R_oo/1_22_0",
+      "http:cran/R_methodsS3/1_7_1"
+    ],
+    "http:cran/later/0_7_5": [
+      "http:cran/BH/1_66_0_1",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/Rcpp/1_0_0"
+    ],
+    "http:cran/smoof/1_5_1": [
+      "http:cran/ParamHelpers/1_11",
+      "http:cran/plotly/4_8_0",
+      "http:cran/RColorBrewer/1_1_2",
+      "http:cran/checkmate/1_8_5",
+      "http:cran/ggplot2/3_0_0",
+      "http:cran/Rcpp/1_0_0",
+      "http:cran/BBmisc/1_11",
+      "http:cran/RcppArmadillo/0_9_200_5_0",
+      "http:cran/plot3D/1_1_1",
+      "http:cran/mco/1_0_15_1",
+      "http:cran/RJSONIO/1_3_1_1"
+    ],
+    "http:cran/crosstalk/1_0_0": [
+      "http:cran/htmltools/0_3_6",
+      "http:cran/shiny/1_2_0",
+      "http:cran/ggplot2/3_0_0",
+      "http:cran/lazyeval/0_2_1",
+      "http:cran/jsonlite/1_5",
+      "http:cran/R6/2_2_2"
+    ],
+    "http:cran/purrr/0_2_5": [
+      "http:cran/magrittr/1_5",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/tibble/1_4_2"
+    ],
+    "http:cran/ParamHelpers/1_11": [
+      "http:cran/fastmatch/1_1_0",
+      "http:cran/backports/1_1_2",
+      "http:cran/checkmate/1_8_5",
+      "http:cran/BBmisc/1_11"
+    ],
+    "http:cran/pkgbuild/1_0_2": [
+      "http:cran/cli/1_0_0",
+      "http:cran/rprojroot/1_3_2",
+      "http:cran/desc/1_2_0",
+      "http:cran/prettyunits/1_0_2",
+      "http:cran/R6/2_2_2",
+      "http:cran/withr/2_1_2",
+      "http:cran/crayon/1_3_4",
+      "http:cran/callr/3_1_0"
+    ],
+    "http:cran/semver/0_2_0": [
+      "http:cran/assertthat/0_2_0",
+      "http:cran/Rcpp/1_0_0"
+    ],
+    "http:cran/xopen/1_0_0": [
+      "http:cran/processx/3_2_1"
+    ],
+    "http:cran/tidyselect/0_2_4": [
+      "http:cran/purrr/0_2_5",
+      "http:cran/glue/1_3_0",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/Rcpp/1_0_0"
+    ],
+    "http:cran/fs/1_2_6": [
+      "http:cran/Rcpp/1_0_0"
+    ],
+    "http:cran/xts/0_11_0": [
+      "http:cran/zoo/1_8_3"
+    ],
+    "http:cran/gdata/2_18_0": [
+      "http:cran/gtools/3_8_1"
+    ],
+    "http:cran/rgdal/1_3_3": [
+      "http:cran/sp/1_3_1"
+    ],
+    "http:cran/mockery/0_4_1_1": [
+      "http:cran/testthat/2_0_1"
+    ],
+    "http:cran/R_oo/1_22_0": [
+      "http:cran/R_methodsS3/1_7_1"
+    ],
+    "http:cran/munsell/0_5_0": [
+      "http:cran/colorspace/1_3_2"
+    ],
+    "http:cran/reshape/0_8_8": [
+      "http:cran/plyr/1_8_4"
+    ],
+    "http:cran/RSAGA/1_3_0": [
+      "http:cran/rgdal/1_3_3",
+      "http:cran/plyr/1_8_4",
+      "http:cran/magrittr/1_5",
+      "http:cran/gstat/1_1_6",
+      "http:cran/stringr/1_3_1",
+      "http:cran/shapefiles/0_7"
+    ],
+    "http:cran/cowplot/0_9_3": [
+      "http:cran/gtable/0_2_0",
+      "http:cran/plyr/1_8_4",
+      "http:cran/ggplot2/3_0_0",
+      "http:cran/scales/0_5_0"
+    ],
+    "http:cran/ggplot2/3_0_0": [
+      "http:cran/gtable/0_2_0",
+      "http:cran/plyr/1_8_4",
+      "http:cran/viridisLite/0_3_0",
+      "http:cran/reshape2/1_4_3",
+      "http:cran/MASS/7_3_50",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/lazyeval/0_2_1",
+      "http:cran/withr/2_1_2",
+      "http:cran/mgcv/1_8_24",
+      "http:cran/digest/0_6_15",
+      "http:cran/scales/0_5_0",
+      "http:cran/tibble/1_4_2"
+    ],
+    "http:cran/mgcv/1_8_24": [
+      "http:cran/Matrix/1_2_14",
+      "http:cran/nlme/3_1_137"
+    ],
+    "http:cran/plotly/4_8_0": [
+      "http:cran/purrr/0_2_5",
+      "http:cran/data_table/1_11_8",
+      "http:cran/magrittr/1_5",
+      "http:cran/viridisLite/0_3_0",
+      "http:cran/ggplot2/3_0_0",
+      "http:cran/httr/1_3_1",
+      "http:cran/jsonlite/1_5",
+      "http:cran/promises/1_0_1",
+      "http:cran/tibble/1_4_2",
+      "http:cran/tidyr/0_8_1",
+      "http:cran/htmltools/0_3_6",
+      "http:cran/htmlwidgets/1_3",
+      "http:cran/RColorBrewer/1_1_2",
+      "http:cran/dplyr/0_7_8",
+      "http:cran/base64enc/0_1_3",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/hexbin/1_27_2",
+      "http:cran/lazyeval/0_2_1",
+      "http:cran/digest/0_6_15",
+      "http:cran/scales/0_5_0",
+      "http:cran/crosstalk/1_0_0"
+    ],
+    "http:cran/devtools/2_0_1": [
+      "http:cran/rcmdcheck/1_3_2",
+      "http:cran/pkgbuild/1_0_2",
+      "http:cran/remotes/2_0_2",
+      "http:cran/memoise/1_1_0",
+      "http:cran/httr/1_3_1",
+      "http:cran/pkgload/1_0_2",
+      "http:cran/jsonlite/1_5",
+      "http:cran/withr/2_1_2",
+      "http:cran/usethis/1_4_0",
+      "http:cran/rstudioapi/0_8",
+      "http:cran/cli/1_0_0",
+      "http:cran/git2r/0_23_0",
+      "http:cran/digest/0_6_15",
+      "http:cran/sessioninfo/1_1_1",
+      "http:cran/callr/3_1_0"
+    ],
+    "http:cran/gh/1_0_1": [
+      "http:cran/httr/1_3_1",
+      "http:cran/jsonlite/1_5",
+      "http:cran/ini/0_3_1"
+    ],
+    "http:cran/mlr/2_13": [
+      "http:cran/ParamHelpers/1_11",
+      "http:cran/data_table/1_11_8",
+      "http:cran/backports/1_1_2",
+      "http:cran/XML/3_98_1_16",
+      "http:cran/checkmate/1_8_5",
+      "http:cran/ggplot2/3_0_0",
+      "http:cran/BBmisc/1_11",
+      "http:cran/stringi/1_2_4",
+      "http:cran/parallelMap/1_3"
+    ],
+    "http:cran/dplyr/0_7_8": [
+      "http:cran/glue/1_3_0",
+      "http:cran/bindrcpp/0_2_2",
+      "http:cran/magrittr/1_5",
+      "http:cran/plogr/0_2_0",
+      "http:cran/BH/1_66_0_1",
+      "http:cran/assertthat/0_2_0",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/Rcpp/1_0_0",
+      "http:cran/R6/2_2_2",
+      "http:cran/tidyselect/0_2_4",
+      "http:cran/pkgconfig/2_0_1",
+      "http:cran/tibble/1_4_2"
+    ],
+    "http:cran/rmarkdown/1_10": [
+      "http:cran/htmltools/0_3_6",
+      "http:cran/rprojroot/1_3_2",
+      "http:cran/knitr/1_20",
+      "http:cran/evaluate/0_11",
+      "http:cran/base64enc/0_1_3",
+      "http:cran/mime/0_5",
+      "http:cran/yaml/2_2_0",
+      "http:cran/jsonlite/1_5",
+      "http:cran/stringr/1_3_1",
+      "http:cran/tinytex/0_6"
+    ],
+    "http:cran/hexbin/1_27_2": [
+      "http:cran/lattice/0_20_35"
+    ],
+    "http:cran/raster/2_8_4": [
+      "http:cran/sp/1_3_1",
+      "http:cran/Rcpp/1_0_0"
+    ],
+    "http:cran/plotKML/0_5_8": [
+      "http:cran/plyr/1_8_4",
+      "http:cran/classInt/0_2_3",
+      "http:cran/gstat/1_1_6",
+      "http:cran/zoo/1_8_3",
+      "http:cran/pixmap/0_4_11",
+      "http:cran/rgdal/1_3_3",
+      "http:cran/sp/1_3_1",
+      "http:cran/XML/3_98_1_16",
+      "http:cran/aqp/1_16_3",
+      "http:cran/RColorBrewer/1_1_2",
+      "http:cran/RSAGA/1_3_0",
+      "http:cran/colorspace/1_3_2",
+      "http:cran/raster/2_8_4",
+      "http:cran/colorRamps/2_3",
+      "http:cran/stringr/1_3_1",
+      "http:cran/plotrix/3_7_4",
+      "http:cran/spacetime/1_2_2",
+      "http:cran/scales/0_5_0",
+      "http:cran/dismo/1_1_4"
+    ],
+    "http:cran/spdep/0_7_7": [
+      "http:cran/expm/0_999_2",
+      "http:cran/Matrix/1_2_14",
+      "http:cran/sp/1_3_1",
+      "http:cran/spData/0_2_9_0",
+      "http:cran/gmodels/2_18_1",
+      "http:cran/boot/1_3_20",
+      "http:cran/MASS/7_3_50",
+      "http:cran/LearnBayes/2_15_1",
+      "http:cran/nlme/3_1_137",
+      "http:cran/deldir/0_1_15",
+      "http:cran/coda/0_19_1"
+    ],
+    "http:cran/markdown/0_8": [
+      "http:cran/mime/0_5"
+    ],
+    "http:cran/bindrcpp/0_2_2": [
+      "http:cran/plogr/0_2_0",
+      "http:cran/bindr/0_1_1",
+      "http:cran/Rcpp/1_0_0"
+    ],
+    "http:cran/gridExtra/2_3": [
+      "http:cran/gtable/0_2_0"
+    ],
+    "http:cran/containerit/0_5_0_9003": [
+      "http:cran/versions/0_3",
+      "http:cran/devtools/2_0_1",
+      "http:cran/semver/0_2_0",
+      "http:cran/automagic/0_3",
+      "http:cran/sysreqs/1_0_0_9000",
+      "http:cran/futile_logger/1_4_3",
+      "http:cran/jsonlite/1_5",
+      "http:cran/stringr/1_3_1",
+      "http:cran/rjson/0_2_20",
+      "http:cran/sessioninfo/1_1_1",
+      "http:cran/stevedore/0_9_0",
+      "http:cran/callr/3_1_0"
+    ],
+    "http:cran/classInt/0_2_3": [
+      "http:cran/spData/0_2_9_0",
+      "http:cran/e1071/1_7_0"
+    ],
+    "http:cran/lubridate/1_7_4": [
+      "http:cran/Rcpp/1_0_0",
+      "http:cran/stringr/1_3_1"
+    ],
+    "http:cran/plot3D/1_1_1": [
+      "http:cran/misc3d/0_8_4"
+    ],
+    "http:cran/githubinstall/0_2_2": [
+      "http:cran/data_table/1_11_8",
+      "http:cran/devtools/2_0_1",
+      "http:cran/mockery/0_4_1_1",
+      "http:cran/httr/1_3_1",
+      "http:cran/curl/3_2",
+      "http:cran/jsonlite/1_5"
+    ],
+    "http:cran/tidyr/0_8_1": [
+      "http:cran/purrr/0_2_5",
+      "http:cran/glue/1_3_0",
+      "http:cran/magrittr/1_5",
+      "http:cran/dplyr/0_7_8",
+      "http:cran/rlang/0_3_0_1",
+      "http:cran/Rcpp/1_0_0",
+      "http:cran/stringi/1_2_4",
+      "http:cran/tidyselect/0_2_4",
+      "http:cran/tibble/1_4_2"
+    ],
+    "http:cran/htmlwidgets/1_3": [
+      "http:cran/htmltools/0_3_6",
+      "http:cran/yaml/2_2_0",
+      "http:cran/jsonlite/1_5"
+    ],
+    "http:cran/futile_logger/1_4_3": [
+      "http:cran/lambda_r/1_2_3",
+      "http:cran/futile_options/1_0_1"
+    ],
+    "http:cran/stringr/1_3_1": [
+      "http:cran/glue/1_3_0",
+      "http:cran/magrittr/1_5",
+      "http:cran/stringi/1_2_4"
+    ],
+    "http:cran/RcppArmadillo/0_9_200_5_0": [
+      "http:cran/Rcpp/1_0_0"
+    ],
+    "http:cran/tinytex/0_6": [
+      "http:cran/xfun/0_3"
+    ]
+  },
+  "dependencySummaries": {
+    "http:cran/lambda_r/1_2_3": {
+      "name": "lambda.r",
+      "version": "1.2.3"
+    },
+    "http:cran/CodeDepends/0_6_5": {
+      "name": "CodeDepends",
+      "version": "0.6.5"
+    },
+    "http:cran/knitr/1_20": {
+      "name": "knitr",
+      "version": "1.20"
+    },
+    "http:cran/xfun/0_3": {
+      "name": "xfun",
+      "version": "0.3"
+    },
+    "http:cran/gstat/1_1_6": {
+      "name": "gstat",
+      "version": "1.1-6"
+    },
+    "http:cran/automagic/0_3": {
+      "name": "automagic",
+      "version": "0.3"
+    },
+    "http:cran/nlme/3_1_137": {
+      "name": "nlme",
+      "version": "3.1-137"
+    },
+    "http:cran/lwgeom/0_1_6": {
+      "name": "lwgeom",
+      "version": "0.1-6"
+    },
+    "http:cran/mco/1_0_15_1": {
+      "name": "mco",
+      "version": "1.0-15.1"
+    },
+    "http:cran/utf8/1_1_4": {
+      "name": "utf8",
+      "version": "1.1.4"
+    },
+    "http:cran/viridis/0_5_1": {
+      "name": "viridis",
+      "version": "0.5.1"
+    },
+    "http:cran/gmodels/2_18_1": {
+      "name": "gmodels",
+      "version": "2.18.1"
+    },
+    "http:cran/gtools/3_8_1": {
+      "name": "gtools",
+      "version": "3.8.1"
+    },
+    "http:cran/memuse/4_0_0": {
+      "name": "memuse",
+      "version": "4.0-0"
+    },
+    "http:cran/visNetwork/2_0_5": {
+      "name": "visNetwork",
+      "version": "2.0.5"
+    },
+    "http:cran/tibble/1_4_2": {
+      "name": "tibble",
+      "version": "1.4.2"
+    },
+    "http:cran/ggsignif/0_4_0": {
+      "name": "ggsignif",
+      "version": "0.4.0"
+    },
+    "http:cran/Rcpp/1_0_0": {
+      "name": "Rcpp",
+      "version": "1.0.0"
+    },
+    "http:cran/rgeos/0_3_28": {
+      "name": "rgeos",
+      "version": "0.3-28"
+    },
+    "http:cran/rjson/0_2_20": {
+      "name": "rjson",
+      "version": "0.2.20"
+    },
+    "http:cran/scales/0_5_0": {
+      "name": "scales",
+      "version": "0.5.0"
+    },
+    "http:cran/fastmatch/1_1_0": {
+      "name": "fastmatch",
+      "version": "1.1-0"
+    },
+    "http:cran/BiocGenerics/0_28_0": {
+      "name": "BiocGenerics",
+      "version": "0.28.0"
+    },
+    "http:cran/misc3d/0_8_4": {
+      "name": "misc3d",
+      "version": "0.8-4"
+    },
+    "http:cran/viridisLite/0_3_0": {
+      "name": "viridisLite",
+      "version": "0.3.0"
+    },
+    "http:cran/memoise/1_1_0": {
+      "name": "memoise",
+      "version": "1.1.0"
+    },
+    "http:cran/BiocVersion/3_8_0": {
+      "name": "BiocVersion",
+      "version": "3.8.0"
+    },
+    "http:cran/yaml/2_2_0": {
+      "name": "yaml",
+      "version": "2.2.0"
+    },
+    "http:cran/htmlTable/1_12": {
+      "name": "htmlTable",
+      "version": "1.12"
+    },
+    "http:cran/pacman/0_5_0": {
+      "name": "pacman",
+      "version": "0.5.0"
+    },
+    "http:cran/e1071/1_7_0": {
+      "name": "e1071",
+      "version": "1.7-0"
+    },
+    "http:cran/praise/1_0_0": {
+      "name": "praise",
+      "version": "1.0.0"
+    },
+    "http:cran/openssl/1_1": {
+      "name": "openssl",
+      "version": "1.1"
+    },
+    "http:cran/pgirmess/1_6_9": {
+      "name": "pgirmess",
+      "version": "1.6.9"
+    },
+    "http:cran/shapefiles/0_7": {
+      "name": "shapefiles",
+      "version": "0.7"
+    },
+    "http:cran/Matrix/1_2_14": {
+      "name": "Matrix",
+      "version": "1.2-14"
+    },
+    "http:cran/intervals/0_15_1": {
+      "name": "intervals",
+      "version": "0.15.1"
+    },
+    "http:cran/polynom/1_3_9": {
+      "name": "polynom",
+      "version": "1.3-9"
+    },
+    "http:cran/aqp/1_16_3": {
+      "name": "aqp",
+      "version": "1.16-3"
+    },
+    "http:cran/maptools/0_9_2": {
+      "name": "maptools",
+      "version": "0.9-2"
+    },
+    "http:cran/git2r/0_23_0": {
+      "name": "git2r",
+      "version": "0.23.0"
+    },
+    "http:cran/futile_options/1_0_1": {
+      "name": "futile.options",
+      "version": "1.0.1"
+    },
+    "http:cran/igraph/1_2_2": {
+      "name": "igraph",
+      "version": "1.2.2"
+    },
+    "http:cran/R6/2_2_2": {
+      "name": "R6",
+      "version": "2.2.2"
+    },
+    "http:cran/digest/0_6_15": {
+      "name": "digest",
+      "version": "0.6.15"
+    },
+    "http:cran/MASS/7_3_50": {
+      "name": "MASS",
+      "version": "7.3-50"
+    },
+    "http:cran/coda/0_19_1": {
+      "name": "coda",
+      "version": "0.19-1"
+    },
+    "http:cran/pixmap/0_4_11": {
+      "name": "pixmap",
+      "version": "0.4-11"
+    },
+    "http:cran/clisymbols/1_2_0": {
+      "name": "clisymbols",
+      "version": "1.2.0"
+    },
+    "http:cran/units/0_6_2": {
+      "name": "units",
+      "version": "0.6-2"
+    },
+    "http:cran/rprojroot/1_3_2": {
+      "name": "rprojroot",
+      "version": "1.3-2"
+    },
+    "http:cran/purrr/0_2_5": {
+      "name": "purrr",
+      "version": "0.2.5"
+    },
+    "http:cran/whisker/0_3_2": {
+      "name": "whisker",
+      "version": "0.3-2"
+    },
+    "http:cran/pkgbuild/1_0_2": {
+      "name": "pkgbuild",
+      "version": "1.0.2"
+    },
+    "http:cran/semver/0_2_0": {
+      "name": "semver",
+      "version": "0.2.0"
+    },
+    "http:cran/xopen/1_0_0": {
+      "name": "xopen",
+      "version": "1.0.0"
+    },
+    "http:cran/xts/0_11_0": {
+      "name": "xts",
+      "version": "0.11-0"
+    },
+    "http:cran/rgdal/1_3_3": {
+      "name": "rgdal",
+      "version": "1.3-3"
+    },
+    "http:cran/munsell/0_5_0": {
+      "name": "munsell",
+      "version": "0.5.0"
+    },
+    "http:cran/highr/0_7": {
+      "name": "highr",
+      "version": "0.7"
+    },
+    "http:cran/assertthat/0_2_0": {
+      "name": "assertthat",
+      "version": "0.2.0"
+    },
+    "http:cran/RSAGA/1_3_0": {
+      "name": "RSAGA",
+      "version": "1.3.0"
+    },
+    "http:cran/colorspace/1_3_2": {
+      "name": "colorspace",
+      "version": "1.3-2"
+    },
+    "http:cran/crayon/1_3_4": {
+      "name": "crayon",
+      "version": "1.3.4"
+    },
+    "http:cran/lattice/0_20_35": {
+      "name": "lattice",
+      "version": "0.20-35"
+    },
+    "http:cran/backports/1_1_2": {
+      "name": "backports",
+      "version": "1.1.2"
+    },
+    "http:cran/ggplot2/3_0_0": {
+      "name": "ggplot2",
+      "version": "3.0.0"
+    },
+    "http:cran/mgcv/1_8_24": {
+      "name": "mgcv",
+      "version": "1.8-24"
+    },
+    "http:cran/jsonlite/1_5": {
+      "name": "jsonlite",
+      "version": "1.5"
+    },
+    "http:cran/needs/0_0_3": {
+      "name": "needs",
+      "version": "0.0.3"
+    },
+    "http:cran/plotly/4_8_0": {
+      "name": "plotly",
+      "version": "4.8.0"
+    },
+    "http:cran/FNN/1_1": {
+      "name": "FNN",
+      "version": "1.1"
+    },
+    "http:cran/XML/3_98_1_16": {
+      "name": "XML",
+      "version": "3.98-1.16"
+    },
+    "http:cran/RColorBrewer/1_1_2": {
+      "name": "RColorBrewer",
+      "version": "1.1-2"
+    },
+    "http:cran/dplyr/0_7_8": {
+      "name": "dplyr",
+      "version": "0.7.8"
+    },
+    "http:cran/base64enc/0_1_3": {
+      "name": "base64enc",
+      "version": "0.1-3"
+    },
+    "http:cran/hexbin/1_27_2": {
+      "name": "hexbin",
+      "version": "1.27.2"
+    },
+    "http:cran/raster/2_8_4": {
+      "name": "raster",
+      "version": "2.8-4"
+    },
+    "http:cran/glue/1_3_0": {
+      "name": "glue",
+      "version": "1.3.0"
+    },
+    "http:cran/markdown/0_8": {
+      "name": "markdown",
+      "version": "0.8"
+    },
+    "http:cran/BiocManager/1_30_4": {
+      "name": "BiocManager",
+      "version": "1.30.4"
+    },
+    "http:cran/gridExtra/2_3": {
+      "name": "gridExtra",
+      "version": "2.3"
+    },
+    "http:cran/containerit/0_5_0_9003": {
+      "name": "containerit",
+      "version": "0.5.0.9003"
+    },
+    "http:cran/classInt/0_2_3": {
+      "name": "classInt",
+      "version": "0.2-3"
+    },
+    "http:cran/labeling/0_3": {
+      "name": "labeling",
+      "version": "0.3"
+    },
+    "http:cran/plot3D/1_1_1": {
+      "name": "plot3D",
+      "version": "1.1.1"
+    },
+    "http:cran/packrat/0_4_9_3": {
+      "name": "packrat",
+      "version": "0.4.9-3"
+    },
+    "http:cran/tidyr/0_8_1": {
+      "name": "tidyr",
+      "version": "0.8.1"
+    },
+    "http:cran/fansi/0_2_3": {
+      "name": "fansi",
+      "version": "0.2.3"
+    },
+    "http:cran/rlang/0_3_0_1": {
+      "name": "rlang",
+      "version": "0.3.0.1"
+    },
+    "http:cran/DBI/1_0_0": {
+      "name": "DBI",
+      "version": "1.0.0"
+    },
+    "http:cran/futile_logger/1_4_3": {
+      "name": "futile.logger",
+      "version": "1.4.3"
+    },
+    "http:cran/deldir/0_1_15": {
+      "name": "deldir",
+      "version": "0.1-15"
+    },
+    "http:cran/stringr/1_3_1": {
+      "name": "stringr",
+      "version": "1.3.1"
+    },
+    "http:cran/RcppArmadillo/0_9_200_5_0": {
+      "name": "RcppArmadillo",
+      "version": "0.9.200.5.0"
+    },
+    "http:cran/httr/1_3_1": {
+      "name": "httr",
+      "version": "1.3.1"
+    },
+    "http:cran/GSIF/0_5_4": {
+      "name": "GSIF",
+      "version": "0.5-4"
+    },
+    "http:cran/prettyunits/1_0_2": {
+      "name": "prettyunits",
+      "version": "1.0.2"
+    },
+    "http:cran/zoo/1_8_3": {
+      "name": "zoo",
+      "version": "1.8-3"
+    },
+    "http:cran/ggsci/2_9": {
+      "name": "ggsci",
+      "version": "2.9"
+    },
+    "http:cran/splancs/2_01_40": {
+      "name": "splancs",
+      "version": "2.01-40"
+    },
+    "http:cran/cli/1_0_0": {
+      "name": "cli",
+      "version": "1.0.0"
+    },
+    "http:cran/reshape2/1_4_3": {
+      "name": "reshape2",
+      "version": "1.4.3"
+    },
+    "http:cran/sysreqs/1_0_0_9000": {
+      "name": "sysreqs",
+      "version": "1.0.0.9000"
+    },
+    "http:cran/processx/3_2_1": {
+      "name": "processx",
+      "version": "3.2.1"
+    },
+    "http:cran/lhs/0_16": {
+      "name": "lhs",
+      "version": "0.16"
+    },
+    "http:cran/colorout/1_2_0": {
+      "name": "colorout",
+      "version": "1.2-0"
+    },
+    "http:cran/remotes/2_0_2": {
+      "name": "remotes",
+      "version": "2.0.2"
+    },
+    "http:cran/drake/6_2_1": {
+      "name": "drake",
+      "version": "6.2.1"
+    },
+    "http:cran/pkgload/1_0_2": {
+      "name": "pkgload",
+      "version": "1.0.2"
+    },
+    "http:cran/withr/2_1_2": {
+      "name": "withr",
+      "version": "2.1.2"
+    },
+    "http:cran/promises/1_0_1": {
+      "name": "promises",
+      "version": "1.0.1"
+    },
+    "http:cran/pillar/1_3_0": {
+      "name": "pillar",
+      "version": "1.3.0"
+    },
+    "http:cran/ini/0_3_1": {
+      "name": "ini",
+      "version": "0.3.1"
+    },
+    "http:cran/htmltools/0_3_6": {
+      "name": "htmltools",
+      "version": "0.3.6"
+    },
+    "http:cran/sf/0_7_1": {
+      "name": "sf",
+      "version": "0.7-1"
+    },
+    "http:cran/pkgconfig/2_0_1": {
+      "name": "pkgconfig",
+      "version": "2.0.1"
+    },
+    "http:cran/RJSONIO/1_3_1_1": {
+      "name": "RJSONIO",
+      "version": "1.3-1.1"
+    },
+    "http:cran/latticeExtra/0_6_28": {
+      "name": "latticeExtra",
+      "version": "0.6-28"
+    },
+    "http:cran/xtable/1_8_3": {
+      "name": "xtable",
+      "version": "1.8-3"
+    },
+    "http:cran/plogr/0_2_0": {
+      "name": "plogr",
+      "version": "0.2.0"
+    },
+    "http:cran/BH/1_66_0_1": {
+      "name": "BH",
+      "version": "1.66.0-1"
+    },
+    "http:cran/parallelMap/1_3": {
+      "name": "parallelMap",
+      "version": "1.3"
+    },
+    "http:cran/dichromat/2_0_0": {
+      "name": "dichromat",
+      "version": "2.0-0"
+    },
+    "http:cran/testthat/2_0_1": {
+      "name": "testthat",
+      "version": "2.0.1"
+    },
+    "http:cran/sp/1_3_1": {
+      "name": "sp",
+      "version": "1.3-1"
+    },
+    "http:cran/ggrepel/0_8_0": {
+      "name": "ggrepel",
+      "version": "0.8.0"
+    },
+    "http:cran/checkmate/1_8_5": {
+      "name": "checkmate",
+      "version": "1.8.5"
+    },
+    "http:cran/plotrix/3_7_4": {
+      "name": "plotrix",
+      "version": "3.7-4"
+    },
+    "http:cran/sessioninfo/1_1_1": {
+      "name": "sessioninfo",
+      "version": "1.1.1"
+    },
+    "http:cran/spacetime/1_2_2": {
+      "name": "spacetime",
+      "version": "1.2-2"
+    },
+    "http:cran/Hmisc/4_1_1": {
+      "name": "Hmisc",
+      "version": "4.1-1"
+    },
+    "http:cran/expm/0_999_2": {
+      "name": "expm",
+      "version": "0.999-2"
+    },
+    "http:cran/mlrMBO/1_1_2": {
+      "name": "mlrMBO",
+      "version": "1.1.2"
+    },
+    "http:cran/storr/1_2_1": {
+      "name": "storr",
+      "version": "1.2.1"
+    },
+    "http:cran/prompt/1_0_0": {
+      "name": "prompt",
+      "version": "1.0.0"
+    },
+    "http:cran/evaluate/0_11": {
+      "name": "evaluate",
+      "version": "0.11"
+    },
+    "http:cran/rasterVis/0_45": {
+      "name": "rasterVis",
+      "version": "0.45"
+    },
+    "http:cran/dismo/1_1_4": {
+      "name": "dismo",
+      "version": "1.1-4"
+    },
+    "http:cran/callr/3_1_0": {
+      "name": "callr",
+      "version": "3.1.0"
+    },
+    "http:cran/rcmdcheck/1_3_2": {
+      "name": "rcmdcheck",
+      "version": "1.3.2"
+    },
+    "http:cran/graph/1_60_0": {
+      "name": "graph",
+      "version": "1.60.0"
+    },
+    "http:cran/plyr/1_8_4": {
+      "name": "plyr",
+      "version": "1.8.4"
+    },
+    "http:cran/forcats/0_3_0": {
+      "name": "forcats",
+      "version": "0.3.0"
+    },
+    "http:cran/data_table/1_11_8": {
+      "name": "data.table",
+      "version": "1.11.8"
+    },
+    "http:cran/spData/0_2_9_0": {
+      "name": "spData",
+      "version": "0.2.9.0"
+    },
+    "http:cran/ggpubr/0_2": {
+      "name": "ggpubr",
+      "version": "0.2"
+    },
+    "http:cran/httpuv/1_4_5": {
+      "name": "httpuv",
+      "version": "1.4.5"
+    },
+    "http:cran/boot/1_3_20": {
+      "name": "boot",
+      "version": "1.3-20"
+    },
+    "http:cran/ps/1_2_1": {
+      "name": "ps",
+      "version": "1.2.1"
+    },
+    "http:cran/desc/1_2_0": {
+      "name": "desc",
+      "version": "1.2.0"
+    },
+    "http:cran/BBmisc/1_11": {
+      "name": "BBmisc",
+      "version": "1.11"
+    },
+    "http:cran/usethis/1_4_0": {
+      "name": "usethis",
+      "version": "1.4.0"
+    },
+    "http:cran/stevedore/0_9_0": {
+      "name": "stevedore",
+      "version": "0.9.0"
+    },
+    "http:cran/shiny/1_2_0": {
+      "name": "shiny",
+      "version": "1.2.0"
+    },
+    "http:cran/debugme/1_1_0": {
+      "name": "debugme",
+      "version": "1.1.0"
+    },
+    "http:cran/R_utils/2_7_0": {
+      "name": "R.utils",
+      "version": "2.7.0"
+    },
+    "http:cran/later/0_7_5": {
+      "name": "later",
+      "version": "0.7.5"
+    },
+    "http:cran/smoof/1_5_1": {
+      "name": "smoof",
+      "version": "1.5.1"
+    },
+    "http:cran/crosstalk/1_0_0": {
+      "name": "crosstalk",
+      "version": "1.0.0"
+    },
+    "http:cran/ParamHelpers/1_11": {
+      "name": "ParamHelpers",
+      "version": "1.11"
+    },
+    "http:cran/LearnBayes/2_15_1": {
+      "name": "LearnBayes",
+      "version": "2.15.1"
+    },
+    "http:cran/acepack/1_4_1": {
+      "name": "acepack",
+      "version": "1.4.1"
+    },
+    "http:cran/tidyselect/0_2_4": {
+      "name": "tidyselect",
+      "version": "0.2.4"
+    },
+    "http:cran/fs/1_2_6": {
+      "name": "fs",
+      "version": "1.2.6"
+    },
+    "http:cran/gdata/2_18_0": {
+      "name": "gdata",
+      "version": "2.18.0"
+    },
+    "http:cran/mockery/0_4_1_1": {
+      "name": "mockery",
+      "version": "0.4.1.1"
+    },
+    "http:cran/R_oo/1_22_0": {
+      "name": "R.oo",
+      "version": "1.22.0"
+    },
+    "http:cran/clipr/0_4_1": {
+      "name": "clipr",
+      "version": "0.4.1"
+    },
+    "http:cran/reshape/0_8_8": {
+      "name": "reshape",
+      "version": "0.8.8"
+    },
+    "http:cran/cowplot/0_9_3": {
+      "name": "cowplot",
+      "version": "0.9.3"
+    },
+    "http:cran/gtable/0_2_0": {
+      "name": "gtable",
+      "version": "0.2.0"
+    },
+    "http:cran/versions/0_3": {
+      "name": "versions",
+      "version": "0.3"
+    },
+    "http:cran/startup/0_11_0": {
+      "name": "startup",
+      "version": "0.11.0"
+    },
+    "http:cran/foreign/0_8_71": {
+      "name": "foreign",
+      "version": "0.8-71"
+    },
+    "http:cran/devtools/2_0_1": {
+      "name": "devtools",
+      "version": "2.0.1"
+    },
+    "http:cran/gh/1_0_1": {
+      "name": "gh",
+      "version": "1.0.1"
+    },
+    "http:cran/mlr/2_13": {
+      "name": "mlr",
+      "version": "2.13"
+    },
+    "http:cran/rmarkdown/1_10": {
+      "name": "rmarkdown",
+      "version": "1.10"
+    },
+    "http:cran/curl/3_2": {
+      "name": "curl",
+      "version": "3.2"
+    },
+    "http:cran/Formula/1_2_3": {
+      "name": "Formula",
+      "version": "1.2-3"
+    },
+    "http:cran/plotKML/0_5_8": {
+      "name": "plotKML",
+      "version": "0.5-8"
+    },
+    "http:cran/colorRamps/2_3": {
+      "name": "colorRamps",
+      "version": "2.3"
+    },
+    "http:cran/lazyeval/0_2_1": {
+      "name": "lazyeval",
+      "version": "0.2.1"
+    },
+    "http:cran/stringi/1_2_4": {
+      "name": "stringi",
+      "version": "1.2.4"
+    },
+    "http:cran/spdep/0_7_7": {
+      "name": "spdep",
+      "version": "0.7-7"
+    },
+    "http:cran/sourcetools/0_1_7": {
+      "name": "sourcetools",
+      "version": "0.1.7"
+    },
+    "http:cran/bindrcpp/0_2_2": {
+      "name": "bindrcpp",
+      "version": "0.2.2"
+    },
+    "http:cran/magrittr/1_5": {
+      "name": "magrittr",
+      "version": "1.5"
+    },
+    "http:cran/lubridate/1_7_4": {
+      "name": "lubridate",
+      "version": "1.7.4"
+    },
+    "http:cran/githubinstall/0_2_2": {
+      "name": "githubinstall",
+      "version": "0.2.2"
+    },
+    "http:cran/htmlwidgets/1_3": {
+      "name": "htmlwidgets",
+      "version": "1.3"
+    },
+    "http:cran/formatR/1_5": {
+      "name": "formatR",
+      "version": "1.5"
+    },
+    "http:cran/rstudioapi/0_8": {
+      "name": "rstudioapi",
+      "version": "0.8"
+    },
+    "http:cran/R_methodsS3/1_7_1": {
+      "name": "R.methodsS3",
+      "version": "1.7.1"
+    },
+    "http:cran/bindr/0_1_1": {
+      "name": "bindr",
+      "version": "0.1.1"
+    },
+    "http:cran/mime/0_5": {
+      "name": "mime",
+      "version": "0.5"
+    },
+    "http:cran/tinytex/0_6": {
+      "name": "tinytex",
+      "version": "0.6"
+    }
+  }
+}
