@@ -14,10 +14,10 @@ import org.junit.Assert;
 import com.synopsys.integration.util.ResourceUtil;
 
 public class FunctionalTestFiles {
-    private static String resourcePrefix = "/detectables/functional";
+    private static final String resourcePrefix = "/detectables/functional";
 
     public static String asString(final String relativeResourcePath) {
-        String data;
+        final String data;
         try {
             data = ResourceUtil.getResourceAsString(FunctionalTestFiles.class, resourcePrefix + relativeResourcePath, StandardCharsets.UTF_8);
         } catch (final IOException e) {
@@ -38,13 +38,13 @@ public class FunctionalTestFiles {
         return FunctionalTestFiles.class.getResourceAsStream(resourcePrefix + relativeResourcePath);
     }
 
-    public static String resolvePath(String relativeResourcePath) {
+    public static String resolvePath(final String relativeResourcePath) {
         return FunctionalTestFiles.asFile(relativeResourcePath).getAbsolutePath();
     }
 
-    public static File asFile(String relativeResourcePath) {
-        URL resource = FunctionalTestFiles.class.getResource(resourcePrefix + relativeResourcePath);
-        File file = new File(resource.getFile());
+    public static File asFile(final String relativeResourcePath) {
+        final URL resource = FunctionalTestFiles.class.getResource(resourcePrefix + relativeResourcePath);
+        final File file = new File(resource.getFile());
         Assert.assertTrue(file.exists());
 
         return file;
