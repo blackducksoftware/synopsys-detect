@@ -45,11 +45,11 @@ import com.synopsys.integration.util.NameVersion;
 public class PackratLockExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final PackratDescriptionFileParser packratDescriptionFileParser;
-    private final PackRatLockFileParser packRatLockFileParser;
+    private final PackratLockFileParser packRatLockFileParser;
     private final ExternalIdFactory externalIdFactory;
     private final FileFinder fileFinder;
 
-    public PackratLockExtractor(final PackratDescriptionFileParser packratDescriptionFileParser, final PackRatLockFileParser packRatLockFileParser, final ExternalIdFactory externalIdFactory, final FileFinder fileFinder) {
+    public PackratLockExtractor(final PackratDescriptionFileParser packratDescriptionFileParser, final PackratLockFileParser packRatLockFileParser, final ExternalIdFactory externalIdFactory, final FileFinder fileFinder) {
         this.packratDescriptionFileParser = packratDescriptionFileParser;
         this.packRatLockFileParser = packRatLockFileParser;
         this.externalIdFactory = externalIdFactory;

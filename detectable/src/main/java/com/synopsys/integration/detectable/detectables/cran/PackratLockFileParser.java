@@ -38,7 +38,7 @@ import com.synopsys.integration.bdio.model.dependencyid.NameVersionDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
-public class PackRatLockFileParser {
+public class PackratLockFileParser {
     private static final String PACKAGE_TOKEN = "Package";
     private static final String VERSION_TOKEN = "Version";
     private static final String REQUIRES_TOKEN = "Requires";
@@ -46,7 +46,7 @@ public class PackRatLockFileParser {
 
     private final ExternalIdFactory externalIdFactory;
 
-    public PackRatLockFileParser(final ExternalIdFactory externalIdFactory) {
+    public PackratLockFileParser(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
