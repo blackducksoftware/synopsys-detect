@@ -15,6 +15,7 @@ import com.synopsys.integration.bdio.graph.summary.GraphSummary;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
 public class GraphAssert {
     protected final Forge forge;
@@ -80,17 +81,17 @@ public class GraphAssert {
         assertTrue(title + ": Found extra actual " + extraActual.toString(), extraActual.size() == 0);
     }
 
-    public ExternalId hasRootDependency(ExternalId externalId) {
+    public ExternalId hasRootDependency(final ExternalId externalId) {
         assert graph.getRootDependencyExternalIds().contains(externalId);
         return externalId;
     }
 
-    public ExternalId hasDependency(ExternalId externalId) {
+    public ExternalId hasDependency(final ExternalId externalId) {
         assert graph.hasDependency(externalId);
         return externalId;
     }
 
-    public ExternalId noDependency(ExternalId externalId) {
+    public ExternalId noDependency(final ExternalId externalId) {
         assert !graph.hasDependency(externalId);
         return externalId;
     }
