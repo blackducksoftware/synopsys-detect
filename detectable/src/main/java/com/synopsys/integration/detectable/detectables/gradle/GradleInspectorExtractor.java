@@ -38,6 +38,7 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.detectable.detectables.gradle.parse.GradleReportParser;
 import com.synopsys.integration.util.NameVersion;
 
 public class GradleInspectorExtractor {

@@ -14,8 +14,8 @@ import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
-import com.synopsys.integration.detectable.util.graph.ArchitectureGraphAssert;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
+import com.synopsys.integration.detectable.util.graph.ArchitectureGraphAssert;
 
 @FunctionalTest
 public class BitbakeDependencyGraphFunctionalTest {

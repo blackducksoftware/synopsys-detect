@@ -43,6 +43,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.detectables.gradle.inspector.GradleInspectorResolver;
 
 public class GradleInspectorDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

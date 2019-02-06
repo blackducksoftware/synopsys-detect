@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectables.gradle.GradleInspectorResolver;
+import com.synopsys.integration.detectable.detectables.gradle.inspector.GradleInspectorResolver;
 import com.synopsys.integration.exception.IntegrationException;
 
 import freemarker.template.Configuration;

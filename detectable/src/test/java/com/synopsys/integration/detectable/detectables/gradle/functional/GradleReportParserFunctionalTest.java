@@ -12,24 +12,31 @@
 package com.synopsys.integration.detectable.detectables.gradle.functional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.json.JSONException;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.gradle.GradleReportParser;
+import com.synopsys.integration.detectable.detectables.gradle.model.GradleReport;
+import com.synopsys.integration.detectable.detectables.gradle.parsenew.GradleReportParser;
+import com.synopsys.integration.detectable.detectables.gradle.parsenew.transformers.GradleReportRecursiveTransformer;
+import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.MavenGraphAssert;
 import com.synopsys.integration.util.NameVersion;
 
-public class GradleReportParserTest {
+public class GradleReportParserFunctionalTest {
     //private final TestUtil testUtil = new TestUtil();
 
     @Test
@@ -69,7 +76,7 @@ public class GradleReportParserTest {
     private CodeLocation build(final String resource) throws IOException {
         final File file = new File(resource);
         final GradleReportParser gradleReportParser = new GradleReportParser(new ExternalIdFactory());
-        final Optional<CodeLocation> result = gradleReportParser.parseDependencies(file);
+        final Optional<CodeLocation> result = null;// = //;gradleReportParser.parseDependencies(file);
         if (result.isPresent()) {
             return result.get();
         } else {
@@ -81,7 +88,7 @@ public class GradleReportParserTest {
     public void testSpringFrameworkAop() throws IOException {
         final File file = new File("/gradle/spring-framework/spring_aop_dependencyGraph.txt");
         final GradleReportParser gradleReportParser = new GradleReportParser(new ExternalIdFactory());
-        final Optional<CodeLocation> result = gradleReportParser.parseDependencies(file);
+        final Optional<CodeLocation> result = null;//= gradleReportParser.parseDependencies(file);
         assertTrue(result.isPresent());
         System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(result.get()));
     }
@@ -90,21 +97,53 @@ public class GradleReportParserTest {
     public void testImplementationsGraph() throws IOException {
         final File file = new File("/gradle/gradle_implementations_dependencyGraph.txt");
         final GradleReportParser gradleReportParser = new GradleReportParser(new ExternalIdFactory());
-        final Optional<CodeLocation> result = gradleReportParser.parseDependencies(file);
+        final Optional<CodeLocation> result = null;//= gradleReportParser.parseDependencies(file);
         assertTrue(result.isPresent());
         System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(result.get()));
     }
 
     private void createNewCodeLocationTest(final String gradleInspectorOutputFilePath, final String expectedResourcePath, final String rootProjectFilePath, final String rootProjectName, final String rootProjectVersionName)
         throws IOException {
+
         final GradleReportParser gradleReportParser = new GradleReportParser(new ExternalIdFactory());
-        final Optional<CodeLocation> result = gradleReportParser.parseDependencies(new File(gradleInspectorOutputFilePath));
-        final Optional<NameVersion> rootProjectNameVersion = gradleReportParser.parseRootProjectNameVersion(new File(rootProjectFilePath));
+        final GradleReport result = gradleReportParser.parseReport(FunctionalTestFiles.asFile(gradleInspectorOutputFilePath));
+
+        GradleReportRecursiveTransformer transformer = new GradleReportRecursiveTransformer(new ExternalIdFactory());
+        CodeLocation codeLocation = transformer.trasnform(result);
+        assertNotNull(codeLocation);
+        //        assertTrue(rootProjectNameVersion.isPresent());
+        //        assertEquals(rootProjectName, rootProjectNameVersion.get().getName());
+        //       assertEquals(rootProjectVersionName, rootProjectNameVersion.get().getVersion());
+
+        final String actual = new Gson().toJson(codeLocation);
+
+        try {
+            JSONAssert.assertEquals(FunctionalTestFiles.asString(expectedResourcePath), actual, false);
+        } catch (final JSONException e) {
+            throw new RuntimeException(e);
+        }
+        //testUtil.testJsonResource(expectedResourcePath, result.get()); TODO: WHAT THE FUCK
+    }
+
+    private void createNewCodeLocationTest2(final String gradleInspectorOutputFilePath, final String expectedResourcePath, final String rootProjectFilePath, final String rootProjectName, final String rootProjectVersionName)
+        throws IOException {
+        final com.synopsys.integration.detectable.detectables.gradle.parse.GradleReportParser gradleReportParser = new com.synopsys.integration.detectable.detectables.gradle.parse.GradleReportParser(new ExternalIdFactory());
+        final Optional<CodeLocation> result = gradleReportParser.parseDependencies(FunctionalTestFiles.asFile(gradleInspectorOutputFilePath));
+        final Optional<NameVersion> rootProjectNameVersion = gradleReportParser.parseRootProjectNameVersion(FunctionalTestFiles.asFile(rootProjectFilePath));
 
         assertTrue(result.isPresent());
         assertTrue(rootProjectNameVersion.isPresent());
         assertEquals(rootProjectName, rootProjectNameVersion.get().getName());
         assertEquals(rootProjectVersionName, rootProjectNameVersion.get().getVersion());
+
+        final String actual = new Gson().toJson(result.get());
+
+        try {
+            JSONAssert.assertEquals(FunctionalTestFiles.asString(expectedResourcePath), actual, false);
+        } catch (final JSONException e) {
+            throw new RuntimeException(e);
+        }
         //testUtil.testJsonResource(expectedResourcePath, result.get()); TODO: WHAT THE FUCK
     }
+
 }

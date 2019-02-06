@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.gradle;
+package com.synopsys.integration.detectable.detectables.gradle.inspector;
 
 import java.util.Optional;
 

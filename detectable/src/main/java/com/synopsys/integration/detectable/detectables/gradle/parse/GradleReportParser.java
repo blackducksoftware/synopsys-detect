@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.gradle;
+package com.synopsys.integration.detectable.detectables.gradle.parse;
 
 import java.io.BufferedReader;
 import java.io.File;

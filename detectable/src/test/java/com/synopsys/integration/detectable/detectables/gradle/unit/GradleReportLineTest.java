@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.gradle.GradleReportLine;
+import com.synopsys.integration.detectable.detectables.gradle.parse.GradleReportLine;
 
 public class GradleReportLineTest {
     @Test
