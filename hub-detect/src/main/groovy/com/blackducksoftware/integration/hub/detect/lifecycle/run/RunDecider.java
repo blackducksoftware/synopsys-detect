@@ -28,9 +28,10 @@ public class RunDecider {
         boolean libraryCanRun = polarisEnvironmentCheck.canRun(directoryManager.getUserHome());
         if (StringUtils.isBlank(polarisUrl)) {
             logger.info("No polaris url was found, cannot run polaris.");
+            runPolaris = false;
         } else if (!libraryCanRun) {
             logger.info("No polaris access token was found even though a url was found, cannot run polaris.");
-            runPolaris = true;
+            runPolaris = false;
         } else {
             logger.info("A polaris access token and url was found, will run Polaris product.");
             runPolaris = true;
