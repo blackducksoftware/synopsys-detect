@@ -49,7 +49,7 @@ public class GradleReportParserFunctionalTest {
         final CodeLocation codeLocation = build("/gradle/parse-tests/complex_dependencyGraph.txt");
         final DependencyGraph graph = codeLocation.getDependencyGraph();
 
-        MavenGraphAssert graphAssert = new MavenGraphAssert(graph);
+        final MavenGraphAssert graphAssert = new MavenGraphAssert(graph);
         graphAssert.hasDependency("non-project:with-nested:1.0.0");
         graphAssert.hasDependency("solo:component:4.12");
         graphAssert.hasDependency("some.group:child:2.2.2");
@@ -68,8 +68,8 @@ public class GradleReportParserFunctionalTest {
         graphAssert.hasRootDependency("some.group:parent:5.0.0");
         graphAssert.hasRootDependency("terminal:child:6.2.3");
 
-        ExternalId parent = graphAssert.hasDependency("some.group:parent:5.0.0");
-        ExternalId child = graphAssert.hasDependency("some.group:child:2.2.2");
+        final ExternalId parent = graphAssert.hasDependency("some.group:parent:5.0.0");
+        final ExternalId child = graphAssert.hasDependency("some.group:child:2.2.2");
         graphAssert.hasParentChildRelationship(parent, child);
     }
 
@@ -77,7 +77,7 @@ public class GradleReportParserFunctionalTest {
         final File file = new File(resource);
         final GradleReportParser gradleReportParser = new GradleReportParser(new ExternalIdFactory());
         final Optional<CodeLocation> result = null;// = //;gradleReportParser.parseDependencies(file);
-        if (result.isPresent()) {
+        if (result.isPresent()) { // TODO: What?
             return result.get();
         } else {
             return null;
@@ -108,8 +108,8 @@ public class GradleReportParserFunctionalTest {
         final GradleReportParser gradleReportParser = new GradleReportParser(new ExternalIdFactory());
         final GradleReport result = gradleReportParser.parseReport(FunctionalTestFiles.asFile(gradleInspectorOutputFilePath));
 
-        GradleReportRecursiveTransformer transformer = new GradleReportRecursiveTransformer(new ExternalIdFactory());
-        CodeLocation codeLocation = transformer.trasnform(result);
+        final GradleReportRecursiveTransformer transformer = new GradleReportRecursiveTransformer(new ExternalIdFactory());
+        final CodeLocation codeLocation = transformer.trasnform(result);
         assertNotNull(codeLocation);
         //        assertTrue(rootProjectNameVersion.isPresent());
         //        assertEquals(rootProjectName, rootProjectNameVersion.get().getName());
