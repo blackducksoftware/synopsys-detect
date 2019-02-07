@@ -31,6 +31,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.blackducksoftware.integration.hub.detect.configuration.ConnectionManager;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
@@ -51,12 +54,15 @@ public class PolarisTool {
     private final ExecutableRunner executableRunner;
     private final ConnectionManager connectionManager;
     private final EventSystem eventSystem;
+    private DetectConfiguration detectConfiguration;
 
-    public PolarisTool(EventSystem eventSystem, final DirectoryManager directoryManager, final ExecutableRunner executableRunner, ConnectionManager connectionManager) {
+    public PolarisTool(EventSystem eventSystem, final DirectoryManager directoryManager, final ExecutableRunner executableRunner, ConnectionManager connectionManager,
+        final DetectConfiguration detectConfiguration) {
         this.directoryManager = directoryManager;
         this.executableRunner = executableRunner;
         this.connectionManager = connectionManager;
         this.eventSystem = eventSystem;
+        this.detectConfiguration = detectConfiguration;
     }
 
     public void runPolaris(final IntLogger logger, File projectDirectory) throws DetectUserFriendlyException {
@@ -70,11 +76,14 @@ public class PolarisTool {
         }
 
         logger.info("Polaris determined it should attempt to run.");
-        IntHttpClient restConnection = connectionManager.createUnauthenticatedRestConnection(PolarisDownloadUtility.DEFAULT_POLARIS_SERVER_URL);
+        String polarisUrl = detectConfiguration.getProperty(DetectProperty.DETECT_POLARIS_URL, PropertyAuthority.None);
+        logger.info("Will use the following polaris url: " + polarisUrl);
+
+        IntHttpClient restConnection = connectionManager.createUnauthenticatedRestConnection(polarisUrl);
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(logger);
         File toolsDirectory = directoryManager.getPermanentDirectory();
 
-        PolarisDownloadUtility polarisDownloadUtility = new PolarisDownloadUtility(logger, restConnection, cleanupZipExpander, PolarisDownloadUtility.DEFAULT_POLARIS_SERVER_URL, toolsDirectory);
+        PolarisDownloadUtility polarisDownloadUtility = new PolarisDownloadUtility(logger, restConnection, cleanupZipExpander, polarisUrl, toolsDirectory);
         Optional<String> swipCliPath = polarisDownloadUtility.retrievePolarisCliExecutablePath();
 
         if (swipCliPath.isPresent()) {

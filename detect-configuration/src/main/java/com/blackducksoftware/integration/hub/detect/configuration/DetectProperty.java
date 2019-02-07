@@ -83,7 +83,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Black Duck password")
-    BLACKDUCK_PASSWORD("blackduck.password","Black Duck Password","4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_PASSWORD("blackduck.password", "Black Duck Password", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Hostname for proxy server")
@@ -95,7 +95,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("NTLM Proxy domain")
-    BLACKDUCK_PROXY_NTLM_DOMAIN("blackduck.proxy.ntlm.domain", "NTLM Proxy Domain","4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_PROXY_NTLM_DOMAIN("blackduck.proxy.ntlm.domain", "NTLM Proxy Domain", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("NTLM Proxy workstation")
@@ -103,7 +103,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Proxy password")
-    BLACKDUCK_PROXY_PASSWORD("blackduck.proxy.password", "Proxy Password","4.2.0", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_PROXY_PASSWORD("blackduck.proxy.password", "Proxy Password", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("Proxy port")
@@ -119,7 +119,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("If true, automatically trust the certificate for the current run of Detect only")
-    BLACKDUCK_TRUST_CERT("blackduck.trust.cert",  "Trust All SSL Certificates","4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    BLACKDUCK_TRUST_CERT("blackduck.trust.cert", "Trust All SSL Certificates", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
     @HelpDescription("URL of the Black Duck server")
@@ -232,7 +232,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_CONDA, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the conda executable")
-    DETECT_CONDA_PATH("detect.conda.path", "Conda Executable","3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_CONDA_PATH("detect.conda.path", "Conda Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_CPAN, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the cpan executable")
@@ -298,11 +298,11 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Path of the docker executable")
-    DETECT_DOCKER_PATH("detect.docker.path", "Docker Executable","3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_DOCKER_PATH("detect.docker.path", "Docker Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If set to false, detect will attempt to run docker even if it cannot find a docker path.")
-    DETECT_DOCKER_PATH_REQUIRED("detect.docker.path.required",  "Run Without Docker in Path",   "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+    DETECT_DOCKER_PATH_REQUIRED("detect.docker.path.required", "Run Without Docker in Path", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.")
@@ -334,7 +334,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the dependency configurations to exclude")
-    DETECT_GRADLE_EXCLUDED_CONFIGURATIONS("detect.gradle.excluded.configurations", "Gradle Exclude Configurations",  "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_GRADLE_EXCLUDED_CONFIGURATIONS("detect.gradle.excluded.configurations", "Gradle Exclude Configurations", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the projects to exclude")
@@ -394,11 +394,11 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_REPORT, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("When set to true, a Black Duck notices report in text form will be created in your source directory")
-    DETECT_NOTICES_REPORT("detect.notices.report",  "Generate Notices Report", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_NOTICES_REPORT("detect.notices.report", "Generate Notices Report", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_REPORT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_REPORT_SETTING })
     @HelpDescription("The output directory for notices report. Default is the source directory")
-    DETECT_NOTICES_REPORT_PATH("detect.notices.report.path",  "Notices Report Path", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "."),
+    DETECT_NOTICES_REPORT_PATH("detect.notices.report.path", "Notices Report Path", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "."),
 
     @HelpGroup(primary = GROUP_NPM, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("A space-separated list of additional arguments to use when running Detect against an NPM project")
@@ -406,7 +406,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_NPM, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("Set this value to false if you would like to exclude your dev dependencies when ran")
-    DETECT_NPM_INCLUDE_DEV_DEPENDENCIES("detect.npm.include.dev.dependencies",  "Include NPM Development Dependencies", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+    DETECT_NPM_INCLUDE_DEV_DEPENDENCIES("detect.npm.include.dev.dependencies", "Include NPM Development Dependencies", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_NPM, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path of the node executable that is used by Npm")
@@ -438,7 +438,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Version of the Nuget Inspector. By default detect will communicate with Artifactory.")
-    DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version",  "Nuget Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
+    DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version", "Nuget Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The source for nuget packages")
@@ -483,6 +483,10 @@ public enum DetectProperty {
     @HelpDescription("The path of the Pipenv executable")
     DETECT_PIPENV_PATH("detect.pipenv.path", "Pipenv Executable", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
+    @HelpGroup(primary = GROUP_POLARIS, additional = {})
+    @HelpDescription("The url of your polaris instance.")
+    DETECT_POLARIS_URL("detect.polaris.url", "Polaris Url", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
+
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_POLICY })
     @HelpDescription("A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.")
     @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
@@ -490,12 +494,12 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("Sets the 'Application ID' project setting")
-    DETECT_PROJECT_APPLICATION_ID("detect.project.application.id",  "Application ID", "5.2.0", PropertyType.STRING, PropertyAuthority.None, null),
+    DETECT_PROJECT_APPLICATION_ID("detect.project.application.id", "Application ID", "5.2.0", PropertyType.STRING, PropertyAuthority.None, null),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set.")
     @AcceptableValues(value = { "COMPONENT_DATA", "VULN_DATA" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
-    DETECT_PROJECT_CLONE_CATEGORIES("detect.project.clone.categories",  "Clone Project Categories", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "COMPONENT_DATA,VULN_DATA"),
+    DETECT_PROJECT_CLONE_CATEGORIES("detect.project.clone.categories", "Clone Project Categories", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "COMPONENT_DATA,VULN_DATA"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_GLOBAL })
     @HelpDescription("A prefix to the name of the scans created by Detect. Useful for running against the same projects on multiple machines.")
@@ -507,7 +511,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("If set to true, unmaps all other scans mapped to the project version produced by the current run of Detect.")
-    DETECT_PROJECT_CODELOCATION_UNMAP("detect.project.codelocation.unmap",  "Unmap All Other Scans for Project", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_PROJECT_CODELOCATION_UNMAP("detect.project.codelocation.unmap", "Unmap All Other Scans for Project", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("If project description is specified, your project version will be created with this description.")
@@ -533,12 +537,12 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The tool priority for project name and version. The first tool in this list that provides a project name and version will be used.")
     @AcceptableValues(value = { "DETECTOR", "DOCKER", "BAZEL" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
-    DETECT_PROJECT_TOOL("detect.project.tool",  "Detector Tool Priority", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "DOCKER,DETECTOR,BAZEL"),
+    DETECT_PROJECT_TOOL("detect.project.tool", "Detector Tool Priority", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "DOCKER,DETECTOR,BAZEL"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("An override for the Project Version distribution")
     @AcceptableValues(value = { "EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE" }, caseSensitive = false, strict = false)
-    DETECT_PROJECT_VERSION_DISTRIBUTION("detect.project.version.distribution", "Version Distribution","3.0.0", PropertyType.STRING, PropertyAuthority.None, "External"),
+    DETECT_PROJECT_VERSION_DISTRIBUTION("detect.project.version.distribution", "Version Distribution", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "External"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("An override for the version to use for the Black Duck project. If not supplied, detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.")
@@ -572,7 +576,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The amount of time in seconds detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
-    DETECT_REPORT_TIMEOUT("detect.report.timeout", "Report Generation Timeout","5.2.0", PropertyType.LONG, PropertyAuthority.None, "300"),
+    DETECT_REPORT_TIMEOUT("detect.report.timeout", "Report Generation Timeout", "5.2.0", PropertyType.LONG, PropertyAuthority.None, "300"),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If set, detect will fail if it does not find the detector types supplied here.")
@@ -584,7 +588,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_REPORT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_REPORT_SETTING })
     @HelpDescription("When set to true, a Black Duck risk report in PDF form will be created")
-    DETECT_RISK_REPORT_PDF("detect.risk.report.pdf", "Generate Risk Report (PDF)","3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_RISK_REPORT_PDF("detect.risk.report.pdf", "Generate Risk Report (PDF)", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_REPORT, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The output directory for risk report in PDF. Default is the source directory")
@@ -645,7 +649,7 @@ public enum DetectProperty {
     @DetectDeprecation(description = "This property is not deprecated. Please use --detect.report.timeout in the future. NOTE the new property is in SECONDS not MILLISECONDS.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { GROUP_PROJECT })
     @HelpDescription("Timeout for response from Black Duck regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.")
-    DETECT_API_TIMEOUT("detect.api.timeout",  "", "3.0.0", PropertyType.LONG, PropertyAuthority.None, "300000"),
+    DETECT_API_TIMEOUT("detect.api.timeout", "", "3.0.0", PropertyType.LONG, PropertyAuthority.None, "300000"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.url in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)

@@ -278,17 +278,17 @@ public class RunManager {
             logger.info("Black Duck tools will NOT be run.");
         }
 
-        if (runDecision.willRunPolaris()){
+        if (runDecision.willRunPolaris()) {
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
                 logger.info("Will include the Polaris tool.");
-                final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, new ExecutableRunner(), connectionManager);
+                final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, new ExecutableRunner(), connectionManager, detectConfiguration);
                 polarisTool.runPolaris(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
                 logger.info("Polaris actions finished.");
             } else {
                 logger.info("Polaris CLI tool will not be run.");
             }
-        }else {
+        } else {
             logger.info("Polaris tools will NOT be run.");
         }
 
