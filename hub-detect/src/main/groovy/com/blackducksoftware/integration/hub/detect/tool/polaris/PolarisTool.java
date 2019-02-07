@@ -76,7 +76,7 @@ public class PolarisTool {
         }
 
         logger.info("Polaris determined it should attempt to run.");
-        String polarisUrl = detectConfiguration.getProperty(DetectProperty.DETECT_POLARIS_URL, PropertyAuthority.None);
+        String polarisUrl = detectConfiguration.getProperty(DetectProperty.POLARIS_URL, PropertyAuthority.None);
         logger.info("Will use the following polaris url: " + polarisUrl);
 
         IntHttpClient restConnection = connectionManager.createUnauthenticatedRestConnection(polarisUrl);

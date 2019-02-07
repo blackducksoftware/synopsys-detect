@@ -485,7 +485,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_POLARIS, additional = {})
     @HelpDescription("The url of your polaris instance.")
-    DETECT_POLARIS_URL("detect.polaris.url", "Polaris Url", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
+    POLARIS_URL("polaris.url", "Polaris Url", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_POLICY })
     @HelpDescription("A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.")

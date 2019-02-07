@@ -24,7 +24,7 @@ public class RunDecider {
         } else {
             logger.info("No Black Duck url was found and offline mode is not set, will NOT run Black Duck product.");
         }
-        String polarisUrl = detectConfiguration.getProperty(DetectProperty.DETECT_POLARIS_URL, PropertyAuthority.None);
+        String polarisUrl = detectConfiguration.getProperty(DetectProperty.POLARIS_URL, PropertyAuthority.None);
         boolean libraryCanRun = polarisEnvironmentCheck.canRun(directoryManager.getUserHome());
         if (StringUtils.isBlank(polarisUrl)) {
             logger.info("No polaris url was found, cannot run polaris.");
