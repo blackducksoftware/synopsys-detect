@@ -152,8 +152,8 @@ public class BootManager {
         RunDecision runDecision = runDecider.decide(detectConfiguration, new PolarisEnvironmentCheck(), directoryManager);
 
         boolean willRunSomething = runDecision.willRunBlackduck() || runDecision.willRunPolaris();
-        if (!willRunSomething){
-            throw new DetectUserFriendlyException("No blackduck or polaris settings were found. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
+        if (!willRunSomething) {
+            throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run blackduck or polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
         }
 
         ConnectivityManager connectivityManager;
