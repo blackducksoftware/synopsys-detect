@@ -14,7 +14,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.rubygems.GemlockParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
-import com.synopsys.integration.detectable.util.graph.GraphAssert;
+import com.synopsys.integration.detectable.util.GraphCompare;
 
 @FunctionalTest
 public class GemlockNodeParserTest {
@@ -25,7 +25,7 @@ public class GemlockNodeParserTest {
         final GemlockParser gemlockNodeParser = new GemlockParser(new ExternalIdFactory());
         final DependencyGraph dependencyGraph = gemlockNodeParser.parseProjectDependencies(gemfileLockContents);
 
-        GraphAssert.assertGraph("/rubygems/expectedSmallParser_graph.json", dependencyGraph);
+        GraphCompare.assertEqualsResource("/rubygems/expectedSmallParser_graph.json", dependencyGraph);
     }
 
     @Test
@@ -35,7 +35,7 @@ public class GemlockNodeParserTest {
         final GemlockParser gemlockNodeParser = new GemlockParser(new ExternalIdFactory());
         final DependencyGraph dependencyGraph = gemlockNodeParser.parseProjectDependencies(gemfileLockContents);
 
-        GraphAssert.assertGraph("/rubygems/expectedParser_graph.json", dependencyGraph);
+        GraphCompare.assertEqualsResource("/rubygems/expectedParser_graph.json", dependencyGraph);
     }
 
     @Test

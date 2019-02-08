@@ -20,7 +20,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.conda.CondaListParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
-import com.synopsys.integration.detectable.util.graph.GraphAssert;
+import com.synopsys.integration.detectable.util.GraphCompare;
 
 @FunctionalTest
 public class CondaListParserFunctionalTest {
@@ -37,7 +37,7 @@ public class CondaListParserFunctionalTest {
         final String condaListJson = FunctionalTestFiles.asString("/conda/condaListSmall.json");
         final DependencyGraph dependencyGraph = condaListParser.parse(condaListJson, condaInfoJson);
 
-        GraphAssert.assertGraph("/conda/condaListSmallExpected_graph.json", dependencyGraph);
+        GraphCompare.assertEqualsResource("/conda/condaListSmallExpected_graph.json", dependencyGraph);
     }
 
     @Test
@@ -46,6 +46,6 @@ public class CondaListParserFunctionalTest {
         final String condaListJson = FunctionalTestFiles.asString("/conda/condaListLarge.json");
         final DependencyGraph dependencyGraph = condaListParser.parse(condaListJson, condaInfoJson);
 
-        GraphAssert.assertGraph("/conda/condaListLargeExpected_graph.json", dependencyGraph);
+        GraphCompare.assertEqualsResource("/conda/condaListLargeExpected_graph.json", dependencyGraph);
     }
 }

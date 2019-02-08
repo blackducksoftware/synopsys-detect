@@ -15,6 +15,6 @@ public class ArchitectureGraphAssert extends GraphAssert {
     }
 
     public ExternalId noDependency(String name, String version, String architecture) {
-        return this.noDependency(externalIdFactory.createArchitectureExternalId(forge, name, version, architecture));
+        return this.hasNoDependency(externalIdFactory.createArchitectureExternalId(forge, name, version, architecture));
     }
 }

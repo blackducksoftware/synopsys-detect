@@ -23,6 +23,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.rubygems.GemlockParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
+import com.synopsys.integration.detectable.util.GraphCompare;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 @FunctionalTest
@@ -36,7 +37,7 @@ public class RubygemsNodePackagerTest {
         final DependencyGraph projects = rubygemsNodePackager.parseProjectDependencies(actualText);
         Assert.assertEquals(8, projects.getRootDependencies().size());
 
-        GraphAssert.assertGraph("/rubygems/expectedPackager_graph.json", projects);
+        GraphCompare.assertEqualsResource("/rubygems/expectedPackager_graph.json", projects);
     }
 
     @Test
@@ -47,7 +48,7 @@ public class RubygemsNodePackagerTest {
         final DependencyGraph graph = rubygemsNodePackager.parseProjectDependencies(actualText);
 
         final GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, graph);
-        graphAssert.noDependency(createExternalId("nokogiri", ""));
+        graphAssert.hasNoDependency(createExternalId("nokogiri", ""));
         graphAssert.hasDependency(createExternalId("nokogiri", "1.8.2"));
         graphAssert.hasDependency(createExternalId("nokogiri", "1.8.2-java"));
         graphAssert.hasDependency(createExternalId("nokogiri", "1.8.2-x86-mingw32"));
