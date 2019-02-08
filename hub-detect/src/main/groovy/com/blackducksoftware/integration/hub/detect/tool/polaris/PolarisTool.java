@@ -66,15 +66,6 @@ public class PolarisTool {
     }
 
     public void runPolaris(final IntLogger logger, File projectDirectory) throws DetectUserFriendlyException {
-        logger.info("Checking if Polaris can run.");
-        PolarisEnvironmentCheck polarisEnvironmentCheck = new PolarisEnvironmentCheck();
-
-        if (!polarisEnvironmentCheck.canRun(directoryManager.getUserHome())) {
-            logger.info("Polaris determined it should not run.");
-            logger.debug("Checked the following user directory: " + directoryManager.getUserHome().getAbsolutePath());
-            return;
-        }
-
         logger.info("Polaris determined it should attempt to run.");
         String polarisUrl = detectConfiguration.getProperty(DetectProperty.POLARIS_URL, PropertyAuthority.None);
         logger.info("Will use the following polaris url: " + polarisUrl);

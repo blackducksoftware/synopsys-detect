@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.lifecycle.boot;
 
 import java.util.List;
+import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -59,7 +60,6 @@ import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunDecider;
 import com.blackducksoftware.integration.hub.detect.lifecycle.run.RunDecision;
 import com.blackducksoftware.integration.hub.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackducksoftware.integration.hub.detect.property.SpringPropertySource;
-import com.blackducksoftware.integration.hub.detect.tool.polaris.PolarisEnvironmentCheck;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.detect.workflow.ConnectivityManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectRun;
@@ -75,6 +75,8 @@ import com.blackducksoftware.integration.hub.detect.workflow.report.writer.InfoL
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.polaris.common.PolarisEnvironmentCheck;
+import com.synopsys.integration.util.IntEnvironmentVariables;
 
 import freemarker.template.Configuration;
 
@@ -148,8 +150,12 @@ public class BootManager {
         }
 
         logger.info("Main boot completed. Deciding what detect should do.");
+        Properties properties = new Properties();
+        properties.setProperty("user.home", directoryManager.getUserHome().getAbsolutePath());
+        PolarisEnvironmentCheck polarisEnvironmentCheck = new PolarisEnvironmentCheck(new IntEnvironmentVariables(), properties);
+
         RunDecider runDecider = new RunDecider();
-        RunDecision runDecision = runDecider.decide(detectConfiguration, new PolarisEnvironmentCheck(), directoryManager);
+        RunDecision runDecision = runDecider.decide(detectConfiguration, polarisEnvironmentCheck);
 
         boolean willRunSomething = runDecision.willRunBlackduck() || runDecision.willRunPolaris();
         if (!willRunSomething) {
