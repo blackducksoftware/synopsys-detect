@@ -136,8 +136,8 @@ public class DetectorFactory implements BeanFactoryAware {
         return beanFactory.getBean(SbtResolutionCacheDetector.class, environment);
     }
 
-    public YarnLockDetector createYarnLockBomTool(final DetectorEnvironment environment) {
-        return beanFactory.getBean(YarnLockDetector.class, environment);
+    public YarnLockDetectable createYarnLockBomTool(final DetectorEnvironment environment) {
+        return beanFactory.getBean(YarnLockDetectable.class, environment);
     }
     */
 

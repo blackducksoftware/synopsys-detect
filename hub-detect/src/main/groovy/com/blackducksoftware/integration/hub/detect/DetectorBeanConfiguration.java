@@ -451,8 +451,8 @@ public class DetectorBeanConfiguration {
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public YarnLockDetector yarnLockBomTool(final DetectorEnvironment environment) {
-        return new YarnLockDetector(environment, detectFileFinder, cacheableExecutableFinder, yarnLockExtractor());
+    public YarnLockDetectable yarnLockBomTool(final DetectorEnvironment environment) {
+        return new YarnLockDetectable(environment, detectFileFinder, cacheableExecutableFinder, yarnLockExtractor());
     }
     */
 }
