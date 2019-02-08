@@ -8,9 +8,11 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.pear.PearListParser;
 import com.synopsys.integration.exception.IntegrationException;
 
+@UnitTest
 class PearListParserTest {
     private static PearListParser pearListParser;
 

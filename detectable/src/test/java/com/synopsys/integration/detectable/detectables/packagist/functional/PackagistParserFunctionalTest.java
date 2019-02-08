@@ -23,9 +23,9 @@ public class PackagistParserFunctionalTest {
         final String composerJsonText = FunctionalTestFiles.asString("/packagist/composer.json");
         final PackagistParseResult result = packagistParser.getDependencyGraphFromProject("source", composerJsonText, composerLockText);
 
-        Assert.assertEquals(result.projectName, "clue/graph-composer");
-        Assert.assertEquals(result.projectVersion, "1.0.0");
+        Assert.assertEquals(result.getProjectName(), "clue/graph-composer");
+        Assert.assertEquals(result.getProjectVersion(), "1.0.0");
 
-        GraphAssert.assertGraph("/packagist/PackagistTestDependencyNode_graph.json", result.codeLocation.getDependencyGraph());
+        GraphAssert.assertGraph("/packagist/PackagistTestDependencyNode_graph.json", result.getCodeLocation().getDependencyGraph());
     }
 }

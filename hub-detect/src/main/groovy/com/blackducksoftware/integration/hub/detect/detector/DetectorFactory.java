@@ -32,7 +32,7 @@ public class DetectorFactory implements BeanFactoryAware {
     private BeanFactory beanFactory;
 
     @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+    public void setBeanFactory(final BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
 
@@ -59,8 +59,8 @@ public class DetectorFactory implements BeanFactoryAware {
         return beanFactory.getBean(ComposerLockDetector.class, environment);
     }
 
-    public GemlockDetector createGemlockBomTool(final DetectorEnvironment environment) {
-        return beanFactory.getBean(GemlockDetector.class, environment);
+    public GemlockDetectable createGemlockBomTool(final DetectorEnvironment environment) {
+        return beanFactory.getBean(GemlockDetectable.class, environment);
     }
 
     public GoCliDetector createGoCliBomTool(final DetectorEnvironment environment) {
