@@ -24,7 +24,16 @@
 package com.synopsys.integration.detectable.detectables.pear;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -33,35 +42,72 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.util.NameVersion;
 
 public class PearCliExtractor {
     private static final String PACKAGE_XML_FILENAME = "package.xml";
 
-    private final ExternalIdFactory externalIdFactory;
-    private final PearParser pearParser;
-    private final ExecutableRunner executableRunner;
-    private final PearCliDetectableOptions pearCliDetectableOptions;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public PearCliExtractor(final ExternalIdFactory externalIdFactory, final PearParser pearParser, final ExecutableRunner executableRunner, final PearCliDetectableOptions pearCliDetectableOptions) {
+    private final ExternalIdFactory externalIdFactory;
+    private final ExecutableRunner executableRunner;
+    private final PearDependencyGraphTransformer pearDependencyGraphTransformer;
+    private final PearPackageXmlParser pearPackageXmlParser;
+    private final PearPackageDependenciesParser pearPackageDependenciesParser;
+    private final PearListParser pearListParser;
+
+    public PearCliExtractor(final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final PearDependencyGraphTransformer pearDependencyGraphTransformer, final PearPackageXmlParser pearPackageXmlParser,
+        final PearPackageDependenciesParser pearPackageDependenciesParser, final PearListParser pearListParser) {
         this.externalIdFactory = externalIdFactory;
-        this.pearParser = pearParser;
         this.executableRunner = executableRunner;
-        this.pearCliDetectableOptions = pearCliDetectableOptions;
+        this.pearDependencyGraphTransformer = pearDependencyGraphTransformer;
+        this.pearPackageXmlParser = pearPackageXmlParser;
+        this.pearPackageDependenciesParser = pearPackageDependenciesParser;
+        this.pearListParser = pearListParser;
     }
 
     public Extraction extract(final File pearExe, final File packageXmlFile, final File extractionDirectory) {
         try {
-            final ExecutableOutput pearListing = executableRunner.execute(extractionDirectory, pearExe, "list");
-            final ExecutableOutput pearDependencies = executableRunner.execute(extractionDirectory, pearExe, "package-dependencies", PACKAGE_XML_FILENAME);
+            final ExecutableOutput pearListOutput = executableRunner.execute(extractionDirectory, pearExe, "list");
+            final ExecutableOutput packageDependenciesOutput = executableRunner.execute(extractionDirectory, pearExe, "package-dependencies", PACKAGE_XML_FILENAME);
+            assertValidExecutableOutput(pearListOutput, packageDependenciesOutput);
 
-            final PearParseResult result = pearParser.parse(packageXmlFile, pearListing, pearDependencies, pearCliDetectableOptions.onlyGatherRequired());
-            final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PEAR, result.name, result.version);
-            final CodeLocation detectCodeLocation = new CodeLocation.Builder(CodeLocationType.PEAR, result.dependencyGraph, externalId).build();
+            final Map<String, String> dependencyNameVersionMap = pearListParser.parse(pearListOutput.getStandardOutputAsList());
+            final List<PackageDependency> packageDependencies = pearPackageDependenciesParser.parse(packageDependenciesOutput.getStandardOutputAsList());
+            final DependencyGraph dependencyGraph = pearDependencyGraphTransformer.buildDependencyGraph(dependencyNameVersionMap, packageDependencies);
 
-            return new Extraction.Builder().success(detectCodeLocation).projectName(result.name).projectVersion(result.version).build();
+            final InputStream packageXmlInputStream = new FileInputStream(packageXmlFile);
+            final NameVersion projectNameVersion = pearPackageXmlParser.parse(packageXmlInputStream);
+
+            final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PEAR, projectNameVersion.getName(), projectNameVersion.getVersion());
+            final CodeLocation detectCodeLocation = new CodeLocation.Builder(CodeLocationType.PEAR, dependencyGraph, externalId).build();
+
+            return new Extraction.Builder()
+                       .success(detectCodeLocation)
+                       .projectName(projectNameVersion.getName())
+                       .projectVersion(projectNameVersion.getVersion())
+                       .build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
+    private void assertValidExecutableOutput(final ExecutableOutput pearListing, final ExecutableOutput pearDependencies) throws IntegrationException {
+        if (StringUtils.isNotBlank(pearDependencies.getErrorOutput()) || StringUtils.isNotBlank(pearListing.getErrorOutput())) {
+            logger.error("There was an error during execution.");
+            if (StringUtils.isNotBlank(pearListing.getErrorOutput())) {
+                logger.error("Pear list error: ");
+                logger.error(pearListing.getErrorOutput());
+            }
+            if (StringUtils.isNotBlank(pearDependencies.getErrorOutput())) {
+                logger.error("Pear package-dependencies error: ");
+                logger.error(pearDependencies.getErrorOutput());
+            }
+
+            throw new IntegrationException("There was an error during execution of the pear CLI");
+        } else if (!(pearDependencies.getStandardOutputAsList().size() > 0) || !(pearListing.getStandardOutputAsList().size() > 0)) {
+            throw new IntegrationException("No information retrieved from running pear commands");
+        }
+    }
 }
