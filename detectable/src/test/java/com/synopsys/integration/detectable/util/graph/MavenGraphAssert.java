@@ -25,6 +25,6 @@ public class MavenGraphAssert extends GraphAssert {
     }
 
     public ExternalId noDependency(String gav) {
-        return this.noDependency(gavToExternalId(gav));
+        return this.hasNoDependency(gavToExternalId(gav));
     }
 }

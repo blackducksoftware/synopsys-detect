@@ -45,6 +45,6 @@ public class BitbakeDependencyGraphFunctionalTest {
         ExternalId attr = graphAssert.hasDependency("attr", "2.4.47-r0", "i586-poky-linux");
         ExternalId acl = graphAssert.hasDependency("acl", "2.2.52-r0", "i586-poky-linux");
         graphAssert.hasParentChildRelationship(acl, attr);
-        graphAssert.rootSize(2);
+        graphAssert.hasRootSize(2);
     }
 }

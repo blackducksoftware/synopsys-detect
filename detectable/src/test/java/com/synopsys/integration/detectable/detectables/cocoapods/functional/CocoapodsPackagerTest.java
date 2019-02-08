@@ -20,7 +20,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
-import com.synopsys.integration.detectable.util.graph.GraphAssert;
+import com.synopsys.integration.detectable.util.GraphCompare;
 
 @FunctionalTest
 public class CocoapodsPackagerTest {
@@ -30,13 +30,13 @@ public class CocoapodsPackagerTest {
     public void simpleTest() throws IOException {
         final String podlockText = FunctionalTestFiles.asString("/cocoapods/simplePodfile.lock");
         final DependencyGraph projectDependencies = podlockParser.extractDependencyGraph(podlockText);
-        GraphAssert.assertGraph("/cocoapods/simpleExpected_graph.json", projectDependencies);
+        GraphCompare.assertEqualsResource("/cocoapods/simpleExpected_graph.json", projectDependencies);
     }
 
     @Test
     public void complexTest() throws IOException {
         final String podlockText = FunctionalTestFiles.asString("/cocoapods/complexPodfile.lock");
         final DependencyGraph projectDependencies = podlockParser.extractDependencyGraph(podlockText);
-        GraphAssert.assertGraph("/cocoapods/complexExpected_graph.json", projectDependencies);
+        GraphCompare.assertEqualsResource("/cocoapods/complexExpected_graph.json", projectDependencies);
     }
 }

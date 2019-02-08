@@ -23,7 +23,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.cpan.CpanListParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
-import com.synopsys.integration.detectable.util.graph.GraphAssert;
+import com.synopsys.integration.detectable.util.GraphCompare;
 
 @FunctionalTest
 public class CpanListParserFunctionalTest {
@@ -48,6 +48,6 @@ public class CpanListParserFunctionalTest {
 
         final DependencyGraph dependencyGraph = cpanListParser.parse(cpanListText, showDepsText);
 
-        GraphAssert.assertGraph("/cpan/expectedDependencyNodes_graph.json", dependencyGraph);
+        GraphCompare.assertEqualsResource("/cpan/expectedDependencyNodes_graph.json", dependencyGraph);
     }
 }

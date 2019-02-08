@@ -43,9 +43,9 @@ public class BitbakeGraphTransformerTest {
         DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, "archy");
 
         ArchitectureGraphAssert graphAssert = new ArchitectureGraphAssert(Forge.YOCTO, dependencyGraph);
-        graphAssert.rootSize(1);
+        graphAssert.hasRootSize(1);
         ExternalId externalId = graphAssert.hasDependency("example", "75", "archy");
-        graphAssert.relationshipCount(externalId, 0);
+        graphAssert.hasRelationshipCount(externalId, 0);
     }
 
     @Test
@@ -58,6 +58,6 @@ public class BitbakeGraphTransformerTest {
 
         ArchitectureGraphAssert graphAssert = new ArchitectureGraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.noDependency("example", null, "archy");
-        graphAssert.rootSize(0);
+        graphAssert.hasRootSize(0);
     }
 }

@@ -10,7 +10,7 @@ import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDet
 import com.synopsys.integration.detectable.detectables.packagist.PackagistParseResult;
 import com.synopsys.integration.detectable.detectables.packagist.PackagistParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
-import com.synopsys.integration.detectable.util.graph.GraphAssert;
+import com.synopsys.integration.detectable.util.GraphCompare;
 
 public class PackagistParserFunctionalTest {
 
@@ -26,6 +26,6 @@ public class PackagistParserFunctionalTest {
         Assert.assertEquals(result.projectName, "clue/graph-composer");
         Assert.assertEquals(result.projectVersion, "1.0.0");
 
-        GraphAssert.assertGraph("/packagist/PackagistTestDependencyNode_graph.json", result.codeLocation.getDependencyGraph());
+        GraphCompare.assertEqualsResource("/packagist/PackagistTestDependencyNode_graph.json", result.codeLocation.getDependencyGraph());
     }
 }
