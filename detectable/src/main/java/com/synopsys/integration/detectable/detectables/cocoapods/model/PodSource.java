@@ -21,30 +21,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.hex;
+package com.synopsys.integration.detectable.detectables.cocoapods.model;
 
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class RebarParseResult {
-    private final String projectName;
-    private final String projectVersion;
-    private final CodeLocation codeLocation;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class PodSource {
+    @JsonIgnore
+    private String name;
 
-    public RebarParseResult(final String projectName, final String projectVersion, final CodeLocation codeLocation) {
-        this.projectName = projectName;
-        this.projectVersion = projectVersion;
-        this.codeLocation = codeLocation;
+    @JsonProperty(":git")
+    private String git;
+
+    @JsonProperty(":path")
+    private String path;
+
+    public String getName() {
+        return name;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public void setName(final String name) {
+        this.name = name;
     }
 
-    public String getProjectVersion() {
-        return projectVersion;
+    public String getGit() {
+        return git;
     }
 
-    public CodeLocation getCodeLocation() {
-        return codeLocation;
+    public String getPath() {
+        return path;
     }
 }

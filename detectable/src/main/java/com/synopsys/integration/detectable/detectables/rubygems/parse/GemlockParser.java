@@ -21,12 +21,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.rubygems;
+package com.synopsys.integration.detectable.detectables.rubygems.parse;
 
-import static com.synopsys.integration.detectable.detectables.rubygems.GemlockParser.GemfileLockSection.BUNDLED_WITH;
-import static com.synopsys.integration.detectable.detectables.rubygems.GemlockParser.GemfileLockSection.DEPENDENCIES;
-import static com.synopsys.integration.detectable.detectables.rubygems.GemlockParser.GemfileLockSection.NONE;
-import static com.synopsys.integration.detectable.detectables.rubygems.GemlockParser.GemfileLockSection.SPECS;
+import static com.synopsys.integration.detectable.detectables.rubygems.parse.GemlockParser.GemfileLockSection.BUNDLED_WITH;
+import static com.synopsys.integration.detectable.detectables.rubygems.parse.GemlockParser.GemfileLockSection.DEPENDENCIES;
+import static com.synopsys.integration.detectable.detectables.rubygems.parse.GemlockParser.GemfileLockSection.NONE;
+import static com.synopsys.integration.detectable.detectables.rubygems.parse.GemlockParser.GemfileLockSection.SPECS;
 
 import java.util.ArrayList;
 import java.util.List;

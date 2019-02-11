@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.cocoapods;
+package com.synopsys.integration.detectable.detectables.cocoapods.parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,6 +43,9 @@ import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
 import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectables.cocoapods.model.Pod;
+import com.synopsys.integration.detectable.detectables.cocoapods.model.PodSource;
+import com.synopsys.integration.detectable.detectables.cocoapods.model.PodfileLock;
 
 public class PodlockParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

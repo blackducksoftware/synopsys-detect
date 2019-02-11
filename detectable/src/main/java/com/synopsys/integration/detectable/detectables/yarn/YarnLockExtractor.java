@@ -40,6 +40,7 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListParser;
 
 public class YarnLockExtractor {
     public static final String OUTPUT_FILE = "detect_yarn_proj_dependencies.txt";

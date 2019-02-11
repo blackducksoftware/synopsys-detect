@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.cran.PackratDescriptionFileParser;
+import com.synopsys.integration.detectable.detectables.cran.parse.PackratDescriptionFileParser;
 import com.synopsys.integration.util.NameVersion;
 
 class PackratDescriptionFileParserTest {

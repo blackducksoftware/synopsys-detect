@@ -12,8 +12,8 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.yarn.YarnListParser;
-import com.synopsys.integration.detectable.detectables.yarn.YarnLockParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 @UnitTest
@@ -91,7 +91,7 @@ public class YarnListParserTest {
     @Test
     void testThatYarnListWithGrandchildIsParsedCorrectly() {
         final List<String> designedYarnLock = new ArrayList<>();
-        designedYarnLock.add("yargs-parser@5.5.2:");
+        designedYarnLock.add("yargs-parse@5.5.2:");
         designedYarnLock.add("  version \"5.5.2\"");
         designedYarnLock.add("");
         designedYarnLock.add("camelcase@^3.0.0:");
@@ -99,7 +99,7 @@ public class YarnListParserTest {
         designedYarnLock.add("");
 
         final List<String> testLines = new ArrayList<>();
-        testLines.add("├─ yargs-parser@4.2.1");
+        testLines.add("├─ yargs-parse@4.2.1");
         testLines.add("│  └─ camelcase@^3.0.0");
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
@@ -108,14 +108,14 @@ public class YarnListParserTest {
         final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
 
         final GraphAssert graphAssert = new GraphAssert(Forge.NPM, dependencyGraph);
-        final ExternalId rootDependency = graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "yargs-parser", "4.2.1"));
+        final ExternalId rootDependency = graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "yargs-parse", "4.2.1"));
         graphAssert.hasParentChildRelationship(rootDependency, externalIdFactory.createNameVersionExternalId(Forge.NPM, "camelcase", "5.5.2"));
     }
 
     @Test
     void testThatYarnListWithGreatGrandchildrenIsParsedCorrectly() {
         final List<String> designedYarnLock = new ArrayList<>();
-        designedYarnLock.add("yargs-parser@5.5.2:");
+        designedYarnLock.add("yargs-parse@5.5.2:");
         designedYarnLock.add("  version \"5.5.2\"");
         designedYarnLock.add("");
         designedYarnLock.add("camelcase@^3.0.0:");
@@ -126,7 +126,7 @@ public class YarnListParserTest {
         designedYarnLock.add("");
 
         final List<String> testLines = new ArrayList<>();
-        testLines.add("├─ yargs-parser@4.2.1");
+        testLines.add("├─ yargs-parse@4.2.1");
         testLines.add("│  └─ camelcase@^3.0.0");
         testLines.add("│  │  └─ ms@0.7.2");
 
@@ -136,7 +136,7 @@ public class YarnListParserTest {
         final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
 
         final GraphAssert graphAssert = new GraphAssert(Forge.NPM, dependencyGraph);
-        final ExternalId rootDependency = graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "yargs-parser", "4.2.1"));
+        final ExternalId rootDependency = graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "yargs-parse", "4.2.1"));
         final ExternalId childDependency = graphAssert.hasParentChildRelationship(rootDependency, externalIdFactory.createNameVersionExternalId(Forge.NPM, "camelcase", "5.5.2"));
         graphAssert.hasParentChildRelationship(childDependency, externalIdFactory.createNameVersionExternalId(Forge.NPM, "ms", "0.7.2"));
     }

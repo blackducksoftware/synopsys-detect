@@ -21,26 +21,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.packagist;
+package com.synopsys.integration.detectable.detectables.cocoapods.model;
 
 import java.util.List;
 
-import com.synopsys.integration.util.NameVersion;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PackagistPackage {
-    private final NameVersion nameVersion;
-    private final List<NameVersion> dependencies;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class PodfileLock {
+    @JsonProperty("PODS")
+    private List<Pod> pods;
 
-    public PackagistPackage(final NameVersion nameVersion, final List<NameVersion> dependencies) {
-        this.nameVersion = nameVersion;
-        this.dependencies = dependencies;
+    @JsonProperty("DEPENDENCIES")
+    private List<Pod> dependencies;
+
+    @JsonProperty("EXTERNAL SOURCES")
+    private ExternalSources externalSources;
+
+    public List<Pod> getPods() {
+        return pods;
     }
 
-    public NameVersion getNameVersion() {
-        return nameVersion;
-    }
-
-    public List<NameVersion> getDependencies() {
+    public List<Pod> getDependencies() {
         return dependencies;
+    }
+
+    public ExternalSources getExternalSources() {
+        return externalSources;
     }
 }

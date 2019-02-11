@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.pear.PearPackageXmlParser;
+import com.synopsys.integration.detectable.detectables.pear.parse.PearPackageXmlParser;
 import com.synopsys.integration.util.NameVersion;
 
 @UnitTest

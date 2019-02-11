@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.packagist;
+package com.synopsys.integration.detectable.detectables.packagist.parse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +40,9 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
+import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectableOptions;
+import com.synopsys.integration.detectable.detectables.packagist.model.PackagistPackage;
+import com.synopsys.integration.detectable.detectables.packagist.model.PackagistParseResult;
 import com.synopsys.integration.util.NameVersion;
 
 public class PackagistParser {

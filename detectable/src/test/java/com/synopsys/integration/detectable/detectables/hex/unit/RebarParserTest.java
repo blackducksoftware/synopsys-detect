@@ -12,7 +12,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.hex.Rebar3TreeParser;
+import com.synopsys.integration.detectable.detectables.hex.parse.Rebar3TreeParser;
 
 @UnitTest
 public class RebarParserTest {

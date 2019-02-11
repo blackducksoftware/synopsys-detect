@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.cran;
+package com.synopsys.integration.detectable.detectables.cran.parse;
 
 import java.util.List;
 

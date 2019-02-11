@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pear;
+package com.synopsys.integration.detectable.detectables.pear.parse;
 
 import java.util.HashMap;
 import java.util.List;

@@ -17,7 +17,7 @@ import com.synopsys.integration.detectable.detectables.gradle.model.GradleGav;
 import com.synopsys.integration.detectable.detectables.gradle.model.GradleReport;
 import com.synopsys.integration.detectable.detectables.gradle.model.GradleTreeNode;
 
-//An example transformer that uses queue and recursion to build the Gradle graph. Possibly more difficult to grok?
+//An example transform that uses queue and recursion to build the Gradle graph. Possibly more difficult to grok?
 public class GradleReportRecursiveTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;

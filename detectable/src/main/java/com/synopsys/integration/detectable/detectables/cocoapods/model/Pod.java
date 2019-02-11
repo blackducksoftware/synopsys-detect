@@ -21,36 +21,40 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.cocoapods;
+package com.synopsys.integration.detectable.detectables.cocoapods.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
+import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class PodSource {
-    @JsonIgnore
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+
+public class Pod {
     private String name;
+    private String cleanName;
+    private List<String> dependencies = new ArrayList<>();
 
-    @JsonProperty(":git")
-    private String git;
+    public Pod() {
+    }
 
-    @JsonProperty(":path")
-    private String path;
+    public Pod(final String name) {
+        this.name = name;
+    }
+
+    @JsonAnySetter
+    public void setDynamicProperty(final String name, final List<String> dependencies) {
+        this.name = name;
+        this.dependencies = dependencies;
+    }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public String getCleanName() {
+        return cleanName;
     }
 
-    public String getGit() {
-        return git;
-    }
-
-    public String getPath() {
-        return path;
+    public List<String> getDependencies() {
+        return dependencies;
     }
 }

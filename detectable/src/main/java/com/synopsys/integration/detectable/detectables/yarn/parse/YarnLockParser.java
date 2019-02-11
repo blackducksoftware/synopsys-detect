@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn;
+package com.synopsys.integration.detectable.detectables.yarn.parse;
 
 import java.util.ArrayList;
 import java.util.Arrays;

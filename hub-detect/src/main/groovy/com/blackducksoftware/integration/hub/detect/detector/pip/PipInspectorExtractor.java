@@ -60,7 +60,7 @@ public class PipInspectorExtractor {
             result = pipInspectorTreeParser.parse(inspectorOutput, directory.toString());
 
             if (!result.isPresent()) {
-                extractionResult = new Extraction.Builder().failure("The Pip Inspector tree parser failed to produce output").build();
+                extractionResult = new Extraction.Builder().failure("The Pip Inspector tree parse failed to produce output").build();
             } else {
                 extractionResult = new Extraction.Builder().success(result.get().getCodeLocation()).projectName(result.get().getProjectName()).projectVersion(result.get().getProjectVersion()).build();
             }

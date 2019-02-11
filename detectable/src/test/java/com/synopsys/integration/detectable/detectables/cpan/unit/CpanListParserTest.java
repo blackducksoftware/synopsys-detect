@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.cpan.CpanListParser;
+import com.synopsys.integration.detectable.detectables.cpan.parse.CpanListParser;
 
 @UnitTest
 public class CpanListParserTest {

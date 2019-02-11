@@ -21,11 +21,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.conda;
+package com.synopsys.integration.detectable.detectables.packagist.model;
 
-import com.google.gson.annotations.SerializedName;
+import java.util.List;
 
-public class CondaInfo {
-    @SerializedName("platform")
-    String platform;
+import com.synopsys.integration.util.NameVersion;
+
+public class PackagistPackage {
+    private final NameVersion nameVersion;
+    private final List<NameVersion> dependencies;
+
+    public PackagistPackage(final NameVersion nameVersion, final List<NameVersion> dependencies) {
+        this.nameVersion = nameVersion;
+        this.dependencies = dependencies;
+    }
+
+    public NameVersion getNameVersion() {
+        return nameVersion;
+    }
+
+    public List<NameVersion> getDependencies() {
+        return dependencies;
+    }
 }

@@ -9,7 +9,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.yarn.YarnLockParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 
 @UnitTest
 public class YarnLockParserTest {

@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.conda;
+package com.synopsys.integration.detectable.detectables.conda.parser;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -36,6 +36,8 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectables.conda.model.CondaInfo;
+import com.synopsys.integration.detectable.detectables.conda.model.CondaListElement;
 
 public class CondaListParser {
     private final Gson gson;

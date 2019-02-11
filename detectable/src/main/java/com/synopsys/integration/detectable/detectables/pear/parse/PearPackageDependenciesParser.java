@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pear;
+package com.synopsys.integration.detectable.detectables.pear.parse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.synopsys.integration.detectable.detectables.pear.model.PackageDependency;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class PearPackageDependenciesParser {

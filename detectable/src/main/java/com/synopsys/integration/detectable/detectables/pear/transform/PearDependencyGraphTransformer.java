@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pear;
+package com.synopsys.integration.detectable.detectables.pear.transform;
 
 import java.util.List;
 import java.util.Map;
@@ -11,6 +11,8 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pear.model.PackageDependency;
 
 public class PearDependencyGraphTransformer {
     private final ExternalIdFactory externalIdFactory;

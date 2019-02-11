@@ -21,33 +21,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.cocoapods;
+package com.synopsys.integration.detectable.detectables.cocoapods.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class PodfileLock {
-    @JsonProperty("PODS")
-    private List<Pod> pods;
+public class ExternalSources {
+    private final List<PodSource> sources = new ArrayList<>();
 
-    @JsonProperty("DEPENDENCIES")
-    private List<Pod> dependencies;
-
-    @JsonProperty("EXTERNAL SOURCES")
-    private ExternalSources externalSources;
-
-    public List<Pod> getPods() {
-        return pods;
+    @JsonAnySetter
+    public void setDynamicProperty(final String name, final PodSource podSource) {
+        podSource.setName(name);
+        sources.add(podSource);
     }
 
-    public List<Pod> getDependencies() {
-        return dependencies;
-    }
-
-    public ExternalSources getExternalSources() {
-        return externalSources;
+    public List<PodSource> getSources() {
+        return sources;
     }
 }

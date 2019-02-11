@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.hex;
+package com.synopsys.integration.detectable.detectables.hex.parse;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +38,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
+import com.synopsys.integration.detectable.detectables.hex.model.RebarParseResult;
 
 public class Rebar3TreeParser {
     private final Logger logger = LoggerFactory.getLogger(Rebar3TreeParser.class);

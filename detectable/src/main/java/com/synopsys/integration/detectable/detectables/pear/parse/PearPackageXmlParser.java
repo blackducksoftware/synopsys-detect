@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pear;
+package com.synopsys.integration.detectable.detectables.pear.parse;
 
 import java.io.IOException;
 import java.io.InputStream;

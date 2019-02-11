@@ -21,23 +21,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.cocoapods;
+package com.synopsys.integration.detectable.detectables.conda.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-
-public class ExternalSources {
-    private final List<PodSource> sources = new ArrayList<>();
-
-    @JsonAnySetter
-    public void setDynamicProperty(final String name, final PodSource podSource) {
-        podSource.setName(name);
-        sources.add(podSource);
-    }
-
-    public List<PodSource> getSources() {
-        return sources;
-    }
+public class CondaInfo {
+    @SerializedName("platform")
+    public String platform;
 }

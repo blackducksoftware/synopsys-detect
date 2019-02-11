@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pear;
+package com.synopsys.integration.detectable.detectables.pear.model;
 
 public class PackageDependency {
     private final String name;

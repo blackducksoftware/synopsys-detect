@@ -21,16 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.packagist;
+package com.synopsys.integration.detectable.detectables.hex.model;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 
-public class PackagistParseResult {
+public class RebarParseResult {
     private final String projectName;
     private final String projectVersion;
     private final CodeLocation codeLocation;
 
-    public PackagistParseResult(final String projectName, final String projectVersion, final CodeLocation codeLocation) {
+    public RebarParseResult(final String projectName, final String projectVersion, final CodeLocation codeLocation) {
         this.projectName = projectName;
         this.projectVersion = projectVersion;
         this.codeLocation = codeLocation;
