@@ -14,6 +14,6 @@ public class DetectableFactory {
     }
 
     public BitbakeDetectable bitbakeDetectable(DetectableEnvironment environment, BitbakeDetectableOptions options) {
-        return new BitbakeDetectable(environment, this.utilityFactory.simpleFileFinder(), options, extractorFactory.bitbakeExtractor(), this.utilityFactory.simpleSystemExecutableFinder());
+        return new BitbakeDetectable(environment, this.utilityFactory.simpleFileFinder(), options, extractorFactory.bitbakeExtractor(), this.utilityFactory.executableResolver());
     }
 }

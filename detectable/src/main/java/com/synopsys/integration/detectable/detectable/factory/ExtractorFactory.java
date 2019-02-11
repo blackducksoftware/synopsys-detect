@@ -1,13 +1,7 @@
 package com.synopsys.integration.detectable.detectable.factory;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectable.executable.SystemExecutableFinder;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
-import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeArchitectureParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
@@ -16,7 +10,7 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParser
 public class ExtractorFactory {
     private final UtilityFactory utilityFactory;
 
-    public ExtractorFactory(UtilityFactory utilityFactory){
+    public ExtractorFactory(UtilityFactory utilityFactory) {
         this.utilityFactory = utilityFactory;
     }
 

@@ -29,8 +29,9 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableResolver;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableType;
-import com.synopsys.integration.detectable.detectable.executable.SystemExecutableFinder;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
@@ -41,17 +42,17 @@ public class YarnLockDetectable extends Detectable {
     private static final String YARN_LOCK_FILENAME = "yarn.lock";
 
     private final FileFinder fileFinder;
-    private final SystemExecutableFinder systemExecutableFinder;
+    private final ExecutableResolver executableResolver;
     private final YarnLockExtractor yarnLockExtractor;
 
     private File yarnLock;
     private File yarnExe;
 
-    public YarnLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SystemExecutableFinder systemExecutableFinder, final YarnLockExtractor yarnLockExtractor) {
+    public YarnLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final ExecutableResolver executableResolver, final YarnLockExtractor yarnLockExtractor) {
         super(environment, "Yarn Lock", "YARN");
         this.fileFinder = fileFinder;
         this.yarnLockExtractor = yarnLockExtractor;
-        this.systemExecutableFinder = systemExecutableFinder;
+        this.executableResolver = executableResolver;
     }
 
     @Override
@@ -65,11 +66,11 @@ public class YarnLockDetectable extends Detectable {
     }
 
     @Override
-    public DetectableResult extractable() {
-        yarnExe = systemExecutableFinder.findExecutable(ExecutableType.YARN.getExecutable());
+    public DetectableResult extractable() throws DetectableException {
+        yarnExe = executableResolver.resolveExecutable(ExecutableType.YARN, environment);
 
         if (yarnExe == null) {
-            return new ExecutableNotFoundDetectableResult(ExecutableType.YARN.getExecutable());
+            return new ExecutableNotFoundDetectableResult("yarn");
         }
 
         return new PassedDetectableResult();

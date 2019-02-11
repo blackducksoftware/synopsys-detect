@@ -30,7 +30,8 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.SystemExecutableFinder;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableResolver;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
@@ -38,19 +39,18 @@ import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetecta
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
 public class CondaCliDetectable extends Detectable {
-    public static final String CONDA_EXECUTABLE_NAME = "conda";
     public static final String ENVIRONEMNT_YML = "environment.yml";
 
     private final FileFinder fileFinder;
-    private SystemExecutableFinder systemExecutableFinder;
+    private ExecutableResolver executableResolver;
     private final CondaCliExtractor condaExtractor;
 
     private File condaExe;
 
-    public CondaCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SystemExecutableFinder systemExecutableFinder, final CondaCliExtractor condaExtractor) {
+    public CondaCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final ExecutableResolver executableResolver, final CondaCliExtractor condaExtractor) {
         super(environment, "Conda Cli", "CONDA");
         this.fileFinder = fileFinder;
-        this.systemExecutableFinder = systemExecutableFinder;
+        this.executableResolver = executableResolver;
         this.condaExtractor = condaExtractor;
     }
 
@@ -66,7 +66,7 @@ public class CondaCliDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        condaExe = systemExecutableFinder.findExecutable(CONDA_EXECUTABLE_NAME);
+        condaExe = executableResolver.resolveExecutable(ExecutableType.CONDA, environment);
 
         if (condaExe == null) {
             return new ExecutableNotFoundDetectableResult("conda");

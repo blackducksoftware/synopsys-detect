@@ -32,36 +32,18 @@ public enum ExecutableType {
     DOCKER,
     DOTNET,
     GO,
-    GO_DEP("dep"),
+    GO_DEP,
     GRADLE,
-    GRADLEW,
     MVN,
-    MVNW,
     NPM,
     NUGET,
     PEAR,
     PERL,
     PIP,
-    PIP3,
     PIPENV,
     PYTHON,
-    PYTHON3,
     REBAR3,
     YARN,
     JAVA;
-
-    private String executableName;
-
-    private ExecutableType() {
-        this.executableName = this.name().toLowerCase();
-    }
-
-    private ExecutableType(final String executableName) {
-        this.executableName = executableName;
-    }
-
-    public String getExecutable() {
-        return executableName;
-    }
 }
 

@@ -29,8 +29,9 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableResolver;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableType;
-import com.synopsys.integration.detectable.detectable.executable.SystemExecutableFinder;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
@@ -41,16 +42,16 @@ public class PearCliDetectable extends Detectable {
     public static final String PACKAGE_XML_FILENAME = "package.xml";
 
     private final FileFinder fileFinder;
-    private final SystemExecutableFinder systemExecutableFinder;
+    private final ExecutableResolver executableResolver;
     private final PearCliExtractor pearCliExtractor;
 
     private File pearExe;
     private File packageDotXml;
 
-    public PearCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SystemExecutableFinder systemExecutableFinder, final PearCliExtractor pearCliExtractor) {
+    public PearCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final ExecutableResolver executableResolver, final PearCliExtractor pearCliExtractor) {
         super(environment, "Pear Cli", "PEAR");
         this.fileFinder = fileFinder;
-        this.systemExecutableFinder = systemExecutableFinder;
+        this.executableResolver = executableResolver;
         this.pearCliExtractor = pearCliExtractor;
     }
 
@@ -66,8 +67,8 @@ public class PearCliDetectable extends Detectable {
     }
 
     @Override
-    public DetectableResult extractable() {
-        pearExe = systemExecutableFinder.findExecutable(ExecutableType.PEAR.toString());
+    public DetectableResult extractable() throws DetectableException {
+        pearExe = executableResolver.resolveExecutable(ExecutableType.PEAR, environment);
 
         if (pearExe == null) {
             return new ExecutableNotFoundDetectableResult("pear");

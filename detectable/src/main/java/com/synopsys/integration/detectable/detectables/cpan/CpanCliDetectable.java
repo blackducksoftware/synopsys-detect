@@ -29,7 +29,9 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
-import com.synopsys.integration.detectable.detectable.executable.SystemExecutableFinder;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableResolver;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
@@ -42,17 +44,17 @@ public class CpanCliDetectable extends Detectable {
     public static final String MAKEFILE = "Makefile.PL";
 
     private final FileFinder fileFinder;
-    private final SystemExecutableFinder systemExecutableFinder;
+    private final ExecutableResolver executableResolver;
     private final CpanCliExtractor cpanCliExtractor;
 
     private File cpanExe;
     private File cpanmExe;
 
-    public CpanCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SystemExecutableFinder systemExecutableFinder, final CpanCliExtractor cpanCliExtractor) {
+    public CpanCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final ExecutableResolver executableResolver, final CpanCliExtractor cpanCliExtractor) {
         super(environment, "Cpan Cli", "CPAN");
         this.fileFinder = fileFinder;
         this.cpanCliExtractor = cpanCliExtractor;
-        this.systemExecutableFinder = systemExecutableFinder;
+        this.executableResolver = executableResolver;
     }
 
     @Override
@@ -66,8 +68,8 @@ public class CpanCliDetectable extends Detectable {
     }
 
     @Override
-    public DetectableResult extractable() {
-        final File cpan = systemExecutableFinder.findExecutable(CPAN_EXECUTABLE_NAME);
+    public DetectableResult extractable() throws DetectableException {
+        final File cpan = executableResolver.resolveExecutable(ExecutableType.CPAN, environment);
 
         if (cpan == null) {
             return new ExecutableNotFoundDetectableResult("cpan");
@@ -75,7 +77,7 @@ public class CpanCliDetectable extends Detectable {
             cpanExe = cpan;
         }
 
-        final File cpanm = systemExecutableFinder.findExecutable(CPANM_EXECUTABLE_NAME);
+        final File cpanm = executableResolver.resolveExecutable(ExecutableType.CPANM, environment);
 
         if (cpanm == null) {
             return new ExecutableNotFoundDetectableResult("cpanm");

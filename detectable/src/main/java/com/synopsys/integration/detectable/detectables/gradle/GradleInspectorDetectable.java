@@ -35,8 +35,8 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.LocalExecutableFinder;
-import com.synopsys.integration.detectable.detectable.executable.SystemExecutableFinder;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableResolver;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
@@ -52,8 +52,7 @@ public class GradleInspectorDetectable extends Detectable {
 
     private final DirectoryManager directoryManager;
     private final FileFinder fileFinder;
-    private final LocalExecutableFinder localExecutableFinder;
-    private final SystemExecutableFinder systemExecutableFinder;
+    private final ExecutableResolver executableResolver;
     private final GradleInspectorResolver gradleInspectorResolver;
     private final GradleInspectorExtractor gradleInspectorExtractor;
     private final GradleInspectorOptions gradleInspectorOptions;
@@ -62,13 +61,12 @@ public class GradleInspectorDetectable extends Detectable {
     private File gradleInspector;
 
     public GradleInspectorDetectable(final DetectableEnvironment environment, final DirectoryManager directoryManager, final FileFinder fileFinder,
-        final LocalExecutableFinder localExecutableFinder, SystemExecutableFinder systemExecutableFinder, final GradleInspectorResolver gradleInspectorResolver,
+        final ExecutableResolver executableResolver, final GradleInspectorResolver gradleInspectorResolver,
         final GradleInspectorExtractor gradleInspectorExtractor, GradleInspectorOptions gradleInspectorOptions) {
         super(environment, "Gradle Inspector", "Gradle");
         this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;
-        this.localExecutableFinder = localExecutableFinder;
-        this.systemExecutableFinder = systemExecutableFinder;
+        this.executableResolver = executableResolver;
         this.gradleInspectorResolver = gradleInspectorResolver;
         this.gradleInspectorExtractor = gradleInspectorExtractor;
         this.gradleInspectorOptions = gradleInspectorOptions;
@@ -86,10 +84,7 @@ public class GradleInspectorDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        gradleExe = localExecutableFinder.findExecutable("gradlew", environment.getDirectory());
-        if (gradleExe != null) {
-            gradleExe = systemExecutableFinder.findExecutable("gradle");
-        }
+        gradleExe = executableResolver.resolveExecutable(ExecutableType.GRADLE, environment);
         if (gradleExe == null) {
             return new ExecutableNotFoundDetectableResult("gradle");
         }
