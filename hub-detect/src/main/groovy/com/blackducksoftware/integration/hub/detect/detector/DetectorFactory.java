@@ -128,8 +128,8 @@ public class DetectorFactory implements BeanFactoryAware {
         return beanFactory.getBean(PipInspectorDetector.class, environment);
     }
 
-    public RebarDetector createRebarBomTool(final DetectorEnvironment environment) {
-        return beanFactory.getBean(RebarDetector.class, environment);
+    public RebarDetectable createRebarBomTool(final DetectorEnvironment environment) {
+        return beanFactory.getBean(RebarDetectable.class, environment);
     }
 
     public SbtResolutionCacheDetector createSbtResolutionCacheBomTool(final DetectorEnvironment environment) {
