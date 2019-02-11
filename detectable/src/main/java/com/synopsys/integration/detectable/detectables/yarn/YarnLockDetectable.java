@@ -44,7 +44,7 @@ public class YarnLockDetectable extends Detectable {
     private final SystemExecutableFinder systemExecutableFinder;
     private final YarnLockExtractor yarnLockExtractor;
 
-    private File yarnlock;
+    private File yarnLock;
     private File yarnExe;
 
     public YarnLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SystemExecutableFinder systemExecutableFinder, final YarnLockExtractor yarnLockExtractor) {
@@ -56,8 +56,8 @@ public class YarnLockDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        yarnlock = fileFinder.findFile(environment.getDirectory(), YARN_LOCK_FILENAME);
-        if (yarnlock == null) {
+        yarnLock = fileFinder.findFile(environment.getDirectory(), YARN_LOCK_FILENAME);
+        if (yarnLock == null) {
             return new FileNotFoundDetectableResult(YARN_LOCK_FILENAME);
         }
 
@@ -77,7 +77,7 @@ public class YarnLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return yarnLockExtractor.extract(environment.getDirectory(), yarnlock, yarnExe);
+        return yarnLockExtractor.extract(environment.getDirectory(), yarnLock, yarnExe);
     }
 
 }
