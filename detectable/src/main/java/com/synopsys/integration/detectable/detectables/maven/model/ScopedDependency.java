@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.maven;
+package com.synopsys.integration.detectable.detectables.maven.model;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

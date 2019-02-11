@@ -371,8 +371,8 @@ public class DetectorBeanConfiguration {
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public MavenPomDetector mavenPomBomTool(final DetectorEnvironment environment) {
-        return new MavenPomDetector(environment, detectFileFinder, mavenExecutableFinder(), mavenCliExtractor());
+    public MavenCliDetectable mavenPomBomTool(final DetectorEnvironment environment) {
+        return new MavenCliDetectable(environment, detectFileFinder, mavenExecutableFinder(), mavenCliExtractor());
     }
 
     @Bean
