@@ -31,8 +31,9 @@ public class GraphAssert {
         return externalId;
     }
 
-    public void hasParentChildRelationship(final ExternalId parent, final ExternalId child) {
+    public ExternalId hasParentChildRelationship(final ExternalId parent, final ExternalId child) {
         assert graph.getChildrenExternalIdsForParent(parent).contains(child);
+        return child;
     }
 
     public void hasRelationshipCount(final ExternalId parent, final int count) {
