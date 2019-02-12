@@ -23,6 +23,30 @@ public class SimpleExecutableResolver implements GradleResolver, BashResolver, C
 
     Map<String, File> cached = new HashMap<>();
 
+    private enum SimpleExecutableType {
+        BASH,
+        BITBAKE,
+        CONDA,
+        CPAN,
+        CPANM,
+        DOCKER,
+        DOTNET,
+        GO,
+        GO_DEP,
+        GRADLE,
+        MVN,
+        NPM,
+        NUGET,
+        PEAR,
+        PERL,
+        PIP,
+        PIPENV,
+        PYTHON,
+        REBAR3,
+        YARN,
+        JAVA;
+    }
+
     public SimpleExecutableResolver(CachedExecutableResolverOptions executableResolverOptions, SimpleLocalExecutableFinder localExecutableFinder, SimpleSystemExecutableFinder systemExecutableFinder) {
         this.executableResolverOptions = executableResolverOptions;
         this.localExecutableFinder = localExecutableFinder;
