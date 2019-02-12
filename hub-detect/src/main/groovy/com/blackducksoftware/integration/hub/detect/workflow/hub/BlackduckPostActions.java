@@ -87,7 +87,7 @@ public class BlackduckPostActions {
             if (policyCheckOptions.shouldPerformPolicyCheck()) {
                 logger.info("Detect will check policy for violations.");
                 PolicyChecker policyChecker = new PolicyChecker(eventSystem);
-                policyChecker.checkPolicy(policyCheckOptions.getSeveritiesToFailPolicyCheck(), blackDuckServicesFactory.createProjectService(), projectVersionView);
+                policyChecker.checkPolicy(policyCheckOptions.getSeveritiesToFailPolicyCheck(), blackDuckServicesFactory.createProjectBomService(), projectVersionView);
             }
 
             if (blackduckReportOptions.shouldGenerateAnyReport()) {

@@ -101,7 +101,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
                     } else {
                         connected = false;
                         println("Failed to connect.");
-                        println(connectionAttempt.getErrorMessage().orElse("Unknown reason."));
+                        println(connectionAttempt.getFailureMessage().orElse("Unknown reason."));
                         skipConnectionTest = !askYesOrNo("Would you like to retry entering Black Duck information?");
                     }
                 } else {
