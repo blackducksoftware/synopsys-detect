@@ -13,19 +13,19 @@ public class SimpleSystemExecutableFinder {
 
     private final SimpleExecutableFinder executableFinder;
 
-    public SimpleSystemExecutableFinder(SimpleExecutableFinder executableFinder) {
+    public SimpleSystemExecutableFinder(final SimpleExecutableFinder executableFinder) {
         this.executableFinder = executableFinder;
     }
 
-    public File findExecutable(final String executable) {
+    public File findExecutable(final String executableName) {
         final String systemPath = System.getenv("PATH");
-        List<File> systemPathLocations = Arrays.stream(systemPath.split(File.pathSeparator))
+        final List<File> systemPathLocations = Arrays.stream(systemPath.split(File.pathSeparator))
                                              .map(File::new)
                                              .collect(Collectors.toList());
 
-        File found = executableFinder.findExecutable(executable, systemPathLocations);
+        final File found = executableFinder.findExecutable(executableName, systemPathLocations);
         if (found == null) {
-            logger.debug(String.format("Could not find the executable: %s while searching through: %s", executable, systemPath));
+            logger.debug(String.format("Could not find the executable: %s while searching through: %s", executableName, systemPath));
         }
         return found;
     }

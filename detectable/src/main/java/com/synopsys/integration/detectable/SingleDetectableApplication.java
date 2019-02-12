@@ -38,25 +38,25 @@ import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
 
 //This sample application will an example detectable tool and execute it against the current folder.
 public class SingleDetectableApplication {
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
 
     }
 
     //In this example, we use the Detectable to determine if we can extract and if all necessary pieces are present.
     public Extraction DetectableExample() {
         //Factory
-        UtilityFactory utilityFactory = new UtilityFactory();
-        ExtractorFactory extractorFactory = new ExtractorFactory(utilityFactory);
-        DetectableFactory detectableFactory = new DetectableFactory(utilityFactory, extractorFactory);
+        final UtilityFactory utilityFactory = new UtilityFactory();
+        final ExtractorFactory extractorFactory = new ExtractorFactory(utilityFactory);
+        final DetectableFactory detectableFactory = new DetectableFactory(utilityFactory, extractorFactory);
 
         //Data
-        File sourceDirectory = new File("");
-        File outputDirectory = new File("");
-        DetectableEnvironment environment = new DetectableEnvironment(sourceDirectory);
-        BitbakeDetectableOptions options = new BitbakeDetectableOptions("", new String[] { "" });
+        final File sourceDirectory = new File("");
+        final File outputDirectory = new File("");
+        final DetectableEnvironment environment = new DetectableEnvironment(sourceDirectory);
+        final BitbakeDetectableOptions options = new BitbakeDetectableOptions("", new String[] { "" });
 
         //Objects
-        BitbakeDetectable bitbakeDetectable = detectableFactory.bitbakeDetectable(environment, options);
+        final BitbakeDetectable bitbakeDetectable = detectableFactory.bitbakeDetectable(environment, options);
 
         //Extraction
         try {
@@ -65,7 +65,7 @@ public class SingleDetectableApplication {
                     return bitbakeDetectable.extract(new ExtractionEnvironment(outputDirectory));
                 }
             }
-        } catch (DetectableException exception) {
+        } catch (final DetectableException exception) {
             return null;
         }
         return null;
@@ -74,21 +74,21 @@ public class SingleDetectableApplication {
     //In this example, we use the factory to create the objects but will manually look for the files and perform the extraction.
     public Extraction ExtractorExample() throws DetectableException {
         //Factory
-        UtilityFactory utilityFactory = new UtilityFactory();
-        ExtractorFactory extractorFactory = new ExtractorFactory(utilityFactory);
+        final UtilityFactory utilityFactory = new UtilityFactory();
+        final ExtractorFactory extractorFactory = new ExtractorFactory(utilityFactory);
 
         //Data
-        File sourceDirectory = new File("");
-        File outputDirectory = new File("");
+        final File sourceDirectory = new File("");
+        final File outputDirectory = new File("");
 
         //Objects
-        FileFinder simpleFileFinder = utilityFactory.simpleFileFinder();
-        ExecutableResolver cachedExecutableResolver = utilityFactory.executableResolver();
-        BitbakeExtractor bitbakeExtractor = extractorFactory.bitbakeExtractor();
+        final FileFinder simpleFileFinder = utilityFactory.simpleFileFinder();
+        final ExecutableResolver cachedExecutableResolver = utilityFactory.cachedExecutableResolver();
+        final BitbakeExtractor bitbakeExtractor = extractorFactory.bitbakeExtractor();
 
         //Search
-        File bitbakeFile = simpleFileFinder.findFile(sourceDirectory, "*.bitbake");//TODO: bitbake is a terrible example
-        File bashExecutable = cachedExecutableResolver.resolveExecutable(ExecutableType.BASH, new DetectableEnvironment(sourceDirectory));
+        final File bitbakeFile = simpleFileFinder.findFile(sourceDirectory, "*.bitbake");//TODO: bitbake is a terrible example
+        final File bashExecutable = cachedExecutableResolver.resolveExecutable(ExecutableType.BASH, new DetectableEnvironment(sourceDirectory));
 
         //Extraction
         return bitbakeExtractor.extract(new ExtractionEnvironment(outputDirectory), bitbakeFile, sourceDirectory, new String[] { "" }, bashExecutable);

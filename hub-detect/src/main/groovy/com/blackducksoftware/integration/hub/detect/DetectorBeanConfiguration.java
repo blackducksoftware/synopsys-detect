@@ -276,8 +276,8 @@ public class DetectorBeanConfiguration {
     }
 
     @Bean
-    public PythonExecutableFinder pythonExecutableFinder() {
-        return new PythonExecutableFinder(executableFinder, detectConfiguration);
+    public PythonSystemExecutableResolver pythonExecutableFinder() {
+        return new PythonSystemExecutableResolver(executableFinder, detectConfiguration);
     }
 
     @Bean

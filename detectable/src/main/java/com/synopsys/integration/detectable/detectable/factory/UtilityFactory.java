@@ -2,7 +2,9 @@ package com.synopsys.integration.detectable.detectable.factory;
 
 import com.synopsys.integration.detectable.detectable.executable.ExecutableResolver;
 import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolver;
-import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
+import com.synopsys.integration.detectable.detectable.executable.impl.GradleExecutableResolver;
+import com.synopsys.integration.detectable.detectable.executable.impl.MavenExecutableResolver;
+import com.synopsys.integration.detectable.detectable.executable.impl.PythonSystemExecutableResolver;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleLocalExecutableFinder;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
@@ -27,8 +29,23 @@ public class UtilityFactory {
     }
 
     public ExecutableResolver executableResolver() {
-        CachedExecutableResolverOptions options = new CachedExecutableResolverOptions();
-        options.python3 = false;
-        return new CachedExecutableResolver(options, simpleLocalExecutableFinder(), simpleSystemExecutableFinder());
+        return cachedExecutableResolver();
+    }
+
+    public CachedExecutableResolver cachedExecutableResolver() {
+        return new CachedExecutableResolver(simpleLocalExecutableFinder(), simpleSystemExecutableFinder());
+    }
+
+    public PythonSystemExecutableResolver pythonExecutableResolver() {
+        final boolean usingPython3 = false; // TODO: Get from configuration
+        return new PythonSystemExecutableResolver(cachedExecutableResolver(), simpleSystemExecutableFinder(), usingPython3);
+    }
+
+    public MavenExecutableResolver mavenExecutableResolver() {
+        return new MavenExecutableResolver(cachedExecutableResolver(), simpleLocalExecutableFinder(), simpleSystemExecutableFinder());
+    }
+
+    public GradleExecutableResolver gradleExecutableResolver() {
+        return new GradleExecutableResolver(cachedExecutableResolver(), simpleLocalExecutableFinder(), simpleSystemExecutableFinder());
     }
 }
