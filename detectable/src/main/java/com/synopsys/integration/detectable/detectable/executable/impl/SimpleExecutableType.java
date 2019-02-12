@@ -21,9 +21,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.executable;
+package com.synopsys.integration.detectable.detectable.executable.impl;
 
-public enum ExecutableType {
+public enum SimpleExecutableType {
     BASH,
     BITBAKE,
     CONDA,

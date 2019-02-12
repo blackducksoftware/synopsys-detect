@@ -6,18 +6,24 @@ import java.util.Map;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableResolver;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableType;
+import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.YarnResolver;
 
 //this will cache the find result.
-public class CachedExecutableResolver implements ExecutableResolver {
+public class SimpleExecutableResolver implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver {
     private final CachedExecutableResolverOptions executableResolverOptions;
     private final SimpleLocalExecutableFinder localExecutableFinder;
     private final SimpleSystemExecutableFinder systemExecutableFinder;
 
     Map<String, File> cached = new HashMap<>();
 
-    public CachedExecutableResolver(CachedExecutableResolverOptions executableResolverOptions, SimpleLocalExecutableFinder localExecutableFinder, SimpleSystemExecutableFinder systemExecutableFinder) {
+    public SimpleExecutableResolver(CachedExecutableResolverOptions executableResolverOptions, SimpleLocalExecutableFinder localExecutableFinder, SimpleSystemExecutableFinder systemExecutableFinder) {
         this.executableResolverOptions = executableResolverOptions;
         this.localExecutableFinder = localExecutableFinder;
         this.systemExecutableFinder = systemExecutableFinder;
@@ -46,9 +52,8 @@ public class CachedExecutableResolver implements ExecutableResolver {
         return findLocalOrSystem(name, name, environment);
     }
 
-    @Override
-    public File resolveExecutable(final ExecutableType executableType, final DetectableEnvironment environment) throws DetectableException {
-        switch (executableType) {
+    private File resolveExecutable(final SimpleExecutableType simpleExecutableType, final DetectableEnvironment environment) throws DetectableException {
+        switch (simpleExecutableType) {
             case BASH:
                 return findCachedSystem("bash");
             case BITBAKE:
@@ -101,5 +106,40 @@ public class CachedExecutableResolver implements ExecutableResolver {
                 return findCachedSystem("java");
         }
         return null;
+    }
+
+    @Override
+    public File resolveGradle(final DetectableEnvironment environment) throws DetectableException {
+        return resolveExecutable(SimpleExecutableType.GRADLE, environment);
+    }
+
+    @Override
+    public File resolveBash() throws DetectableException {
+        return resolveExecutable(SimpleExecutableType.BASH, null);
+    }
+
+    @Override
+    public File resolveConda() throws DetectableException {
+        return resolveExecutable(SimpleExecutableType.CONDA, null);
+    }
+
+    @Override
+    public File resolveCpan() throws DetectableException {
+        return resolveExecutable(SimpleExecutableType.CPAN, null);
+    }
+
+    @Override
+    public File resolvePear() throws DetectableException {
+        return resolveExecutable(SimpleExecutableType.PEAR, null);
+    }
+
+    @Override
+    public File resolveRebar3() throws DetectableException {
+        return resolveExecutable(SimpleExecutableType.REBAR3, null);
+    }
+
+    @Override
+    public File resolveYarn() throws DetectableException {
+        return resolveExecutable(SimpleExecutableType.YARN, null);
     }
 }

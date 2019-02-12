@@ -1,9 +1,8 @@
 package com.synopsys.integration.detectable.detectable.factory;
 
-import com.synopsys.integration.detectable.detectable.executable.ExecutableResolver;
-import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolver;
 import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleLocalExecutableFinder;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -26,9 +25,9 @@ public class UtilityFactory {
         return new SimpleSystemExecutableFinder(simpleExecutableFinder());
     }
 
-    public ExecutableResolver executableResolver() {
+    public SimpleExecutableResolver executableResolver() {
         CachedExecutableResolverOptions options = new CachedExecutableResolverOptions();
         options.python3 = false;
-        return new CachedExecutableResolver(options, simpleLocalExecutableFinder(), simpleSystemExecutableFinder());
+        return new SimpleExecutableResolver(options, simpleLocalExecutableFinder(), simpleSystemExecutableFinder());
     }
 }

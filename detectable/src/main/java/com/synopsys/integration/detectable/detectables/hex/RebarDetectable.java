@@ -30,8 +30,7 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableResolver;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableType;
+import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
@@ -42,16 +41,16 @@ public class RebarDetectable extends Detectable {
     public static final String REBAR_CONFIG = "rebar.config";
 
     private final FileFinder fileFinder;
-    private final ExecutableResolver executableResolver;
+    private final Rebar3Resolver rebar3Resolver;
     private final RebarExtractor rebarExtractor;
 
     private File rebarExe;
 
-    public RebarDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final ExecutableResolver executableResolver, final RebarExtractor rebarExtractor) {
+    public RebarDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final Rebar3Resolver rebar3Resolver, final RebarExtractor rebarExtractor) {
         super(environment, "Rebar Config", "HEX");
         this.fileFinder = fileFinder;
         this.rebarExtractor = rebarExtractor;
-        this.executableResolver = executableResolver;
+        this.rebar3Resolver = rebar3Resolver;
     }
 
     @Override
@@ -66,7 +65,7 @@ public class RebarDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        rebarExe = executableResolver.resolveExecutable(ExecutableType.REBAR3, environment);
+        rebarExe = rebar3Resolver.resolveRebar3();
 
         if (rebarExe == null) {
             return new ExecutableNotFoundDetectableResult("rebar3");

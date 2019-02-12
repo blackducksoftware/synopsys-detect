@@ -30,8 +30,7 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableResolver;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableType;
+import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
@@ -43,18 +42,18 @@ public class BitbakeDetectable extends Detectable {
     private final BitbakeDetectableOptions bitbakeDetectableOptions;
     private final FileFinder fileFinder;
     private final BitbakeExtractor bitbakeExtractor;
-    private final ExecutableResolver executableResolver;
+    private final BashResolver bashResolver;
 
     private File foundBuildEnvScript;
     private File bashExe;
 
     public BitbakeDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder, final BitbakeDetectableOptions bitbakeDetectableOptions, final BitbakeExtractor bitbakeExtractor,
-        final ExecutableResolver executableResolver) {
+        final BashResolver bashResolver) {
         super(detectableEnvironment, "Bitbake", "Bitbake");
         this.fileFinder = fileFinder;
         this.bitbakeDetectableOptions = bitbakeDetectableOptions;
         this.bitbakeExtractor = bitbakeExtractor;
-        this.executableResolver = executableResolver;
+        this.bashResolver = bashResolver;
     }
 
     @Override
@@ -73,7 +72,7 @@ public class BitbakeDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        bashExe = executableResolver.resolveExecutable(ExecutableType.BASH, environment);
+        bashExe = bashResolver.resolveBash();
         if (bashExe == null) {
             return new ExecutableNotFoundDetectableResult("bash");
         }
