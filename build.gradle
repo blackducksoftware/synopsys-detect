@@ -43,7 +43,7 @@ configure(subprojects) { project ->
     }
 
     dependencies {
-        implementation 'com.blackducksoftware.integration:blackduck-common:42.0.0-SNAPSHOT'
+        implementation 'com.blackducksoftware.integration:blackduck-common:42.0.0'
         implementation 'com.paypal.digraph:digraph-parser:1.0'
     }
 }
