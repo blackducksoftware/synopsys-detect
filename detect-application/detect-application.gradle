@@ -4,6 +4,7 @@ apply plugin: 'org.springframework.boot'
 apply from: 'airgap.gradle'
 apply from: 'artifactory-properties.gradle'
 
+project.ext.archivesBaseName = "synopsys-detect"
 archivesBaseName = "synopsys-detect"
 
 build {
