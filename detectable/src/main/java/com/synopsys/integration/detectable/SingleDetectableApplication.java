@@ -26,8 +26,7 @@ package com.synopsys.integration.detectable;
 import java.io.File;
 
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableResolver;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableType;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
 import com.synopsys.integration.detectable.detectable.factory.DetectableFactory;
 import com.synopsys.integration.detectable.detectable.factory.ExtractorFactory;
 import com.synopsys.integration.detectable.detectable.factory.UtilityFactory;
@@ -83,12 +82,12 @@ public class SingleDetectableApplication {
 
         //Objects
         FileFinder simpleFileFinder = utilityFactory.simpleFileFinder();
-        ExecutableResolver cachedExecutableResolver = utilityFactory.executableResolver();
+        SimpleExecutableResolver executableResolver = utilityFactory.executableResolver();
         BitbakeExtractor bitbakeExtractor = extractorFactory.bitbakeExtractor();
 
         //Search
         File bitbakeFile = simpleFileFinder.findFile(sourceDirectory, "*.bitbake");//TODO: bitbake is a terrible example
-        File bashExecutable = cachedExecutableResolver.resolveExecutable(ExecutableType.BASH, new DetectableEnvironment(sourceDirectory));
+        File bashExecutable = executableResolver.resolveBash();
 
         //Extraction
         return bitbakeExtractor.extract(new ExtractionEnvironment(outputDirectory), bitbakeFile, sourceDirectory, new String[] { "" }, bashExecutable);
