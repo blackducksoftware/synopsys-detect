@@ -42,6 +42,11 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectables.pear.model.PackageDependency;
+import com.synopsys.integration.detectable.detectables.pear.parse.PearListParser;
+import com.synopsys.integration.detectable.detectables.pear.parse.PearPackageDependenciesParser;
+import com.synopsys.integration.detectable.detectables.pear.parse.PearPackageXmlParser;
+import com.synopsys.integration.detectable.detectables.pear.transform.PearDependencyGraphTransformer;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 

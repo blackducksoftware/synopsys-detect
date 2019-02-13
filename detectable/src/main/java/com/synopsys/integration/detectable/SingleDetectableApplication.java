@@ -25,29 +25,19 @@ package com.synopsys.integration.detectable;
 
 import java.io.File;
 
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.SystemExecutableFinder;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
 import com.synopsys.integration.detectable.detectable.factory.DetectableFactory;
 import com.synopsys.integration.detectable.detectable.factory.ExtractorFactory;
 import com.synopsys.integration.detectable.detectable.factory.UtilityFactory;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeArchitectureParser;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
-import com.synopsys.integration.util.OperatingSystemType;
 
 //This sample application will an example detectable tool and execute it against the current folder.
 public class SingleDetectableApplication {
     public static void main(String[] args) {
-
 
     }
 
@@ -62,7 +52,7 @@ public class SingleDetectableApplication {
         File sourceDirectory = new File("");
         File outputDirectory = new File("");
         DetectableEnvironment environment = new DetectableEnvironment(sourceDirectory);
-        BitbakeDetectableOptions options = new BitbakeDetectableOptions("",  new String[] {""});
+        BitbakeDetectableOptions options = new BitbakeDetectableOptions("", new String[] { "" });
 
         //Objects
         BitbakeDetectable bitbakeDetectable = detectableFactory.bitbakeDetectable(environment, options);
@@ -74,14 +64,14 @@ public class SingleDetectableApplication {
                     return bitbakeDetectable.extract(new ExtractionEnvironment(outputDirectory));
                 }
             }
-        } catch (DetectableException exception){
+        } catch (DetectableException exception) {
             return null;
         }
         return null;
     }
 
     //In this example, we use the factory to create the objects but will manually look for the files and perform the extraction.
-    public Extraction ExtractorExample() {
+    public Extraction ExtractorExample() throws DetectableException {
         //Factory
         UtilityFactory utilityFactory = new UtilityFactory();
         ExtractorFactory extractorFactory = new ExtractorFactory(utilityFactory);
@@ -92,14 +82,14 @@ public class SingleDetectableApplication {
 
         //Objects
         FileFinder simpleFileFinder = utilityFactory.simpleFileFinder();
-        SystemExecutableFinder simpleSystemExecutableFinder = utilityFactory.simpleSystemExecutableFinder();
+        SimpleExecutableResolver executableResolver = utilityFactory.executableResolver();
         BitbakeExtractor bitbakeExtractor = extractorFactory.bitbakeExtractor();
 
         //Search
         File bitbakeFile = simpleFileFinder.findFile(sourceDirectory, "*.bitbake");//TODO: bitbake is a terrible example
-        File bashExecutable = simpleSystemExecutableFinder.findExecutable("bash");
+        File bashExecutable = executableResolver.resolveBash();
 
         //Extraction
-        return bitbakeExtractor.extract(new ExtractionEnvironment(outputDirectory), bitbakeFile, sourceDirectory, new String[] {""}, bashExecutable);
+        return bitbakeExtractor.extract(new ExtractionEnvironment(outputDirectory), bitbakeFile, sourceDirectory, new String[] { "" }, bashExecutable);
     }
 }

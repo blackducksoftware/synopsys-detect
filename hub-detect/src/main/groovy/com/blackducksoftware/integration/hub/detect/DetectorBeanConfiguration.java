@@ -98,11 +98,11 @@ public class DetectorBeanConfiguration {
 /* TODO: Resurrect
     @Bean
     public BazelExtractor bazelExtractor() {
-        BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
+        BazelQueryXmlOutputParser parse = new BazelQueryXmlOutputParser(new XPathParser());
         BazelExternalIdExtractionSimpleRules rules = new BazelExternalIdExtractionSimpleRules(detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None));
         BazelCodeLocationBuilder codeLocationGenerator = new BazelCodeLocationBuilder(externalIdFactory);
         BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor = new BazelExternalIdExtractionFullRuleJsonProcessor(gson);
-        return new BazelExtractor(detectConfiguration, executableRunner, parser, rules, codeLocationGenerator, bazelExternalIdExtractionFullRuleJsonProcessor);
+        return new BazelExtractor(detectConfiguration, executableRunner, parse, rules, codeLocationGenerator, bazelExternalIdExtractionFullRuleJsonProcessor);
     }
 
     @Bean

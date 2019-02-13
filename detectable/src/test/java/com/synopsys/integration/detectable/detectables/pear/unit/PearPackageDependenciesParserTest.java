@@ -8,8 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.pear.PackageDependency;
-import com.synopsys.integration.detectable.detectables.pear.PearPackageDependenciesParser;
+import com.synopsys.integration.detectable.detectables.pear.model.PackageDependency;
+import com.synopsys.integration.detectable.detectables.pear.parse.PearPackageDependenciesParser;
 import com.synopsys.integration.exception.IntegrationException;
 
 @UnitTest

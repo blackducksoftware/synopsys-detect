@@ -16,7 +16,7 @@ import com.synopsys.integration.detectable.detectables.gradle.model.GradleGav;
 import com.synopsys.integration.detectable.detectables.gradle.model.GradleReport;
 import com.synopsys.integration.detectable.detectables.gradle.model.GradleTreeNode;
 
-//An example transformer that uses our "Dependency History" class and is closer to the original Gradle implementation
+//An example transform that uses our "Dependency History" class and is closer to the original Gradle implementation
 public class GradleReportHistoryTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;

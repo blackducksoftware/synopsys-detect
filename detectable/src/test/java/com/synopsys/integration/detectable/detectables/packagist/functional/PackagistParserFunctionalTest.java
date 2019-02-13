@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectableOptions;
-import com.synopsys.integration.detectable.detectables.packagist.PackagistParseResult;
-import com.synopsys.integration.detectable.detectables.packagist.PackagistParser;
+import com.synopsys.integration.detectable.detectables.packagist.model.PackagistParseResult;
+import com.synopsys.integration.detectable.detectables.packagist.parse.PackagistParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.GraphCompare;
 

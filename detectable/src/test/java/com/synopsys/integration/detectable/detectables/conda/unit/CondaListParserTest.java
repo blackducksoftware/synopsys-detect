@@ -20,8 +20,8 @@ import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.conda.CondaListElement;
-import com.synopsys.integration.detectable.detectables.conda.CondaListParser;
+import com.synopsys.integration.detectable.detectables.conda.model.CondaListElement;
+import com.synopsys.integration.detectable.detectables.conda.parser.CondaListParser;
 
 @UnitTest
 public class CondaListParserTest {

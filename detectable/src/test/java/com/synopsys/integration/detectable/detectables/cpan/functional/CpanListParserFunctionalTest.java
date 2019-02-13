@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
-import com.synopsys.integration.detectable.detectables.cpan.CpanListParser;
+import com.synopsys.integration.detectable.detectables.cpan.parse.CpanListParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.GraphCompare;
 

@@ -21,7 +21,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
-import com.synopsys.integration.detectable.detectables.rubygems.GemlockParser;
+import com.synopsys.integration.detectable.detectables.rubygems.parse.GemlockParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.GraphCompare;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;

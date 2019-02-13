@@ -38,6 +38,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
+import com.synopsys.integration.detectable.detectables.rubygems.parse.GemlockParser;
 
 public class GemlockExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

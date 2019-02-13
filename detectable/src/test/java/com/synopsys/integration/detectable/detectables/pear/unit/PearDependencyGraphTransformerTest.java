@@ -14,9 +14,9 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.pear.PackageDependency;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
-import com.synopsys.integration.detectable.detectables.pear.PearDependencyGraphTransformer;
+import com.synopsys.integration.detectable.detectables.pear.model.PackageDependency;
+import com.synopsys.integration.detectable.detectables.pear.transform.PearDependencyGraphTransformer;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 @UnitTest
