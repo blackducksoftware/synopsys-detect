@@ -26,7 +26,6 @@ allprojects {
 configure(subprojects) { project ->
     group = 'com.blackducksoftware.integration'
     version = parentVersion
-    archivesBaseName = "synopsys-detect"
 
     apply plugin: 'com.blackducksoftware.integration.solution'
     apply plugin: 'groovy'
