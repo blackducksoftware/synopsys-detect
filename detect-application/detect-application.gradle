@@ -4,6 +4,8 @@ apply plugin: 'org.springframework.boot'
 apply from: 'airgap.gradle'
 apply from: 'artifactory-properties.gradle'
 
+archivesBaseName = "synopsys-detect"
+
 build {
     doLast {
         def shellScriptTemplateFile = new File("${projectDir}/src/main/resources/detect-sh")
