@@ -12,7 +12,7 @@ Detect Configuration
 
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=detect%3Adetect-configuration&metric=alert_status)](https://sonarcloud.io/dashboard?id=detect%3Adetect-configuration)
 
-Hub Detect
+Detect
 
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=detect%3Ahub-detect&metric=alert_status)](https://sonarcloud.io/dashboard?id=detect%3Ahub-detect)
 
