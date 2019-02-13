@@ -1,5 +1,5 @@
 ## Overview ##
-Hub Detect offers package management level analysis combined with signature scanning.
+Detect offers package management level analysis combined with signature scanning.
 
 ## Build ##
 
