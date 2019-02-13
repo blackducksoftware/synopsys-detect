@@ -23,30 +23,6 @@ public class SimpleExecutableResolver implements GradleResolver, BashResolver, C
 
     Map<String, File> cached = new HashMap<>();
 
-    private enum SimpleExecutableType {
-        BASH,
-        BITBAKE,
-        CONDA,
-        CPAN,
-        CPANM,
-        DOCKER,
-        DOTNET,
-        GO,
-        GO_DEP,
-        GRADLE,
-        MVN,
-        NPM,
-        NUGET,
-        PEAR,
-        PERL,
-        PIP,
-        PIPENV,
-        PYTHON,
-        REBAR3,
-        YARN,
-        JAVA;
-    }
-
     public SimpleExecutableResolver(CachedExecutableResolverOptions executableResolverOptions, SimpleLocalExecutableFinder localExecutableFinder, SimpleSystemExecutableFinder systemExecutableFinder) {
         this.executableResolverOptions = executableResolverOptions;
         this.localExecutableFinder = localExecutableFinder;
@@ -76,94 +52,38 @@ public class SimpleExecutableResolver implements GradleResolver, BashResolver, C
         return findLocalOrSystem(name, name, environment);
     }
 
-    private File resolveExecutable(final SimpleExecutableType simpleExecutableType, final DetectableEnvironment environment) throws DetectableException {
-        switch (simpleExecutableType) {
-            case BASH:
-                return findCachedSystem("bash");
-            case BITBAKE:
-                return findCachedSystem("bitbake");
-            case CONDA:
-                return findCachedSystem("conda");
-            case CPAN:
-                return findCachedSystem("cpan");
-            case CPANM:
-                return findCachedSystem("cpanm");
-            case DOCKER:
-                return findCachedSystem("docker");
-            case DOTNET:
-                return findCachedSystem("dotnet");
-            case GO:
-                return findCachedSystem("go");
-            case GO_DEP:
-                return findCachedSystem("deps");
-            case GRADLE:
-                return findLocalOrSystem("gradlew", "gradle", environment);
-            case MVN:
-                return findLocalOrSystem("mvnw", "mvn", environment);
-            case NPM:
-                return findCachedSystem("npm");
-            case NUGET:
-                return findCachedSystem("nuget");
-            case PEAR:
-                return findCachedSystem("pear");
-            case PERL:
-                return findCachedSystem("pearl");
-            case PIP:
-                if (executableResolverOptions.python3) {
-                    return findCachedSystem("pip3");
-                } else {
-                    return findCachedSystem("pip");
-                }
-            case PIPENV:
-                return findCachedSystem("pipenv");
-            case PYTHON:
-                if (executableResolverOptions.python3) {
-                    return findCachedSystem("python3");
-                } else {
-                    return findCachedSystem("python");
-                }
-            case REBAR3:
-                return findCachedSystem("rebar3");
-            case YARN:
-                return findCachedSystem("yarn");
-            case JAVA:
-                return findCachedSystem("java");
-        }
-        return null;
-    }
-
     @Override
     public File resolveGradle(final DetectableEnvironment environment) throws DetectableException {
-        return resolveExecutable(SimpleExecutableType.GRADLE, environment);
+        return findLocalOrSystem("gradlew", "gradle", environment);
     }
 
     @Override
     public File resolveBash() throws DetectableException {
-        return resolveExecutable(SimpleExecutableType.BASH, null);
+        return findCachedSystem("bash");
     }
 
     @Override
     public File resolveConda() throws DetectableException {
-        return resolveExecutable(SimpleExecutableType.CONDA, null);
+        return findCachedSystem("conda");
     }
 
     @Override
     public File resolveCpan() throws DetectableException {
-        return resolveExecutable(SimpleExecutableType.CPAN, null);
+        return findCachedSystem("cpan");
     }
 
     @Override
     public File resolvePear() throws DetectableException {
-        return resolveExecutable(SimpleExecutableType.PEAR, null);
+        return findCachedSystem("pear");
     }
 
     @Override
     public File resolveRebar3() throws DetectableException {
-        return resolveExecutable(SimpleExecutableType.REBAR3, null);
+        return findCachedSystem("rebar3");
     }
 
     @Override
     public File resolveYarn() throws DetectableException {
-        return resolveExecutable(SimpleExecutableType.YARN, null);
+        return findCachedSystem("yarn");
     }
 }
