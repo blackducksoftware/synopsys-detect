@@ -3,7 +3,7 @@ Detect offers package management level analysis combined with signature scanning
 
 ## Build ##
 
-[![Build Status](https://travis-ci.org/blackducksoftware/hub-gradle-plugin.svg?branch=master)](https://travis-ci.org/blackducksoftware/hub-detect)
+[![Build Status](https://travis-ci.org/blackducksoftware/hub-gradle-plugin.svg?branch=master)](https://travis-ci.org/blackducksoftware/synopsys-detect.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/blackducksoftware/hub-detect/badge.svg?branch=master)](https://coveralls.io/github/blackducksoftware/hub-detect?branch=master)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Black Duck Security Risk](https://copilot.blackducksoftware.com/github/repos/blackducksoftware/hub-detect/branches/master/badge-risk.svg)](https://copilot.blackducksoftware.com/github/repos/blackducksoftware/hub-detect/branches/master)
