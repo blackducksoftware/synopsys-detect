@@ -1,4 +1,4 @@
-include "hub-detect"
+include "detect-application"
 include "detect-configuration"
 
 rootProject.name = 'detect'

@@ -1,0 +1,89 @@
+def artifactName = "synopsys-detect";
+
+task updateArtifactoryProperties() {
+    dependsOn artifactoryPublish
+    doLast {
+        if (project.isSnapshot || "true" == project.findProperty('qa.build')) {
+            println 'For a snapshot or qa build, artifactory properties will not be updated.'
+        } else {
+            try {
+                println 'For a release build, an update of artifactory properties will be attempted.'
+                def latestPropertyKey = "DETECT_LATEST"
+
+                def majorVersion = project.version.split("\\.")[0]
+                def majorVersionPropertyKey = "${latestPropertyKey}_${majorVersion}"
+
+                def artifactoryCredentials = "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}"
+                def defaultCurlArgs = defaultCurlArgs(artifactoryCredentials)
+
+                def currentArtifact = findCurrentArtifact(defaultCurlArgs)
+                if (currentArtifact) {
+                    setArtifactoryProperty(defaultCurlArgs, latestPropertyKey, currentArtifact['downloadUri'])
+                    setArtifactoryProperty(defaultCurlArgs, majorVersionPropertyKey, currentArtifact['downloadUri'])
+                } else {
+                    println "Artifactory properties won't be updated since ${project.version} was not found."
+                }
+            } catch (Exception e) {
+                println "Manual corrections to the properties for ${project.name}-${project.version} may be necessary."
+                println "Error correcting the artifactory properties: ${e.message}"
+            }
+        }
+    }
+}
+
+def findCurrentArtifact(def defaultCurlArgs) {
+    try {
+        def url = "${project.ext.artifactoryUrl}/api/search/artifact?name=${artifactName}-${project.version}.jar&repos=${project.ext.artifactoryRepo}"
+        def artifactoryItems = getArtifactoryItems(url, defaultCurlArgs)
+
+        if (artifactoryItems != null && artifactoryItems.size() == 1) {
+            return artifactoryItems[0]
+        }
+    } catch (Exception e) {
+        println "Could not find the current artifact: ${e.message}"
+    }
+
+    return null
+}
+
+def getArtifactoryItems(String url, def defaultCurlArgs) {
+    def artifactoryItems = []
+
+    def curlArgs = defaultCurlArgs + ['--header', 'X-Result-Detail: info', url]
+    def response = curlResponse(curlArgs)
+
+    def jsonResponse = new groovy.json.JsonSlurper().parseText(response)
+    def results = jsonResponse['results']
+    if (results != null && results.size() > 0) {
+        results.each {
+            def downloadUri = it['downloadUri']
+            if (downloadUri) {
+                artifactoryItems.add([downloadUri:downloadUri])
+            }
+        }
+    }
+
+    return artifactoryItems
+}
+
+def setArtifactoryProperty(def defaultCurlArgs, String propertyKey, String propertyValue) {
+    println "Setting ${propertyKey} to ${propertyValue}."
+    def curlArgs = defaultCurlArgs + ['--request', 'PATCH', '--data', "{\"props\":{\"${propertyKey}\":\"${propertyValue}\"}}", "${project.ext.artifactoryUrl}/api/metadata/${project.ext.artifactoryRepo}/com/blackducksoftware/integration/${artifactName}"]
+
+    curlResponse(curlArgs)
+}
+
+def defaultCurlArgs(String artifactoryCredentials) {
+    return ['--silent', '--insecure', '--user', artifactoryCredentials, '--header', 'Content-Type: application/json']
+}
+
+def curlResponse(def curlArgs) {
+    new ByteArrayOutputStream().withStream { os ->
+        exec {
+            executable = 'curl'
+            args = curlArgs
+            standardOutput = os
+        }
+        return os.toString()
+    }
+}
