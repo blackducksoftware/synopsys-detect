@@ -27,6 +27,7 @@ build {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId = "synopsys-detect"
             def jarName = "${buildDir}/libs/${artifactName}-${version}.jar"
             artifact(jarName)
         }
