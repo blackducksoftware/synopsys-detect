@@ -16,6 +16,8 @@ buildscript {
 
 apply plugin: 'java'
 
+project.ext.set("archivesBaseName", "synopsys-detect")
+
 version = '5.3.0-SNAPSHOT'
 String parentVersion = project.version
 
