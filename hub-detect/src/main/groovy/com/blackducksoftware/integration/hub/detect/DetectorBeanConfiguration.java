@@ -276,11 +276,6 @@ public class DetectorBeanConfiguration {
     }
 
     @Bean
-    public PythonExecutableFinder pythonExecutableFinder() {
-        return new PythonExecutableFinder(executableFinder, detectConfiguration);
-    }
-
-    @Bean
     public GemlockExtractor gemlockExtractor() {
         return new GemlockExtractor(externalIdFactory);
     }
@@ -431,9 +426,9 @@ public class DetectorBeanConfiguration {
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public PipInspectorDetector pipInspectorBomTool(final DetectorEnvironment environment) {
+    public PipInspectorDetectable pipInspectorBomTool(final DetectorEnvironment environment) {
         //final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None);
-        return new PipInspectorDetector(environment, detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None), detectFileFinder, pythonExecutableFinder(), pipInspectorManager(),
+        return new PipInspectorDetectable(environment, detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None), detectFileFinder, pythonExecutableFinder(), pipInspectorManager(),
             pipInspectorExtractor());
     }
 

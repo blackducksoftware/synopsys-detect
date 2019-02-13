@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.detector.pip;
+package com.synopsys.integration.detectable.detectables.pip;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,26 +31,24 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.configuration.PropertyAuthority;
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
+import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 
 public class PipInspectorExtractor {
     private final ExecutableRunner executableRunner;
     private final PipInspectorTreeParser pipInspectorTreeParser;
-    private final DetectConfiguration detectConfiguration;
+    private final PipInspectorDetectableOptions pipInspectorDetectableOptions;
 
-    public PipInspectorExtractor(final ExecutableRunner executableRunner, final PipInspectorTreeParser pipInspectorTreeParser, final DetectConfiguration detectConfiguration) {
+    public PipInspectorExtractor(final ExecutableRunner executableRunner, final PipInspectorTreeParser pipInspectorTreeParser, final PipInspectorDetectableOptions pipInspectorDetectableOptions) {
         this.executableRunner = executableRunner;
         this.pipInspectorTreeParser = pipInspectorTreeParser;
-        this.detectConfiguration = detectConfiguration;
+        this.pipInspectorDetectableOptions = pipInspectorDetectableOptions;
     }
 
-    public Extraction extract(final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) {
+    public Extraction extract(final File directory, final File pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) {
         Extraction extractionResult;
         try {
             final String projectName = getProjectName(directory, pythonExe, setupFile);
@@ -71,7 +69,7 @@ public class PipInspectorExtractor {
         return extractionResult;
     }
 
-    private List<String> runInspector(final File sourceDirectory, final String pythonPath, final File inspectorScript, final String projectName, final String requirementsFilePath) throws ExecutableRunnerException {
+    private List<String> runInspector(final File sourceDirectory, final File pythonExe, final File inspectorScript, final String projectName, final String requirementsFilePath) throws ExecutableRunnerException {
         final List<String> inspectorArguments = new ArrayList<>();
         inspectorArguments.add(inspectorScript.getAbsolutePath());
 
@@ -84,18 +82,15 @@ public class PipInspectorExtractor {
             inspectorArguments.add(String.format("--projectname=%s", projectName));
         }
 
-        final Executable pipInspector = new Executable(sourceDirectory, pythonPath, inspectorArguments);
-        return executableRunner.execute(pipInspector).getStandardOutputAsList();
+        return executableRunner.execute(sourceDirectory, pythonExe, inspectorArguments).getStandardOutputAsList();
     }
 
-    private String getProjectName(final File directory, final String pythonExe, final File setupFile) throws ExecutableRunnerException {
-        String projectName = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME, PropertyAuthority.None);
+    private String getProjectName(final File directory, final File pythonExe, final File setupFile) throws ExecutableRunnerException {
+        String projectName = pipInspectorDetectableOptions.getDetectPipProjectName();
 
-        if (setupFile != null && setupFile.exists() && StringUtils.isBlank(projectName)) {
-            final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(
-                setupFile.getAbsolutePath(),
-                "--name"));
-            final List<String> output = executableRunner.execute(findProjectNameExecutable).getStandardOutputAsList();
+        if (StringUtils.isBlank(projectName) && setupFile != null && setupFile.exists()) {
+            final List<String> pythonArguments = Arrays.asList(setupFile.getAbsolutePath(), "--name");
+            final List<String> output = executableRunner.execute(directory, pythonExe, pythonArguments).getStandardOutputAsList();
             projectName = output.get(output.size() - 1).replace('_', '-').trim();
         }
 

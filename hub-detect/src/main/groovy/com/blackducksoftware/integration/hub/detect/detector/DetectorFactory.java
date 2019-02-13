@@ -123,9 +123,9 @@ public class DetectorFactory implements BeanFactoryAware {
         return beanFactory.getBean(PipenvDetector.class, environment);
     }
 
-    public PipInspectorDetector createPipInspectorBomTool(final DetectorEnvironment environment) {
+    public PipInspectorDetectable createPipInspectorBomTool(final DetectorEnvironment environment) {
         //final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None);
-        return beanFactory.getBean(PipInspectorDetector.class, environment);
+        return beanFactory.getBean(PipInspectorDetectable.class, environment);
     }
 
     public RebarDetectable createRebarBomTool(final DetectorEnvironment environment) {
