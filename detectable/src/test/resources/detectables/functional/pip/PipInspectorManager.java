@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip;
+package detectables.functional.pip;
 
 import java.io.File;
 import java.io.IOException;

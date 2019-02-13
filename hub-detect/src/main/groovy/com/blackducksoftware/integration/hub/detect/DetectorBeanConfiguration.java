@@ -276,11 +276,6 @@ public class DetectorBeanConfiguration {
     }
 
     @Bean
-    public PythonExecutableFinder pythonExecutableFinder() {
-        return new PythonExecutableFinder(executableFinder, detectConfiguration);
-    }
-
-    @Bean
     public GemlockExtractor gemlockExtractor() {
         return new GemlockExtractor(externalIdFactory);
     }

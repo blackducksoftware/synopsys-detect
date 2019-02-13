@@ -30,21 +30,17 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationType;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
 
 public class PipenvGraphParser {
-    final Logger logger = LoggerFactory.getLogger(PipenvGraphParser.class);
-
     public static final String TOP_LEVEL_SEPARATOR = "==";
     public static final String DEPENDENCY_INDENTATION = "  ";
     public static final String DEPENDENCY_NAME_PREFIX = "- ";
@@ -98,14 +94,14 @@ public class PipenvGraphParser {
 
         if (!dependencyGraph.getRootDependencyExternalIds().isEmpty()) {
             final ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, projectName, projectVersionName);
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.PIP, sourcePath, projectExternalId, dependencyGraph).build();
+            final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.PIP, dependencyGraph, projectExternalId).build();
             return new PipParseResult(projectName, projectVersionName, codeLocation);
         } else {
             return null;
         }
     }
 
-    int getLevel(final String line) {
+    public int getLevel(final String line) {
         String consumableLine = line;
         int level = 0;
 
@@ -117,7 +113,7 @@ public class PipenvGraphParser {
         return level;
     }
 
-    Optional<Dependency> getDependencyFromLine(final Map<String, String[]> pipFreezeMap, final String line) {
+    public Optional<Dependency> getDependencyFromLine(final Map<String, String[]> pipFreezeMap, final String line) {
         Dependency dependency = null;
         String name = null;
         String version = null;

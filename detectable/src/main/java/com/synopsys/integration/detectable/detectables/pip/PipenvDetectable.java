@@ -30,6 +30,8 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
@@ -41,27 +43,30 @@ public class PipenvDetectable extends Detectable {
     public static final String PIPFILE_FILE_NAME = "Pipfile";
     public static final String PIPFILE_DOT_LOCK_FILE_NAME = "Pipfile.lock";
 
+    private final PipenvDetectableOptions pipenvDetectableOptions;
     private final FileFinder fileFinder;
-    private final PythonExecutableFinder pythonExecutableFinder;
+    private final PythonResolver pythonResolver;
+    private final PipenvResolver pipenvResolver;
     private final PipenvExtractor pipenvExtractor;
 
-    private String pythonExe;
-    private String pipenvExe;
-    private File pipfileDotLock;
-    private File pipfile;
+    private File pythonExe;
+    private File pipenvExe;
     private File setupFile;
 
-    public PipenvDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PythonExecutableFinder pythonExecutableFinder, final PipenvExtractor pipenvExtractor) {
+    public PipenvDetectable(final DetectableEnvironment environment, final PipenvDetectableOptions pipenvDetectableOptions, final FileFinder fileFinder, final PythonResolver pythonResolver, final PipenvResolver pipenvResolver,
+        final PipenvExtractor pipenvExtractor) {
         super(environment, "Pipenv Graph", "PIP");
+        this.pipenvDetectableOptions = pipenvDetectableOptions;
         this.fileFinder = fileFinder;
+        this.pipenvResolver = pipenvResolver;
         this.pipenvExtractor = pipenvExtractor;
-        this.pythonExecutableFinder = pythonExecutableFinder;
+        this.pythonResolver = pythonResolver;
     }
 
     @Override
     public DetectableResult applicable() {
-        pipfile = fileFinder.findFile(environment.getDirectory(), PIPFILE_FILE_NAME);
-        pipfileDotLock = fileFinder.findFile(environment.getDirectory(), PIPFILE_DOT_LOCK_FILE_NAME);
+        final File pipfile = fileFinder.findFile(environment.getDirectory(), PIPFILE_FILE_NAME);
+        final File pipfileDotLock = fileFinder.findFile(environment.getDirectory(), PIPFILE_DOT_LOCK_FILE_NAME);
 
         if (pipfile != null || pipfileDotLock != null) {
             return new PassedDetectableResult();
@@ -73,12 +78,12 @@ public class PipenvDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        pythonExe = pythonExecutableFinder.findPython(environment);
+        pythonExe = pythonResolver.resolvePython();
         if (pythonExe == null) {
             return new ExecutableNotFoundDetectableResult("python");
         }
 
-        pipenvExe = pythonExecutableFinder.findPipenv(environment);
+        pipenvExe = pipenvResolver.resolvePipenv();
         if (pipenvExe == null) {
             return new ExecutableNotFoundDetectableResult("pipenv");
         }

@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pip;
+package com.synopsys.integration.detectable.detectables.pip.unit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -12,14 +12,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvGraphParser;
 
+@UnitTest
 public class PipEnvTreeParserTest {
     private PipenvGraphParser parser;
 
@@ -30,13 +32,13 @@ public class PipEnvTreeParserTest {
     private final String line2 = PipenvGraphParser.DEPENDENCY_INDENTATION + PipenvGraphParser.DEPENDENCY_INDENTATION + line1;
     private final String line3 = "invalid line";
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         parser = new PipenvGraphParser(new ExternalIdFactory());
     }
 
     @Test
-    public void getCurrentIndentationTest() {
+    void getCurrentIndentationTest() {
         final int indentation1 = parser.getLevel(line1);
         assertEquals(1, indentation1);
 
@@ -45,7 +47,7 @@ public class PipEnvTreeParserTest {
     }
 
     @Test
-    public void lineToNodeTest() {
+    void lineToNodeTest() {
         final Map<String, String[]> pipFreezeMap = new HashMap<>();
 
         final Optional<Dependency> validNode1 = parser.getDependencyFromLine(pipFreezeMap, line1);
@@ -63,7 +65,7 @@ public class PipEnvTreeParserTest {
     }
 
     @Test
-    public void invalidParseTest() {
+    void invalidParseTest() {
         final List<String> pipFreezeOutput = new ArrayList<>();
 
         String invalidText = "i am not a valid file" + "\n";

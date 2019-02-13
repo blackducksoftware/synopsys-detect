@@ -9,24 +9,26 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.synopsys.integration.detectable.detectables.pip;
+package com.synopsys.integration.detectable.detectables.pip.unit;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 
+@UnitTest
 public class PipInspectorTreeParserTest {
     private PipInspectorTreeParser parser;
 
-    @Before
+    @BeforeEach
     public void init() {
         parser = new PipInspectorTreeParser(new ExternalIdFactory());
     }
@@ -76,8 +78,8 @@ public class PipInspectorTreeParserTest {
 
         final Optional<PipParseResult> validParse = parser.parse(pipInspectorOutput, "");
         Assert.assertTrue(validParse.isPresent());
-        Assert.assertTrue(validParse.get().getProjectName().equals("projectName"));
-        Assert.assertTrue(validParse.get().getProjectVersion().equals("projectVersionName"));
+        Assert.assertEquals("projectName", validParse.get().getProjectName());
+        Assert.assertEquals("projectVersionName", validParse.get().getProjectVersion());
     }
 
     @Test

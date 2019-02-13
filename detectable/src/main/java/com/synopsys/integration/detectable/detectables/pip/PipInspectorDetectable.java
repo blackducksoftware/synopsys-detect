@@ -34,7 +34,9 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.SystemExecutableFinder;
+import com.synopsys.integration.detectable.detectable.executable.resolver.PipInspectorResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.PipResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
@@ -44,29 +46,28 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 
 public class PipInspectorDetectable extends Detectable {
     public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
-    public static final String PYTHON_EXECUTABLE = "python";
-    public static final String PIP_EXECUTABLE = "python";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final FileFinder fileFinder;
-    private final SystemExecutableFinder systemExecutableFinder;
-    private final PipInspectorManager pipInspectorManager;
+    private final PythonResolver pythonResolver;
+    private final PipResolver pipResolver;
+    private final PipInspectorResolver pipInspectorResolver;
     private final PipInspectorExtractor pipInspectorExtractor;
     private final String requirementFilePath;
 
     private File pythonExe;
-    private File pipExe;
     private File pipInspector;
     private File setupFile;
 
-    public PipInspectorDetectable(final DetectableEnvironment environment, final String requirementFilePath, final FileFinder fileFinder, final SystemExecutableFinder systemExecutableFinder, final PipInspectorManager pipInspectorManager,
-        final PipInspectorExtractor pipInspectorExtractor) {
+    public PipInspectorDetectable(final DetectableEnvironment environment, final String requirementFilePath, final FileFinder fileFinder, final PythonResolver pythonResolver, final PipResolver pipResolver,
+        final PipInspectorResolver pipInspectorResolver, final PipInspectorExtractor pipInspectorExtractor) {
         super(environment, "Pip Inspector", "PIP");
         this.fileFinder = fileFinder;
+        this.pythonResolver = pythonResolver;
+        this.pipResolver = pipResolver;
+        this.pipInspectorResolver = pipInspectorResolver;
         this.pipInspectorExtractor = pipInspectorExtractor;
-        this.systemExecutableFinder = systemExecutableFinder;
-        this.pipInspectorManager = pipInspectorManager;
         this.requirementFilePath = requirementFilePath;
     }
 
@@ -88,20 +89,20 @@ public class PipInspectorDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        pythonExe = systemExecutableFinder.findExecutable(PYTHON_EXECUTABLE);
+        pythonExe = pythonResolver.resolvePython();
         if (pythonExe == null) {
-            return new ExecutableNotFoundDetectableResult(PYTHON_EXECUTABLE);
+            return new ExecutableNotFoundDetectableResult("python");
         }
 
-        pipExe = systemExecutableFinder.findExecutable(PIP_EXECUTABLE);
+        final File pipExe = pipResolver.resolvePip();
         if (pipExe == null) {
-            return new ExecutableNotFoundDetectableResult(PIP_EXECUTABLE);
+            return new ExecutableNotFoundDetectableResult("pip");
         }
 
-        pipInspector = pipInspectorManager.findPipInspector(environment);
+        pipInspector = pipInspectorResolver.resolvePipInspector();
 
         if (pipInspector == null) {
-            return new InspectorNotFoundDetectableResult(PipInspectorManager.INSPECTOR_NAME);
+            return new InspectorNotFoundDetectableResult("pip-inspector.py");
         }
 
         return new PassedDetectableResult();
