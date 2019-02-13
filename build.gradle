@@ -16,8 +16,6 @@ buildscript {
 
 apply plugin: 'java'
 
-project.ext.set("archivesBaseName", "synopsys-detect")
-
 version = '5.3.0-SNAPSHOT'
 String parentVersion = project.version
 
@@ -28,6 +26,7 @@ allprojects {
 configure(subprojects) { project ->
     group = 'com.blackducksoftware.integration'
     version = parentVersion
+    archivesBaseName = "synopsys-detect"
 
     apply plugin: 'com.blackducksoftware.integration.solution'
     apply plugin: 'groovy'
