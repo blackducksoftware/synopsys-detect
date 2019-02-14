@@ -1,9 +1,6 @@
-include "detect-application"
 include "detect-configuration"
 include 'detectable'
 
-rootProject.name = 'detect'
-rootProject.children.each { project -> project.buildFileName = "${project.name}.gradle"
-}
+rootProject.name = 'synopsys-detect'
 
 
