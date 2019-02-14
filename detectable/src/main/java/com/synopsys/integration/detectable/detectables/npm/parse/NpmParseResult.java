@@ -21,16 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.npm;
+package com.synopsys.integration.detectable.detectables.npm.parse;
 
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 
 public class NpmParseResult {
     public String projectName;
     public String projectVersion;
-    public DetectCodeLocation codeLocation;
+    public CodeLocation codeLocation;
 
-    public NpmParseResult(final String projectName, final String projectVersion, final DetectCodeLocation codeLocation) {
+    public NpmParseResult(final String projectName, final String projectVersion, final CodeLocation codeLocation) {
         this.projectName = projectName;
         this.projectVersion = projectVersion;
         this.codeLocation = codeLocation;

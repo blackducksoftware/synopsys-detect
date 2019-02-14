@@ -30,31 +30,29 @@ import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.detect.workflow.extraction.Extraction;
+import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.detectables.npm.parse.NpmLockfileParser;
+import com.synopsys.integration.detectable.detectables.npm.parse.NpmParseResult;
 
 public class NpmLockfileExtractor {
     private final NpmLockfileParser npmLockfileParser;
-    private final DetectConfiguration detectConfiguration;
 
-    public NpmLockfileExtractor(final NpmLockfileParser npmLockfileParser, final DetectConfiguration detectConfiguration) {
+    public NpmLockfileExtractor(final NpmLockfileParser npmLockfileParser) {
         this.npmLockfileParser = npmLockfileParser;
-        this.detectConfiguration = detectConfiguration;
     }
 
-    public Extraction extract(final File directory, final File lockfile, final Optional<File> packageJson) {
+    /*
+    packageJson is optional
+     */
+    public Extraction extract(final File directory, final File lockfile, final File packageJson, final boolean includeDevDependencies) {
         try {
-            final boolean includeDev = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.None);
-
-            String lockText = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
+            final String lockText = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
             Optional<String> packageText = Optional.empty();
-            if (packageJson.isPresent()) {
-                packageText = Optional.of(FileUtils.readFileToString(packageJson.get(), StandardCharsets.UTF_8));
+            if (packageJson != null) {
+                packageText = Optional.of(FileUtils.readFileToString(packageJson, StandardCharsets.UTF_8));
             }
 
-            final NpmParseResult result = npmLockfileParser.parse(directory.getCanonicalPath(), packageText, lockText, includeDev);
+            final NpmParseResult result = npmLockfileParser.parse(directory.getCanonicalPath(), packageText, lockText, includeDevDependencies);
 
             return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
 

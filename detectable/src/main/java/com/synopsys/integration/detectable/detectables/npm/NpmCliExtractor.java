@@ -33,32 +33,30 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.detect.detector.ExtractionId;
-import com.synopsys.integration.detect.util.executable.Executable;
-import com.synopsys.integration.detect.util.executable.ExecutableOutput;
-import com.synopsys.integration.detect.util.executable.ExecutableRunner;
-import com.synopsys.integration.detect.workflow.extraction.Extraction;
+import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectables.npm.parse.NpmCliParser;
+import com.synopsys.integration.detectable.detectables.npm.parse.NpmParseResult;
 
 public class NpmCliExtractor {
     public static final String OUTPUT_FILE = "detect_npm_proj_dependencies.json";
     public static final String ERROR_FILE = "detect_npm_error.json";
-    private final Logger logger = LoggerFactory.getLogger(NpmCliExtractor.class);
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
     private final NpmCliParser npmCliParser;
-    private final DetectConfiguration detectConfiguration;
+    private final NpmCliExtractorOptions npmCliExtractorOptions;
 
-    public NpmCliExtractor(final ExecutableRunner executableRunner, final NpmCliParser npmCliParser, final DetectConfiguration detectConfiguration) {
+    public NpmCliExtractor(final ExecutableRunner executableRunner, final NpmCliParser npmCliParser, final NpmCliExtractorOptions npmCliExtractorOptions) {
         this.executableRunner = executableRunner;
         this.npmCliParser = npmCliParser;
-        this.detectConfiguration = detectConfiguration;
+        this.npmCliExtractorOptions = npmCliExtractorOptions;
     }
 
-    public Extraction extract(final File directory, final String npmExe, final ExtractionId extractionId) {
+    public Extraction extract(final File directory, final File npmExe) {
 
-        final boolean includeDevDeps = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.None);
+        final boolean includeDevDeps = npmCliExtractorOptions.shouldIncludeDevDependencies();
         final List<String> exeArgs = new ArrayList<>();
         exeArgs.add("ls");
         exeArgs.add("-json");
@@ -66,7 +64,7 @@ public class NpmCliExtractor {
             exeArgs.add("-prod");
         }
 
-        final String additionalArguments = detectConfiguration.getProperty(DetectProperty.DETECT_NPM_ARGUMENTS, PropertyAuthority.None);
+        final String additionalArguments = npmCliExtractorOptions.getNpmArguments();
         if (StringUtils.isNotBlank(additionalArguments)) {
             exeArgs.addAll(Arrays.asList(additionalArguments.split(" ")));
         }
@@ -74,12 +72,12 @@ public class NpmCliExtractor {
         final Executable npmLsExe = new Executable(directory, npmExe, exeArgs);
         ExecutableOutput executableOutput;
         try {
-            executableOutput = executableRunner.execute(npmLsExe);
+            npmLsOutput = executableRunner.execute(directory, npmExe, exeArgs);
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
-        final String standardOutput = executableOutput.getStandardOutput();
-        final String errorOutput = executableOutput.getErrorOutput();
+        final String standardOutput = npmLsOutput.getStandardOutput();
+        final String errorOutput = npmLsOutput.getErrorOutput();
         if (StringUtils.isNotBlank(errorOutput)) {
             logger.error("Error when running npm ls -json command");
             logger.error(errorOutput);

@@ -99,7 +99,7 @@ public class PipInspectorDetectable extends Detectable {
             return new ExecutableNotFoundDetectableResult("pip");
         }
 
-        pipInspector = pipInspectorResolver.resolvePipInspector();
+        pipInspector = pipInspectorResolver.resolvePipInspector(); // TODO: Implementation of this should copy the pip-inspector.py from resources to temp folder
 
         if (pipInspector == null) {
             return new InspectorNotFoundDetectableResult("pip-inspector.py");

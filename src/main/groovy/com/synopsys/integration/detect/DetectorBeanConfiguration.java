@@ -384,8 +384,8 @@ public class DetectorBeanConfiguration {
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public NpmPackageLockDetector npmPackageLockBomTool(final DetectorEnvironment environment) {
-        return new NpmPackageLockDetector(environment, detectFileFinder, npmLockfileExtractor());
+    public NpmPackageLockDetectable npmPackageLockBomTool(final DetectorEnvironment environment) {
+        return new NpmPackageLockDetectable(environment, detectFileFinder, npmLockfileExtractor());
     }
 
     @Bean

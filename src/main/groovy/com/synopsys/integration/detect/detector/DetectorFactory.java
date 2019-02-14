@@ -95,8 +95,8 @@ public class DetectorFactory implements BeanFactoryAware {
         return beanFactory.getBean(NpmCliDetector.class, environment);
     }
 
-    public NpmPackageLockDetector createNpmPackageLockBomTool(final DetectorEnvironment environment) {
-        return beanFactory.getBean(NpmPackageLockDetector.class, environment);
+    public NpmPackageLockDetectable createNpmPackageLockBomTool(final DetectorEnvironment environment) {
+        return beanFactory.getBean(NpmPackageLockDetectable.class, environment);
     }
 
     public NugetProjectDetector createNugetProjectBomTool(final DetectorEnvironment environment) {

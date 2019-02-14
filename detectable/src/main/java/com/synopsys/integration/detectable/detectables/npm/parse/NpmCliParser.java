@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.npm;
+package com.synopsys.integration.detectable.detectables.npm.parse;
 
 import java.util.Map.Entry;
 import java.util.Set;
@@ -30,8 +30,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationType;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -42,6 +40,8 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 
 public class NpmCliParser {
     private final Logger logger = LoggerFactory.getLogger(NpmCliParser.class);
@@ -67,7 +67,7 @@ public class NpmCliParser {
         return convertNpmJsonFileToCodeLocation(sourcePath, npmLsOutput);
     }
 
-    NpmParseResult convertNpmJsonFileToCodeLocation(final String sourcePath, final String npmLsOutput) {
+    public NpmParseResult convertNpmJsonFileToCodeLocation(final String sourcePath, final String npmLsOutput) {
         final JsonObject npmJson = new JsonParser().parse(npmLsOutput).getAsJsonObject();
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
@@ -86,7 +86,7 @@ public class NpmCliParser {
 
         final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, projectName, projectVersion);
 
-        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.NPM, sourcePath, externalId, graph).build();
+        final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.NPM, graph, externalId).build();
 
         return new NpmParseResult(projectName, projectVersion, codeLocation);
 
