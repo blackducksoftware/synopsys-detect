@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.exitcode;
 
 public enum ExitCodeType {
     SUCCESS(0),
-    FAILURE_HUB_CONNECTIVITY(1),
+    FAILURE_BLACKDUCK_CONNECTIVITY(1),
     FAILURE_TIMEOUT(2),
     FAILURE_POLICY_VIOLATION(3),
     FAILURE_PROXY_CONNECTIVITY(4),

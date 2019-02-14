@@ -112,7 +112,7 @@ public class Application implements ApplicationRunner {
             RunManager runManager = new RunManager(detectContext);
             try {
                 logger.info("Detect run begin: " + detectRun.getRunId());
-                runResult = Optional.ofNullable(runManager.run());
+                runResult = Optional.ofNullable(runManager.run(bootResult.runDecision));
                 logger.info("Detect run completed.");
             } catch (final Exception e) {
                 if (e.getMessage() != null){

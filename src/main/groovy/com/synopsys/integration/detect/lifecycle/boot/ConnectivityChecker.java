@@ -79,7 +79,7 @@ public class ConnectivityChecker {
             final CurrentVersionView currentVersion = blackDuckService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
             logger.info(String.format("Successfully connected to BlackDuck (version %s)!", currentVersion.getVersion()));
         } catch (IntegrationException e) {
-            throw new DetectUserFriendlyException("Could not determine which version of Black Duck detect connected to.", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
+            throw new DetectUserFriendlyException("Could not determine which version of Black Duck detect connected to.", e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         }
 
         Map<String, String> additionalMetaData = detectConfiguration.getPhoneHomeProperties();
