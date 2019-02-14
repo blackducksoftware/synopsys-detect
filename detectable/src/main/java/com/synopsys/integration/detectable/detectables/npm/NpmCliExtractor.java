@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.npm;
+package com.synopsys.integration.detectable.detectables.npm;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,8 +69,7 @@ public class NpmCliExtractor {
             exeArgs.addAll(Arrays.asList(additionalArguments.split(" ")));
         }
 
-        final Executable npmLsExe = new Executable(directory, npmExe, exeArgs);
-        ExecutableOutput executableOutput;
+        final ExecutableOutput npmLsOutput;
         try {
             npmLsOutput = executableRunner.execute(directory, npmExe, exeArgs);
         } catch (final Exception e) {

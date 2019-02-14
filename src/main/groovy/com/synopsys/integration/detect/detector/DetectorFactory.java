@@ -91,8 +91,8 @@ public class DetectorFactory implements BeanFactoryAware {
         return beanFactory.getBean(MavenPomWrapperDetectable.class, environment);
     }
 
-    public NpmCliDetector createNpmCliBomTool(final DetectorEnvironment environment) {
-        return beanFactory.getBean(NpmCliDetector.class, environment);
+    public NpmCliDetectable createNpmCliBomTool(final DetectorEnvironment environment) {
+        return beanFactory.getBean(NpmCliDetectable.class, environment);
     }
 
     public NpmPackageLockDetectable createNpmPackageLockBomTool(final DetectorEnvironment environment) {

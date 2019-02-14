@@ -21,19 +21,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.npm.model;
+package com.synopsys.integration.detectable.detectables.npm.model;
 
-import java.util.Map;
+public class NpmRequires {
+    private final String name;
+    private final String fuzzyVersion;
 
-import com.google.gson.annotations.SerializedName;
+    public NpmRequires(final String name, final String fuzzyVersion) {
+        this.name = name;
+        this.fuzzyVersion = fuzzyVersion;
+    }
 
-public class PackageLock {
-    @SerializedName("name")
-    public String name;
+    public String getName() {
+        return name;
+    }
 
-    @SerializedName("version")
-    public String version;
-
-    @SerializedName("dependencies")
-    public Map<String, PackageLockDependency> dependencies;
+    public String getFuzzyVersion() {
+        return fuzzyVersion;
+    }
 }

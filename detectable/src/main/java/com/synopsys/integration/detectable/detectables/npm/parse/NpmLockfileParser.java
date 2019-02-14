@@ -21,18 +21,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.npm;
+package com.synopsys.integration.detectable.detectables.npm.parse;
 
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.detector.npm.model.NpmDependency;
-import com.synopsys.integration.detect.detector.npm.model.PackageJson;
-import com.synopsys.integration.detect.detector.npm.model.PackageLock;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationType;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
@@ -74,8 +69,8 @@ public class NpmLockfileParser {
         if (packageLock.dependencies != null) {
             logger.info(String.format("Found %d dependencies.", packageLock.dependencies.size()));
             //Convert to our custom format
-            NpmDependencyConverter dependencyConverter = new NpmDependencyConverter(externalIdFactory);
-            NpmDependency rootDependency = dependencyConverter.convertLockFile(packageLock, packageJson);
+            final NpmDependencyConverter dependencyConverter = new NpmDependencyConverter(externalIdFactory);
+            final NpmDependency rootDependency = dependencyConverter.convertLockFile(packageLock, packageJson);
             traverse(rootDependency, dependencyGraph, true, includeDevDependencies);
         } else {
             logger.info("Lock file did not have a 'dependencies' section.");
@@ -86,12 +81,12 @@ public class NpmLockfileParser {
         return new NpmParseResult(packageLock.name, packageLock.version, codeLocation);
     }
 
-    private void traverse(NpmDependency npmDependency, MutableDependencyGraph dependencyGraph, boolean atRoot, boolean includeDevDependencies) {
+    private void traverse(final NpmDependency npmDependency, final MutableDependencyGraph dependencyGraph, final boolean atRoot, final boolean includeDevDependencies) {
         if (!shouldInclude(npmDependency, includeDevDependencies))
             return;
 
         npmDependency.getRequires().forEach(required -> {
-            NpmDependency resolved = lookupDependency(npmDependency, required.getName());
+            final NpmDependency resolved = lookupDependency(npmDependency, required.getName());
             logger.debug("Required package: " + required.getName() + " of version: " + required.getFuzzyVersion());
             if (resolved != null) {
                 logger.debug("Found package: " + resolved.getName() + "with version: " + resolved.getVersion());
@@ -109,8 +104,8 @@ public class NpmLockfileParser {
     }
 
     //returns the first dependency directly under this dependency or under a parent
-    private NpmDependency lookupDependency(NpmDependency npmDependency, String name) {
-        for (NpmDependency current : npmDependency.getDependencies()) {
+    private NpmDependency lookupDependency(final NpmDependency npmDependency, final String name) {
+        for (final NpmDependency current : npmDependency.getDependencies()) {
             if (current.getName().equals(name)) {
                 return current;
             }

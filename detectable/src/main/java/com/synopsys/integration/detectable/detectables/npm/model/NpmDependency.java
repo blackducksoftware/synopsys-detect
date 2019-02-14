@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.npm.model;
+package com.synopsys.integration.detectable.detectables.npm.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,23 +55,23 @@ public class NpmDependency {
         this.parent = parent;
     }
 
-    public void addRequires(String name, String fuzzyVersion) {
+    public void addRequires(final String name, final String fuzzyVersion) {
         this.addRequires(new NpmRequires(name, fuzzyVersion));
     }
 
-    public void addRequires(NpmRequires required) {
+    public void addRequires(final NpmRequires required) {
         this.requires.add(required);
     }
 
-    public void addAllRequires(Collection<NpmRequires> required) {
+    public void addAllRequires(final Collection<NpmRequires> required) {
         this.requires.addAll(required);
     }
 
-    public void addDependency(NpmDependency dependency) {
+    public void addDependency(final NpmDependency dependency) {
         dependencies.add(dependency);
     }
 
-    public void addAllDependencies(Collection<NpmDependency> dependencies) {
+    public void addAllDependencies(final Collection<NpmDependency> dependencies) {
         this.dependencies.addAll(dependencies);
     }
 

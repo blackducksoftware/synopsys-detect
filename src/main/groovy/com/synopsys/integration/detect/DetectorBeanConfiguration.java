@@ -378,8 +378,8 @@ public class DetectorBeanConfiguration {
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public NpmCliDetector npmCliBomTool(final DetectorEnvironment environment) {
-        return new NpmCliDetector(environment, detectFileFinder, npmExecutableFinder(), npmCliExtractor());
+    public NpmCliDetectable npmCliBomTool(final DetectorEnvironment environment) {
+        return new NpmCliDetectable(environment, detectFileFinder, npmExecutableFinder(), npmCliExtractor());
     }
 
     @Bean
