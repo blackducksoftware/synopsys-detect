@@ -17,18 +17,13 @@ buildscript {
 version = '5.3.0-SNAPSHOT'
 apply plugin: 'com.blackducksoftware.integration.solution'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'maven-publish'
-
 apply from: 'airgap.gradle'
 apply from: 'artifactory-properties.gradle'
 
 allprojects {
     apply plugin: 'groovy'
+    apply plugin: 'maven-publish'
     apply plugin: 'io.spring.dependency-management'
-
-    license {
-        header rootProject.file('LICENSE')
-    }
 
     dependencies {
         implementation 'com.blackducksoftware.integration:blackduck-common:41.2.0'
@@ -39,6 +34,10 @@ allprojects {
 subprojects {
     version = rootProject.version
     apply plugin: 'com.blackducksoftware.integration.simple'
+
+    license {
+        header rootProject.file('LICENSE')
+    }
 
     dependencyManagement {
         imports {

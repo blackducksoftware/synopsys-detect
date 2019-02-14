@@ -1,5 +1,5 @@
 /**
- * detect-application
+ * synopsys-detect
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
