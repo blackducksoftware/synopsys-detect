@@ -16,6 +16,7 @@ import com.synopsys.integration.bdio.BdioNodeFactory;
 import com.synopsys.integration.bdio.BdioPropertyHelper;
 import com.synopsys.integration.bdio.graph.DependencyGraphTransformer;
 import com.synopsys.integration.bdio.model.BdioComponent;
+import com.synopsys.integration.bdio.model.BdioId;
 import com.synopsys.integration.bdio.model.BdioNode;
 import com.synopsys.integration.bdio.model.BdioProject;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -38,7 +39,7 @@ public class NugetInspectorPackagerPerfTest {
         final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
         final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
 
-        final BdioProject bdioNode = bdioNodeFactory.createProject("test", "1.0.0", "bdioId", externalIdFactory.createMavenExternalId("group", "name", "version"));
+        final BdioProject bdioNode = bdioNodeFactory.createProject("test", "1.0.0", BdioId.createFromPieces("bdioId"), externalIdFactory.createMavenExternalId("group", "name", "version"));
 
         final List<BdioComponent> components = dependencyGraphTransformer.transformDependencyGraph(codeLocation.getDependencyGraph(), bdioNode, codeLocation.getDependencyGraph().getRootDependencies(), new HashMap<ExternalId, BdioNode>());
 

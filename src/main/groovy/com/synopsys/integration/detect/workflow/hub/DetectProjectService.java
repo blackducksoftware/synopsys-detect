@@ -24,23 +24,26 @@
 package com.synopsys.integration.detect.workflow.hub;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.blackduck.api.core.ProjectRequestBuilder;
-import com.synopsys.integration.blackduck.api.generated.component.ProjectRequest;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectService;
+import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -61,42 +64,72 @@ public class DetectProjectService {
     public ProjectVersionWrapper createOrUpdateHubProject(final NameVersion projectNameVersion, final String applicationId) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         final ProjectService projectService = blackDuckServicesFactory.createProjectService();
         final BlackDuckService hubService = blackDuckServicesFactory.createBlackDuckService();
-        final ProjectRequest projectRequest = createProjectRequest(projectNameVersion, projectService, hubService);
+        final ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectService, hubService);
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
-        final ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectRequest, forceUpdate);
+        final ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
         setApplicationId(projectVersionWrapper.getProjectView(), applicationId);
         return projectVersionWrapper;
     }
 
-    public ProjectRequest createProjectRequest(final NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService hubService) throws DetectUserFriendlyException {
-        final ProjectRequestBuilder projectRequestBuilder = new ProjectRequestBuilder();
+    public ProjectSyncModel createProjectSyncModel(final NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService hubService) throws DetectUserFriendlyException {
+        final ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectNameVersion.getName(), projectNameVersion.getVersion());
 
-        projectRequestBuilder.setProjectName(projectNameVersion.getName());
-        projectRequestBuilder.setVersionName(projectNameVersion.getVersion());
+        // TODO need to determine if this property actually exists in the ConfigurableEnvironment - just omit this one?
+        // projectSyncModel.setProjectLevelAdjustments(detectProjectServiceOptions.isProjectLevelAdjustments());
 
-        projectRequestBuilder.setProjectLevelAdjustments(detectProjectServiceOptions.isProjectLevelAdjustments());
-        projectRequestBuilder.setPhase(detectProjectServiceOptions.getProjectVersionPhase());
-        projectRequestBuilder.setDistribution(detectProjectServiceOptions.getProjectVersionDistribution());
-        projectRequestBuilder.setProjectTier(detectProjectServiceOptions.getProjectTier());
-        projectRequestBuilder.setDescription(detectProjectServiceOptions.getProjectDescription());
-        projectRequestBuilder.setReleaseComments(detectProjectServiceOptions.getProjectVersionNotes());
-        projectRequestBuilder.setCloneCategories(convertClonePropertyToEnum(detectProjectServiceOptions.getCloneCategories()));
-        projectRequestBuilder.setVersionNickname(detectProjectServiceOptions.getProjectVersionNickname());
+        String phaseString = detectProjectServiceOptions.getProjectVersionPhase();
+        if (StringUtils.isNotBlank(phaseString) && EnumUtils.isValidEnum(ProjectVersionPhaseType.class, phaseString)) {
+            ProjectVersionPhaseType phase = ProjectVersionPhaseType.valueOf(phaseString);
+            projectSyncModel.setPhase(phase);
+        }
+
+        String distributionString = detectProjectServiceOptions.getProjectVersionDistribution();
+        if (StringUtils.isNotBlank(distributionString) && EnumUtils.isValidEnum(ProjectVersionDistributionType.class, phaseString)) {
+            ProjectVersionDistributionType distribution = ProjectVersionDistributionType.valueOf(distributionString);
+            projectSyncModel.setDistribution(distribution);
+        }
+
+        Integer projectTier = detectProjectServiceOptions.getProjectTier();
+        if (null != projectTier && projectTier >= 1 && projectTier <= 5) {
+            projectSyncModel.setProjectTier(projectTier);
+        }
+
+        String description = detectProjectServiceOptions.getProjectDescription();
+        if (StringUtils.isNotBlank(description)) {
+            projectSyncModel.setDescription(description);
+        }
+
+
+        String releaseComments = detectProjectServiceOptions.getProjectVersionNotes();
+        if (StringUtils.isNotBlank(releaseComments)) {
+            projectSyncModel.setReleaseComments(releaseComments);
+        }
+
+        List<ProjectCloneCategoriesType> cloneCategories = convertClonePropertyToEnum(detectProjectServiceOptions.getCloneCategories());
+        if (!cloneCategories.isEmpty()) {
+            projectSyncModel.setCloneCategories(cloneCategories);
+        }
+
+        String nickname = detectProjectServiceOptions.getProjectVersionNickname();
+        if (StringUtils.isNotBlank(nickname)) {
+            projectSyncModel.setNickname(nickname);
+        }
 
         final Optional<String> cloneUrl = findCloneUrl(projectNameVersion, projectService, hubService);
         if (cloneUrl.isPresent()) {
             logger.info("Cloning project version from release url: " + cloneUrl.get());
-            projectRequestBuilder.setCloneFromReleaseUrl(cloneUrl.get());
+            projectSyncModel.setCloneFromReleaseUrl(cloneUrl.get());
         }
 
-        return projectRequestBuilder.build();
+        return projectSyncModel;
     }
 
     private List<ProjectCloneCategoriesType> convertClonePropertyToEnum(final String[] cloneCategories) {
-        final List<ProjectCloneCategoriesType> categories = new ArrayList<>();
-        for (final String category : cloneCategories) {
-            categories.add(ProjectCloneCategoriesType.valueOf(category));
-        }
+        final List<ProjectCloneCategoriesType> categories = Arrays
+                .stream(cloneCategories)
+                .filter(cloneCategoryValue -> EnumUtils.isValidEnum(ProjectCloneCategoriesType.class, cloneCategoryValue))
+                .map(ProjectCloneCategoriesType::valueOf)
+                .collect(Collectors.toList());
         logger.debug("Found clone categories:" + categories.stream().map(it -> it.toString()).collect(Collectors.joining(",")));
         return categories;
     }

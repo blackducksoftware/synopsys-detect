@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.configuration;
+package com.synopsys.integration.detect.configuration;
 
 import java.net.MalformedURLException;
 import java.net.URL;

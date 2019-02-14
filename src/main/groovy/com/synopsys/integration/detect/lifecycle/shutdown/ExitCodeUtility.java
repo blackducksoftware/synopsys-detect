@@ -1,5 +1,5 @@
 /**
- * hub-detect
+ * synopsys-detect
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.lifecycle.shutdown;
+package com.synopsys.integration.detect.lifecycle.shutdown;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
