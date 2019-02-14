@@ -24,10 +24,12 @@
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
+import com.synopsys.integration.detect.lifecycle.run.RunDecision;
 
 public class BootResult {
     public BootType bootType;
     public DetectConfiguration detectConfiguration; //Application needs this to make sure exit code behaves.
+    public RunDecision runDecision = null;
 
     public enum BootType {
         EXIT,

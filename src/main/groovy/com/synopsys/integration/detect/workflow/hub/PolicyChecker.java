@@ -38,6 +38,7 @@ import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicySummaryStatusType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.VersionBomPolicyStatusView;
+import com.synopsys.integration.blackduck.service.ProjectBomService;
 import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
 import com.synopsys.integration.exception.IntegrationException;
@@ -51,8 +52,8 @@ public class PolicyChecker {
         this.eventSystem = eventSystem;
     }
 
-    public void checkPolicy(final List<PolicySeverityType> policySeverities, final ProjectService projectService, final ProjectVersionView projectVersionView) throws IntegrationException {
-        final Optional<PolicyStatusDescription> optionalPolicyStatusDescription = getPolicyStatus(projectService, projectVersionView);
+    public void checkPolicy(final List<PolicySeverityType> policySeverities, final ProjectBomService projectBomService, final ProjectVersionView projectVersionView) throws IntegrationException {
+        final Optional<PolicyStatusDescription> optionalPolicyStatusDescription = getPolicyStatus(projectBomService, projectVersionView);
         if (optionalPolicyStatusDescription.isPresent()) {
             PolicyStatusDescription policyStatusDescription = optionalPolicyStatusDescription.get();
             logger.info(policyStatusDescription.getPolicyStatusMessage());
@@ -69,8 +70,8 @@ public class PolicyChecker {
      * For the given DetectProject, find the matching Hub project/version, then all of its code locations, then all of their scan summaries, wait until they are all complete, then get the policy status.
      * @throws IntegrationException
      */
-    public Optional<PolicyStatusDescription> getPolicyStatus(final ProjectService projectService, final ProjectVersionView version) throws IntegrationException {
-        final Optional<VersionBomPolicyStatusView> versionBomPolicyStatusView = projectService.getPolicyStatusForVersion(version);
+    public Optional<PolicyStatusDescription> getPolicyStatus(final ProjectBomService projectBomService, final ProjectVersionView version) throws IntegrationException {
+        final Optional<VersionBomPolicyStatusView> versionBomPolicyStatusView = projectBomService.getPolicyStatusForVersion(version);
         if (!versionBomPolicyStatusView.isPresent()) {
             return Optional.empty();
         }

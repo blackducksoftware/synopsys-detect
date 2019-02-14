@@ -20,6 +20,7 @@ import com.synopsys.integration.bdio.BdioPropertyHelper;
 import com.synopsys.integration.bdio.graph.DependencyGraphTransformer;
 import com.synopsys.integration.bdio.model.BdioComponent;
 import com.synopsys.integration.bdio.model.BdioExternalIdentifier;
+import com.synopsys.integration.bdio.model.BdioId;
 import com.synopsys.integration.bdio.model.BdioNode;
 import com.synopsys.integration.bdio.model.BdioProject;
 import com.synopsys.integration.bdio.model.Forge;
@@ -72,7 +73,7 @@ public class NugetInspectorPackagerTest {
             final DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
 
             final BdioExternalIdentifier projectId = bdioPropertyHelper.createExternalIdentifier(codeLocation.getExternalId());
-            final BdioProject project = bdioNodeFactory.createProject(result.projectName, result.projectVersion, Forge.NUGET.toString(), projectId);
+            final BdioProject project = bdioNodeFactory.createProject(result.projectName, result.projectVersion, BdioId.createFromPieces(Forge.NUGET.toString()), projectId);
 
             final Map<ExternalId, BdioNode> components = new HashMap<>();
             components.put(codeLocation.getExternalId(), project);

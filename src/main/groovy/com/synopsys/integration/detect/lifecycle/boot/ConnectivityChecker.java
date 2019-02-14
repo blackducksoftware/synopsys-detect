@@ -66,7 +66,8 @@ public class ConnectivityChecker {
 
         if (connectionResult.isFailure()) {
             logger.error("Failed to connect to the Black Duck server");
-            return ConnectivityResult.failure(connectionResult.getErrorMessage().orElse("Could not reach the Black Duck server or the credentials were invalid."));
+            logger.debug(String.format("The Black Duck server responded with a status code of %d", connectionResult.getHttpStatusCode()));
+            return ConnectivityResult.failure(connectionResult.getFailureMessage().orElse("Could not reach the Black Duck server or the credentials were invalid."));
         }
 
         logger.info("Connection to the Black Duck server was successful");//TODO: Get a detailed reason of why canConnect failed.

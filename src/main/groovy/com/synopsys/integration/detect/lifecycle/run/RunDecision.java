@@ -21,25 +21,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.polaris;
+package com.synopsys.integration.detect.lifecycle.run;
 
-import java.io.File;
+public class RunDecision {
+    private boolean runBlackduck;
+    private boolean runPolaris;
 
-public class PolarisEnvironmentCheck {
-    public static final String POLARIS_CONFIG_DIRECTORY = ".swip";
-    public static final String POLARIS_ACCESS_TOKEN_FILENAME = ".access_token";
-
-    public boolean canRun(final File homeDirectory) {
-        if (null != homeDirectory && homeDirectory.exists() && homeDirectory.isDirectory()) {
-            final File polarisConfig = new File(homeDirectory, POLARIS_CONFIG_DIRECTORY);
-            if (null != polarisConfig && polarisConfig.exists() && polarisConfig.isDirectory()) {
-                final File accessToken = new File(polarisConfig, POLARIS_ACCESS_TOKEN_FILENAME);
-                if (null != accessToken && accessToken.exists() && accessToken.isFile() && accessToken.length() > 0) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public RunDecision(final boolean runBlackduck, final boolean runPolaris) {
+        this.runBlackduck = runBlackduck;
+        this.runPolaris = runPolaris;
     }
 
+    public boolean willRunBlackduck(){
+        return runBlackduck;
+    }
+
+    public boolean willRunPolaris(){
+        return runPolaris;
+    }
 }

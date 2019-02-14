@@ -24,6 +24,7 @@
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.util.List;
+import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -55,6 +56,8 @@ import com.synopsys.integration.detect.help.print.HelpPrinter;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.interactive.mode.DefaultInteractiveMode;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
+import com.synopsys.integration.detect.lifecycle.run.RunDecider;
+import com.synopsys.integration.detect.lifecycle.run.RunDecision;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.property.SpringPropertySource;
 import com.synopsys.integration.detect.util.TildeInPathResolver;
@@ -72,6 +75,8 @@ import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWrite
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.polaris.common.PolarisEnvironmentCheck;
+import com.synopsys.integration.util.IntEnvironmentVariables;
 
 import freemarker.template.Configuration;
 
@@ -144,16 +149,30 @@ public class BootManager {
             return BootResult.exit(detectConfiguration);
         }
 
+        logger.info("Main boot completed. Deciding what detect should do.");
+        Properties properties = new Properties();
+        properties.setProperty("user.home", directoryManager.getUserHome().getAbsolutePath());
+        PolarisEnvironmentCheck polarisEnvironmentCheck = new PolarisEnvironmentCheck(new IntEnvironmentVariables(), properties);
+
+        RunDecider runDecider = new RunDecider();
+        RunDecision runDecision = runDecider.decide(detectConfiguration, polarisEnvironmentCheck);
+
+        boolean willRunSomething = runDecision.willRunBlackduck() || runDecision.willRunPolaris();
+        if (!willRunSomething) {
+            throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run blackduck or polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
+        }
+
         ConnectivityManager connectivityManager;
-        boolean offline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
-        if (offline) {
-            logger.info("Detect is in offline mode.");
-            connectivityManager = ConnectivityManager.offline();
-        } else {
-            logger.info("Detect is in online mode.");
-            //check my connectivity
-            ConnectivityChecker connectivityChecker = new ConnectivityChecker();
-            ConnectivityResult connectivityResult = connectivityChecker.determineConnectivity(detectConfiguration, detectOptionManager, detectInfo, gson, objectMapper, eventSystem);
+        if (runDecision.willRunBlackduck()) {
+            boolean offline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
+            if (offline) {
+                logger.info("Detect is in offline mode.");
+                connectivityManager = ConnectivityManager.offline();
+            } else {
+                logger.info("Detect is in online mode.");
+                //check my connectivity
+                ConnectivityChecker connectivityChecker = new ConnectivityChecker();
+                ConnectivityResult connectivityResult = connectivityChecker.determineConnectivity(detectConfiguration, detectOptionManager, detectInfo, gson, objectMapper, eventSystem);
 
             if (connectivityResult.isSuccessfullyConnected()) {
                 logger.info("Detect is capable of communicating with server.");
@@ -171,9 +190,12 @@ public class BootManager {
             }
         }
 
-        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
-            logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
-            return BootResult.exit(detectConfiguration);
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
+                logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
+                return BootResult.exit(detectConfiguration);
+            }
+        } else {
+            connectivityManager = null;
         }
 
         //TODO: Only need this if in diagnostic or online (for phone home):
@@ -206,6 +228,7 @@ public class BootManager {
         BootResult result = new BootResult();
         result.bootType = BootResult.BootType.CONTINUE;
         result.detectConfiguration = detectConfiguration;
+        result.runDecision = runDecision;
         return result;
     }
 

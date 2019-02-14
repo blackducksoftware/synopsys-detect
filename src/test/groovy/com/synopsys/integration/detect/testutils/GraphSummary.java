@@ -1,5 +1,5 @@
 /**
- * detectable
+ * integration-bdio
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,19 +21,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.npm.model;
+package com.synopsys.integration.detect.testutils;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
-import com.google.gson.annotations.SerializedName;
+import com.synopsys.integration.bdio.model.BdioId;
+import com.synopsys.integration.util.NameVersion;
 
-public class PackageLock {
-    @SerializedName("name")
-    public String name;
+public class GraphSummary {
+    public Set<BdioId> rootExternalDataIds = new HashSet<>();
+    public Map<BdioId, Set<BdioId>> externalDataIdRelationships = new HashMap<>();
+    public Map<BdioId, NameVersion> dependencySummaries = new HashMap<>();
 
-    @SerializedName("version")
-    public String version;
-
-    @SerializedName("dependencies")
-    public Map<String, PackageLockDependency> dependencies;
 }

@@ -11,8 +11,7 @@ import org.junit.Assert;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.summary.DependencyGraphSummarizer;
-import com.synopsys.integration.bdio.graph.summary.GraphSummary;
+import com.synopsys.integration.bdio.model.BdioId;
 
 public class GraphCompare {
 
@@ -39,21 +38,21 @@ public class GraphCompare {
         assertSet(expected.rootExternalDataIds, actual.rootExternalDataIds, "Root external ids");
         assertSet(expected.dependencySummaries.keySet(), actual.dependencySummaries.keySet(), "Dependencies in graph");
 
-        final Set<String> expectedRelationshipIds = expected.externalDataIdRelationships.keySet();
-        final Set<String> expectedExistingRelationshipsIds = expectedRelationshipIds.stream().filter(key -> expected.externalDataIdRelationships.get(key) != null && expected.externalDataIdRelationships.get(key).size() > 0)
+        final Set<BdioId> expectedRelationshipIds = expected.externalDataIdRelationships.keySet();
+        final Set<BdioId> expectedExistingRelationshipsIds = expectedRelationshipIds.stream().filter(key -> expected.externalDataIdRelationships.get(key) != null && expected.externalDataIdRelationships.get(key).size() > 0)
                                                                  .collect(Collectors.toSet());
 
-        final Set<String> actualRelationshipIds = actual.externalDataIdRelationships.keySet();
-        final Set<String> actualExistingRelationshipsIds = actualRelationshipIds.stream().filter(key -> actual.externalDataIdRelationships.get(key) != null && actual.externalDataIdRelationships.get(key).size() > 0)
+        final Set<BdioId> actualRelationshipIds = actual.externalDataIdRelationships.keySet();
+        final Set<BdioId> actualExistingRelationshipsIds = actualRelationshipIds.stream().filter(key -> actual.externalDataIdRelationships.get(key) != null && actual.externalDataIdRelationships.get(key).size() > 0)
                                                                .collect(Collectors.toSet());
 
         assertSet(expectedExistingRelationshipsIds, actualExistingRelationshipsIds, "Existing relationships");
 
-        for (final String key : expected.dependencySummaries.keySet()) {
+        for (final BdioId key : expected.dependencySummaries.keySet()) {
             Assert.assertEquals(expected.dependencySummaries.get(key).getName(), actual.dependencySummaries.get(key).getName());
             Assert.assertEquals(expected.dependencySummaries.get(key).getVersion(), actual.dependencySummaries.get(key).getVersion());
         }
-        for (final String key : expectedExistingRelationshipsIds) {
+        for (final BdioId key : expectedExistingRelationshipsIds) {
             assertSet(expected.externalDataIdRelationships.get(key), actual.externalDataIdRelationships.get(key), "External data id relationships for " + key);
         }
     }
