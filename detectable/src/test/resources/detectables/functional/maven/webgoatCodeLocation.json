@@ -1,2377 +1,538 @@
 {
-  "codeLocationType": "MAVEN",
-  "sourcePath": "/test/path/webgoat-container",
-  "externalId": {
-    "forge": {
-      "name": "maven",
-      "separator": ":",
-      "kbSeparator": ":"
-    },
-    "group": "org.owasp.webgoat",
-    "name": "webgoat-container",
-    "version": "7.1-SNAPSHOT"
-  },
-  "dependencyGraph": {
-    "rootDependencies": [
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.springframework",
-        "name": "spring-webmvc",
-        "version": "3.2.4.RELEASE"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "javax.servlet",
-        "name": "jstl",
-        "version": "1.2"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.apache.tiles",
-        "name": "tiles-core",
-        "version": "3.0.5"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "javax.transaction",
-        "name": "javax.transaction-api",
-        "version": "1.2"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "hsqldb",
-        "name": "hsqldb",
-        "version": "1.8.0.10"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "com.h2database",
-        "name": "h2",
-        "version": "1.4.190"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "com.fasterxml.jackson.core",
-        "name": "jackson-core",
-        "version": "2.6.3"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "javax.activation",
-        "name": "activation",
-        "version": "1.1.1"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.apache.axis",
-        "name": "axis-ant",
-        "version": "1.4"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.slf4j",
-        "name": "jcl-over-slf4j",
-        "version": "1.7.12"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "javax.mail",
-        "name": "javax.mail-api",
-        "version": "1.5.4"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "commons-collections",
-        "name": "commons-collections",
-        "version": "3.2.1"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "net.sourceforge.jtds",
-        "name": "jtds",
-        "version": "1.3.1"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "wsdl4j",
-        "name": "wsdl4j",
-        "version": "1.6.3"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.springframework.security",
-        "name": "spring-security-core",
-        "version": "3.2.4.RELEASE"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.springframework.security",
-        "name": "spring-security-web",
-        "version": "3.2.4.RELEASE"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.springframework",
-        "name": "spring-core",
-        "version": "3.2.4.RELEASE"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "commons-io",
-        "name": "commons-io",
-        "version": "2.4"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "com.google.guava",
-        "name": "guava",
-        "version": "18.0"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "com.saucelabs",
-        "name": "sauce_junit",
-        "version": "2.1.20"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "junit",
-        "name": "junit",
-        "version": "4.12"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.apache.axis",
-        "name": "axis-jaxrpc",
-        "version": "1.4"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.springframework.security",
-        "name": "spring-security-config",
-        "version": "3.2.4.RELEASE"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "commons-discovery",
-        "name": "commons-discovery",
-        "version": "0.5"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "commons-digester",
-        "name": "commons-digester",
-        "version": "2.1"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.springframework",
-        "name": "spring-aop",
-        "version": "3.2.4.RELEASE"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.apache.axis",
-        "name": "axis-saaj",
-        "version": "1.4"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.apache.commons",
-        "name": "commons-lang3",
-        "version": "3.4"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "taglibs",
-        "name": "standard",
-        "version": "1.1.2"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.slf4j",
-        "name": "slf4j-log4j12",
-        "version": "1.7.12"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.apache.tomcat",
-        "name": "tomcat-catalina",
-        "version": "7.0.65"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "commons-logging",
-        "name": "commons-logging",
-        "version": "1.2"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "log4j",
-        "name": "log4j",
-        "version": "1.2.17"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "axis",
-        "name": "axis",
-        "version": "1.4"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "java2html",
-        "name": "j2h",
-        "version": "1.3.1"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.slf4j",
-        "name": "slf4j-api",
-        "version": "1.7.12"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "org.seleniumhq.selenium",
-        "name": "selenium-java",
-        "version": "2.48.2"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "commons-fileupload",
-        "name": "commons-fileupload",
-        "version": "1.3.1"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "com.fasterxml.jackson.core",
-        "name": "jackson-databind",
-        "version": "2.6.3"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "ecs",
-        "name": "ecs",
-        "version": "1.4.2"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":",
-          "kbSeparator": ":"
-        },
-        "group": "javax",
-        "name": "javaee-api",
-        "version": "6.0"
-      }
+  "rootExternalDataIds": [
+    "http:maven/org_slf4j/slf4j_api/1_7_12",
+    "http:maven/org_springframework_security/spring_security_config/3_2_4_RELEASE",
+    "http:maven/org_apache_axis/axis_jaxrpc/1_4",
+    "http:maven/org_slf4j/jcl_over_slf4j/1_7_12",
+    "http:maven/com_google_guava/guava/18_0",
+    "http:maven/junit/junit/4_12",
+    "http:maven/org_springframework/spring_webmvc/3_2_4_RELEASE",
+    "http:maven/javax_mail/javax_mail_api/1_5_4",
+    "http:maven/log4j/log4j/1_2_17",
+    "http:maven/javax_activation/activation/1_1_1",
+    "http:maven/org_apache_tomcat/tomcat_catalina/7_0_65",
+    "http:maven/commons_discovery/commons_discovery/0_5",
+    "http:maven/ecs/ecs/1_4_2",
+    "http:maven/org_apache_axis/axis_saaj/1_4",
+    "http:maven/commons_collections/commons_collections/3_2_1",
+    "http:maven/commons_logging/commons_logging/1_2",
+    "http:maven/taglibs/standard/1_1_2",
+    "http:maven/com_h2database/h2/1_4_190",
+    "http:maven/commons_io/commons_io/2_4",
+    "http:maven/org_springframework/spring_aop/3_2_4_RELEASE",
+    "http:maven/wsdl4j/wsdl4j/1_6_3",
+    "http:maven/org_springframework/spring_core/3_2_4_RELEASE",
+    "http:maven/commons_fileupload/commons_fileupload/1_3_1",
+    "http:maven/org_seleniumhq_selenium/selenium_java/2_48_2",
+    "http:maven/javax_transaction/javax_transaction_api/1_2",
+    "http:maven/org_apache_tiles/tiles_core/3_0_5",
+    "http:maven/org_apache_commons/commons_lang3/3_4",
+    "http:maven/javax/javaee_api/6_0",
+    "http:maven/axis/axis/1_4",
+    "http:maven/org_apache_axis/axis_ant/1_4",
+    "http:maven/hsqldb/hsqldb/1_8_0_10",
+    "http:maven/java2html/j2h/1_3_1",
+    "http:maven/org_springframework_security/spring_security_core/3_2_4_RELEASE",
+    "http:maven/com_fasterxml_jackson_core/jackson_databind/2_6_3",
+    "http:maven/org_slf4j/slf4j_log4j12/1_7_12",
+    "http:maven/commons_digester/commons_digester/2_1",
+    "http:maven/javax_servlet/jstl/1_2",
+    "http:maven/com_saucelabs/sauce_junit/2_1_20",
+    "http:maven/net_sourceforge_jtds/jtds/1_3_1",
+    "http:maven/org_springframework_security/spring_security_web/3_2_4_RELEASE",
+    "http:maven/com_fasterxml_jackson_core/jackson_core/2_6_3"
+  ],
+  "externalDataIdRelationships": {
+    "http:maven/junit/junit/4_12": [
+      "http:maven/org_hamcrest/hamcrest_core/1_3"
     ],
-    "dependencies": {
-      "{\"forge\":\"maven\",\"group\":\"org.springframework\",\"name\":\"spring-webmvc\",\"version\":\"3.2.4.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-webmvc",
-        "version": "3.2.4.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-webmvc",
-          "version": "3.2.4.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"net.java.dev.jna\",\"name\":\"jna\",\"version\":\"4.1.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "jna",
-        "version": "4.1.0",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "net.java.dev.jna",
-          "name": "jna",
-          "version": "4.1.0"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-api\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "selenium-api",
-        "version": "2.48.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-api",
-          "version": "2.48.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"net.sourceforge.nekohtml\",\"name\":\"nekohtml\",\"version\":\"1.9.22\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "nekohtml",
-        "version": "1.9.22",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "net.sourceforge.nekohtml",
-          "name": "nekohtml",
-          "version": "1.9.22"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.tomcat\",\"name\":\"tomcat-util\",\"version\":\"7.0.65\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "tomcat-util",
-        "version": "7.0.65",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tomcat",
-          "name": "tomcat-util",
-          "version": "7.0.65"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"commons-codec\",\"name\":\"commons-codec\",\"version\":\"1.10\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "commons-codec",
-        "version": "1.10",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "commons-codec",
-          "name": "commons-codec",
-          "version": "1.10"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"cglib\",\"name\":\"cglib-nodep\",\"version\":\"2.1_3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "cglib-nodep",
-        "version": "2.1_3",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "cglib",
-          "name": "cglib-nodep",
-          "version": "2.1_3"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"com.h2database\",\"name\":\"h2\",\"version\":\"1.4.190\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "h2",
-        "version": "1.4.190",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.h2database",
-          "name": "h2",
-          "version": "1.4.190"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"xalan\",\"name\":\"serializer\",\"version\":\"2.7.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "serializer",
-        "version": "2.7.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "xalan",
-          "name": "serializer",
-          "version": "2.7.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"javax.activation\",\"name\":\"activation\",\"version\":\"1.1.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "activation",
-        "version": "1.1.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "javax.activation",
-          "name": "activation",
-          "version": "1.1.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-safari-driver\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "selenium-safari-driver",
-        "version": "2.48.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-safari-driver",
-          "version": "2.48.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.webbitserver\",\"name\":\"webbit\",\"version\":\"0.4.14\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "webbit",
-        "version": "0.4.14",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.webbitserver",
-          "name": "webbit",
-          "version": "0.4.14"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.axis\",\"name\":\"axis-ant\",\"version\":\"1.4\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "axis-ant",
-        "version": "1.4",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.axis",
-          "name": "axis-ant",
-          "version": "1.4"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"javax.mail\",\"name\":\"javax.mail-api\",\"version\":\"1.5.4\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "javax.mail-api",
-        "version": "1.5.4",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "javax.mail",
-          "name": "javax.mail-api",
-          "version": "1.5.4"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"commons-collections\",\"name\":\"commons-collections\",\"version\":\"3.2.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "commons-collections",
-        "version": "3.2.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "commons-collections",
-          "name": "commons-collections",
-          "version": "3.2.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.springframework\",\"name\":\"spring-web\",\"version\":\"3.2.4.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-web",
-        "version": "3.2.4.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-web",
-          "version": "3.2.4.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"xerces\",\"name\":\"xercesImpl\",\"version\":\"2.11.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "xercesImpl",
-        "version": "2.11.0",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "xerces",
-          "name": "xercesImpl",
-          "version": "2.11.0"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.springframework.security\",\"name\":\"spring-security-core\",\"version\":\"3.2.4.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-security-core",
-        "version": "3.2.4.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.springframework.security",
-          "name": "spring-security-core",
-          "version": "3.2.4.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.springframework.security\",\"name\":\"spring-security-web\",\"version\":\"3.2.4.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-security-web",
-        "version": "3.2.4.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.springframework.security",
-          "name": "spring-security-web",
-          "version": "3.2.4.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.springframework\",\"name\":\"spring-core\",\"version\":\"3.2.4.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-core",
-        "version": "3.2.4.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-core",
-          "version": "3.2.4.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"commons-io\",\"name\":\"commons-io\",\"version\":\"2.4\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "commons-io",
-        "version": "2.4",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "commons-io",
-          "name": "commons-io",
-          "version": "2.4"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"com.google.guava\",\"name\":\"guava\",\"version\":\"18.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "guava",
-        "version": "18.0",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.google.guava",
-          "name": "guava",
-          "version": "18.0"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.eclipse.jetty\",\"name\":\"jetty-util\",\"version\":\"9.2.12.v20150709\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "jetty-util",
-        "version": "9.2.12.v20150709",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.eclipse.jetty",
-          "name": "jetty-util",
-          "version": "9.2.12.v20150709"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"com.saucelabs\",\"name\":\"sauce_junit\",\"version\":\"2.1.20\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "sauce_junit",
-        "version": "2.1.20",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.saucelabs",
-          "name": "sauce_junit",
-          "version": "2.1.20"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"junit\",\"name\":\"junit\",\"version\":\"4.12\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "junit",
-        "version": "4.12",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "junit",
-          "name": "junit",
-          "version": "4.12"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"commons-beanutils\",\"name\":\"commons-beanutils\",\"version\":\"1.8.3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "commons-beanutils",
-        "version": "1.8.3",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "commons-beanutils",
-          "name": "commons-beanutils",
-          "version": "1.8.3"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.axis\",\"name\":\"axis-jaxrpc\",\"version\":\"1.4\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "axis-jaxrpc",
-        "version": "1.4",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.axis",
-          "name": "axis-jaxrpc",
-          "version": "1.4"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"commons-discovery\",\"name\":\"commons-discovery\",\"version\":\"0.5\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "commons-discovery",
-        "version": "0.5",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "commons-discovery",
-          "name": "commons-discovery",
-          "version": "0.5"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-chrome-driver\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "selenium-chrome-driver",
-        "version": "2.48.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-chrome-driver",
-          "version": "2.48.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.json\",\"name\":\"json\",\"version\":\"20090211\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "json",
-        "version": "20090211",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.json",
-          "name": "json",
-          "version": "20090211"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.springframework\",\"name\":\"spring-expression\",\"version\":\"3.2.4.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-expression",
-        "version": "3.2.4.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-expression",
-          "version": "3.2.4.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.axis\",\"name\":\"axis-saaj\",\"version\":\"1.4\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "axis-saaj",
-        "version": "1.4",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.axis",
-          "name": "axis-saaj",
-          "version": "1.4"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.commons\",\"name\":\"commons-lang3\",\"version\":\"3.4\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "commons-lang3",
-        "version": "3.4",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.commons",
-          "name": "commons-lang3",
-          "version": "3.4"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"taglibs\",\"name\":\"standard\",\"version\":\"1.1.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "standard",
-        "version": "1.1.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "taglibs",
-          "name": "standard",
-          "version": "1.1.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.slf4j\",\"name\":\"slf4j-log4j12\",\"version\":\"1.7.12\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "slf4j-log4j12",
-        "version": "1.7.12",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.slf4j",
-          "name": "slf4j-log4j12",
-          "version": "1.7.12"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-edge-driver\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "selenium-edge-driver",
-        "version": "2.48.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-edge-driver",
-          "version": "2.48.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"axis\",\"name\":\"axis\",\"version\":\"1.4\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "axis",
-        "version": "1.4",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "axis",
-          "name": "axis",
-          "version": "1.4"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"java2html\",\"name\":\"j2h\",\"version\":\"1.3.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "j2h",
-        "version": "1.3.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "java2html",
-          "name": "j2h",
-          "version": "1.3.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.eclipse.jetty.websocket\",\"name\":\"websocket-client\",\"version\":\"9.2.12.v20150709\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "websocket-client",
-        "version": "9.2.12.v20150709",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.eclipse.jetty.websocket",
-          "name": "websocket-client",
-          "version": "9.2.12.v20150709"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-java\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "selenium-java",
-        "version": "2.48.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-java",
-          "version": "2.48.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-ie-driver\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "selenium-ie-driver",
-        "version": "2.48.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-ie-driver",
-          "version": "2.48.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-leg-rc\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "selenium-leg-rc",
-        "version": "2.48.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-leg-rc",
-          "version": "2.48.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"commons-fileupload\",\"name\":\"commons-fileupload\",\"version\":\"1.3.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "commons-fileupload",
-        "version": "1.3.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "commons-fileupload",
-          "name": "commons-fileupload",
-          "version": "1.3.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.hamcrest\",\"name\":\"hamcrest-core\",\"version\":\"1.3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "hamcrest-core",
-        "version": "1.3",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.hamcrest",
-          "name": "hamcrest-core",
-          "version": "1.3"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"com.google.code.gson\",\"name\":\"gson\",\"version\":\"2.3.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "gson",
-        "version": "2.3.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.google.code.gson",
-          "name": "gson",
-          "version": "2.3.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"xalan\",\"name\":\"xalan\",\"version\":\"2.7.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "xalan",
-        "version": "2.7.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "xalan",
-          "name": "xalan",
-          "version": "2.7.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"com.fasterxml.jackson.core\",\"name\":\"jackson-databind\",\"version\":\"2.6.3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "jackson-databind",
-        "version": "2.6.3",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.fasterxml.jackson.core",
-          "name": "jackson-databind",
-          "version": "2.6.3"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"javax\",\"name\":\"javaee-api\",\"version\":\"6.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "javaee-api",
-        "version": "6.0",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "javax",
-          "name": "javaee-api",
-          "version": "6.0"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.eclipse.jetty.websocket\",\"name\":\"websocket-api\",\"version\":\"9.2.12.v20150709\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "websocket-api",
-        "version": "9.2.12.v20150709",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.eclipse.jetty.websocket",
-          "name": "websocket-api",
-          "version": "9.2.12.v20150709"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"com.saucelabs\",\"name\":\"saucerest\",\"version\":\"1.0.22\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "saucerest",
-        "version": "1.0.22",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.saucelabs",
-          "name": "saucerest",
-          "version": "1.0.22"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"com.googlecode.json-simple\",\"name\":\"json-simple\",\"version\":\"1.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "json-simple",
-        "version": "1.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.googlecode.json-simple",
-          "name": "json-simple",
-          "version": "1.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"aopalliance\",\"name\":\"aopalliance\",\"version\":\"1.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "aopalliance",
-        "version": "1.0",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "aopalliance",
-          "name": "aopalliance",
-          "version": "1.0"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"javax.servlet\",\"name\":\"jstl\",\"version\":\"1.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "jstl",
-        "version": "1.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "javax.servlet",
-          "name": "jstl",
-          "version": "1.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.tiles\",\"name\":\"tiles-core\",\"version\":\"3.0.5\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "tiles-core",
-        "version": "3.0.5",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tiles",
-          "name": "tiles-core",
-          "version": "3.0.5"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.tiles\",\"name\":\"tiles-request-api\",\"version\":\"1.0.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "tiles-request-api",
-        "version": "1.0.6",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tiles",
-          "name": "tiles-request-api",
-          "version": "1.0.6"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-htmlunit-driver\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "selenium-htmlunit-driver",
-        "version": "2.48.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-htmlunit-driver",
-          "version": "2.48.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"javax.transaction\",\"name\":\"javax.transaction-api\",\"version\":\"1.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "javax.transaction-api",
-        "version": "1.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "javax.transaction",
-          "name": "javax.transaction-api",
-          "version": "1.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"net.sourceforge.htmlunit\",\"name\":\"htmlunit\",\"version\":\"2.18\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "htmlunit",
-        "version": "2.18",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "net.sourceforge.htmlunit",
-          "name": "htmlunit",
-          "version": "2.18"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.httpcomponents\",\"name\":\"httpcore\",\"version\":\"4.4.3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "httpcore",
-        "version": "4.4.3",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.httpcomponents",
-          "name": "httpcore",
-          "version": "4.4.3"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"hsqldb\",\"name\":\"hsqldb\",\"version\":\"1.8.0.10\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "hsqldb",
-        "version": "1.8.0.10",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "hsqldb",
-          "name": "hsqldb",
-          "version": "1.8.0.10"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"xml-apis\",\"name\":\"xml-apis\",\"version\":\"1.4.01\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "xml-apis",
-        "version": "1.4.01",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "xml-apis",
-          "name": "xml-apis",
-          "version": "1.4.01"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"axis\",\"name\":\"axis-wsdl4j\",\"version\":\"1.5.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "axis-wsdl4j",
-        "version": "1.5.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "axis",
-          "name": "axis-wsdl4j",
-          "version": "1.5.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.eclipse.jetty\",\"name\":\"jetty-io\",\"version\":\"9.2.12.v20150709\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "jetty-io",
-        "version": "9.2.12.v20150709",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.eclipse.jetty",
-          "name": "jetty-io",
-          "version": "9.2.12.v20150709"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"net.java.dev.jna\",\"name\":\"jna-platform\",\"version\":\"4.1.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "jna-platform",
-        "version": "4.1.0",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "net.java.dev.jna",
-          "name": "jna-platform",
-          "version": "4.1.0"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"com.fasterxml.jackson.core\",\"name\":\"jackson-core\",\"version\":\"2.6.3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "jackson-core",
-        "version": "2.6.3",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.fasterxml.jackson.core",
-          "name": "jackson-core",
-          "version": "2.6.3"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.springframework\",\"name\":\"spring-beans\",\"version\":\"3.2.4.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-beans",
-        "version": "3.2.4.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-beans",
-          "version": "3.2.4.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.slf4j\",\"name\":\"jcl-over-slf4j\",\"version\":\"1.7.12\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "jcl-over-slf4j",
-        "version": "1.7.12",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.slf4j",
-          "name": "jcl-over-slf4j",
-          "version": "1.7.12"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.tomcat\",\"name\":\"tomcat-api\",\"version\":\"7.0.65\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "tomcat-api",
-        "version": "7.0.65",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tomcat",
-          "name": "tomcat-api",
-          "version": "7.0.65"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"io.netty\",\"name\":\"netty\",\"version\":\"3.5.2.Final\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "netty",
-        "version": "3.5.2.Final",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "io.netty",
-          "name": "netty",
-          "version": "3.5.2.Final"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"net.sourceforge.jtds\",\"name\":\"jtds\",\"version\":\"1.3.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "jtds",
-        "version": "1.3.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "net.sourceforge.jtds",
-          "name": "jtds",
-          "version": "1.3.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"wsdl4j\",\"name\":\"wsdl4j\",\"version\":\"1.6.3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "wsdl4j",
-        "version": "1.6.3",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "wsdl4j",
-          "name": "wsdl4j",
-          "version": "1.6.3"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-firefox-driver\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "selenium-firefox-driver",
-        "version": "2.48.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-firefox-driver",
-          "version": "2.48.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.w3c.css\",\"name\":\"sac\",\"version\":\"1.3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "sac",
-        "version": "1.3",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.w3c.css",
-          "name": "sac",
-          "version": "1.3"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.eclipse.jetty.websocket\",\"name\":\"websocket-common\",\"version\":\"9.2.12.v20150709\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "websocket-common",
-        "version": "9.2.12.v20150709",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.eclipse.jetty.websocket",
-          "name": "websocket-common",
-          "version": "9.2.12.v20150709"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-support\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "selenium-support",
-        "version": "2.48.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-support",
-          "version": "2.48.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.tiles\",\"name\":\"tiles-api\",\"version\":\"3.0.5\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "tiles-api",
-        "version": "3.0.5",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tiles",
-          "name": "tiles-api",
-          "version": "3.0.5"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.commons\",\"name\":\"commons-exec\",\"version\":\"1.3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "commons-exec",
-        "version": "1.3",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.commons",
-          "name": "commons-exec",
-          "version": "1.3"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"com.saucelabs\",\"name\":\"sauce_java_common\",\"version\":\"2.1.20\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "sauce_java_common",
-        "version": "2.1.20",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.saucelabs",
-          "name": "sauce_java_common",
-          "version": "2.1.20"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.springframework.security\",\"name\":\"spring-security-config\",\"version\":\"3.2.4.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-security-config",
-        "version": "3.2.4.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.springframework.security",
-          "name": "spring-security-config",
-          "version": "3.2.4.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.tomcat\",\"name\":\"tomcat-juli\",\"version\":\"7.0.65\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "tomcat-juli",
-        "version": "7.0.65",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tomcat",
-          "name": "tomcat-juli",
-          "version": "7.0.65"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"net.sourceforge.cssparser\",\"name\":\"cssparser\",\"version\":\"0.9.16\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "cssparser",
-        "version": "0.9.16",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "net.sourceforge.cssparser",
-          "name": "cssparser",
-          "version": "0.9.16"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"commons-digester\",\"name\":\"commons-digester\",\"version\":\"2.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "commons-digester",
-        "version": "2.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "commons-digester",
-          "name": "commons-digester",
-          "version": "2.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.springframework\",\"name\":\"spring-aop\",\"version\":\"3.2.4.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-aop",
-        "version": "3.2.4.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-aop",
-          "version": "3.2.4.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.springframework\",\"name\":\"spring-context\",\"version\":\"3.2.4.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-context",
-        "version": "3.2.4.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-context",
-          "version": "3.2.4.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.httpcomponents\",\"name\":\"httpmime\",\"version\":\"4.5\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "httpmime",
-        "version": "4.5",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.httpcomponents",
-          "name": "httpmime",
-          "version": "4.5"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.tomcat\",\"name\":\"tomcat-catalina\",\"version\":\"7.0.65\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "tomcat-catalina",
-        "version": "7.0.65",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tomcat",
-          "name": "tomcat-catalina",
-          "version": "7.0.65"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.tomcat\",\"name\":\"tomcat-servlet-api\",\"version\":\"7.0.65\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "tomcat-servlet-api",
-        "version": "7.0.65",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tomcat",
-          "name": "tomcat-servlet-api",
-          "version": "7.0.65"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"commons-logging\",\"name\":\"commons-logging\",\"version\":\"1.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "commons-logging",
-        "version": "1.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "commons-logging",
-          "name": "commons-logging",
-          "version": "1.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"log4j\",\"name\":\"log4j\",\"version\":\"1.2.17\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "log4j",
-        "version": "1.2.17",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "log4j",
-          "name": "log4j",
-          "version": "1.2.17"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"com.fasterxml.jackson.core\",\"name\":\"jackson-annotations\",\"version\":\"2.6.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "jackson-annotations",
-        "version": "2.6.0",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.fasterxml.jackson.core",
-          "name": "jackson-annotations",
-          "version": "2.6.0"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.tomcat\",\"name\":\"tomcat-annotations-api\",\"version\":\"7.0.65\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "tomcat-annotations-api",
-        "version": "7.0.65",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tomcat",
-          "name": "tomcat-annotations-api",
-          "version": "7.0.65"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.apache.httpcomponents\",\"name\":\"httpclient\",\"version\":\"4.5.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "httpclient",
-        "version": "4.5.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.httpcomponents",
-          "name": "httpclient",
-          "version": "4.5.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.slf4j\",\"name\":\"slf4j-api\",\"version\":\"1.7.12\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "slf4j-api",
-        "version": "1.7.12",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.slf4j",
-          "name": "slf4j-api",
-          "version": "1.7.12"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-remote-driver\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "selenium-remote-driver",
-        "version": "2.48.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-remote-driver",
-          "version": "2.48.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"net.sourceforge.htmlunit\",\"name\":\"htmlunit-core-js\",\"version\":\"2.17\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "htmlunit-core-js",
-        "version": "2.17",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "net.sourceforge.htmlunit",
-          "name": "htmlunit-core-js",
-          "version": "2.17"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"ecs\",\"name\":\"ecs\",\"version\":\"1.4.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "ecs",
-        "version": "1.4.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "ecs",
-          "name": "ecs",
-          "version": "1.4.2"
-        }
-      }
+    "http:maven/org_springframework/spring_webmvc/3_2_4_RELEASE": [
+      "http:maven/org_springframework/spring_expression/3_2_4_RELEASE",
+      "http:maven/org_springframework/spring_context/3_2_4_RELEASE",
+      "http:maven/org_springframework/spring_web/3_2_4_RELEASE"
+    ],
+    "http:maven/xalan/xalan/2_7_2": [
+      "http:maven/xalan/serializer/2_7_2"
+    ],
+    "http:maven/xerces/xercesImpl/2_11_0": [
+      "http:maven/xml_apis/xml_apis/1_4_01"
+    ],
+    "http:maven/org_apache_tomcat/tomcat_catalina/7_0_65": [
+      "http:maven/org_apache_tomcat/tomcat_util/7_0_65",
+      "http:maven/org_apache_tomcat/tomcat_servlet_api/7_0_65",
+      "http:maven/org_apache_tomcat/tomcat_juli/7_0_65",
+      "http:maven/org_apache_tomcat/tomcat_api/7_0_65",
+      "http:maven/org_apache_tomcat/tomcat_annotations_api/7_0_65"
+    ],
+    "http:maven/org_eclipse_jetty_websocket/websocket_common/9_2_12_v20150709": [
+      "http:maven/org_eclipse_jetty_websocket/websocket_api/9_2_12_v20150709"
+    ],
+    "http:maven/org_webbitserver/webbit/0_4_14": [
+      "http:maven/io_netty/netty/3_5_2_Final"
+    ],
+    "http:maven/org_springframework/spring_aop/3_2_4_RELEASE": [
+      "http:maven/aopalliance/aopalliance/1_0",
+      "http:maven/org_springframework/spring_beans/3_2_4_RELEASE"
+    ],
+    "http:maven/org_seleniumhq_selenium/selenium_ie_driver/2_48_2": [
+      "http:maven/net_java_dev_jna/jna_platform/4_1_0",
+      "http:maven/net_java_dev_jna/jna/4_1_0"
+    ],
+    "http:maven/com_saucelabs/saucerest/1_0_22": [
+      "http:maven/org_json/json/20090211",
+      "http:maven/com_googlecode_json_simple/json_simple/1_1"
+    ],
+    "http:maven/org_seleniumhq_selenium/selenium_java/2_48_2": [
+      "http:maven/org_webbitserver/webbit/0_4_14",
+      "http:maven/org_seleniumhq_selenium/selenium_edge_driver/2_48_2",
+      "http:maven/org_seleniumhq_selenium/selenium_ie_driver/2_48_2",
+      "http:maven/org_seleniumhq_selenium/selenium_support/2_48_2",
+      "http:maven/org_seleniumhq_selenium/selenium_firefox_driver/2_48_2",
+      "http:maven/org_seleniumhq_selenium/selenium_leg_rc/2_48_2",
+      "http:maven/org_seleniumhq_selenium/selenium_htmlunit_driver/2_48_2",
+      "http:maven/org_seleniumhq_selenium/selenium_safari_driver/2_48_2",
+      "http:maven/org_seleniumhq_selenium/selenium_chrome_driver/2_48_2"
+    ],
+    "http:maven/org_apache_tiles/tiles_core/3_0_5": [
+      "http:maven/org_apache_tiles/tiles_api/3_0_5"
+    ],
+    "http:maven/org_seleniumhq_selenium/selenium_htmlunit_driver/2_48_2": [
+      "http:maven/org_apache_httpcomponents/httpclient/4_5_1",
+      "http:maven/net_sourceforge_htmlunit/htmlunit/2_18"
+    ],
+    "http:maven/org_apache_tiles/tiles_api/3_0_5": [
+      "http:maven/org_apache_tiles/tiles_request_api/1_0_6"
+    ],
+    "http:maven/axis/axis/1_4": [
+      "http:maven/axis/axis_wsdl4j/1_5_1"
+    ],
+    "http:maven/org_seleniumhq_selenium/selenium_edge_driver/2_48_2": [
+      "http:maven/org_apache_commons/commons_exec/1_3"
+    ],
+    "http:maven/org_apache_httpcomponents/httpclient/4_5_1": [
+      "http:maven/org_apache_httpcomponents/httpcore/4_4_3"
+    ],
+    "http:maven/org_eclipse_jetty_websocket/websocket_client/9_2_12_v20150709": [
+      "http:maven/org_eclipse_jetty/jetty_util/9_2_12_v20150709",
+      "http:maven/org_eclipse_jetty/jetty_io/9_2_12_v20150709",
+      "http:maven/org_eclipse_jetty_websocket/websocket_common/9_2_12_v20150709"
+    ],
+    "http:maven/com_fasterxml_jackson_core/jackson_databind/2_6_3": [
+      "http:maven/com_fasterxml_jackson_core/jackson_annotations/2_6_0"
+    ],
+    "http:maven/org_seleniumhq_selenium/selenium_chrome_driver/2_48_2": [
+      "http:maven/org_seleniumhq_selenium/selenium_remote_driver/2_48_2"
+    ],
+    "http:maven/commons_digester/commons_digester/2_1": [
+      "http:maven/commons_beanutils/commons_beanutils/1_8_3"
+    ],
+    "http:maven/com_saucelabs/sauce_junit/2_1_20": [
+      "http:maven/com_saucelabs/saucerest/1_0_22",
+      "http:maven/com_saucelabs/sauce_java_common/2_1_20"
+    ],
+    "http:maven/org_seleniumhq_selenium/selenium_remote_driver/2_48_2": [
+      "http:maven/org_seleniumhq_selenium/selenium_api/2_48_2",
+      "http:maven/com_google_code_gson/gson/2_3_1",
+      "http:maven/cglib/cglib_nodep/2_1_3"
+    ],
+    "http:maven/net_sourceforge_cssparser/cssparser/0_9_16": [
+      "http:maven/org_w3c_css/sac/1_3"
+    ],
+    "http:maven/net_sourceforge_htmlunit/htmlunit/2_18": [
+      "http:maven/net_sourceforge_nekohtml/nekohtml/1_9_22",
+      "http:maven/org_apache_httpcomponents/httpmime/4_5",
+      "http:maven/xalan/xalan/2_7_2",
+      "http:maven/xerces/xercesImpl/2_11_0",
+      "http:maven/commons_codec/commons_codec/1_10",
+      "http:maven/net_sourceforge_cssparser/cssparser/0_9_16",
+      "http:maven/org_eclipse_jetty_websocket/websocket_client/9_2_12_v20150709",
+      "http:maven/net_sourceforge_htmlunit/htmlunit_core_js/2_17"
+    ]
+  },
+  "dependencySummaries": {
+    "http:maven/org_springframework_security/spring_security_config/3_2_4_RELEASE": {
+      "name": "spring-security-config",
+      "version": "3.2.4.RELEASE"
     },
-    "relationships": {
-      "{\"forge\":\"maven\",\"group\":\"org.springframework\",\"name\":\"spring-webmvc\",\"version\":\"3.2.4.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-web",
-          "version": "3.2.4.RELEASE"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-expression",
-          "version": "3.2.4.RELEASE"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-context",
-          "version": "3.2.4.RELEASE"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.apache.tiles\",\"name\":\"tiles-core\",\"version\":\"3.0.5\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tiles",
-          "name": "tiles-api",
-          "version": "3.0.5"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-htmlunit-driver\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.httpcomponents",
-          "name": "httpclient",
-          "version": "4.5.1"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "net.sourceforge.htmlunit",
-          "name": "htmlunit",
-          "version": "2.18"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"net.sourceforge.htmlunit\",\"name\":\"htmlunit\",\"version\":\"2.18\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.eclipse.jetty.websocket",
-          "name": "websocket-client",
-          "version": "9.2.12.v20150709"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "net.sourceforge.nekohtml",
-          "name": "nekohtml",
-          "version": "1.9.22"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "xalan",
-          "name": "xalan",
-          "version": "2.7.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "commons-codec",
-          "name": "commons-codec",
-          "version": "1.10"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "net.sourceforge.htmlunit",
-          "name": "htmlunit-core-js",
-          "version": "2.17"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "xerces",
-          "name": "xercesImpl",
-          "version": "2.11.0"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "net.sourceforge.cssparser",
-          "name": "cssparser",
-          "version": "0.9.16"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.httpcomponents",
-          "name": "httpmime",
-          "version": "4.5"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.webbitserver\",\"name\":\"webbit\",\"version\":\"0.4.14\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "io.netty",
-          "name": "netty",
-          "version": "3.5.2.Final"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"xerces\",\"name\":\"xercesImpl\",\"version\":\"2.11.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "xml-apis",
-          "name": "xml-apis",
-          "version": "1.4.01"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.eclipse.jetty.websocket\",\"name\":\"websocket-common\",\"version\":\"9.2.12.v20150709\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.eclipse.jetty.websocket",
-          "name": "websocket-api",
-          "version": "9.2.12.v20150709"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.apache.tiles\",\"name\":\"tiles-api\",\"version\":\"3.0.5\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tiles",
-          "name": "tiles-request-api",
-          "version": "1.0.6"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"com.saucelabs\",\"name\":\"sauce_junit\",\"version\":\"2.1.20\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.saucelabs",
-          "name": "sauce_java_common",
-          "version": "2.1.20"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.saucelabs",
-          "name": "saucerest",
-          "version": "1.0.22"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"junit\",\"name\":\"junit\",\"version\":\"4.12\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.hamcrest",
-          "name": "hamcrest-core",
-          "version": "1.3"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-chrome-driver\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-remote-driver",
-          "version": "2.48.2"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"net.sourceforge.cssparser\",\"name\":\"cssparser\",\"version\":\"0.9.16\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.w3c.css",
-          "name": "sac",
-          "version": "1.3"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"commons-digester\",\"name\":\"commons-digester\",\"version\":\"2.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "commons-beanutils",
-          "name": "commons-beanutils",
-          "version": "1.8.3"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.springframework\",\"name\":\"spring-aop\",\"version\":\"3.2.4.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "aopalliance",
-          "name": "aopalliance",
-          "version": "1.0"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-beans",
-          "version": "3.2.4.RELEASE"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-edge-driver\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.commons",
-          "name": "commons-exec",
-          "version": "1.3"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.apache.tomcat\",\"name\":\"tomcat-catalina\",\"version\":\"7.0.65\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tomcat",
-          "name": "tomcat-api",
-          "version": "7.0.65"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tomcat",
-          "name": "tomcat-annotations-api",
-          "version": "7.0.65"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tomcat",
-          "name": "tomcat-util",
-          "version": "7.0.65"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tomcat",
-          "name": "tomcat-juli",
-          "version": "7.0.65"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.tomcat",
-          "name": "tomcat-servlet-api",
-          "version": "7.0.65"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"axis\",\"name\":\"axis\",\"version\":\"1.4\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "axis",
-          "name": "axis-wsdl4j",
-          "version": "1.5.1"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.eclipse.jetty.websocket\",\"name\":\"websocket-client\",\"version\":\"9.2.12.v20150709\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.eclipse.jetty",
-          "name": "jetty-util",
-          "version": "9.2.12.v20150709"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.eclipse.jetty",
-          "name": "jetty-io",
-          "version": "9.2.12.v20150709"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.eclipse.jetty.websocket",
-          "name": "websocket-common",
-          "version": "9.2.12.v20150709"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.apache.httpcomponents\",\"name\":\"httpclient\",\"version\":\"4.5.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.apache.httpcomponents",
-          "name": "httpcore",
-          "version": "4.4.3"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-remote-driver\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-api",
-          "version": "2.48.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.google.code.gson",
-          "name": "gson",
-          "version": "2.3.1"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "cglib",
-          "name": "cglib-nodep",
-          "version": "2.1_3"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-java\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-htmlunit-driver",
-          "version": "2.48.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-firefox-driver",
-          "version": "2.48.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-ie-driver",
-          "version": "2.48.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-leg-rc",
-          "version": "2.48.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-chrome-driver",
-          "version": "2.48.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-edge-driver",
-          "version": "2.48.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-safari-driver",
-          "version": "2.48.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.seleniumhq.selenium",
-          "name": "selenium-support",
-          "version": "2.48.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.webbitserver",
-          "name": "webbit",
-          "version": "0.4.14"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.seleniumhq.selenium\",\"name\":\"selenium-ie-driver\",\"version\":\"2.48.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "net.java.dev.jna",
-          "name": "jna",
-          "version": "4.1.0"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "net.java.dev.jna",
-          "name": "jna-platform",
-          "version": "4.1.0"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"xalan\",\"name\":\"xalan\",\"version\":\"2.7.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "xalan",
-          "name": "serializer",
-          "version": "2.7.2"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"com.fasterxml.jackson.core\",\"name\":\"jackson-databind\",\"version\":\"2.6.3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.fasterxml.jackson.core",
-          "name": "jackson-annotations",
-          "version": "2.6.0"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"com.saucelabs\",\"name\":\"saucerest\",\"version\":\"1.0.22\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "org.json",
-          "name": "json",
-          "version": "20090211"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":",
-            "kbSeparator": ":"
-          },
-          "group": "com.googlecode.json-simple",
-          "name": "json-simple",
-          "version": "1.1"
-        }
-      ]
+    "http:maven/org_slf4j/jcl_over_slf4j/1_7_12": {
+      "name": "jcl-over-slf4j",
+      "version": "1.7.12"
     },
-    "dependencyGraphCombiner": {}
+    "http:maven/junit/junit/4_12": {
+      "name": "junit",
+      "version": "4.12"
+    },
+    "http:maven/org_apache_httpcomponents/httpmime/4_5": {
+      "name": "httpmime",
+      "version": "4.5"
+    },
+    "http:maven/xalan/xalan/2_7_2": {
+      "name": "xalan",
+      "version": "2.7.2"
+    },
+    "http:maven/org_w3c_css/sac/1_3": {
+      "name": "sac",
+      "version": "1.3"
+    },
+    "http:maven/log4j/log4j/1_2_17": {
+      "name": "log4j",
+      "version": "1.2.17"
+    },
+    "http:maven/commons_discovery/commons_discovery/0_5": {
+      "name": "commons-discovery",
+      "version": "0.5"
+    },
+    "http:maven/org_apache_tomcat/tomcat_catalina/7_0_65": {
+      "name": "tomcat-catalina",
+      "version": "7.0.65"
+    },
+    "http:maven/org_apache_tiles/tiles_request_api/1_0_6": {
+      "name": "tiles-request-api",
+      "version": "1.0.6"
+    },
+    "http:maven/org_eclipse_jetty_websocket/websocket_common/9_2_12_v20150709": {
+      "name": "websocket-common",
+      "version": "9.2.12.v20150709"
+    },
+    "http:maven/commons_logging/commons_logging/1_2": {
+      "name": "commons-logging",
+      "version": "1.2"
+    },
+    "http:maven/org_apache_axis/axis_saaj/1_4": {
+      "name": "axis-saaj",
+      "version": "1.4"
+    },
+    "http:maven/org_seleniumhq_selenium/selenium_api/2_48_2": {
+      "name": "selenium-api",
+      "version": "2.48.2"
+    },
+    "http:maven/org_springframework/spring_web/3_2_4_RELEASE": {
+      "name": "spring-web",
+      "version": "3.2.4.RELEASE"
+    },
+    "http:maven/com_googlecode_json_simple/json_simple/1_1": {
+      "name": "json-simple",
+      "version": "1.1"
+    },
+    "http:maven/commons_io/commons_io/2_4": {
+      "name": "commons-io",
+      "version": "2.4"
+    },
+    "http:maven/org_springframework/spring_aop/3_2_4_RELEASE": {
+      "name": "spring-aop",
+      "version": "3.2.4.RELEASE"
+    },
+    "http:maven/wsdl4j/wsdl4j/1_6_3": {
+      "name": "wsdl4j",
+      "version": "1.6.3"
+    },
+    "http:maven/org_springframework/spring_core/3_2_4_RELEASE": {
+      "name": "spring-core",
+      "version": "3.2.4.RELEASE"
+    },
+    "http:maven/org_apache_commons/commons_lang3/3_4": {
+      "name": "commons-lang3",
+      "version": "3.4"
+    },
+    "http:maven/org_apache_tiles/tiles_core/3_0_5": {
+      "name": "tiles-core",
+      "version": "3.0.5"
+    },
+    "http:maven/com_google_code_gson/gson/2_3_1": {
+      "name": "gson",
+      "version": "2.3.1"
+    },
+    "http:maven/org_eclipse_jetty/jetty_io/9_2_12_v20150709": {
+      "name": "jetty-io",
+      "version": "9.2.12.v20150709"
+    },
+    "http:maven/hsqldb/hsqldb/1_8_0_10": {
+      "name": "hsqldb",
+      "version": "1.8.0.10"
+    },
+    "http:maven/com_saucelabs/sauce_java_common/2_1_20": {
+      "name": "sauce_java_common",
+      "version": "2.1.20"
+    },
+    "http:maven/net_java_dev_jna/jna_platform/4_1_0": {
+      "name": "jna-platform",
+      "version": "4.1.0"
+    },
+    "http:maven/java2html/j2h/1_3_1": {
+      "name": "j2h",
+      "version": "1.3.1"
+    },
+    "http:maven/commons_codec/commons_codec/1_10": {
+      "name": "commons-codec",
+      "version": "1.10"
+    },
+    "http:maven/org_eclipse_jetty_websocket/websocket_client/9_2_12_v20150709": {
+      "name": "websocket-client",
+      "version": "9.2.12.v20150709"
+    },
+    "http:maven/org_apache_tomcat/tomcat_juli/7_0_65": {
+      "name": "tomcat-juli",
+      "version": "7.0.65"
+    },
+    "http:maven/org_seleniumhq_selenium/selenium_leg_rc/2_48_2": {
+      "name": "selenium-leg-rc",
+      "version": "2.48.2"
+    },
+    "http:maven/org_seleniumhq_selenium/selenium_chrome_driver/2_48_2": {
+      "name": "selenium-chrome-driver",
+      "version": "2.48.2"
+    },
+    "http:maven/org_apache_tomcat/tomcat_annotations_api/7_0_65": {
+      "name": "tomcat-annotations-api",
+      "version": "7.0.65"
+    },
+    "http:maven/org_slf4j/slf4j_log4j12/1_7_12": {
+      "name": "slf4j-log4j12",
+      "version": "1.7.12"
+    },
+    "http:maven/org_eclipse_jetty/jetty_util/9_2_12_v20150709": {
+      "name": "jetty-util",
+      "version": "9.2.12.v20150709"
+    },
+    "http:maven/org_apache_httpcomponents/httpcore/4_4_3": {
+      "name": "httpcore",
+      "version": "4.4.3"
+    },
+    "http:maven/commons_digester/commons_digester/2_1": {
+      "name": "commons-digester",
+      "version": "2.1"
+    },
+    "http:maven/net_sourceforge_jtds/jtds/1_3_1": {
+      "name": "jtds",
+      "version": "1.3.1"
+    },
+    "http:maven/com_saucelabs/sauce_junit/2_1_20": {
+      "name": "sauce_junit",
+      "version": "2.1.20"
+    },
+    "http:maven/org_seleniumhq_selenium/selenium_remote_driver/2_48_2": {
+      "name": "selenium-remote-driver",
+      "version": "2.48.2"
+    },
+    "http:maven/org_springframework/spring_beans/3_2_4_RELEASE": {
+      "name": "spring-beans",
+      "version": "3.2.4.RELEASE"
+    },
+    "http:maven/cglib/cglib_nodep/2_1_3": {
+      "name": "cglib-nodep",
+      "version": "2.1_3"
+    },
+    "http:maven/net_sourceforge_htmlunit/htmlunit_core_js/2_17": {
+      "name": "htmlunit-core-js",
+      "version": "2.17"
+    },
+    "http:maven/org_slf4j/slf4j_api/1_7_12": {
+      "name": "slf4j-api",
+      "version": "1.7.12"
+    },
+    "http:maven/xml_apis/xml_apis/1_4_01": {
+      "name": "xml-apis",
+      "version": "1.4.01"
+    },
+    "http:maven/org_apache_axis/axis_jaxrpc/1_4": {
+      "name": "axis-jaxrpc",
+      "version": "1.4"
+    },
+    "http:maven/com_google_guava/guava/18_0": {
+      "name": "guava",
+      "version": "18.0"
+    },
+    "http:maven/org_springframework/spring_context/3_2_4_RELEASE": {
+      "name": "spring-context",
+      "version": "3.2.4.RELEASE"
+    },
+    "http:maven/org_springframework/spring_webmvc/3_2_4_RELEASE": {
+      "name": "spring-webmvc",
+      "version": "3.2.4.RELEASE"
+    },
+    "http:maven/javax_mail/javax_mail_api/1_5_4": {
+      "name": "javax.mail-api",
+      "version": "1.5.4"
+    },
+    "http:maven/xerces/xercesImpl/2_11_0": {
+      "name": "xercesImpl",
+      "version": "2.11.0"
+    },
+    "http:maven/javax_activation/activation/1_1_1": {
+      "name": "activation",
+      "version": "1.1.1"
+    },
+    "http:maven/ecs/ecs/1_4_2": {
+      "name": "ecs",
+      "version": "1.4.2"
+    },
+    "http:maven/commons_collections/commons_collections/3_2_1": {
+      "name": "commons-collections",
+      "version": "3.2.1"
+    },
+    "http:maven/taglibs/standard/1_1_2": {
+      "name": "standard",
+      "version": "1.1.2"
+    },
+    "http:maven/io_netty/netty/3_5_2_Final": {
+      "name": "netty",
+      "version": "3.5.2.Final"
+    },
+    "http:maven/com_h2database/h2/1_4_190": {
+      "name": "h2",
+      "version": "1.4.190"
+    },
+    "http:maven/org_webbitserver/webbit/0_4_14": {
+      "name": "webbit",
+      "version": "0.4.14"
+    },
+    "http:maven/org_apache_tomcat/tomcat_util/7_0_65": {
+      "name": "tomcat-util",
+      "version": "7.0.65"
+    },
+    "http:maven/org_seleniumhq_selenium/selenium_ie_driver/2_48_2": {
+      "name": "selenium-ie-driver",
+      "version": "2.48.2"
+    },
+    "http:maven/com_saucelabs/saucerest/1_0_22": {
+      "name": "saucerest",
+      "version": "1.0.22"
+    },
+    "http:maven/commons_fileupload/commons_fileupload/1_3_1": {
+      "name": "commons-fileupload",
+      "version": "1.3.1"
+    },
+    "http:maven/aopalliance/aopalliance/1_0": {
+      "name": "aopalliance",
+      "version": "1.0"
+    },
+    "http:maven/org_seleniumhq_selenium/selenium_java/2_48_2": {
+      "name": "selenium-java",
+      "version": "2.48.2"
+    },
+    "http:maven/javax_transaction/javax_transaction_api/1_2": {
+      "name": "javax.transaction-api",
+      "version": "1.2"
+    },
+    "http:maven/org_apache_tomcat/tomcat_servlet_api/7_0_65": {
+      "name": "tomcat-servlet-api",
+      "version": "7.0.65"
+    },
+    "http:maven/org_hamcrest/hamcrest_core/1_3": {
+      "name": "hamcrest-core",
+      "version": "1.3"
+    },
+    "http:maven/org_seleniumhq_selenium/selenium_firefox_driver/2_48_2": {
+      "name": "selenium-firefox-driver",
+      "version": "2.48.2"
+    },
+    "http:maven/org_apache_tomcat/tomcat_api/7_0_65": {
+      "name": "tomcat-api",
+      "version": "7.0.65"
+    },
+    "http:maven/javax/javaee_api/6_0": {
+      "name": "javaee-api",
+      "version": "6.0"
+    },
+    "http:maven/org_seleniumhq_selenium/selenium_htmlunit_driver/2_48_2": {
+      "name": "selenium-htmlunit-driver",
+      "version": "2.48.2"
+    },
+    "http:maven/org_apache_tiles/tiles_api/3_0_5": {
+      "name": "tiles-api",
+      "version": "3.0.5"
+    },
+    "http:maven/axis/axis/1_4": {
+      "name": "axis",
+      "version": "1.4"
+    },
+    "http:maven/org_apache_axis/axis_ant/1_4": {
+      "name": "axis-ant",
+      "version": "1.4"
+    },
+    "http:maven/axis/axis_wsdl4j/1_5_1": {
+      "name": "axis-wsdl4j",
+      "version": "1.5.1"
+    },
+    "http:maven/org_seleniumhq_selenium/selenium_edge_driver/2_48_2": {
+      "name": "selenium-edge-driver",
+      "version": "2.48.2"
+    },
+    "http:maven/net_sourceforge_nekohtml/nekohtml/1_9_22": {
+      "name": "nekohtml",
+      "version": "1.9.22"
+    },
+    "http:maven/org_springframework/spring_expression/3_2_4_RELEASE": {
+      "name": "spring-expression",
+      "version": "3.2.4.RELEASE"
+    },
+    "http:maven/org_json/json/20090211": {
+      "name": "json",
+      "version": "20090211"
+    },
+    "http:maven/xalan/serializer/2_7_2": {
+      "name": "serializer",
+      "version": "2.7.2"
+    },
+    "http:maven/org_apache_httpcomponents/httpclient/4_5_1": {
+      "name": "httpclient",
+      "version": "4.5.1"
+    },
+    "http:maven/net_java_dev_jna/jna/4_1_0": {
+      "name": "jna",
+      "version": "4.1.0"
+    },
+    "http:maven/org_apache_commons/commons_exec/1_3": {
+      "name": "commons-exec",
+      "version": "1.3"
+    },
+    "http:maven/org_springframework_security/spring_security_core/3_2_4_RELEASE": {
+      "name": "spring-security-core",
+      "version": "3.2.4.RELEASE"
+    },
+    "http:maven/com_fasterxml_jackson_core/jackson_databind/2_6_3": {
+      "name": "jackson-databind",
+      "version": "2.6.3"
+    },
+    "http:maven/org_seleniumhq_selenium/selenium_safari_driver/2_48_2": {
+      "name": "selenium-safari-driver",
+      "version": "2.48.2"
+    },
+    "http:maven/org_eclipse_jetty_websocket/websocket_api/9_2_12_v20150709": {
+      "name": "websocket-api",
+      "version": "9.2.12.v20150709"
+    },
+    "http:maven/commons_beanutils/commons_beanutils/1_8_3": {
+      "name": "commons-beanutils",
+      "version": "1.8.3"
+    },
+    "http:maven/javax_servlet/jstl/1_2": {
+      "name": "jstl",
+      "version": "1.2"
+    },
+    "http:maven/org_seleniumhq_selenium/selenium_support/2_48_2": {
+      "name": "selenium-support",
+      "version": "2.48.2"
+    },
+    "http:maven/com_fasterxml_jackson_core/jackson_annotations/2_6_0": {
+      "name": "jackson-annotations",
+      "version": "2.6.0"
+    },
+    "http:maven/org_springframework_security/spring_security_web/3_2_4_RELEASE": {
+      "name": "spring-security-web",
+      "version": "3.2.4.RELEASE"
+    },
+    "http:maven/net_sourceforge_cssparser/cssparser/0_9_16": {
+      "name": "cssparser",
+      "version": "0.9.16"
+    },
+    "http:maven/com_fasterxml_jackson_core/jackson_core/2_6_3": {
+      "name": "jackson-core",
+      "version": "2.6.3"
+    },
+    "http:maven/net_sourceforge_htmlunit/htmlunit/2_18": {
+      "name": "htmlunit",
+      "version": "2.18"
+    }
   }
 }

@@ -1,389 +1,104 @@
 {
-  "codeLocationType": "MAVEN",
-  "sourcePath": "/test/path/hub-teamcity",
-  "externalId": {
-    "forge": {
-      "name": "maven",
-      "separator": ":"
-    },
-    "group": "com.blackducksoftware.integration",
-    "name": "hub-teamcity",
-    "version": "3.2.0-SNAPSHOT"
-  },
-  "dependencyGraph": {
-    "rootDependencies": [
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.powermock",
-        "name": "powermock-api-mockito",
-        "version": "1.6.6"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.codehaus.groovy",
-        "name": "groovy-all",
-        "version": "2.4.11"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.powermock",
-        "name": "powermock-module-junit4",
-        "version": "1.6.6"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "junit",
-        "name": "junit",
-        "version": "4.12"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.mockito",
-        "name": "mockito-all",
-        "version": "1.10.19"
-      },
-      {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.slf4j",
-        "name": "slf4j-simple",
-        "version": "1.7.21"
-      }
+  "rootExternalDataIds": [
+    "http:maven/org_mockito/mockito_all/1_10_19",
+    "http:maven/junit/junit/4_12",
+    "http:maven/org_powermock/powermock_module_junit4/1_6_6",
+    "http:maven/org_slf4j/slf4j_simple/1_7_21",
+    "http:maven/org_powermock/powermock_api_mockito/1_6_6",
+    "http:maven/org_codehaus_groovy/groovy_all/2_4_11"
+  ],
+  "externalDataIdRelationships": {
+    "http:maven/org_powermock/powermock_api_mockito_common/1_6_6": [
+      "http:maven/org_powermock/powermock_api_support/1_6_6"
     ],
-    "dependencies": {
-      "{\"forge\":\"maven\",\"group\":\"org.powermock\",\"name\":\"powermock-api-mockito\",\"version\":\"1.6.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "powermock-api-mockito",
-        "version": "1.6.6",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.powermock",
-          "name": "powermock-api-mockito",
-          "version": "1.6.6"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.powermock\",\"name\":\"powermock-module-junit4-common\",\"version\":\"1.6.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "powermock-module-junit4-common",
-        "version": "1.6.6",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.powermock",
-          "name": "powermock-module-junit4-common",
-          "version": "1.6.6"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.slf4j\",\"name\":\"slf4j-api\",\"version\":\"1.7.21\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "slf4j-api",
-        "version": "1.7.21",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.slf4j",
-          "name": "slf4j-api",
-          "version": "1.7.21"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.powermock\",\"name\":\"powermock-api-support\",\"version\":\"1.6.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "powermock-api-support",
-        "version": "1.6.6",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.powermock",
-          "name": "powermock-api-support",
-          "version": "1.6.6"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.mockito\",\"name\":\"mockito-core\",\"version\":\"1.10.19\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "mockito-core",
-        "version": "1.10.19",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.mockito",
-          "name": "mockito-core",
-          "version": "1.10.19"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.powermock\",\"name\":\"powermock-module-junit4\",\"version\":\"1.6.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "powermock-module-junit4",
-        "version": "1.6.6",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.powermock",
-          "name": "powermock-module-junit4",
-          "version": "1.6.6"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"junit\",\"name\":\"junit\",\"version\":\"4.12\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "junit",
-        "version": "4.12",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "junit",
-          "name": "junit",
-          "version": "4.12"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.powermock\",\"name\":\"powermock-api-mockito-common\",\"version\":\"1.6.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "powermock-api-mockito-common",
-        "version": "1.6.6",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.powermock",
-          "name": "powermock-api-mockito-common",
-          "version": "1.6.6"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.powermock\",\"name\":\"powermock-reflect\",\"version\":\"1.6.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "powermock-reflect",
-        "version": "1.6.6",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.powermock",
-          "name": "powermock-reflect",
-          "version": "1.6.6"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.codehaus.groovy\",\"name\":\"groovy-all\",\"version\":\"2.4.11\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "groovy-all",
-        "version": "2.4.11",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.codehaus.groovy",
-          "name": "groovy-all",
-          "version": "2.4.11"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.objenesis\",\"name\":\"objenesis\",\"version\":\"2.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "objenesis",
-        "version": "2.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.objenesis",
-          "name": "objenesis",
-          "version": "2.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.powermock\",\"name\":\"powermock-core\",\"version\":\"1.6.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "powermock-core",
-        "version": "1.6.6",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.powermock",
-          "name": "powermock-core",
-          "version": "1.6.6"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.javassist\",\"name\":\"javassist\",\"version\":\"3.21.0-GA\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "javassist",
-        "version": "3.21.0-GA",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.javassist",
-          "name": "javassist",
-          "version": "3.21.0-GA"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.mockito\",\"name\":\"mockito-all\",\"version\":\"1.10.19\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "mockito-all",
-        "version": "1.10.19",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.mockito",
-          "name": "mockito-all",
-          "version": "1.10.19"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.hamcrest\",\"name\":\"hamcrest-core\",\"version\":\"1.3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "hamcrest-core",
-        "version": "1.3",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.hamcrest",
-          "name": "hamcrest-core",
-          "version": "1.3"
-        }
-      },
-      "{\"forge\":\"maven\",\"group\":\"org.slf4j\",\"name\":\"slf4j-simple\",\"version\":\"1.7.21\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "slf4j-simple",
-        "version": "1.7.21",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.slf4j",
-          "name": "slf4j-simple",
-          "version": "1.7.21"
-        }
-      }
+    "http:maven/org_powermock/powermock_core/1_6_6": [
+      "http:maven/org_javassist/javassist/3_21_0_GA"
+    ],
+    "http:maven/junit/junit/4_12": [
+      "http:maven/org_hamcrest/hamcrest_core/1_3"
+    ],
+    "http:maven/org_mockito/mockito_core/1_10_19": [
+      "http:maven/org_objenesis/objenesis/2_1"
+    ],
+    "http:maven/org_powermock/powermock_module_junit4/1_6_6": [
+      "http:maven/org_powermock/powermock_module_junit4_common/1_6_6"
+    ],
+    "http:maven/org_slf4j/slf4j_simple/1_7_21": [
+      "http:maven/org_slf4j/slf4j_api/1_7_21"
+    ],
+    "http:maven/org_powermock/powermock_api_mockito/1_6_6": [
+      "http:maven/org_powermock/powermock_api_mockito_common/1_6_6",
+      "http:maven/org_mockito/mockito_core/1_10_19"
+    ],
+    "http:maven/org_powermock/powermock_module_junit4_common/1_6_6": [
+      "http:maven/org_powermock/powermock_reflect/1_6_6",
+      "http:maven/org_powermock/powermock_core/1_6_6"
+    ]
+  },
+  "dependencySummaries": {
+    "http:maven/org_powermock/powermock_reflect/1_6_6": {
+      "name": "powermock-reflect",
+      "version": "1.6.6"
     },
-    "relationships": {
-      "{\"forge\":\"maven\",\"group\":\"org.powermock\",\"name\":\"powermock-api-mockito\",\"version\":\"1.6.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.powermock",
-          "name": "powermock-api-mockito-common",
-          "version": "1.6.6"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.mockito",
-          "name": "mockito-core",
-          "version": "1.10.19"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.powermock\",\"name\":\"powermock-module-junit4-common\",\"version\":\"1.6.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.powermock",
-          "name": "powermock-reflect",
-          "version": "1.6.6"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.powermock",
-          "name": "powermock-core",
-          "version": "1.6.6"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.powermock\",\"name\":\"powermock-api-mockito-common\",\"version\":\"1.6.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.powermock",
-          "name": "powermock-api-support",
-          "version": "1.6.6"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.powermock\",\"name\":\"powermock-module-junit4\",\"version\":\"1.6.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.powermock",
-          "name": "powermock-module-junit4-common",
-          "version": "1.6.6"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.mockito\",\"name\":\"mockito-core\",\"version\":\"1.10.19\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.objenesis",
-          "name": "objenesis",
-          "version": "2.1"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.powermock\",\"name\":\"powermock-core\",\"version\":\"1.6.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.javassist",
-          "name": "javassist",
-          "version": "3.21.0-GA"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"junit\",\"name\":\"junit\",\"version\":\"4.12\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.hamcrest",
-          "name": "hamcrest-core",
-          "version": "1.3"
-        }
-      ],
-      "{\"forge\":\"maven\",\"group\":\"org.slf4j\",\"name\":\"slf4j-simple\",\"version\":\"1.7.21\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.slf4j",
-          "name": "slf4j-api",
-          "version": "1.7.21"
-        }
-      ]
+    "http:maven/junit/junit/4_12": {
+      "name": "junit",
+      "version": "4.12"
+    },
+    "http:maven/org_mockito/mockito_all/1_10_19": {
+      "name": "mockito-all",
+      "version": "1.10.19"
+    },
+    "http:maven/org_slf4j/slf4j_api/1_7_21": {
+      "name": "slf4j-api",
+      "version": "1.7.21"
+    },
+    "http:maven/org_objenesis/objenesis/2_1": {
+      "name": "objenesis",
+      "version": "2.1"
+    },
+    "http:maven/org_slf4j/slf4j_simple/1_7_21": {
+      "name": "slf4j-simple",
+      "version": "1.7.21"
+    },
+    "http:maven/org_powermock/powermock_api_mockito/1_6_6": {
+      "name": "powermock-api-mockito",
+      "version": "1.6.6"
+    },
+    "http:maven/org_javassist/javassist/3_21_0_GA": {
+      "name": "javassist",
+      "version": "3.21.0-GA"
+    },
+    "http:maven/org_powermock/powermock_api_support/1_6_6": {
+      "name": "powermock-api-support",
+      "version": "1.6.6"
+    },
+    "http:maven/org_powermock/powermock_api_mockito_common/1_6_6": {
+      "name": "powermock-api-mockito-common",
+      "version": "1.6.6"
+    },
+    "http:maven/org_powermock/powermock_core/1_6_6": {
+      "name": "powermock-core",
+      "version": "1.6.6"
+    },
+    "http:maven/org_mockito/mockito_core/1_10_19": {
+      "name": "mockito-core",
+      "version": "1.10.19"
+    },
+    "http:maven/org_powermock/powermock_module_junit4/1_6_6": {
+      "name": "powermock-module-junit4",
+      "version": "1.6.6"
+    },
+    "http:maven/org_hamcrest/hamcrest_core/1_3": {
+      "name": "hamcrest-core",
+      "version": "1.3"
+    },
+    "http:maven/org_powermock/powermock_module_junit4_common/1_6_6": {
+      "name": "powermock-module-junit4-common",
+      "version": "1.6.6"
+    },
+    "http:maven/org_codehaus_groovy/groovy_all/2_4_11": {
+      "name": "groovy-all",
+      "version": "2.4.11"
     }
   }
 }
