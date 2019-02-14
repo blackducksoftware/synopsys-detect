@@ -33,6 +33,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.CondaR
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
@@ -41,7 +42,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3
 import com.synopsys.integration.detectable.detectable.executable.resolver.YarnResolver;
 
 //this will cache the find result.
-public class SimpleExecutableResolver implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver {
+public class SimpleExecutableResolver implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver {
     private final CachedExecutableResolverOptions executableResolverOptions;
     private final SimpleLocalExecutableFinder localExecutableFinder;
     private final SimpleSystemExecutableFinder systemExecutableFinder;
@@ -126,5 +127,10 @@ public class SimpleExecutableResolver implements GradleResolver, BashResolver, C
     @Override
     public File resolvePipenv() {
         return findCachedSystem("pipenv");
+    }
+
+    @Override
+    public File resolveMaven(final DetectableEnvironment environment) {
+        return findLocalOrSystem("mvnw", "mvn", environment);
     }
 }

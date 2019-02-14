@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.maven;
+package com.synopsys.integration.detectable.detectables.maven;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,14 +33,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationType;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.util.ExcludedIncludedFilter;
 
 public class MavenCodeLocationPackager {
@@ -60,7 +60,7 @@ public class MavenCodeLocationPackager {
     private final List<Dependency> orphans = new ArrayList<>();
     private boolean parsingProjectSection;
     private int level;
-    private boolean inOutOfScopeTree=false;
+    private boolean inOutOfScopeTree = false;
     private MutableDependencyGraph currentGraph = null;
 
     public MavenCodeLocationPackager(final ExternalIdFactory externalIdFactory) {
@@ -138,7 +138,8 @@ public class MavenCodeLocationPackager {
                         currentGraph.addChildToRoot(dependency);
                         inOutOfScopeTree = false;
                     } else {
-                        logger.trace(String.format("Level 1 component %s:%s:%s:%s is a top-level out-of-scope component; entering non-scoped tree", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
+                        logger.trace(String.format("Level 1 component %s:%s:%s:%s is a top-level out-of-scope component; entering non-scoped tree", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version,
+                            dependency.scope));
                         inOutOfScopeTree = true;
                     }
                     dependencyParentStack.clear();
@@ -176,7 +177,7 @@ public class MavenCodeLocationPackager {
             final Dependency orphanListParent = createOrphanListParentDependency();
             logger.trace(String.format("adding orphan list parent dependency: %s", orphanListParent.externalId.toString()));
             graph.addChildToRoot(orphanListParent);
-            for (Dependency dependency : orphans) {
+            for (final Dependency dependency : orphans) {
                 logger.trace(String.format("adding orphan: %s", dependency.externalId.toString()));
                 graph.addParentWithChild(orphanListParent, dependency);
             }
@@ -199,11 +200,7 @@ public class MavenCodeLocationPackager {
     private MavenParseResult createMavenParseResult(final String sourcePath, final String line, final DependencyGraph graph) {
         final Dependency dependency = textToProject(line);
         if (null != dependency) {
-            String codeLocationSourcePath = sourcePath;
-            if (!sourcePath.endsWith(dependency.name)) {
-                codeLocationSourcePath += "/" + dependency.name;
-            }
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.MAVEN, codeLocationSourcePath, dependency.externalId, graph).build();
+            final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.MAVEN, graph, dependency.externalId).build();
             return new MavenParseResult(dependency.name, dependency.version, codeLocation);
         }
         return null;
@@ -253,7 +250,7 @@ public class MavenCodeLocationPackager {
         final String[] gavParts = componentText.split(":");
         final String group = gavParts[0];
         final String artifact = gavParts[1];
-        String version;
+        final String version;
         if (gavParts.length == 4) {
             // Dependency does not include the classifier
             version = gavParts[gavParts.length - 1];

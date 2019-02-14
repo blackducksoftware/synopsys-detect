@@ -83,12 +83,12 @@ public class DetectorFactory implements BeanFactoryAware {
         return beanFactory.getBean(GradleInspectorDetector.class, environment);
     }
 
-    public MavenPomDetector createMavenPomBomTool(final DetectorEnvironment environment) {
-        return beanFactory.getBean(MavenPomDetector.class, environment);
+    public MavenPomDetectable createMavenPomBomTool(final DetectorEnvironment environment) {
+        return beanFactory.getBean(MavenPomDetectable.class, environment);
     }
 
-    public MavenPomWrapperDetector createMavenPomWrapperBomTool(final DetectorEnvironment environment) {
-        return beanFactory.getBean(MavenPomWrapperDetector.class, environment);
+    public MavenPomWrapperDetectable createMavenPomWrapperBomTool(final DetectorEnvironment environment) {
+        return beanFactory.getBean(MavenPomWrapperDetectable.class, environment);
     }
 
     public NpmCliDetector createNpmCliBomTool(final DetectorEnvironment environment) {

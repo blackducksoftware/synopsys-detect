@@ -28,6 +28,8 @@ import javax.xml.parsers.DocumentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
+import com.google.gson.Gson;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectorOptionFactory;
@@ -39,8 +41,6 @@ import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.google.gson.Gson;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 import freemarker.template.Configuration;
 
@@ -366,14 +366,14 @@ public class DetectorBeanConfiguration {
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public MavenPomDetector mavenPomBomTool(final DetectorEnvironment environment) {
-        return new MavenPomDetector(environment, detectFileFinder, mavenExecutableFinder(), mavenCliExtractor());
+    public MavenPomDetectable mavenPomBomTool(final DetectorEnvironment environment) {
+        return new MavenPomDetectable(environment, detectFileFinder, mavenExecutableFinder(), mavenCliExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public MavenPomWrapperDetector mavenPomWrapperBomTool(final DetectorEnvironment environment) {
-        return new MavenPomWrapperDetector(environment, detectFileFinder, mavenExecutableFinder(), mavenCliExtractor());
+    public MavenPomWrapperDetectable mavenPomWrapperBomTool(final DetectorEnvironment environment) {
+        return new MavenPomWrapperDetectable(environment, detectFileFinder, mavenExecutableFinder(), mavenCliExtractor());
     }
 
     @Bean

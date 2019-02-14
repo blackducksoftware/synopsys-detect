@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.maven;
+package com.synopsys.integration.detectable.detectables.maven;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,29 +32,25 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.detect.util.executable.Executable;
-import com.synopsys.integration.detect.util.executable.ExecutableOutput;
-import com.synopsys.integration.detect.util.executable.ExecutableRunner;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.extraction.Extraction;
+import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 
 public class MavenCliExtractor {
     private final ExecutableRunner executableRunner;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
-    private final DetectConfiguration detectConfiguration;
+    private final MavenCliExtractorOptions mavenCliExtractorOptions;
 
-    public MavenCliExtractor(final ExecutableRunner executableRunner, final MavenCodeLocationPackager mavenCodeLocationPackager, final DetectConfiguration detectConfiguration) {
+    public MavenCliExtractor(final ExecutableRunner executableRunner, final MavenCodeLocationPackager mavenCodeLocationPackager, final MavenCliExtractorOptions mavenCliExtractorOptions) {
         this.executableRunner = executableRunner;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
-        this.detectConfiguration = detectConfiguration;
+        this.mavenCliExtractorOptions = mavenCliExtractorOptions;
     }
 
-    public Extraction extract(final File directory, final String mavenExe) {
+    public Extraction extract(final File directory, final File mavenExe) {
         try {
-            String mavenCommand = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_BUILD_COMMAND, PropertyAuthority.None);
+            String mavenCommand = mavenCliExtractorOptions.getMavenBuildCommand();
             if (StringUtils.isNotBlank(mavenCommand)) {
                 mavenCommand = mavenCommand.replace("dependency:tree", "");
                 if (StringUtils.isNotBlank(mavenCommand)) {
@@ -68,20 +64,19 @@ public class MavenCliExtractor {
             }
             arguments.add("dependency:tree");
 
-            final Executable mvnExecutable = new Executable(directory, mavenExe, arguments);
-            final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable);
+            final ExecutableOutput mvnOutput = executableRunner.execute(directory, mavenExe, arguments);
 
             if (mvnOutput.getReturnCode() == 0) {
 
-                final String mavenScope = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_SCOPE, PropertyAuthority.None);
-                final String excludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_MODULES, PropertyAuthority.None);
-                final String includedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_MODULES, PropertyAuthority.None);
+                final String mavenScope = mavenCliExtractorOptions.getMavenScope();
+                final String excludedModules = mavenCliExtractorOptions.getMavenExcludedModules();
+                final String includedModules = mavenCliExtractorOptions.getMavenIncludedModules();
                 final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(),
                     mavenScope, excludedModules, includedModules);
 
-                final List<DetectCodeLocation> codeLocations = mavenResults.stream()
-                                                                   .map(it -> it.codeLocation)
-                                                                   .collect(Collectors.toList());
+                final List<CodeLocation> codeLocations = mavenResults.stream()
+                                                             .map(mavenResult -> mavenResult.codeLocation)
+                                                             .collect(Collectors.toList());
 
                 final Optional<MavenParseResult> firstWithName = mavenResults.stream()
                                                                      .filter(it -> StringUtils.isNoneBlank(it.projectName))
