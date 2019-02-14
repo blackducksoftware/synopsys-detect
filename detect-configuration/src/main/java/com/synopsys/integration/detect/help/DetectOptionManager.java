@@ -24,11 +24,14 @@
 package com.synopsys.integration.detect.help;
 
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +48,7 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.SilentIntLogger;
+import com.synopsys.integration.util.proxy.ProxyUtil;
 
 public class DetectOptionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class);
@@ -104,8 +108,26 @@ public class DetectOptionManager {
 
     public BlackDuckServerConfig createBlackduckServerConfig(IntLogger logger) {
         final BlackDuckServerConfigBuilder hubServerConfigBuilder = new BlackDuckServerConfigBuilder().setLogger(logger);
+
         final Map<String, String> blackduckBlackDuckProperties = detectConfiguration.getBlackduckProperties();
-        hubServerConfigBuilder.setFromProperties(blackduckBlackDuckProperties);
+        final Map<String, String> blackduckBlackDuckPropertiesNoProxy = blackduckBlackDuckProperties.entrySet().stream()
+                                                                            .filter(it -> !it.getKey().toLowerCase().contains("proxy"))
+                                                                            .collect(Collectors.toMap(it -> it.getKey(), it -> it.getValue()));
+
+        final List<Pattern> ignoredProxyHostPatterns = ProxyUtil.getIgnoredProxyHostPatterns(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS, PropertyAuthority.None));
+        boolean ignoreProxy = false;
+        try {
+            ignoreProxy = ProxyUtil.shouldIgnoreHost(new URL(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None)).getHost(), ignoredProxyHostPatterns);
+        } catch (MalformedURLException e) {
+            logger.error("Unable to decide if proxy should be used for the given hub host, will use proxy.");
+        }
+
+        if (ignoreProxy) {
+            hubServerConfigBuilder.setFromProperties(blackduckBlackDuckPropertiesNoProxy);
+        } else {
+            hubServerConfigBuilder.setFromProperties(blackduckBlackDuckProperties);
+        }
+
         BlackDuckServerConfig blackDuckServerConfig = hubServerConfigBuilder.build();
         return blackDuckServerConfig;
     }
