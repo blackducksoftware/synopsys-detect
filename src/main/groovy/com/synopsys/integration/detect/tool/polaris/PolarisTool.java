@@ -31,6 +31,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.synopsys.integration.detect.configuration.ConnectionManager;
+import com.synopsys.integration.detect.configuration.DetectConfiguration;
+import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.util.executable.Executable;
 import com.synopsys.integration.detect.util.executable.ExecutableOutput;
