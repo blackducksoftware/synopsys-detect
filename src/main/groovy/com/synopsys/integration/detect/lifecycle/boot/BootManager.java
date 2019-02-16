@@ -24,7 +24,6 @@
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -32,6 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectorBeanConfiguration;
@@ -72,10 +73,9 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.profiling.BomToolProfiler;
 import com.synopsys.integration.detect.workflow.report.DetectConfigurationReporter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.polaris.common.PolarisEnvironmentCheck;
+import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
+import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 
 import freemarker.template.Configuration;
@@ -150,12 +150,12 @@ public class BootManager {
         }
 
         logger.info("Main boot completed. Deciding what detect should do.");
-        Properties properties = new Properties();
-        properties.setProperty("user.home", directoryManager.getUserHome().getAbsolutePath());
-        PolarisEnvironmentCheck polarisEnvironmentCheck = new PolarisEnvironmentCheck(new IntEnvironmentVariables(), properties);
+        PolarisServerConfigBuilder polarisServerConfigBuilder = PolarisServerConfig.newBuilder();
+        polarisServerConfigBuilder.setFromProperties(new IntEnvironmentVariables().getVariables());
+        polarisServerConfigBuilder.setUserHomePath(directoryManager.getUserHome().getAbsolutePath());
 
         RunDecider runDecider = new RunDecider();
-        RunDecision runDecision = runDecider.decide(detectConfiguration, polarisEnvironmentCheck);
+        RunDecision runDecision = runDecider.decide(detectConfiguration, polarisServerConfigBuilder);
 
         boolean willRunSomething = runDecision.willRunBlackduck() || runDecision.willRunPolaris();
         if (!willRunSomething) {

@@ -254,7 +254,7 @@ public class DetectConfiguration {
         }
     }
 
-    //Does not require autorization because you are bananas
+    //Does not require authorization because you are bananas
     public Map<DetectProperty, Object> getCurrentProperties() {
         return new HashMap<>(detectPropertyMap.getUnderlyingPropertyMap());// return an immutable copy
     }
