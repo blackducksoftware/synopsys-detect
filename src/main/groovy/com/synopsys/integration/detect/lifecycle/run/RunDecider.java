@@ -47,24 +47,16 @@ public class RunDecider {
         } else {
             logger.info("No Black Duck url was found and offline mode is not set, will NOT run Black Duck product.");
         }
-        String polarisUrl = detectConfiguration.getProperty(DetectProperty.POLARIS_URL, PropertyAuthority.None);
-        if (StringUtils.isNotBlank(polarisUrl)) {
-            polarisServerConfigBuilder.setPolarisUrl(polarisUrl);
-        }
-        polarisServerConfigBuilder.setTimeoutSeconds(120);
 
         BuilderStatus builderStatus = polarisServerConfigBuilder.validateAndGetBuilderStatus();
-        boolean libraryCanRun = builderStatus.isValid();
-        logger.info(builderStatus.getFullErrorMessage());
+        boolean polarisCanRun = builderStatus.isValid();
 
-        if (StringUtils.isBlank(polarisUrl)) {
-            logger.info("No polaris url was found, cannot run polaris.");
-            runPolaris = false;
-        } else if (!libraryCanRun) {
-            logger.info("No polaris access token was found even though a url was found, cannot run polaris.");
+        if (!polarisCanRun) {
+            logger.info("The supplied properties are not sufficient to run polaris - polaris will not run.");
+            logger.info(builderStatus.getFullErrorMessage());
             runPolaris = false;
         } else {
-            logger.info("A polaris access token and url was found, will run Polaris product.");
+            logger.info("A polaris access token and url were found, will run Polaris product.");
             runPolaris = true;
         }
 
