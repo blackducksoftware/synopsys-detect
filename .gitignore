@@ -16,3 +16,5 @@ build/
 
 version.txt
 swip.yml
+.swip/
+.swip-Coverity-2018.12.zip
