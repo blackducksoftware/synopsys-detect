@@ -21,6 +21,6 @@ powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://b
 
 ## Documentation
 
-[Quick Start](https://github.com/blackducksoftware/synopsys-detect/wiki/Quick-Start)
+[Quick Start Guide](https://github.com/blackducksoftware/synopsys-detect/wiki/Quick-Start)
 
-All documentation is located on our public [Confluence](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/622633/Synopsys+Detect)
+All oterh documentation is located on our public [Confluence](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/622633/Synopsys+Detect)
