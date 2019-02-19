@@ -10,7 +10,6 @@ Synopsys Detect offers package management level analysis combined with signature
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=detect%3Adetect-application&metric=alert_status)](https://sonarcloud.io/dashboard?id=detect%3Adetect-application)
 
 ## Where can I get the latest release? ##
-[Quick Start](https://github.com/blackducksoftware/synopsys-detect/wiki/Quick-Start)
 
 Note:  These URLs are for the old Detect, new URLs coming soon.
 
@@ -21,5 +20,7 @@ Available from GitHub for Windows by running:
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://blackducksoftware.github.io/hub-detect/hub-detect.ps1?$(Get-Random) | iex; detect"
 
 ## Documentation
+
+[Quick Start](https://github.com/blackducksoftware/synopsys-detect/wiki/Quick-Start)
 
 All documentation is located on our public [Confluence](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/622633/Synopsys+Detect)
