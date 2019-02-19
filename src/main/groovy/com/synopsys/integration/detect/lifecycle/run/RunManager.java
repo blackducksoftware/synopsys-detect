@@ -83,6 +83,7 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.Slf4jIntLogger;
+import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
@@ -282,7 +283,8 @@ public class RunManager {
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
                 logger.info("Will include the Polaris tool.");
-                final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, new ExecutableRunner(), connectionManager, detectConfiguration);
+                PolarisServerConfig polarisServerConfig = detectContext.getBean(PolarisServerConfig.class);
+                final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, new ExecutableRunner(), connectionManager, detectConfiguration, polarisServerConfig);
                 polarisTool.runPolaris(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
                 logger.info("Polaris actions finished.");
             } else {

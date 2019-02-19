@@ -46,6 +46,8 @@ import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.polaris.common.PolarisDownloadUtility;
+import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
+import com.synopsys.integration.polaris.common.rest.AccessTokenPolarisHttpClient;
 import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.util.CleanupZipExpander;
 
@@ -55,14 +57,16 @@ public class PolarisTool {
     private final ConnectionManager connectionManager;
     private final EventSystem eventSystem;
     private DetectConfiguration detectConfiguration;
+    private final PolarisServerConfig polarisServerConfig;
 
     public PolarisTool(EventSystem eventSystem, final DirectoryManager directoryManager, final ExecutableRunner executableRunner, ConnectionManager connectionManager,
-        final DetectConfiguration detectConfiguration) {
+        final DetectConfiguration detectConfiguration, PolarisServerConfig polarisServerConfig) {
         this.directoryManager = directoryManager;
         this.executableRunner = executableRunner;
         this.connectionManager = connectionManager;
         this.eventSystem = eventSystem;
         this.detectConfiguration = detectConfiguration;
+        this.polarisServerConfig = polarisServerConfig;
     }
 
     public void runPolaris(final IntLogger logger, File projectDirectory) throws DetectUserFriendlyException {
@@ -70,17 +74,17 @@ public class PolarisTool {
         String polarisUrl = detectConfiguration.getProperty(DetectProperty.POLARIS_URL, PropertyAuthority.None);
         logger.info("Will use the following polaris url: " + polarisUrl);
 
-        IntHttpClient restConnection = connectionManager.createUnauthenticatedRestConnection(polarisUrl);
-        CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(logger);
+        AccessTokenPolarisHttpClient polarisHttpClient = polarisServerConfig.createPolarisHttpClient(logger);
         File toolsDirectory = directoryManager.getPermanentDirectory();
 
-        PolarisDownloadUtility polarisDownloadUtility = new PolarisDownloadUtility(logger, restConnection, cleanupZipExpander, polarisUrl, toolsDirectory);
+        PolarisDownloadUtility polarisDownloadUtility = PolarisDownloadUtility.fromPolaris(logger, polarisHttpClient, toolsDirectory);
         Optional<String> swipCliPath = polarisDownloadUtility.retrievePolarisCliExecutablePath();
 
         if (swipCliPath.isPresent()) {
             Map<String, String> environmentVariables = new HashMap<>();
             environmentVariables.put("COVERITY_UNSUPPORTED", "1");
             environmentVariables.put("SWIP_USER_INPUT_TIMEOUT_MINUTES", "1");
+            polarisServerConfig.populateEnvironmentVariables(environmentVariables);
 
             logger.info("Found polaris cli: " + swipCliPath.get());
             List<String> arguments = new ArrayList<>();

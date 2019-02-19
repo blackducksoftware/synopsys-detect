@@ -30,12 +30,13 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.polaris.common.PolarisEnvironmentCheck;
+import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder;
+import com.synopsys.integration.util.BuilderStatus;
 
 public class RunDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public RunDecision decide(DetectConfiguration detectConfiguration, PolarisEnvironmentCheck polarisEnvironmentCheck) {
+    public RunDecision decide(DetectConfiguration detectConfiguration, PolarisServerConfigBuilder polarisServerConfigBuilder) {
         boolean runBlackduck = false;
         boolean runPolaris = false;
         boolean offline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
@@ -46,16 +47,16 @@ public class RunDecider {
         } else {
             logger.info("No Black Duck url was found and offline mode is not set, will NOT run Black Duck product.");
         }
-        String polarisUrl = detectConfiguration.getProperty(DetectProperty.POLARIS_URL, PropertyAuthority.None);
-        boolean libraryCanRun = polarisEnvironmentCheck.isAccessTokenConfigured();
-        if (StringUtils.isBlank(polarisUrl)) {
-            logger.info("No polaris url was found, cannot run polaris.");
-            runPolaris = false;
-        } else if (!libraryCanRun) {
-            logger.info("No polaris access token was found even though a url was found, cannot run polaris.");
+
+        BuilderStatus builderStatus = polarisServerConfigBuilder.validateAndGetBuilderStatus();
+        boolean polarisCanRun = builderStatus.isValid();
+
+        if (!polarisCanRun) {
+            logger.info("The supplied properties are not sufficient to run polaris - polaris will not run.");
+            logger.info(builderStatus.getFullErrorMessage());
             runPolaris = false;
         } else {
-            logger.info("A polaris access token and url was found, will run Polaris product.");
+            logger.info("A polaris access token and url were found, will run Polaris product.");
             runPolaris = true;
         }
 
