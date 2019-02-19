@@ -13,14 +13,14 @@ Synopsys Detect offers package management level analysis combined with signature
 
 Note:  These URLs are for the old Detect, new URLs coming soon.
 
-Available from GitHub for Linux by running:  
+*Available from GitHub for Linux by running:  
 bash <(curl -s https://blackducksoftware.github.io/hub-detect/hub-detect.sh)
 
-Available from GitHub for Windows by running:  
+*Available from GitHub for Windows by running:  
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://blackducksoftware.github.io/hub-detect/hub-detect.ps1?$(Get-Random) | iex; detect"
 
 ## Documentation
 
-[Quick Start Guide](https://github.com/blackducksoftware/synopsys-detect/wiki/Quick-Start)
+[Quick Start Guide](https://github.com/blackducksoftware/synopsys-detect/wiki/Quick-Start-Guide)
 
 All oterh documentation is located on our public [Confluence](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/622633/Synopsys+Detect)
