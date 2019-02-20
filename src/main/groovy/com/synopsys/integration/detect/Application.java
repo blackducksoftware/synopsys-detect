@@ -48,7 +48,6 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
-import com.synopsys.integration.detect.workflow.BlackDuckConnectivityManager;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticManager;
 import com.synopsys.integration.detect.workflow.event.Event;

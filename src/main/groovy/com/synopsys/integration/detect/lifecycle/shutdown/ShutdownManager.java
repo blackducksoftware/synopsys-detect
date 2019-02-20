@@ -44,7 +44,6 @@ import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.RunResult;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
-import com.synopsys.integration.detect.workflow.BlackDuckConnectivityManager;
 import com.synopsys.integration.detect.workflow.detector.RequiredDetectorChecker;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -75,11 +74,10 @@ public class ShutdownManager {
     public void shutdown(Optional<RunResult> runResultOptional) {
         if (productRunData.shouldUseBlackDuckProduct()){
             BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
-            BlackDuckConnectivityManager connectivityManager = blackDuckRunData.getConnectivityManager();
-            if (connectivityManager.getPhoneHomeManager().isPresent()) {
+            if (blackDuckRunData.getPhoneHomeManager().isPresent()) {
                 try {
                     logger.debug("Ending phone home.");
-                    connectivityManager.getPhoneHomeManager().get().endPhoneHome();
+                    blackDuckRunData.getPhoneHomeManager().get().endPhoneHome();
                 } catch (final Exception e) {
                     logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
                 }
@@ -103,7 +101,7 @@ public class ShutdownManager {
                 boolean offline = false;
                 if (productRunData.shouldUseBlackDuckProduct()){
                     BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
-                    if (!blackDuckRunData.getConnectivityManager().isDetectOnline()){
+                    if (!blackDuckRunData.isOnline()){
                         offline = true;
                     }
                 }

@@ -46,7 +46,6 @@ import com.synopsys.integration.detect.util.executable.CacheableExecutableFinder
 import com.synopsys.integration.detect.util.executable.ExecutableFinder;
 import com.synopsys.integration.detect.util.executable.ExecutableRunner;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
-import com.synopsys.integration.detect.workflow.BlackDuckConnectivityManager;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;

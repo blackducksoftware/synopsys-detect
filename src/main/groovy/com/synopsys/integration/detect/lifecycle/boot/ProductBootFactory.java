@@ -45,7 +45,6 @@ import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.PolarisRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
-import com.synopsys.integration.detect.workflow.BlackDuckConnectivityManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.phonehome.OnlinePhoneHomeManager;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;

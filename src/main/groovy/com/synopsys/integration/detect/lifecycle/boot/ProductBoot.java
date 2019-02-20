@@ -38,7 +38,6 @@ import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.PolarisRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
-import com.synopsys.integration.detect.workflow.BlackDuckConnectivityManager;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 
 public class ProductBoot {
@@ -53,13 +52,12 @@ public class ProductBoot {
         BlackDuckDecision blackDuckDecision = bootDecision.getBlackDuckDecision();
         if (blackDuckDecision.shouldRun()){
             if (blackDuckDecision.isOffline()){
-                blackDuckRunData = new BlackDuckRunData(BlackDuckConnectivityManager.offline());
+                blackDuckRunData = BlackDuckRunData.offline();
             } else {
                 if (blackDuckDecision.isSuccessfullyConnected()){
                     BlackDuckServicesFactory blackDuckServicesFactory = blackDuckDecision.getBlackDuckServicesFactory();
                     PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
-                    BlackDuckConnectivityManager connectivityManager = BlackDuckConnectivityManager.online(blackDuckServicesFactory, phoneHomeManager, blackDuckDecision.getBlackDuckServerConfig());
-                    blackDuckRunData = new BlackDuckRunData(connectivityManager);
+                    blackDuckRunData = BlackDuckRunData.online(blackDuckServicesFactory, phoneHomeManager, blackDuckDecision.getBlackDuckServerConfig());
                 } else {
                     if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, PropertyAuthority.None)) {
                         logger.info(blackDuckDecision.getConnectionFailureReason());

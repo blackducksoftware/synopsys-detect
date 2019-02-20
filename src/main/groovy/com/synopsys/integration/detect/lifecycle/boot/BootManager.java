@@ -74,7 +74,6 @@ import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.property.SpringPropertySource;
 import com.synopsys.integration.detect.util.TildeInPathResolver;
-import com.synopsys.integration.detect.workflow.BlackDuckConnectivityManager;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticManager;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
