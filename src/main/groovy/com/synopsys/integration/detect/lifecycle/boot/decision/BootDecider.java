@@ -23,6 +23,7 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot.decision;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -49,19 +50,19 @@ import com.synopsys.integration.util.BuilderStatus;
 public class BootDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private PolarisServerConfigBuilder createPolarisServerConfigBuilder(DetectConfiguration detectConfiguration, DirectoryManager directoryManager) {
+    private PolarisServerConfigBuilder createPolarisServerConfigBuilder(DetectConfiguration detectConfiguration, File userHome) {
         PolarisServerConfigBuilder polarisServerConfigBuilder = PolarisServerConfig.newBuilder();
         Set<String> allPolarisKeys = new HashSet<>(polarisServerConfigBuilder.getAllPropertyKeys());
         Map<String, String> polarisProperties = detectConfiguration.getProperties(allPolarisKeys);
         polarisServerConfigBuilder.setLogger(new SilentIntLogger());
         polarisServerConfigBuilder.setFromProperties(polarisProperties);
-        polarisServerConfigBuilder.setUserHomePath(directoryManager.getUserHome().getAbsolutePath());
+        polarisServerConfigBuilder.setUserHomePath(userHome.getAbsolutePath());
         polarisServerConfigBuilder.setTimeoutSeconds(120);
         return polarisServerConfigBuilder;
     }
 
-    private PolarisDecision determinePolaris(DetectConfiguration detectConfiguration, DirectoryManager directoryManager){
-        PolarisServerConfigBuilder polarisServerConfigBuilder = createPolarisServerConfigBuilder(detectConfiguration, directoryManager);
+    public PolarisDecision determinePolaris(DetectConfiguration detectConfiguration, File userHome){
+        PolarisServerConfigBuilder polarisServerConfigBuilder = createPolarisServerConfigBuilder(detectConfiguration, userHome);
         BuilderStatus builderStatus = polarisServerConfigBuilder.validateAndGetBuilderStatus();
         boolean polarisCanRun = builderStatus.isValid();
 
@@ -75,32 +76,21 @@ public class BootDecider {
         }
     }
 
-    private BlackDuckDecision determineBlackDuck(DetectConfiguration detectConfiguration, DetectOptionManager detectOptionManager) throws DetectUserFriendlyException {
+    public BlackDuckDecision determineBlackDuck(DetectConfiguration detectConfiguration) {
         boolean offline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
         String hubUrl = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None);
         if (offline) {
             return BlackDuckDecision.runOffline();
         } else if(StringUtils.isNotBlank(hubUrl)) {
             logger.info("Either the Black Duck url was found or offline mode is set, will run Black Duck product.");
-
-            BlackDuckServerConfig blackDuckServerConfig = detectOptionManager.createBlackduckServerConfig();
-            BlackDuckConnectivityChecker connectivityChecker = new BlackDuckConnectivityChecker();
-            BlackDuckConnectivityResult connectivityResult = connectivityChecker.determineConnectivity(blackDuckServerConfig);
-
-            if (connectivityResult.isSuccessfullyConnected()){
-                BlackDuckServicesFactory blackDuckServicesFactory = connectivityResult.getBlackDuckServicesFactory();
-                blackDuckServerConfig = connectivityResult.getBlackDuckServerConfig();
-                return BlackDuckDecision.runOnlineConnected(blackDuckServicesFactory, blackDuckServerConfig);
-            } else {
-                return BlackDuckDecision.runOnlineDisconnected(connectivityResult.getFailureReason());
-            }
+            return BlackDuckDecision.runOnline();
         } else {
             logger.info("No Black Duck url was found and offline mode is not set, will NOT run Black Duck product.");
             return BlackDuckDecision.skip();
         }
     }
 
-    public BootDecision decide(DetectConfiguration detectConfiguration, DetectOptionManager detectOptionManager, DirectoryManager directoryManager) throws DetectUserFriendlyException {
-        return new BootDecision(determineBlackDuck(detectConfiguration, detectOptionManager), determinePolaris(detectConfiguration, directoryManager));
+    public BootDecision decide(DetectConfiguration detectConfiguration, File userHome) throws DetectUserFriendlyException {
+        return new BootDecision(determineBlackDuck(detectConfiguration), determinePolaris(detectConfiguration, userHome));
     }
 }

@@ -26,6 +26,7 @@ package com.synopsys.integration.detect.lifecycle.boot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
@@ -43,7 +44,7 @@ import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 public class ProductBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public ProductRunData boot(BootDecision bootDecision, DetectConfiguration detectConfiguration, ProductBootFactory productBootFactory) throws DetectUserFriendlyException {
+    public ProductRunData boot(BootDecision bootDecision, DetectConfiguration detectConfiguration, BlackDuckConnectivityChecker blackDuckConnectivityChecker, ProductBootFactory productBootFactory) throws DetectUserFriendlyException {
         if (!bootDecision.willRunAny()) {
             throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
         }
@@ -54,17 +55,20 @@ public class ProductBoot {
             if (blackDuckDecision.isOffline()){
                 blackDuckRunData = BlackDuckRunData.offline();
             } else {
-                if (blackDuckDecision.isSuccessfullyConnected()){
-                    BlackDuckServicesFactory blackDuckServicesFactory = blackDuckDecision.getBlackDuckServicesFactory();
+                BlackDuckServerConfig blackDuckServerConfig = productBootFactory.createBlackDuckServerConfig();
+                BlackDuckConnectivityResult connectivityResult = blackDuckConnectivityChecker.determineConnectivity(blackDuckServerConfig);
+
+                if (connectivityResult.isSuccessfullyConnected()){
+                    BlackDuckServicesFactory blackDuckServicesFactory = connectivityResult.getBlackDuckServicesFactory();
                     PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
-                    blackDuckRunData = BlackDuckRunData.online(blackDuckServicesFactory, phoneHomeManager, blackDuckDecision.getBlackDuckServerConfig());
+                    blackDuckRunData = BlackDuckRunData.online(blackDuckServicesFactory, phoneHomeManager, connectivityResult.getBlackDuckServerConfig());
                 } else {
                     if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, PropertyAuthority.None)) {
-                        logger.info(blackDuckDecision.getConnectionFailureReason());
+                        logger.info(connectivityResult.getFailureReason());
                         logger.info(String.format("%s is set to 'true' so Detect will simply exit.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
                         return null;
                     } else {
-                        throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + blackDuckDecision.getConnectionFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
+                        throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + connectivityResult.getFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
                     }
                 }
                 if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {

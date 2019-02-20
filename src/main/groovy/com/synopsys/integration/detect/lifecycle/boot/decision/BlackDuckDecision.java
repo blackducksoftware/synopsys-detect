@@ -23,66 +23,32 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot.decision;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-
 public class BlackDuckDecision {
     private boolean shouldRun;
-    private boolean successfullyConnected;
-    private String connectionFailureReason;
     private boolean isOffline;
 
-    private BlackDuckServicesFactory blackDuckServicesFactory;
-    private BlackDuckServerConfig blackDuckServerConfig;
+    public BlackDuckDecision(final boolean shouldRun, final boolean isOffline) {
+        this.shouldRun = shouldRun;
+        this.isOffline = isOffline;
+    }
 
     public static BlackDuckDecision skip() {
-        return new BlackDuckDecision(false, false, null, true, null, null);
+        return new BlackDuckDecision(false, true);
     }
 
     public static BlackDuckDecision runOffline() {
-        return new BlackDuckDecision(true, false, null, true, null, null);
+        return new BlackDuckDecision(true, true);
     }
 
-    public static BlackDuckDecision runOnlineConnected(final BlackDuckServicesFactory blackDuckServicesFactory,
-        final BlackDuckServerConfig blackDuckServerConfig) {
-        return new BlackDuckDecision(true, true, null, false, blackDuckServicesFactory, blackDuckServerConfig);
-    }
-
-    public static BlackDuckDecision runOnlineDisconnected(String reason) {
-        return new BlackDuckDecision(true, false, reason, false, null, null);
-    }
-
-    public BlackDuckDecision(final boolean shouldRun, final boolean successfullyConnected, final String connectionFailureReason, final boolean isOffline, final BlackDuckServicesFactory blackDuckServicesFactory,
-        final BlackDuckServerConfig blackDuckServerConfig) {
-        this.shouldRun = shouldRun;
-        this.successfullyConnected = successfullyConnected;
-        this.connectionFailureReason = connectionFailureReason;
-        this.isOffline = isOffline;
-        this.blackDuckServicesFactory = blackDuckServicesFactory;
-        this.blackDuckServerConfig = blackDuckServerConfig;
-    }
-
-    public BlackDuckServicesFactory getBlackDuckServicesFactory() {
-        return blackDuckServicesFactory;
-    }
-
-    public BlackDuckServerConfig getBlackDuckServerConfig() {
-        return blackDuckServerConfig;
-    }
-
-    public boolean isSuccessfullyConnected() {
-        return successfullyConnected;
-    }
-
-    public boolean isOffline() {
-        return isOffline;
+    public static BlackDuckDecision runOnline() {
+        return new BlackDuckDecision(true, false);
     }
 
     public boolean shouldRun() {
         return shouldRun;
     }
 
-    public String getConnectionFailureReason(){
-        return connectionFailureReason;
+    public boolean isOffline() {
+        return isOffline;
     }
 }

@@ -24,10 +24,6 @@
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -37,9 +33,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectorBeanConfiguration;
@@ -64,12 +57,8 @@ import com.synopsys.integration.detect.help.print.HelpPrinter;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.interactive.mode.DefaultInteractiveMode;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
-import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BootDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BootDecision;
-import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
-import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.synopsys.integration.detect.lifecycle.run.data.PolarisRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.property.SpringPropertySource;
@@ -81,8 +70,6 @@ import com.synopsys.integration.detect.workflow.diagnostic.RelevantFileTracker;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detect.workflow.phonehome.OnlinePhoneHomeManager;
-import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.detect.workflow.profiling.BomToolProfiler;
 import com.synopsys.integration.detect.workflow.report.DetectConfigurationReporter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
@@ -162,11 +149,11 @@ public class BootManager {
         logger.info("Main boot completed. Deciding what detect should do.");
 
         BootDecider bootDecider = new BootDecider();
-        BootDecision bootDecision = bootDecider.decide(detectConfiguration, detectOptionManager, directoryManager);
+        BootDecision bootDecision = bootDecider.decide(detectConfiguration, directoryManager.getUserHome());
 
-        ProductBootFactory productBootFactory = new ProductBootFactory(detectConfiguration, detectInfo, eventSystem);
+        ProductBootFactory productBootFactory = new ProductBootFactory(detectConfiguration, detectInfo, eventSystem, detectOptionManager);
         ProductBoot productBoot = new ProductBoot();
-        ProductRunData productRunData = productBoot.boot(bootDecision, detectConfiguration, productBootFactory);
+        ProductRunData productRunData = productBoot.boot(bootDecision, detectConfiguration, new BlackDuckConnectivityChecker(), productBootFactory);
         if (productRunData == null){
             logger.info("No products to run, detect is complete.");
             return BootResult.exit(detectConfiguration);
