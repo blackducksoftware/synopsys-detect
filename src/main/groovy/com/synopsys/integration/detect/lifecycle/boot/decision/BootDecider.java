@@ -42,6 +42,7 @@ import com.synopsys.integration.detect.help.DetectOptionManager;
 import com.synopsys.integration.detect.lifecycle.boot.BlackDuckConnectivityChecker;
 import com.synopsys.integration.detect.lifecycle.boot.BlackDuckConnectivityResult;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder;
 import com.synopsys.integration.util.BuilderStatus;
@@ -53,6 +54,7 @@ public class BootDecider {
         PolarisServerConfigBuilder polarisServerConfigBuilder = PolarisServerConfig.newBuilder();
         Set<String> allPolarisKeys = new HashSet<>(polarisServerConfigBuilder.getAllPropertyKeys());
         Map<String, String> polarisProperties = detectConfiguration.getProperties(allPolarisKeys);
+        polarisServerConfigBuilder.setLogger(new SilentIntLogger());
         polarisServerConfigBuilder.setFromProperties(polarisProperties);
         polarisServerConfigBuilder.setUserHomePath(directoryManager.getUserHome().getAbsolutePath());
         polarisServerConfigBuilder.setTimeoutSeconds(120);
@@ -91,7 +93,7 @@ public class BootDecider {
                 blackDuckServerConfig = connectivityResult.getBlackDuckServerConfig();
                 return BlackDuckDecision.forOnlineConnected(blackDuckServicesFactory, blackDuckServerConfig);
             } else {
-                return BlackDuckDecision.forOnlineNotConnected();
+                return BlackDuckDecision.forOnlineNotConnected(connectivityResult.getFailureReason());
             }
         } else {
             logger.info("No Black Duck url was found and offline mode is not set, will NOT run Black Duck product.");

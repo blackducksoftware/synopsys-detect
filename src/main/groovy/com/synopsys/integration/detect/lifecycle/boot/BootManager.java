@@ -184,6 +184,8 @@ public class BootManager {
                     if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
                         logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
                         return BootResult.exit(detectConfiguration);
+                    } else {
+                        throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + blackDuckDecision.getConnectionFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
                     }
                 }
             }
