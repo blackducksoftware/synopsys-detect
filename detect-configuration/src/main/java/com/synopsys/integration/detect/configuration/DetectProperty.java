@@ -23,6 +23,7 @@
  */
 package com.synopsys.integration.detect.configuration;
 
+import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.DEFAULT_HELP;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_BAZEL;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_BITBAKE;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_BLACKDUCK_SERVER;
@@ -73,59 +74,59 @@ import com.synopsys.integration.detect.property.PropertyType;
 
 public enum DetectProperty {
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("The API token used to authenticate with the Black Duck Server.")
     BLACKDUCK_API_TOKEN("blackduck.api.token", "Black Duck API Token", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, SEARCH_GROUP_OFFLINE })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, SEARCH_GROUP_OFFLINE, DEFAULT_HELP })
     @HelpDescription("This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
     BLACKDUCK_OFFLINE_MODE("blackduck.offline.mode", "Offline Mode", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Black Duck password")
     BLACKDUCK_PASSWORD("blackduck.password", "Black Duck Password", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Hostname for proxy server")
     BLACKDUCK_PROXY_HOST("blackduck.proxy.host", "Proxy Host", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Comma separated list of host patterns that should not use the proxy")
     BLACKDUCK_PROXY_IGNORED_HOSTS("blackduck.proxy.ignored.hosts", "Bypass Proxy Hosts", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("NTLM Proxy domain")
     BLACKDUCK_PROXY_NTLM_DOMAIN("blackduck.proxy.ntlm.domain", "NTLM Proxy Domain", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("NTLM Proxy workstation")
     BLACKDUCK_PROXY_NTLM_WORKSTATION("blackduck.proxy.ntlm.workstation", "NTLM Proxy Workstation", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Proxy password")
     BLACKDUCK_PROXY_PASSWORD("blackduck.proxy.password", "Proxy Password", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Proxy port")
     BLACKDUCK_PROXY_PORT("blackduck.proxy.port", "Proxy Port", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Proxy username")
     BLACKDUCK_PROXY_USERNAME("blackduck.proxy.username", "Proxy Username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Time to wait for network connections to complete (in seconds).")
     BLACKDUCK_TIMEOUT("blackduck.timeout", "Black Duck Timeout", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "120"),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("If true, automatically trust the certificate for the current run of Detect only")
     BLACKDUCK_TRUST_CERT("blackduck.trust.cert", "Trust All SSL Certificates", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("URL of the Black Duck server")
     BLACKDUCK_URL("blackduck.url", "Black Duck URL", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Black Duck username")
     BLACKDUCK_USERNAME("blackduck.username", "Black Duck Username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
@@ -276,7 +277,7 @@ public enum DetectProperty {
     @HelpDetailed("If true, these directories will be excluded from the detector search: " + DetectorSearchExcludedDirectories.DIRECTORY_NAMES)
     DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS("detect.detector.search.exclusion.defaults", "Detector Exclude Default Directories", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect.")
     DETECT_DISABLE_WITHOUT_BLACKDUCK("detect.disable.without.blackduck", "Check For Valid Black Duck Connection", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
@@ -483,9 +484,13 @@ public enum DetectProperty {
     @HelpDescription("The path of the Pipenv executable")
     DETECT_PIPENV_PATH("detect.pipenv.path", "Pipenv Executable", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_POLARIS, additional = {})
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP })
     @HelpDescription("The url of your polaris instance.")
     POLARIS_URL("polaris.url", "Polaris Url", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP })
+    @HelpDescription("The access token for your polaris instance.")
+    POLARIS_ACCESS_TOKEN("polaris.access.token", "Polaris Access Token", "5.3.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_POLICY })
     @HelpDescription("A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.")
@@ -1018,9 +1023,10 @@ public enum DetectProperty {
         public static final String SEARCH_GROUP_PROJECT_SETTING = "project setting";
         public static final String SEARCH_GROUP_REPORT_SETTING = "report setting";
         public static final String SEARCH_GROUP_SEARCH = "search";
+        public static final String DEFAULT_HELP = "default";
 
         //Print Config
-        public static final String PRINT_GROUP_DEFAULT = SEARCH_GROUP_BLACKDUCK;
+        public static final String PRINT_GROUP_DEFAULT = DEFAULT_HELP;
 
         //All Deprecated Groups
         @Deprecated
