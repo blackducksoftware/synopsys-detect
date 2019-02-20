@@ -42,14 +42,12 @@ import com.synopsys.integration.phonehome.PhoneHomeResponse;
 public abstract class PhoneHomeManager {
     private final Logger logger = LoggerFactory.getLogger(PhoneHomeManager.class);
 
-    protected final Gson gson;
     protected final DetectInfo detectInfo;
     protected final EventSystem eventSystem;
     protected PhoneHomeResponse currentPhoneHomeResponse;
     protected Map<String, String> additionalMetaData;
 
-    public PhoneHomeManager(Map<String, String> additionalMetaData, final DetectInfo detectInfo, final Gson gson, EventSystem eventSystem) {
-        this.gson = gson;
+    public PhoneHomeManager(Map<String, String> additionalMetaData, final DetectInfo detectInfo, EventSystem eventSystem) {
         this.detectInfo = detectInfo;
         this.eventSystem = eventSystem;
         this.additionalMetaData = additionalMetaData;

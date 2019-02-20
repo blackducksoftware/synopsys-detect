@@ -165,40 +165,12 @@ public class BootManager {
         BootDecider bootDecider = new BootDecider();
         BootDecision bootDecision = bootDecider.decide(detectConfiguration, detectOptionManager, directoryManager);
 
-        if (!bootDecision.willRunAny()) {
-            throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
-        }
-
-        BlackDuckRunData blackDuckRunData = null;
-        BlackDuckDecision blackDuckDecision = bootDecision.getBlackDuckDecision();
-        if (blackDuckDecision.shouldRun()){
-            if (blackDuckDecision.isOffline()){
-                blackDuckRunData = new BlackDuckRunData(BlackDuckConnectivityManager.offline());
-            } else {
-                if (blackDuckDecision.isSuccessfullyConnected()){
-                    BlackDuckServicesFactory blackDuckServicesFactory = blackDuckDecision.getBlackDuckServicesFactory();
-                    PhoneHomeManager phoneHomeManager = createPhoneHomeManager(detectConfiguration, blackDuckServicesFactory, detectInfo, gson, eventSystem);
-                    BlackDuckConnectivityManager connectivityManager = BlackDuckConnectivityManager.online(blackDuckServicesFactory, phoneHomeManager, blackDuckDecision.getBlackDuckServerConfig());
-                    blackDuckRunData = new BlackDuckRunData(connectivityManager);
-                } else {
-                    if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
-                        logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
-                        return BootResult.exit(detectConfiguration);
-                    } else {
-                        throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + blackDuckDecision.getConnectionFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
-                    }
-                }
-            }
-            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
-                logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
-                return BootResult.exit(detectConfiguration);
-            }
-        }
-
-        PolarisRunData polarisRunData = null;
-        PolarisDecision polarisDecision = bootDecision.getPolarisDecision();
-        if (polarisDecision.shouldRun()){
-            polarisRunData = new PolarisRunData(polarisDecision.getPolarisServerConfig());
+        ProductBootFactory productBootFactory = new ProductBootFactory(detectConfiguration, detectInfo, eventSystem);
+        ProductBoot productBoot = new ProductBoot();
+        ProductRunData productRunData = productBoot.boot(bootDecision, detectConfiguration, productBootFactory);
+        if (productRunData == null){
+            logger.info("No products to run, detect is complete.");
+            return BootResult.exit(detectConfiguration);
         }
 
         //TODO: Only need this if in diagnostic or online (for phone home):
@@ -227,7 +199,7 @@ public class BootManager {
         detectContext.registerConfiguration(DetectorBeanConfiguration.class);
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
-        return BootResult.run(detectConfiguration, new ProductRunData(polarisRunData, blackDuckRunData));
+        return BootResult.run(detectConfiguration, productRunData);
     }
 
     private void printAppropriateHelp(List<DetectOption> detectOptions, DetectArgumentState detectArgumentState) {
@@ -296,11 +268,5 @@ public class BootManager {
         }
     }
 
-    private PhoneHomeManager createPhoneHomeManager(DetectConfiguration detectConfiguration, BlackDuckServicesFactory blackDuckServicesFactory, DetectInfo detectInfo, Gson gson, EventSystem eventSystem) {
-        Map<String, String> additionalMetaData = detectConfiguration.getPhoneHomeProperties();
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(blackDuckServicesFactory, executorService);
-        PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem, blackDuckPhoneHomeHelper);
-        return phoneHomeManager;
-    }
+
 }

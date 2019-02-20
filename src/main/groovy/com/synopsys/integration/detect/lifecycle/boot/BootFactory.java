@@ -30,6 +30,7 @@ import com.synopsys.integration.detect.Application;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 import freemarker.template.Configuration;
@@ -65,4 +66,5 @@ public class BootFactory {
     public IntegrationEscapeUtil createIntegrationEscapeUtil() {
         return new IntegrationEscapeUtil();
     }
+
 }

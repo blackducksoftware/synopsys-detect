@@ -646,7 +646,7 @@ public enum DetectProperty {
      *********************************************************************************************/
 
     @Deprecated
-    @DetectDeprecation(description = "This property is not deprecated. Please use --detect.report.timeout in the future. NOTE the new property is in SECONDS not MILLISECONDS.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @DetectDeprecation(description = "This property is now deprecated. Please use --detect.report.timeout in the future. NOTE the new property is in SECONDS not MILLISECONDS.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { GROUP_PROJECT })
     @HelpDescription("Timeout for response from Black Duck regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.")
     DETECT_API_TIMEOUT("detect.api.timeout", "", "3.0.0", PropertyType.LONG, PropertyAuthority.None, "300000"),
