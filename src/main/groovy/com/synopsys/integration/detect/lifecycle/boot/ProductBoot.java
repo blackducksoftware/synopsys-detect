@@ -50,7 +50,6 @@ public class ProductBoot {
                     }
                 }
             }
-
         }
 
         PolarisRunData polarisRunData = null;

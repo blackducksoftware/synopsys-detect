@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
@@ -18,6 +20,7 @@ import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision
 import com.synopsys.integration.detect.lifecycle.boot.decision.BootDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
+import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 
 public class ProductBootTest {
 
@@ -51,6 +54,29 @@ public class ProductBootTest {
         Assert.assertNull(productRunData);
     }
 
+    @Test()
+    public void blackDuckOnlyWorks() throws DetectUserFriendlyException {
+        HashMap<DetectProperty, Boolean> properties = new HashMap<>();
+
+        BlackDuckDecision blackDuckDecision = BlackDuckDecision.forOnlineConnected(Mockito.mock(BlackDuckServicesFactory.class), Mockito.mock(BlackDuckServerConfig.class));
+
+        ProductRunData productRunData = testBoot(blackDuckDecision, PolarisDecision.forSkipPolaris(), properties);
+
+        Assert.assertTrue(productRunData.shouldUseBlackDuckProduct());
+        Assert.assertFalse(productRunData.shouldUsePolarisProduct());
+    }
+
+    @Test()
+    public void polarisOnlyWorks() throws DetectUserFriendlyException {
+        HashMap<DetectProperty, Boolean> properties = new HashMap<>();
+
+        PolarisDecision polarisDecision = PolarisDecision.forOnline(Mockito.mock(PolarisServerConfig.class));
+
+        ProductRunData productRunData = testBoot(BlackDuckDecision.forSkipBlackduck(), polarisDecision, properties);
+
+        Assert.assertFalse(productRunData.shouldUseBlackDuckProduct());
+        Assert.assertTrue(productRunData.shouldUsePolarisProduct());
+    }
 
     private ProductRunData testBoot(BlackDuckDecision blackDuckDecision, PolarisDecision polarisDecision, Map<DetectProperty, Boolean> properties) throws DetectUserFriendlyException {
         DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
