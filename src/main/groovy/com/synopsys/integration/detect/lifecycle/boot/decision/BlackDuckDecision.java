@@ -35,20 +35,20 @@ public class BlackDuckDecision {
     private BlackDuckServicesFactory blackDuckServicesFactory;
     private BlackDuckServerConfig blackDuckServerConfig;
 
-    public static BlackDuckDecision forSkipBlackduck() {
+    public static BlackDuckDecision skip() {
         return new BlackDuckDecision(false, false, null, true, null, null);
     }
 
-    public static BlackDuckDecision forOffline() {
+    public static BlackDuckDecision runOffline() {
         return new BlackDuckDecision(true, false, null, true, null, null);
     }
 
-    public static BlackDuckDecision forOnlineConnected(final BlackDuckServicesFactory blackDuckServicesFactory,
+    public static BlackDuckDecision runOnlineConnected(final BlackDuckServicesFactory blackDuckServicesFactory,
         final BlackDuckServerConfig blackDuckServerConfig) {
         return new BlackDuckDecision(true, true, null, false, blackDuckServicesFactory, blackDuckServerConfig);
     }
 
-    public static BlackDuckDecision forOnlineNotConnected(String reason) {
+    public static BlackDuckDecision runOnlineDisconnected(String reason) {
         return new BlackDuckDecision(true, false, reason, false, null, null);
     }
 

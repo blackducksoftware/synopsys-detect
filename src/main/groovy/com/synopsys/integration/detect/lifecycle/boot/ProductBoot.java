@@ -32,10 +32,7 @@ public class ProductBoot {
             if (blackDuckDecision.isOffline()){
                 blackDuckRunData = new BlackDuckRunData(BlackDuckConnectivityManager.offline());
             } else {
-                if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
-                    logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
-                    return null;
-                } else if (blackDuckDecision.isSuccessfullyConnected()){
+                if (blackDuckDecision.isSuccessfullyConnected()){
                     BlackDuckServicesFactory blackDuckServicesFactory = blackDuckDecision.getBlackDuckServicesFactory();
                     PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
                     BlackDuckConnectivityManager connectivityManager = BlackDuckConnectivityManager.online(blackDuckServicesFactory, phoneHomeManager, blackDuckDecision.getBlackDuckServerConfig());
@@ -48,6 +45,10 @@ public class ProductBoot {
                     } else {
                         throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + blackDuckDecision.getConnectionFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
                     }
+                }
+                if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
+                    logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
+                    return null;
                 }
             }
         }

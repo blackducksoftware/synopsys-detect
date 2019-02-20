@@ -7,7 +7,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
@@ -26,12 +25,12 @@ public class ProductBootTest {
 
     @Test(expected = DetectUserFriendlyException.class)
     public void bothProductsSkippedThrows() throws DetectUserFriendlyException {
-        testBoot(BlackDuckDecision.forSkipBlackduck(), PolarisDecision.forSkipPolaris(), new HashMap<>());
+        testBoot(BlackDuckDecision.skip(), PolarisDecision.skip(), new HashMap<>());
     }
 
     @Test(expected = DetectUserFriendlyException.class)
     public void blackDuckConnectionFailureThrows() throws DetectUserFriendlyException {
-        testBoot(BlackDuckDecision.forOnlineNotConnected("Failed to connect"), PolarisDecision.forSkipPolaris(), new HashMap<>());
+        testBoot(BlackDuckDecision.runOnlineDisconnected("Failed to connect"), PolarisDecision.skip(), new HashMap<>());
     }
 
     @Test()
@@ -39,17 +38,26 @@ public class ProductBootTest {
         HashMap<DetectProperty, Boolean> properties = new HashMap<>();
         properties.put(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, true);
 
-        ProductRunData productRunData = testBoot(BlackDuckDecision.forOnlineNotConnected("Failed to connect"), PolarisDecision.forSkipPolaris(), properties);
+        ProductRunData productRunData = testBoot(BlackDuckDecision.runOnlineDisconnected("Failed to connect"), PolarisDecision.skip(), properties);
 
         Assert.assertNull(productRunData);
     }
 
-    @Test()
-    public void blackDuckConnectionFailureWithTestReturnsNull() throws DetectUserFriendlyException {
+    @Test(expected = DetectUserFriendlyException.class)
+    public void blackDuckConnectionFailureWithTestThrows() throws DetectUserFriendlyException {
         HashMap<DetectProperty, Boolean> properties = new HashMap<>();
         properties.put(DetectProperty.DETECT_TEST_CONNECTION, true);
 
-        ProductRunData productRunData = testBoot(BlackDuckDecision.forOnlineNotConnected("Failed to connect"), PolarisDecision.forSkipPolaris(), properties);
+        testBoot(BlackDuckDecision.runOnlineDisconnected("Failed to connect"), PolarisDecision.skip(), properties);
+    }
+
+    @Test()
+    public void blackDuckConnectionSuccessWithTestReturnsNull() throws DetectUserFriendlyException {
+        HashMap<DetectProperty, Boolean> properties = new HashMap<>();
+        properties.put(DetectProperty.DETECT_TEST_CONNECTION, true);
+
+        BlackDuckDecision blackDuckDecision = BlackDuckDecision.runOnlineConnected(Mockito.mock(BlackDuckServicesFactory.class), Mockito.mock(BlackDuckServerConfig.class));
+        ProductRunData productRunData = testBoot(blackDuckDecision, PolarisDecision.skip(), properties);
 
         Assert.assertNull(productRunData);
     }
@@ -58,9 +66,9 @@ public class ProductBootTest {
     public void blackDuckOnlyWorks() throws DetectUserFriendlyException {
         HashMap<DetectProperty, Boolean> properties = new HashMap<>();
 
-        BlackDuckDecision blackDuckDecision = BlackDuckDecision.forOnlineConnected(Mockito.mock(BlackDuckServicesFactory.class), Mockito.mock(BlackDuckServerConfig.class));
+        BlackDuckDecision blackDuckDecision = BlackDuckDecision.runOnlineConnected(Mockito.mock(BlackDuckServicesFactory.class), Mockito.mock(BlackDuckServerConfig.class));
 
-        ProductRunData productRunData = testBoot(blackDuckDecision, PolarisDecision.forSkipPolaris(), properties);
+        ProductRunData productRunData = testBoot(blackDuckDecision, PolarisDecision.skip(), properties);
 
         Assert.assertTrue(productRunData.shouldUseBlackDuckProduct());
         Assert.assertFalse(productRunData.shouldUsePolarisProduct());
@@ -70,9 +78,9 @@ public class ProductBootTest {
     public void polarisOnlyWorks() throws DetectUserFriendlyException {
         HashMap<DetectProperty, Boolean> properties = new HashMap<>();
 
-        PolarisDecision polarisDecision = PolarisDecision.forOnline(Mockito.mock(PolarisServerConfig.class));
+        PolarisDecision polarisDecision = PolarisDecision.runOnline(Mockito.mock(PolarisServerConfig.class));
 
-        ProductRunData productRunData = testBoot(BlackDuckDecision.forSkipBlackduck(), polarisDecision, properties);
+        ProductRunData productRunData = testBoot(BlackDuckDecision.skip(), polarisDecision, properties);
 
         Assert.assertFalse(productRunData.shouldUseBlackDuckProduct());
         Assert.assertTrue(productRunData.shouldUsePolarisProduct());

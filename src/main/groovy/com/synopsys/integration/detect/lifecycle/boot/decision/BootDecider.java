@@ -25,7 +25,6 @@ package com.synopsys.integration.detect.lifecycle.boot.decision;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -69,10 +68,10 @@ public class BootDecider {
         if (!polarisCanRun) {
             logger.info("The supplied properties are not sufficient to run polaris - polaris will not run.");
             logger.info(builderStatus.getFullErrorMessage());
-            return PolarisDecision.forSkipPolaris();
+            return PolarisDecision.skip();
         } else {
             logger.info("A polaris access token and url were found, will run Polaris product.");
-            return PolarisDecision.forOnline(polarisServerConfigBuilder.build());
+            return PolarisDecision.runOnline(polarisServerConfigBuilder.build());
         }
     }
 
@@ -80,7 +79,7 @@ public class BootDecider {
         boolean offline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
         String hubUrl = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None);
         if (offline) {
-            return BlackDuckDecision.forOffline();
+            return BlackDuckDecision.runOffline();
         } else if(StringUtils.isNotBlank(hubUrl)) {
             logger.info("Either the Black Duck url was found or offline mode is set, will run Black Duck product.");
 
@@ -91,13 +90,13 @@ public class BootDecider {
             if (connectivityResult.isSuccessfullyConnected()){
                 BlackDuckServicesFactory blackDuckServicesFactory = connectivityResult.getBlackDuckServicesFactory();
                 blackDuckServerConfig = connectivityResult.getBlackDuckServerConfig();
-                return BlackDuckDecision.forOnlineConnected(blackDuckServicesFactory, blackDuckServerConfig);
+                return BlackDuckDecision.runOnlineConnected(blackDuckServicesFactory, blackDuckServerConfig);
             } else {
-                return BlackDuckDecision.forOnlineNotConnected(connectivityResult.getFailureReason());
+                return BlackDuckDecision.runOnlineDisconnected(connectivityResult.getFailureReason());
             }
         } else {
             logger.info("No Black Duck url was found and offline mode is not set, will NOT run Black Duck product.");
-            return BlackDuckDecision.forSkipBlackduck();
+            return BlackDuckDecision.skip();
         }
     }
 

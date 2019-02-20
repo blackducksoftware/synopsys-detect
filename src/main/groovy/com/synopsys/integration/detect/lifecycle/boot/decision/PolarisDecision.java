@@ -29,11 +29,11 @@ public class PolarisDecision {
     private final boolean shouldRun;
     private final PolarisServerConfig polarisServerConfig;
 
-    public static PolarisDecision forSkipPolaris() {
+    public static PolarisDecision skip() {
         return new PolarisDecision(false, null);
     }
 
-    public static PolarisDecision forOnline(final PolarisServerConfig polarisServerConfig) {
+    public static PolarisDecision runOnline(final PolarisServerConfig polarisServerConfig) {
         return new PolarisDecision(true, polarisServerConfig);
     }
 
