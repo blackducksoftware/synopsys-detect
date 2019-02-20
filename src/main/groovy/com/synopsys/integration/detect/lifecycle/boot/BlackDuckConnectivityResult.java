@@ -27,7 +27,7 @@ import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 
-public class ConnectivityResult {
+public class BlackDuckConnectivityResult {
     private boolean successfullyConnected;
 
     //if failure, the following is populated
@@ -35,24 +35,22 @@ public class ConnectivityResult {
 
     //if success, the following is populated
     private BlackDuckServicesFactory blackDuckServicesFactory;
-    private PhoneHomeManager phoneHomeManager;
     private BlackDuckServerConfig blackDuckServerConfig;
 
-    private ConnectivityResult(final boolean successfullyConnected, final String failureReason,
-        final BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, final BlackDuckServerConfig blackDuckServerConfig) {
+    private BlackDuckConnectivityResult(final boolean successfullyConnected, final String failureReason,
+        final BlackDuckServicesFactory blackDuckServicesFactory, final BlackDuckServerConfig blackDuckServerConfig) {
         this.successfullyConnected = successfullyConnected;
         this.failureReason = failureReason;
         this.blackDuckServicesFactory = blackDuckServicesFactory;
-        this.phoneHomeManager = phoneHomeManager;
         this.blackDuckServerConfig = blackDuckServerConfig;
     }
 
-    public static ConnectivityResult success(final BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, final BlackDuckServerConfig blackDuckServerConfig) {
-        return new ConnectivityResult(true, null, blackDuckServicesFactory, phoneHomeManager, blackDuckServerConfig);
+    public static BlackDuckConnectivityResult success(final BlackDuckServicesFactory blackDuckServicesFactory, final BlackDuckServerConfig blackDuckServerConfig) {
+        return new BlackDuckConnectivityResult(true, null, blackDuckServicesFactory, blackDuckServerConfig);
     }
 
-    public static ConnectivityResult failure(String reason) {
-        return new ConnectivityResult(false, reason, null, null, null);
+    public static BlackDuckConnectivityResult failure(String reason) {
+        return new BlackDuckConnectivityResult(false, reason, null, null);
     }
 
     public boolean isSuccessfullyConnected() {
@@ -65,10 +63,6 @@ public class ConnectivityResult {
 
     public BlackDuckServicesFactory getBlackDuckServicesFactory() {
         return blackDuckServicesFactory;
-    }
-
-    public PhoneHomeManager getPhoneHomeManager() {
-        return phoneHomeManager;
     }
 
     public BlackDuckServerConfig getBlackDuckServerConfig() {

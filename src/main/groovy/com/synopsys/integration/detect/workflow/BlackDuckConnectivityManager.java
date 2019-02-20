@@ -31,23 +31,23 @@ import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 
-public class ConnectivityManager {
+public class BlackDuckConnectivityManager {
     private final boolean isDetectOnline;
     private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final PhoneHomeManager phoneHomeManager;
     private final BlackDuckServerConfig blackDuckServerConfig;
 
-    public static ConnectivityManager offline() {
-        return new ConnectivityManager(false, null, null, null);
+    public static BlackDuckConnectivityManager offline() {
+        return new BlackDuckConnectivityManager(false, null, null, null);
     }
 
-    public static ConnectivityManager online(BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, final BlackDuckServerConfig blackDuckServerConfig) {
+    public static BlackDuckConnectivityManager online(BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, final BlackDuckServerConfig blackDuckServerConfig) {
         Assert.notNull(blackDuckServicesFactory, "Online detect needs a services factory.");
         Assert.notNull(blackDuckServerConfig, "Online detect needs a server config.");
-        return new ConnectivityManager(true, blackDuckServicesFactory, phoneHomeManager, blackDuckServerConfig);
+        return new BlackDuckConnectivityManager(true, blackDuckServicesFactory, phoneHomeManager, blackDuckServerConfig);
     }
 
-    private ConnectivityManager(boolean isDetectOnline, final BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
+    private BlackDuckConnectivityManager(boolean isDetectOnline, final BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
         this.isDetectOnline = isDetectOnline;
         this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.phoneHomeManager = phoneHomeManager;

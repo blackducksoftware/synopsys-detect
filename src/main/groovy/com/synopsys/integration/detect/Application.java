@@ -48,7 +48,7 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
-import com.synopsys.integration.detect.workflow.ConnectivityManager;
+import com.synopsys.integration.detect.workflow.BlackDuckConnectivityManager;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticManager;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -107,12 +107,12 @@ public class Application implements ApplicationRunner {
             logger.error("Detect boot failed.");
             exitCodeManager.requestExitCode(e);
         }
-        if (bootResult != null && bootResult.bootType == BootResult.BootType.CONTINUE) {
+        if (bootResult != null && bootResult.bootType == BootResult.BootType.RUN) {
             logger.info("Detect will attempt to run.");
             RunManager runManager = new RunManager(detectContext);
             try {
                 logger.info("Detect run begin: " + detectRun.getRunId());
-                runResult = Optional.ofNullable(runManager.run(bootResult.runDecision));
+                runResult = Optional.ofNullable(runManager.run(bootResult.productRunData));
                 logger.info("Detect run completed.");
             } catch (final Exception e) {
                 if (e.getMessage() != null){
@@ -128,8 +128,7 @@ public class Application implements ApplicationRunner {
                 DiagnosticManager diagnosticManager = detectContext.getBean(DiagnosticManager.class);
                 DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
                 DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
-                ConnectivityManager connectivityManager = detectContext.getBean(ConnectivityManager.class);
-                ShutdownManager shutdownManager = new ShutdownManager(connectivityManager, statusManager, exitCodeManager, directoryManager, detectConfiguration, reportManager, diagnosticManager);
+                ShutdownManager shutdownManager = new ShutdownManager(bootResult.productRunData, statusManager, exitCodeManager, directoryManager, detectConfiguration, reportManager, diagnosticManager);
                 logger.info("Detect shutdown begin.");
                 shutdownManager.shutdown(runResult);
                 logger.info("Detect shutdown completed.");

@@ -23,19 +23,23 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectorBeanConfiguration;
@@ -60,12 +64,17 @@ import com.synopsys.integration.detect.help.print.HelpPrinter;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.interactive.mode.DefaultInteractiveMode;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
-import com.synopsys.integration.detect.lifecycle.run.RunDecider;
-import com.synopsys.integration.detect.lifecycle.run.RunDecision;
+import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
+import com.synopsys.integration.detect.lifecycle.boot.decision.BootDecider;
+import com.synopsys.integration.detect.lifecycle.boot.decision.BootDecision;
+import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
+import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.synopsys.integration.detect.lifecycle.run.data.PolarisRunData;
+import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.property.SpringPropertySource;
 import com.synopsys.integration.detect.util.TildeInPathResolver;
-import com.synopsys.integration.detect.workflow.ConnectivityManager;
+import com.synopsys.integration.detect.workflow.BlackDuckConnectivityManager;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticManager;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
@@ -73,13 +82,12 @@ import com.synopsys.integration.detect.workflow.diagnostic.RelevantFileTracker;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.phonehome.OnlinePhoneHomeManager;
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.detect.workflow.profiling.BomToolProfiler;
 import com.synopsys.integration.detect.workflow.report.DetectConfigurationReporter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
-import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder;
-import com.synopsys.integration.util.IntEnvironmentVariables;
 
 import freemarker.template.Configuration;
 
@@ -153,63 +161,42 @@ public class BootManager {
         }
 
         logger.info("Main boot completed. Deciding what detect should do.");
-        PolarisServerConfigBuilder polarisServerConfigBuilder = PolarisServerConfig.newBuilder();
-        List<String> allPolarisKeys = polarisServerConfigBuilder.getAllPropertyKeys();
-        Map<String, String> polarisProperties = new HashMap<>();
-        for (String polarisKey : allPolarisKeys) {
-            if (springPropertySource.containsProperty(polarisKey)) {
-                polarisProperties.put(polarisKey, springPropertySource.getProperty(polarisKey));
-            }
-        }
-        polarisServerConfigBuilder.setFromProperties(polarisProperties);
-        polarisServerConfigBuilder.setUserHomePath(directoryManager.getUserHome().getAbsolutePath());
-        String polarisUrl = detectConfiguration.getProperty(DetectProperty.POLARIS_URL, PropertyAuthority.None);
-        if (StringUtils.isNotBlank(polarisUrl)) {
-            polarisServerConfigBuilder.setPolarisUrl(polarisUrl);
-        }
-        polarisServerConfigBuilder.setTimeoutSeconds(120);
 
-        RunDecider runDecider = new RunDecider();
-        RunDecision runDecision = runDecider.decide(detectConfiguration, polarisServerConfigBuilder);
+        BootDecider bootDecider = new BootDecider();
+        BootDecision bootDecision = bootDecider.decide(detectConfiguration, detectOptionManager, directoryManager);
 
-        boolean willRunSomething = runDecision.willRunBlackduck() || runDecision.willRunPolaris();
-        if (!willRunSomething) {
-            throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run blackduck or polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
+        if (!bootDecision.willRunAny()) {
+            throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
         }
 
-        ConnectivityManager connectivityManager;
-        if (runDecision.willRunBlackduck()) {
-            boolean offline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
-            if (offline) {
-                logger.info("Detect is in offline mode.");
-                connectivityManager = ConnectivityManager.offline();
+        BlackDuckRunData blackDuckRunData = null;
+        BlackDuckDecision blackDuckDecision = bootDecision.getBlackDuckDecision();
+        if (blackDuckDecision.shouldRun()){
+            if (blackDuckDecision.isOffline()){
+                blackDuckRunData = new BlackDuckRunData(BlackDuckConnectivityManager.offline());
             } else {
-                logger.info("Detect is in online mode.");
-                //check my connectivity
-                ConnectivityChecker connectivityChecker = new ConnectivityChecker();
-                ConnectivityResult connectivityResult = connectivityChecker.determineConnectivity(detectConfiguration, detectOptionManager, detectInfo, gson, objectMapper, eventSystem);
-
-                if (connectivityResult.isSuccessfullyConnected()) {
-                    logger.info("Detect is capable of communicating with server.");
-                    connectivityManager = ConnectivityManager.online(connectivityResult.getBlackDuckServicesFactory(), connectivityResult.getPhoneHomeManager(), connectivityResult.getBlackDuckServerConfig());
+                if (blackDuckDecision.isSuccessfullyConnected()){
+                    BlackDuckServicesFactory blackDuckServicesFactory = blackDuckDecision.getBlackDuckServicesFactory();
+                    PhoneHomeManager phoneHomeManager = createPhoneHomeManager(detectConfiguration, blackDuckServicesFactory, detectInfo, gson, eventSystem);
+                    BlackDuckConnectivityManager connectivityManager = BlackDuckConnectivityManager.online(blackDuckServicesFactory, phoneHomeManager, blackDuckDecision.getBlackDuckServerConfig());
+                    blackDuckRunData = new BlackDuckRunData(connectivityManager);
                 } else {
-                    logger.info("Detect is NOT capable of communicating with server.");
-                    if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, PropertyAuthority.None)) {
-                        logger.info(connectivityResult.getFailureReason());
-                        logger.info(String.format("%s is set to 'true' so Detect will simply exit.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
+                    if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
+                        logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
                         return BootResult.exit(detectConfiguration);
-                    } else {
-                        throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + connectivityResult.getFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
                     }
                 }
             }
-
             if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
                 logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
                 return BootResult.exit(detectConfiguration);
             }
-        } else {
-            connectivityManager = null;
+        }
+
+        PolarisRunData polarisRunData = null;
+        PolarisDecision polarisDecision = bootDecision.getPolarisDecision();
+        if (polarisDecision.shouldRun()){
+            polarisRunData = new PolarisRunData(polarisDecision.getPolarisServerConfig());
         }
 
         //TODO: Only need this if in diagnostic or online (for phone home):
@@ -220,9 +207,6 @@ public class BootManager {
         detectConfiguration.lock();
 
         //Finished, populate the detect context
-        if (runDecision.willRunPolaris()) {
-            detectContext.registerBean(polarisServerConfigBuilder.build());
-        }
         detectContext.registerBean(detectRun);
         detectContext.registerBean(eventSystem);
         detectContext.registerBean(profiler);
@@ -231,7 +215,6 @@ public class BootManager {
         detectContext.registerBean(detectInfo);
         detectContext.registerBean(directoryManager);
         detectContext.registerBean(diagnosticManager);
-        detectContext.registerBean(connectivityManager);
 
         detectContext.registerBean(gson);
         detectContext.registerBean(objectMapper);
@@ -242,11 +225,7 @@ public class BootManager {
         detectContext.registerConfiguration(DetectorBeanConfiguration.class);
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
-        BootResult result = new BootResult();
-        result.bootType = BootResult.BootType.CONTINUE;
-        result.detectConfiguration = detectConfiguration;
-        result.runDecision = runDecision;
-        return result;
+        return BootResult.run(detectConfiguration, new ProductRunData(polarisRunData, blackDuckRunData));
     }
 
     private void printAppropriateHelp(List<DetectOption> detectOptions, DetectArgumentState detectArgumentState) {
@@ -313,5 +292,13 @@ public class BootManager {
         } else {
             return DiagnosticManager.createWithoutDiagnostics();
         }
+    }
+
+    private PhoneHomeManager createPhoneHomeManager(DetectConfiguration detectConfiguration, BlackDuckServicesFactory blackDuckServicesFactory, DetectInfo detectInfo, Gson gson, EventSystem eventSystem) {
+        Map<String, String> additionalMetaData = detectConfiguration.getPhoneHomeProperties();
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(blackDuckServicesFactory, executorService);
+        PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(additionalMetaData, detectInfo, gson, eventSystem, blackDuckPhoneHomeHelper);
+        return phoneHomeManager;
     }
 }

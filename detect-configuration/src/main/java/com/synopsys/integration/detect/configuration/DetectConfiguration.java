@@ -163,6 +163,10 @@ public class DetectConfiguration {
         return getKeys(getBlackduckPropertyKeys());
     }
 
+    public Map<String, String> getProperties(Set<String> keys) {
+        return getKeys(keys);
+    }
+
     public Map<String, String> getDockerProperties() {
         return getKeysWithoutPrefix(detectPropertySource.getDockerPropertyKeys(), DetectPropertySource.DOCKER_PROPERTY_PREFIX);
     }

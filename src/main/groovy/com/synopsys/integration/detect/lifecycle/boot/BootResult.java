@@ -24,16 +24,24 @@
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.lifecycle.run.RunDecision;
+import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 
 public class BootResult {
     public BootType bootType;
     public DetectConfiguration detectConfiguration; //Application needs this to make sure exit code behaves.
-    public RunDecision runDecision = null;
+    public ProductRunData productRunData;
 
     public enum BootType {
         EXIT,
-        CONTINUE
+        RUN
+    }
+
+    public static BootResult run(DetectConfiguration detectConfiguration, ProductRunData productRunData) {
+        BootResult result = new BootResult();
+        result.bootType = BootType.RUN;
+        result.detectConfiguration = detectConfiguration;
+        result.productRunData = productRunData;
+        return result;
     }
 
     public static BootResult exit(DetectConfiguration detectConfiguration) {
