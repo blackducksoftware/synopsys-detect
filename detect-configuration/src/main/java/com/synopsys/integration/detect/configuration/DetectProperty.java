@@ -277,9 +277,10 @@ public enum DetectProperty {
     @HelpDetailed("If true, these directories will be excluded from the detector search: " + DetectorSearchExcludedDirectories.DIRECTORY_NAMES)
     DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS("detect.detector.search.exclusion.defaults", "Detector Exclude Default Directories", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
-    @HelpDescription("If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect.")
-    DETECT_DISABLE_WITHOUT_BLACKDUCK("detect.disable.without.blackduck", "Check For Valid Black Duck Connection", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    @HelpGroup(primary = GROUP_GENERAL, additional = { GROUP_BLACKDUCK_SERVER, GROUP_POLARIS })
+    @HelpDescription("If true, detect will ignore any products that it cannot connect to.")
+    @HelpDetailed("If true, when detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.")
+    DETECT_IGNORE_CONNECTION_FAILURES("detect.ignore.connection.failures", "Detect Ignore Connection Failures", "5.3.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("The docker image name to inspect. For detect to run docker either this property or detect.docker.tar must be set.")
@@ -644,7 +645,7 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_LOGGING, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The logging level of Detect")
     @AcceptableValues(value = { "ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
-    LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION("logging.level.com.blackducksoftware.integration", "Logging Level", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "INFO"),
+    LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION("logging.level.com.synopsys.integration", "Logging Level", "5.3.0", PropertyType.STRING, PropertyAuthority.None, "INFO"),
 
     /**********************************************************************************************
      * DEPRECATED START
@@ -741,10 +742,16 @@ public enum DetectProperty {
     BLACKDUCK_HUB_OFFLINE_MODE("blackduck.hub.offline.mode", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
-    @DetectDeprecation(description = "This property is changing. Please use --detect.disable.without.blackduck in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @DetectDeprecation(description = "This property is changing. Please use --detect.ignore.connection.failures in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("If true, during initialization Detect will check for Hub connectivity and exit with status code 0 if it cannot connect.")
     DETECT_DISABLE_WITHOUT_HUB("detect.disable.without.hub", "", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.ignore.connection.failures in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
+    @HelpDescription("If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect.")
+    DETECT_DISABLE_WITHOUT_BLACKDUCK("detect.disable.without.blackduck", "Check For Valid Black Duck Connection", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is being removed. Configuration can no longer be suppressed individually. Log level can be used.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
@@ -916,7 +923,14 @@ public enum DetectProperty {
     @DetectDeprecation(description = "This property is changing. Please use --detect.tools and POLARIS in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_POLARIS)
     @HelpDescription("Set to false to disable the Synopsys Polaris Tool.")
-    DETECT_SWIP_ENABLED("detect.polaris.enabled", "", "4.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false");
+    DETECT_SWIP_ENABLED("detect.polaris.enabled", "", "4.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --logging.level.com.synopsys.integration in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @HelpGroup(primary = GROUP_LOGGING, additional = { SEARCH_GROUP_GLOBAL })
+    @HelpDescription("The logging level of Detect")
+    @AcceptableValues(value = { "ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
+    LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION("logging.level.com.blackducksoftware.integration", "Logging Level", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "INFO");
 
     /**********************************************************************************************
      * DEPRECATED END

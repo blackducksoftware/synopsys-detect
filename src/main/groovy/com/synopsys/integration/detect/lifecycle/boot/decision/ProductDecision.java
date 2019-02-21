@@ -23,11 +23,11 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot.decision;
 
-public class BootDecision {
+public class ProductDecision {
     private final BlackDuckDecision blackDuckDecision;
     private final PolarisDecision polarisDecision;
 
-    public BootDecision(final BlackDuckDecision blackDuckDecision, final PolarisDecision polarisDecision) {
+    public ProductDecision(final BlackDuckDecision blackDuckDecision, final PolarisDecision polarisDecision) {
         this.blackDuckDecision = blackDuckDecision;
         this.polarisDecision = polarisDecision;
     }

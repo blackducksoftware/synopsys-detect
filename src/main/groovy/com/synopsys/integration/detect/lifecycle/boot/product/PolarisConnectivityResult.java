@@ -21,36 +21,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.lifecycle.boot;
+package com.synopsys.integration.detect.lifecycle.boot.product;
 
-import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 
-public class BlackDuckConnectivityResult {
+public class PolarisConnectivityResult {
     private boolean successfullyConnected;
 
     //if failure, the following is populated
     private String failureReason;
 
-    //if success, the following is populated
-    private BlackDuckServicesFactory blackDuckServicesFactory;
-    private BlackDuckServerConfig blackDuckServerConfig;
-
-    private BlackDuckConnectivityResult(final boolean successfullyConnected, final String failureReason,
-        final BlackDuckServicesFactory blackDuckServicesFactory, final BlackDuckServerConfig blackDuckServerConfig) {
+    private PolarisConnectivityResult(final boolean successfullyConnected, final String failureReason) {
         this.successfullyConnected = successfullyConnected;
         this.failureReason = failureReason;
-        this.blackDuckServicesFactory = blackDuckServicesFactory;
-        this.blackDuckServerConfig = blackDuckServerConfig;
     }
 
-    public static BlackDuckConnectivityResult success(final BlackDuckServicesFactory blackDuckServicesFactory, final BlackDuckServerConfig blackDuckServerConfig) {
-        return new BlackDuckConnectivityResult(true, null, blackDuckServicesFactory, blackDuckServerConfig);
+    public static PolarisConnectivityResult success() {
+        return new PolarisConnectivityResult(true, null);
     }
 
-    public static BlackDuckConnectivityResult failure(String reason) {
-        return new BlackDuckConnectivityResult(false, reason, null, null);
+    public static PolarisConnectivityResult failure(String reason) {
+        return new PolarisConnectivityResult(false, reason);
     }
 
     public boolean isSuccessfullyConnected() {
@@ -59,13 +52,5 @@ public class BlackDuckConnectivityResult {
 
     public String getFailureReason() {
         return failureReason;
-    }
-
-    public BlackDuckServicesFactory getBlackDuckServicesFactory() {
-        return blackDuckServicesFactory;
-    }
-
-    public BlackDuckServerConfig getBlackDuckServerConfig() {
-        return blackDuckServerConfig;
     }
 }

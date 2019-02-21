@@ -26,7 +26,7 @@ package com.synopsys.integration.detect.lifecycle.boot;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 
-public class BootResult {
+public class DetectBootResult {
     public BootType bootType;
     public DetectConfiguration detectConfiguration; //Application needs this to make sure exit code behaves.
     public ProductRunData productRunData;
@@ -36,16 +36,16 @@ public class BootResult {
         RUN
     }
 
-    public static BootResult run(DetectConfiguration detectConfiguration, ProductRunData productRunData) {
-        BootResult result = new BootResult();
+    public static DetectBootResult run(DetectConfiguration detectConfiguration, ProductRunData productRunData) {
+        DetectBootResult result = new DetectBootResult();
         result.bootType = BootType.RUN;
         result.detectConfiguration = detectConfiguration;
         result.productRunData = productRunData;
         return result;
     }
 
-    public static BootResult exit(DetectConfiguration detectConfiguration) {
-        BootResult result = new BootResult();
+    public static DetectBootResult exit(DetectConfiguration detectConfiguration) {
+        DetectBootResult result = new DetectBootResult();
         result.bootType = BootType.EXIT;
         result.detectConfiguration = detectConfiguration;
         return result;

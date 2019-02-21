@@ -39,9 +39,9 @@ import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
-import com.synopsys.integration.detect.lifecycle.boot.BootFactory;
-import com.synopsys.integration.detect.lifecycle.boot.BootManager;
-import com.synopsys.integration.detect.lifecycle.boot.BootResult;
+import com.synopsys.integration.detect.lifecycle.boot.DetectBootFactory;
+import com.synopsys.integration.detect.lifecycle.boot.DetectBoot;
+import com.synopsys.integration.detect.lifecycle.boot.DetectBootResult;
 import com.synopsys.integration.detect.lifecycle.run.RunManager;
 import com.synopsys.integration.detect.lifecycle.run.RunResult;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
@@ -95,23 +95,23 @@ public class Application implements ApplicationRunner {
         DetectRun detectRun = DetectRun.createDefault();
         DetectContext detectContext = new DetectContext(detectRun);
 
-        BootResult bootResult = null;
+        DetectBootResult detectBootResult = null;
         Optional<RunResult> runResult = Optional.empty();
         try {
             logger.info("Detect boot begin.");
-            BootManager bootManager = new BootManager(new BootFactory());
-            bootResult = bootManager.boot(detectRun, applicationArguments.getSourceArgs(), environment, eventSystem, detectContext);
+            DetectBoot detectBoot = new DetectBoot(new DetectBootFactory());
+            detectBootResult = detectBoot.boot(detectRun, applicationArguments.getSourceArgs(), environment, eventSystem, detectContext);
             logger.info("Detect boot completed.");
         } catch (final Exception e) {
             logger.error("Detect boot failed.");
             exitCodeManager.requestExitCode(e);
         }
-        if (bootResult != null && bootResult.bootType == BootResult.BootType.RUN) {
+        if (detectBootResult != null && detectBootResult.bootType == DetectBootResult.BootType.RUN) {
             logger.info("Detect will attempt to run.");
             RunManager runManager = new RunManager(detectContext);
             try {
                 logger.info("Detect run begin: " + detectRun.getRunId());
-                runResult = Optional.ofNullable(runManager.run(bootResult.productRunData));
+                runResult = Optional.ofNullable(runManager.run(detectBootResult.productRunData));
                 logger.info("Detect run completed.");
             } catch (final Exception e) {
                 if (e.getMessage() != null){
@@ -127,7 +127,7 @@ public class Application implements ApplicationRunner {
                 DiagnosticManager diagnosticManager = detectContext.getBean(DiagnosticManager.class);
                 DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
                 DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
-                ShutdownManager shutdownManager = new ShutdownManager(bootResult.productRunData, statusManager, exitCodeManager, directoryManager, detectConfiguration, reportManager, diagnosticManager);
+                ShutdownManager shutdownManager = new ShutdownManager(detectBootResult.productRunData, statusManager, exitCodeManager, directoryManager, detectConfiguration, reportManager, diagnosticManager);
                 logger.info("Detect shutdown begin.");
                 shutdownManager.shutdown(runResult);
                 logger.info("Detect shutdown completed.");
@@ -144,9 +144,9 @@ public class Application implements ApplicationRunner {
         //Determine how detect should actually exit
         boolean printOutput = true;
         boolean shouldForceSuccess = false;
-        if (bootResult != null && bootResult.detectConfiguration != null) {
-            printOutput = !bootResult.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT, PropertyAuthority.None);
-            shouldForceSuccess = bootResult.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS, PropertyAuthority.None);
+        if (detectBootResult != null && detectBootResult.detectConfiguration != null) {
+            printOutput = !detectBootResult.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT, PropertyAuthority.None);
+            shouldForceSuccess = detectBootResult.detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS, PropertyAuthority.None);
         }
 
         //Generally, when requesting a failure status, an exit code is also requested, but if it is not, we default to an unknown error.

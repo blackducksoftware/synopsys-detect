@@ -32,22 +32,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.help.DetectOptionManager;
-import com.synopsys.integration.detect.lifecycle.boot.BlackDuckConnectivityChecker;
-import com.synopsys.integration.detect.lifecycle.boot.BlackDuckConnectivityResult;
-import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder;
 import com.synopsys.integration.util.BuilderStatus;
 
-public class BootDecider {
+public class ProductDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private PolarisServerConfigBuilder createPolarisServerConfigBuilder(DetectConfiguration detectConfiguration, File userHome) {
@@ -67,11 +61,10 @@ public class BootDecider {
         boolean polarisCanRun = builderStatus.isValid();
 
         if (!polarisCanRun) {
-            logger.info("The supplied properties are not sufficient to run polaris - polaris will not run.");
-            logger.info(builderStatus.getFullErrorMessage());
+            logger.info("Polaris will NOT run: " + builderStatus.getFullErrorMessage());
             return PolarisDecision.skip();
         } else {
-            logger.info("A polaris access token and url were found, will run Polaris product.");
+            logger.info("Polaris will run: An access token and url were found.");
             return PolarisDecision.runOnline(polarisServerConfigBuilder.build());
         }
     }
@@ -80,17 +73,18 @@ public class BootDecider {
         boolean offline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
         String hubUrl = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None);
         if (offline) {
+            logger.info("Black Duck will run: Black Duck offline mode was set to true.");
             return BlackDuckDecision.runOffline();
         } else if(StringUtils.isNotBlank(hubUrl)) {
-            logger.info("Either the Black Duck url was found or offline mode is set, will run Black Duck product.");
+            logger.info("Black Duck will run: A Black Duck url was found.");
             return BlackDuckDecision.runOnline();
         } else {
-            logger.info("No Black Duck url was found and offline mode is not set, will NOT run Black Duck product.");
+            logger.info("Black Duck will NOT run: The Black Duck url must be provided or offline mode must true.");
             return BlackDuckDecision.skip();
         }
     }
 
-    public BootDecision decide(DetectConfiguration detectConfiguration, File userHome) throws DetectUserFriendlyException {
-        return new BootDecision(determineBlackDuck(detectConfiguration), determinePolaris(detectConfiguration, userHome));
+    public ProductDecision decide(DetectConfiguration detectConfiguration, File userHome) throws DetectUserFriendlyException {
+        return new ProductDecision(determineBlackDuck(detectConfiguration), determinePolaris(detectConfiguration, userHome));
     }
 }

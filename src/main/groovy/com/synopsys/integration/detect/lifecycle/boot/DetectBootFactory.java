@@ -36,7 +36,7 @@ import com.synopsys.integration.util.IntegrationEscapeUtil;
 import freemarker.template.Configuration;
 
 //Responsible for creating a few classes boot needs
-public class BootFactory {
+public class DetectBootFactory {
     public Gson createGson() {
         return BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create();
     }

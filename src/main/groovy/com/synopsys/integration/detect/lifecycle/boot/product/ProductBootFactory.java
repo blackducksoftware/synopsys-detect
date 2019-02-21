@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.lifecycle.boot;
+package com.synopsys.integration.detect.lifecycle.boot.product;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;

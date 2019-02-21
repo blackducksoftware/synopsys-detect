@@ -57,8 +57,12 @@ import com.synopsys.integration.detect.help.print.HelpPrinter;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.interactive.mode.DefaultInteractiveMode;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
-import com.synopsys.integration.detect.lifecycle.boot.decision.BootDecider;
-import com.synopsys.integration.detect.lifecycle.boot.decision.BootDecision;
+import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
+import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
+import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
+import com.synopsys.integration.detect.lifecycle.boot.product.PolarisConnectivityChecker;
+import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
+import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.property.SpringPropertySource;
@@ -77,20 +81,20 @@ import com.synopsys.integration.exception.IntegrationException;
 
 import freemarker.template.Configuration;
 
-public class BootManager {
+public class DetectBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private BootFactory bootFactory;
+    private DetectBootFactory detectBootFactory;
 
-    public BootManager(BootFactory bootFactory) {
-        this.bootFactory = bootFactory;
+    public DetectBoot(DetectBootFactory detectBootFactory) {
+        this.detectBootFactory = detectBootFactory;
     }
 
-    public BootResult boot(DetectRun detectRun, final String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) throws DetectUserFriendlyException, IntegrationException {
-        Gson gson = bootFactory.createGson();
-        ObjectMapper objectMapper = bootFactory.createObjectMapper();
-        DocumentBuilder xml = bootFactory.createXmlDocumentBuilder();
-        Configuration configuration = bootFactory.createConfiguration();
+    public DetectBootResult boot(DetectRun detectRun, final String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) throws DetectUserFriendlyException, IntegrationException {
+        Gson gson = detectBootFactory.createGson();
+        ObjectMapper objectMapper = detectBootFactory.createObjectMapper();
+        DocumentBuilder xml = detectBootFactory.createXmlDocumentBuilder();
+        Configuration configuration = detectBootFactory.createConfiguration();
 
         DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
 
@@ -106,17 +110,17 @@ public class BootManager {
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             printAppropriateHelp(options, detectArgumentState);
-            return BootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(detectConfiguration);
         }
 
         if (detectArgumentState.isHelpHtmlDocument()) {
             printHelpHtmlDocument(options, detectInfo, configuration);
-            return BootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(detectConfiguration);
         }
 
         if (detectArgumentState.isHelpJsonDocument()) {
             printHelpJsonDocument(options, detectInfo, configuration, gson);
-            return BootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(detectConfiguration);
         }
 
         printDetectInfo(detectInfo);
@@ -143,20 +147,22 @@ public class BootManager {
 
         if (detectOptionManager.checkForAnyFailureProperties()) {
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION));
-            return BootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(detectConfiguration);
         }
 
         logger.info("Main boot completed. Deciding what detect should do.");
 
-        BootDecider bootDecider = new BootDecider();
-        BootDecision bootDecision = bootDecider.decide(detectConfiguration, directoryManager.getUserHome());
+        ProductDecider productDecider = new ProductDecider();
+        ProductDecision productDecision = productDecider.decide(detectConfiguration, directoryManager.getUserHome());
+
+        logger.info("Decided what products will be run. Starting product boot.");
 
         ProductBootFactory productBootFactory = new ProductBootFactory(detectConfiguration, detectInfo, eventSystem, detectOptionManager);
         ProductBoot productBoot = new ProductBoot();
-        ProductRunData productRunData = productBoot.boot(bootDecision, detectConfiguration, new BlackDuckConnectivityChecker(), productBootFactory);
+        ProductRunData productRunData = productBoot.boot(productDecision, detectConfiguration, new BlackDuckConnectivityChecker(), new PolarisConnectivityChecker(), productBootFactory);
         if (productRunData == null){
             logger.info("No products to run, detect is complete.");
-            return BootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(detectConfiguration);
         }
 
         //TODO: Only need this if in diagnostic or online (for phone home):
@@ -185,7 +191,7 @@ public class BootManager {
         detectContext.registerConfiguration(DetectorBeanConfiguration.class);
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
-        return BootResult.run(detectConfiguration, productRunData);
+        return DetectBootResult.run(detectConfiguration, productRunData);
     }
 
     private void printAppropriateHelp(List<DetectOption> detectOptions, DetectArgumentState detectArgumentState) {

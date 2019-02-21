@@ -8,34 +8,24 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.help.DetectOptionManager;
-import com.synopsys.integration.detect.lifecycle.boot.BlackDuckConnectivityChecker;
-import com.synopsys.integration.detect.lifecycle.boot.ProductBoot;
-import com.synopsys.integration.detect.lifecycle.boot.ProductBootFactory;
-import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
-import com.synopsys.integration.detect.lifecycle.boot.decision.BootDecider;
-import com.synopsys.integration.detect.lifecycle.boot.decision.BootDecision;
-import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
-import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
-import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
+import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
+import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
 
-public class BootDeciderTest {
+public class ProductDeciderTest {
 
     @Test()
     public void shouldRunPolaris() throws DetectUserFriendlyException {
         File userHome = Mockito.mock(File.class);
         DetectConfiguration detectConfiguration = polarisConfiguration("POLARIS_ACCESS_TOKEN", "access token text", "POLARIS_URL", "http://polaris.com");
 
-        BootDecider bootDecider = new BootDecider();
-        BootDecision bootDecision = bootDecider.decide(detectConfiguration, userHome);
+        ProductDecider productDecider = new ProductDecider();
+        ProductDecision productDecision = productDecider.decide(detectConfiguration, userHome);
 
-        Assert.assertTrue(bootDecision.getPolarisDecision().shouldRun());
+        Assert.assertTrue(productDecision.getPolarisDecision().shouldRun());
     }
 
     @Test()
@@ -44,11 +34,11 @@ public class BootDeciderTest {
         DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
         Mockito.when(detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None)).thenReturn(true);
 
-        BootDecider bootDecider = new BootDecider();
-        BootDecision bootDecision = bootDecider.decide(detectConfiguration, userHome);
+        ProductDecider productDecider = new ProductDecider();
+        ProductDecision productDecision = productDecider.decide(detectConfiguration, userHome);
 
-        Assert.assertTrue(bootDecision.getBlackDuckDecision().shouldRun());
-        Assert.assertTrue(bootDecision.getBlackDuckDecision().isOffline());
+        Assert.assertTrue(productDecision.getBlackDuckDecision().shouldRun());
+        Assert.assertTrue(productDecision.getBlackDuckDecision().isOffline());
     }
 
     @Test()
@@ -57,11 +47,11 @@ public class BootDeciderTest {
         DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
         Mockito.when(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None)).thenReturn("some-url");
 
-        BootDecider bootDecider = new BootDecider();
-        BootDecision bootDecision = bootDecider.decide(detectConfiguration, userHome);
+        ProductDecider productDecider = new ProductDecider();
+        ProductDecision productDecision = productDecider.decide(detectConfiguration, userHome);
 
-        Assert.assertTrue(bootDecision.getBlackDuckDecision().shouldRun());
-        Assert.assertFalse(bootDecision.getBlackDuckDecision().isOffline());
+        Assert.assertTrue(productDecision.getBlackDuckDecision().shouldRun());
+        Assert.assertFalse(productDecision.getBlackDuckDecision().isOffline());
     }
 
     @Test()
@@ -69,10 +59,10 @@ public class BootDeciderTest {
         File userHome = Mockito.mock(File.class);
         DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
 
-        BootDecider bootDecider = new BootDecider();
-        BootDecision bootDecision = bootDecider.decide(detectConfiguration, userHome);
+        ProductDecider productDecider = new ProductDecider();
+        ProductDecision productDecision = productDecider.decide(detectConfiguration, userHome);
 
-        Assert.assertFalse(bootDecision.willRunAny());
+        Assert.assertFalse(productDecision.willRunAny());
     }
 
     private DetectConfiguration polarisConfiguration(String... polarisKeys) {
