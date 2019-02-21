@@ -26,7 +26,7 @@ allprojects {
     apply plugin: 'io.spring.dependency-management'
 
     dependencies {
-        implementation 'com.blackducksoftware.integration:blackduck-common:42.0.0'
+        implementation 'com.blackducksoftware.integration:blackduck-common:42.1.0'
         implementation 'com.paypal.digraph:digraph-parser:1.0'
     }
 }
