@@ -21,42 +21,40 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.nuget.model;
+package com.synopsys.integration.detectable.detectables.go.vendor.model;
 
 import java.util.List;
 
-import org.apache.commons.lang3.builder.RecursiveToStringStyle;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-
 import com.google.gson.annotations.SerializedName;
+import com.synopsys.integration.detectable.detectables.go.vendor.model.PackageData;
+import com.synopsys.integration.util.Stringable;
 
-public class NugetContainer {
-    @SerializedName("Name")
-    public String name;
+public class VendorJson extends Stringable {
+    private final String comment;
+    private final String ignore;
+    @SerializedName("package") private final List<PackageData> packages;
+    private final String rootPath;
 
-    @SerializedName("Version")
-    public String version;
+    public VendorJson(final String comment, final String ignore, final List<PackageData> packages, final String rootPath) {
+        this.comment = comment;
+        this.ignore = ignore;
+        this.packages = packages;
+        this.rootPath = rootPath;
+    }
 
-    @SerializedName("Type")
-    public NugetContainerType type;
+    public String getComment() {
+        return comment;
+    }
 
-    @SerializedName("SourcePath")
-    public String sourcePath;
+    public String getIgnore() {
+        return ignore;
+    }
 
-    @SerializedName("OutputPaths")
-    public List<String> outputPaths;
+    public List<PackageData> getPackages() {
+        return packages;
+    }
 
-    @SerializedName("Packages")
-    public List<NugetPackageSet> packages;
-
-    @SerializedName("Dependencies")
-    public List<NugetPackageId> dependencies;
-
-    @SerializedName("Children")
-    public List<NugetContainer> children;
-
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE);
+    public String getRootPath() {
+        return rootPath;
     }
 }

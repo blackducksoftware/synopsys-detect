@@ -136,8 +136,8 @@ public class DetectorBeanConfiguration {
     }
 
     @Bean
-    public DepPackager depPackager() {
-        return new DepPackager(executableRunner, externalIdFactory, detectConfiguration);
+    public GoDepLockFileGenerator depPackager() {
+        return new GoDepLockFileGenerator(executableRunner, externalIdFactory, detectConfiguration);
     }
 
     @Bean

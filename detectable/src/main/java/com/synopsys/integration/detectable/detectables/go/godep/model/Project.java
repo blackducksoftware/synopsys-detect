@@ -21,8 +21,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.inspector.nuget;
+package com.synopsys.integration.detectable.detectables.go.godep.model;
 
-public interface NugetInspectorResolver {
-    NugetInspector resolveNugetInspector();
+import java.util.List;
+
+public class Project {
+    public String name;
+    public String branch;
+    public String revision;
+    public String version;
+    public String source;
+    public List<String> packages;
 }

@@ -21,8 +21,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.inspector.nuget;
+package com.synopsys.integration.detectable.detectable.inspector.go;
 
-public interface NugetInspectorResolver {
-    NugetInspector resolveNugetInspector();
+import java.io.File;
+
+import org.antlr.v4.runtime.misc.Nullable;
+
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+
+public interface GoResolver {
+    @Nullable
+    File resolveGo() throws DetectableException;
 }

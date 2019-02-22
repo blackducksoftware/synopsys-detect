@@ -21,8 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.inspector.nuget;
+package com.synopsys.integration.detectable.detectables.go.godep.model;
 
-public interface NugetInspectorResolver {
-    NugetInspector resolveNugetInspector();
+import java.util.List;
+
+import com.google.gson.annotations.SerializedName;
+
+public class GoLock {
+    // see https://github.com/golang/dep/blob/master/lock.go for the source of the lock file
+    public List<Project> projects;
+
+    @SerializedName("solve-meta")
+    public SolveMeta solveMeta;
 }
