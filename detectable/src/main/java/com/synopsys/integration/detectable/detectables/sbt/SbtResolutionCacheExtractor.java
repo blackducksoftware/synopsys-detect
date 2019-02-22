@@ -153,7 +153,7 @@ public class SbtResolutionCacheExtractor {
 
     private List<SbtDependencyModule> extractModules(final File path, final int depth, final String included, final String excluded) throws IOException, SAXException, ParserConfigurationException {
         final List<File> sbtFiles = fileFinder.findFiles(path, BUILD_SBT_FILENAME, depth);
-        final List<File> resolutionCaches = fileFinder.findFiles(path, RESOLUTION_CACHE_DIRECTORY, depth); // TODO: findDirectoriesContainingDirectoriesToDepth
+        final List<File> resolutionCaches = fileFinder.findFiles(path, RESOLUTION_CACHE_DIRECTORY, depth); // TODO: ensure this does what the old method did. findDirectoriesContainingDirectoriesToDepth
 
         logger.info(String.format("Found %s build.sbt files.", sbtFiles.size()));
         logger.info(String.format("Found %s resolution caches.", resolutionCaches.size()));
