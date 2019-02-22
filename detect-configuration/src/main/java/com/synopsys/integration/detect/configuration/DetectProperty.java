@@ -280,7 +280,7 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_GENERAL, additional = { GROUP_BLACKDUCK_SERVER, GROUP_POLARIS })
     @HelpDescription("If true, detect will ignore any products that it cannot connect to.")
     @HelpDetailed("If true, when detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.")
-    DETECT_IGNORE_CONNECTION_FAILURES("detect.ignore.connection.failures", "Detect Ignore Connection Failures", "5.3.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+    DETECT_IGNORE_CONNECTION_FAILURES("detect.ignore.connection.failures", "Detect Ignore Connection Failures", "5.3.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("The docker image name to inspect. For detect to run docker either this property or detect.docker.tar must be set.")
