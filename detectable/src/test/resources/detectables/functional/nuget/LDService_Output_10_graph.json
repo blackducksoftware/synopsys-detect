@@ -1,0 +1,92 @@
+{
+  "externalDataIdRelationships": {
+    "http:nuget/Tulpep_ActiveDirectoryObjectPicker/2_1_106": [],
+    "http:nuget/Hangfire_SqlServer/1_6_14": [],
+    "http:nuget/Newtonsoft_Json/10_0_3": [],
+    "http:nuget/Extended_Wpf_Toolkit/3_0_0": [],
+    "http:nuget/Owin/1_0_0": [],
+    "http:nuget/Nancy/1_4_3": [],
+    "http:nuget/Hangfire_Core/1_6_14": [],
+    "http:nuget/NLog_Schema/4_4_11": [],
+    "http:nuget/EntityFramework/6_1_3": [],
+    "http:nuget/NLog/4_4_11": [],
+    "http:nuget/SimpleImpersonation/2_0_1": [],
+    "http:nuget/DataConnectionDialog/1_2_0": [],
+    "http:nuget/Expression_Blend_Sdk/1_0_2": [],
+    "http:nuget/Ensure_That/5_0_0": []
+  },
+  "dependencySummaries": {
+    "http:nuget/Tulpep_ActiveDirectoryObjectPicker/2_1_106": {
+      "name": "Tulpep.ActiveDirectoryObjectPicker",
+      "version": "2.1.106"
+    },
+    "http:nuget/Hangfire_SqlServer/1_6_14": {
+      "name": "Hangfire.SqlServer",
+      "version": "1.6.14"
+    },
+    "http:nuget/Newtonsoft_Json/10_0_3": {
+      "name": "Newtonsoft.Json",
+      "version": "10.0.3"
+    },
+    "http:nuget/Extended_Wpf_Toolkit/3_0_0": {
+      "name": "Extended.Wpf.Toolkit",
+      "version": "3.0.0"
+    },
+    "http:nuget/Owin/1_0_0": {
+      "name": "Owin",
+      "version": "1.0.0"
+    },
+    "http:nuget/Nancy/1_4_3": {
+      "name": "Nancy",
+      "version": "1.4.3"
+    },
+    "http:nuget/Hangfire_Core/1_6_14": {
+      "name": "Hangfire.Core",
+      "version": "1.6.14"
+    },
+    "http:nuget/NLog_Schema/4_4_11": {
+      "name": "NLog.Schema",
+      "version": "4.4.11"
+    },
+    "http:nuget/EntityFramework/6_1_3": {
+      "name": "EntityFramework",
+      "version": "6.1.3"
+    },
+    "http:nuget/NLog/4_4_11": {
+      "name": "NLog",
+      "version": "4.4.11"
+    },
+    "http:nuget/SimpleImpersonation/2_0_1": {
+      "name": "SimpleImpersonation",
+      "version": "2.0.1"
+    },
+    "http:nuget/DataConnectionDialog/1_2_0": {
+      "name": "DataConnectionDialog",
+      "version": "1.2.0"
+    },
+    "http:nuget/Expression_Blend_Sdk/1_0_2": {
+      "name": "Expression.Blend.Sdk",
+      "version": "1.0.2"
+    },
+    "http:nuget/Ensure_That/5_0_0": {
+      "name": "Ensure.That",
+      "version": "5.0.0"
+    }
+  },
+  "rootExternalDataIds": [
+    "http:nuget/Tulpep_ActiveDirectoryObjectPicker/2_1_106",
+    "http:nuget/Hangfire_SqlServer/1_6_14",
+    "http:nuget/Newtonsoft_Json/10_0_3",
+    "http:nuget/Extended_Wpf_Toolkit/3_0_0",
+    "http:nuget/Owin/1_0_0",
+    "http:nuget/Nancy/1_4_3",
+    "http:nuget/Hangfire_Core/1_6_14",
+    "http:nuget/NLog_Schema/4_4_11",
+    "http:nuget/EntityFramework/6_1_3",
+    "http:nuget/NLog/4_4_11",
+    "http:nuget/SimpleImpersonation/2_0_1",
+    "http:nuget/DataConnectionDialog/1_2_0",
+    "http:nuget/Expression_Blend_Sdk/1_0_2",
+    "http:nuget/Ensure_That/5_0_0"
+  ]
+}
