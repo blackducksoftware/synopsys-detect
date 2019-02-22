@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.resolver;
+package com.synopsys.integration.detectable.detectable.inspector.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,19 +32,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectables.gradle.inspector.GradleInspectorResolver;
+import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorTemplateResolver;
 import com.synopsys.integration.exception.IntegrationException;
 
 import freemarker.template.Configuration;
 
-public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolver {
+public class ArtifactoryGradleInspectorTemplateResolver implements GradleInspectorTemplateResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String GRADLE_DIR_NAME = "gradle";
     private static final String GENERATED_GRADLE_SCRIPT_NAME = "init-detect.gradle";
 
     @Override
-    public File resolveGradleInspector() {
+    public File resolveGradleInspectorTemplate() {
         return null;
     }
 
@@ -55,7 +55,7 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
     private String generatedGradleScriptPath = null;
     private boolean hasResolvedInspector = false;
 
-    public ArtifactoryGradleInspectorResolver(final ArtifactResolver artifactResolver, Configuration configuration) {
+    public ArtifactoryGradleInspectorTemplateResolver(final ArtifactResolver artifactResolver, Configuration configuration) {
         this.configuration = configuration;
         this.artifactResolver = artifactResolver;
     }
@@ -114,4 +114,6 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
         //return artifactResolver.resolveArtifactVersion(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.GRADLE_INSPECTOR_REPO, ArtifactoryConstants.GRADLE_INSPECTOR_PROPERTY, gradleVersion);
         return Optional.empty();
     }
+
+
 }

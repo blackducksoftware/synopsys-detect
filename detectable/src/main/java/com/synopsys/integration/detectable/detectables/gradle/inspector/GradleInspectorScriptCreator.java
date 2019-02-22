@@ -35,7 +35,8 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectable.resolver.ArtifactoryConstants;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.inspector.impl.ArtifactoryConstants;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -52,7 +53,7 @@ public class GradleInspectorScriptCreator {
         this.configuration = configuration;
     }
 
-    public String generateGradleScript(File scriptFile, GradleInspectorScriptOptions scriptOptions) throws IOException, TemplateException {
+    public File createGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions) throws DetectableException {
         logger.debug("Generating the gradle script file.");
         final Map<String, String> gradleScriptData = new HashMap<>();
         gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(scriptOptions.getOfflineLibraryPaths().orElse("")));
@@ -69,14 +70,18 @@ public class GradleInspectorScriptCreator {
         }
         gradleScriptData.put("customRepositoryUrl", customRepository);
 
-        populateGradleScriptWithData(scriptFile, gradleScriptData);
-        logger.trace(String.format("Successfully created gradle script: %s", scriptFile.getCanonicalPath()));
-        return scriptFile.getCanonicalPath();
+        try {
+            populateGradleScriptWithData(templateFile, gradleScriptData);
+        } catch (IOException | TemplateException e){
+            throw new DetectableException("Failed to generate the Gradle Inspector script from the given template file: " + templateFile.toString(), e);
+        }
+        logger.trace(String.format("Successfully created Gradle Inspector: %s", templateFile.toString()));
+        return templateFile;
     }
 
-    private void populateGradleScriptWithData(File generatedGradleScriptFile, Map<String, String> gradleScriptData) throws IOException, TemplateException {
+    private void populateGradleScriptWithData(File targetFile, Map<String, String> gradleScriptData) throws IOException, TemplateException {
         final Template gradleScriptTemplate = configuration.getTemplate(GRADLE_SCRIPT_TEMPLATE_FILENAME);
-        try (final Writer fileWriter = new FileWriter(generatedGradleScriptFile)) {
+        try (final Writer fileWriter = new FileWriter(targetFile)) {
             gradleScriptTemplate.process(gradleScriptData, fileWriter);
         }
     }

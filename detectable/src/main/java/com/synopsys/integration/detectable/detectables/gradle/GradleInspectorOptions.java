@@ -23,12 +23,21 @@
  */
 package com.synopsys.integration.detectable.detectables.gradle;
 
+import com.synopsys.integration.detectable.detectables.gradle.inspector.GradleInspectorScriptOptions;
+
 public class GradleInspectorOptions {
     private String gradleBuildCommand;
+    private GradleInspectorScriptOptions gradleInspectorScriptOptions;
 
-    public GradleInspectorOptions(final String gradleBuildCommand) {this.gradleBuildCommand = gradleBuildCommand;}
+    public GradleInspectorOptions(final String gradleBuildCommand, final GradleInspectorScriptOptions gradleInspectorScriptOptions) {this.gradleBuildCommand = gradleBuildCommand;
+        this.gradleInspectorScriptOptions = gradleInspectorScriptOptions;
+    }
 
     public String getGradleBuildCommand() {
         return gradleBuildCommand;
+    }
+
+    public GradleInspectorScriptOptions getGradleInspectorScriptOptions() {
+        return gradleInspectorScriptOptions;
     }
 }
