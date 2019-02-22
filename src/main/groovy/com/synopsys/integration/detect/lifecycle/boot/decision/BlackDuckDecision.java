@@ -21,25 +21,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.lifecycle.boot;
+package com.synopsys.integration.detect.lifecycle.boot.decision;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.lifecycle.run.RunDecision;
+public class BlackDuckDecision {
+    private boolean shouldRun;
+    private boolean isOffline;
 
-public class BootResult {
-    public BootType bootType;
-    public DetectConfiguration detectConfiguration; //Application needs this to make sure exit code behaves.
-    public RunDecision runDecision = null;
-
-    public enum BootType {
-        EXIT,
-        CONTINUE
+    public BlackDuckDecision(final boolean shouldRun, final boolean isOffline) {
+        this.shouldRun = shouldRun;
+        this.isOffline = isOffline;
     }
 
-    public static BootResult exit(DetectConfiguration detectConfiguration) {
-        BootResult result = new BootResult();
-        result.bootType = BootType.EXIT;
-        result.detectConfiguration = detectConfiguration;
-        return result;
+    public static BlackDuckDecision skip() {
+        return new BlackDuckDecision(false, true);
+    }
+
+    public static BlackDuckDecision runOffline() {
+        return new BlackDuckDecision(true, true);
+    }
+
+    public static BlackDuckDecision runOnline() {
+        return new BlackDuckDecision(true, false);
+    }
+
+    public boolean shouldRun() {
+        return shouldRun;
+    }
+
+    public boolean isOffline() {
+        return isOffline;
     }
 }

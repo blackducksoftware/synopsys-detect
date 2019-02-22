@@ -41,6 +41,8 @@ import com.synopsys.integration.detect.detector.DetectorFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
+import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.ToolRunner;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanToolResult;
@@ -52,7 +54,6 @@ import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureS
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.synopsys.integration.detect.util.executable.ExecutableRunner;
-import com.synopsys.integration.detect.workflow.ConnectivityManager;
 import com.synopsys.integration.detect.workflow.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
@@ -83,6 +84,7 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.Slf4jIntLogger;
+import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
@@ -95,7 +97,7 @@ public class RunManager {
         this.detectContext = detectContext;
     }
 
-    public RunResult run(RunDecision runDecision) throws DetectUserFriendlyException, InterruptedException, IntegrationException {
+    public RunResult run(ProductRunData productRunData) throws DetectUserFriendlyException, InterruptedException, IntegrationException {
         //TODO: Better way for run manager to get dependencies so he can be tested. (And better ways of creating his objects)
         final DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
         final DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
@@ -111,13 +113,13 @@ public class RunManager {
 
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
 
-        if (runDecision.willRunBlackduck()) {
+        if (productRunData.shouldUseBlackDuckProduct()) {
             logger.info("Black Duck tools will run.");
 
-            final ConnectivityManager connectivityManager = detectContext.getBean(ConnectivityManager.class);
+            final BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
 
-            if (connectivityManager.getPhoneHomeManager().isPresent()) {
-                connectivityManager.getPhoneHomeManager().get().startPhoneHome();
+            if (blackDuckRunData.getPhoneHomeManager().isPresent()) {
+                blackDuckRunData.getPhoneHomeManager().get().startPhoneHome();
             }
 
             /*//TODO Resurrect
@@ -177,8 +179,8 @@ public class RunManager {
 
             Optional<ProjectVersionWrapper> projectVersionWrapper = Optional.empty();
 
-            if (connectivityManager.isDetectOnline() && connectivityManager.getBlackDuckServicesFactory().isPresent()) {
-                final BlackDuckServicesFactory blackDuckServicesFactory = connectivityManager.getBlackDuckServicesFactory().get();
+            if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
+                final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
                 logger.info("Getting or creating project.");
                 final DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
                 final DetectProjectMappingService detectProjectMappingService = new DetectProjectMappingService(blackDuckServicesFactory.createBlackDuckService());
@@ -206,9 +208,9 @@ public class RunManager {
             if (bdioResult.getUploadTargets().size() > 0) {
                 logger.info("Created " + bdioResult.getUploadTargets().size() + " BDIO files.");
                 bdioResult.getUploadTargets().forEach(it -> eventSystem.publishEvent(Event.OutputFileOfInterest, it.getUploadFile()));
-                if (connectivityManager.isDetectOnline() && connectivityManager.getBlackDuckServicesFactory().isPresent()) {
+                if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
                     logger.info("Uploading BDIO files.");
-                    final BlackDuckServicesFactory blackDuckServicesFactory = connectivityManager.getBlackDuckServicesFactory().get();
+                    final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
                     final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, blackDuckServicesFactory.createBdioUploadService(), eventSystem);
                     final CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
                     codeLocationWaitData.setFromBdioCodeLocationCreationData(uploadBatchOutputCodeLocationCreationData);
@@ -224,7 +226,7 @@ public class RunManager {
                 logger.info("Will include the signature scanner tool.");
                 final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
                 final BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
-                final SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(projectNameVersion, runResult.getDockerTar());
+                final SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar());
                 if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
                     codeLocationWaitData.setFromSignatureScannerCodeLocationCreationData(signatureScannerToolResult.getCreationData().get());
                 }
@@ -236,8 +238,8 @@ public class RunManager {
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
                 logger.info("Will include the binary scanner tool.");
-                if (connectivityManager.isDetectOnline() && connectivityManager.getBlackDuckServicesFactory().isPresent()) {
-                    final BlackDuckServicesFactory blackDuckServicesFactory = connectivityManager.getBlackDuckServicesFactory().get();
+                if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
+                    final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
                     final BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, detectConfiguration, blackDuckServicesFactory);
                     BinaryScanToolResult result = blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
                     if (result.isSuccessful()) {
@@ -250,8 +252,8 @@ public class RunManager {
             }
 
             logger.info(ReportConstants.RUN_SEPARATOR);
-            if (projectVersionWrapper.isPresent() && connectivityManager.isDetectOnline() && connectivityManager.getBlackDuckServicesFactory().isPresent()) {
-                final BlackDuckServicesFactory blackDuckServicesFactory = connectivityManager.getBlackDuckServicesFactory().get();
+            if (projectVersionWrapper.isPresent() && blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
+                final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
 
                 logger.info("Will perform Black Duck post actions.");
                 final BlackduckReportOptions blackduckReportOptions = detectConfigurationFactory.createReportOptions();
@@ -279,11 +281,12 @@ public class RunManager {
             logger.info("Black Duck tools will NOT be run.");
         }
 
-        if (runDecision.willRunPolaris()) {
+        if (productRunData.shouldUsePolarisProduct()) {
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
                 logger.info("Will include the Polaris tool.");
-                final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, new ExecutableRunner(), connectionManager, detectConfiguration);
+                PolarisServerConfig polarisServerConfig = productRunData.getPolarisRunData().getPolarisServerConfig();
+                final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, new ExecutableRunner(), connectionManager, detectConfiguration, polarisServerConfig);
                 polarisTool.runPolaris(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
                 logger.info("Polaris actions finished.");
             } else {

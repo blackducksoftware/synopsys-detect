@@ -24,7 +24,6 @@
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -32,6 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectorBeanConfiguration;
@@ -56,12 +57,16 @@ import com.synopsys.integration.detect.help.print.HelpPrinter;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.interactive.mode.DefaultInteractiveMode;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
-import com.synopsys.integration.detect.lifecycle.run.RunDecider;
-import com.synopsys.integration.detect.lifecycle.run.RunDecision;
+import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
+import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
+import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
+import com.synopsys.integration.detect.lifecycle.boot.product.PolarisConnectivityChecker;
+import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
+import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory;
+import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.property.SpringPropertySource;
 import com.synopsys.integration.detect.util.TildeInPathResolver;
-import com.synopsys.integration.detect.workflow.ConnectivityManager;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticManager;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
@@ -72,28 +77,24 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.profiling.BomToolProfiler;
 import com.synopsys.integration.detect.workflow.report.DetectConfigurationReporter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.polaris.common.PolarisEnvironmentCheck;
-import com.synopsys.integration.util.IntEnvironmentVariables;
 
 import freemarker.template.Configuration;
 
-public class BootManager {
+public class DetectBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private BootFactory bootFactory;
+    private DetectBootFactory detectBootFactory;
 
-    public BootManager(BootFactory bootFactory) {
-        this.bootFactory = bootFactory;
+    public DetectBoot(DetectBootFactory detectBootFactory) {
+        this.detectBootFactory = detectBootFactory;
     }
 
-    public BootResult boot(DetectRun detectRun, final String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) throws DetectUserFriendlyException, IntegrationException {
-        Gson gson = bootFactory.createGson();
-        ObjectMapper objectMapper = bootFactory.createObjectMapper();
-        DocumentBuilder xml = bootFactory.createXmlDocumentBuilder();
-        Configuration configuration = bootFactory.createConfiguration();
+    public DetectBootResult boot(DetectRun detectRun, final String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) throws DetectUserFriendlyException, IntegrationException {
+        Gson gson = detectBootFactory.createGson();
+        ObjectMapper objectMapper = detectBootFactory.createObjectMapper();
+        DocumentBuilder xml = detectBootFactory.createXmlDocumentBuilder();
+        Configuration configuration = detectBootFactory.createConfiguration();
 
         DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
 
@@ -109,17 +110,17 @@ public class BootManager {
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             printAppropriateHelp(options, detectArgumentState);
-            return BootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(detectConfiguration);
         }
 
         if (detectArgumentState.isHelpHtmlDocument()) {
             printHelpHtmlDocument(options, detectInfo, configuration);
-            return BootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(detectConfiguration);
         }
 
         if (detectArgumentState.isHelpJsonDocument()) {
             printHelpJsonDocument(options, detectInfo, configuration, gson);
-            return BootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(detectConfiguration);
         }
 
         printDetectInfo(detectInfo);
@@ -146,56 +147,22 @@ public class BootManager {
 
         if (detectOptionManager.checkForAnyFailureProperties()) {
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION));
-            return BootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(detectConfiguration);
         }
 
         logger.info("Main boot completed. Deciding what detect should do.");
-        Properties properties = new Properties();
-        properties.setProperty("user.home", directoryManager.getUserHome().getAbsolutePath());
-        PolarisEnvironmentCheck polarisEnvironmentCheck = new PolarisEnvironmentCheck(new IntEnvironmentVariables(), properties);
 
-        RunDecider runDecider = new RunDecider();
-        RunDecision runDecision = runDecider.decide(detectConfiguration, polarisEnvironmentCheck);
+        ProductDecider productDecider = new ProductDecider();
+        ProductDecision productDecision = productDecider.decide(detectConfiguration, directoryManager.getUserHome());
 
-        boolean willRunSomething = runDecision.willRunBlackduck() || runDecision.willRunPolaris();
-        if (!willRunSomething) {
-            throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run blackduck or polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
-        }
+        logger.info("Decided what products will be run. Starting product boot.");
 
-        ConnectivityManager connectivityManager;
-        if (runDecision.willRunBlackduck()) {
-            boolean offline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
-            if (offline) {
-                logger.info("Detect is in offline mode.");
-                connectivityManager = ConnectivityManager.offline();
-            } else {
-                logger.info("Detect is in online mode.");
-                //check my connectivity
-                ConnectivityChecker connectivityChecker = new ConnectivityChecker();
-                ConnectivityResult connectivityResult = connectivityChecker.determineConnectivity(detectConfiguration, detectOptionManager, detectInfo, gson, objectMapper, eventSystem);
-
-            if (connectivityResult.isSuccessfullyConnected()) {
-                logger.info("Detect is capable of communicating with server.");
-                connectivityManager = ConnectivityManager.online(connectivityResult.getBlackDuckServicesFactory(), connectivityResult.getPhoneHomeManager(), connectivityResult.getBlackDuckServerConfig());
-            } else {
-                logger.info("Detect is NOT capable of communicating with server.");
-                logger.info("Please double check the Detect documentation: https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/622633/Hub+Detect");
-                if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, PropertyAuthority.None)) {
-                    logger.info(connectivityResult.getFailureReason());
-                    logger.info(String.format("%s is set to 'true' so Detect will simply exit.", DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK.getPropertyName()));
-                    return BootResult.exit(detectConfiguration);
-                } else {
-                    throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + connectivityResult.getFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
-                }
-            }
-        }
-
-            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
-                logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
-                return BootResult.exit(detectConfiguration);
-            }
-        } else {
-            connectivityManager = null;
+        ProductBootFactory productBootFactory = new ProductBootFactory(detectConfiguration, detectInfo, eventSystem, detectOptionManager);
+        ProductBoot productBoot = new ProductBoot();
+        ProductRunData productRunData = productBoot.boot(productDecision, detectConfiguration, new BlackDuckConnectivityChecker(), new PolarisConnectivityChecker(), productBootFactory);
+        if (productRunData == null){
+            logger.info("No products to run, detect is complete.");
+            return DetectBootResult.exit(detectConfiguration);
         }
 
         //TODO: Only need this if in diagnostic or online (for phone home):
@@ -214,7 +181,6 @@ public class BootManager {
         detectContext.registerBean(detectInfo);
         detectContext.registerBean(directoryManager);
         detectContext.registerBean(diagnosticManager);
-        detectContext.registerBean(connectivityManager);
 
         detectContext.registerBean(gson);
         detectContext.registerBean(objectMapper);
@@ -225,11 +191,7 @@ public class BootManager {
         detectContext.registerConfiguration(DetectorBeanConfiguration.class);
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
-        BootResult result = new BootResult();
-        result.bootType = BootResult.BootType.CONTINUE;
-        result.detectConfiguration = detectConfiguration;
-        result.runDecision = runDecision;
-        return result;
+        return DetectBootResult.run(detectConfiguration, productRunData);
     }
 
     private void printAppropriateHelp(List<DetectOption> detectOptions, DetectArgumentState detectArgumentState) {
@@ -297,4 +259,6 @@ public class BootManager {
             return DiagnosticManager.createWithoutDiagnostics();
         }
     }
+
+
 }

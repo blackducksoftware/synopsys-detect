@@ -29,6 +29,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonArray;
+import com.synopsys.integration.detect.configuration.DetectConfiguration;
+import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.PropertyAuthority;
+import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
+import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationType;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -123,7 +129,16 @@ public class PackagistParser {
 
     private List<PackagistPackage> convertJsonToModel(final JsonObject lockfile, final boolean checkDev) {
         final List<PackagistPackage> packages = new ArrayList<>();
-        lockfile.get("packages").getAsJsonArray().forEach(it -> {
+        packages.addAll(convertJsonToModel(lockfile.get("packages").getAsJsonArray(), checkDev));
+        if (checkDev){
+            packages.addAll(convertJsonToModel(lockfile.get("packages-dev").getAsJsonArray(), checkDev));
+        }
+        return packages;
+    }
+
+    private List<PackagistPackage> convertJsonToModel(final JsonArray packagesProperty, final boolean checkDev) {
+        final List<PackagistPackage> packages = new ArrayList<>();
+        packagesProperty.forEach(it -> {
             if (it.isJsonObject()) {
                 final JsonObject itObject = it.getAsJsonObject();
                 final NameVersion nameVersion = parseNameVersionFromJson(itObject);

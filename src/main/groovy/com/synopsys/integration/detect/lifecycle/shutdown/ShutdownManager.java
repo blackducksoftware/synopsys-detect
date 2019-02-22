@@ -42,7 +42,8 @@ import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.detector.DetectorType;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.RunResult;
-import com.synopsys.integration.detect.workflow.ConnectivityManager;
+import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.workflow.detector.RequiredDetectorChecker;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -57,9 +58,9 @@ public class ShutdownManager {
     private final DetectConfiguration detectConfiguration;
     private final ReportManager reportManager;
     private final DiagnosticManager diagnosticManager;
-    private final ConnectivityManager connectivityManager;
+    private final ProductRunData productRunData;
 
-    public ShutdownManager(ConnectivityManager connectivityManager, DetectStatusManager detectStatusManager, final ExitCodeManager exitCodeManager,
+    public ShutdownManager(ProductRunData productRunData, DetectStatusManager detectStatusManager, final ExitCodeManager exitCodeManager,
         final DirectoryManager directoryManager, final DetectConfiguration detectConfiguration, ReportManager reportManager, DiagnosticManager diagnosticManager) {
         this.detectStatusManager = detectStatusManager;
         this.exitCodeManager = exitCodeManager;
@@ -67,16 +68,19 @@ public class ShutdownManager {
         this.detectConfiguration = detectConfiguration;
         this.reportManager = reportManager;
         this.diagnosticManager = diagnosticManager;
-        this.connectivityManager = connectivityManager;
+        this.productRunData = productRunData;
     }
 
     public void shutdown(Optional<RunResult> runResultOptional) {
-        if (connectivityManager.getPhoneHomeManager().isPresent()) {
-            try {
-                logger.debug("Ending phone home.");
-                connectivityManager.getPhoneHomeManager().get().endPhoneHome();
-            } catch (final Exception e) {
-                logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
+        if (productRunData.shouldUseBlackDuckProduct()){
+            BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
+            if (blackDuckRunData.getPhoneHomeManager().isPresent()) {
+                try {
+                    logger.debug("Ending phone home.");
+                    blackDuckRunData.getPhoneHomeManager().get().endPhoneHome();
+                } catch (final Exception e) {
+                    logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
+                }
             }
         }
 
@@ -93,7 +97,15 @@ public class ShutdownManager {
             if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.None)) {
                 logger.info("Detect will cleanup.");
                 boolean dryRun = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, PropertyAuthority.None);
-                boolean offline = !connectivityManager.isDetectOnline();
+
+                boolean offline = false;
+                if (productRunData.shouldUseBlackDuckProduct()){
+                    BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
+                    if (!blackDuckRunData.isOnline()){
+                        offline = true;
+                    }
+                }
+
 
                 List<File> cleanupToSkip = new ArrayList<>();
                 if (dryRun || offline) {

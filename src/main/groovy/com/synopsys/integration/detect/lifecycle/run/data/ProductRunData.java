@@ -21,22 +21,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.lifecycle.run;
+package com.synopsys.integration.detect.lifecycle.run.data;
 
-public class RunDecision {
-    private boolean runBlackduck;
-    private boolean runPolaris;
+import java.util.Optional;
 
-    public RunDecision(final boolean runBlackduck, final boolean runPolaris) {
-        this.runBlackduck = runBlackduck;
-        this.runPolaris = runPolaris;
+public class ProductRunData {
+    private final PolarisRunData polarisRunData;
+    private final BlackDuckRunData blackDuckRunData;
+
+    public ProductRunData(final PolarisRunData polarisRunData, final BlackDuckRunData blackDuckRunData) {
+        this.polarisRunData = polarisRunData;
+        this.blackDuckRunData = blackDuckRunData;
     }
 
-    public boolean willRunBlackduck(){
-        return runBlackduck;
+    public PolarisRunData getPolarisRunData() {
+        return polarisRunData;
     }
 
-    public boolean willRunPolaris(){
-        return runPolaris;
+    public BlackDuckRunData getBlackDuckRunData() {
+        return blackDuckRunData;
+    }
+
+    public boolean shouldUseBlackDuckProduct() {
+        return blackDuckRunData != null;
+    }
+
+    public boolean shouldUsePolarisProduct() {
+        return polarisRunData != null;
     }
 }

@@ -75,18 +75,16 @@ public class DetectProjectService {
         final ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectNameVersion.getName(), projectNameVersion.getVersion());
 
         // TODO need to determine if this property actually exists in the ConfigurableEnvironment - just omit this one?
-        // projectSyncModel.setProjectLevelAdjustments(detectProjectServiceOptions.isProjectLevelAdjustments());
+        projectSyncModel.setProjectLevelAdjustments(detectProjectServiceOptions.isProjectLevelAdjustments());
 
-        String phaseString = detectProjectServiceOptions.getProjectVersionPhase();
-        if (StringUtils.isNotBlank(phaseString) && EnumUtils.isValidEnum(ProjectVersionPhaseType.class, phaseString)) {
-            ProjectVersionPhaseType phase = ProjectVersionPhaseType.valueOf(phaseString);
-            projectSyncModel.setPhase(phase);
+        Optional<ProjectVersionPhaseType> phase = tryGetEnumValue(ProjectVersionPhaseType.class, detectProjectServiceOptions.getProjectVersionPhase());
+        if (phase.isPresent()) {
+            projectSyncModel.setPhase(phase.get());
         }
 
-        String distributionString = detectProjectServiceOptions.getProjectVersionDistribution();
-        if (StringUtils.isNotBlank(distributionString) && EnumUtils.isValidEnum(ProjectVersionDistributionType.class, phaseString)) {
-            ProjectVersionDistributionType distribution = ProjectVersionDistributionType.valueOf(distributionString);
-            projectSyncModel.setDistribution(distribution);
+        Optional<ProjectVersionDistributionType> distribution = tryGetEnumValue(ProjectVersionDistributionType.class, detectProjectServiceOptions.getProjectVersionDistribution());
+        if (distribution.isPresent()) {
+            projectSyncModel.setDistribution(distribution.get());
         }
 
         Integer projectTier = detectProjectServiceOptions.getProjectTier();
@@ -122,6 +120,15 @@ public class DetectProjectService {
         }
 
         return projectSyncModel;
+    }
+
+    public static <E extends Enum<E>> Optional<E> tryGetEnumValue(final Class<E> enumClass, final String value) {
+        String enumName = StringUtils.trimToEmpty(value).toUpperCase();
+        try {
+            return Optional.of(Enum.valueOf(enumClass, enumName));
+        } catch (final IllegalArgumentException ex) {
+            return Optional.empty();
+        }
     }
 
     private List<ProjectCloneCategoriesType> convertClonePropertyToEnum(final String[] cloneCategories) {

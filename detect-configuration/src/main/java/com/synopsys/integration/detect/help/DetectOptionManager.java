@@ -43,6 +43,7 @@ import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.interactive.InteractiveOption;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
@@ -102,11 +103,11 @@ public class DetectOptionManager {
         checkForRemovedProperties();
     }
 
-    public BlackDuckServerConfig createBlackduckServerConfig() {
+    public BlackDuckServerConfig createBlackduckServerConfig() throws DetectUserFriendlyException {
         return createBlackduckServerConfig(new SilentIntLogger());
     }
 
-    public BlackDuckServerConfig createBlackduckServerConfig(IntLogger logger) {
+    public BlackDuckServerConfig createBlackduckServerConfig(IntLogger logger) throws DetectUserFriendlyException {
         final BlackDuckServerConfigBuilder hubServerConfigBuilder = new BlackDuckServerConfigBuilder().setLogger(logger);
 
         final Map<String, String> blackduckBlackDuckProperties = detectConfiguration.getBlackduckProperties();
@@ -128,8 +129,12 @@ public class DetectOptionManager {
             hubServerConfigBuilder.setFromProperties(blackduckBlackDuckProperties);
         }
 
-        BlackDuckServerConfig blackDuckServerConfig = hubServerConfigBuilder.build();
-        return blackDuckServerConfig;
+        try {
+            BlackDuckServerConfig blackDuckServerConfig = hubServerConfigBuilder.build();
+            return blackDuckServerConfig;
+        } catch (IllegalArgumentException e){
+            throw new DetectUserFriendlyException("Failed to configure Black Duck server connection: " + e.getMessage(), e, ExitCodeType.FAILURE_CONFIGURATION);
+        }
     }
 
     public void postConfigurationProcessedInit() throws IllegalArgumentException, SecurityException {

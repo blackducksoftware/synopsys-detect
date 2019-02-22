@@ -100,7 +100,7 @@ public class BlackDuckBinaryScannerTool {
             Set<String> names = new HashSet<String>();
             names.add(codeLocationName);
             return  names;
-        } catch (IOException | IntegrationException | URISyntaxException e) {
+        } catch (IOException | IntegrationException e) {
             logger.error("Failed to upload binary scan file: " + e.getMessage());
             eventSystem.publishEvent(Event.StatusSummary, new Status("BINARY_SCAN", StatusType.FAILURE));
             throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);

@@ -23,6 +23,7 @@
  */
 package com.synopsys.integration.detect.configuration;
 
+import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.DEFAULT_HELP;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_BAZEL;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_BITBAKE;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_BLACKDUCK_SERVER;
@@ -73,59 +74,59 @@ import com.synopsys.integration.detect.property.PropertyType;
 
 public enum DetectProperty {
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("The API token used to authenticate with the Black Duck Server.")
     BLACKDUCK_API_TOKEN("blackduck.api.token", "Black Duck API Token", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, SEARCH_GROUP_OFFLINE })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, SEARCH_GROUP_OFFLINE, DEFAULT_HELP })
     @HelpDescription("This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
     BLACKDUCK_OFFLINE_MODE("blackduck.offline.mode", "Offline Mode", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Black Duck password")
     BLACKDUCK_PASSWORD("blackduck.password", "Black Duck Password", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Hostname for proxy server")
     BLACKDUCK_PROXY_HOST("blackduck.proxy.host", "Proxy Host", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Comma separated list of host patterns that should not use the proxy")
     BLACKDUCK_PROXY_IGNORED_HOSTS("blackduck.proxy.ignored.hosts", "Bypass Proxy Hosts", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("NTLM Proxy domain")
     BLACKDUCK_PROXY_NTLM_DOMAIN("blackduck.proxy.ntlm.domain", "NTLM Proxy Domain", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("NTLM Proxy workstation")
     BLACKDUCK_PROXY_NTLM_WORKSTATION("blackduck.proxy.ntlm.workstation", "NTLM Proxy Workstation", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Proxy password")
     BLACKDUCK_PROXY_PASSWORD("blackduck.proxy.password", "Proxy Password", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Proxy port")
     BLACKDUCK_PROXY_PORT("blackduck.proxy.port", "Proxy Port", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Proxy username")
     BLACKDUCK_PROXY_USERNAME("blackduck.proxy.username", "Proxy Username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Time to wait for network connections to complete (in seconds).")
     BLACKDUCK_TIMEOUT("blackduck.timeout", "Black Duck Timeout", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "120"),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("If true, automatically trust the certificate for the current run of Detect only")
     BLACKDUCK_TRUST_CERT("blackduck.trust.cert", "Trust All SSL Certificates", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("URL of the Black Duck server")
     BLACKDUCK_URL("blackduck.url", "Black Duck URL", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Black Duck username")
     BLACKDUCK_USERNAME("blackduck.username", "Black Duck Username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
@@ -276,9 +277,10 @@ public enum DetectProperty {
     @HelpDetailed("If true, these directories will be excluded from the detector search: " + DetectorSearchExcludedDirectories.DIRECTORY_NAMES)
     DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS("detect.detector.search.exclusion.defaults", "Detector Exclude Default Directories", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
-    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK })
-    @HelpDescription("If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect.")
-    DETECT_DISABLE_WITHOUT_BLACKDUCK("detect.disable.without.blackduck", "Check For Valid Black Duck Connection", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    @HelpGroup(primary = GROUP_GENERAL, additional = { GROUP_BLACKDUCK_SERVER, GROUP_POLARIS })
+    @HelpDescription("If true, detect will ignore any products that it cannot connect to.")
+    @HelpDetailed("If true, when detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.")
+    DETECT_IGNORE_CONNECTION_FAILURES("detect.ignore.connection.failures", "Detect Ignore Connection Failures", "5.3.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("The docker image name to inspect. For detect to run docker either this property or detect.docker.tar must be set.")
@@ -483,9 +485,17 @@ public enum DetectProperty {
     @HelpDescription("The path of the Pipenv executable")
     DETECT_PIPENV_PATH("detect.pipenv.path", "Pipenv Executable", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_POLARIS, additional = {})
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP })
     @HelpDescription("The url of your polaris instance.")
     POLARIS_URL("polaris.url", "Polaris Url", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP })
+    @HelpDescription("The access token for your polaris instance.")
+    POLARIS_ACCESS_TOKEN("polaris.access.token", "Polaris Access Token", "5.3.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP })
+    @HelpDescription("Additional arguments to pass to palaris.")
+    POLARIS_ARGUMENTS("polaris.arguments", "Polaris Arguments", "5.3.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_POLICY })
     @HelpDescription("A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.")
@@ -639,14 +649,14 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_LOGGING, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The logging level of Detect")
     @AcceptableValues(value = { "ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
-    LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION("logging.level.com.blackducksoftware.integration", "Logging Level", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "INFO"),
+    LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION("logging.level.com.synopsys.integration", "Logging Level", "5.3.0", PropertyType.STRING, PropertyAuthority.None, "INFO"),
 
     /**********************************************************************************************
      * DEPRECATED START
      *********************************************************************************************/
 
     @Deprecated
-    @DetectDeprecation(description = "This property is not deprecated. Please use --detect.report.timeout in the future. NOTE the new property is in SECONDS not MILLISECONDS.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @DetectDeprecation(description = "This property is now deprecated. Please use --detect.report.timeout in the future. NOTE the new property is in SECONDS not MILLISECONDS.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { GROUP_PROJECT })
     @HelpDescription("Timeout for response from Black Duck regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.")
     DETECT_API_TIMEOUT("detect.api.timeout", "", "3.0.0", PropertyType.LONG, PropertyAuthority.None, "300000"),
@@ -736,10 +746,16 @@ public enum DetectProperty {
     BLACKDUCK_HUB_OFFLINE_MODE("blackduck.hub.offline.mode", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
-    @DetectDeprecation(description = "This property is changing. Please use --detect.disable.without.blackduck in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @DetectDeprecation(description = "This property is changing. Please use --detect.ignore.connection.failures in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("If true, during initialization Detect will check for Hub connectivity and exit with status code 0 if it cannot connect.")
     DETECT_DISABLE_WITHOUT_HUB("detect.disable.without.hub", "", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.ignore.connection.failures in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
+    @HelpDescription("If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect.")
+    DETECT_DISABLE_WITHOUT_BLACKDUCK("detect.disable.without.blackduck", "Check For Valid Black Duck Connection", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is being removed. Configuration can no longer be suppressed individually. Log level can be used.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
@@ -911,7 +927,14 @@ public enum DetectProperty {
     @DetectDeprecation(description = "This property is changing. Please use --detect.tools and POLARIS in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_POLARIS)
     @HelpDescription("Set to false to disable the Synopsys Polaris Tool.")
-    DETECT_SWIP_ENABLED("detect.polaris.enabled", "", "4.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false");
+    DETECT_SWIP_ENABLED("detect.polaris.enabled", "", "4.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --logging.level.com.synopsys.integration in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @HelpGroup(primary = GROUP_LOGGING, additional = { SEARCH_GROUP_GLOBAL })
+    @HelpDescription("The logging level of Detect")
+    @AcceptableValues(value = { "ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
+    LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION("logging.level.com.blackducksoftware.integration", "Logging Level", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "INFO");
 
     /**********************************************************************************************
      * DEPRECATED END
@@ -1018,9 +1041,10 @@ public enum DetectProperty {
         public static final String SEARCH_GROUP_PROJECT_SETTING = "project setting";
         public static final String SEARCH_GROUP_REPORT_SETTING = "report setting";
         public static final String SEARCH_GROUP_SEARCH = "search";
+        public static final String DEFAULT_HELP = "default";
 
         //Print Config
-        public static final String PRINT_GROUP_DEFAULT = SEARCH_GROUP_BLACKDUCK;
+        public static final String PRINT_GROUP_DEFAULT = DEFAULT_HELP;
 
         //All Deprecated Groups
         @Deprecated

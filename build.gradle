@@ -26,7 +26,7 @@ allprojects {
     apply plugin: 'io.spring.dependency-management'
 
     dependencies {
-        implementation 'com.blackducksoftware.integration:blackduck-common:42.0.0'
+        implementation 'com.blackducksoftware.integration:blackduck-common:42.1.0'
         implementation 'com.paypal.digraph:digraph-parser:1.0'
     }
 }
@@ -89,7 +89,7 @@ dependencies {
     implementation project(":detect-configuration")
     implementation project(":detectable")
 
-    implementation 'com.synopsys.integration:polaris-common:0.5.1-SNAPSHOT'
+    implementation 'com.synopsys.integration:polaris-common:0.7.0'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'

@@ -30,12 +30,13 @@ import com.synopsys.integration.detect.Application;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 import freemarker.template.Configuration;
 
 //Responsible for creating a few classes boot needs
-public class BootFactory {
+public class DetectBootFactory {
     public Gson createGson() {
         return BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create();
     }
@@ -65,4 +66,5 @@ public class BootFactory {
     public IntegrationEscapeUtil createIntegrationEscapeUtil() {
         return new IntegrationEscapeUtil();
     }
+
 }

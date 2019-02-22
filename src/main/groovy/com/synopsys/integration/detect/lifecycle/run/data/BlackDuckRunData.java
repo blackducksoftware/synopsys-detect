@@ -21,41 +21,39 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow;
+package com.synopsys.integration.detect.lifecycle.run.data;
 
 import java.util.Optional;
 
 import org.springframework.util.Assert;
 
-import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 
-public class ConnectivityManager {
-    private final boolean isDetectOnline;
+public class BlackDuckRunData {
+    private final boolean isOnline;
     private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final PhoneHomeManager phoneHomeManager;
     private final BlackDuckServerConfig blackDuckServerConfig;
 
-    public static ConnectivityManager offline() {
-        return new ConnectivityManager(false, null, null, null);
+    public static BlackDuckRunData offline() {
+        return new BlackDuckRunData(false, null, null, null);
     }
 
-    public static ConnectivityManager online(BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, final BlackDuckServerConfig blackDuckServerConfig) {
-        Assert.notNull(blackDuckServicesFactory, "Online detect needs a services factory.");
-        Assert.notNull(blackDuckServerConfig, "Online detect needs a server config.");
-        return new ConnectivityManager(true, blackDuckServicesFactory, phoneHomeManager, blackDuckServerConfig);
+    public static BlackDuckRunData online(BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, final BlackDuckServerConfig blackDuckServerConfig) {
+        return new BlackDuckRunData(true, blackDuckServicesFactory, phoneHomeManager, blackDuckServerConfig);
     }
 
-    private ConnectivityManager(boolean isDetectOnline, final BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
-        this.isDetectOnline = isDetectOnline;
+    private BlackDuckRunData(boolean isOnline, final BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
+        this.isOnline = isOnline;
         this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.phoneHomeManager = phoneHomeManager;
         this.blackDuckServerConfig = blackDuckServerConfig;
     }
 
-    public boolean isDetectOnline() {
-        return isDetectOnline;
+    public boolean isOnline() {
+        return isOnline;
     }
 
     public Optional<BlackDuckServicesFactory> getBlackDuckServicesFactory() {
@@ -69,5 +67,4 @@ public class ConnectivityManager {
     public Optional<PhoneHomeManager> getPhoneHomeManager() {
         return Optional.ofNullable(phoneHomeManager);
     }
-
 }

@@ -46,7 +46,6 @@ import com.synopsys.integration.detect.util.executable.CacheableExecutableFinder
 import com.synopsys.integration.detect.util.executable.ExecutableFinder;
 import com.synopsys.integration.detect.util.executable.ExecutableRunner;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
-import com.synopsys.integration.detect.workflow.ConnectivityManager;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
@@ -78,8 +77,6 @@ public class RunBeanConfiguration {
     public DirectoryManager directoryManager;
     @Autowired
     public DiagnosticManager diagnosticManager;
-    @Autowired
-    public ConnectivityManager connectivityManager;
     @Autowired
     public EventSystem eventSystem;
     @Autowired

@@ -40,8 +40,8 @@ public class OnlinePhoneHomeManager extends PhoneHomeManager {
 
     private BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper;
 
-    public OnlinePhoneHomeManager(Map<String, String> additionalMetaData, final DetectInfo detectInfo, final Gson gson, EventSystem eventSystem, final BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper) {
-        super(additionalMetaData, detectInfo, gson, eventSystem);
+    public OnlinePhoneHomeManager(Map<String, String> additionalMetaData, final DetectInfo detectInfo, EventSystem eventSystem, final BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper) {
+        super(additionalMetaData, detectInfo, eventSystem);
 
         this.blackDuckPhoneHomeHelper = blackDuckPhoneHomeHelper;
     }
@@ -51,7 +51,7 @@ public class OnlinePhoneHomeManager extends PhoneHomeManager {
         Map<String, String> metaDataToSend = new HashMap<>();
         metaDataToSend.putAll(metadata);
         metaDataToSend.putAll(additionalMetaData);
-        return blackDuckPhoneHomeHelper.handlePhoneHome("hub-detect", detectInfo.getDetectVersion(), metaDataToSend);
+        return blackDuckPhoneHomeHelper.handlePhoneHome("synopsys-detect", detectInfo.getDetectVersion(), metaDataToSend);
     }
 
 }

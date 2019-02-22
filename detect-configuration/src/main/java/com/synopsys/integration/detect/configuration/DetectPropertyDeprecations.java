@@ -30,6 +30,9 @@ public class DetectPropertyDeprecations {
     public static final Map<DetectProperty, DetectProperty> PROPERTY_OVERRIDES = new HashMap<>();
 
     static {
+        PROPERTY_OVERRIDES.put(DetectProperty.LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION, DetectProperty.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION);
+        PROPERTY_OVERRIDES.put(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES);
+
         PROPERTY_OVERRIDES.put(DetectProperty.BLACKDUCK_HUB_API_TOKEN, DetectProperty.BLACKDUCK_API_TOKEN);
         PROPERTY_OVERRIDES.put(DetectProperty.BLACKDUCK_HUB_URL, DetectProperty.BLACKDUCK_URL);
         PROPERTY_OVERRIDES.put(DetectProperty.BLACKDUCK_HUB_TIMEOUT, DetectProperty.BLACKDUCK_TIMEOUT);
