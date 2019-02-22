@@ -21,21 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.file;
+package com.synopsys.integration.detectable.detectables.sbt.model;
 
-import java.io.File;
-import java.util.List;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
+public class SbtGraph {
+    public String sourcePath;
+    public DependencyGraph graph;
 
-public interface FileFinder {
-    @Nullable
-    File findFile(File directoryToSearch, String filenamePattern);
-
-    @NotNull
-    List<File> findFiles(File directoryToSearch, String filenamePattern);
-
-    @NotNull
-    List<File> findFiles(File directoryToSearch, String filenamePattern, int depth);
+    public SbtGraph(final DependencyGraph graph, final String sourcePath) {
+        this.sourcePath = sourcePath;
+        this.graph = graph;
+    }
 }

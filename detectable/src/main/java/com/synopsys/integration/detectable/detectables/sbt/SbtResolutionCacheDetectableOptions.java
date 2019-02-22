@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,18 +21,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.sbt;
+package com.synopsys.integration.detectable.detectables.sbt;
 
-import com.synopsys.integration.util.Stringable;
+public class SbtResolutionCacheDetectableOptions {
+    private final String includedConfigurations;
+    private final String excludedConfigurations;
+    private final int reportDepth;
 
-public class SbtAggregate extends Stringable {
-    public String name;
-    public String org;
-    public String version;
+    public SbtResolutionCacheDetectableOptions(final String includedConfigurations, final String excludedConfigurations, final int reportDepth) {
+        this.includedConfigurations = includedConfigurations;
+        this.excludedConfigurations = excludedConfigurations;
+        this.reportDepth = reportDepth;
+    }
 
-    public SbtAggregate(final String name, final String org, final String version) {
-        this.name = name;
-        this.org = org;
-        this.version = version;
+    public String getIncludedConfigurations() {
+        return includedConfigurations;
+    }
+
+    public String getExcludedConfigurations() {
+        return excludedConfigurations;
+    }
+
+    public int getReportDepth() {
+        return reportDepth;
     }
 }

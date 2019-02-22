@@ -49,7 +49,7 @@ public class DependenyListFileParser {
     public List<String> parseDepsMk(final String depsMkText) {
         final String[] depsMkTextParts = depsMkText.split(": ");
         if (depsMkTextParts.length != 2) {
-            logger.warn(String.format("Unable to split mk text parts reasonably", depsMkTextParts));
+            logger.warn(String.format("Unable to split mk text parts reasonably: %s", String.join(" ", depsMkTextParts)));
             return Collections.emptyList();
         }
         String depsListString = depsMkTextParts[1];

@@ -21,21 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.file;
+package com.synopsys.integration.detectable.detectables.sbt.model;
 
-import java.io.File;
-import java.util.List;
+import com.synopsys.integration.util.Stringable;
 
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
+public class SbtAggregate extends Stringable {
+    public String name;
+    public String org;
+    public String version;
 
-public interface FileFinder {
-    @Nullable
-    File findFile(File directoryToSearch, String filenamePattern);
-
-    @NotNull
-    List<File> findFiles(File directoryToSearch, String filenamePattern);
-
-    @NotNull
-    List<File> findFiles(File directoryToSearch, String filenamePattern, int depth);
+    public SbtAggregate(final String name, final String org, final String version) {
+        this.name = name;
+        this.org = org;
+        this.version = version;
+    }
 }

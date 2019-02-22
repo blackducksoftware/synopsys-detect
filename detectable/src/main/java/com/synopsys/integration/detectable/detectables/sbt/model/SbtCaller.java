@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,16 +21,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.sbt;
+package com.synopsys.integration.detectable.detectables.sbt.model;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+public class SbtCaller {
+    private final String organisation;
+    private final String name;
+    private final String revision;
 
-public class SbtGraph {
-    public String sourcePath;
-    public DependencyGraph graph;
+    public SbtCaller(final String organisation, final String name, final String revision) {
+        this.organisation = organisation;
+        this.name = name;
+        this.revision = revision;
+    }
 
-    public SbtGraph(final DependencyGraph graph, final String sourcePath) {
-        this.sourcePath = sourcePath;
-        this.graph = graph;
+    public String getOrganisation() {
+        return organisation;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getRevision() {
+        return revision;
     }
 }

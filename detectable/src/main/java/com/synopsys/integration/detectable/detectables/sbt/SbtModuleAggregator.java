@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.sbt;
+package com.synopsys.integration.detectable.detectables.sbt;
 
 import java.util.List;
 import java.util.Set;
@@ -33,6 +33,8 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraphCombiner;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.detectable.detectables.sbt.model.SbtAggregate;
+import com.synopsys.integration.detectable.detectables.sbt.model.SbtDependencyModule;
 
 public class SbtModuleAggregator {
     private final Logger logger = LoggerFactory.getLogger(SbtModuleAggregator.class);
