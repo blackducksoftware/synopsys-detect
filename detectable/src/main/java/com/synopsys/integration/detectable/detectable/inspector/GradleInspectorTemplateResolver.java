@@ -21,10 +21,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.executable.resolver;
+package com.synopsys.integration.detectable.detectable.inspector;
 
 import java.io.File;
 
-public interface PipInspectorResolver {
-    File resolvePipInspector();
+public interface GradleInspectorTemplateResolver {
+    File resolveGradleInspectorTemplate();
 }

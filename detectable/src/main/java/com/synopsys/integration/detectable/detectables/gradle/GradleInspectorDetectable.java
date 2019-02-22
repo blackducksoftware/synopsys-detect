@@ -42,7 +42,8 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.detectables.gradle.inspector.GradleInspectorResolver;
+import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorTemplateResolver;
+import com.synopsys.integration.detectable.detectables.gradle.inspector.GradleInspectorScriptCreator;
 
 public class GradleInspectorDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -52,23 +53,26 @@ public class GradleInspectorDetectable extends Detectable {
     private final DirectoryManager directoryManager;
     private final FileFinder fileFinder;
     private final GradleResolver gradleResolver;
-    private final GradleInspectorResolver gradleInspectorResolver;
+    private final GradleInspectorTemplateResolver gradleInspectorTemplateResolver;
     private final GradleInspectorExtractor gradleInspectorExtractor;
     private final GradleInspectorOptions gradleInspectorOptions;
+    private final GradleInspectorScriptCreator gradleInspectorScriptCreator;
 
     private File gradleExe;
     private File gradleInspector;
 
     public GradleInspectorDetectable(final DetectableEnvironment environment, final DirectoryManager directoryManager, final FileFinder fileFinder,
-        final GradleResolver gradleResolver, final GradleInspectorResolver gradleInspectorResolver,
-        final GradleInspectorExtractor gradleInspectorExtractor, GradleInspectorOptions gradleInspectorOptions) {
+        final GradleResolver gradleResolver, final GradleInspectorTemplateResolver gradleInspectorTemplateResolver,
+        final GradleInspectorExtractor gradleInspectorExtractor, GradleInspectorOptions gradleInspectorOptions,
+        final GradleInspectorScriptCreator gradleInspectorScriptCreator) {
         super(environment, "Gradle Inspector", "Gradle");
         this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;
         this.gradleResolver = gradleResolver;
-        this.gradleInspectorResolver = gradleInspectorResolver;
+        this.gradleInspectorTemplateResolver = gradleInspectorTemplateResolver;
         this.gradleInspectorExtractor = gradleInspectorExtractor;
         this.gradleInspectorOptions = gradleInspectorOptions;
+        this.gradleInspectorScriptCreator = gradleInspectorScriptCreator;
     }
 
     @Override
@@ -88,7 +92,12 @@ public class GradleInspectorDetectable extends Detectable {
             return new ExecutableNotFoundDetectableResult("gradle");
         }
 
-        //gradleInspector = gradleInspectorResolver.getGradleInspector();
+        File gradleInspectorTemplate = gradleInspectorTemplateResolver.resolveGradleInspectorTemplate();
+        if (gradleInspectorTemplate == null) {
+            return new InspectorNotFoundDetectableResult("gradle");
+        }
+
+        gradleInspector = gradleInspectorScriptCreator.createGradleInspector(gradleInspectorTemplate, gradleInspectorOptions.getGradleInspectorScriptOptions());
         if (gradleInspector == null) {
             return new InspectorNotFoundDetectableResult("gradle");
         }
