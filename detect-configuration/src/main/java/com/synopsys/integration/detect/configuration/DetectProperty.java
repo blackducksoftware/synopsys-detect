@@ -493,6 +493,10 @@ public enum DetectProperty {
     @HelpDescription("The access token for your polaris instance.")
     POLARIS_ACCESS_TOKEN("polaris.access.token", "Polaris Access Token", "5.3.0", PropertyType.STRING, PropertyAuthority.None),
 
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP })
+    @HelpDescription("Additional arguments to pass to palaris.")
+    POLARIS_ARGUMENTS("polaris.arguments", "Polaris Arguments", "5.3.0", PropertyType.STRING, PropertyAuthority.None),
+
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_POLICY })
     @HelpDescription("A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.")
     @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)

@@ -25,10 +25,13 @@ package com.synopsys.integration.detect.tool.polaris;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
@@ -90,6 +93,11 @@ public class PolarisTool {
             List<String> arguments = new ArrayList<>();
             arguments.add("analyze");
             arguments.add("-w");
+
+            String additionalArgs = detectConfiguration.getProperty(DetectProperty.POLARIS_ARGUMENTS, PropertyAuthority.None);
+            if (StringUtils.isNotBlank(additionalArgs)) {
+                arguments.addAll(Arrays.asList(additionalArgs.split(" ")));
+            }
 
             Executable swipExecutable = new Executable(projectDirectory, environmentVariables, swipCliPath.get(), arguments);
             try {
