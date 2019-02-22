@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,25 +21,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.sbt;
+package com.synopsys.integration.detectable.detectables.sbt.model;
 
 import java.util.List;
 
-public class SbtRevision {
+public class SbtModule {
+    private final String organisation;
     private final String name;
-    private final List<SbtCaller> callers;
+    private final List<SbtRevision> revisions;
 
-    public SbtRevision(final String name, final List<SbtCaller> callers) {
+    public SbtModule(final String organisation, final String name, final List<SbtRevision> revisions) {
+        this.organisation = organisation;
         this.name = name;
-        this.callers = callers;
+        this.revisions = revisions;
+    }
+
+    public String getOrganisation() {
+        return organisation;
     }
 
     public String getName() {
         return name;
     }
 
-    public List<SbtCaller> getCallers() {
-        return callers;
+    public List<SbtRevision> getRevisions() {
+        return revisions;
     }
-
 }

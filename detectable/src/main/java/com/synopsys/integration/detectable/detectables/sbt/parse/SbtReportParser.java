@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.sbt;
+package com.synopsys.integration.detectable.detectables.sbt.parse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +29,11 @@ import java.util.stream.Collectors;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import com.synopsys.integration.detect.util.XmlUtil;
+import com.synopsys.integration.detectable.detectables.sbt.model.SbtCaller;
+import com.synopsys.integration.detectable.detectables.sbt.model.SbtModule;
+import com.synopsys.integration.detectable.detectables.sbt.model.SbtReport;
+import com.synopsys.integration.detectable.detectables.sbt.model.SbtRevision;
+import com.synopsys.integration.detectable.util.XmlUtil;
 
 public class SbtReportParser {
     private static final String IVY_REPORT_NODE_KEY = "ivy-report";

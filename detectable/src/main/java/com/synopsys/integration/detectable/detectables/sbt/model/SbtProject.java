@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,28 +21,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.sbt;
+package com.synopsys.integration.detectable.detectables.sbt.model;
 
-public class SbtCaller {
-    private final String organisation;
-    private final String name;
-    private final String revision;
+import java.util.List;
 
-    public SbtCaller(final String organisation, final String name, final String revision) {
-        this.organisation = organisation;
-        this.name = name;
-        this.revision = revision;
-    }
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
-    public String getOrganisation() {
-        return organisation;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getRevision() {
-        return revision;
-    }
+public class SbtProject {
+    public String projectName;
+    public String projectVersion;
+    public ExternalId projectExternalId;
+    public List<SbtDependencyModule> modules;
 }

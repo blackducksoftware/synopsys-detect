@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,49 +21,49 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.sbt;
+package com.synopsys.integration.detectable.detectables.sbt;
 
 import java.io.File;
 
-import com.synopsys.integration.detect.detector.Detector;
-import com.synopsys.integration.detect.detector.DetectorEnvironment;
-import com.synopsys.integration.detect.detector.DetectorType;
-import com.synopsys.integration.detect.detector.ExtractionId;
-import com.synopsys.integration.detect.workflow.extraction.Extraction;
-import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
-import com.synopsys.integration.detect.workflow.search.result.DetectorResult;
-import com.synopsys.integration.detect.workflow.search.result.FileNotFoundDetectorResult;
-import com.synopsys.integration.detect.workflow.search.result.PassedDetectorResult;
+import com.synopsys.integration.detectable.Detectable;
+import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-public class SbtResolutionCacheDetector extends Detector {
+public class SbtResolutionCacheDetectable extends Detectable {
     public static final String BUILD_SBT_FILENAME = "build.sbt";
 
-    private final DetectFileFinder fileFinder;
+    private final FileFinder fileFinder;
     private final SbtResolutionCacheExtractor sbtResolutionCacheExtractor;
 
-    public SbtResolutionCacheDetector(final DetectorEnvironment environment, final DetectFileFinder fileFinder, final SbtResolutionCacheExtractor sbtResolutionCacheExtractor) {
-        super(environment, "Build SBT", DetectorType.SBT);
+    public SbtResolutionCacheDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SbtResolutionCacheExtractor sbtResolutionCacheExtractor) {
+        super(environment, "Build SBT", "SBT");
         this.fileFinder = fileFinder;
         this.sbtResolutionCacheExtractor = sbtResolutionCacheExtractor;
     }
 
     @Override
-    public DetectorResult applicable() {
+    public DetectableResult applicable() {
         final File build = fileFinder.findFile(environment.getDirectory(), BUILD_SBT_FILENAME);
         if (build == null) {
-            return new FileNotFoundDetectorResult(BUILD_SBT_FILENAME);
+            return new FileNotFoundDetectableResult(BUILD_SBT_FILENAME);
         }
 
-        return new PassedDetectorResult();
+        return new PassedDetectableResult();
     }
 
     @Override
-    public DetectorResult extractable() {
-        return new PassedDetectorResult();
+    public DetectableResult extractable() {
+        return new PassedDetectableResult();
     }
 
     @Override
-    public Extraction extract(final ExtractionId extractionId) {
+    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+        // TODO: This extractor probably is due for a re-write
         return sbtResolutionCacheExtractor.extract(environment.getDirectory());
     }
 
