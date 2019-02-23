@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.functional.bazel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -8,9 +8,17 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.detect.util.executable.ExecutableOutput;
-import com.synopsys.integration.detect.util.executable.ExecutableRunner;
-import com.synopsys.integration.detect.util.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRule;
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionSimpleRule;
+import com.synopsys.integration.detectable.detectables.bazel.parse.BazelExternalIdGenerator;
+import com.synopsys.integration.detectable.detectables.bazel.parse.BazelQueryXmlOutputParser;
+import com.synopsys.integration.detectable.detectables.bazel.parse.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.parse.RuleConverter;
+import com.synopsys.integration.detectable.detectables.bazel.parse.XPathParser;
 
 public class BazelExternalIdGeneratorTest {
     private static final String commonsIoXml = "<?xml version=\"1.1\" encoding=\"UTF-8\" standalone=\"no\"?> "
@@ -47,15 +55,15 @@ public class BazelExternalIdGeneratorTest {
         // executableRunner.executeQuietly(workspaceDir, bazelExe, targetOnlyVariableSubstitutor.substitute(xPathRule.getTargetDependenciesQueryBazelCmdArguments()));
         final BazelVariableSubstitutor targetOnlyVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
         ExecutableOutput executableOutputQueryForDependencies = new ExecutableOutput(0, "@org_apache_commons_commons_io//jar:jar\n@com_google_guava_guava//jar:jar", "");
-        Mockito.when(executableRunner.executeQuietly(workspaceDir, bazelExe, targetOnlyVariableSubstitutor.substitute(xPathRule.getTargetDependenciesQueryBazelCmdArguments()))).thenReturn(executableOutputQueryForDependencies);
+        Mockito.when(executableRunner.execute(workspaceDir, bazelExe, targetOnlyVariableSubstitutor.substitute(xPathRule.getTargetDependenciesQueryBazelCmdArguments()))).thenReturn(executableOutputQueryForDependencies);
 
         // executableRunner.executeQuietly(workspaceDir, bazelExe, dependencyVariableSubstitutor.substitute(xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments()));
         final BazelVariableSubstitutor dependencyVariableSubstitutorCommonsIo = new BazelVariableSubstitutor(bazelTarget, "//external:org_apache_commons_commons_io");
         final BazelVariableSubstitutor dependencyVariableSubstitutorGuava = new BazelVariableSubstitutor(bazelTarget, "//external:com_google_guava_guava");
         ExecutableOutput executableOutputQueryCommonsIo = new ExecutableOutput(0, commonsIoXml, "");
         ExecutableOutput executableOutputQueryGuava = new ExecutableOutput(0, guavaXml, "");
-        Mockito.when(executableRunner.executeQuietly(workspaceDir, bazelExe, dependencyVariableSubstitutorCommonsIo.substitute(xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments()))).thenReturn(executableOutputQueryCommonsIo);
-        Mockito.when(executableRunner.executeQuietly(workspaceDir, bazelExe, dependencyVariableSubstitutorGuava.substitute(xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments()))).thenReturn(executableOutputQueryGuava);
+        Mockito.when(executableRunner.execute(workspaceDir, bazelExe, dependencyVariableSubstitutorCommonsIo.substitute(xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments()))).thenReturn(executableOutputQueryCommonsIo);
+        Mockito.when(executableRunner.execute(workspaceDir, bazelExe, dependencyVariableSubstitutorGuava.substitute(xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments()))).thenReturn(executableOutputQueryGuava);
 
         List<BazelExternalId> bazelExternalIds = generator.generate(xPathRule);
         assertEquals(2, bazelExternalIds.size());

@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,11 +21,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.parse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRule;
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionSimpleRule;
+import com.synopsys.integration.detectable.detectables.bazel.model.SearchReplacePattern;
 
 public class RuleConverter {
     public static final String BAZEL_QUERY_SUBCOMMAND = "query";

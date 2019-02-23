@@ -24,6 +24,7 @@
 package com.synopsys.integration.detectable.detectable.codelocation;
 
 public enum CodeLocationType {
+    BAZEL,
     BITBAKE,
     COCOAPODS,
     CONDA,

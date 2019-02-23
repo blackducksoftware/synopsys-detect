@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.bazel;
+package com.synopsys.integration.detectable.detectables.bazel;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,25 +33,27 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.detect.util.executable.ExecutableRunner;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.extraction.Extraction;
+import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRule;
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRuleJsonProcessor;
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionSimpleRules;
+import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
+import com.synopsys.integration.detectable.detectables.bazel.parse.BazelExternalIdGenerator;
+import com.synopsys.integration.detectable.detectables.bazel.parse.BazelQueryXmlOutputParser;
+import com.synopsys.integration.detectable.detectables.bazel.parse.RuleConverter;
 
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final DetectConfiguration detectConfiguration;
     private final ExecutableRunner executableRunner;
     private final BazelQueryXmlOutputParser parser;
     private final BazelExternalIdExtractionSimpleRules simpleRules;
     private final BazelCodeLocationBuilder codeLocationGenerator;
     private final BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor;
 
-    public BazelExtractor(final DetectConfiguration detectConfiguration, final ExecutableRunner executableRunner, BazelQueryXmlOutputParser parser, final BazelExternalIdExtractionSimpleRules simpleRules,
+    public BazelExtractor(final ExecutableRunner executableRunner, BazelQueryXmlOutputParser parser, final BazelExternalIdExtractionSimpleRules simpleRules,
         final BazelCodeLocationBuilder codeLocationGenerator, final BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor) {
-        this.detectConfiguration = detectConfiguration;
         this.executableRunner = executableRunner;
         this.parser = parser;
         this.simpleRules = simpleRules;
@@ -59,12 +61,10 @@ public class BazelExtractor {
         this.bazelExternalIdExtractionFullRuleJsonProcessor = bazelExternalIdExtractionFullRuleJsonProcessor;
     }
 
-    public Extraction extract(final String bazelExe, final File workspaceDir) {
+    public Extraction extract(final File bazelExe, final File workspaceDir, String bazelTarget, String fullRulesPath) {
         logger.debug("Bazel extractAndPublishResults()");
         try {
             codeLocationGenerator.setWorkspaceDir(workspaceDir);
-            final String fullRulesPath = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_ADVANCED_RULES_PATH, PropertyAuthority.None);
-            final String bazelTarget = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None);
             List<BazelExternalIdExtractionFullRule> fullRules;
             if (StringUtils.isNotBlank(fullRulesPath)) {
                 fullRules = loadXPathRulesFromFile(fullRulesPath);
@@ -76,7 +76,7 @@ public class BazelExtractor {
                     logger.debug(String.format("Using default rules:\n%s", bazelExternalIdExtractionFullRuleJsonProcessor.toJson(fullRules)));
                 }
             }
-            BazelExternalIdGenerator externalIdGenerator = new BazelExternalIdGenerator(executableRunner, bazelExe, parser, workspaceDir, bazelTarget);
+            BazelExternalIdGenerator externalIdGenerator = new BazelExternalIdGenerator(executableRunner, bazelExe.toString(), parser, workspaceDir, bazelTarget);
             fullRules.stream()
                 .map(externalIdGenerator::generate)
                 .flatMap(Collection::stream)
@@ -84,7 +84,7 @@ public class BazelExtractor {
             if (externalIdGenerator.isErrors()) {
                 return new Extraction.Builder().failure(externalIdGenerator.getErrorMessage()).build();
             }
-            final List<DetectCodeLocation> codeLocations = codeLocationGenerator.build();
+            final List<CodeLocation> codeLocations = codeLocationGenerator.build();
             final String projectName = cleanProjectName(bazelTarget);
             final Extraction.Builder builder = new Extraction.Builder()
                                                    .success(codeLocations)

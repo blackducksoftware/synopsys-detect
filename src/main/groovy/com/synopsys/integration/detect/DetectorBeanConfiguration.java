@@ -186,8 +186,8 @@ public class DetectorBeanConfiguration {
     }
 
     @Bean
-    public BazelExecutableFinder bazelExecutableFinder() {
-        return new BazelExecutableFinder(executableRunner, directoryManager, executableFinder, detectConfiguration);
+    public BazelResolver bazelExecutableFinder() {
+        return new BazelResolver(executableRunner, directoryManager, executableFinder, detectConfiguration);
     }
 
     @Bean

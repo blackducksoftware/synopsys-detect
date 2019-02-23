@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.functional.bazel;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,16 +7,19 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
+import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
+import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
 public class BazelCodeLocationBuilderTest {
 
     @Test
     public void test() {
         BazelCodeLocationBuilder bdioBuilder = new BazelCodeLocationBuilder(new ExternalIdFactory());
-        final List<DetectCodeLocation> codeLocations = bdioBuilder.setWorkspaceDir(new File("src/test/resources/bazel/multiLevel"))
+        final List<CodeLocation> codeLocations = bdioBuilder.setWorkspaceDir(FunctionalTestFiles.asFile("/bazel/multiLevel"))
             .addDependency(BazelExternalId.fromBazelArtifactString("testGroup:testArtifact:testVersion", ":"))
             .build();
 

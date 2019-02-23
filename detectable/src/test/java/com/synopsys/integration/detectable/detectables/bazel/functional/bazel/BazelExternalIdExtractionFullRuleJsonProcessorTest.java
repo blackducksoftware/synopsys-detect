@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.functional.bazel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,6 +16,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRule;
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRuleJsonProcessor;
+import com.synopsys.integration.detectable.detectables.bazel.model.SearchReplacePattern;
 
 public class BazelExternalIdExtractionFullRuleJsonProcessorTest {
     private static File tempDir;

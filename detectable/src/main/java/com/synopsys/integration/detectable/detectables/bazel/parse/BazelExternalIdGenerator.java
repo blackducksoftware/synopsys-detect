@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.parse;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,14 +34,17 @@ import java.util.Optional;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import com.synopsys.integration.detect.util.executable.ExecutableOutput;
-import com.synopsys.integration.detect.util.executable.ExecutableRunner;
-import com.synopsys.integration.detect.util.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRule;
+import com.synopsys.integration.detectable.detectables.bazel.model.SearchReplacePattern;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BazelExternalIdGenerator {
@@ -109,7 +112,7 @@ public class BazelExternalIdGenerator {
     private Optional<String[]> executeDependencyListQuery(final BazelExternalIdExtractionFullRule xPathRule, final List<String> dependencyListQueryArgs) {
         ExecutableOutput targetDependenciesQueryResults = null;
         try {
-            targetDependenciesQueryResults = executableRunner.executeQuietly(workspaceDir, bazelExe, dependencyListQueryArgs);
+            targetDependenciesQueryResults = executableRunner.execute(workspaceDir, bazelExe, dependencyListQueryArgs);
         } catch (ExecutableRunnerException e) {
             logger.debug(String.format("Error executing bazel with args: %s: %s", dependencyListQueryArgs, e.getMessage()));
             exceptionsGenerated.put(xPathRule, e);
@@ -154,7 +157,7 @@ public class BazelExternalIdGenerator {
     private Optional<String> executeDependencyDetailsQuery(final BazelExternalIdExtractionFullRule xPathRule, final List<String> dependencyDetailsQueryArgs) {
         ExecutableOutput dependencyDetailsXmlQueryResults = null;
         try {
-            dependencyDetailsXmlQueryResults = executableRunner.executeQuietly(workspaceDir, bazelExe, dependencyDetailsQueryArgs);
+            dependencyDetailsXmlQueryResults = executableRunner.execute(workspaceDir, bazelExe, dependencyDetailsQueryArgs);
         } catch (ExecutableRunnerException e) {
             logger.debug(String.format("Error executing bazel with args: %s: %s", xPathRule.getDependencyDetailsXmlQueryBazelCmdArguments(), e.getMessage()));
             exceptionsGenerated.put(xPathRule, e);

@@ -24,11 +24,15 @@
 package com.synopsys.integration.detectable.detectable.executable.impl;
 
 import java.io.File;
+import java.lang.reflect.Executable;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
@@ -43,7 +47,8 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3
 import com.synopsys.integration.detectable.detectable.executable.resolver.YarnResolver;
 
 //this will cache the find result.
-public class SimpleExecutableResolver implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver {
+public class SimpleExecutableResolver implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver,
+                                                     BazelResolver {
     private final CachedExecutableResolverOptions executableResolverOptions;
     private final SimpleLocalExecutableFinder localExecutableFinder;
     private final SimpleSystemExecutableFinder systemExecutableFinder;
@@ -138,5 +143,21 @@ public class SimpleExecutableResolver implements GradleResolver, BashResolver, C
     @Override
     public File resolveNpm(final DetectableEnvironment environment) {
         return findCachedSystem("npm");
+    }
+
+    @Override
+    public File resolveBazel() throws DetectableException {
+        File bazel = findCachedSystem("bazel");
+        //TODO: replicate bazel version call?
+        /*
+        try {
+            ExecutableOutput bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(environment.getDirectory(), resolvedBazel, BAZEL_VERSION_SUBCOMMAND);
+            int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
+            logger.trace(String.format("Bazel version returned %d; output: %s", returnCode, bazelQueryDepsRecursiveOutput.getStandardOutput()));
+        } catch (ExecutableRunnerException e) {
+            logger.debug(String.format("Bazel version threw exception: %s", e.getMessage()));
+            resolvedBazel = null;
+        }*/
+        return bazel;
     }
 }

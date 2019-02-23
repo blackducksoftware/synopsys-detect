@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.model;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class BazelExternalIdExtractionFullRule extends Stringable {
     private final String artifactStringSeparatorRegex;
 
     // Normal use case is to use RuleConverter.simpleToFull() to construct BazelExternalIdExtractionFullRule, not this ctor
-    BazelExternalIdExtractionFullRule(final List<String> targetDependenciesQueryBazelCmdArguments, final List<SearchReplacePattern> dependencyToBazelExternalIdTransforms,
+    public BazelExternalIdExtractionFullRule(final List<String> targetDependenciesQueryBazelCmdArguments, final List<SearchReplacePattern> dependencyToBazelExternalIdTransforms,
         final List<String> dependencyDetailsXmlQueryBazelCmdArguments,
         final String xPathQuery, final String ruleElementValueAttrName, final String artifactStringSeparatorRegex) {
         this.targetDependenciesQueryBazelCmdArguments = targetDependenciesQueryBazelCmdArguments;

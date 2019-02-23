@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,21 +21,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.bazel;
+package com.synopsys.integration.detectable.detectable.executable.resolver;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.io.File;
 
-public class BazelExternalIdExtractionSimpleRules {
-    private final List<BazelExternalIdExtractionSimpleRule> rules;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
-    public BazelExternalIdExtractionSimpleRules(final String bazelTarget) {
-        rules = new ArrayList<>();
-        rules.add(new BazelExternalIdExtractionSimpleRule("@.*:jar", "maven_jar", "artifact", ":"));
-    }
-
-    public Collection<BazelExternalIdExtractionSimpleRule> getRules() {
-        return rules;
-    }
+public interface BazelResolver {
+    File resolveBazel() throws DetectableException;
 }

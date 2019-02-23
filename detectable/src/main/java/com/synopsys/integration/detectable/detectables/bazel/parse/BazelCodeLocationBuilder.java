@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.parse;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,14 +30,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationType;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
 
 public class BazelCodeLocationBuilder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -67,11 +68,11 @@ public class BazelCodeLocationBuilder {
         return this;
     }
 
-    public List<DetectCodeLocation> build() {
+    public List<CodeLocation> build() {
         Forge forge = new Forge("/", "/", "DETECT");
-         final ExternalId externalId = externalIdFactory.createPathExternalId(forge, workspaceDir.toString());
-         final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.BAZEL, workspaceDir.toString(), externalId, dependencyGraph).build();
-        List<DetectCodeLocation> codeLocations = new ArrayList<>(1);
+         final ExternalId externalId = externalIdFactory.createPathExternalId(forge, workspaceDir.toString()); //TODO: don't use workspace as ID
+         final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.BAZEL, dependencyGraph, externalId).build();
+        List<CodeLocation> codeLocations = new ArrayList<>(1);
         codeLocations.add(codeLocation);
         return codeLocations;
     }

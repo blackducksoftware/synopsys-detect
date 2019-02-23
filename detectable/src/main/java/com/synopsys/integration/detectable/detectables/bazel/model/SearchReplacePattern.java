@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,34 +21,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.model;
 
-import com.synopsys.integration.util.Stringable;
+public class SearchReplacePattern {
+    private final String searchRegex;
+    private final String replacementString;
 
-public class BazelExternalId extends Stringable {
-    private final String group;
-    private final String artifact;
-    private final String version;
-
-    public static BazelExternalId fromBazelArtifactString(final String bazelArtifactString, final String separatorRegEx) {
-        final String[] parts = bazelArtifactString.split(separatorRegEx);
-        return new BazelExternalId(parts[0], parts[1], parts[2]);
-    }
-    private BazelExternalId(final String group, final String artifact, final String version) {
-        this.group = group;
-        this.artifact = artifact;
-        this.version = version;
+    public SearchReplacePattern(final String searchRegex, final String replacementString) {
+        this.searchRegex = searchRegex;
+        this.replacementString = replacementString;
     }
 
-    public String getGroup() {
-        return group;
+    public String getSearchRegex() {
+        return searchRegex;
     }
 
-    public String getArtifact() {
-        return artifact;
-    }
-
-    public String getVersion() {
-        return version;
+    public String getReplacementString() {
+        return replacementString;
     }
 }

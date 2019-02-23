@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.functional.bazel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+
+import com.synopsys.integration.detectable.detectables.bazel.parse.BazelVariableSubstitutor;
 
 public class BazelVariableSubstitutorTest {
 

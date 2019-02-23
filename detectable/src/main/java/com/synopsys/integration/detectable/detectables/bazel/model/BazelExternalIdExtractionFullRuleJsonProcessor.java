@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,28 +21,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.model;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathExpressionException;
+import org.apache.commons.io.FileUtils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
+import com.google.gson.Gson;
 
-public class BazelQueryXmlOutputParser {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final XPathParser xPathParser;
+public class BazelExternalIdExtractionFullRuleJsonProcessor {
+    private final Gson gson;
 
-    public BazelQueryXmlOutputParser(final XPathParser xPathParser) {
-        this.xPathParser = xPathParser;
+    public BazelExternalIdExtractionFullRuleJsonProcessor(final Gson gson) {
+        this.gson = gson;
     }
 
-    public List<String> parseStringValuesWithXPath(final String xml, final String xPathQuery, final String ruleElementValueAttrName) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
-        List<String> externalIds = xPathParser.parseAttributeValuesWithGivenXPathQuery(xml, xPathQuery, ruleElementValueAttrName);
-        return externalIds;
+    public List<BazelExternalIdExtractionFullRule> load(File jsonFile) throws IOException {
+        String json = FileUtils.readFileToString(jsonFile, StandardCharsets.UTF_8);
+        BazelExternalIdExtractionFullRule[] rulesArray = gson.fromJson(json, BazelExternalIdExtractionFullRule[].class);
+        return Arrays.asList(rulesArray);
+    }
+
+    public String toJson(final List<BazelExternalIdExtractionFullRule> rules) {
+        return gson.toJson(rules);
     }
 }
