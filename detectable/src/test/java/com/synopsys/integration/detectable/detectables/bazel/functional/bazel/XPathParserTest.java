@@ -19,7 +19,6 @@ import com.synopsys.integration.detectable.detectables.bazel.parse.XPathParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
 public class XPathParserTest {
-
     @Test
     public void testSimpleXml() throws Exception {
         final String xmlFilePath = FunctionalTestFiles.asString("/bazel/sample1.xml");
@@ -42,5 +41,4 @@ public class XPathParserTest {
         List<String> externalIds = parser.parseAttributeValuesWithGivenXPathQuery(xml,"/query/rule/string[@name='artifact']", "value");
         return externalIds;
     }
-
 }

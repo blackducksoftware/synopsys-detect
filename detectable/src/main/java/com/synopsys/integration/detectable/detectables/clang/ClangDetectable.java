@@ -86,7 +86,7 @@ public class ClangDetectable extends Detectable {
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         //addRelevantDiagnosticFile(jsonCompilationDatabaseFile);
-        return clangExtractor.extract(selectedPackageManager, packageManagerRunner, environment.getDirectory(), 0, extractionEnvironment.getOutputDirectory(), jsonCompilationDatabaseFile, options.isCleanup());//TODO: Fix depth?
+        return clangExtractor.extract(selectedPackageManager, packageManagerRunner, environment.getDirectory(), options.getDepth(), extractionEnvironment.getOutputDirectory(), jsonCompilationDatabaseFile, options.isCleanup());
     }
 
     private ClangPackageManager findPkgMgr(File workingDirectory) throws IntegrationException {
