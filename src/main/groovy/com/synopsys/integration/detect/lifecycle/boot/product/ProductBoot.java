@@ -97,7 +97,7 @@ public class ProductBoot {
                     logger.info("Failed to connect to Polaris: " + polarisConnectivityResult.getFailureReason());
                     logger.info(String.format("%s is set to 'true' so Detect will simply disable the Polaris product.", DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES.getPropertyName()));
                 } else {
-                    throw new DetectUserFriendlyException("Could not communicate with Polaris: " + polarisConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
+                    throw new DetectUserFriendlyException("Could not communicate with Polaris: " + polarisConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_POLARIS_CONNECTIVITY);
                 }
             }
         }
