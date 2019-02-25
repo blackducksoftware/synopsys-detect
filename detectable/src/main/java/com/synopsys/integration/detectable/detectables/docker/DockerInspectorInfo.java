@@ -21,26 +21,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.docker;
+package com.synopsys.integration.detectable.detectables.docker;
 
 import java.io.File;
 import java.util.List;
 
-import org.springframework.util.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 public class DockerInspectorInfo {
     private final File dockerInspectorJar;
-    private final List<File> airGapInspectorImageTarfiles;
+    private final List<File> airGapInspectorImageTarFiles;
 
     public DockerInspectorInfo(final File dockerInspectorJar) {
         this.dockerInspectorJar = dockerInspectorJar;
-        this.airGapInspectorImageTarfiles = null;
+        this.airGapInspectorImageTarFiles = null;
     }
 
     public DockerInspectorInfo(final File dockerInspectorJar,
-        final List<File> airGapInspectorImageTarfiles) {
+        final List<File> airGapInspectorImageTarFiles) {
         this.dockerInspectorJar = dockerInspectorJar;
-        this.airGapInspectorImageTarfiles = airGapInspectorImageTarfiles;
+        this.airGapInspectorImageTarFiles = airGapInspectorImageTarFiles;
     }
 
     public File getDockerInspectorJar() {
@@ -48,10 +48,10 @@ public class DockerInspectorInfo {
     }
 
     public boolean hasAirGapImageFiles() {
-        return !CollectionUtils.isEmpty(airGapInspectorImageTarfiles);
+        return !CollectionUtils.isEmpty(airGapInspectorImageTarFiles);
     }
 
-    public List<File> getAirGapInspectorImageTarfiles() {
-        return airGapInspectorImageTarfiles;
+    public List<File> getAirGapInspectorImageTarFiles() {
+        return airGapInspectorImageTarFiles;
     }
 }

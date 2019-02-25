@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.docker;
+package com.synopsys.integration.detectable.detectables.docker;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,13 +37,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.util.executable.Executable;
-import com.synopsys.integration.detect.util.executable.ExecutableRunner;
-import com.synopsys.integration.detect.util.executable.ExecutableRunnerException;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationType;
-import com.synopsys.integration.detect.workflow.extraction.Extraction;
-import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioReader;
 import com.synopsys.integration.bdio.BdioTransformer;
@@ -53,6 +46,13 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
+import com.synopsys.integration.detectable.detectable.executable.Executable;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.file.FileFinder;
 
 public class DockerExtractor {
     public static final String DOCKER_TAR_META_DATA_KEY = "dockerTar";
@@ -62,16 +62,15 @@ public class DockerExtractor {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final DetectFileFinder detectFileFinder;
+    private final FileFinder fileFinder;
     private final DockerProperties dockerProperties;
     private final ExecutableRunner executableRunner;
     private final BdioTransformer bdioTransformer;
     private final ExternalIdFactory externalIdFactory;
     private final Gson gson;
 
-    public DockerExtractor(final DetectFileFinder detectFileFinder, final DockerProperties dockerProperties,
-        final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson) {
-        this.detectFileFinder = detectFileFinder;
+    public DockerExtractor(final FileFinder fileFinder, final DockerProperties dockerProperties, final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson) {
+        this.fileFinder = fileFinder;
         this.dockerProperties = dockerProperties;
         this.executableRunner = executableRunner;
         this.bdioTransformer = bdioTransformer;
@@ -79,15 +78,14 @@ public class DockerExtractor {
         this.gson = gson;
     }
 
-    public Extraction extract(final File directory, final File outputDirectory, final File bashExe, final File javaExe, final String image, final String tar,
-        final DockerInspectorInfo dockerInspectorInfo) {
+    public Extraction extract(final File directory, final File outputDirectory, final File bashExe, final File javaExe, final String image, final String tar, final DockerInspectorInfo dockerInspectorInfo) {
         try {
             String imageArgument = null;
             String imagePiece = null;
             if (StringUtils.isNotBlank(tar)) {
                 final File dockerTarFile = new File(tar);
                 imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath());
-                imagePiece = detectFileFinder.extractFinalPieceFromPath(dockerTarFile.getCanonicalPath());
+                imagePiece = dockerTarFile.getName();
             } else if (StringUtils.isNotBlank(image)) {
                 imagePiece = image;
                 imageArgument = String.format("--docker.image=%s", image);
@@ -103,7 +101,7 @@ public class DockerExtractor {
         }
     }
 
-    private void importTars(final File inspectorJar, final List<File> importTars, final File directory, final Map<String, String> environmentVariables, final File bashExe) {
+    private void importTars(final List<File> importTars, final File directory, final Map<String, String> environmentVariables, final File bashExe) {
         try {
             for (final File imageToImport : importTars) {
                 // The -c is a bash option, the following String is the command we want to run
@@ -120,8 +118,7 @@ public class DockerExtractor {
         }
     }
 
-    private Extraction executeDocker(File outputDirectory, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File javaExe,
-        final File bashExe,
+    private Extraction executeDocker(final File outputDirectory, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File javaExe, final File bashExe,
         final DockerInspectorInfo dockerInspectorInfo)
         throws IOException, ExecutableRunnerException {
 
@@ -135,12 +132,12 @@ public class DockerExtractor {
         dockerArguments.add("file:" + dockerPropertiesFile.getCanonicalPath());
         dockerArguments.add(imageArgument);
         if (dockerInspectorInfo.hasAirGapImageFiles()) {
-            importTars(dockerInspectorInfo.getDockerInspectorJar(), dockerInspectorInfo.getAirGapInspectorImageTarfiles(), outputDirectory, environmentVariables, bashExe);
+            importTars(dockerInspectorInfo.getAirGapInspectorImageTarFiles(), outputDirectory, environmentVariables, bashExe);
         }
         final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, javaExe.getAbsolutePath(), dockerArguments);
         executableRunner.execute(dockerExecutable);
 
-        final File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
+        final File producedTarFile = fileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
         File scanFile = null;
         if (null != producedTarFile && producedTarFile.isFile()) {
             scanFile = producedTarFile;
@@ -155,17 +152,17 @@ public class DockerExtractor {
             }
         }
 
-        Extraction.Builder extractionBuilder = findCodeLocations(outputDirectory, directory, imagePiece);
+        final Extraction.Builder extractionBuilder = findCodeLocations(outputDirectory, directory, imagePiece);
         extractionBuilder.metaData(DOCKER_TAR_META_DATA_KEY, scanFile);
         return extractionBuilder.build();
     }
 
     private Extraction.Builder findCodeLocations(final File directoryToSearch, final File directory, final String imageName) {
-        final File bdioFile = detectFileFinder.findFile(directoryToSearch, DEPENDENCIES_PATTERN);
+        final File bdioFile = fileFinder.findFile(directoryToSearch, DEPENDENCIES_PATTERN);
         if (bdioFile != null) {
             SimpleBdioDocument simpleBdioDocument = null;
 
-            try (final InputStream dockerOutputInputStream = new FileInputStream(bdioFile); BdioReader bdioReader = new BdioReader(gson, dockerOutputInputStream)) {
+            try (final InputStream dockerOutputInputStream = new FileInputStream(bdioFile); final BdioReader bdioReader = new BdioReader(gson, dockerOutputInputStream)) {
                 simpleBdioDocument = bdioReader.readSimpleBdioDocument();
             } catch (final Exception e) {
                 return new Extraction.Builder().exception(e);
@@ -182,7 +179,7 @@ public class DockerExtractor {
                 final String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId;
                 final ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath);
 
-                final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(DetectCodeLocationType.DOCKER, directory.toString(), projectExternalId, dependencyGraph).dockerImage(imageName).build();
+                final CodeLocation detectCodeLocation = new CodeLocation.Builder(CodeLocationType.DOCKER, dependencyGraph, projectExternalId).dockerImage(imageName).build();
 
                 return new Extraction.Builder().success(detectCodeLocation).projectName(projectName).projectVersion(projectVersionName);
             }

@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.docker;
+package com.synopsys.integration.detectable.detectables.docker;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,29 +29,25 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
-
 public class DockerProperties {
-    private final DetectConfiguration detectConfiguration;
+    private final DockerDetectableOptions dockerDetectableOptions;
 
-    public DockerProperties(final DetectConfiguration detectConfiguration) {
-        this.detectConfiguration = detectConfiguration;
+    public DockerProperties(final DockerDetectableOptions dockerDetectableOptions) {
+        this.dockerDetectableOptions = dockerDetectableOptions;
     }
 
     public void populatePropertiesFile(final File dockerPropertiesFile, final File outputDirectory) throws IOException {
         final Properties dockerProperties = new Properties();
 
-        dockerProperties.setProperty("logging.level.com.synopsys", detectConfiguration.getProperty(DetectProperty.LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION, PropertyAuthority.None));
+        dockerProperties.setProperty("logging.level.com.synopsys", dockerDetectableOptions.getDockerInspectorLoggingLevel());
         dockerProperties.setProperty("upload.bdio", "false");
         dockerProperties.setProperty("output.path", outputDirectory.getAbsolutePath());
         dockerProperties.setProperty("output.include.containerfilesystem", "true");
         dockerProperties.setProperty("phone.home", "false");
         dockerProperties.setProperty("caller.name", "Detect");
 
-        final Map<String, String> additionalDockerProperties = detectConfiguration.getDockerProperties();
-        additionalDockerProperties.forEach((key, value) -> dockerProperties.setProperty(key, value));
+        final Map<String, String> additionalDockerProperties = dockerDetectableOptions.getAdditionalDockerProperties();
+        dockerProperties.putAll(additionalDockerProperties);
 
         dockerProperties.store(new FileOutputStream(dockerPropertiesFile), "");
     }

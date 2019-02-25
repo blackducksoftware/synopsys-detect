@@ -21,32 +21,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.docker;
+package com.synopsys.integration.detectable.detectables.docker;
+
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
-
-public class DockerOptions {
+public class DockerDetectableOptions {
 
     private final boolean dockerPathRequired;
     private final String suppliedDockerImage;
     private final String suppliedDockerTar;
+    private final String dockerInspectorLoggingLevel;
+    private final String dockerInspectorVersion;
+    private final Map<String, String> additionalDockerProperties;
 
-    public static DockerOptions fromConfiguration(DetectConfiguration detectConfiguration) {
-        final String tar = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_TAR, PropertyAuthority.None);
-        final String image = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE, PropertyAuthority.None);
-        final boolean dockerRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED, PropertyAuthority.None);
-        return new DockerOptions(dockerRequired, image, tar);
-    }
-
-    public DockerOptions(final boolean dockerPathRequired, final String suppliedDockerImage,
-        final String suppliedDockerTar) {
+    public DockerDetectableOptions(final boolean dockerPathRequired, final String suppliedDockerImage,
+        final String suppliedDockerTar, final String dockerInspectorLoggingLevel, final String dockerInspectorVersion, final Map<String, String> additionalDockerProperties) {
         this.dockerPathRequired = dockerPathRequired;
         this.suppliedDockerImage = suppliedDockerImage;
         this.suppliedDockerTar = suppliedDockerTar;
+        this.dockerInspectorLoggingLevel = dockerInspectorLoggingLevel;
+        this.dockerInspectorVersion = dockerInspectorVersion;
+        this.additionalDockerProperties = additionalDockerProperties;
     }
 
     public boolean isDockerPathRequired() {
@@ -62,6 +59,18 @@ public class DockerOptions {
     }
 
     public boolean hasDockerImageOrTag() {
-        return StringUtils.isNotBlank(getSuppliedDockerImage()) && StringUtils.isNotBlank(getSuppliedDockerTar());
+        return StringUtils.isNotBlank(getSuppliedDockerImage()) || StringUtils.isNotBlank(getSuppliedDockerTar());
+    }
+
+    public String getDockerInspectorLoggingLevel() {
+        return dockerInspectorLoggingLevel;
+    }
+
+    public String getDockerInspectorVersion() {
+        return dockerInspectorVersion;
+    }
+
+    public Map<String, String> getAdditionalDockerProperties() {
+        return additionalDockerProperties;
     }
 }
