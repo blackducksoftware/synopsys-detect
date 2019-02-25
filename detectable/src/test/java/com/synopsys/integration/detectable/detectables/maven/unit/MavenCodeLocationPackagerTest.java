@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.maven.MavenCodeLocationPackager;
-import com.synopsys.integration.detectable.detectables.maven.ScopedDependency;
+import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocationPackager;
+import com.synopsys.integration.detectable.detectables.maven.cli.ScopedDependency;
 
 @UnitTest
 public class MavenCodeLocationPackagerTest {

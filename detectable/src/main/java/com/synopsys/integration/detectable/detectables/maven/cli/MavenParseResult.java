@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.maven;
+package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 

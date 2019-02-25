@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.maven.MavenCodeLocationPackager;
-import com.synopsys.integration.detectable.detectables.maven.MavenParseResult;
+import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocationPackager;
+import com.synopsys.integration.detectable.detectables.maven.cli.MavenParseResult;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.GraphCompare;
 

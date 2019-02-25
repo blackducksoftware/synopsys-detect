@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.maven;
+package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
