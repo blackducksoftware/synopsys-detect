@@ -34,13 +34,13 @@ import com.synopsys.integration.detect.detector.DetectorException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.RunResult;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.synopsys.integration.detect.tool.docker.DockerExtractor;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.extraction.Extraction;
 import com.synopsys.integration.detect.workflow.search.result.DetectorResult;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
+import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.util.NameVersion;
 
 public class ToolRunner {
@@ -56,13 +56,13 @@ public class ToolRunner {
 
     public void run(final RunResult runResult) throws DetectorException {
         logger.info(String.format("Checking if %s applies.", toolDetector.getToolEnum().toString()));
-        DetectorResult applicableResult = toolDetector.applicable();
+        final DetectorResult applicableResult = toolDetector.applicable();
         if (applicableResult.getPassed()) {
             logger.info(String.format("Checking if %s is extractable.", toolDetector.getToolEnum().toString()));
-            DetectorResult extractableResult = toolDetector.extractable();
+            final DetectorResult extractableResult = toolDetector.extractable();
             if (extractableResult.getPassed()) {
                 logger.info(String.format("Performing the %s extraction.", toolDetector.getToolEnum().toString()));
-                Extraction extractionResults = toolDetector.extract();
+                final Extraction extractionResults = toolDetector.extract();
                 if (extractionResults.result != Extraction.ExtractionResultType.SUCCESS) {
                     logger.error(String.format("%s extraction failed: %s", toolDetector.getToolEnum().toString(), extractionResults.description));
                 }
@@ -78,7 +78,7 @@ public class ToolRunner {
 
     private void publishExtractionResults(final EventSystem eventSystem, final RunResult runResult, final Extraction extractionResult) {
         runResult.addToolNameVersionIfPresent(toolDetector.getToolEnum(), Optional.of(new NameVersion(extractionResult.projectName, extractionResult.projectVersion)));
-        Optional<Object> dockerTar = extractionResult.getMetaDataValue(DockerExtractor.DOCKER_TAR_META_DATA_KEY);
+        final Optional<Object> dockerTar = extractionResult.getMetaDataValue(DockerExtractor.DOCKER_TAR_META_DATA_KEY);
         if (dockerTar.isPresent()) {
             runResult.addDockerFile(Optional.of((File) dockerTar.get()));
         }

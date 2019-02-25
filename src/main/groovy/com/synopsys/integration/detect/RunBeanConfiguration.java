@@ -29,16 +29,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 
+import com.google.gson.Gson;
+import com.synopsys.integration.bdio.BdioTransformer;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.detect.detector.DetectorEnvironment;
-import com.synopsys.integration.detect.tool.docker.DockerDetector;
-import com.synopsys.integration.detect.tool.docker.DockerExtractor;
-import com.synopsys.integration.detect.tool.docker.DockerInspectorManager;
-import com.synopsys.integration.detect.tool.docker.DockerProperties;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.OfflineBlackDuckSignatureScanner;
 import com.synopsys.integration.detect.tool.signaturescanner.OnlineBlackDuckSignatureScanner;
@@ -56,12 +55,6 @@ import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detect.workflow.file.AirGapOptions;
 import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.google.gson.Gson;
-import com.synopsys.integration.bdio.BdioTransformer;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 
 import freemarker.template.Configuration;
 
@@ -138,7 +131,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public AirGapManager airGapManager() {
-        AirGapOptions airGapOptions = detectConfigurationFactory().createAirGapOptions();
+        final AirGapOptions airGapOptions = detectConfigurationFactory().createAirGapOptions();
         return new AirGapManager(airGapOptions);
     }
 
@@ -152,39 +145,41 @@ public class RunBeanConfiguration {
         return new CacheableExecutableFinder(directoryManager, executableManager(), detectConfiguration);
     }
 
-    @Bean
-    public DockerInspectorManager dockerInspectorManager() {
-        return new DockerInspectorManager(directoryManager, airGapManager(), detectFileFinder(), detectConfiguration, artifactResolver());
-    }
+    // TODO: Jordan fix me
+
+    //    @Bean
+    //    public DockerInspectorManager dockerInspectorManager() {
+    //        return new DockerInspectorManager(directoryManager, airGapManager(), detectFileFinder(), detectConfiguration, artifactResolver());
+    //    }
+    //
+    //    @Lazy
+    //    @Bean
+    //    public DockerDetectable dockerBomTool(final DetectorEnvironment detectorEnvironment) {
+    //        final DockerProperties dockerProperties = new DockerProperties(detectConfiguration);
+    //
+    //        final String tar = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_TAR, PropertyAuthority.None);
+    //        final String image = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE, PropertyAuthority.None);
+    //        final boolean dockerRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED, PropertyAuthority.None);
+    //
+    //        return new DockerDetectable(detectInfo, detectorEnvironment, directoryManager, dockerInspectorManager(), standardExecutableFinder(), dockerRequired, image, tar, dockerExtractor(dockerProperties));
+    //    }
+    //
+    //    @Lazy
+    //    @Bean
+    //    public DockerExtractor dockerExtractor(final DockerProperties dockerProperties) {
+    //        return new DockerExtractor(detectFileFinder(), dockerProperties, executableRunner(), bdioTransformer(), externalIdFactory(), gson);
+    //    }
 
     @Lazy
     @Bean
-    public DockerDetector dockerBomTool(DetectorEnvironment detectorEnvironment) {
-        DockerProperties dockerProperties = new DockerProperties(detectConfiguration);
-
-        final String tar = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_TAR, PropertyAuthority.None);
-        final String image = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE, PropertyAuthority.None);
-        final boolean dockerRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED, PropertyAuthority.None);
-
-        return new DockerDetector(detectInfo, detectorEnvironment, directoryManager, dockerInspectorManager(), standardExecutableFinder(), dockerRequired, image, tar, dockerExtractor(dockerProperties));
-    }
-
-    @Lazy
-    @Bean
-    public DockerExtractor dockerExtractor(DockerProperties dockerProperties) {
-        return new DockerExtractor(detectFileFinder(), dockerProperties, executableRunner(), bdioTransformer(), externalIdFactory(), gson);
-    }
-
-    @Lazy
-    @Bean
-    public OnlineBlackDuckSignatureScanner onlineBlackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner, CodeLocationCreationService codeLocationCreationService,
-        BlackDuckServerConfig hubServerConfig) {
+    public OnlineBlackDuckSignatureScanner onlineBlackDuckSignatureScanner(final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, final ScanBatchRunner scanBatchRunner,
+        final CodeLocationCreationService codeLocationCreationService, final BlackDuckServerConfig hubServerConfig) {
         return new OnlineBlackDuckSignatureScanner(directoryManager, detectFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, codeLocationCreationService, hubServerConfig);
     }
 
     @Lazy
     @Bean
-    public OfflineBlackDuckSignatureScanner offlineBlackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner) {
+    public OfflineBlackDuckSignatureScanner offlineBlackDuckSignatureScanner(final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, final ScanBatchRunner scanBatchRunner) {
         return new OfflineBlackDuckSignatureScanner(directoryManager, detectFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner);
     }
 
