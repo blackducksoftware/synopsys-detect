@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.gradle.parse;
+package com.synopsys.integration.detectable.detectables.gradle.inspection.parse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +34,10 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
-import com.synopsys.integration.detectable.detectables.gradle.model.GradleConfiguration;
-import com.synopsys.integration.detectable.detectables.gradle.model.GradleGav;
-import com.synopsys.integration.detectable.detectables.gradle.model.GradleReport;
-import com.synopsys.integration.detectable.detectables.gradle.model.GradleTreeNode;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleConfiguration;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleGav;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleReport;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleTreeNode;
 
 //An example transform that uses our "Dependency History" class and is closer to the original Gradle implementation
 public class GradleReportTransformer {

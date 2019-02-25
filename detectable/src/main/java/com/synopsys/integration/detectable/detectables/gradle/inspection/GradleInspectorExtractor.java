@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.gradle;
+package com.synopsys.integration.detectable.detectables.gradle.inspection;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,7 +38,9 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.gradle.parse.GradleReportParser;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
 import com.synopsys.integration.util.NameVersion;
 
 public class GradleInspectorExtractor {
@@ -47,12 +49,16 @@ public class GradleInspectorExtractor {
     private final ExecutableRunner executableRunner;
     private final FileFinder fileFinder;
     private final GradleReportParser gradleReportParser;
+    private final GradleReportTransformer gradleReportTransformer;
+    private final GradleRootMetadataParser gradleRootMetadataParser;
 
-    public GradleInspectorExtractor(final ExecutableRunner executableRunner, final FileFinder fileFinder,
-        final GradleReportParser gradleReportParser) {
+    public GradleInspectorExtractor(final ExecutableRunner executableRunner, final FileFinder fileFinder, final GradleReportParser gradleReportParser, final GradleReportTransformer gradleReportTransformer,
+        final GradleRootMetadataParser gradleRootMetadataParser) {
         this.executableRunner = executableRunner;
         this.fileFinder = fileFinder;
         this.gradleReportParser = gradleReportParser;
+        this.gradleReportTransformer = gradleReportTransformer;
+        this.gradleRootMetadataParser = gradleRootMetadataParser;
     }
 
     public Extraction extract(final File directory, final File gradleExe, String gradleCommand, final File gradleInspector, final File outputDirectory) {
@@ -72,20 +78,19 @@ public class GradleInspectorExtractor {
 
             if (output.getReturnCode() == 0) {
                 final File rootProjectMetadataFile = fileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
-                final List<File> codeLocationFiles = fileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
+                final List<File> reportFiles = fileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
 
                 final List<CodeLocation> codeLocations = new ArrayList<>();
                 String projectName = null;
                 String projectVersion = null;
-                if (codeLocationFiles != null) {
-                    codeLocationFiles.stream()
-                        .map(codeLocationFile -> gradleReportParser.parseDependencies(codeLocationFile))
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
+                if (reportFiles != null) {
+                    reportFiles.stream()
+                        .map(gradleReportParser::parseReport)
+                        .map(gradleReportTransformer::trasnform)
                         .forEach(codeLocations::add);
 
                     if (rootProjectMetadataFile != null) {
-                        final Optional<NameVersion> projectNameVersion = gradleReportParser.parseRootProjectNameVersion(rootProjectMetadataFile);
+                        final Optional<NameVersion> projectNameVersion = gradleRootMetadataParser.parseRootProjectNameVersion(rootProjectMetadataFile);
                         if (projectNameVersion.isPresent()) {
                             projectName = projectNameVersion.get().getName();
                             projectVersion = projectNameVersion.get().getVersion();

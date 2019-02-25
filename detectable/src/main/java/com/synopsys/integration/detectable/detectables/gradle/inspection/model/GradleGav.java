@@ -21,12 +21,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.gradle.model;
+package com.synopsys.integration.detectable.detectables.gradle.inspection.model;
 
-import java.util.ArrayList;
-import java.util.List;
+public class GradleGav {
+    private final String artifact;
+    private final String version;
+    private final String name;
 
-public class GradleConfiguration {
-    public String name;
-    public List<GradleTreeNode> children = new ArrayList<>();
+    public GradleGav(final String artifact, final String version, final String name) {
+        this.artifact = artifact;
+        this.version = version;
+        this.name = name;
+    }
+
+    public String getArtifact() {
+        return artifact;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

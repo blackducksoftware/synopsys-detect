@@ -64,7 +64,7 @@ public abstract class Detectable {
         return String.format("%s - %s", getGroupName().toString(), getName());
     }
 
-    public boolean isSame(Detectable detector) {
+    public boolean isSame(final Detectable detector) {
         return this.getClass().equals(detector.getClass());
     }
 

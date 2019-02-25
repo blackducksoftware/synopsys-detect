@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.gradle.parse;
+package com.synopsys.integration.detectable.detectables.gradle.inspection.parse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.util.DetectableStringUtils;
-import com.synopsys.integration.detectable.detectables.gradle.model.GradleTreeNode;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleTreeNode;
 
 public class GradleReportLineParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

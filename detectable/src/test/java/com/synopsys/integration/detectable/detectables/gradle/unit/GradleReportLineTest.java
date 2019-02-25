@@ -4,8 +4,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.gradle.parse.GradleReportLine;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleGav;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleTreeNode;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportLineParser;
 
 public class GradleReportLineTest {
     @Test
@@ -84,8 +87,11 @@ public class GradleReportLineTest {
 
     private void assertDependency(final String line, final String[] expectedResults) {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final GradleReportLine gradleReportLine = new GradleReportLine(line);
-        final Dependency dependency = gradleReportLine.createDependencyNode(externalIdFactory);
+        final GradleReportLineParser gradleReportLineParser = new GradleReportLineParser();
+        final GradleTreeNode gradleTreeNode = gradleReportLineParser.parseLine(line);
+        final GradleGav gav = gradleTreeNode.getGav().get();
+        final ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getArtifact(), gav.getVersion());
+        final Dependency dependency = new Dependency(gav.getArtifact(), gav.getVersion(), externalId);
 
         Assert.assertEquals(expectedResults[0], dependency.name);
         Assert.assertEquals(expectedResults[1], dependency.version);

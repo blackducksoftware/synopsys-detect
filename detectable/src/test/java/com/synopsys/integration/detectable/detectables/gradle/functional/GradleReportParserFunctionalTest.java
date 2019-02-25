@@ -24,9 +24,9 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.gradle.model.GradleReport;
-import com.synopsys.integration.detectable.detectables.gradle.parse.GradleReportParser;
-import com.synopsys.integration.detectable.detectables.gradle.parse.GradleReportTransformer;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleReport;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.MavenGraphAssert;
 
