@@ -57,9 +57,11 @@ public class ProductBoot {
             throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
         }
 
+        logger.info("Detect product boot start.");
         BlackDuckRunData blackDuckRunData = null;
         BlackDuckDecision blackDuckDecision = productDecision.getBlackDuckDecision();
         if (blackDuckDecision.shouldRun()){
+            logger.info("Will boot Black Duck product.");
             if (blackDuckDecision.isOffline()){
                 blackDuckRunData = BlackDuckRunData.offline();
             } else {
@@ -84,6 +86,7 @@ public class ProductBoot {
         PolarisRunData polarisRunData = null;
         PolarisDecision polarisDecision = productDecision.getPolarisDecision();
         if (polarisDecision.shouldRun()){
+            logger.info("Will boot Polaris product.");
             PolarisServerConfig polarisServerConfig = polarisDecision.getPolarisServerConfig();
             PolarisConnectivityResult polarisConnectivityResult = polarisConnectivityChecker.determineConnectivity(polarisServerConfig);
 
@@ -94,7 +97,7 @@ public class ProductBoot {
                     logger.info("Failed to connect to Polaris: " + polarisConnectivityResult.getFailureReason());
                     logger.info(String.format("%s is set to 'true' so Detect will simply disable the Polaris product.", DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES.getPropertyName()));
                 } else {
-                    throw new DetectUserFriendlyException("Could not communicate with Polaris: " + polarisConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
+                    throw new DetectUserFriendlyException("Could not communicate with Polaris: " + polarisConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_POLARIS_CONNECTIVITY);
                 }
             }
         }
@@ -104,6 +107,7 @@ public class ProductBoot {
             return null;
         }
 
+        logger.info("Detect product boot completed.");
         return new ProductRunData(polarisRunData, blackDuckRunData);
     }
 }

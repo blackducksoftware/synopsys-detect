@@ -54,14 +54,14 @@ public class PolarisConnectivityChecker {
     public PolarisConnectivityResult determineConnectivity(PolarisServerConfig polarisServerConfig)
         throws DetectUserFriendlyException {
 
-        logger.info("Detect will check if it can communicate with the Black Duck Server.");
+        logger.info("Detect will check if it can communicate with the Polaris Server.");
 
         ConnectionResult connectionResult = attemptConnection(polarisServerConfig);
 
         if (connectionResult.isFailure()) {
-            logger.error("Failed to connect to the Black Duck server");
-            logger.debug(String.format("The Black Duck server responded with a status code of %d", connectionResult.getHttpStatusCode()));
-            return PolarisConnectivityResult.failure(connectionResult.getFailureMessage().orElse("Could not reach the Black Duck server or the credentials were invalid."));
+            logger.error("Failed to connect to the Polaris server");
+            logger.debug(String.format("The Polaris server responded with a status code of %d", connectionResult.getHttpStatusCode()));
+            return PolarisConnectivityResult.failure(connectionResult.getFailureMessage().orElse("Could not reach the Polaris server or the credentials were invalid."));
         }
 
         logger.info("Connection to the Polaris server was successful");//TODO: Get a detailed reason of why canConnect failed.
