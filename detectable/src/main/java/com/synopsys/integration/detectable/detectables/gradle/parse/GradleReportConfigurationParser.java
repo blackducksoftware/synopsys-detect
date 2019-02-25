@@ -23,69 +23,36 @@
  */
 package com.synopsys.integration.detectable.detectables.gradle.parse;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectables.gradle.model.GradleConfiguration;
 
 public class GradleReportConfigurationParser {
-    private final Logger logger = LoggerFactory.getLogger(GradleReportConfigurationParser.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private boolean processingConfiguration;
-    private boolean processingProjectTree;
-    private String lineThatMayContainConfigurationName;
-    private GradleReportLine gradleReportLine;
+    private final GradleReportLineParser parser = new GradleReportLineParser();
 
-    public Dependency parseDependency(final ExternalIdFactory externalIdFactory, final String line) {
-        if (shouldParseLine(line)) {
-            final Dependency dependency = gradleReportLine.createDependencyNode(externalIdFactory);
-            return dependency;
-        }
-        return null;
+    public GradleConfiguration parse(final String header, final List<String> dependencyLines) {
+        final GradleConfiguration configuration = new GradleConfiguration();
+
+        configuration.name = parseConfigurationName(header);
+
+        configuration.children = dependencyLines.stream()
+                                     .map(parser::parseLine)
+                                     .collect(Collectors.toList());
+
+        return configuration;
     }
 
-    public int getTreeLevel() {
-        return gradleReportLine.getTreeLevel();
-    }
-
-    public boolean shouldParseLine(final String line) {
-        gradleReportLine = new GradleReportLine(line);
-
-        if (!processingConfiguration) {
-            if (gradleReportLine.isRootLevel()) {
-                processingConfiguration = true;
-                final String configurationName = extractConfigurationName();
-                logger.info(String.format("Started processing of configuration: %s", configurationName));
-            } else {
-                lineThatMayContainConfigurationName = line;
-                return false;
-            }
-        }
-
-        if (processingProjectTree && !gradleReportLine.isRootLevel()) {
-            return false;
-        }
-
-        if (gradleReportLine.isRootLevelProject()) {
-            processingProjectTree = true;
-            return false;
-        }
-
-        processingProjectTree = false;
-
-        return processingConfiguration && !processingProjectTree;
-    }
-
-    public GradleReportLine getLineToProcess() {
-        return gradleReportLine;
-    }
-
-    private String extractConfigurationName() {
-        if (lineThatMayContainConfigurationName.contains(" - ")) {
-            return lineThatMayContainConfigurationName.substring(0, lineThatMayContainConfigurationName.indexOf(" - ")).trim();
+    private String parseConfigurationName(final String header) {
+        if (header.contains(" - ")) {
+            return header.substring(0, header.indexOf(" - ")).trim();
         } else {
-            return lineThatMayContainConfigurationName.trim();
+            return header.trim();
         }
     }
 

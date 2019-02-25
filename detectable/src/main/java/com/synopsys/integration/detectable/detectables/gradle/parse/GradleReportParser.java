@@ -29,24 +29,20 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
-import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
-import com.synopsys.integration.util.NameVersion;
+import com.synopsys.integration.detectable.detectables.gradle.model.GradleConfiguration;
+import com.synopsys.integration.detectable.detectables.gradle.model.GradleReport;
 
 public class GradleReportParser {
-    private final Logger logger = LoggerFactory.getLogger(GradleReportParser.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static final String PROJECT_PATH_PREFIX = "projectPath:";
     public static final String PROJECT_GROUP_PREFIX = "projectGroup:";
@@ -59,23 +55,17 @@ public class GradleReportParser {
 
     private final ExternalIdFactory externalIdFactory;
 
-    private GradleReportConfigurationParser gradleReportConfigurationParser = new GradleReportConfigurationParser();
+    private final GradleReportConfigurationParser gradleReportConfigurationParser = new GradleReportConfigurationParser();
 
     public GradleReportParser(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Optional<CodeLocation> parseDependencies(final File codeLocationFile) {
-        CodeLocation codeLocation = null;
-        String projectSourcePath = "";
-        String projectGroup = "";
-        String projectName = "";
-        String projectVersionName = "";
+    public GradleReport parseReport(final File reportFile) {
+        GradleReport gradleReport = new GradleReport();
         boolean processingMetaData = false;
-        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        final DependencyHistory history = new DependencyHistory();
-
-        try (FileInputStream dependenciesInputStream = new FileInputStream(codeLocationFile); BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8));) {
+        final List<String> configurationLines = new ArrayList<String>();
+        try (final FileInputStream dependenciesInputStream = new FileInputStream(reportFile); final BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8))) {
             while (reader.ready()) {
                 final String line = reader.readLine();
                 /**
@@ -91,87 +81,34 @@ public class GradleReportParser {
                 }
                 if (processingMetaData) {
                     if (line.startsWith(PROJECT_PATH_PREFIX)) {
-                        projectSourcePath = line.substring(PROJECT_PATH_PREFIX.length()).trim();
+                        gradleReport.projectSourcePath = line.substring(PROJECT_PATH_PREFIX.length()).trim();
                     } else if (line.startsWith(PROJECT_GROUP_PREFIX)) {
-                        projectGroup = line.substring(PROJECT_GROUP_PREFIX.length()).trim();
+                        gradleReport.projectGroup = line.substring(PROJECT_GROUP_PREFIX.length()).trim();
                     } else if (line.startsWith(PROJECT_NAME_PREFIX)) {
-                        projectName = line.substring(PROJECT_NAME_PREFIX.length()).trim();
+                        gradleReport.projectName = line.substring(PROJECT_NAME_PREFIX.length()).trim();
                     } else if (line.startsWith(PROJECT_VERSION_PREFIX)) {
-                        projectVersionName = line.substring(PROJECT_VERSION_PREFIX.length()).trim();
+                        gradleReport.projectVersionName = line.substring(PROJECT_VERSION_PREFIX.length()).trim();
                     }
                     continue;
                 }
 
-                if (StringUtils.isBlank(line)) {
-                    history.clear();
-                    gradleReportConfigurationParser = new GradleReportConfigurationParser();
-                    continue;
-                }
-
-                final Dependency dependency = gradleReportConfigurationParser.parseDependency(externalIdFactory, line);
-                if (dependency == null) {
-                    continue;
-                }
-
-                final int lineTreeLevel = gradleReportConfigurationParser.getTreeLevel();
-
-                try {
-                    history.clearDependenciesDeeperThan(lineTreeLevel);
-                } catch (final IllegalStateException e) {
-                    logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
-                }
-
-                if (history.isEmpty()) {
-                    graph.addChildToRoot(dependency);
+                if (StringUtils.isBlank(line)) {//TODO: Does this handle the 'header block' and 'footer block' of the output the same way?
+                    if (configurationLines.size() > 1) {
+                        final String header = configurationLines.get(0);
+                        final List<String> dependencyTree = configurationLines.stream().skip(1).collect(Collectors.toList());
+                        final GradleConfiguration configuration = gradleReportConfigurationParser.parse(header, dependencyTree);
+                        gradleReport.configurations.add(configuration);
+                    }
+                    configurationLines.clear();
                 } else {
-                    graph.addChildWithParents(dependency, history.getLastDependency());
+                    configurationLines.add(line);
                 }
 
-                history.add(dependency);
             }
-
-            final ExternalId id = externalIdFactory.createMavenExternalId(projectGroup, projectName, projectVersionName);
-            codeLocation = new CodeLocation.Builder(CodeLocationType.GRADLE, graph, id).build(); //TODO: Source Path?
         } catch (final IOException e) {
-            codeLocation = null;
+            gradleReport = null; //TODO?
         }
 
-        return Optional.ofNullable(codeLocation);
+        return gradleReport;
     }
-
-    public Optional<NameVersion> parseRootProjectNameVersion(final File rootProjectMetadataFile) {
-        NameVersion nameVersion = null;
-        String rootProjectName = null;
-        String rootProjectVersionName = null;
-        boolean processingMetaData = false;
-
-        try (FileInputStream dependenciesInputStream = new FileInputStream(rootProjectMetadataFile); BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8));) {
-            while (reader.ready()) {
-                final String line = reader.readLine();
-
-                if (line.startsWith(DETECT_META_DATA_HEADER)) {
-                    processingMetaData = true;
-                    continue;
-                }
-                if (line.startsWith(DETECT_META_DATA_FOOTER)) {
-                    processingMetaData = false;
-                    continue;
-                }
-                if (processingMetaData) {
-                    if (line.startsWith(ROOT_PROJECT_NAME_PREFIX)) {
-                        rootProjectName = line.substring(ROOT_PROJECT_NAME_PREFIX.length()).trim();
-                    } else if (line.startsWith(ROOT_PROJECT_VERSION_PREFIX)) {
-                        rootProjectVersionName = line.substring(ROOT_PROJECT_VERSION_PREFIX.length()).trim();
-                    }
-                    continue;
-                }
-            }
-            nameVersion = new NameVersion(rootProjectName, rootProjectVersionName);
-        } catch (final IOException e) {
-            nameVersion = null;
-        }
-
-        return Optional.ofNullable(nameVersion);
-    }
-
 }

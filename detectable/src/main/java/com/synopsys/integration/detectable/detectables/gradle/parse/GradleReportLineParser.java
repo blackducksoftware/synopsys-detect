@@ -31,34 +31,39 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.util.DetectableStringUtils;
+import com.synopsys.integration.detectable.detectables.gradle.model.GradleTreeNode;
 
-public class GradleReportLine {
-    private final Logger logger = LoggerFactory.getLogger(GradleReportLine.class);
-
-    private static final String[] DEPENDENCY_INDICATORS = new String[] { "+---", "\\---" };
-    private static final String[] PROJECT_INDICATORS = new String[] { "+--- project ", "\\--- project " };
+public class GradleReportLineParser {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final String[] TREE_LEVEL_TERMINALS = new String[] { "+---", "\\---" };
+    private static final String[] PROJECT_INDICATORS = new String[] { "--- project " };
     private static final String COMPONENT_PREFIX = "--- ";
     private static final String SEEN_ELSEWHERE_SUFFIX = " (*)";
     private static final String WINNING_INDICATOR = " -> ";
 
-    private final String originalLine;
-
-    public GradleReportLine(final String line) {
-        this.originalLine = line;
-    }
-
-    public boolean isComponentLine() {
-        return originalLine.contains(COMPONENT_PREFIX);
-    }
-
-    public Dependency createDependencyNode(final ExternalIdFactory externalIdFactory) {
-        if (!originalLine.contains(COMPONENT_PREFIX)) {
-            return null;
+    public GradleTreeNode parseLine(final String line) {
+        final int level = parseTreeLevel(line);
+        if (!line.contains(COMPONENT_PREFIX)) {
+            return GradleTreeNode.newUnknown(level);
+        } else if (StringUtils.containsAny(line, PROJECT_INDICATORS)) {
+            return GradleTreeNode.newProject(level);
+        } else {
+            final List<String> gav = parseGav(line);
+            if (gav.size() != 3) {
+                logger.error(String.format("The line can not be reasonably split in to the necessary parts: %s", line));
+                return GradleTreeNode.newUnknown(level);
+            } else {
+                final String group = gav.get(0);
+                final String artifact = gav.get(1);
+                final String version = gav.get(2);
+                return GradleTreeNode.newGav(level, artifact, version, group);
+            }
         }
+    }
 
-        String cleanedOutput = StringUtils.trimToEmpty(originalLine);
+    private List<String> parseGav(final String line) {
+        String cleanedOutput = StringUtils.trimToEmpty(line);
         cleanedOutput = cleanedOutput.substring(cleanedOutput.indexOf(COMPONENT_PREFIX) + COMPONENT_PREFIX.length());
 
         if (cleanedOutput.endsWith(SEEN_ELSEWHERE_SUFFIX)) {
@@ -85,24 +90,15 @@ public class GradleReportLine {
             }
         }
 
-        if (gavPieces.size() != 3) {
-            logger.error(String.format("The line can not be reasonably split in to the neccessary parts: %s", originalLine));
-            return null;
-        }
-
-        final String group = gavPieces.get(0);
-        final String artifact = gavPieces.get(1);
-        final String version = gavPieces.get(2);
-        final Dependency dependency = new Dependency(artifact, version, externalIdFactory.createMavenExternalId(group, artifact, version));
-        return dependency;
+        return gavPieces;
     }
 
-    public int getTreeLevel() {
-        if (isRootLevel()) {
+    private int parseTreeLevel(final String line) {
+        if (StringUtils.startsWithAny(line, TREE_LEVEL_TERMINALS)) {
             return 0;
         }
 
-        String modifiedLine = removeDependencyIndicators();
+        String modifiedLine = DetectableStringUtils.removeEvery(line, TREE_LEVEL_TERMINALS);
 
         if (!modifiedLine.startsWith("|")) {
             modifiedLine = "|" + modifiedLine;
@@ -115,38 +111,6 @@ public class GradleReportLine {
         final int matches = StringUtils.countMatches(modifiedLine, "|");
 
         return matches;
-    }
-
-    public boolean isRootLevel() {
-        return isRootLevelProject() || isRootLevelDependency();
-    }
-
-    public boolean isRootLevelDependency() {
-        return startsWithAny(originalLine, DEPENDENCY_INDICATORS);
-    }
-
-    public boolean isRootLevelProject() {
-        return startsWithAny(originalLine, PROJECT_INDICATORS);
-    }
-
-    private boolean startsWithAny(final String thing, final String[] targets) {
-        for (final String target : targets) {
-            if (thing.startsWith(target)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String removeDependencyIndicators() {
-        int indexToCut = originalLine.length();
-        for (final String target : DEPENDENCY_INDICATORS) {
-            if (originalLine.contains(target)) {
-                indexToCut = originalLine.indexOf(target);
-            }
-        }
-
-        return originalLine.substring(0, indexToCut);
     }
 
 }

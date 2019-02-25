@@ -21,9 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.gradle.parsenew.transformers;
-
-import java.util.LinkedList;
+package com.synopsys.integration.detectable.detectables.gradle.parse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,53 +33,48 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
+import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
 import com.synopsys.integration.detectable.detectables.gradle.model.GradleConfiguration;
 import com.synopsys.integration.detectable.detectables.gradle.model.GradleGav;
 import com.synopsys.integration.detectable.detectables.gradle.model.GradleReport;
 import com.synopsys.integration.detectable.detectables.gradle.model.GradleTreeNode;
 
-//An example transform that uses queue and recursion to build the Gradle graph. Possibly more difficult to grok?
-public class GradleReportRecursiveTransformer {
+//An example transform that uses our "Dependency History" class and is closer to the original Gradle implementation
+public class GradleReportTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
 
-    public GradleReportRecursiveTransformer(final ExternalIdFactory externalIdFactory) {this.externalIdFactory = externalIdFactory;}
+    public GradleReportTransformer(final ExternalIdFactory externalIdFactory) {this.externalIdFactory = externalIdFactory;}
 
-    public CodeLocation trasnform(GradleReport gradleReport) {
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+    public CodeLocation trasnform(final GradleReport gradleReport) {
+        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        for (GradleConfiguration configuration : gradleReport.configurations) {
-            LinkedList<GradleTreeNode> nodeQueue = new LinkedList<>();
-            nodeQueue.addAll(configuration.children);
-
-            while (!nodeQueue.isEmpty()) {
-                GradleTreeNode next = nodeQueue.pop();
-                if (next.getLevel() == 0) {
-                    walkStack(graph, nodeQueue, next, null);
-                } //otherwise ignore non-root nodes
-            }
+        for (final GradleConfiguration configuration : gradleReport.configurations) {
+            addConfigurationToGraph(graph, configuration);
         }
 
-        ExternalId projectId = externalIdFactory.createMavenExternalId(gradleReport.projectGroup, gradleReport.projectName, gradleReport.projectVersionName);
+        final ExternalId projectId = externalIdFactory.createMavenExternalId(gradleReport.projectGroup, gradleReport.projectName, gradleReport.projectVersionName);
         return new CodeLocation.Builder(CodeLocationType.GRADLE, graph, projectId).build();
     }
 
-    public void walkStack(MutableDependencyGraph graph, LinkedList<GradleTreeNode> nodeQueue, GradleTreeNode currentNode, Dependency currentParent) {
-        if (currentNode.getNodeType() == GradleTreeNode.NodeType.GAV) {
-            GradleGav gav = currentNode.getGav().get();
-            ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getArtifact(), gav.getVersion());
-            Dependency currentDependency = new Dependency(gav.getArtifact(), gav.getVersion(), externalId);
+    public void addConfigurationToGraph(final MutableDependencyGraph graph, final GradleConfiguration configuration) {
+        final DependencyHistory history = new DependencyHistory();
+        for (final GradleTreeNode currentNode : configuration.children) {
+            history.clearDependenciesDeeperThan(currentNode.getLevel());
+            if (currentNode.getNodeType() != GradleTreeNode.NodeType.GAV) {
+                continue;
+            }
 
-            if (currentParent == null) {
+            final GradleGav gav = currentNode.getGav().get();
+            final ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getArtifact(), gav.getVersion());
+            final Dependency currentDependency = new Dependency(gav.getArtifact(), gav.getVersion(), externalId);
+
+            if (history.isEmpty()) {
                 graph.addChildToRoot(currentDependency);
             } else {
-                graph.addChildWithParent(currentDependency, currentParent);
+                graph.addChildWithParents(currentDependency, history.getLastDependency());
             }
-
-            while (nodeQueue.peek() != null && nodeQueue.peek().getLevel() == currentNode.getLevel() + 1) {
-                GradleTreeNode next = nodeQueue.pop();
-                walkStack(graph, nodeQueue, next, currentDependency);
-            }
+            history.add(currentDependency);
         }
     }
 }
