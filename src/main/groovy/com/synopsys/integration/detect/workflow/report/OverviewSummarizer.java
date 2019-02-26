@@ -33,9 +33,9 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.detect.workflow.extraction.Extraction;
 import com.synopsys.integration.detect.workflow.report.util.ObjectPrinter;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
+import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class OverviewSummarizer extends DetectorEvaluationSummarizer {
     public List<OverviewSummaryData> summarize(final List<DetectorEvaluation> evaluations) {

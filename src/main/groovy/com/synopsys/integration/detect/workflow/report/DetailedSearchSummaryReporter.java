@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class DetailedSearchSummaryReporter {
     public void print(final ReportWriter writer, final List<DetectorEvaluation> results) {

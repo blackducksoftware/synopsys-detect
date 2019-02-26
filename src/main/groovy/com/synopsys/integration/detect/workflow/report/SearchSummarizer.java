@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detect.detector.Detector;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
+import com.synopsys.integration.detector.base.Detector;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class SearchSummarizer extends DetectorEvaluationSummarizer {
     public List<SearchSummaryData> summarize(final List<DetectorEvaluation> detectorEvaluations) {

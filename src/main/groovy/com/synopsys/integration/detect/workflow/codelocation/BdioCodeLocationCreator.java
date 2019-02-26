@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.detect.detector.DetectorType;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.util.DetectEnumUtil;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;

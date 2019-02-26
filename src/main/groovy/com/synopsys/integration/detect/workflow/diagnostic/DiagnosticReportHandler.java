@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.help.DetectOption;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
@@ -46,7 +45,8 @@ import com.synopsys.integration.detect.workflow.report.SearchSummaryReporter;
 import com.synopsys.integration.detect.workflow.report.writer.FileReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class DiagnosticReportHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -94,7 +94,7 @@ public class DiagnosticReportHandler {
         createReports();
 
         eventSystem.registerListener(Event.DetectorsComplete, event -> completedBomToolEvaluations(event.evaluatedDetectors));
-        eventSystem.registerListener(Event.CodeLocationsCalculated, event -> completedCodeLocations(event.getCodeLocationNames()));
+        //eventSystem.registerListener(Event.CodeLocationsCalculated, event -> completedCodeLocations(event.getCodeLocationNames())); TODO Fix
         eventSystem.registerListener(Event.DetectorsProfiled, event -> detectorsProfiled(event));
     }
 
@@ -128,7 +128,7 @@ public class DiagnosticReportHandler {
         }
     }
 
-    public void completedCodeLocations(final Map<DetectCodeLocation, String> codeLocationNameMap) {
+    public void completedCodeLocations(final Map<CodeLocation, String> codeLocationNameMap) {
         if (completedDetectorEvaluations == null)
             return;
 

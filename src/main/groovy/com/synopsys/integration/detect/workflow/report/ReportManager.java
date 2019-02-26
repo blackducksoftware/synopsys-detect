@@ -33,7 +33,7 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.TraceLogReportWriter;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class ReportManager {
     // all entry points to reporting
@@ -60,8 +60,8 @@ public class ReportManager {
         this.searchSummaryReporter = searchSummaryReporter;
         this.errorSummaryReporter = errorSummaryReporter;
 
-        eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event.getDetectorEvaluations()));
-        eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event.getDetectorEvaluations()));
+//        eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event.getDetectorEvaluations()));//TODO: Fix
+//        eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event.getDetectorEvaluations()));
         eventSystem.registerListener(Event.DetectorsComplete, event -> bomToolsComplete(event.evaluatedDetectors));
         eventSystem.registerListener(Event.CodeLocationsCalculated, event -> codeLocationsCompleted(event.getCodeLocationNames()));
 

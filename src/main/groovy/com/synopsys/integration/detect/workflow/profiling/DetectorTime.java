@@ -23,7 +23,7 @@
  */
 package com.synopsys.integration.detect.workflow.profiling;
 
-import com.synopsys.integration.detect.detector.Detector;
+import com.synopsys.integration.detector.base.Detector;
 
 public class DetectorTime {
     private final long ms;

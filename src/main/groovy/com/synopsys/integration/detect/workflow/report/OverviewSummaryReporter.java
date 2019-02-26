@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class OverviewSummaryReporter {
     public void writeReport(final ReportWriter writer, final List<DetectorEvaluation> results) {

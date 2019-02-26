@@ -30,16 +30,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationType;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 
 public class CodeLocationDependencyCounter {
-    public Map<DetectCodeLocationType, Integer> aggregateCountsByGroup(final Map<DetectCodeLocation, Integer> codeLocations) {
-        final Map<DetectCodeLocationType, Integer> dependencyCounts = new HashMap<>();
-        for (final Entry<DetectCodeLocation, Integer> countEntry : codeLocations.entrySet()) {
-            final DetectCodeLocationType group = countEntry.getKey().getCodeLocationType();
+    public Map<CodeLocationType, Integer> aggregateCountsByGroup(final Map<CodeLocation, Integer> codeLocations) {
+        final Map<CodeLocationType, Integer> dependencyCounts = new HashMap<>();
+        for (final Entry<CodeLocation, Integer> countEntry : codeLocations.entrySet()) {
+            final CodeLocationType group = countEntry.getKey().getCodeLocationType();
             if (!dependencyCounts.containsKey(group)) {
                 dependencyCounts.put(group, 0);
             }
@@ -48,9 +48,9 @@ public class CodeLocationDependencyCounter {
         return dependencyCounts;
     }
 
-    public Map<DetectCodeLocation, Integer> countCodeLocations(final List<DetectCodeLocation> codeLocations) {
-        final Map<DetectCodeLocation, Integer> dependencyCounts = new HashMap<>();
-        for (final DetectCodeLocation codeLocation : codeLocations) {
+    public Map<CodeLocation, Integer> countCodeLocations(final List<CodeLocation> codeLocations) {
+        final Map<CodeLocation, Integer> dependencyCounts = new HashMap<>();
+        for (final CodeLocation codeLocation : codeLocations) {
             if (!dependencyCounts.containsKey(codeLocation)) {
                 dependencyCounts.put(codeLocation, 0);
             }
@@ -59,7 +59,7 @@ public class CodeLocationDependencyCounter {
         return dependencyCounts;
     }
 
-    private int countCodeLocationDependencies(final DetectCodeLocation codeLocation) {
+    private int countCodeLocationDependencies(final CodeLocation codeLocation) {
         return countDependencies(new ArrayList<ExternalId>(), codeLocation.getDependencyGraph().getRootDependencyExternalIds(), codeLocation.getDependencyGraph());
     }
 

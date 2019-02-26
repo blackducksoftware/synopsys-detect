@@ -28,20 +28,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.detector.DetectorFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
-import com.synopsys.integration.detect.workflow.detector.DetectorManager;
-import com.synopsys.integration.detect.workflow.event.Event;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.extraction.ExtractionManager;
-import com.synopsys.integration.detect.workflow.extraction.PreparationManager;
-import com.synopsys.integration.detect.workflow.project.DetectorEvaluationNameVersionDecider;
-import com.synopsys.integration.detect.workflow.project.DetectorNameVersionDecider;
-import com.synopsys.integration.detect.workflow.search.SearchManager;
-import com.synopsys.integration.detect.workflow.search.SearchOptions;
-import com.synopsys.integration.detect.workflow.search.rules.DetectorSearchEvaluator;
-import com.synopsys.integration.detect.workflow.search.rules.DetectorSearchProvider;
+import com.synopsys.integration.detector.search.SearchOptions;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorTool {
@@ -53,31 +42,31 @@ public class DetectorTool {
     }
 
     public DetectorToolResult performDetectors(SearchOptions searchOptions, String projectBomTool) throws DetectUserFriendlyException {
-        logger.info("Preparing to initialize detectors.");
-        DetectorFactory detectorFactory = detectContext.getBean(DetectorFactory.class);
-        EventSystem eventSystem = detectContext.getBean(EventSystem.class);
+//        logger.info("Preparing to initialize detectors.");
+//        DetectorFactory detectorFactory = detectContext.getBean(DetectorFactory.class);
+//        EventSystem eventSystem = detectContext.getBean(EventSystem.class);
+//
+//        logger.info("Building detector system.");
+//        DetectorSearchProvider detectorSearchProvider = new DetectorSearchProvider(detectorFactory);
+//        DetectorSearchEvaluator detectorSearchEvaluator = new DetectorSearchEvaluator();
+//
+//        SearchManager searchManager = new SearchManager(searchOptions, detectorSearchProvider, detectorSearchEvaluator, eventSystem);
+//        PreparationManager preparationManager = new PreparationManager(eventSystem);
+//        ExtractionManager extractionManager = new ExtractionManager();
+//
+//        DetectorManager detectorManager = new DetectorManager(searchManager, extractionManager, preparationManager, eventSystem);
+//        logger.info("Running detectors.");
+//        DetectorToolResult detectorToolResult = detectorManager.runDetectors();
+//        logger.info("Finished running detectors.");
+//        eventSystem.publishEvent(Event.DetectorsComplete, detectorToolResult);
+//
+//        logger.info("Evaluating detectors for project info.");
+//
+//        DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
+//        Optional<NameVersion> bomToolNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorToolResult.evaluatedDetectors, projectBomTool);
+//        detectorToolResult.bomToolProjectNameVersion = bomToolNameVersion;
+//        logger.info("Finished evaluating detectors for project info.");
 
-        logger.info("Building detector system.");
-        DetectorSearchProvider detectorSearchProvider = new DetectorSearchProvider(detectorFactory);
-        DetectorSearchEvaluator detectorSearchEvaluator = new DetectorSearchEvaluator();
-
-        SearchManager searchManager = new SearchManager(searchOptions, detectorSearchProvider, detectorSearchEvaluator, eventSystem);
-        PreparationManager preparationManager = new PreparationManager(eventSystem);
-        ExtractionManager extractionManager = new ExtractionManager();
-
-        DetectorManager detectorManager = new DetectorManager(searchManager, extractionManager, preparationManager, eventSystem);
-        logger.info("Running detectors.");
-        DetectorToolResult detectorToolResult = detectorManager.runDetectors();
-        logger.info("Finished running detectors.");
-        eventSystem.publishEvent(Event.DetectorsComplete, detectorToolResult);
-
-        logger.info("Evaluating detectors for project info.");
-
-        DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
-        Optional<NameVersion> bomToolNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorToolResult.evaluatedDetectors, projectBomTool);
-        detectorToolResult.bomToolProjectNameVersion = bomToolNameVersion;
-        logger.info("Finished evaluating detectors for project info.");
-
-        return detectorToolResult;
+        return null; //TODO: Fix
     }
 }

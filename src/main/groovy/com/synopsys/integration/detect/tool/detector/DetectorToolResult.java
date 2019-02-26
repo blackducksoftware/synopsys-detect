@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.synopsys.integration.detect.detector.DetectorType;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorToolResult {

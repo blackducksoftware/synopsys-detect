@@ -2,5 +2,5 @@ include "detect-configuration"
 include 'detectable'
 
 rootProject.name = 'synopsys-detect'
-
+include 'detector'
 

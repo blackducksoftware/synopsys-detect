@@ -25,21 +25,18 @@ package com.synopsys.integration.detect.workflow.event;
 
 import java.io.File;
 
-import com.synopsys.integration.detect.detector.Detector;
+import com.synopsys.integration.detector.base.Detector;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
-import com.synopsys.integration.detect.workflow.extraction.ExtractionResult;
-import com.synopsys.integration.detect.workflow.extraction.PreparationResult;
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
-import com.synopsys.integration.detect.workflow.search.SearchResult;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detect.workflow.status.Status;
 
 public class Event {
-    public static EventType<SearchResult> SearchCompleted = new EventType(SearchResult.class);
-    public static EventType<PreparationResult> PreparationsCompleted = new EventType(PreparationResult.class);
-    public static EventType<ExtractionResult> ExtractionsCompleted = new EventType(ExtractionResult.class);
+//    public static EventType<SearchResult> SearchCompleted = new EventType(SearchResult.class); //TODO: Listen
+//    public static EventType<PreparationResult> PreparationsCompleted = new EventType(PreparationResult.class);
+//    public static EventType<ExtractionResult> ExtractionsCompleted = new EventType(ExtractionResult.class);
     public static EventType<DetectorToolResult> DetectorsComplete = new EventType(DetectorToolResult.class);
     public static EventType<DetectorTimings> DetectorsProfiled = new EventType(DetectorTimings.class);
     public static EventType<Detector> ApplicableStarted = new EventType(Detector.class);

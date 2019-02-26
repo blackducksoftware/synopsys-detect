@@ -23,7 +23,7 @@
  */
 package com.synopsys.integration.detect.workflow.report;
 
-import com.synopsys.integration.detect.detector.Detector;
+import com.synopsys.integration.detector.base.Detector;
 
 public class DetailedSearchSummaryBomToolData {
     private final Detector detector;

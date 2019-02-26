@@ -30,7 +30,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.time.StopWatch;
 
-import com.synopsys.integration.detect.detector.Detector;
+import com.synopsys.integration.detector.base.Detector;
 
 public class BomToolTimekeeper {
 

@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.detector.go;
+package com.synopsys.integration.detector.detector.go;
 
 import java.io.File;
 import java.util.List;

@@ -27,38 +27,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationType;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 
 public class CodeLocationReporter {
-    public void writeCodeLocationReport(final ReportWriter writer, final ReportWriter writer2, final List<DetectorEvaluation> detectorEvaluations, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+    public void writeCodeLocationReport(final ReportWriter writer, final ReportWriter writer2, final List<DetectorEvaluation> detectorEvaluations, final Map<CodeLocation, String> codeLocationNameMap) {
         final List<DetectorEvaluation> succesfullDetectorEvaluations = detectorEvaluations.stream()
                                                                            .filter(it -> it.wasExtractionSuccessful())
                                                                            .collect(Collectors.toList());
 
-        final List<DetectCodeLocation> codeLocationsToCount = succesfullDetectorEvaluations.stream()
+        final List<CodeLocation> codeLocationsToCount = succesfullDetectorEvaluations.stream()
                                                                   .flatMap(it -> it.getExtraction().codeLocations.stream())
                                                                   .collect(Collectors.toList());
 
         final CodeLocationDependencyCounter counter = new CodeLocationDependencyCounter();
-        final Map<DetectCodeLocation, Integer> dependencyCounts = counter.countCodeLocations(codeLocationsToCount);
-        final Map<DetectCodeLocationType, Integer> dependencyAggregates = counter.aggregateCountsByGroup(dependencyCounts);
+        final Map<CodeLocation, Integer> dependencyCounts = counter.countCodeLocations(codeLocationsToCount);
+        final Map<CodeLocationType, Integer> dependencyAggregates = counter.aggregateCountsByGroup(dependencyCounts);
 
         succesfullDetectorEvaluations.forEach(it -> writeBomToolEvaluationDetails(writer, it, dependencyCounts, codeLocationNameMap));
         writeBomToolCounts(writer2, dependencyAggregates);
 
     }
 
-    private void writeBomToolEvaluationDetails(final ReportWriter writer, final DetectorEvaluation evaluation, final Map<DetectCodeLocation, Integer> dependencyCounts, final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        for (final DetectCodeLocation codeLocation : evaluation.getExtraction().codeLocations) {
+    private void writeBomToolEvaluationDetails(final ReportWriter writer, final DetectorEvaluation evaluation, final Map<CodeLocation, Integer> dependencyCounts, final Map<CodeLocation, String> codeLocationNameMap) {
+        for (final CodeLocation codeLocation : evaluation.getExtraction().codeLocations) {
             writeCodeLocationDetails(writer, codeLocation, dependencyCounts.get(codeLocation), codeLocationNameMap.get(codeLocation), evaluation.getExtractionId().toUniqueString());
         }
     }
 
-    private void writeCodeLocationDetails(final ReportWriter writer, final DetectCodeLocation codeLocation, final Integer dependencyCount, final String codeLocationName, final String extractionId) {
+    private void writeCodeLocationDetails(final ReportWriter writer, final CodeLocation codeLocation, final Integer dependencyCount, final String codeLocationName, final String extractionId) {
 
         writer.writeSeperator();
         writer.writeLine("Name : " + codeLocationName);
@@ -73,8 +74,8 @@ public class CodeLocationReporter {
 
     }
 
-    private void writeBomToolCounts(final ReportWriter writer, final Map<DetectCodeLocationType, Integer> dependencyCounts) {
-        for (final DetectCodeLocationType group : dependencyCounts.keySet()) {
+    private void writeBomToolCounts(final ReportWriter writer, final Map<CodeLocationType, Integer> dependencyCounts) {
+        for (final CodeLocationType group : dependencyCounts.keySet()) {
             final Integer count = dependencyCounts.get(group);
 
             writer.writeLine(group.toString() + " : " + count);

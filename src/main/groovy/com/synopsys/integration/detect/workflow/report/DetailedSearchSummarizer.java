@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class DetailedSearchSummarizer extends DetectorEvaluationSummarizer {
     public List<DetailedSearchSummaryData> summarize(final List<DetectorEvaluation> detectorEvaluations) {

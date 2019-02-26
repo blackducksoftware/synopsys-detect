@@ -23,7 +23,6 @@
  */
 package com.synopsys.integration.detect.lifecycle.run;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -36,15 +35,12 @@ import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.detect.detector.DetectorEnvironment;
-import com.synopsys.integration.detect.detector.DetectorFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.synopsys.integration.detect.tool.ToolRunner;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanToolResult;
 import com.synopsys.integration.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.synopsys.integration.detect.tool.detector.DetectorTool;
@@ -74,7 +70,7 @@ import com.synopsys.integration.detect.workflow.hub.PolicyCheckOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
-import com.synopsys.integration.detect.workflow.search.SearchOptions;
+import com.synopsys.integration.detector.search.SearchOptions;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;

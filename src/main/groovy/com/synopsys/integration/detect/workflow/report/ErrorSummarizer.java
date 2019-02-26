@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detect.workflow.extraction.Extraction;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
+import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class ErrorSummarizer extends DetectorEvaluationSummarizer {
     public List<ErrorSummaryData> summarize(final List<DetectorEvaluation> results) {

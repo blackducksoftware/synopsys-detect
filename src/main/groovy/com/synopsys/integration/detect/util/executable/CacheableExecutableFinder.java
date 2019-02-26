@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.detect.detector.DetectorException;
 import com.synopsys.integration.detect.type.ExecutableType;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 
@@ -66,14 +65,14 @@ public class CacheableExecutableFinder {
         this.detectConfiguration = detectConfiguration;
     }
 
-    public File getExecutable(final CacheableExecutableType executableType) throws DetectorException {
+    public File getExecutable(final CacheableExecutableType executableType) throws Exception {
         if (alreadyFound.containsKey(executableType)) {
             logger.debug("Already found executable, resolving with cached value.");
             return alreadyFound.get(executableType);
         }
         final StandardExecutableInfo info = createInfo(executableType);
         if (info == null) {
-            throw new DetectorException("Unknown executable type: " + executableType.toString());
+            throw new Exception("Unknown executable type: " + executableType.toString());
         }
 
         final String exe = executableFinder.getExecutablePathOrOverride(info.detectExecutableType, true, directoryManager.getSourceDirectory(), info.override);

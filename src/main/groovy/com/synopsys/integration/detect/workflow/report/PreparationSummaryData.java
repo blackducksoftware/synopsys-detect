@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.workflow.report;
 
 import java.util.List;
 
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class PreparationSummaryData {
     private final String directory;

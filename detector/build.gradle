@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+group 'com.blackducksoftware.integration'
+version '5.4.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':detectable')
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

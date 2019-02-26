@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.synopsys.integration.detect.detector.DetectorType;
+import com.synopsys.integration.detector.base.DetectorType;
 
 public class BdioCodeLocationResult {
     private final List<BdioCodeLocation> bdioCodeLocations;

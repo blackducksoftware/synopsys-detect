@@ -35,7 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.detector.ExtractionId;
+//import com.synopsys.integration.detector.evaluation.ExtractionId;
 import com.synopsys.integration.detect.workflow.DetectRun;
 
 public class DirectoryManager {
@@ -84,7 +84,7 @@ public class DirectoryManager {
     private final Map<OutputDirectory, File> outputDirectories = new HashMap<>();
     private final Map<RunDirectory, File> runDirectories = new HashMap<>();
 
-    private final Map<ExtractionId, File> extractionDirectories = new HashMap<>();
+    //private final Map<ExtractionId, File> extractionDirectories = new HashMap<>();
 
     private final List<File> temporaryFiles = new ArrayList<>();
 
@@ -143,16 +143,17 @@ public class DirectoryManager {
         return userHome;
     }
 
-    public File getExtractionOutputDirectory(final ExtractionId extractionId) {
-        if (extractionDirectories.containsKey(extractionId)) {
-            return extractionDirectories.get(extractionId);
-        } else {
-            final String directoryName = extractionId.toUniqueString();
-            final File newDirectory = new File(getRunDirectory(RunDirectory.Extraction), directoryName);
-            newDirectory.mkdir();
-            extractionDirectories.put(extractionId, newDirectory);
-            return newDirectory;
-        }
+    public File getExtractionOutputDirectory(){//(final ExtractionId extractionId) {
+//        if (extractionDirectories.containsKey(extractionId)) {
+//            return extractionDirectories.get(extractionId);
+//        } else {
+//            final String directoryName = extractionId.toUniqueString();
+//            final File newDirectory = new File(getRunDirectory(RunDirectory.Extraction), directoryName);
+//            newDirectory.mkdir();
+//            extractionDirectories.put(extractionId, newDirectory);
+//            return newDirectory;
+//        }
+        return null; //TODO: fix
     }
 
     public File getSourceDirectory() {

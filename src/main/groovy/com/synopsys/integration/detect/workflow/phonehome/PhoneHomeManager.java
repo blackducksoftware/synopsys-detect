@@ -32,11 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.detector.DetectorType;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.search.SearchResult;
-import com.google.gson.Gson;
 import com.synopsys.integration.phonehome.PhoneHomeResponse;
 
 public abstract class PhoneHomeManager {
@@ -52,7 +50,7 @@ public abstract class PhoneHomeManager {
         this.eventSystem = eventSystem;
         this.additionalMetaData = additionalMetaData;
 
-        eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event));
+//        eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event));//TODO Fix
         eventSystem.registerListener(Event.DetectorsProfiled, event -> startPhoneHome(event.getAggregateTimings()));
     }
 
@@ -89,10 +87,10 @@ public abstract class PhoneHomeManager {
         }
         safelyPhoneHome(metadata);
     }
-
-    public void searchCompleted(final SearchResult searchResult) {
-        startPhoneHome(searchResult.getApplicableBomTools());
-    }
+//
+//    public void searchCompleted(final SearchResult searchResult) {//TODO FIx
+//        startPhoneHome(searchResult.getApplicableBomTools());
+//    }
 
     private void safelyPhoneHome(final Map<String, String> metadata) {
         endPhoneHome();

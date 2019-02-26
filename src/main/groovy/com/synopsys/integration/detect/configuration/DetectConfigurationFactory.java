@@ -40,7 +40,7 @@ import com.synopsys.integration.detect.workflow.hub.BlackduckReportOptions;
 import com.synopsys.integration.detect.workflow.hub.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.hub.PolicyCheckOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
-import com.synopsys.integration.detect.workflow.search.SearchOptions;
+import com.synopsys.integration.detector.search.SearchOptions;
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 
 public class DetectConfigurationFactory {
@@ -100,7 +100,7 @@ public class DetectConfigurationFactory {
         final String excluded = detectConfiguration.getProperty(DetectProperty.DETECT_EXCLUDED_DETECTOR_TYPES, PropertyAuthority.None).toUpperCase();
         final String included = detectConfiguration.getProperty(DetectProperty.DETECT_INCLUDED_DETECTOR_TYPES, PropertyAuthority.None).toUpperCase();
         final DetectOverrideableFilter bomToolFilter = new DetectOverrideableFilter(excluded, included);
-        return new SearchOptions(directory, excludedDirectories, excludedDirectoryPatterns, forceNestedSearch, maxDepth, bomToolFilter);
+        return new SearchOptions(directory, excludedDirectories, excludedDirectoryPatterns, forceNestedSearch, maxDepth, null);//TODO Create filter
     }
 
     public BdioOptions createBdioOptions() {

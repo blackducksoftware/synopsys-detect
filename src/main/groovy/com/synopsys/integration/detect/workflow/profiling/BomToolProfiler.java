@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.synopsys.integration.detect.detector.Detector;
-import com.synopsys.integration.detect.detector.DetectorType;
+import com.synopsys.integration.detector.base.Detector;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 

@@ -35,7 +35,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
-import com.synopsys.integration.detect.DetectorBeanConfiguration;
 import com.synopsys.integration.detect.RunBeanConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
@@ -188,7 +187,7 @@ public class DetectBoot {
         detectContext.registerBean(configuration);
 
         detectContext.registerConfiguration(RunBeanConfiguration.class);
-        detectContext.registerConfiguration(DetectorBeanConfiguration.class);
+        //detectContext.registerConfiguration(DetectorBeanConfiguration.class); TODO: Fix
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
         return DetectBootResult.run(detectConfiguration, productRunData);

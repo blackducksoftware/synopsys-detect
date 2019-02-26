@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
-import com.synopsys.integration.detect.workflow.extraction.Extraction;
+import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class ExtractionSummarizer extends DetectorEvaluationSummarizer {
     public List<ExtractionSummaryData> summarize(final List<DetectorEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
