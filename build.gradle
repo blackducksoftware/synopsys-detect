@@ -14,7 +14,7 @@ buildscript {
     }
 }
 
-version = '5.3.0-RC2'
+version = '5.3.0-RC3'
 apply plugin: 'com.blackducksoftware.integration.solution'
 apply plugin: 'org.springframework.boot'
 apply from: 'airgap.gradle'
@@ -88,7 +88,7 @@ test {
 dependencies {
     implementation project(":detect-configuration")
 
-    implementation 'com.synopsys.integration:polaris-common:0.7.2'
+    implementation 'com.synopsys.integration:polaris-common:0.7.3'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
