@@ -67,7 +67,7 @@ public class AirGapManager {
     }
 
     private String guessDetectJarLocation() {
-        final String containsDetectJarRegex = ".*hub-detect-[^\\\\/]+\\.jar.*";
+        final String containsDetectJarRegex = ".*synopsys-detect-[^\\\\/]+\\.jar.*";
         final String javaClasspath = System.getProperty("java.class.path");
         if (javaClasspath != null && javaClasspath.matches(containsDetectJarRegex)) {
             for (final String classpathChunk : javaClasspath.split(System.getProperty("path.separator"))) {
