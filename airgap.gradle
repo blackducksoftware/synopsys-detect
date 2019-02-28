@@ -7,7 +7,7 @@ final String classicNugetAirGapPath = "${nugetPath}/nuget_classic"
 final String dotnetNugetAirGapPath = "${nugetPath}/nuget_dotnet"
 final String configAirGapPath = "${buildArtifactFolder}/config"
 final String dockerAirGapPath = "${airGapFolder}/docker"
-final String artifactoryIntegrationPath = "com/blackducksoftware/integration"
+final String artifactoryIntegrationPath = "com/synopsys/integration"
 
 final String airGapZipName = "${project.name}-${version}-air-gap.zip"
 
