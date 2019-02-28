@@ -49,24 +49,6 @@ subprojects {
     }
 }
 
-build {
-    doLast {
-        def shellScriptTemplateFile = new File("${projectDir}/src/main/resources/detect-sh")
-        def shellScriptContents = shellScriptTemplateFile.getText('UTF-8')
-        def shellScriptFile = new File("${buildDir}/detect.sh")
-        shellScriptFile.delete()
-        shellScriptFile << shellScriptContents
-        shellScriptFile.setExecutable(true)
-
-        def powershellScriptTemplateFile = new File("${projectDir}/src/main/resources/detect-ps")
-        def powershellScriptContents = powershellScriptTemplateFile.getText('UTF-8')
-        def powershellScriptFile = new File("${buildDir}/detect.ps1")
-        powershellScriptFile.delete()
-        powershellScriptFile << powershellScriptContents
-        powershellScriptFile.setExecutable(true)
-    }
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
