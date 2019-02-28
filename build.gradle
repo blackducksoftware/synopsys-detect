@@ -14,7 +14,7 @@ buildscript {
     }
 }
 
-version = '5.3.0-RC3'
+version = '5.3.0-RC4'
 apply plugin: 'com.blackducksoftware.integration.solution'
 apply plugin: 'org.springframework.boot'
 apply from: 'airgap.gradle'
