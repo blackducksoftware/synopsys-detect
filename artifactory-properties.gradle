@@ -68,7 +68,7 @@ def getArtifactoryItems(String url, def defaultCurlArgs) {
 
 def setArtifactoryProperty(def defaultCurlArgs, String propertyKey, String propertyValue) {
     println "Setting ${propertyKey} to ${propertyValue}."
-    def curlArgs = defaultCurlArgs + ['--request', 'PATCH', '--data', "{\"props\":{\"${propertyKey}\":\"${propertyValue}\"}}", "${project.ext.artifactoryUrl}/api/metadata/${project.ext.artifactoryRepo}/com/blackducksoftware/integration/${artifactName}"]
+    def curlArgs = defaultCurlArgs + ['--request', 'PATCH', '--data', "{\"props\":{\"${propertyKey}\":\"${propertyValue}\"}}", "${project.ext.artifactoryUrl}/api/metadata/${project.ext.artifactoryRepo}/com/synopsys/integration/${artifactName}"]
 
     curlResponse(curlArgs)
 }
