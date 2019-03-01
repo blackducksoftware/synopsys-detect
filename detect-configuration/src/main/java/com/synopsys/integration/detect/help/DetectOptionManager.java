@@ -23,6 +23,8 @@
  */
 package com.synopsys.integration.detect.help;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,12 +33,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ReflectionUtils;
 
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
@@ -47,6 +56,7 @@ import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.interactive.InteractiveOption;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.synopsys.integration.detect.thread.NoThreadExecutorService;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.util.proxy.ProxyUtil;
@@ -60,11 +70,25 @@ public class DetectOptionManager {
     private List<DetectOption> detectOptions;
     private List<String> detectGroups;
 
+    private ExecutorService executorService;
+
     public DetectOptionManager(final DetectConfiguration detectConfiguration, final DetectInfo detectInfo) {
         this.detectConfiguration = detectConfiguration;
         this.detectInfo = detectInfo;
 
         init();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        if (executorService != null) {
+            executorService.shutdownNow(); // normally no task are waiting anymore so we don't care to do that
+            try {
+                executorService.awaitTermination(10, SECONDS);
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
     public List<DetectOption> getDetectOptions() {
@@ -108,7 +132,19 @@ public class DetectOptionManager {
     }
 
     public BlackDuckServerConfig createBlackduckServerConfig(IntLogger logger) throws DetectUserFriendlyException {
-        final BlackDuckServerConfigBuilder hubServerConfigBuilder = new BlackDuckServerConfigBuilder().setLogger(logger);
+        executorService = createExecutorService();
+        final BlackDuckServerConfigBuilder hubServerConfigBuilder = new BlackDuckServerConfigBuilder(){
+            @Override
+            public BlackDuckServerConfig buildWithoutValidation() {
+                setExecutorService(executorService);
+                final BlackDuckServerConfig blackDuckServerConfig = super.buildWithoutValidation();
+                // TODO: bug in common, the executor service is ignored
+                final Field esField = ReflectionUtils.findField(BlackDuckServerConfig.class, "executorService");
+                esField.setAccessible(true);
+                ReflectionUtils.setField(esField, blackDuckServerConfig, executorService);
+                return blackDuckServerConfig;
+            }
+        }.setLogger(logger);
 
         final Map<String, String> blackduckBlackDuckProperties = detectConfiguration.getBlackduckProperties();
         final Map<String, String> blackduckBlackDuckPropertiesNoProxy = blackduckBlackDuckProperties.entrySet().stream()
@@ -134,6 +170,36 @@ public class DetectOptionManager {
             return blackDuckServerConfig;
         } catch (IllegalArgumentException e){
             throw new DetectUserFriendlyException("Failed to configure Black Duck server connection: " + e.getMessage(), e, ExitCodeType.FAILURE_CONFIGURATION);
+        }
+    }
+
+    private ExecutorService createExecutorService() {
+        try {
+            final int threads = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BLACKDUCK_PROCESSORS, PropertyAuthority.None);
+            switch (threads) {
+                case 0:
+                    return new NoThreadExecutorService();
+                case -1: // let the jvm be judge!
+                    return Executors.newCachedThreadPool();
+                default:
+                    return Executors.newFixedThreadPool(threads, new ThreadFactory() {
+                        private final AtomicInteger counter = new AtomicInteger();
+                        @Override
+                        public Thread newThread(final Runnable r) {
+                            final Thread thread = new Thread(r, getClass().getName() + "-" + counter.incrementAndGet());
+                            if (thread.getPriority() != Thread.NORM_PRIORITY) {
+                                thread.setPriority(Thread.NORM_PRIORITY);
+                            }
+                            if (thread.isDaemon()) {
+                                thread.setDaemon(false);
+                            }
+                            return thread;
+                        }
+                    });
+            }
+        } catch (final NumberFormatException nfe) {
+            logger.error("{} is invalid, defaulting to no parallelism", DetectProperty.DETECT_BLACKDUCK_PROCESSORS.getPropertyName());
+            return new NoThreadExecutorService();
         }
     }
 

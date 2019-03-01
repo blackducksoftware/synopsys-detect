@@ -651,6 +651,10 @@ public enum DetectProperty {
     @AcceptableValues(value = { "ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
     LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION("logging.level.com.synopsys.integration", "Logging Level", "5.3.0", PropertyType.STRING, PropertyAuthority.None, "INFO"),
 
+    @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
+    @HelpDescription("The number of scans to run in parallel, defaults to 0 (no thread pool), if you specify -1, the number of processors on the machine will be used.")
+    DETECT_BLACKDUCK_PROCESSORS("detect.blackduck.parallel.processors", "BDIO upload Parallel Processors", "5.3.1", PropertyType.INTEGER, PropertyAuthority.None, "0"),
+
     /**********************************************************************************************
      * DEPRECATED START
      *********************************************************************************************/

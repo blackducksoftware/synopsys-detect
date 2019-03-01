@@ -177,6 +177,7 @@ public class DetectBoot {
         detectContext.registerBean(eventSystem);
         detectContext.registerBean(profiler);
 
+        detectContext.registerBean(detectOptionManager); // to clean up executor service if any
         detectContext.registerBean(detectConfiguration);
         detectContext.registerBean(detectInfo);
         detectContext.registerBean(directoryManager);
