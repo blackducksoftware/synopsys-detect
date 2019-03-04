@@ -27,11 +27,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.synopsys.integration.detect.workflow.profiling.DetectorTime;
+//import com.synopsys.integration.detect.workflow.profiling.DetectorTime;
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 
 public class ProfilingReporter {
+    /*
     public void writeReport(final ReportWriter writer, final DetectorTimings detectorTimings) {
         writer.writeSeperator();
         writer.writeLine("Applicable Times");
@@ -77,5 +78,5 @@ public class ProfilingReporter {
             outText += " ";
         }
         return outText;
-    }
+    }*/
 }

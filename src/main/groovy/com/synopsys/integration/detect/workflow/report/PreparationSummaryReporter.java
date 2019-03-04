@@ -26,31 +26,35 @@ package com.synopsys.integration.detect.workflow.report;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReporterUtils;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class PreparationSummaryReporter {
 
-    public void write(final ReportWriter writer, final List<DetectorEvaluation> results) {
-        final PreparationSummarizer summarizer = new PreparationSummarizer();
-        final List<PreparationSummaryData> result = summarizer.summarize(results);
-        writeSummary(writer, result);
+    public void write(final ReportWriter writer, final DetectorEvaluationTree rootEvaluationTree) {
+        writeSummary(writer, rootEvaluationTree.asFlatList());
     }
 
-    private void writeSummary(final ReportWriter writer, final List<PreparationSummaryData> datas) {
+    private void writeSummary(final ReportWriter writer, final List<DetectorEvaluationTree> detectorEvaluationTrees) {
         ReporterUtils.printHeader(writer, "Preparation for extraction");
-        for (final PreparationSummaryData data : datas) {
-            writer.writeLine(data.getDirectory());
-            if (data.getReady().size() > 0) {
-                writer.writeLine("\t READY: " + data.getReady().stream()
-                                                    .map(it -> it.getDetector().getDescriptiveName())
+        for (final DetectorEvaluationTree detectorEvaluationTree : detectorEvaluationTrees) {
+            List<DetectorEvaluation> applicable = DetectorEvaluationUtils.allApplicable(detectorEvaluationTree);
+            List<DetectorEvaluation> ready = applicable.stream().filter(it -> it.isExtractable()).collect(Collectors.toList());
+            List<DetectorEvaluation> failed = applicable.stream().filter(it -> !it.isExtractable()).collect(Collectors.toList());
+
+            writer.writeLine(detectorEvaluationTree.getDirectory().toString());
+            if (ready.size() > 0) {
+                writer.writeLine("\t READY: " + ready.stream()
+                                                    .map(it -> it.getDetectorRule().getDescriptiveName())
                                                     .sorted()
                                                     .collect(Collectors.joining(", ")));
             }
-            if (data.getFailed().size() > 0) {
-                data.getFailed().stream()
-                    .map(it -> "\tFAILED: " + it.getDetector().getDescriptiveName() + " - " + it.getExtractabilityMessage())
+            if (failed.size() > 0) {
+                failed.stream()
+                    .map(it -> "\tFAILED: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
                     .sorted()
                     .forEach(writer::writeLine);
             }

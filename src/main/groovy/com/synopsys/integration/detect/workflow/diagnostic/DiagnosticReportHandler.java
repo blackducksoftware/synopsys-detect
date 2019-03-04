@@ -93,7 +93,7 @@ public class DiagnosticReportHandler {
         this.runId = runId;
         createReports();
 
-        eventSystem.registerListener(Event.DetectorsComplete, event -> completedBomToolEvaluations(event.evaluatedDetectors));
+        //eventSystem.registerListener(Event.DetectorsComplete, event -> completedBomToolEvaluations(event.evaluatedDetectors));/* TODO FiX*.
         //eventSystem.registerListener(Event.CodeLocationsCalculated, event -> completedCodeLocations(event.getCodeLocationNames())); TODO Fix
         eventSystem.registerListener(Event.DetectorsProfiled, event -> detectorsProfiled(event));
     }
@@ -104,6 +104,7 @@ public class DiagnosticReportHandler {
 
     private List<DetectorEvaluation> completedDetectorEvaluations = null;
 
+    /* TODO FiX
     public void completedBomToolEvaluations(final List<DetectorEvaluation> detectorEvaluations) {
         completedDetectorEvaluations = detectorEvaluations;
         try {
@@ -126,7 +127,7 @@ public class DiagnosticReportHandler {
         } catch (final Exception e) {
             logger.error("Failed to write detector report.", e);
         }
-    }
+    } */
 
     public void completedCodeLocations(final Map<CodeLocation, String> codeLocationNameMap) {
         if (completedDetectorEvaluations == null)
@@ -145,8 +146,8 @@ public class DiagnosticReportHandler {
     private void detectorsProfiled(DetectorTimings detectorTimings) {
         try {
             final ReportWriter profileWriter = getReportWriter(ReportTypes.DETECTOR_PROFILE);
-            final ProfilingReporter reporter = new ProfilingReporter();
-            reporter.writeReport(profileWriter, detectorTimings);
+            //final ProfilingReporter reporter = new ProfilingReporter();
+            //reporter.writeReport(profileWriter, detectorTimings);
         } catch (final Exception e) {
             logger.error("Failed to write profiling report.", e);
         }

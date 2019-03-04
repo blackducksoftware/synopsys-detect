@@ -55,7 +55,7 @@ public class CodeLocationReporter {
 
     private void writeBomToolEvaluationDetails(final ReportWriter writer, final DetectorEvaluation evaluation, final Map<CodeLocation, Integer> dependencyCounts, final Map<CodeLocation, String> codeLocationNameMap) {
         for (final CodeLocation codeLocation : evaluation.getExtraction().codeLocations) {
-            writeCodeLocationDetails(writer, codeLocation, dependencyCounts.get(codeLocation), codeLocationNameMap.get(codeLocation), evaluation.getExtractionId().toUniqueString());
+            writeCodeLocationDetails(writer, codeLocation, dependencyCounts.get(codeLocation), codeLocationNameMap.get(codeLocation), evaluation.getExtractionEnvironment().toString());//TODO: Fix this .... //.toUniqueString());
         }
     }
 

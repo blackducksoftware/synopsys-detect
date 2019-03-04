@@ -21,11 +21,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.result;
+package com.synopsys.integration.detector.rule;
 
-public class PropertyInsufficientDetectorResult extends FailedDetectorResult {
-    @Override
-    public String toDescription() {
-        return "The properties are insufficient to run.";
+public class DetectorRuleYieldBuilder {
+
+    private final DetectorRule yieldingDetector;
+    private DetectorRule yieldingToDetector;
+
+    public DetectorRuleYieldBuilder(final DetectorRule yieldingDetector) {
+        this.yieldingDetector = yieldingDetector;
+    }
+
+    public DetectorRuleYieldBuilder to(final DetectorRule Detector) {
+        this.yieldingToDetector = Detector;
+        return this;
+    }
+
+    public DetectorRule getYieldingDetector() {
+        return yieldingDetector;
+    }
+
+    public DetectorRule getYieldingToDetector() {
+        return yieldingToDetector;
     }
 }

@@ -70,7 +70,7 @@ public class DetectorEvaluationNameVersionDecider {
 
     private DetectorProjectInfo transformDetectorEvaluation(DetectorEvaluation detectorEvaluation) {
         final NameVersion nameVersion = new NameVersion(detectorEvaluation.getExtraction().projectName, detectorEvaluation.getExtraction().projectVersion);
-        final DetectorProjectInfo possibility = new DetectorProjectInfo(detectorEvaluation.getDetector().getDetectorType(), detectorEvaluation.getEnvironment().getDepth(), nameVersion);
+        final DetectorProjectInfo possibility = new DetectorProjectInfo(detectorEvaluation.getDetectorRule().getDetectorType(), detectorEvaluation.getSearchEnvironment().getDepth(), nameVersion);
         return possibility;
     }
 }

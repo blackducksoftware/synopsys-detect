@@ -25,13 +25,13 @@ package com.synopsys.integration.detect.workflow.event;
 
 import java.io.File;
 
-import com.synopsys.integration.detector.base.Detector;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class Event {
 //    public static EventType<SearchResult> SearchCompleted = new EventType(SearchResult.class); //TODO: Listen
@@ -39,10 +39,10 @@ public class Event {
 //    public static EventType<ExtractionResult> ExtractionsCompleted = new EventType(ExtractionResult.class);
     public static EventType<DetectorToolResult> DetectorsComplete = new EventType(DetectorToolResult.class);
     public static EventType<DetectorTimings> DetectorsProfiled = new EventType(DetectorTimings.class);
-    public static EventType<Detector> ApplicableStarted = new EventType(Detector.class);
-    public static EventType<Detector> ApplicableEnded = new EventType(Detector.class);
-    public static EventType<Detector> ExtractableStarted = new EventType(Detector.class);
-    public static EventType<Detector> ExtractableEnded = new EventType(Detector.class);
+    public static EventType<DetectorRule> ApplicableStarted = new EventType(DetectorRule.class);
+    public static EventType<DetectorRule> ApplicableEnded = new EventType(DetectorRule.class);
+    public static EventType<DetectorRule> ExtractableStarted = new EventType(DetectorRule.class);
+    public static EventType<DetectorRule> ExtractableEnded = new EventType(DetectorRule.class);
     public static EventType<DetectorEvaluation> ExtractionStarted = new EventType(DetectorEvaluation.class);
     public static EventType<DetectorEvaluation> ExtractionEnded = new EventType(DetectorEvaluation.class);
     public static EventType<BdioCodeLocationResult> CodeLocationsCalculated = new EventType(BdioCodeLocationResult.class);

@@ -21,27 +21,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.report;
+package com.synopsys.integration.detect.workflow.profiling;
 
-import java.util.List;
+import com.synopsys.integration.detectable.Detectable;
 
-import com.synopsys.integration.detector.base.Detector;
+public class DetectableTime {
+    private final long ms;
+    private final Detectable detector;
 
-public class SearchSummaryData {
-    private final String directory;
-    private final List<Detector> applicable;
-
-    public SearchSummaryData(final String directory, final List<Detector> applicable) {
-        this.directory = directory;
-        this.applicable = applicable;
+    public DetectableTime(final Detectable detector, final long ms) {
+        this.ms = ms;
+        this.detector = detector;
     }
 
-    public String getDirectory() {
-        return directory;
+    public long getMs() {
+        return ms;
     }
 
-    public List<Detector> getApplicable() {
-        return applicable;
+    public Detectable getDetectable() {
+        return detector;
     }
-
 }

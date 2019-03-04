@@ -27,27 +27,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.synopsys.integration.detector.base.Detector;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 
-public class BomToolProfiler {
-    public BomToolTimekeeper applicableTimekeeper = new BomToolTimekeeper();
-    public BomToolTimekeeper extractableTimekeeper = new BomToolTimekeeper();
-    public BomToolTimekeeper extractionTimekeeper = new BomToolTimekeeper();
+public class DetectableProfiler { //TODO: Bring back
+    public DetectableTimekeeper applicableTimekeeper = new DetectableTimekeeper();
+    public DetectableTimekeeper extractableTimekeeper = new DetectableTimekeeper();
+    public DetectableTimekeeper extractionTimekeeper = new DetectableTimekeeper();
     private EventSystem eventSystem;
 
-    public BomToolProfiler(EventSystem eventSystem) {
+    public DetectableProfiler(EventSystem eventSystem) {
         this.eventSystem = eventSystem;
+        /*
         eventSystem.registerListener(Event.ApplicableStarted, event -> applicableStarted(event));
         eventSystem.registerListener(Event.ApplicableEnded, event -> applicableEnded(event));
         eventSystem.registerListener(Event.ExtractableStarted, event -> extractableStarted(event));
         eventSystem.registerListener(Event.ExtractableEnded, event -> extractableEnded(event));
         eventSystem.registerListener(Event.ExtractionStarted, event -> extractionStarted(event.getDetector()));
         eventSystem.registerListener(Event.ExtractionEnded, event -> extractionEnded(event.getDetector()));
-        eventSystem.registerListener(Event.DetectorsComplete, event -> bomToolsComplete());
+        eventSystem.registerListener(Event.DetectorsComplete, event -> bomToolsComplete());*/
     }
+    /*
 
     private void applicableStarted(final Detector detector) {
         applicableTimekeeper.started(detector);
@@ -90,13 +91,6 @@ public class BomToolProfiler {
         eventSystem.publishEvent(Event.DetectorsProfiled, timings);
     }
 
-    public Map<DetectorType, Long> getAggregateBomToolGroupTimes() {
-        final Map<DetectorType, Long> aggregate = new HashMap<>();
-        addAggregateByBomToolGroupType(aggregate, getExtractableTimings());
-        addAggregateByBomToolGroupType(aggregate, getExtractionTimings());
-        return aggregate;
-    }
-
     private void addAggregateByBomToolGroupType(final Map<DetectorType, Long> aggregate, final List<DetectorTime> detectorTimes) {
         for (final DetectorTime detectorTime : detectorTimes) {
             final DetectorType type = detectorTime.getDetector().getDetectorType();
@@ -108,6 +102,15 @@ public class BomToolProfiler {
             final Long sum = time + currentTime;
             aggregate.put(type, sum);
         }
+    }*/
+
+    public Map<DetectorType, Long> getAggregateBomToolGroupTimes() {
+        final Map<DetectorType, Long> aggregate = new HashMap<>();
+        return aggregate;
+//        addAggregateByBomToolGroupType(aggregate, getExtractableTimings());
+  //      addAggregateByBomToolGroupType(aggregate, getExtractionTimings());
     }
+
+
 
 }

@@ -21,44 +21,46 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.base;
+package com.synopsys.integration.detector.evaluation;
 
-import java.io.File;
 import java.util.Set;
 
-public class DetectorEnvironment {
+import com.synopsys.integration.detector.finder.DetectorFilter;
+import com.synopsys.integration.detector.rule.DetectorRule;
 
-    private final File directory;
-    private final Set<Detector> appliedToParent;
+public class SearchEnvironment {
     private final int depth;
-    //private final DetectFilter detectorFilter;
+    private final DetectorFilter detectorFilter;
     private final boolean forceNestedSearch;
+    private final Set<DetectorRule> appliedToParent;
+    private final Set<DetectorRule> appliedSoFar;
 
-    public DetectorEnvironment(final File directory, final Set<Detector> appliedToParent, final int depth, final boolean forceNestedSearch) {
-        this.directory = directory;
-        this.appliedToParent = appliedToParent;
+    public SearchEnvironment(final int depth, final DetectorFilter detectorFilter, final boolean forceNestedSearch, final Set<DetectorRule> appliedToParent,
+        final Set<DetectorRule> appliedSoFar) {
         this.depth = depth;
-//        this.detectorFilter = detectorFilter;
+        this.detectorFilter = detectorFilter;
         this.forceNestedSearch = forceNestedSearch;
-    }
-
-    public File getDirectory() {
-        return directory;
-    }
-
-    public Set<Detector> getAppliedToParent() {
-        return appliedToParent;
+        this.appliedToParent = appliedToParent;
+        this.appliedSoFar = appliedSoFar;
     }
 
     public int getDepth() {
         return depth;
     }
 
-//    public DetectFilter getDetectorFilter() {
-//        return detectorFilter;
-//    }
+    public DetectorFilter getDetectorFilter() {
+        return detectorFilter;
+    }
 
-    public boolean getForceNestedSearch() {
+    public boolean isForceNestedSearch() {
         return forceNestedSearch;
+    }
+
+    public Set<DetectorRule> getAppliedToParent() {
+        return appliedToParent;
+    }
+
+    public Set<DetectorRule> getAppliedSoFar() {
+        return appliedSoFar;
     }
 }

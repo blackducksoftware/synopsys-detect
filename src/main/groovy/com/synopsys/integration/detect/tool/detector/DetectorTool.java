@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
-import com.synopsys.integration.detector.search.SearchOptions;
+import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorTool {
@@ -41,14 +41,24 @@ public class DetectorTool {
         this.detectContext = detectContext;
     }
 
-    public DetectorToolResult performDetectors(SearchOptions searchOptions, String projectBomTool) throws DetectUserFriendlyException {
-//        logger.info("Preparing to initialize detectors.");
+    public DetectorToolResult performDetectors(DetectorFinderOptions searchOptions, String projectBomTool) throws DetectUserFriendlyException {
+        logger.info("Preparing to initialize detectors.");
+
+        logger.info("Finding detectors.");
+
+        logger.info("Determining searchable and applicable.");
+
+        logger.info("Determining extractable.");
+
+        logger.info("Performing extraction.");
+
+        //        logger.info("Preparing to initialize detectors.");
 //        DetectorFactory detectorFactory = detectContext.getBean(DetectorFactory.class);
 //        EventSystem eventSystem = detectContext.getBean(EventSystem.class);
 //
 //        logger.info("Building detector system.");
 //        DetectorSearchProvider detectorSearchProvider = new DetectorSearchProvider(detectorFactory);
-//        DetectorSearchEvaluator detectorSearchEvaluator = new DetectorSearchEvaluator();
+//        SearchableEvaluator detectorSearchEvaluator = new SearchableEvaluator();
 //
 //        SearchManager searchManager = new SearchManager(searchOptions, detectorSearchProvider, detectorSearchEvaluator, eventSystem);
 //        PreparationManager preparationManager = new PreparationManager(eventSystem);

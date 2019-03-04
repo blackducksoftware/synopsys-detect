@@ -13,8 +13,6 @@ import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectPropertyMap;
 import com.synopsys.integration.detect.configuration.DetectPropertySource;
-import com.synopsys.integration.detector.base.Detector;
-import com.synopsys.integration.detector.base.DetectorEnvironment;
 import com.synopsys.integration.detect.property.SpringPropertySource;
 import com.synopsys.integration.detect.util.executable.CacheableExecutableFinder;
 import com.synopsys.integration.detect.util.executable.ExecutableFinder;
@@ -73,11 +71,11 @@ public class DetectorFactoryTest {
 //
 //        DetectorEnvironment mockEnv = Mockito.mock(DetectorEnvironment.class);
 //
-//        DetectorSearchRuleSet ruleSet1 = provider.createBomToolSearchRuleSet(mockEnv);
-//        DetectorSearchRuleSet ruleSet2 = provider.createBomToolSearchRuleSet(mockEnv);
+//        DetectorRuleSet ruleSet1 = provider.createBomToolSearchRuleSet(mockEnv);
+//        DetectorRuleSet ruleSet2 = provider.createBomToolSearchRuleSet(mockEnv);
 //
-//        Detector detector1 = ruleSet1.getOrderedBomToolRules().get(0).getDetector();
-//        Detector detector2 = ruleSet2.getOrderedBomToolRules().get(0).getDetector();
+//        Detector detector1 = ruleSet1.getOrderedDetectorRules().get(0).getDetector();
+//        Detector detector2 = ruleSet2.getOrderedDetectorRules().get(0).getDetector();
 //
 //        //Sanity check they are the same class
 //        Assert.assertTrue(detector1.getClass().isInstance(detector2));

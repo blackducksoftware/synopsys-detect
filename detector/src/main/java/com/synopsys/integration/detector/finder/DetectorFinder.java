@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,78 +36,50 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detector.base.Detector;
-import com.synopsys.integration.detector.base.DetectorEnvironment;
-import com.synopsys.integration.detector.base.DetectorType;
+import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.exception.DetectorException;
-import com.synopsys.integration.detector.rules.DetectorSearchRuleSet;
-import com.synopsys.integration.detector.search.DetectorSearchFilter;
+import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
 public class DetectorFinder {
-    private final Logger logger = LoggerFactory.getLogger(DetectorFinder.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public List<DetectorEvaluation> findApplicableBomTools(final File initialDirectory, final DetectorFinderOptions options) throws DetectorException, DetectorFinderDirectoryListException {
-        final List<File> subDirectories = new ArrayList<>();
-        subDirectories.add(initialDirectory);
-        return findApplicableBomTools(subDirectories, new HashSet<Detector>(), 0, options);
+    public DetectorEvaluationTree findDetectors(final File initialDirectory, DetectorRuleSet detectorRuleSet, final DetectorFinderOptions options) throws DetectorFinderDirectoryListException {
+        return findDetectors(initialDirectory, detectorRuleSet,0, options);
     }
 
-    private List<DetectorEvaluation> findApplicableBomTools(final List<File> directoriesToSearch, final Set<Detector> appliedBefore, final int depth, final DetectorFinderOptions options)
-        throws DetectorException, DetectorFinderDirectoryListException {
-
-        final List<DetectorEvaluation> results = new ArrayList<>();
+    private DetectorEvaluationTree findDetectors(final File directory, DetectorRuleSet detectorRuleSet, final int depth, final DetectorFinderOptions options)
+        throws DetectorFinderDirectoryListException {
 
         if (depth > options.getMaximumDepth()) {
-            return results;
+            return new DetectorEvaluationTree(directory, depth, detectorRuleSet);
         }
 
-        if (null == directoriesToSearch || directoriesToSearch.size() == 0) {
-            return results;
+        if (null == directory || !directory.isFile()) {
+            return new DetectorEvaluationTree(directory, depth, detectorRuleSet);
         }
 
-        for (final File directory : directoriesToSearch) {
-            if (depth > 0 && options.getDetectorSearchFilter().shouldExclude(directory)) { // NEVER skip at depth 0.
-                logger.info("Skipping excluded directory: " + directory.getPath());
-                continue;
-            }
-
-            logger.info("Searching directory: " + directory.getPath());
-
-            final Set<DetectorType> applicableTypes = new HashSet<>();
-            final Set<Detector> applied = new HashSet<>();
-            final List<DetectorEvaluation> evaluations = processDirectory(directory, appliedBefore, depth, options);
-            results.addAll(evaluations);
-
-            final List<Detector> appliedBomTools = evaluations.stream()
-                                                       .filter(it -> it.isApplicable())
-                                                       .map(it -> it.getDetector())
-                                                       .collect(Collectors.toList());
-
-            applied.addAll(appliedBomTools);
-
-            // TODO: Used to have a remaining detectors and would bail early here, not sure how to go about that?
-            final Set<Detector> everApplied = new HashSet<>();
-            everApplied.addAll(applied);
-            everApplied.addAll(appliedBefore);
-            final List<File> subdirectories = getSubDirectories(directory, options.getDetectorSearchFilter());
-            final List<DetectorEvaluation> recursiveResults = findApplicableBomTools(subdirectories, everApplied, depth + 1, options);
-            results.addAll(recursiveResults);
-
-            logger.debug(directory + ": " + applicableTypes.stream().map(it -> it.toString()).collect(Collectors.joining(", ")));
+        if (depth > 0 && options.getFileFilter().test(directory)) { // NEVER skip at depth 0.
+            logger.info("Skipping excluded directory: " + directory.getPath());
+            return new DetectorEvaluationTree(directory, depth, detectorRuleSet);
         }
 
-        return results;
+        logger.info("Searching directory: " + directory.getPath());
+        List<DetectorEvaluation> evaluations = detectorRuleSet.getOrderedDetectorRules().stream()
+                                                   .map(rule -> new DetectorEvaluation(rule))
+                                                   .collect(Collectors.toList());
+
+        Set<DetectorEvaluationTree> children = new HashSet<>();
+
+        List<File> subDirectories = findSubDirectories(directory);
+        for (final File subDirectory : subDirectories) {
+            DetectorEvaluationTree childEvaluationSet = findDetectors(subDirectory, detectorRuleSet, depth + 1, options);
+            children.add(childEvaluationSet);
+        }
+
+        return new DetectorEvaluationTree(directory, depth, evaluations, children);
     }
 
-    private List<DetectorEvaluation> processDirectory(final File directory, final Set<Detector> appliedBefore, final int depth, final DetectorFinderOptions options) {
-        final DetectorEnvironment environment = new DetectorEnvironment(directory, appliedBefore, depth, options.getForceNestedSearch());
-        final DetectorSearchRuleSet bomToolSet = options.getDetectorSearchProvider().createBomToolSearchRuleSet(environment);
-        final List<DetectorEvaluation> evaluations = options.getDetectorSearchEvaluator().evaluate(bomToolSet, options.getDetectorEventListener(), options.getDetectorFilter());
-        return evaluations;
-    }
-
-    private List<File> getSubDirectories(final File directory, DetectorSearchFilter filter) throws DetectorFinderDirectoryListException {
+    private List<File> findSubDirectories(final File directory) throws DetectorFinderDirectoryListException {
         Stream<Path> stream = null;
         try {
             stream = Files.list(directory.toPath());

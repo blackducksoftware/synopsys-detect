@@ -32,11 +32,6 @@ import java.util.stream.Collectors;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public abstract class DetectorEvaluationSummarizer {
-    protected Map<File, List<DetectorEvaluation>> groupByDirectory(final List<DetectorEvaluation> results) {
-        return results.stream()
-                   .collect(Collectors.groupingBy(item -> item.getEnvironment().getDirectory()));
-    }
-
     protected int filesystemCompare(final String left, final String right) {
         final String[] pieces1 = left.split(Pattern.quote(File.separator));
         final String[] pieces2 = right.split(Pattern.quote(File.separator));

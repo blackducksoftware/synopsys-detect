@@ -40,7 +40,7 @@ import com.synopsys.integration.detect.workflow.hub.BlackduckReportOptions;
 import com.synopsys.integration.detect.workflow.hub.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.hub.PolicyCheckOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
-import com.synopsys.integration.detector.search.SearchOptions;
+import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 
 public class DetectConfigurationFactory {
@@ -92,7 +92,7 @@ public class DetectConfigurationFactory {
         return new AirGapOptions(dockerOverride, gradleOverride, nugetOverride);
     }
 
-    public SearchOptions createSearchOptions(final File directory) {
+    public DetectorFinderOptions createSearchOptions(final File directory) {
         final List<String> excludedDirectories = Arrays.asList(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION, PropertyAuthority.None));
         final List<String> excludedDirectoryPatterns = Arrays.asList(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS, PropertyAuthority.None));
         final boolean forceNestedSearch = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DETECTOR_SEARCH_CONTINUE, PropertyAuthority.None);
@@ -100,7 +100,7 @@ public class DetectConfigurationFactory {
         final String excluded = detectConfiguration.getProperty(DetectProperty.DETECT_EXCLUDED_DETECTOR_TYPES, PropertyAuthority.None).toUpperCase();
         final String included = detectConfiguration.getProperty(DetectProperty.DETECT_INCLUDED_DETECTOR_TYPES, PropertyAuthority.None).toUpperCase();
         final DetectOverrideableFilter bomToolFilter = new DetectOverrideableFilter(excluded, included);
-        return new SearchOptions(directory, excludedDirectories, excludedDirectoryPatterns, forceNestedSearch, maxDepth, null);//TODO Create filter
+        return new DetectorFinderOptions(file -> true, maxDepth);//TODO Create filter
     }
 
     public BdioOptions createBdioOptions() {

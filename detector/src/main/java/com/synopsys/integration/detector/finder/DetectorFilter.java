@@ -23,8 +23,8 @@
  */
 package com.synopsys.integration.detector.finder;
 
-import com.synopsys.integration.detector.base.Detector;
+import com.synopsys.integration.detector.base.DetectorType;
 
 public interface DetectorFilter {
-    boolean shouldInclude(Detector detector);
+    boolean shouldInclude(DetectorType detectorType);
 }

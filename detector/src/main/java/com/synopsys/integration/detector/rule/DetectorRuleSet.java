@@ -21,37 +21,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.search;
+package com.synopsys.integration.detector.rule;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detector.evaluation.SearchResult;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
+public class DetectorRuleSet {
+    private final List<DetectorRule> orderedRules;
+    private final Map<DetectorRule, Set<DetectorRule>> yieldsToRules;
 
-public class SearchResultSuccess extends SearchResult {
-    List<DetectorEvaluation> detectorEvaluations;
-    Set<DetectorType> applicableBomTools;
-
-    public SearchResultSuccess(final List<DetectorEvaluation> detectorEvaluations, Set<DetectorType> applicableBomTools) {
-        this.detectorEvaluations = detectorEvaluations;
-        this.applicableBomTools = applicableBomTools;
+    public DetectorRuleSet(final List<DetectorRule> orderedRules, Map<DetectorRule, Set<DetectorRule>> yieldsToRules) {
+        this.orderedRules = orderedRules;
+        this.yieldsToRules = yieldsToRules;
     }
 
-    @Override
-    public List<DetectorEvaluation> getDetectorEvaluations() {
-        return detectorEvaluations;
+    public List<DetectorRule> getOrderedDetectorRules() {
+        return orderedRules;
     }
 
-    @Override
-    public Set<DetectorType> getApplicableBomTools() {
-        return applicableBomTools;
+    public Map<DetectorRule, Set<DetectorRule>> getYieldsToRules() {
+        return yieldsToRules;
     }
 
-    @Override
-    public boolean getSuccess() {
-        return true;
+    public Set<DetectorRule> getYieldsTo(DetectorRule rule) {
+        if (yieldsToRules.containsKey(rule)) return yieldsToRules.get(rule);
+        return new HashSet<>();
     }
-
 }

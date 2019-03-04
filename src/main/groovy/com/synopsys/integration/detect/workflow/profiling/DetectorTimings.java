@@ -30,12 +30,12 @@ import com.synopsys.integration.detector.base.DetectorType;
 
 public class DetectorTimings {
     private final Map<DetectorType, Long> aggregateTimings;
-    private final List<DetectorTime> applicableTimings;
-    private final List<DetectorTime> extractableTimings;
-    private final List<DetectorTime> extractionTimings;
+    private final List<DetectableTime> applicableTimings;
+    private final List<DetectableTime> extractableTimings;
+    private final List<DetectableTime> extractionTimings;
 
-    public DetectorTimings(final Map<DetectorType, Long> aggregateTimings, final List<DetectorTime> applicableTimings,
-        final List<DetectorTime> extractableTimings, final List<DetectorTime> extractionTimings) {
+    public DetectorTimings(final Map<DetectorType, Long> aggregateTimings, final List<DetectableTime> applicableTimings,
+        final List<DetectableTime> extractableTimings, final List<DetectableTime> extractionTimings) {
         this.aggregateTimings = aggregateTimings;
         this.applicableTimings = applicableTimings;
         this.extractableTimings = extractableTimings;
@@ -46,15 +46,15 @@ public class DetectorTimings {
         return aggregateTimings;
     }
 
-    public List<DetectorTime> getApplicableTimings() {
+    public List<DetectableTime> getApplicableTimings() {
         return applicableTimings;
     }
 
-    public List<DetectorTime> getExtractableTimings() {
+    public List<DetectableTime> getExtractableTimings() {
         return extractableTimings;
     }
 
-    public List<DetectorTime> getExtractionTimings() {
+    public List<DetectableTime> getExtractionTimings() {
         return extractionTimings;
     }
 

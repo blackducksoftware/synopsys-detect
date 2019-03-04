@@ -35,7 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectProperty;
-//import com.synopsys.integration.detector.evaluation.ExtractionId;
+//import com.synopsys.integration.detect.tool.detector.ExtractionId;
 import com.synopsys.integration.detect.workflow.DetectRun;
 
 public class DirectoryManager {

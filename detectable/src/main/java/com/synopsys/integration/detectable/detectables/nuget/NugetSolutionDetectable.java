@@ -50,16 +50,14 @@ public class NugetSolutionDetectable extends Detectable {
 
     private NugetInspectorOptions nugetInspectorOptions;
     private NugetInspector inspector;
-    private DirectoryManager directoryManager;
 
     public NugetSolutionDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NugetInspectorResolver nugetInspectorManager, final NugetInspectorExtractor nugetInspectorExtractor,
-        final NugetInspectorOptions nugetInspectorOptions, final DirectoryManager directoryManager) {
+        final NugetInspectorOptions nugetInspectorOptions) {
         super(environment, "Solution", "Nuget");
         this.fileFinder = fileFinder;
         this.nugetInspectorExtractor = nugetInspectorExtractor;
         this.nugetInspectorResolver = nugetInspectorManager;
         this.nugetInspectorOptions = nugetInspectorOptions;
-        this.directoryManager = directoryManager;
     }
 
     @Override

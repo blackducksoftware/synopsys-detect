@@ -32,7 +32,7 @@ import org.apache.commons.io.output.TeeOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detector.evaluation.ExtractionId;
+import com.synopsys.integration.detect.tool.detector.ExtractionId;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 
@@ -72,8 +72,9 @@ public class DiagnosticLogger {
         logger.info("Attempting to redirect sysout.");
         captureStdOut();
 
-        eventSystem.registerListener(Event.ExtractionStarted, it -> startLoggingExtraction(it.getExtractionId()));
-        eventSystem.registerListener(Event.ExtractionEnded, it -> stopLoggingExtraction(it.getExtractionId()));
+        //TODO: Bring back
+        //eventSystem.registerListener(Event.ExtractionStarted, it -> startLoggingExtraction(it.getExtractionId()));
+        //eventSystem.registerListener(Event.ExtractionEnded, it -> stopLoggingExtraction(it.getExtractionId()));
     }
 
     public void finish() {

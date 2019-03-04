@@ -25,29 +25,36 @@ package com.synopsys.integration.detector.base;
 
 import java.util.Optional;
 
+import com.synopsys.integration.detectable.Detectable;
+import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
-import com.synopsys.integration.detector.evaluation.ExtractionId;
+import com.synopsys.integration.detector.evaluation.SearchEnvironment;
 import com.synopsys.integration.detector.result.DetectorResult;
+import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class DetectorEvaluation {
     public static final String NO_MESSAGE = "Unknown";
 
-    private final Detector detector;
-    private final DetectorEnvironment environment;
+    private final DetectorRule detectorRule;
+    private Detectable detectable;
+    private DetectableEnvironment detectableEnvironment;
+    private SearchEnvironment searchEnvironment;
 
     private DetectorResult searchable;
     private DetectorResult applicable;
     private DetectorResult extractable;
 
-    private ExtractionId extractionId;
     private ExtractionEnvironment extractionEnvironment;
     private Extraction extraction;
 
-    public DetectorEvaluation(final Detector detector, final DetectorEnvironment environment, final ExtractionId extractionId) {
-        this.detector = detector;
-        this.environment = environment;
-        this.extractionId = extractionId;
+    // The detector evaluation is built over time. The only thing you need at the start is the rule this evaluation represents.
+    public DetectorEvaluation(DetectorRule detectorRule) {
+        this.detectorRule = detectorRule;
+    }
+
+    public DetectorRule getDetectorRule() {
+        return this.detectorRule;
     }
 
     public void setExtraction(final Extraction extraction) {
@@ -70,12 +77,12 @@ public class DetectorEvaluation {
         return isExtractable() && this.extraction != null && this.extraction.result == Extraction.ExtractionResultType.SUCCESS;
     }
 
-    public Detector getDetector() {
-        return detector;
+    public boolean wasExtractionFailure() {
+        return isExtractable() && this.extraction != null && this.extraction.result == Extraction.ExtractionResultType.FAILURE;
     }
 
-    public DetectorEnvironment getEnvironment() {
-        return environment;
+    public boolean wasExtractionException() {
+        return isExtractable() && this.extraction != null && this.extraction.result == Extraction.ExtractionResultType.EXCEPTION;
     }
 
     public void setSearchable(final DetectorResult searchable) {
@@ -87,7 +94,7 @@ public class DetectorEvaluation {
     }
 
     public String getSearchabilityMessage() {
-        return getBomToolResultDescription(searchable).orElse(NO_MESSAGE);
+        return getDetectorResultDescription(searchable).orElse(NO_MESSAGE);
     }
 
     public void setApplicable(final DetectorResult applicable) {
@@ -99,7 +106,7 @@ public class DetectorEvaluation {
     }
 
     public String getApplicabilityMessage() {
-        return getBomToolResultDescription(applicable).orElse(NO_MESSAGE);
+        return getDetectorResultDescription(applicable).orElse(NO_MESSAGE);
     }
 
     public void setExtractable(final DetectorResult extractable) {
@@ -111,10 +118,10 @@ public class DetectorEvaluation {
     }
 
     public String getExtractabilityMessage() {
-        return getBomToolResultDescription(extractable).orElse(NO_MESSAGE);
+        return getDetectorResultDescription(extractable).orElse(NO_MESSAGE);
     }
 
-    private Optional<String> getBomToolResultDescription(final DetectorResult detectorResult) {
+    private Optional<String> getDetectorResultDescription(final DetectorResult detectorResult) {
         String description = null;
 
         if (detectorResult != null) {
@@ -124,7 +131,27 @@ public class DetectorEvaluation {
         return Optional.ofNullable(description);
     }
 
-    public ExtractionId getExtractionId() {
-        return extractionId;
+    public void setSearchEnvironment(final SearchEnvironment searchEnvironment) {
+        this.searchEnvironment = searchEnvironment;
+    }
+
+    public SearchEnvironment getSearchEnvironment() {
+        return this.searchEnvironment;
+    }
+
+    public DetectableEnvironment getDetectableEnvironment() {
+        return detectableEnvironment;
+    }
+
+    public void setDetectableEnvironment(final DetectableEnvironment detectableEnvironment) {
+        this.detectableEnvironment = detectableEnvironment;
+    }
+
+    public Detectable getDetectable() {
+        return detectable;
+    }
+
+    public void setDetectable(final Detectable detectable) {
+        this.detectable = detectable;
     }
 }

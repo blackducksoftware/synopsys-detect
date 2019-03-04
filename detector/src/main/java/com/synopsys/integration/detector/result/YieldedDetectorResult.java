@@ -27,23 +27,24 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detector.base.Detector;
+import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class YieldedDetectorResult extends FailedDetectorResult {
-    private final Set<Detector> yieldedTo;
+    private final Set<DetectorRule> yieldedTo;
 
-    public YieldedDetectorResult(final Detector yielded) {
+    public YieldedDetectorResult(final DetectorRule yielded) {
         yieldedTo = new HashSet<>();
         yieldedTo.add(yielded);
     }
 
-    public YieldedDetectorResult(final Set<Detector> yieldedTo) {
+    public YieldedDetectorResult(final Set<DetectorRule> yieldedTo) {
         this.yieldedTo = yieldedTo;
     }
 
     @Override
     public String toDescription() {
-        final String yielded = yieldedTo.stream().map(it -> it.getDescriptiveName()).collect(Collectors.joining(", "));
-        return "Yielded to detectors: " + yielded;
+        //TODO: Put in using some property on the rule.
+        //final String yielded = yieldedTo.stream().map(it -> it.getDescriptiveName()).collect(Collectors.joining(", "));
+        return "Yielded to detectors: ";// + yielded;
     }
 }

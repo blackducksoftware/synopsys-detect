@@ -30,36 +30,36 @@ import java.util.Map;
 
 import org.apache.commons.lang3.time.StopWatch;
 
-import com.synopsys.integration.detector.base.Detector;
+import com.synopsys.integration.detectable.Detectable;
 
-public class BomToolTimekeeper {
+public class DetectableTimekeeper {
 
-    private final Map<Detector, StopWatch> bomToolMap = new HashMap<>();
+    private final Map<Detectable, StopWatch> stopWatches = new HashMap<>();
 
-    private StopWatch getStopWatch(final Detector detector) {
-        if (bomToolMap.containsKey(detector)) {
-            return bomToolMap.get(detector);
+    private StopWatch getStopWatch(final Detectable detector) {
+        if (stopWatches.containsKey(detector)) {
+            return stopWatches.get(detector);
         } else {
             final StopWatch sw = new StopWatch();
-            bomToolMap.put(detector, sw);
+            stopWatches.put(detector, sw);
             return sw;
         }
     }
 
-    public void started(final Detector detector) {
+    public void started(final Detectable detector) {
         getStopWatch(detector).start();
     }
 
-    public void ended(final Detector detector) {
+    public void ended(final Detectable detector) {
         getStopWatch(detector).stop();
     }
 
-    public List<DetectorTime> getTimings() {
-        final List<DetectorTime> bomToolTimings = new ArrayList<>();
-        for (final Detector detector : bomToolMap.keySet()) {
-            final StopWatch sw = bomToolMap.get(detector);
+    public List<DetectableTime> getTimings() {
+        final List<DetectableTime> bomToolTimings = new ArrayList<>();
+        for (final Detectable detector : stopWatches.keySet()) {
+            final StopWatch sw = stopWatches.get(detector);
             final long ms = sw.getTime();
-            final DetectorTime detectorTime = new DetectorTime(detector, ms);
+            final DetectableTime detectorTime = new DetectableTime(detector, ms);
             bomToolTimings.add(detectorTime);
         }
         return bomToolTimings;

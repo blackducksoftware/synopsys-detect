@@ -21,17 +21,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.result;
+package com.synopsys.integration.detector.base;
 
-public class FileNotFoundDetectorResult extends FailedDetectorResult {
-    private final String pattern;
+import com.synopsys.integration.detectable.Detectable;
+import com.synopsys.integration.detectable.DetectableEnvironment;
 
-    public FileNotFoundDetectorResult(final String pattern) {
-        this.pattern = pattern;
-    }
-
-    @Override
-    public String toDescription() {
-        return "No file was found with pattern: " + pattern;
-    }
+@FunctionalInterface
+public interface DetectableCreatable {
+    Detectable createDetectable(DetectableEnvironment environment);
 }

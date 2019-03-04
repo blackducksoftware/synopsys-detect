@@ -34,6 +34,7 @@ import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWrite
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.TraceLogReportWriter;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class ReportManager {
     // all entry points to reporting
@@ -68,14 +69,14 @@ public class ReportManager {
     }
 
     // Reports
-    public void searchCompleted(final List<DetectorEvaluation> detectorEvaluations) {
-        searchSummaryReporter.print(logWriter, detectorEvaluations);
+    public void searchCompleted(final DetectorEvaluationTree rootEvaluation) {
+        searchSummaryReporter.print(logWriter, rootEvaluation);
         final DetailedSearchSummaryReporter detailedSearchSummaryReporter = new DetailedSearchSummaryReporter();
-        detailedSearchSummaryReporter.print(traceLogWriter, detectorEvaluations);
+        detailedSearchSummaryReporter.print(traceLogWriter, rootEvaluation);
     }
 
     public void preparationsCompleted(final List<DetectorEvaluation> detectorEvaluations) {
-        preparationSummaryReporter.write(logWriter, detectorEvaluations);
+        //preparationSummaryReporter.write(logWriter, detectorEvaluations);
     }
 
     private List<DetectorEvaluation> completedDetectorEvaluations = new ArrayList<>();
@@ -86,7 +87,7 @@ public class ReportManager {
 
     public void codeLocationsCompleted(final Map<DetectCodeLocation, String> codeLocationNameMap) {
         if (completedDetectorEvaluations.size() > 0) {
-            extractionSummaryReporter.writeSummary(logWriter, completedDetectorEvaluations, codeLocationNameMap);
+            //extractionSummaryReporter.write(logWriter, completedDetectorEvaluations, codeLocationNameMap);//TODO: FIx
         } else {
             logWriter.writeLine("Will not summarize extractions, no evaluations occurred.");
         }
@@ -94,6 +95,6 @@ public class ReportManager {
     }
 
     public void printDetectorIssues() {
-        errorSummaryReporter.writeSummary(logWriter, completedDetectorEvaluations);
+        //errorSummaryReporter.writeSummary(logWriter, completedDetectorEvaluations);//TODO fix
     }
 }

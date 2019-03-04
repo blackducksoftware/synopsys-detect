@@ -23,57 +23,24 @@
  */
 package com.synopsys.integration.detector.finder;
 
-import com.synopsys.integration.detector.DetectorEventListener;
-import com.synopsys.integration.detector.rules.DetectorSearchEvaluator;
-import com.synopsys.integration.detector.rules.DetectorSearchProvider;
-import com.synopsys.integration.detector.search.DetectorSearchFilter;
+import java.io.File;
+import java.util.function.Predicate;
 
 public class DetectorFinderOptions {
 
-    private final DetectorSearchFilter detectorSearchFilter;
-    private final Boolean forceNestedSearch;
+    private final Predicate<File> fileFilter;
     private final int maximumDepth;
-    private final DetectorFilter detectorFilter;
-    private final DetectorSearchProvider detectorSearchProvider;
-    private final DetectorSearchEvaluator detectorSearchEvaluator;
-    private final DetectorEventListener detectorEventListener;
 
-    public DetectorFinderOptions(DetectorSearchFilter detectorSearchFilter, final Boolean forceNestedSearch, final int maximumDepth, final DetectorFilter detectorFilter,
-        final DetectorSearchProvider detectorSearchProvider, final DetectorSearchEvaluator detectorSearchEvaluator, DetectorEventListener detectorEventListener) {
-        this.detectorSearchFilter = detectorSearchFilter;
-        this.forceNestedSearch = forceNestedSearch;
+    public DetectorFinderOptions(final Predicate<File> fileFilter, final int maximumDepth) {
+        this.fileFilter = fileFilter;
         this.maximumDepth = maximumDepth;
-        this.detectorFilter = detectorFilter;
-        this.detectorSearchProvider = detectorSearchProvider;
-        this.detectorSearchEvaluator = detectorSearchEvaluator;
-        this.detectorEventListener = detectorEventListener;
     }
 
-    public DetectorSearchFilter getDetectorSearchFilter() {
-        return detectorSearchFilter;
-    }
-
-    public Boolean getForceNestedSearch() {
-        return forceNestedSearch;
-    }
-
-    public DetectorFilter getDetectorFilter() {
-        return detectorFilter;
+    public Predicate<File> getFileFilter() {
+        return fileFilter;
     }
 
     public int getMaximumDepth() {
         return maximumDepth;
-    }
-
-    public DetectorSearchProvider getDetectorSearchProvider() {
-        return detectorSearchProvider;
-    }
-
-    public DetectorSearchEvaluator getDetectorSearchEvaluator() {
-        return detectorSearchEvaluator;
-    }
-
-    public DetectorEventListener getDetectorEventListener() {
-        return detectorEventListener;
     }
 }

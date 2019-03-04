@@ -21,33 +21,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.report;
+package com.synopsys.integration.detect.workflow.report.util;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
-public class PreparationSummaryData {
-    private final String directory;
-
-    private final List<DetectorEvaluation> ready;
-    private final List<DetectorEvaluation> failed;
-
-    public PreparationSummaryData(final String directory, final List<DetectorEvaluation> ready, final List<DetectorEvaluation> failed) {
-        this.directory = directory;
-        this.ready = ready;
-        this.failed = failed;
+public class DetectorEvaluationUtils {
+    public static List<DetectorEvaluation> allApplicable(DetectorEvaluationTree tree){
+        return filteredEvaluations(tree, DetectorEvaluation::isApplicable);
     }
 
-    public String getDirectory() {
-        return directory;
+    public static List<DetectorEvaluation> notApplicable(DetectorEvaluationTree tree){
+        return filteredEvaluations(tree, detectorEvaluation -> !detectorEvaluation.isApplicable());
     }
 
-    public List<DetectorEvaluation> getReady() {
-        return ready;
+    public static List<DetectorEvaluation> notSearchable(DetectorEvaluationTree tree){
+        return filteredEvaluations(tree, detectorEvaluation -> !detectorEvaluation.isSearchable());
     }
 
-    public List<DetectorEvaluation> getFailed() {
-        return failed;
+    public static List<DetectorEvaluation> filteredEvaluations(DetectorEvaluationTree tree, Predicate<DetectorEvaluation> predicate){
+        return tree.getOrderedEvaluations().stream().filter(predicate).collect(Collectors.toList());
     }
 }

@@ -33,7 +33,7 @@ import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class ExtractionSummaryReporter {
-
+ /*
     public void writeSummary(ReportWriter writer, final List<DetectorEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final ExtractionSummarizer summarizer = new ExtractionSummarizer();
 
@@ -62,5 +62,5 @@ public class ExtractionSummaryReporter {
             writer.writeLine(prefix + evaluations.stream().map(evaluation -> evaluation.getDetector().getDescriptiveName()).collect(Collectors.joining(", ")));
         }
     }
-
+    */
 }

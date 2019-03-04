@@ -70,7 +70,7 @@ import com.synopsys.integration.detect.workflow.hub.PolicyCheckOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
-import com.synopsys.integration.detector.search.SearchOptions;
+import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
@@ -145,10 +145,10 @@ public class RunManager {
             if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
                 logger.info("Will include the detector tool.");
                 final String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DETECTOR, PropertyAuthority.None);
-                final SearchOptions searchOptions = detectConfigurationFactory.createSearchOptions(directoryManager.getSourceDirectory());
+                final DetectorFinderOptions finderOptions = detectConfigurationFactory.createSearchOptions(directoryManager.getSourceDirectory());
                 final DetectorTool detectorTool = new DetectorTool(detectContext);
 
-                final DetectorToolResult detectorToolResult = detectorTool.performDetectors(searchOptions, projectBomTool);
+                final DetectorToolResult detectorToolResult = detectorTool.performDetectors(finderOptions, projectBomTool);
                 runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
                 runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);
                 runResult.addApplicableDetectors(detectorToolResult.applicableDetectorTypes);

@@ -1,5 +1,5 @@
 /**
- * detector
+ * synopsys-detect
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,17 +21,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.result;
+package com.synopsys.integration.detect.tool.detector;
 
-public class InspectorNotFoundDetectorResult extends FailedDetectorResult {
-    private final String inspectorName;
+import com.synopsys.integration.detector.base.DetectorType;
 
-    public InspectorNotFoundDetectorResult(final String inspectorName) {
-        this.inspectorName = inspectorName;
+public class ExtractionId {
+    private final String id;
+    private final String extractionType;
+
+    public ExtractionId(final DetectorType detectorType, final String id) {
+        extractionType = detectorType.toString();
+        this.id = id;
     }
 
-    @Override
-    public String toDescription() {
-        return "No " + inspectorName + " inspector was found.";
+    public ExtractionId(final String extractionType, final String id) {
+        this.id = id;
+        this.extractionType = extractionType;
+    }
+
+    public String toUniqueString() {
+        return extractionType + "-" + id;
     }
 }

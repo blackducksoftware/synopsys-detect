@@ -73,7 +73,7 @@ import com.synopsys.integration.detect.workflow.diagnostic.RelevantFileTracker;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detect.workflow.profiling.BomToolProfiler;
+import com.synopsys.integration.detect.workflow.profiling.DetectableProfiler;
 import com.synopsys.integration.detect.workflow.report.DetectConfigurationReporter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.exception.IntegrationException;
@@ -165,7 +165,7 @@ public class DetectBoot {
         }
 
         //TODO: Only need this if in diagnostic or online (for phone home):
-        BomToolProfiler profiler = new BomToolProfiler(eventSystem);
+        DetectableProfiler profiler = new DetectableProfiler(eventSystem);
 
         //lock the configuration, boot has completed.
         logger.debug("Configuration is now complete. No changes should occur to configuration.");
