@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.rubygems.functional;
+package com.synopsys.integration.detectable.detectables.rubygems.gemlock.functional;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -12,7 +12,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
-import com.synopsys.integration.detectable.detectables.rubygems.parse.GemlockParser;
+import com.synopsys.integration.detectable.detectables.rubygems.gemlock.parse.GemlockParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.GraphCompare;
 

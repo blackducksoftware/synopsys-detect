@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.rubygems;
+package com.synopsys.integration.detectable.detectables.rubygems.gemlock;
 
 import java.io.File;
 

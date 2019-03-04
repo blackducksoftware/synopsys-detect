@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.rubygems.unit;
+package com.synopsys.integration.detectable.detectables.rubygems.gemspec.unit;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,8 +11,8 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.rubygems.parse.GemspecLineParser;
-import com.synopsys.integration.detectable.detectables.rubygems.parse.GemspecParser;
+import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
+import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 class GemspecParserTest {

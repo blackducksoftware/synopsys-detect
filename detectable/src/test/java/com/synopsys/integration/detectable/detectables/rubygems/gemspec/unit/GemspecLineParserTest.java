@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.rubygems.unit;
+package com.synopsys.integration.detectable.detectables.rubygems.gemspec.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -9,8 +9,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.rubygems.parse.GemspecDependency;
-import com.synopsys.integration.detectable.detectables.rubygems.parse.GemspecLineParser;
+import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecDependency;
+import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
 
 @UnitTest
 public class GemspecLineParserTest {
