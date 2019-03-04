@@ -81,18 +81,18 @@ public class DetectorRuleFactory {
 
         ruleSet.yield(nugetProject).to(nugetSolution);
 
-        ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", detectableFactory::createComposerLockDetectable).defaultNotNested();
+        ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", detectableFactory::createComposerLockDetectable).defaultNotNested().build();
 
         final DetectorRule pipEnv = ruleSet.addDetector(DetectorType.PIP, "Pip Env", detectableFactory::createPipenvDetectable).defaultNotNested().build();
         final DetectorRule pipInspector = ruleSet.addDetector(DetectorType.PIP, "Pip Inspector", detectableFactory::createPipInspectorDetectable).defaultNotNested().build();
 
         ruleSet.yield(pipInspector).to(pipEnv);
 
-        ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", detectableFactory::createGemlockDetectable).defaultNotNested();
-        ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", detectableFactory::createSbtResolutionCacheDetectable).defaultNotNested();
-        ruleSet.addDetector(DetectorType.PEAR, "Pear", detectableFactory::createPearCliDetectable).defaultNotNested();
+        ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", detectableFactory::createGemlockDetectable).defaultNotNested().build();
+        ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", detectableFactory::createSbtResolutionCacheDetectable).defaultNotNested().build();
+        ruleSet.addDetector(DetectorType.PEAR, "Pear", detectableFactory::createPearCliDetectable).defaultNotNested().build();
 
-        ruleSet.addDetector(DetectorType.CLANG, "Clang", detectableFactory::createClangDetectable).defaultNested();
+        ruleSet.addDetector(DetectorType.CLANG, "Clang", detectableFactory::createClangDetectable).defaultNested().build();
 
         return ruleSet.build();
     }
@@ -125,12 +125,12 @@ public class DetectorRuleFactory {
         ruleSet.yield(npmPackageLock).to(yarnLock);
         ruleSet.yield(npmShrinkwrap).to(yarnLock);
 
-        ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", detectableFactory::createComposerLockDetectable).defaultNotNested();
+        ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", detectableFactory::createComposerLockDetectable).defaultNotNested().build();
 
         ruleSet.addDetector(DetectorType.PIP, "Pip Env", detectableFactory::createPipenvDetectable).defaultNotNested().build();
 
-        ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", detectableFactory::createGemlockDetectable).defaultNotNested();
-        ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", detectableFactory::createSbtResolutionCacheDetectable).defaultNotNested();
+        ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", detectableFactory::createGemlockDetectable).defaultNotNested().build();
+        ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", detectableFactory::createSbtResolutionCacheDetectable).defaultNotNested().build();
 
         return ruleSet.build();
     }
