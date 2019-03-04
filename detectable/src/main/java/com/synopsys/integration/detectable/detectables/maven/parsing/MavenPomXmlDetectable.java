@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.gradle.parsing;
+package com.synopsys.integration.detectable.detectables.maven.parsing;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,28 +39,28 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.detectables.gradle.parsing.parse.BuildGradleParser;
+import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomXmlParser;
 
-public class BuildGradleDetectable extends Detectable {
-    public static final String BUILD_GRADLE_FILENAME = "build.gradle";
+public class MavenPomXmlDetectable extends Detectable {
+    public static final String POM_XML_FILENAME = "pom.xml";
 
     private final FileFinder fileFinder;
-    private final BuildGradleParser buildGradleParser;
+    private final PomXmlParser pomXmlParser;
 
-    private File buildFile;
+    private File pomXmlFile;
 
-    public BuildGradleDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final BuildGradleParser buildGradleParser) {
-        super(environment, "gradle.build", "GRADLE");
+    public MavenPomXmlDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PomXmlParser pomXmlParser) {
+        super(environment, "pom.xml", "MAVEN");
         this.fileFinder = fileFinder;
-        this.buildGradleParser = buildGradleParser;
+        this.pomXmlParser = pomXmlParser;
     }
 
     @Override
     public DetectableResult applicable() {
-        buildFile = fileFinder.findFile(environment.getDirectory(), BUILD_GRADLE_FILENAME);
+        pomXmlFile = fileFinder.findFile(environment.getDirectory(), POM_XML_FILENAME);
 
-        if (buildFile == null) {
-            return new FileNotFoundDetectableResult(BUILD_GRADLE_FILENAME);
+        if (pomXmlFile == null) {
+            return new FileNotFoundDetectableResult(POM_XML_FILENAME);
         }
 
         return new PassedDetectableResult();
@@ -74,14 +74,14 @@ public class BuildGradleDetectable extends Detectable {
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         try {
-            final InputStream buildFileInputStream = new FileInputStream(buildFile);
-            final Optional<DependencyGraph> dependencyGraph = buildGradleParser.parse(buildFileInputStream);
+            final InputStream pomXmlInputStream = new FileInputStream(pomXmlFile);
+            final Optional<DependencyGraph> dependencyGraph = pomXmlParser.parse(pomXmlInputStream);
 
             if (dependencyGraph.isPresent()) {
-                final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.GRADLE, dependencyGraph.get()).build();
+                final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.MAVEN, dependencyGraph.get()).build();
                 return new Extraction.Builder().codeLocations(codeLocation).build();
             } else {
-                return new Extraction.Builder().failure(String.format("Failed to extract dependencies from %s", BUILD_GRADLE_FILENAME)).build();
+                return new Extraction.Builder().failure(String.format("Failed to extract dependencies from %s", POM_XML_FILENAME)).build();
             }
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

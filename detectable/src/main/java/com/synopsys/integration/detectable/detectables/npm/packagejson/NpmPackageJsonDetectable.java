@@ -36,7 +36,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-public class PackageJsonDetectable extends Detectable {
+public class NpmPackageJsonDetectable extends Detectable {
     public static final String PACKAGE_JSON = "package.json";
 
     private final FileFinder fileFinder;
@@ -45,7 +45,7 @@ public class PackageJsonDetectable extends Detectable {
 
     private File packageJsonFile;
 
-    public PackageJsonDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PackageJsonExtractor packageJsonExtractor, final boolean includeDevDependencies) {
+    public NpmPackageJsonDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PackageJsonExtractor packageJsonExtractor, final boolean includeDevDependencies) {
         super(environment, "package.json", "NPM");
         this.fileFinder = fileFinder;
         this.packageJsonExtractor = packageJsonExtractor;
