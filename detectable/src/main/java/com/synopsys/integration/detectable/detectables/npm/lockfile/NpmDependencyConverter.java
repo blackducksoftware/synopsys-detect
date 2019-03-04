@@ -36,9 +36,9 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDependency;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLockDependency;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
 public class NpmDependencyConverter {
     private final ExternalIdFactory externalIdFactory;

@@ -39,8 +39,8 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationT
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmDependencyConverter;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDependency;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
 public class NpmLockfileParser {
     private final Logger logger = LoggerFactory.getLogger(NpmLockfileParser.class);

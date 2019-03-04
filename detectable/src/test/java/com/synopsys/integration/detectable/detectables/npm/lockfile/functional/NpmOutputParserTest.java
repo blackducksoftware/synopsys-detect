@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.npm.functional;
+package com.synopsys.integration.detectable.detectables.npm.lockfile.functional;
 
 import java.io.IOException;
 
