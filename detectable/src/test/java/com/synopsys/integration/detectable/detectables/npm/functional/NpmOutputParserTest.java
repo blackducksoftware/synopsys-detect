@@ -6,8 +6,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.npm.parse.NpmCliParser;
-import com.synopsys.integration.detectable.detectables.npm.parse.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.GraphCompare;
 

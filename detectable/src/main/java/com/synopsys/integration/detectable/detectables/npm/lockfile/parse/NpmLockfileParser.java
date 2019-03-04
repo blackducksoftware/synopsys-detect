@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.npm.parse;
+package com.synopsys.integration.detectable.detectables.npm.lockfile.parse;
 
 import java.util.Optional;
 
@@ -36,10 +36,11 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
-import com.synopsys.integration.detectable.detectables.npm.NpmDependencyConverter;
-import com.synopsys.integration.detectable.detectables.npm.model.NpmDependency;
-import com.synopsys.integration.detectable.detectables.npm.model.PackageJson;
-import com.synopsys.integration.detectable.detectables.npm.model.PackageLock;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmDependencyConverter;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDependency;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 
 public class NpmLockfileParser {
     private final Logger logger = LoggerFactory.getLogger(NpmLockfileParser.class);

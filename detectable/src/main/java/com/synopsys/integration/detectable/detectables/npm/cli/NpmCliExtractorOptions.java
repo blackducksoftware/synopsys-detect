@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.npm;
+package com.synopsys.integration.detectable.detectables.npm.cli;
 
 public class NpmCliExtractorOptions {
     private final boolean includeDevDependencies;

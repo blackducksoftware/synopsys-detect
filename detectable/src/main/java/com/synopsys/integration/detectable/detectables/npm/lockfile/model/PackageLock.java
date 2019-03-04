@@ -21,12 +21,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.npm.model;
+package com.synopsys.integration.detectable.detectables.npm.lockfile.model;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class PackageJson {
-    public Map<String, String> dependencies = new HashMap<>();
-    public Map<String, String> devDependencies = new HashMap<>();
+import com.google.gson.annotations.SerializedName;
+
+public class PackageLock {
+    @SerializedName("name")
+    public String name;
+
+    @SerializedName("version")
+    public String version;
+
+    @SerializedName("dependencies")
+    public Map<String, PackageLockDependency> dependencies;
 }

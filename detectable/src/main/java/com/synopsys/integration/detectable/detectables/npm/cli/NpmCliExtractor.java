@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.npm;
+package com.synopsys.integration.detectable.detectables.npm.cli;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,8 +36,8 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectables.npm.parse.NpmCliParser;
-import com.synopsys.integration.detectable.detectables.npm.parse.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
 
 public class NpmCliExtractor {
     public static final String OUTPUT_FILE = "detect_npm_proj_dependencies.json";

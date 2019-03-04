@@ -21,23 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.npm.model;
+package com.synopsys.integration.detectable.detectables.npm.lockfile.model;
 
-import java.util.Map;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 
-import com.google.gson.annotations.SerializedName;
+public class NpmParseResult {
+    public String projectName;
+    public String projectVersion;
+    public CodeLocation codeLocation;
 
-public class PackageLockDependency {
-    @SerializedName("version")
-    public String version;
-
-    @SerializedName("dev")
-    public Boolean dev;
-
-    @SerializedName("requires")
-    public Map<String, String> requires;
-
-    @SerializedName("dependencies")
-    public Map<String, PackageLockDependency> dependencies;
-
+    public NpmParseResult(final String projectName, final String projectVersion, final CodeLocation codeLocation) {
+        this.projectName = projectName;
+        this.projectVersion = projectVersion;
+        this.codeLocation = codeLocation;
+    }
 }

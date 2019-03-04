@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.npm;
+package com.synopsys.integration.detectable.detectables.npm.lockfile;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,8 +31,8 @@ import java.util.Optional;
 import org.apache.commons.io.FileUtils;
 
 import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.detectables.npm.parse.NpmLockfileParser;
-import com.synopsys.integration.detectable.detectables.npm.parse.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfileParser;
 
 public class NpmLockfileExtractor {
     private final NpmLockfileParser npmLockfileParser;

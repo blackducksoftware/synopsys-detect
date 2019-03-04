@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.npm;
+package com.synopsys.integration.detectable.detectables.npm.lockfile;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,11 +34,11 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.npm.model.NpmDependency;
-import com.synopsys.integration.detectable.detectables.npm.model.NpmRequires;
-import com.synopsys.integration.detectable.detectables.npm.model.PackageJson;
-import com.synopsys.integration.detectable.detectables.npm.model.PackageLock;
-import com.synopsys.integration.detectable.detectables.npm.model.PackageLockDependency;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDependency;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLockDependency;
 
 public class NpmDependencyConverter {
     private final ExternalIdFactory externalIdFactory;

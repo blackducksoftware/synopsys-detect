@@ -9,10 +9,10 @@ import org.junit.Test;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.npm.model.PackageJson;
-import com.synopsys.integration.detectable.detectables.npm.model.PackageLock;
-import com.synopsys.integration.detectable.detectables.npm.parse.NpmLockfileParser;
-import com.synopsys.integration.detectable.detectables.npm.parse.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfileParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.GraphCompare;
 

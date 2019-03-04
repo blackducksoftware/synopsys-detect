@@ -21,18 +21,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.npm.parse;
+package com.synopsys.integration.detectable.detectables.npm.lockfile.model;
 
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+public class NpmRequires {
+    private final String name;
+    private final String fuzzyVersion;
 
-public class NpmParseResult {
-    public String projectName;
-    public String projectVersion;
-    public CodeLocation codeLocation;
+    public NpmRequires(final String name, final String fuzzyVersion) {
+        this.name = name;
+        this.fuzzyVersion = fuzzyVersion;
+    }
 
-    public NpmParseResult(final String projectName, final String projectVersion, final CodeLocation codeLocation) {
-        this.projectName = projectName;
-        this.projectVersion = projectVersion;
-        this.codeLocation = codeLocation;
+    public String getName() {
+        return name;
+    }
+
+    public String getFuzzyVersion() {
+        return fuzzyVersion;
     }
 }

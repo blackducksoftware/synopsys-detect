@@ -21,22 +21,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.npm.model;
+package com.synopsys.integration.detectable.detectables.npm.lockfile.model;
 
-public class NpmRequires {
-    private final String name;
-    private final String fuzzyVersion;
+import java.util.HashMap;
+import java.util.Map;
 
-    public NpmRequires(final String name, final String fuzzyVersion) {
-        this.name = name;
-        this.fuzzyVersion = fuzzyVersion;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getFuzzyVersion() {
-        return fuzzyVersion;
-    }
+public class PackageJson {
+    public Map<String, String> dependencies = new HashMap<>();
+    public Map<String, String> devDependencies = new HashMap<>();
 }

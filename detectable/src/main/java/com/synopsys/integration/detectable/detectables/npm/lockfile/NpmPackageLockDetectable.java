@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.npm;
+package com.synopsys.integration.detectable.detectables.npm.lockfile;
 
 import java.io.File;
 
@@ -37,11 +37,10 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-public class NpmShrinkwrapDetectable extends Detectable {
-    public static final String SHRINKWRAP_JSON = "npm-shrinkwrap.json";
-    public static final String PACKAGE_JSON = "package.json";
-
+public class NpmPackageLockDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    public static final String PACKAGE_LOCK_JSON = "package-lock.json";
+    public static final String PACKAGE_JSON = "package.json";
 
     private final FileFinder fileFinder;
     private final NpmLockfileExtractor npmLockfileExtractor;
@@ -50,8 +49,8 @@ public class NpmShrinkwrapDetectable extends Detectable {
     private File lockfile;
     private File packageJson;
 
-    public NpmShrinkwrapDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NpmLockfileExtractor npmLockfileExtractor, final boolean includeDevDependencies) {
-        super(environment, "Shrinkwrap", "NPM");
+    public NpmPackageLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NpmLockfileExtractor npmLockfileExtractor, final boolean includeDevDependencies) {
+        super(environment, "Package Lock", "NPM");
         this.fileFinder = fileFinder;
         this.npmLockfileExtractor = npmLockfileExtractor;
         this.includeDevDependencies = includeDevDependencies;
@@ -59,14 +58,16 @@ public class NpmShrinkwrapDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        lockfile = fileFinder.findFile(environment.getDirectory(), SHRINKWRAP_JSON);
+        lockfile = fileFinder.findFile(environment.getDirectory(), PACKAGE_LOCK_JSON);
         if (lockfile == null) {
-            return new FileNotFoundDetectableResult(SHRINKWRAP_JSON);
+            return new FileNotFoundDetectableResult(PACKAGE_LOCK_JSON);
         }
 
-        packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
-        if (packageJson == null) {
+        final File foundPackageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
+        if (foundPackageJson == null) {
             logger.warn("Npm applied but it could not find a package.json so dependencies may not be entirely accurate.");
+        } else {
+            packageJson = foundPackageJson;
         }
 
         return new PassedDetectableResult();
@@ -78,12 +79,12 @@ public class NpmShrinkwrapDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment environment) {
+    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         //        addRelevantDiagnosticFile(lockfile); // TODO: Jordan FIX ME
         //        if (packageJson != null) {
         //            addRelevantDiagnosticFile(packageJson);
         //        }
-        return npmLockfileExtractor.extract(environment.getOutputDirectory(), lockfile, packageJson, includeDevDependencies);
+        return npmLockfileExtractor.extract(environment.getDirectory(), lockfile, packageJson, includeDevDependencies);
     }
 
 }
