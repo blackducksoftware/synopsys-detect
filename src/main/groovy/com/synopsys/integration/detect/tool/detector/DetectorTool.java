@@ -23,15 +23,25 @@
  */
 package com.synopsys.integration.detect.tool.detector;
 
+import java.util.HashSet;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
+import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detector.base.DetectorEvaluationTree;
+import com.synopsys.integration.detector.evaluation.DetectorEvaluator;
+import com.synopsys.integration.detector.finder.DetectorFinder;
+import com.synopsys.integration.detector.finder.DetectorFinderDirectoryListException;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
+import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.util.NameVersion;
+import java.io.File;
 
 public class DetectorTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -41,7 +51,7 @@ public class DetectorTool {
         this.detectContext = detectContext;
     }
 
-    public DetectorToolResult performDetectors(DetectorFinderOptions searchOptions, String projectBomTool) throws DetectUserFriendlyException {
+    public DetectorToolResult performDetectors(File directory, DetectorFinderOptions detectorFinderOptions, String projectBomTool) throws DetectUserFriendlyException {
         logger.info("Preparing to initialize detectors.");
 
         logger.info("Finding detectors.");
@@ -51,6 +61,27 @@ public class DetectorTool {
         logger.info("Determining extractable.");
 
         logger.info("Performing extraction.");
+
+        DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
+        DetectorFinder detectorFinder = new DetectorFinder();
+        DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
+        DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectableFactory);
+
+        DetectorEvaluationTree rootEvaluation;
+        try {
+            rootEvaluation = detectorFinder.findDetectors(directory, detectRuleSet, detectorFinderOptions);
+        } catch (DetectorFinderDirectoryListException e) {
+            throw new DetectUserFriendlyException("Detect was unable to list a directory while searching for detectors.", e, ExitCodeType.FAILURE_DETECTOR);
+        }
+
+        DetectorEvaluator detectorEvaluator = new DetectorEvaluator();
+        detectorEvaluator.searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
+        detectorEvaluator.extractableEvaluation(rootEvaluation);
+        detectorEvaluator.extractionEvaluation(rootEvaluation, detectorEvaluation -> new ExtractionEnvironment(new File("")));
+
+        //Completed.
+        logger.info("Extractions finished.");
+        //detectors
 
         //        logger.info("Preparing to initialize detectors.");
 //        DetectorFactory detectorFactory = detectContext.getBean(DetectorFactory.class);

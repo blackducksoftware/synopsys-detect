@@ -53,7 +53,7 @@ public class DetectorEvaluator {
 
     //Unfortunately, currently search and applicable are tied together due to Search needing to know about previous detectors that applied.
     //So Search and then Applicable must be evaluated of Detector 1 before the next Search can be evaluated of Detector 2.
-    private void searchAndApplicableEvaluation(DetectorEvaluationTree detectorEvaluationTree, Set<DetectorRule> appliedInParent) {
+    public void searchAndApplicableEvaluation(DetectorEvaluationTree detectorEvaluationTree, Set<DetectorRule> appliedInParent) {
         logger.info("Preparing to evaluate 'searchable and applicable' detectors on the directory: " + detectorEvaluationTree.getDirectory().toString());
         logger.info("The number of evaluations: " + detectorEvaluationTree.getOrderedEvaluations().size());
         logger.info("The number of children: " + detectorEvaluationTree.getChildren().size());
@@ -96,7 +96,7 @@ public class DetectorEvaluator {
         }
     }
 
-    private void extractableEvaluation(DetectorEvaluationTree detectorEvaluationTree){
+    public void extractableEvaluation(DetectorEvaluationTree detectorEvaluationTree){
         logger.info("Preparing to evaluate 'extractable' detectors on the directory: " + detectorEvaluationTree.getDirectory().toString());
         logger.info("The number of evaluations: " + detectorEvaluationTree.getOrderedEvaluations().size());
         logger.info("The number of children: " + detectorEvaluationTree.getChildren().size());
@@ -125,7 +125,7 @@ public class DetectorEvaluator {
         }
     }
 
-    private void extractionEvaluation(DetectorEvaluationTree detectorEvaluationTree, Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider){
+    public void extractionEvaluation(DetectorEvaluationTree detectorEvaluationTree, Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider){
         logger.info("Preparing to evaluate 'extractable' detectors on the directory: " + detectorEvaluationTree.getDirectory().toString());
         logger.info("The number of evaluations: " + detectorEvaluationTree.getOrderedEvaluations().size());
         logger.info("The number of children: " + detectorEvaluationTree.getChildren().size());

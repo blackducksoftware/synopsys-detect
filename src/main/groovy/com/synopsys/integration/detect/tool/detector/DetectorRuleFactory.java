@@ -25,11 +25,12 @@ package com.synopsys.integration.detect.tool.detector;
 
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.rule.DetectorRule;
+import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.detector.rule.DetectorRuleSetBuilder;
 
 public class DetectorRuleFactory {
 
-    public void createRules(DetectableFactory detectableFactory) {
+    public DetectorRuleSet createRules(DetectableFactory detectableFactory) {
 
         final DetectorRuleSetBuilder ruleSet = new DetectorRuleSetBuilder();
 
@@ -73,17 +74,19 @@ public class DetectorRuleFactory {
 
         ruleSet.yield(nugetProject).to(nugetSolution);
 
-        ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", detectableFactory::createComposerLockDetectable).defaultNotNested();
+        ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", detectableFactory::createComposerLockDetectable).defaultNotNested().build();
 
         DetectorRule pipEnv = ruleSet.addDetector(DetectorType.PIP, "Pip Env", detectableFactory::createPipenvDetectable).defaultNotNested().build();
         DetectorRule pipInspector = ruleSet.addDetector(DetectorType.PIP, "Pip Inspector", detectableFactory::createPipInspectorDetectable).defaultNotNested().build();
 
         ruleSet.yield(pipInspector).to(pipEnv);
 
-        ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", detectableFactory::createGemlockDetectable).defaultNotNested();
-        ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", detectableFactory::createSbtResolutionCacheDetectable).defaultNotNested();
-        ruleSet.addDetector(DetectorType.PEAR, "Pear", detectableFactory::createPearCliDetectable).defaultNotNested();
+        ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", detectableFactory::createGemlockDetectable).defaultNotNested().build();
+        ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", detectableFactory::createSbtResolutionCacheDetectable).defaultNotNested().build();
+        ruleSet.addDetector(DetectorType.PEAR, "Pear", detectableFactory::createPearCliDetectable).defaultNotNested().build();
 
-        ruleSet.addDetector(DetectorType.CLANG, "Clang", detectableFactory::createClangDetectable).defaultNested();
+        ruleSet.addDetector(DetectorType.CLANG, "Clang", detectableFactory::createClangDetectable).defaultNested().build();
+
+        return ruleSet.build();
     }
 }
