@@ -28,7 +28,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.inspector.go.GoDepResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
@@ -40,28 +39,33 @@ import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorDetectable;
+import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleBuildFileDetectable;
 import com.synopsys.integration.detectable.detectables.hex.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
-import com.synopsys.integration.detectable.detectables.npm.NpmCliDetectable;
-import com.synopsys.integration.detectable.detectables.npm.NpmPackageLockDetectable;
-import com.synopsys.integration.detectable.detectables.npm.NpmShrinkwrapDetectable;
+import com.synopsys.integration.detectable.detectables.maven.parsing.MavenPomXmlDetectable;
+import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmShrinkwrapDetectable;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
-import com.synopsys.integration.detectable.detectables.rubygems.GemlockDetectable;
+import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
+import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
+import com.synopsys.integration.detector.detector.go.GoDepCliDetectable;
 
 public class DetectableFactory implements BeanFactoryAware {
 
     private BeanFactory beanFactory;
 
     @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+    public void setBeanFactory(final BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
 
@@ -97,8 +101,12 @@ public class DetectableFactory implements BeanFactoryAware {
         return beanFactory.getBean(GemlockDetectable.class, environment);
     }
 
-    public com.synopsys.integration.detector.detector.go.GoDepCliDetectable createGoCliDetectable(final DetectableEnvironment environment) {
-        return beanFactory.getBean(com.synopsys.integration.detector.detector.go.GoDepCliDetectable.class, environment);
+    public GemspecDetectable createGemspecDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(GemspecDetectable.class, environment);
+    }
+
+    public GoDepCliDetectable createGoCliDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(GoDepCliDetectable.class, environment);
     }
 
     public GoVendorDetectable createGoLockDetectable(final DetectableEnvironment environment) {
@@ -113,6 +121,10 @@ public class DetectableFactory implements BeanFactoryAware {
         return beanFactory.getBean(GoVendorDetectable.class, environment);
     }
 
+    public GradleBuildFileDetectable createBuildGradleDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(GradleBuildFileDetectable.class, environment);
+    }
+
     public GradleInspectorDetectable createGradleInspectorDetectable(final DetectableEnvironment environment) {
         return beanFactory.getBean(GradleInspectorDetectable.class, environment);
     }
@@ -125,8 +137,16 @@ public class DetectableFactory implements BeanFactoryAware {
         return beanFactory.getBean(MavenPomWrapperDetectable.class, environment);
     }
 
+    public MavenPomXmlDetectable createMavenPomXmlDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(MavenPomXmlDetectable.class, environment);
+    }
+
     public NpmCliDetectable createNpmCliDetectable(final DetectableEnvironment environment) {
         return beanFactory.getBean(NpmCliDetectable.class, environment);
+    }
+
+    public NpmPackageJsonDetectable createNpmPackageJsonDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(NpmPackageJsonDetectable.class, environment);
     }
 
     public NpmPackageLockDetectable createNpmPackageLockDetectable(final DetectableEnvironment environment) {
