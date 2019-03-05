@@ -105,20 +105,6 @@ public class BdioCodeLocationCreator {
         return result;
     }
 
-    /**
-     * Attempts to map the given Code Location Types to Detector Types with EnumUtils.
-     * @param bdioCodeLocations the final bdio code locations
-     * @return the set of detector types
-     */
-    private Set<DetectorType> getDetectorTypes(final List<BdioCodeLocation> bdioCodeLocations) {
-        return bdioCodeLocations.stream()
-                   .map(bdioCodeLocation -> bdioCodeLocation.codeLocation.getCodeLocationType().toString())
-                   .map(codeLocationType -> DetectEnumUtil.getValueOf(DetectorType.class, codeLocationType))
-                   .filter(Optional::isPresent)
-                   .map(Optional::get)
-                   .collect(Collectors.toSet());
-    }
-
     private Map<String, List<BdioCodeLocation>> groupByBdioNames(final List<BdioCodeLocation> bdioCodeLocations) {
         return bdioCodeLocations.stream().collect(Collectors.groupingBy(it -> it.bdioName, Collectors.toList()));
     }

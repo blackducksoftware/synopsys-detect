@@ -38,25 +38,6 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 
 public class SimpleFileFinder implements FileFinder {
-
-    @Override
-    @Nullable
-    public File findFile(final File directoryToSearch, final String filenamePattern) {
-        return findFiles(directoryToSearch, filenamePattern).stream().findFirst().orElse(null);
-    }
-
-    @Override
-    @NotNull
-    public List<File> findFiles(final File directoryToSearch, final String filenamePattern) {
-        return findFiles(directoryToSearch, filenamePattern, 0);
-    }
-
-    @Override
-    public List<File> findFiles(final File directoryToSearch, final String filenamePattern, final int depth) {
-        final FilenameFilter filter = new WildcardFileFilter(filenamePattern);
-        return findFiles(directoryToSearch, filter, depth);
-    }
-
     private List<File> findFiles(final File directoryToSearch, final FilenameFilter filenameFilter, final int depth) {
         final File[] foundFiles = directoryToSearch.listFiles(filenameFilter);
 
@@ -76,5 +57,11 @@ public class SimpleFileFinder implements FileFinder {
         }
 
         return aggregatedFiles;
+    }
+
+    @Override
+    @Nullable
+    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth) {
+        return findFiles(directoryToSearch, new WildcardFileFilter(filenamePatterns), depth);
     }
 }

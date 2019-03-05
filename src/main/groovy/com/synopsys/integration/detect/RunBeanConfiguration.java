@@ -59,6 +59,7 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 
 import freemarker.template.Configuration;
 
@@ -89,8 +90,8 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public DetectFileFinder detectFileFinder() {
-        return new DetectFileFinder();
+    public FileFinder fileFinder() {
+        return new SimpleFileFinder();
     }
 
     @Bean
@@ -110,7 +111,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public CodeLocationNameGenerator codeLocationNameService() {
-        return new CodeLocationNameGenerator(detectFileFinder());
+        return new CodeLocationNameGenerator();
     }
 
     @Bean
@@ -132,11 +133,6 @@ public class RunBeanConfiguration {
     @Bean
     public BdioTransformer bdioTransformer() {
         return new BdioTransformer();
-    }
-
-    @Bean
-    public FileFinder fileFinder() {
-        return new com.synopsys.integration.detect.tool.detector.impl.DetectFileFinder();
     }
 
     @Bean
@@ -190,13 +186,13 @@ public class RunBeanConfiguration {
     @Bean
     public OnlineBlackDuckSignatureScanner onlineBlackDuckSignatureScanner(final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, final ScanBatchRunner scanBatchRunner,
         final CodeLocationCreationService codeLocationCreationService, final BlackDuckServerConfig hubServerConfig) {
-        return new OnlineBlackDuckSignatureScanner(directoryManager, detectFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, codeLocationCreationService, hubServerConfig);
+        return new OnlineBlackDuckSignatureScanner(directoryManager, fileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, codeLocationCreationService, hubServerConfig);
     }
 
     @Lazy
     @Bean
     public OfflineBlackDuckSignatureScanner offlineBlackDuckSignatureScanner(final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, final ScanBatchRunner scanBatchRunner) {
-        return new OfflineBlackDuckSignatureScanner(directoryManager, detectFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner);
+        return new OfflineBlackDuckSignatureScanner(directoryManager, fileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner);
     }
 
 }

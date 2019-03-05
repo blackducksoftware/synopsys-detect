@@ -40,6 +40,7 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
+import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -47,10 +48,10 @@ public class OnlineBlackDuckSignatureScanner extends BlackDuckSignatureScanner {
     private final CodeLocationCreationService codeLocationCreationService;
     private final BlackDuckServerConfig hubServerConfig;
 
-    public OnlineBlackDuckSignatureScanner(final DirectoryManager directoryManager, final DetectFileFinder detectFileFinder,
+    public OnlineBlackDuckSignatureScanner(final DirectoryManager directoryManager, final FileFinder fileFinder,
         final CodeLocationNameManager codeLocationNameManager, final BlackDuckSignatureScannerOptions signatureScannerOptions, final EventSystem eventSystem, final ScanBatchRunner scanBatchRunner, final CodeLocationCreationService codeLocationCreationService,
         final BlackDuckServerConfig hubServerConfig) {
-        super(directoryManager, detectFileFinder, codeLocationNameManager, signatureScannerOptions, eventSystem, scanBatchRunner);
+        super(directoryManager, fileFinder, codeLocationNameManager, signatureScannerOptions, eventSystem, scanBatchRunner);
         this.codeLocationCreationService = codeLocationCreationService;
         this.hubServerConfig = hubServerConfig;
     }

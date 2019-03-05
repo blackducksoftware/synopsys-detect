@@ -49,8 +49,8 @@ public class PackageJsonExtractorFunctionalTest {
     @Test
     void extractWithNoDevDependencies() throws FileNotFoundException {
         final Extraction extraction = packageJsonExtractor.extract(packageJsonInputStream, false);
-        assertEquals(1, extraction.codeLocations.size());
-        final CodeLocation codeLocation = extraction.codeLocations.get(0);
+        assertEquals(1, extraction.getCodeLocations().size());
+        final CodeLocation codeLocation = extraction.getCodeLocations().get(0);
         final DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
 
         final GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
@@ -64,8 +64,8 @@ public class PackageJsonExtractorFunctionalTest {
     @Test
     void extractWithDevDependencies() throws FileNotFoundException {
         final Extraction extraction = packageJsonExtractor.extract(packageJsonInputStream, true);
-        assertEquals(1, extraction.codeLocations.size());
-        final CodeLocation codeLocation = extraction.codeLocations.get(0);
+        assertEquals(1, extraction.getCodeLocations().size());
+        final CodeLocation codeLocation = extraction.getCodeLocations().get(0);
         final DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
 
         final GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);

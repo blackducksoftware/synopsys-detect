@@ -31,6 +31,10 @@ import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class DetectorEvaluationUtils {
+    public static List<DetectorEvaluation> flatten(DetectorEvaluationTree tree){
+        return tree.asFlatList().stream().flatMap(it -> it.getOrderedEvaluations().stream()).collect(Collectors.toList());
+    }
+
     public static List<DetectorEvaluation> allApplicable(DetectorEvaluationTree tree){
         return filteredEvaluations(tree, DetectorEvaluation::isApplicable);
     }

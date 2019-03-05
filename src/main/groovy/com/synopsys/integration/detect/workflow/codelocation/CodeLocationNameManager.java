@@ -54,16 +54,19 @@ public class CodeLocationNameManager {
 
     public String createCodeLocationName(final DetectCodeLocation detectCodeLocation, final String detectSourcePath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String codeLocationName;
-        if (useCodeLocationOverride() && DetectCodeLocationType.DOCKER.equals(detectCodeLocation.getCodeLocationType())) {
-            codeLocationName = getNextCodeLocationOverrideName(CodeLocationNameType.DOCKER);
-        } else if (useCodeLocationOverride()) {
-            codeLocationName = getNextCodeLocationOverrideName(CodeLocationNameType.BOM);
-        } else if (DetectCodeLocationType.DOCKER.equals(detectCodeLocation.getCodeLocationType())) {
-            codeLocationName = codeLocationNameGenerator
-                                   .createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getCodeLocationType(), prefix,
-                                       suffix);
+        if (useCodeLocationOverride()) {
+            if (detectCodeLocation.getDockerImageName().isPresent()) {
+                codeLocationName = getNextCodeLocationOverrideName(CodeLocationNameType.DOCKER);
+            } else {
+                codeLocationName = getNextCodeLocationOverrideName(CodeLocationNameType.BOM);
+            }
         } else {
-            codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getCodeLocationType(), prefix, suffix);
+            if (detectCodeLocation.getDockerImageName().isPresent()) {
+                codeLocationName = codeLocationNameGenerator.createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getCodeLocationType(), prefix,
+                                           suffix);
+            } else {
+                codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getCodeLocationType(), prefix, suffix);
+            }
         }
         return codeLocationName;
     }

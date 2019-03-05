@@ -35,7 +35,6 @@ public class DetectorRule {
     private final DetectorType detectorType;
     private String name;
 
-
     public DetectorRule(final DetectableCreatable detectableCreatable, final int maxDepth, final boolean nestable, final DetectorType detectorType, final String name) {
         this.detectableCreatable = detectableCreatable;
         this.maxDepth = maxDepth;
@@ -44,7 +43,7 @@ public class DetectorRule {
         this.name = name;
     }
 
-    public DetectableCreatable getDetectorCreatable() {
+    public DetectableCreatable getDetectableCreatable() {
         return detectableCreatable;
     }
 

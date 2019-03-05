@@ -24,6 +24,7 @@
 package com.synopsys.integration.detectable.detectable.file;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import org.antlr.v4.runtime.misc.NotNull;
@@ -31,11 +32,24 @@ import org.antlr.v4.runtime.misc.Nullable;
 
 public interface FileFinder {
     @Nullable
-    File findFile(File directoryToSearch, String filenamePattern);
+    default File findFile(File directoryToSearch, String filenamePattern) {
+        List<File> files = findFiles(directoryToSearch, Arrays.asList(filenamePattern), 0);
+        if (files != null && files.size() > 0){
+            return files.get(0);
+        }
+        return null;
+    }
 
     @NotNull
-    List<File> findFiles(File directoryToSearch, String filenamePattern);
+    default List<File> findFiles(File directoryToSearch, String filenamePattern) {
+        return findFiles(directoryToSearch, Arrays.asList(filenamePattern), 0);
+    }
 
     @NotNull
-    List<File> findFiles(File directoryToSearch, String filenamePattern, int depth);
+    default List<File> findFiles(File directoryToSearch, String filenamePattern, int depth) {
+        return findFiles(directoryToSearch, Arrays.asList(filenamePattern), 0);
+    }
+
+    @NotNull
+    List<File> findFiles(File directoryToSearch, List<String> filenamePatterns, int depth);
 }

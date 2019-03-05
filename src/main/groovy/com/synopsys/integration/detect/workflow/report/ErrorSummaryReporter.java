@@ -48,8 +48,8 @@ public class ErrorSummaryReporter {
                 writer.writeLine(tree.getDirectory().toString());
                 String spacer = "\t\t";
                 writeEvaluationsIfNotEmpty(writer, "\tNot Extractable: ", spacer, notExtractable, detectorEvaluation -> detectorEvaluation.getExtractabilityMessage());
-                writeEvaluationsIfNotEmpty(writer, "\tFailure: ", spacer, failed, detectorEvaluation -> detectorEvaluation.getExtraction().description);
-                writeEvaluationsIfNotEmpty(writer, "\tException: ", spacer, excepted, detectorEvaluation -> detectorEvaluation.getExtraction().error.getMessage());
+                writeEvaluationsIfNotEmpty(writer, "\tFailure: ", spacer, failed, detectorEvaluation -> detectorEvaluation.getExtraction().getDescription());
+                writeEvaluationsIfNotEmpty(writer, "\tException: ", spacer, excepted, detectorEvaluation -> detectorEvaluation.getExtraction().getError().getMessage());
             }
         }
         ReporterUtils.printFooter(writer);

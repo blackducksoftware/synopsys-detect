@@ -20,15 +20,14 @@ import org.junit.Test;
 import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 
 public class CodeLocationNameGeneratorTest {
     @Test
     public void testScanCodeLocationName() {
         final String expected = "hub-common-rest/target/hub-common-rest/2.5.1-SNAPSHOT scan";
 
-        final DetectFileFinder detectFileFinder = mock(DetectFileFinder.class);
-        when(detectFileFinder.extractFinalPieceFromPath("/Users/ekerwin/Documents/source/functional/hub-common-rest")).thenReturn("hub-common-rest");
-        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectFileFinder);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator();
 
         final String sourcePath = "/Users/ekerwin/Documents/source/functional/hub-common-rest";
         final String scanTargetPath = "/Users/ekerwin/Documents/source/functional/hub-common-rest/target";
@@ -46,8 +45,7 @@ public class CodeLocationNameGeneratorTest {
         final String expected = "dockerTar.tar.gz/hub-common-rest/2.5.1-SNAPSHOT scan";
 
         final DetectFileFinder detectFileFinder = mock(DetectFileFinder.class);
-        when(detectFileFinder.extractFinalPieceFromPath("")).thenReturn("hub-common-rest");
-        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectFileFinder);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator();
 
         final String dockerTarFileName = "dockerTar.tar.gz";
         final String projectName = "hub-common-rest";
@@ -66,8 +64,7 @@ public class CodeLocationNameGeneratorTest {
 
         final ExternalIdFactory factory = new ExternalIdFactory();
         final ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
-        final DetectFileFinder detectFileFinder = new DetectFileFinder();
-        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectFileFinder);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator();
 
         final String sourcePath = "/Users/ekerwin/Documents/source/functional/hub-common-rest";
         final String codeLocationPath = "/Users/ekerwin/Documents/source/functional/hub-common-rest/child";
@@ -85,8 +82,7 @@ public class CodeLocationNameGeneratorTest {
 
         final ExternalIdFactory factory = new ExternalIdFactory();
         final ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
-        final DetectFileFinder detectFileFinder = new DetectFileFinder();
-        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectFileFinder);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator();
 
         final String sourcePath = "/Users/ekerwin/Documents/source/functional/hub-common-rest";
         final String codeLocationPath = "/Users/ekerwin/Documents/source/functional/hub-common-rest/hub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-rest";

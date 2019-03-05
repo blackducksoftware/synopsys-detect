@@ -45,8 +45,8 @@ class PackageJsonExtractorTest {
     void extractWithNoDevDependencies() {
         final PackageJson packageJson = createPackageJson();
         final Extraction extraction = packageJsonExtractor.extract(packageJson, false);
-        assertEquals(1, extraction.codeLocations.size());
-        final CodeLocation codeLocation = extraction.codeLocations.get(0);
+        assertEquals(1, extraction.getCodeLocations().size());
+        final CodeLocation codeLocation = extraction.getCodeLocations().get(0);
         final DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
 
         final GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
@@ -61,8 +61,8 @@ class PackageJsonExtractorTest {
     void extractWithDevDependencies() {
         final PackageJson packageJson = createPackageJson();
         final Extraction extraction = packageJsonExtractor.extract(packageJson, true);
-        assertEquals(1, extraction.codeLocations.size());
-        final CodeLocation codeLocation = extraction.codeLocations.get(0);
+        assertEquals(1, extraction.getCodeLocations().size());
+        final CodeLocation codeLocation = extraction.getCodeLocations().get(0);
         final DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
 
         final GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
