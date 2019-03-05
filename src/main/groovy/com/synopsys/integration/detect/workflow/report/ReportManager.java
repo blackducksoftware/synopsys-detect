@@ -62,8 +62,8 @@ public class ReportManager {
         this.searchSummaryReporter = searchSummaryReporter;
         this.errorSummaryReporter = errorSummaryReporter;
 
-//        eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event.getDetectorEvaluations()));//TODO: Fix
-//        eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event.getDetectorEvaluations()));
+        eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event));
+        eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event));
         eventSystem.registerListener(Event.DetectorsComplete, event -> bomToolsComplete(event));
         eventSystem.registerListener(Event.CodeLocationsCalculated, event -> codeLocationsCompleted(event.getCodeLocationNames()));
 
@@ -96,6 +96,6 @@ public class ReportManager {
     }
 
     public void printDetectorIssues() {
-        //errorSummaryReporter.writeSummary(logWriter, completedDetectorEvaluations);//TODO fix
+        errorSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree);
     }
 }

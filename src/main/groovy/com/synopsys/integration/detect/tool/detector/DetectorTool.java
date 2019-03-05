@@ -102,11 +102,15 @@ public class DetectorTool {
         logger.info("Evaluating search and applicable.");
         DetectorEvaluator detectorEvaluator = new DetectorEvaluator();
         detectorEvaluator.searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
+        eventSystem.publishEvent(Event.SearchCompleted, rootEvaluation);
+
         logger.info("Evaluating extractable.");
         detectorEvaluator.extractableEvaluation(rootEvaluation);
+        eventSystem.publishEvent(Event.PreparationsCompleted, rootEvaluation);
+
         logger.info("Evaluating extractions.");
         detectorEvaluator.extractionEvaluation(rootEvaluation, detectorEvaluation -> new ExtractionEnvironment(new File("")));
-
+        eventSystem.publishEvent(Event.ExtractionsCompleted, rootEvaluation);
 
         DetectorToolResult detectorToolResult = new DetectorToolResult();
         List<DetectorEvaluation> detectorEvaluations = DetectorEvaluationUtils.flatten(rootEvaluation);

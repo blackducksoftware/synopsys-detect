@@ -31,12 +31,13 @@ import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationRes
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class Event {
-//    public static EventType<SearchResult> SearchCompleted = new EventType(SearchResult.class); //TODO: Listen
-//    public static EventType<PreparationResult> PreparationsCompleted = new EventType(PreparationResult.class);
-//    public static EventType<ExtractionResult> ExtractionsCompleted = new EventType(ExtractionResult.class);
+    public static EventType<DetectorEvaluationTree> SearchCompleted = new EventType(DetectorEvaluationTree.class); //TODO: Listen
+    public static EventType<DetectorEvaluationTree> PreparationsCompleted = new EventType(DetectorEvaluationTree.class);
+    public static EventType<DetectorEvaluationTree> ExtractionsCompleted = new EventType(DetectorEvaluationTree.class);
     public static EventType<DetectorToolResult> DetectorsComplete = new EventType(DetectorToolResult.class);
     public static EventType<DetectorTimings> DetectorsProfiled = new EventType(DetectorTimings.class);
     public static EventType<DetectorRule> ApplicableStarted = new EventType(DetectorRule.class);
