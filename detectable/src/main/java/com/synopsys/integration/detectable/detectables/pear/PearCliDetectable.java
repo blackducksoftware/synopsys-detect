@@ -43,15 +43,17 @@ public class PearCliDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final PearResolver pearResolver;
     private final PearCliExtractor pearCliExtractor;
+    private final PearCliDetectableOptions pearCliDetectableOptions;
 
     private File pearExe;
     private File packageDotXml;
 
-    public PearCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PearResolver pearResolver, final PearCliExtractor pearCliExtractor) {
+    public PearCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PearResolver pearResolver, final PearCliExtractor pearCliExtractor, final PearCliDetectableOptions pearCliDetectableOptions) {
         super(environment, "Pear Cli", "PEAR");
         this.fileFinder = fileFinder;
         this.pearResolver = pearResolver;
         this.pearCliExtractor = pearCliExtractor;
+        this.pearCliDetectableOptions = pearCliDetectableOptions;
     }
 
     @Override
@@ -78,7 +80,7 @@ public class PearCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return pearCliExtractor.extract(pearExe, packageDotXml, extractionEnvironment.getOutputDirectory());
+        return pearCliExtractor.extract(pearExe, packageDotXml, extractionEnvironment.getOutputDirectory(), pearCliDetectableOptions.onlyGatherRequired());
     }
 
 }

@@ -49,12 +49,12 @@ public class PipenvExtractor {
         this.pipenvDetectableOptions = pipenvDetectableOptions;
     }
 
-    public Extraction extract(final File directory, final File pythonExe, final File pipenvExe, final File setupFile) {
+    public Extraction extract(final File directory, final File pythonExe, final File pipenvExe, final File setupFile, final String providedProjectName, final String providedProjectVersionName) {
         Extraction extraction;
 
         try {
-            final String projectName = getProjectName(directory, pythonExe, setupFile);
-            final String projectVersionName = getProjectVersionName(directory, pythonExe, setupFile);
+            final String projectName = resolveProjectName(directory, pythonExe, setupFile, providedProjectName);
+            final String projectVersionName = resolveProjectVersionName(directory, pythonExe, setupFile, providedProjectVersionName);
             final PipParseResult result;
 
             final ExecutableOutput pipFreezeOutput = executableRunner.execute(directory, pipenvExe, Arrays.asList("run", "pip", "freeze"));
@@ -74,8 +74,8 @@ public class PipenvExtractor {
         return extraction;
     }
 
-    private String getProjectName(final File directory, final File pythonExe, final File setupFile) throws ExecutableRunnerException {
-        String projectName = pipenvDetectableOptions.getPipProjectName();
+    private String resolveProjectName(final File directory, final File pythonExe, final File setupFile, final String providedProjectName) throws ExecutableRunnerException {
+        String projectName = providedProjectName;
 
         if (StringUtils.isBlank(projectName) && setupFile != null && setupFile.exists()) {
             final List<String> arguements = Arrays.asList(setupFile.getAbsolutePath(), "--name");
@@ -86,8 +86,8 @@ public class PipenvExtractor {
         return projectName;
     }
 
-    private String getProjectVersionName(final File directory, final File pythonExe, final File setupFile) throws ExecutableRunnerException {
-        String projectVersionName = pipenvDetectableOptions.getPipProjectVersionName();
+    private String resolveProjectVersionName(final File directory, final File pythonExe, final File setupFile, final String providedProjectVersionName) throws ExecutableRunnerException {
+        String projectVersionName = providedProjectVersionName;
 
         if (StringUtils.isBlank(projectVersionName) && setupFile != null && setupFile.exists()) {
             final List<String> arguments = Arrays.asList(setupFile.getAbsolutePath(), "--version");

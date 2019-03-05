@@ -44,7 +44,6 @@ import com.synopsys.integration.detect.tool.detector.impl.DetectInspectorResolve
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.OfflineBlackDuckSignatureScanner;
 import com.synopsys.integration.detect.tool.signaturescanner.OnlineBlackDuckSignatureScanner;
-import com.synopsys.integration.detect.util.executable.CacheableExecutableFinder;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
@@ -146,7 +145,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public DetectableOptionFactory detectableOptionFactory() {
-        return new DetectableOptionFactory(detectConfiguration);
+        return new DetectableOptionFactory(detectConfiguration, airGapManager);
     }
 
     @Bean
@@ -158,8 +157,6 @@ public class RunBeanConfiguration {
     public DetectInspectorResolver detectInspectorResolver() {
         return new DetectInspectorResolver();
     }
-
-
 
     // TODO: Jordan fix me
 

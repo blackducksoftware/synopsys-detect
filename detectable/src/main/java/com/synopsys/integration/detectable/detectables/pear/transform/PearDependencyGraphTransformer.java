@@ -34,21 +34,18 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pear.model.PackageDependency;
 
 public class PearDependencyGraphTransformer {
     private final ExternalIdFactory externalIdFactory;
-    private final PearCliDetectableOptions pearCliDetectableOptions;
 
-    public PearDependencyGraphTransformer(final ExternalIdFactory externalIdFactory, final PearCliDetectableOptions pearCliDetectableOptions) {
+    public PearDependencyGraphTransformer(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
-        this.pearCliDetectableOptions = pearCliDetectableOptions;
     }
 
-    public DependencyGraph buildDependencyGraph(final Map<String, String> dependencyNameVersionMap, final List<PackageDependency> packageDependencies) {
+    public DependencyGraph buildDependencyGraph(final Map<String, String> dependencyNameVersionMap, final List<PackageDependency> packageDependencies, final boolean onlyGatherRequired) {
         final List<Dependency> dependencies = packageDependencies.stream()
-                                                  .filter(this::filterRequired)
+                                                  .filter(packageDependency -> filterRequired(packageDependency, onlyGatherRequired))
                                                   .map(PackageDependency::getName)
                                                   .map(dependencyName -> {
                                                       final String dependencyVersion = dependencyNameVersionMap.get(dependencyName);
@@ -62,8 +59,8 @@ public class PearDependencyGraphTransformer {
         return mutableDependencyGraph;
     }
 
-    private boolean filterRequired(final PackageDependency packageDependency) {
-        if (pearCliDetectableOptions.onlyGatherRequired()) {
+    private boolean filterRequired(final PackageDependency packageDependency, final boolean onlyGatherRequired) {
+        if (onlyGatherRequired) {
             return packageDependency.isRequired();
         } else {
             return true;

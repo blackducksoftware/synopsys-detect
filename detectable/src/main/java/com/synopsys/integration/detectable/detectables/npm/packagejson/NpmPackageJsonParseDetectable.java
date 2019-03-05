@@ -45,11 +45,12 @@ public class NpmPackageJsonParseDetectable extends Detectable {
 
     private File packageJsonFile;
 
-    public NpmPackageJsonParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PackageJsonExtractor packageJsonExtractor, final boolean includeDevDependencies) {
+    public NpmPackageJsonParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PackageJsonExtractor packageJsonExtractor,
+        final NpmPackageJsonParseDetectableOptions npmPackageJsonParseDetectableOptions) {
         super(environment, "package.json", "NPM");
         this.fileFinder = fileFinder;
         this.packageJsonExtractor = packageJsonExtractor;
-        this.includeDevDependencies = includeDevDependencies;
+        this.includeDevDependencies = npmPackageJsonParseDetectableOptions.shouldIncludeDevDependencies();
     }
 
     @Override

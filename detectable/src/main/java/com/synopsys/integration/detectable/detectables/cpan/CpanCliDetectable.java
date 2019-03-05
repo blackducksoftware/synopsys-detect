@@ -51,8 +51,7 @@ public class CpanCliDetectable extends Detectable {
     private File cpanExe;
     private File cpanmExe;
 
-    public CpanCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final CpanResolver cpanResolver, final CpanmResolver cpanmResolver,
-        final CpanCliExtractor cpanCliExtractor) {
+    public CpanCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final CpanResolver cpanResolver, final CpanmResolver cpanmResolver, final CpanCliExtractor cpanCliExtractor) {
         super(environment, "Cpan Cli", "CPAN");
         this.fileFinder = fileFinder;
         this.cpanResolver = cpanResolver;

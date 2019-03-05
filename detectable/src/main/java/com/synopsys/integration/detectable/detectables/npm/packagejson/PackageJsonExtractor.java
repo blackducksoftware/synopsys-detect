@@ -23,7 +23,6 @@
  */
 package com.synopsys.integration.detectable.detectables.npm.packagejson;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -52,7 +51,7 @@ public class PackageJsonExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(final InputStream packageJsonInputStream, final boolean includeDevDependencies) throws FileNotFoundException {
+    public Extraction extract(final InputStream packageJsonInputStream, final boolean includeDevDependencies) {
         final Reader packageJsonReader = new InputStreamReader(packageJsonInputStream);
         final PackageJson packageJson = gson.fromJson(packageJsonReader, PackageJson.class);
 

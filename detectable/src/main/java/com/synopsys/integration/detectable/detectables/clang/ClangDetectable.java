@@ -54,7 +54,7 @@ public class ClangDetectable extends Detectable {
     private ClangPackageManager selectedPackageManager;
 
     public ClangDetectable(final DetectableEnvironment environment, final ExecutableRunner executableRunner, final FileFinder fileFinder, final List<ClangPackageManager> availablePackageManagers, final ClangExtractor clangExtractor,
-        ClangDetectableOptions options, final ClangPackageManagerRunner packageManagerRunner) {
+        final ClangDetectableOptions options, final ClangPackageManagerRunner packageManagerRunner) {
         super(environment, "Clang", "Clang");
         this.fileFinder = fileFinder;
         this.availablePackageManagers = availablePackageManagers;
@@ -84,12 +84,12 @@ public class ClangDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         //addRelevantDiagnosticFile(jsonCompilationDatabaseFile);
         return clangExtractor.extract(selectedPackageManager, packageManagerRunner, environment.getDirectory(), options.getDepth(), extractionEnvironment.getOutputDirectory(), jsonCompilationDatabaseFile, options.isCleanup());
     }
 
-    private ClangPackageManager findPkgMgr(File workingDirectory) throws IntegrationException {
+    private ClangPackageManager findPkgMgr(final File workingDirectory) throws IntegrationException {
         for (final ClangPackageManager pkgMgrCandidate : availablePackageManagers) {
             if (packageManagerRunner.applies(pkgMgrCandidate, workingDirectory, executableRunner)) {
                 return pkgMgrCandidate;
