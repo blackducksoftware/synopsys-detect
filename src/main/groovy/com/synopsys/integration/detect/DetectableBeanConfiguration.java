@@ -581,8 +581,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetProjectDetectable nugetProjectBomTool(final DetectableEnvironment environment) {
-        //        return new NugetProjectDetectable(environment, fileFinder, detectableOptionFactory.createNugetInspectorOptions(), detectInspectorResolver, nugetInspectorExtractor()); // TODO: Fix NugetInspectorOptions
-        return null;
+        return new NugetProjectDetectable(environment, fileFinder, detectableOptionFactory.createNugetInspectorOptions(), detectInspectorResolver, nugetInspectorExtractor()); // TODO: Fix NugetInspectorOptions
     }
 
     @Bean
@@ -594,8 +593,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetSolutionDetectable nugetSolutionBomTool(final DetectableEnvironment environment) {
-        //        return new NugetSolutionDetectable(environment, fileFinder, detectInspectorResolver, nugetInspectorExtractor(), detectableOptionFactory.createNugetInspectorOptions()); // TODO: Fix NugetInspectorOptions
-        return null;
+        return new NugetSolutionDetectable(environment, fileFinder, detectInspectorResolver, nugetInspectorExtractor(), detectableOptionFactory.createNugetInspectorOptions()); // TODO: Fix NugetInspectorOptions
     }
 
     @Bean

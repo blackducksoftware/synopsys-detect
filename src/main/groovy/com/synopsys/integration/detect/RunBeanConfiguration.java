@@ -141,7 +141,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public DetectableOptionFactory detectableOptionFactory() {
-        return new DetectableOptionFactory(detectConfiguration, airGapManager);
+        return new DetectableOptionFactory(detectConfiguration, null);
     }
 
     @Bean
