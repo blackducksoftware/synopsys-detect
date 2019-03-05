@@ -648,7 +648,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_LOGGING, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The logging level of Detect")
-    @AcceptableValues(value = { "ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
+    @AcceptableValues(value = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
     LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION("logging.level.com.synopsys.integration", "Logging Level", "5.3.0", PropertyType.STRING, PropertyAuthority.None, "INFO"),
 
     /**********************************************************************************************
