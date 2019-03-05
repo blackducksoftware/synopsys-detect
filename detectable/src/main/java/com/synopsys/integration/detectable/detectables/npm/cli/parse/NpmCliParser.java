@@ -41,7 +41,6 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
 
 public class NpmCliParser {
@@ -87,7 +86,7 @@ public class NpmCliParser {
 
         final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, projectName, projectVersion);
 
-        final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.NPM, graph, externalId).build();
+        final CodeLocation codeLocation = new CodeLocation(graph, externalId);
 
         return new NpmParseResult(projectName, projectVersion, codeLocation);
 

@@ -37,7 +37,6 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
 import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
 
@@ -95,7 +94,7 @@ public class PipInspectorTreeParser {
         }
 
         if (project != null) {
-            final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.PIP, graph, project.externalId).build();
+            final CodeLocation codeLocation = new CodeLocation(graph, project.externalId);
             parseResult = new PipParseResult(project.name, project.version, codeLocation);
         }
 

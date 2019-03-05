@@ -21,12 +21,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.rubygems.gemspec;
+package com.synopsys.integration.detectable.detectables.gradle.parsing;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Detectable;
@@ -34,37 +34,32 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
+import com.synopsys.integration.detectable.detectables.gradle.parsing.parse.BuildGradleParser;
 
-public class GemspecDetectable extends Detectable {
-    private static final String GEMSPEC_FILENAME = "Gemfile.lock";
+public class GradleParseDetectable extends Detectable {
+    public static final String BUILD_GRADLE_FILENAME = "build.gradle";
 
     private final FileFinder fileFinder;
-    private final GemspecParser gemspecParser;
-    private final boolean includeRuntimeDependencies;
-    private final boolean includeDevelopmentDependencies;
+    private final BuildGradleParser buildGradleParser;
 
-    private File gemspec;
+    private File buildFile;
 
-    public GemspecDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GemspecParser gemspecParser, final boolean includeRuntimeDependencies, final boolean includeDevelopmentDependencies) {
-        super(environment, "Gemspec", "RUBYGEMS");
+    public GradleParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final BuildGradleParser buildGradleParser) {
+        super(environment, "gradle.build", "GRADLE");
         this.fileFinder = fileFinder;
-        this.gemspecParser = gemspecParser;
-        this.includeRuntimeDependencies = includeRuntimeDependencies;
-        this.includeDevelopmentDependencies = includeDevelopmentDependencies;
+        this.buildGradleParser = buildGradleParser;
     }
 
     @Override
     public DetectableResult applicable() {
-        gemspec = fileFinder.findFile(environment.getDirectory(), GEMSPEC_FILENAME);
+        buildFile = fileFinder.findFile(environment.getDirectory(), BUILD_GRADLE_FILENAME);
 
-        if (gemspec == null) {
-            return new FileNotFoundDetectableResult(GEMSPEC_FILENAME);
+        if (buildFile == null) {
+            return new FileNotFoundDetectableResult(BUILD_GRADLE_FILENAME);
         }
 
         return new PassedDetectableResult();
@@ -78,12 +73,16 @@ public class GemspecDetectable extends Detectable {
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         try {
-            final InputStream inputStream = new FileInputStream(gemspec);
-            final DependencyGraph dependencyGraph = gemspecParser.parse(inputStream, includeRuntimeDependencies, includeDevelopmentDependencies);
-            final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.RUBYGEMS, dependencyGraph).build();
+            final InputStream buildFileInputStream = new FileInputStream(buildFile);
+            final Optional<DependencyGraph> dependencyGraph = buildGradleParser.parse(buildFileInputStream);
 
-            return new Extraction.Builder().codeLocations(codeLocation).build();
-        } catch (final IOException e) {
+            if (dependencyGraph.isPresent()) {
+                final CodeLocation codeLocation = new CodeLocation(dependencyGraph.get());
+                return new Extraction.Builder().codeLocations(codeLocation).build();
+            } else {
+                return new Extraction.Builder().failure(String.format("Failed to extract dependencies from %s", BUILD_GRADLE_FILENAME)).build();
+            }
+        } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }

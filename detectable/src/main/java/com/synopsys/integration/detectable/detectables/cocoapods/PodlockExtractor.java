@@ -37,7 +37,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockParser;
 
 public class PodlockExtractor {
@@ -72,7 +71,7 @@ public class PodlockExtractor {
 
         final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, directory.toString());
 
-        final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.COCOAPODS, dependencyGraph, externalId).build();
+        final CodeLocation codeLocation = new CodeLocation(dependencyGraph, externalId);
 
         return new Extraction.Builder().success(codeLocation).build();
     }

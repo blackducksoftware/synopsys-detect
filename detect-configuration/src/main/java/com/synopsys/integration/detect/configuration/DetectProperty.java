@@ -215,6 +215,10 @@ public enum DetectProperty {
     @HelpDescription("If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.")
     DETECT_BOM_AGGREGATE_NAME("detect.bom.aggregate.name", "Aggregate BDIO File Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
+    @HelpGroup(primary = GROUP_GENERAL)
+    @HelpDescription("If set to true, only Detector's capable of running without a build will be run")
+    DETECT_BUILDLESS("detect.detectors.buildless", "Buildless Mode", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+
     @HelpGroup(primary = GROUP_CLEANUP, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If true, the files created by Detect will be cleaned up.")
     DETECT_CLEANUP("detect.cleanup", "Cleanup Output", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),

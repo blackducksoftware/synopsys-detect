@@ -108,14 +108,14 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.GO_VNDR, "Go Vndr", detectableFactory::createGoVndrDetectable).defaultNested().build();
         ruleSet.addDetector(DetectorType.GO_VENDOR, "Go Vendor", detectableFactory::createGoVendorDetectable).defaultNested().build();
 
-        ruleSet.addDetector(DetectorType.GRADLE, "Gradle Parse", detectableFactory::createBuildGradleDetectable).defaultNotNested().build();
+        ruleSet.addDetector(DetectorType.GRADLE, "Gradle Parse", detectableFactory::createGradleParseDetectable).defaultNotNested().build();
 
-        ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom Parse", detectableFactory::createMavenPomXmlDetectable).defaultNotNested().build();
+        ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom Parse", detectableFactory::createMavenParseDetectable).defaultNotNested().build();
 
         final DetectorRule yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", detectableFactory::createYarnLockDetectable).defaultNested().build();
         final DetectorRule npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", detectableFactory::createNpmPackageLockDetectable).defaultNested().build();
         final DetectorRule npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", detectableFactory::createNpmShrinkwrapDetectable).defaultNested().build();
-        final DetectorRule npmPackageJsonParse = ruleSet.addDetector(DetectorType.NPM, "Package Json Parse", detectableFactory::createNpmPackageJsonDetectable).defaultNested().build();
+        final DetectorRule npmPackageJsonParse = ruleSet.addDetector(DetectorType.NPM, "Package Json Parse", detectableFactory::createNpmPackageJsonParseDetectable).defaultNested().build();
 
         ruleSet.yield(npmShrinkwrap).to(npmPackageLock);
         ruleSet.yield(npmPackageJsonParse).to(npmPackageLock);
@@ -129,7 +129,11 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.PIP, "Pip Env", detectableFactory::createPipenvDetectable).defaultNotNested().build();
 
-        ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", detectableFactory::createGemlockDetectable).defaultNotNested().build();
+        final DetectorRule gemlock = ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", detectableFactory::createGemlockDetectable).defaultNotNested().build();
+        final DetectorRule gemspec = ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemspec", detectableFactory::createGemspecParseDetectable).defaultNotNested().build();
+
+        ruleSet.yield(gemspec).to(gemlock);
+
         ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", detectableFactory::createSbtResolutionCacheDetectable).defaultNotNested().build();
 
         return ruleSet.build();

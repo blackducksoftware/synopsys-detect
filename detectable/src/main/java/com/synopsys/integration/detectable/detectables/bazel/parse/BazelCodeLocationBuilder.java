@@ -37,7 +37,6 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
 
 public class BazelCodeLocationBuilder {
@@ -60,19 +59,19 @@ public class BazelCodeLocationBuilder {
         try {
             logger.debug(String.format("Adding dependency from external id: %s", bazelExternalId));
             final ExternalId externalId = externalIdFactory.createMavenExternalId(bazelExternalId.getGroup(), bazelExternalId.getArtifact(), bazelExternalId.getVersion());
-            Dependency artifactDependency = new Dependency(bazelExternalId.getArtifact(), bazelExternalId.getVersion(), externalId);
+            final Dependency artifactDependency = new Dependency(bazelExternalId.getArtifact(), bazelExternalId.getVersion(), externalId);
             dependencyGraph.addChildToRoot(artifactDependency);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.error(String.format("Unable to parse group:artifact:version from %s", bazelExternalId));
         }
         return this;
     }
 
     public List<CodeLocation> build() {
-        Forge forge = new Forge("/", "/", "DETECT");
-         final ExternalId externalId = externalIdFactory.createPathExternalId(forge, workspaceDir.toString()); //TODO: don't use workspace as ID
-         final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.BAZEL, dependencyGraph, externalId).build();
-        List<CodeLocation> codeLocations = new ArrayList<>(1);
+        final Forge forge = new Forge("/", "/", "DETECT");
+        final ExternalId externalId = externalIdFactory.createPathExternalId(forge, workspaceDir.toString()); //TODO: don't use workspace as ID
+        final CodeLocation codeLocation = new CodeLocation(dependencyGraph, externalId);
+        final List<CodeLocation> codeLocations = new ArrayList<>(1);
         codeLocations.add(codeLocation);
         return codeLocations;
     }

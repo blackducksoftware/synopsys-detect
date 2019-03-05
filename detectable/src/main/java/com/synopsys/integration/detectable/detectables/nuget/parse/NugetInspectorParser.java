@@ -24,13 +24,10 @@
 package com.synopsys.integration.detectable.detectables.nuget.parse;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
@@ -38,7 +35,6 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectables.nuget.model.NugetContainer;
 import com.synopsys.integration.detectable.detectables.nuget.model.NugetContainerType;
 import com.synopsys.integration.detectable.detectables.nuget.model.NugetInspection;
@@ -86,31 +82,36 @@ public class NugetInspectorParser {
                 final NugetDependencyNodeBuilder builder = new NugetDependencyNodeBuilder(externalIdFactory);
                 builder.addPackageSets(container.packages);
                 final DependencyGraph children = builder.createDependencyGraph(container.dependencies);
-                final String sourcePath = container.sourcePath;
-
                 if (StringUtils.isBlank(projectVersionName)) {
                     projectVersionName = container.version;
                 }
-                final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.NUGET, children, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName))
-                                                            .build();
+
+                final CodeLocation codeLocation = new CodeLocation(children, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), convertSourcePath(container.sourcePath));
                 codeLocations.add(codeLocation);
             }
             parseResult = new NugetParseResult(projectName, projectVersionName, codeLocations);
         } else if (NugetContainerType.PROJECT == nugetContainer.type) {
             projectName = nugetContainer.name;
             projectVersionName = nugetContainer.version;
-            final String sourcePath = nugetContainer.sourcePath;
             final NugetDependencyNodeBuilder builder = new NugetDependencyNodeBuilder(externalIdFactory);
             builder.addPackageSets(nugetContainer.packages);
             final DependencyGraph children = builder.createDependencyGraph(nugetContainer.dependencies);
 
-            final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.NUGET, children, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName))
-                                                        .build();
+            final CodeLocation codeLocation = new CodeLocation(children, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), convertSourcePath(nugetContainer.sourcePath));
             parseResult = new NugetParseResult(projectName, projectVersionName, codeLocation);
         } else {
             parseResult = null;
         }
 
         return Optional.ofNullable(parseResult);
+    }
+
+    private File convertSourcePath(final String sourcePath) {
+        File fileSourcePath = null;
+        if (StringUtils.isNotBlank(sourcePath)) {
+            fileSourcePath = new File(sourcePath);
+        }
+
+        return fileSourcePath;
     }
 }

@@ -34,14 +34,13 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomXmlParser;
 
-public class MavenPomXmlDetectable extends Detectable {
+public class MavenParseDetectable extends Detectable {
     public static final String POM_XML_FILENAME = "pom.xml";
 
     private final FileFinder fileFinder;
@@ -49,7 +48,7 @@ public class MavenPomXmlDetectable extends Detectable {
 
     private File pomXmlFile;
 
-    public MavenPomXmlDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PomXmlParser pomXmlParser) {
+    public MavenParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PomXmlParser pomXmlParser) {
         super(environment, "pom.xml", "MAVEN");
         this.fileFinder = fileFinder;
         this.pomXmlParser = pomXmlParser;
@@ -78,7 +77,7 @@ public class MavenPomXmlDetectable extends Detectable {
             final Optional<DependencyGraph> dependencyGraph = pomXmlParser.parse(pomXmlInputStream);
 
             if (dependencyGraph.isPresent()) {
-                final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.MAVEN, dependencyGraph.get()).build();
+                final CodeLocation codeLocation = new CodeLocation(dependencyGraph.get());
                 return new Extraction.Builder().codeLocations(codeLocation).build();
             } else {
                 return new Extraction.Builder().failure(String.format("Failed to extract dependencies from %s", POM_XML_FILENAME)).build();

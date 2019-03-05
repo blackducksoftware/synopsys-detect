@@ -38,7 +38,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectables.go.vendr.parse.VndrParser;
 
 public class GoVndrExtractor {
@@ -57,7 +56,7 @@ public class GoVndrExtractor {
             final DependencyGraph dependencyGraph = vndrParser.parseVendorConf(venderConfContents);
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString());//TODO remove directory as ID
 
-            final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.GO_VNDR, dependencyGraph, externalId).build();
+            final CodeLocation codeLocation = new CodeLocation(dependencyGraph, externalId);
             return new Extraction.Builder().success(codeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

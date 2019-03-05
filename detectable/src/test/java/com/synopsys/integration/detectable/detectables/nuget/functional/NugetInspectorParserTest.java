@@ -2,7 +2,6 @@ package com.synopsys.integration.detectable.detectables.nuget.functional;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +28,6 @@ import com.synopsys.integration.detectable.detectables.nuget.parse.NugetInspecto
 import com.synopsys.integration.detectable.detectables.nuget.parse.NugetParseResult;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.GraphCompare;
-import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 public class NugetInspectorParserTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -76,11 +74,11 @@ public class NugetInspectorParserTest {
 
             final DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
 
-            final BdioExternalIdentifier projectId = bdioPropertyHelper.createExternalIdentifier(codeLocation.getExternalId());
+            final BdioExternalIdentifier projectId = bdioPropertyHelper.createExternalIdentifier(codeLocation.getExternalId().get());
             final BdioProject project = bdioNodeFactory.createProject(result.projectName, result.projectVersion, BdioId.createFromPieces(Forge.NUGET.toString()), projectId);
 
             final Map<ExternalId, BdioNode> components = new HashMap<>();
-            components.put(codeLocation.getExternalId(), project);
+            components.put(codeLocation.getExternalId().get(), project);
 
             final List<BdioComponent> bdioComponents = dependencyNodeTransformer.transformDependencyGraph(codeLocation.getDependencyGraph(), project, codeLocation.getDependencyGraph().getRootDependencies(), components);
 

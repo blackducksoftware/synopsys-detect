@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -38,13 +37,14 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationT
 public class CodeLocationDependencyCounter {
     public Map<CodeLocationType, Integer> aggregateCountsByGroup(final Map<CodeLocation, Integer> codeLocations) {
         final Map<CodeLocationType, Integer> dependencyCounts = new HashMap<>();
-        for (final Entry<CodeLocation, Integer> countEntry : codeLocations.entrySet()) {
-            final CodeLocationType group = countEntry.getKey().getCodeLocationType();
-            if (!dependencyCounts.containsKey(group)) {
-                dependencyCounts.put(group, 0);
-            }
-            dependencyCounts.put(group, dependencyCounts.get(group) + countEntry.getValue());
-        }
+        // TODO: Fix me
+        //        for (final Entry<CodeLocation, Integer> countEntry : codeLocations.entrySet()) {
+        //            final CodeLocationType group = countEntry.getKey().getCodeLocationType();
+        //            if (!dependencyCounts.containsKey(group)) {
+        //                dependencyCounts.put(group, 0);
+        //            }
+        //            dependencyCounts.put(group, dependencyCounts.get(group) + countEntry.getValue());
+        //        }
         return dependencyCounts;
     }
 

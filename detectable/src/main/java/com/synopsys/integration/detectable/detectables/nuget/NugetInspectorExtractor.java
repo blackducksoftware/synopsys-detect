@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraphCombiner;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -62,7 +61,7 @@ public class NugetInspectorExtractor {
         this.fileFinder = fileFinder;
     }
 
-    public Extraction extract(final File targetDirectory, File outputDirectory, NugetInspector inspector, NugetInspectorOptions nugetInspectorOptions) {
+    public Extraction extract(final File targetDirectory, final File outputDirectory, final NugetInspector inspector, final NugetInspectorOptions nugetInspectorOptions) {
         try {
             final ExecutableOutput executableOutput = inspector.execute(targetDirectory, nugetInspectorOptions);
 
@@ -80,30 +79,30 @@ public class NugetInspectorExtractor {
             }
 
             final List<CodeLocation> codeLocations = parseResults.stream()
-                                                               .flatMap(it -> it.codeLocations.stream())
-                                                               .collect(Collectors.toList());
+                                                         .flatMap(it -> it.codeLocations.stream())
+                                                         .collect(Collectors.toList());
 
             if (codeLocations.size() <= 0) {
                 logger.warn("Unable to extract any dependencies from nuget");
             }
 
-            final Map<String, CodeLocation> codeLocationsBySource = new HashMap<>();
+            final Map<File, CodeLocation> codeLocationsBySource = new HashMap<>();
             final DependencyGraphCombiner combiner = new DependencyGraphCombiner();
 
-            codeLocations.stream().forEach(codeLocation -> {
-                final String sourcePathKey = codeLocation.getSourcePath().toLowerCase();
-                if (codeLocationsBySource.containsKey(sourcePathKey)) {
+            codeLocations.forEach(codeLocation -> {
+                final File sourcePathFile = codeLocation.getSourcePath().orElse(null);
+                if (codeLocationsBySource.containsKey(sourcePathFile)) {
                     logger.info("Multiple project code locations were generated for: " + targetDirectory.toString());
                     logger.info("This most likely means the same project exists in multiple solutions.");
                     logger.info("The code location's dependencies will be combined, in the future they will exist seperately for each solution.");
-                    final CodeLocation destination = codeLocationsBySource.get(sourcePathKey);
+                    final CodeLocation destination = codeLocationsBySource.get(sourcePathFile);
                     combiner.addGraphAsChildrenToRoot((MutableDependencyGraph) destination.getDependencyGraph(), codeLocation.getDependencyGraph());
                 } else {
-                    codeLocationsBySource.put(sourcePathKey, codeLocation);
+                    codeLocationsBySource.put(sourcePathFile, codeLocation);
                 }
             });
 
-            final List<CodeLocation> uniqueCodeLocations = codeLocationsBySource.values().stream().collect(Collectors.toList());
+            final List<CodeLocation> uniqueCodeLocations = new ArrayList<>(codeLocationsBySource.values());
 
             final Extraction.Builder builder = new Extraction.Builder().success(uniqueCodeLocations);
             final Optional<NugetParseResult> project = parseResults.stream().filter(it -> StringUtils.isNotBlank(it.projectName)).findFirst();

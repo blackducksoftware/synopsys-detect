@@ -44,7 +44,6 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.sbt.model.SbtDependencyModule;
 import com.synopsys.integration.detectable.detectables.sbt.model.SbtProject;
@@ -86,7 +85,7 @@ public class SbtResolutionCacheExtractor {
             String projectName = null;
             String projectVersion = null;
             for (final SbtDependencyModule module : project.modules) {
-                final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.SBT, module.graph, project.projectExternalId).build();
+                final CodeLocation codeLocation = new CodeLocation(module.graph, project.projectExternalId);
                 if (projectName == null) {
                     projectName = project.projectName;
                     projectVersion = project.projectVersion;

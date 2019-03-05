@@ -32,7 +32,6 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleConfiguration;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleGav;
@@ -54,7 +53,7 @@ public class GradleReportTransformer {
         }
 
         final ExternalId projectId = externalIdFactory.createMavenExternalId(gradleReport.projectGroup, gradleReport.projectName, gradleReport.projectVersionName);
-        return new CodeLocation.Builder(CodeLocationType.GRADLE, graph, projectId).build();
+        return new CodeLocation(graph, projectId);
     }
 
     public void addConfigurationToGraph(final MutableDependencyGraph graph, final GradleConfiguration configuration) {
