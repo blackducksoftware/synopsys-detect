@@ -37,6 +37,7 @@ import com.synopsys.integration.detect.type.ExecutableType;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 
 public class CacheableExecutableFinder {
+    /*
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private DirectoryManager directoryManager;
 
@@ -125,5 +126,5 @@ public class CacheableExecutableFinder {
             this.detectExecutableType = detectExecutableType;
             this.override = override;
         }
-    }
+    } */
 }

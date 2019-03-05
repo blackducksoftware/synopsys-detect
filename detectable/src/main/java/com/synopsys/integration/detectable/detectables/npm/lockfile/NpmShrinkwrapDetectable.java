@@ -50,7 +50,7 @@ public class NpmShrinkwrapDetectable extends Detectable {
     private File lockfile;
     private File packageJson;
 
-    public NpmShrinkwrapDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NpmLockfileExtractor npmLockfileExtractor, final boolean includeDevDependencies) {
+    public NpmShrinkwrapDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NpmLockfileExtractor npmLockfileExtractor, final boolean includeDevDependencies) { //dev should be option object...
         super(environment, "Shrinkwrap", "NPM");
         this.fileFinder = fileFinder;
         this.npmLockfileExtractor = npmLockfileExtractor;

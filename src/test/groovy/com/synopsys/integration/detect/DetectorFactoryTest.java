@@ -15,8 +15,6 @@ import com.synopsys.integration.detect.configuration.DetectPropertyMap;
 import com.synopsys.integration.detect.configuration.DetectPropertySource;
 import com.synopsys.integration.detect.property.SpringPropertySource;
 import com.synopsys.integration.detect.util.executable.CacheableExecutableFinder;
-import com.synopsys.integration.detect.util.executable.ExecutableFinder;
-import com.synopsys.integration.detect.util.executable.ExecutableRunner;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
@@ -32,31 +30,29 @@ public class DetectorFactoryTest {
     AnnotationConfigApplicationContext runContext;
 
     @Before
-    public void createSpringContext() {
-        ConfigurableEnvironment environment = new StandardEnvironment();
-        DetectConfiguration mockConfig = new DetectConfiguration(new DetectPropertySource(new SpringPropertySource(environment)), new DetectPropertyMap());
-
-        runContext = new AnnotationConfigApplicationContext();
-        runContext.setDisplayName("Detect Run Test");
-//        runContext.register(DetectorBeanConfiguration.class); TODO Fix
-        runContext.getBeanFactory().registerSingleton(Gson.class.getSimpleName(), new Gson());
-        runContext.getBeanFactory().registerSingleton(JsonParser.class.getSimpleName(), new JsonParser());
-        registerMock(runContext, Configuration.class);
-        registerMock(runContext, DocumentBuilder.class);
-        registerMock(runContext, ExecutableRunner.class);
-        registerMock(runContext, AirGapManager.class);
-        registerMock(runContext, ExecutableFinder.class);
-        registerMock(runContext, ExternalIdFactory.class);
-        registerMock(runContext, DetectFileFinder.class);
-        registerMock(runContext, DirectoryManager.class);
-        registerMock(runContext, DetectConfiguration.class);
-        registerMock(runContext, ConnectionManager.class);
-        registerMock(runContext, CacheableExecutableFinder.class);
-        registerMock(runContext, ArtifactResolver.class);
-        registerMock(runContext, DetectInfo.class);
-
-        runContext.refresh();
-    }
+//    public void createSpringContext() {
+//        ConfigurableEnvironment environment = new StandardEnvironment();
+//        DetectConfiguration mockConfig = new DetectConfiguration(new DetectPropertySource(new SpringPropertySource(environment)), new DetectPropertyMap());
+//
+//        runContext = new AnnotationConfigApplicationContext();
+//        runContext.setDisplayName("Detect Run Test");
+////        runContext.register(DetectorBeanConfiguration.class); TODO Fix
+//        runContext.getBeanFactory().registerSingleton(Gson.class.getSimpleName(), new Gson());
+//        runContext.getBeanFactory().registerSingleton(JsonParser.class.getSimpleName(), new JsonParser());
+//        registerMock(runContext, Configuration.class);
+//        registerMock(runContext, DocumentBuilder.class);
+//        registerMock(runContext, AirGapManager.class);
+//        registerMock(runContext, ExternalIdFactory.class);
+//        registerMock(runContext, DetectFileFinder.class);
+//        registerMock(runContext, DirectoryManager.class);
+//        registerMock(runContext, DetectConfiguration.class);
+//        registerMock(runContext, ConnectionManager.class);
+//        registerMock(runContext, CacheableExecutableFinder.class);
+//        registerMock(runContext, ArtifactResolver.class);
+//        registerMock(runContext, DetectInfo.class);
+//
+//        runContext.refresh();
+//    }
 
     private <T> void registerMock(AnnotationConfigApplicationContext context, Class<T> bean) {
         String name = bean.getSimpleName();

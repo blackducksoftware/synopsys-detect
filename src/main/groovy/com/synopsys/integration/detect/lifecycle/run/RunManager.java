@@ -49,7 +49,6 @@ import com.synopsys.integration.detect.tool.polaris.PolarisTool;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
-import com.synopsys.integration.detect.util.executable.ExecutableRunner;
 import com.synopsys.integration.detect.workflow.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
@@ -70,6 +69,8 @@ import com.synopsys.integration.detect.workflow.hub.PolicyCheckOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
@@ -148,7 +149,7 @@ public class RunManager {
                 final DetectorFinderOptions finderOptions = detectConfigurationFactory.createSearchOptions(directoryManager.getSourceDirectory());
                 final DetectorTool detectorTool = new DetectorTool(detectContext);
 
-                final DetectorToolResult detectorToolResult = detectorTool.performDetectors(finderOptions, projectBomTool);
+                final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), finderOptions, projectBomTool);
                 runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
                 runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);
                 runResult.addApplicableDetectors(detectorToolResult.applicableDetectorTypes);
@@ -282,7 +283,7 @@ public class RunManager {
             if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
                 logger.info("Will include the Polaris tool.");
                 PolarisServerConfig polarisServerConfig = productRunData.getPolarisRunData().getPolarisServerConfig();
-                final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, new ExecutableRunner(), connectionManager, detectConfiguration, polarisServerConfig);
+                final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, new SimpleExecutableRunner(), connectionManager, detectConfiguration, polarisServerConfig);
                 polarisTool.runPolaris(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
                 logger.info("Polaris actions finished.");
             } else {

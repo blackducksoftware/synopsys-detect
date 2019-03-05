@@ -50,11 +50,12 @@ public class DetectorEvaluationTree {
         this.children = new HashSet<>();
     }
 
-    public DetectorEvaluationTree(final File directory, final int depthFromRoot, final List<DetectorEvaluation> orderedEvaluations, final Set<DetectorEvaluationTree> children) {
+    public DetectorEvaluationTree(final File directory, final int depthFromRoot, final DetectorRuleSet detectorRuleSet, final List<DetectorEvaluation> orderedEvaluations, final Set<DetectorEvaluationTree> children) {
         this.directory = directory;
         this.depthFromRoot = depthFromRoot;
         this.orderedEvaluations = orderedEvaluations;
         this.children = children;
+        this.detectorRuleSet = detectorRuleSet;
     }
 
     public List<DetectorEvaluationTree> asFlatList(){

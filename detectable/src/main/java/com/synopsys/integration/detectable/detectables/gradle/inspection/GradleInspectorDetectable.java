@@ -50,7 +50,6 @@ public class GradleInspectorDetectable extends Detectable {
 
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
 
-    private final DirectoryManager directoryManager;
     private final FileFinder fileFinder;
     private final GradleResolver gradleResolver;
     private final GradleInspectorTemplateResolver gradleInspectorTemplateResolver;
@@ -61,12 +60,11 @@ public class GradleInspectorDetectable extends Detectable {
     private File gradleExe;
     private File gradleInspector;
 
-    public GradleInspectorDetectable(final DetectableEnvironment environment, final DirectoryManager directoryManager, final FileFinder fileFinder,
+    public GradleInspectorDetectable(final DetectableEnvironment environment, final FileFinder fileFinder,
         final GradleResolver gradleResolver, final GradleInspectorTemplateResolver gradleInspectorTemplateResolver,
         final GradleInspectorExtractor gradleInspectorExtractor, final GradleInspectorOptions gradleInspectorOptions,
         final GradleInspectorScriptCreator gradleInspectorScriptCreator) {
         super(environment, "Gradle Inspector", "Gradle");
-        this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;
         this.gradleResolver = gradleResolver;
         this.gradleInspectorTemplateResolver = gradleInspectorTemplateResolver;

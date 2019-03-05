@@ -54,14 +54,6 @@ public class DetectorTool {
     public DetectorToolResult performDetectors(File directory, DetectorFinderOptions detectorFinderOptions, String projectBomTool) throws DetectUserFriendlyException {
         logger.info("Preparing to initialize detectors.");
 
-        logger.info("Finding detectors.");
-
-        logger.info("Determining searchable and applicable.");
-
-        logger.info("Determining extractable.");
-
-        logger.info("Performing extraction.");
-
         DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
         DetectorFinder detectorFinder = new DetectorFinder();
         DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
@@ -69,14 +61,18 @@ public class DetectorTool {
 
         DetectorEvaluationTree rootEvaluation;
         try {
+            logger.info("Finding detectors.");
             rootEvaluation = detectorFinder.findDetectors(directory, detectRuleSet, detectorFinderOptions);
         } catch (DetectorFinderDirectoryListException e) {
             throw new DetectUserFriendlyException("Detect was unable to list a directory while searching for detectors.", e, ExitCodeType.FAILURE_DETECTOR);
         }
 
+        logger.info("Evaluating search and applicable.");
         DetectorEvaluator detectorEvaluator = new DetectorEvaluator();
         detectorEvaluator.searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
+        logger.info("Evaluating extractable.");
         detectorEvaluator.extractableEvaluation(rootEvaluation);
+        logger.info("Evaluating extractions.");
         detectorEvaluator.extractionEvaluation(rootEvaluation, detectorEvaluation -> new ExtractionEnvironment(new File("")));
 
         //Completed.

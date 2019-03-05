@@ -38,12 +38,13 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
+import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
+import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
+import com.synopsys.integration.detect.tool.detector.impl.DetectInspectorResolver;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.OfflineBlackDuckSignatureScanner;
 import com.synopsys.integration.detect.tool.signaturescanner.OnlineBlackDuckSignatureScanner;
 import com.synopsys.integration.detect.util.executable.CacheableExecutableFinder;
-import com.synopsys.integration.detect.util.executable.ExecutableFinder;
-import com.synopsys.integration.detect.util.executable.ExecutableRunner;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
@@ -55,6 +56,9 @@ import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detect.workflow.file.AirGapOptions;
 import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
+import com.synopsys.integration.detectable.detectable.file.FileFinder;
 
 import freemarker.template.Configuration;
 
@@ -120,16 +124,6 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public ExecutableRunner executableRunner() {
-        return new ExecutableRunner();
-    }
-
-    @Bean
-    public ExecutableFinder executableManager() {
-        return new ExecutableFinder(detectFileFinder(), detectInfo);
-    }
-
-    @Bean
     public AirGapManager airGapManager() {
         final AirGapOptions airGapOptions = detectConfigurationFactory().createAirGapOptions();
         return new AirGapManager(airGapOptions);
@@ -141,15 +135,37 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public CacheableExecutableFinder standardExecutableFinder() {
-        return new CacheableExecutableFinder(directoryManager, executableManager(), detectConfiguration);
+    public FileFinder fileFinder() {
+        return new com.synopsys.integration.detect.tool.detector.impl.DetectFileFinder();
     }
+
+    @Bean
+    public ExecutableRunner executableRunner() {
+        return new SimpleExecutableRunner();
+    }
+
+    @Bean
+    public DetectableOptionFactory detectableOptionFactory() {
+        return new DetectableOptionFactory(detectConfiguration);
+    }
+
+    @Bean
+    public DetectExecutableResolver detectExecutableResolver() {
+        return new DetectExecutableResolver();
+    }
+
+    @Bean
+    public DetectInspectorResolver detectInspectorResolver() {
+        return new DetectInspectorResolver();
+    }
+
+
 
     // TODO: Jordan fix me
 
     //    @Bean
     //    public DockerInspectorManager dockerInspectorManager() {
-    //        return new DockerInspectorManager(directoryManager, airGapManager(), detectFileFinder(), detectConfiguration, artifactResolver());
+    //        return new DockerInspectorManager(directoryManager, airGapManager(), fileFinder(), detectConfiguration, artifactResolver());
     //    }
     //
     //    @Lazy
@@ -167,7 +183,7 @@ public class RunBeanConfiguration {
     //    @Lazy
     //    @Bean
     //    public DockerExtractor dockerExtractor(final DockerProperties dockerProperties) {
-    //        return new DockerExtractor(detectFileFinder(), dockerProperties, executableRunner(), bdioTransformer(), externalIdFactory(), gson);
+    //        return new DockerExtractor(fileFinder(), dockerProperties, executableRunner(), bdioTransformer(), externalIdFactory(), gson);
     //    }
 
     @Lazy
