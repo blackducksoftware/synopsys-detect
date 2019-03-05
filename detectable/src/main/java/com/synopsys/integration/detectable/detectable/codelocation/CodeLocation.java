@@ -23,66 +23,41 @@
  */
 package com.synopsys.integration.detectable.detectable.codelocation;
 
+import java.io.File;
+import java.util.Optional;
+
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
 public class CodeLocation {
-    private final CodeLocationType codeLocationType;
-    private final String sourcePath;
-    private final String dockerImage;
+    private final File sourcePath;
     private final ExternalId externalId;
     private final DependencyGraph dependencyGraph;
 
-    public static class Builder {
-        private final CodeLocationType codeLocationType;
-        private String sourcePath;
-        private String dockerImage;
-        private ExternalId externalId;
-        private final DependencyGraph dependencyGraph;
-
-        public Builder(final CodeLocationType codeLocationType, final DependencyGraph dependencyGraph) {
-            this.codeLocationType = codeLocationType;
-            this.dependencyGraph = dependencyGraph;
-        }
-
-        public Builder(final CodeLocationType codeLocationType, final DependencyGraph dependencyGraph, ExternalId externalId) {
-            this.codeLocationType = codeLocationType;
-            this.dependencyGraph = dependencyGraph;
-            this.externalId = externalId;
-        }
-
-        public Builder dockerImage(final String dockerImage) {
-            this.dockerImage = dockerImage;
-            return this;
-        }
-
-        public CodeLocation build() {
-            return new CodeLocation(this);
-        }
+    public CodeLocation(final DependencyGraph dependencyGraph) {
+        this(dependencyGraph, null, null);
     }
 
-    private CodeLocation(final Builder builder) {
-        this.codeLocationType = builder.codeLocationType;
-        this.sourcePath = builder.sourcePath;
-        this.dockerImage = builder.dockerImage;
-        this.externalId = builder.externalId;
-        this.dependencyGraph = builder.dependencyGraph;
+    public CodeLocation(final DependencyGraph dependencyGraph, final File sourcePath) {
+        this(dependencyGraph, null, sourcePath);
     }
 
-    public CodeLocationType getCodeLocationType() {
-        return codeLocationType;
+    public CodeLocation(final DependencyGraph dependencyGraph, final ExternalId externalId) {
+        this(dependencyGraph, externalId, null);
     }
 
-    public String getSourcePath() {
-        return sourcePath;
+    public CodeLocation(final DependencyGraph dependencyGraph, final ExternalId externalId, final File sourcePath) {
+        this.sourcePath = sourcePath;
+        this.externalId = externalId;
+        this.dependencyGraph = dependencyGraph;
     }
 
-    public String getDockerImage() {
-        return dockerImage;
+    public Optional<File> getSourcePath() {
+        return Optional.ofNullable(sourcePath);
     }
 
-    public ExternalId getExternalId() {
-        return externalId;
+    public Optional<ExternalId> getExternalId() {
+        return Optional.ofNullable(externalId);
     }
 
     public DependencyGraph getDependencyGraph() {

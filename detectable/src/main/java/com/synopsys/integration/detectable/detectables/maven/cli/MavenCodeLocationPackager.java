@@ -40,7 +40,6 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.util.ExcludedIncludedFilter;
 
 public class MavenCodeLocationPackager {
@@ -200,7 +199,7 @@ public class MavenCodeLocationPackager {
     private MavenParseResult createMavenParseResult(final String sourcePath, final String line, final DependencyGraph graph) {
         final Dependency dependency = textToProject(line);
         if (null != dependency) {
-            final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.MAVEN, graph, dependency.externalId).build();
+            final CodeLocation codeLocation = new CodeLocation(graph, dependency.externalId);
             return new MavenParseResult(dependency.name, dependency.version, codeLocation);
         }
         return null;

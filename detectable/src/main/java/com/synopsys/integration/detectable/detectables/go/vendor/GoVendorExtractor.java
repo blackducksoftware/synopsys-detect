@@ -37,7 +37,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectables.go.vendor.parse.GoVendorJsonParser;
 
 public class GoVendorExtractor {
@@ -55,11 +54,11 @@ public class GoVendorExtractor {
             final GoVendorJsonParser vendorJsonParser = new GoVendorJsonParser(externalIdFactory);
             final String vendorJsonContents = FileUtils.readFileToString(vendorJsonFile, StandardCharsets.UTF_8);
             logger.debug(vendorJsonContents);
-            
+
             final DependencyGraph dependencyGraph = vendorJsonParser.parseVendorJson(gson, vendorJsonContents);
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString()); //TODO dont use directory for id
 
-            final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.GO_VENDOR, dependencyGraph, externalId).build();
+            final CodeLocation codeLocation = new CodeLocation(dependencyGraph, externalId);
             return new Extraction.Builder().success(codeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

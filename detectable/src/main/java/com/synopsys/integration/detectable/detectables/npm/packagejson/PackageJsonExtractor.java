@@ -41,7 +41,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
 public class PackageJsonExtractor {
@@ -75,7 +74,7 @@ public class PackageJsonExtractor {
         final MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         dependencyGraph.addChildrenToRoot(dependencies);
 
-        final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.RUBYGEMS, dependencyGraph).build();
+        final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
         final String projectName = StringUtils.stripToNull(packageJson.name);
         final String projectVersion = StringUtils.stripToNull(packageJson.version);

@@ -37,7 +37,6 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
 
 public class PipenvGraphParser {
@@ -94,7 +93,7 @@ public class PipenvGraphParser {
 
         if (!dependencyGraph.getRootDependencyExternalIds().isEmpty()) {
             final ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, projectName, projectVersionName);
-            final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.PIP, dependencyGraph, projectExternalId).build();
+            final CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectExternalId);
             return new PipParseResult(projectName, projectVersionName, codeLocation);
         } else {
             return null;

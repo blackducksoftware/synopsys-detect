@@ -35,7 +35,6 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmDependencyConverter;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDependency;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
@@ -78,7 +77,7 @@ public class NpmLockfileParser {
         }
         logger.info("Finished processing.");
         final ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPM, packageLock.name, packageLock.version);
-        final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.NPM, dependencyGraph, projectId).build();
+        final CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectId);
         return new NpmParseResult(packageLock.name, packageLock.version, codeLocation);
     }
 

@@ -35,7 +35,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectables.go.godep.parse.GoLockParser;
 
 public class GoDepExtractor {
@@ -51,11 +50,11 @@ public class GoDepExtractor {
 
     public Extraction extract(final File directory, final File goExe, final File goDep) {//TODO: forward go onto godep resolver?
         try {
-            Optional<File> lockFile = goDepLockFileGenerator.findOrMakeLockFile(directory, goDep, true);//TODO pass allows init
+            final Optional<File> lockFile = goDepLockFileGenerator.findOrMakeLockFile(directory, goDep, true);//TODO pass allows init
 
-            if (lockFile.isPresent()){
+            if (lockFile.isPresent()) {
                 return extract(directory, lockFile.get());
-            } else{
+            } else {
                 return new Extraction.Builder().failure("Failed to find a go lock file.").build();
             }
         } catch (final Exception e) {
@@ -63,13 +62,13 @@ public class GoDepExtractor {
         }
     }
 
-    public Extraction extract(final File directory, File goLock) {
+    public Extraction extract(final File directory, final File goLock) {
         try {
-            String lockContents = FileUtils.readFileToString(goLock, StandardCharsets.UTF_8);
-            DependencyGraph graph = goLockParser.parseDepLock(lockContents);
+            final String lockContents = FileUtils.readFileToString(goLock, StandardCharsets.UTF_8);
+            final DependencyGraph graph = goLockParser.parseDepLock(lockContents);
 
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString());//TODO, don't use directory as external id
-            final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.GO_DEP, graph, externalId).build();
+            final CodeLocation codeLocation = new CodeLocation(graph, externalId);
             return new Extraction.Builder().success(codeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

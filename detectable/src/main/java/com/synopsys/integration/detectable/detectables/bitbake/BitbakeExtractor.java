@@ -42,7 +42,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
@@ -74,7 +73,7 @@ public class BitbakeExtractor {
         this.bitbakeArchitectureParser = bitbakeArchitectureParser;
     }
 
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment, final File buildEnvScript, final File sourcePath, String[] packageNames, File bash) {
+    public Extraction extract(final ExtractionEnvironment extractionEnvironment, final File buildEnvScript, final File sourcePath, final String[] packageNames, final File bash) {
         final File outputDirectory = extractionEnvironment.getOutputDirectory();
         final File bitbakeBuildDirectory = new File(outputDirectory, "build");
 
@@ -99,7 +98,7 @@ public class BitbakeExtractor {
                 final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, targetArchitecture);
 
                 final ExternalId externalId = new ExternalId(Forge.YOCTO);
-                final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.BITBAKE, dependencyGraph, externalId).build();//TODO: Source path: sourcePath.getCanonicalPath()
+                final CodeLocation codeLocation = new CodeLocation(dependencyGraph, externalId);//TODO: Source path: sourcePath.getCanonicalPath()
 
                 codeLocations.add(codeLocation);
             } catch (final IOException | IntegrationException e) {
@@ -123,7 +122,7 @@ public class BitbakeExtractor {
         return extraction;
     }
 
-    private File executeBitbakeForRecipeDependsFile(final File outputDirectory, final File bitbakeBuildDirectory, final File buildEnvScript, final String packageName, File bash) {
+    private File executeBitbakeForRecipeDependsFile(final File outputDirectory, final File bitbakeBuildDirectory, final File buildEnvScript, final String packageName, final File bash) {
         final String bitbakeCommand = "bitbake -g " + packageName;
         final ExecutableOutput executableOutput = runBitbake(outputDirectory, buildEnvScript, bitbakeCommand, bash);
         final int returnCode = executableOutput.getReturnCode();
@@ -138,7 +137,7 @@ public class BitbakeExtractor {
         return recipeDependsFile;
     }
 
-    private String executeBitbakeForTargetArchitecture(final File outputDirectory, final File buildEnvScript, final String packageName, File bash) {
+    private String executeBitbakeForTargetArchitecture(final File outputDirectory, final File buildEnvScript, final String packageName, final File bash) {
         final String bitbakeCommand = "bitbake -c listtasks " + packageName;
         final ExecutableOutput executableOutput = runBitbake(outputDirectory, buildEnvScript, bitbakeCommand, bash);
         final int returnCode = executableOutput.getReturnCode();
@@ -153,7 +152,7 @@ public class BitbakeExtractor {
         return targetArchitecture;
     }
 
-    private ExecutableOutput runBitbake(final File outputDirectory, final File buildEnvScript, final String bitbakeCommand, File bash) {
+    private ExecutableOutput runBitbake(final File outputDirectory, final File buildEnvScript, final String bitbakeCommand, final File bash) {
         try {
             return executableRunner.execute(outputDirectory, bash, "-c", ". " + buildEnvScript + "; " + bitbakeCommand);
         } catch (final ExecutableRunnerException e) {

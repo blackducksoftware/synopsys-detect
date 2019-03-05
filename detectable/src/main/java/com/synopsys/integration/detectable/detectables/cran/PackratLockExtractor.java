@@ -38,7 +38,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratDescriptionFileParser;
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratLockFileParser;
@@ -65,7 +64,7 @@ public class PackratLockExtractor {
             final List<String> packratLockText = Files.readAllLines(packratlock.toPath(), StandardCharsets.UTF_8);
             final DependencyGraph dependencyGraph = packRatLockFileParser.parseProjectDependencies(packratLockText);
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CRAN, directory.toString());
-            final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.CRAN, dependencyGraph, externalId).build();
+            final CodeLocation codeLocation = new CodeLocation(dependencyGraph, externalId);
 
             return new Extraction.Builder().success(codeLocation).projectName(nameVersion.getName()).projectVersion(nameVersion.getVersion()).build();
         } catch (final Exception e) {

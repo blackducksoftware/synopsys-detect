@@ -32,7 +32,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectables.cpan.parse.CpanListParser;
@@ -58,7 +57,7 @@ public class CpanCliExtractor {
 
             final DependencyGraph dependencyGraph = cpanListParser.parse(listText, showdeps);
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CPAN, directory.toString());
-            final CodeLocation detectCodeLocation = new CodeLocation.Builder(CodeLocationType.CPAN, dependencyGraph, externalId).build();
+            final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, externalId);
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

@@ -34,7 +34,6 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
@@ -80,7 +79,7 @@ public class GemspecParseDetectable extends Detectable {
         try {
             final InputStream inputStream = new FileInputStream(gemspec);
             final DependencyGraph dependencyGraph = gemspecParser.parse(inputStream, includeRuntimeDependencies, includeDevelopmentDependencies);
-            final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.RUBYGEMS, dependencyGraph).build();
+            final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
             return new Extraction.Builder().codeLocations(codeLocation).build();
         } catch (final IOException e) {

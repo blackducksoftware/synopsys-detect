@@ -40,7 +40,6 @@ import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectableOptions;
 import com.synopsys.integration.detectable.detectables.packagist.model.PackagistPackage;
 import com.synopsys.integration.detectable.detectables.packagist.model.PackagistParseResult;
@@ -92,7 +91,7 @@ public class PackagistParser {
         }
 
         final DependencyGraph graph = builder.build();
-        final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.PACKAGIST, graph, projectExternalId).build();
+        final CodeLocation codeLocation = new CodeLocation(graph, projectExternalId);
 
         return new PackagistParseResult(projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocation);
     }
@@ -125,7 +124,7 @@ public class PackagistParser {
     private List<PackagistPackage> convertJsonToModel(final JsonObject lockfile, final boolean checkDev) {
         final List<PackagistPackage> packages = new ArrayList<>();
         packages.addAll(convertJsonToModel(lockfile.get("packages").getAsJsonArray(), checkDev));
-        if (checkDev){
+        if (checkDev) {
             packages.addAll(convertJsonToModel(lockfile.get("packages-dev").getAsJsonArray(), checkDev));
         }
         return packages;

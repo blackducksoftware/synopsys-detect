@@ -39,7 +39,6 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 
 public class ClangPackageDetailsTransformer {
@@ -50,7 +49,7 @@ public class ClangPackageDetailsTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public CodeLocation toCodeLocation(final Forge codeLocationForge, List<Forge> dependencyForges, final File rootDir, final Set<PackageDetails> packages) {
+    public CodeLocation toCodeLocation(final Forge codeLocationForge, final List<Forge> dependencyForges, final File rootDir, final Set<PackageDetails> packages) {
         final List<Dependency> dependencies = packages.parallelStream()
                                                   .flatMap(pkg -> toDependency(dependencyForges, pkg).stream())
                                                   .collect(Collectors.toList());
@@ -59,7 +58,7 @@ public class ClangPackageDetailsTransformer {
         return toCodeLocation(codeLocationForge, rootDir, dependencies);
     }
 
-    private List<Dependency> toDependency(final List<Forge> forges, PackageDetails details) {
+    private List<Dependency> toDependency(final List<Forge> forges, final PackageDetails details) {
         final String name = details.getPackageName();
         final String version = details.getPackageVersion();
         final String arch = details.getPackageArch();
@@ -79,7 +78,7 @@ public class ClangPackageDetailsTransformer {
     private CodeLocation toCodeLocation(final Forge defaultForge, final File rootDir, final List<Dependency> bdioComponents) {
         final MutableDependencyGraph dependencyGraph = populateGraph(bdioComponents);
         final ExternalId externalId = externalIdFactory.createPathExternalId(defaultForge, rootDir.toString());
-        return new CodeLocation.Builder(CodeLocationType.CLANG, dependencyGraph, externalId).build(); //TODO: add back in file?
+        return new CodeLocation(dependencyGraph, externalId); //TODO: add back in file?
     }
 
     private MutableDependencyGraph populateGraph(final List<Dependency> bdioComponents) {

@@ -36,7 +36,6 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
 import com.synopsys.integration.detectable.detectables.hex.model.RebarParseResult;
 
@@ -94,7 +93,7 @@ public class Rebar3TreeParser {
         }
 
         final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.HEX, project.name, project.version);
-        final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.HEX, graph, externalId).build();
+        final CodeLocation codeLocation = new CodeLocation(graph, externalId);
         return new RebarParseResult(project.name, project.version, codeLocation);
     }
 

@@ -34,7 +34,6 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
@@ -78,7 +77,7 @@ public class MavenParseDetectable extends Detectable {
             final Optional<DependencyGraph> dependencyGraph = pomXmlParser.parse(pomXmlInputStream);
 
             if (dependencyGraph.isPresent()) {
-                final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.MAVEN, dependencyGraph.get()).build();
+                final CodeLocation codeLocation = new CodeLocation(dependencyGraph.get());
                 return new Extraction.Builder().codeLocations(codeLocation).build();
             } else {
                 return new Extraction.Builder().failure(String.format("Failed to extract dependencies from %s", POM_XML_FILENAME)).build();

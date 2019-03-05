@@ -27,12 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
 
 public class CodeLocationReporter {
     public void writeCodeLocationReport(final ReportWriter writer, final ReportWriter writer2, final List<DetectorEvaluation> detectorEvaluations, final Map<CodeLocation, String> codeLocationNameMap) {
@@ -41,8 +40,8 @@ public class CodeLocationReporter {
                                                                            .collect(Collectors.toList());
 
         final List<CodeLocation> codeLocationsToCount = succesfullDetectorEvaluations.stream()
-                                                                  .flatMap(it -> it.getExtraction().codeLocations.stream())
-                                                                  .collect(Collectors.toList());
+                                                            .flatMap(it -> it.getExtraction().codeLocations.stream())
+                                                            .collect(Collectors.toList());
 
         final CodeLocationDependencyCounter counter = new CodeLocationDependencyCounter();
         final Map<CodeLocation, Integer> dependencyCounts = counter.countCodeLocations(codeLocationsToCount);
@@ -59,13 +58,14 @@ public class CodeLocationReporter {
         }
     }
 
+    // TODO: Take in a DetectCodeLocation
     private void writeCodeLocationDetails(final ReportWriter writer, final CodeLocation codeLocation, final Integer dependencyCount, final String codeLocationName, final String extractionId) {
 
         writer.writeSeperator();
         writer.writeLine("Name : " + codeLocationName);
-        writer.writeLine("Directory : " + codeLocation.getSourcePath());
+        //        writer.writeLine("Directory : " + codeLocation.getSourcePath()); // TODO: Fix ME
         writer.writeLine("Extraction : " + extractionId);
-        writer.writeLine("Detect Code Location Type : " + codeLocation.getCodeLocationType());
+        //        writer.writeLine("Detect Code Location Type : " + codeLocation.getCodeLocationType()); // TODO: Fix me
 
         final DependencyGraph graph = codeLocation.getDependencyGraph();
 

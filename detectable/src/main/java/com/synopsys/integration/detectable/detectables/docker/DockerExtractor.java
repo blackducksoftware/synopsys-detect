@@ -48,7 +48,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
@@ -56,6 +55,7 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 
 public class DockerExtractor {
     public static final String DOCKER_TAR_META_DATA_KEY = "dockerTar";
+    public static final String DOCKER_IMAGE_NAME_META_DATA_KEY = " dockerImage";
 
     public static final String TAR_FILENAME_PATTERN = "*.tar.gz";
     public static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
@@ -152,12 +152,12 @@ public class DockerExtractor {
             }
         }
 
-        final Extraction.Builder extractionBuilder = findCodeLocations(outputDirectory, directory, imagePiece);
-        extractionBuilder.metaData(DOCKER_TAR_META_DATA_KEY, scanFile);
+        final Extraction.Builder extractionBuilder = findCodeLocations(outputDirectory, directory);
+        extractionBuilder.metaData(DOCKER_TAR_META_DATA_KEY, scanFile).metaData(DOCKER_IMAGE_NAME_META_DATA_KEY, imagePiece);
         return extractionBuilder.build();
     }
 
-    private Extraction.Builder findCodeLocations(final File directoryToSearch, final File directory, final String imageName) {
+    private Extraction.Builder findCodeLocations(final File directoryToSearch, final File directory) {
         final File bdioFile = fileFinder.findFile(directoryToSearch, DEPENDENCIES_PATTERN);
         if (bdioFile != null) {
             SimpleBdioDocument simpleBdioDocument = null;
@@ -179,7 +179,7 @@ public class DockerExtractor {
                 final String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId;
                 final ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath);
 
-                final CodeLocation detectCodeLocation = new CodeLocation.Builder(CodeLocationType.DOCKER, dependencyGraph, projectExternalId).dockerImage(imageName).build();
+                final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, projectExternalId);
 
                 return new Extraction.Builder().success(detectCodeLocation).projectName(projectName).projectVersion(projectVersionName);
             }
