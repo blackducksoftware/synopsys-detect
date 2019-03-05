@@ -63,13 +63,13 @@ public class DetectorEvaluationNameVersionDecider {
     private List<DetectorProjectInfo> transformIntoProjectInfo(final List<DetectorEvaluation> detectorEvaluations) {
         return detectorEvaluations.stream()
                    .filter(DetectorEvaluation::wasExtractionSuccessful)
-                   .filter(detectorEvaluation -> StringUtils.isNotBlank(detectorEvaluation.getExtraction().projectName))
+                   .filter(detectorEvaluation -> StringUtils.isNotBlank(detectorEvaluation.getExtraction().getProjectName()))
                    .map(this::transformDetectorEvaluation)
                    .collect(Collectors.toList());
     }
 
     private DetectorProjectInfo transformDetectorEvaluation(DetectorEvaluation detectorEvaluation) {
-        final NameVersion nameVersion = new NameVersion(detectorEvaluation.getExtraction().projectName, detectorEvaluation.getExtraction().projectVersion);
+        final NameVersion nameVersion = new NameVersion(detectorEvaluation.getExtraction().getProjectName(), detectorEvaluation.getExtraction().getProjectVersion());
         final DetectorProjectInfo possibility = new DetectorProjectInfo(detectorEvaluation.getDetectorRule().getDetectorType(), detectorEvaluation.getSearchEnvironment().getDepth(), nameVersion);
         return possibility;
     }

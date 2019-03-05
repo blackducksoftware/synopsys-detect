@@ -82,49 +82,9 @@ public class BdioCodeLocationCreator {
         // We can create a DetectProperty to combine duplicate code location names in the future if users want that
         final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName, directoryManager.getSourceDirectory(), false);
 
-        // Sanity check that code location names are unique (they should be)
-        final Map<String, List<BdioCodeLocation>> bdioByCodeLocationName = groupByCodeLocationNames(bdioCodeLocations);
-        for (final String name : bdioByCodeLocationName.keySet()) {
-            if (bdioByCodeLocationName.get(name).size() > 1) {
-                logger.error("Multiple code locations were generated with the name: " + name);
-                failedBomToolGroups.addAll(getDetectorTypes(bdioByCodeLocationName.get(name)));
-            }
-        }
-
-        // Sanity check that bdio file names are unique (they should be)
-        final Map<String, List<BdioCodeLocation>> bdioByBdioName = groupByBdioNames(bdioCodeLocations);
-        for (final String name : bdioByBdioName.keySet()) {
-            if (bdioByBdioName.get(name).size() > 1) {
-                logger.error("Multiple bdio names were generated with the name: " + name);
-                failedBomToolGroups.addAll(getDetectorTypes(bdioByBdioName.get(name)));
-            }
-        }
-
         final BdioCodeLocationResult result = new BdioCodeLocationResult(bdioCodeLocations, failedBomToolGroups, codeLocationsAndNames);
         eventSystem.publishEvent(Event.CodeLocationsCalculated, result);
         return result;
-    }
-
-    /**
-     * Attempts to map the given Code Location Types to Detector Types with EnumUtils.
-     * @param bdioCodeLocations the final bdio code locations
-     * @return the set of detector types
-     */
-    private Set<DetectorType> getDetectorTypes(final List<BdioCodeLocation> bdioCodeLocations) {
-        return bdioCodeLocations.stream()
-                   .map(bdioCodeLocation -> bdioCodeLocation.codeLocation.getCodeLocationType().toString())
-                   .map(codeLocationType -> DetectEnumUtil.getValueOf(DetectorType.class, codeLocationType))
-                   .filter(Optional::isPresent)
-                   .map(Optional::get)
-                   .collect(Collectors.toSet());
-    }
-
-    private Map<String, List<BdioCodeLocation>> groupByBdioNames(final List<BdioCodeLocation> bdioCodeLocations) {
-        return bdioCodeLocations.stream().collect(Collectors.groupingBy(it -> it.bdioName, Collectors.toList()));
-    }
-
-    private Map<String, List<BdioCodeLocation>> groupByCodeLocationNames(final List<BdioCodeLocation> bdioCodeLocations) {
-        return bdioCodeLocations.stream().collect(Collectors.groupingBy(it -> it.codeLocationName, Collectors.toList()));
     }
 
     private Map<DetectCodeLocation, String> createCodeLocationNameMap(final List<DetectCodeLocation> codeLocations, final String detectSourcePath, NameVersion projectNameVersion, final String prefix,
@@ -186,7 +146,7 @@ public class BdioCodeLocationCreator {
                 final DependencyGraphCombiner combiner = new DependencyGraphCombiner();
                 logger.info("Combining duplicate code locations with name: " + codeLocationName);
                 final MutableDependencyGraph combinedGraph = new MutableMapDependencyGraph();
-                final DetectCodeLocation finalCodeLocation = copyCodeLocation(codeLocations.get(0), combinedGraph);
+                final DetectCodeLocation finalCodeLocation = codeLocations.get(0).copy(combinedGraph);
                 codeLocations.stream()
                     .filter(codeLocation -> shouldCombine(logger, finalCodeLocation, codeLocation))
                     .forEach(codeLocation -> combiner.addGraphAsChildrenToRoot(combinedGraph, codeLocation.getDependencyGraph()));
@@ -220,35 +180,30 @@ public class BdioCodeLocationCreator {
         return filename + ".jsonld";
     }
 
-    private DetectCodeLocation copyCodeLocation(final DetectCodeLocation codeLocation, final DependencyGraph newGraph) {
-        final DetectCodeLocation.Builder builder = new DetectCodeLocation.Builder(codeLocation.getCodeLocationType(), codeLocation.getSourcePath(), codeLocation.getExternalId(), newGraph);
-        builder.dockerImage(codeLocation.getDockerImage());
-        final DetectCodeLocation copy = builder.build();
-        return copy;
-    }
-
     private boolean shouldCombine(final Logger logger, final DetectCodeLocation codeLocationLeft, final DetectCodeLocation codeLocationRight) {
-        if (codeLocationLeft.getCodeLocationType() != codeLocationRight.getCodeLocationType()) {
-            logger.error("Cannot combine code locations with different types.");
-            return false;
-        }
+        return true;//TODO update this
 
-        if (codeLocationLeft.getDockerImage() != codeLocationRight.getDockerImage()) {
-            logger.error("Cannot combine code locations with different docker images.");
-            return false;
-        }
-
-        if (codeLocationLeft.getSourcePath() != codeLocationRight.getSourcePath()) {
-            logger.error("Cannot combine code locations with different source paths.");
-            return false;
-        }
-
-        if (codeLocationLeft.getExternalId() != codeLocationRight.getExternalId()) {
-            logger.error("Cannot combine code locations with different external ids.");
-            return false;
-        }
-
-        return true;
+//        if (codeLocationLeft.getCreatorName() != codeLocationRight.getCreatorName()) {
+//            logger.error("Cannot combine code locations with different types.");
+//            return false;
+//        }
+//
+//        if (codeLocationLeft.getDockerImageName() != codeLocationRight.getDockerImageName()) {
+//            logger.error("Cannot combine code locations with different docker images.");
+//            return false;
+//        }
+//
+//        if (codeLocationLeft.getSourcePath() != codeLocationRight.getSourcePath()) {
+//            logger.error("Cannot combine code locations with different source paths.");
+//            return false;
+//        }
+//
+//        if (codeLocationLeft.getExternalId() != codeLocationRight.getExternalId()) {
+//            logger.error("Cannot combine code locations with different external ids.");
+//            return false;
+//        }
+//
+//        return true;
     }
 
 }

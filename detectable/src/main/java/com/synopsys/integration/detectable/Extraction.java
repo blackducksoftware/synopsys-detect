@@ -32,14 +32,14 @@ import java.util.Optional;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 
 public class Extraction {
-    public List<CodeLocation> codeLocations;
-    public ExtractionResultType result;
-    public Exception error;
-    public String description;
+    private List<CodeLocation> codeLocations;
+    private ExtractionResultType result;
+    private Exception error;
+    private String description;
 
-    public String projectVersion;
-    public String projectName;
-    public Map<String, Object> metaData; //TODO: Typesafe way to provide meta data?
+    private String projectVersion;
+    private String projectName;
+    private Map<String, Object> metaData; //TODO: Typesafe way to provide meta data?
 
     private Extraction(final Builder builder) {
         this.codeLocations = builder.codeLocations;
@@ -62,6 +62,30 @@ public class Extraction {
 
     public boolean isSuccess() {
         return this.result == ExtractionResultType.SUCCESS;
+    }
+
+    public List<CodeLocation> getCodeLocations() {
+        return codeLocations;
+    }
+
+    public Exception getError() {
+        return error;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getProjectVersion() {
+        return projectVersion;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public ExtractionResultType getResult(){
+        return result;
     }
 
     public static class Builder {

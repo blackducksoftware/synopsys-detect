@@ -37,7 +37,7 @@ public class Event {
 //    public static EventType<SearchResult> SearchCompleted = new EventType(SearchResult.class); //TODO: Listen
 //    public static EventType<PreparationResult> PreparationsCompleted = new EventType(PreparationResult.class);
 //    public static EventType<ExtractionResult> ExtractionsCompleted = new EventType(ExtractionResult.class);
-    public static EventType<DetectorToolResult> DetectorsComplete = new EventType(DetectorToolResult.class);
+//    public static EventType<DetectorToolResult> DetectorsComplete = new EventType(DetectorToolResult.class);
     public static EventType<DetectorTimings> DetectorsProfiled = new EventType(DetectorTimings.class);
     public static EventType<DetectorRule> ApplicableStarted = new EventType(DetectorRule.class);
     public static EventType<DetectorRule> ApplicableEnded = new EventType(DetectorRule.class);

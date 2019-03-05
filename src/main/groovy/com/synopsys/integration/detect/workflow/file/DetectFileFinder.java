@@ -40,13 +40,7 @@ import org.slf4j.LoggerFactory;
 public class DetectFileFinder {
     private final Logger logger = LoggerFactory.getLogger(DetectFileFinder.class);
 
-    public String extractFinalPieceFromPath(final String path) {
-        if (path == null || path.length() == 0) {
-            return "";
-        }
-        final String normalizedPath = FilenameUtils.normalizeNoEndSeparator(path, true);
-        return normalizedPath.substring(normalizedPath.lastIndexOf("/") + 1, normalizedPath.length());
-    }
+
 
     public List<File> findFilesToDepth(final String sourceDirectory, final String filenamePattern, final int maxDepth) {
         return findFilesToDepth(new File(sourceDirectory), filenamePattern, maxDepth);

@@ -74,15 +74,15 @@ public class DetectorEvaluation {
     }
 
     public boolean wasExtractionSuccessful() {
-        return isExtractable() && this.extraction != null && this.extraction.result == Extraction.ExtractionResultType.SUCCESS;
+        return isExtractable() && this.extraction != null && this.extraction.getResult() == Extraction.ExtractionResultType.SUCCESS;
     }
 
     public boolean wasExtractionFailure() {
-        return isExtractable() && this.extraction != null && this.extraction.result == Extraction.ExtractionResultType.FAILURE;
+        return isExtractable() && this.extraction != null && this.extraction.getResult() == Extraction.ExtractionResultType.FAILURE;
     }
 
     public boolean wasExtractionException() {
-        return isExtractable() && this.extraction != null && this.extraction.result == Extraction.ExtractionResultType.EXCEPTION;
+        return isExtractable() && this.extraction != null && this.extraction.getResult() == Extraction.ExtractionResultType.EXCEPTION;
     }
 
     public void setSearchable(final DetectorResult searchable) {

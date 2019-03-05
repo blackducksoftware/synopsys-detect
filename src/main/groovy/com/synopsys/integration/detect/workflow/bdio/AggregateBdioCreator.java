@@ -110,9 +110,10 @@ public class AggregateBdioCreator {
             logger.warn("Failed to get name or version to use in the wrapper for a code location.", e);
         }
         final ExternalId original = codeLocation.getExternalId();
-        final String codeLocationSourcePath = codeLocation.getSourcePath();
-        final String bomToolType = codeLocation.getCodeLocationType().toString();
+        final String codeLocationSourcePath = codeLocation.getSourcePath().toString(); //TODO: what happens when docker is present or no source path or no external id!
         final String relativePath = FileNameUtils.relativize(sourcePath.getAbsolutePath(), codeLocationSourcePath);
+
+        final String bomToolType = codeLocation.getCreatorName().get().toLowerCase();
         final List<String> externalIdPieces = new ArrayList<>();
         externalIdPieces.addAll(Arrays.asList(original.getExternalIdPieces()));
         externalIdPieces.add(relativePath);

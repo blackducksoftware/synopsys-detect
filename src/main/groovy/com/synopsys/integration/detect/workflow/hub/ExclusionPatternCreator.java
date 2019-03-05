@@ -25,6 +25,7 @@ package com.synopsys.integration.detect.workflow.hub;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -34,15 +35,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
+import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 
 public class ExclusionPatternCreator {
     private final Logger logger = LoggerFactory.getLogger(ExclusionPatternCreator.class);
 
-    private final DetectFileFinder detectFileFinder;
+    private final FileFinder fileFinder;
     private final File scanTarget;
 
-    public ExclusionPatternCreator(final DetectFileFinder detectFileFinder, final File scanTarget) {
-        this.detectFileFinder = detectFileFinder;
+    public ExclusionPatternCreator(final FileFinder fileFinder, final File scanTarget) {
+        this.fileFinder = fileFinder;
         this.scanTarget = scanTarget;
     }
 
@@ -53,7 +56,7 @@ public class ExclusionPatternCreator {
         final Set<String> scanExclusionPatterns = new HashSet<>();
         try {
             final String scanTargetPath = scanTarget.getCanonicalPath();
-            final List<File> matchingFiles = detectFileFinder.findAllFilesToDepth(scanTarget, new StringBuilder(maxDepthHitMsg), maxDepth, hubSignatureScannerExclusionNamePatterns);
+            final List<File> matchingFiles = fileFinder.findFiles(scanTarget, Arrays.asList(hubSignatureScannerExclusionNamePatterns), maxDepth); //TODO: should re-add the depth hit message creator?
             for (final File matchingFile : matchingFiles) {
                 final String matchingFilePath = matchingFile.getCanonicalPath();
                 final String scanExclusionPattern = createExclusionPatternFromPaths(scanTargetPath, matchingFilePath);

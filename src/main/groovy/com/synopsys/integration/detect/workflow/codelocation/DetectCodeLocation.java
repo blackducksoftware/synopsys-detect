@@ -1,88 +1,68 @@
-/**
- * synopsys-detect
- *
- * Copyright (C) 2019 Black Duck Software, Inc.
- * http://www.blackducksoftware.com/
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.detect.workflow.codelocation;
+
+import java.io.File;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detector.base.DetectorType;
 
 public class DetectCodeLocation {
-    private final DetectCodeLocationType codeLocationType;
-    private final String sourcePath;
-    private final String dockerImage;
-    private final ExternalId externalId;
     private final DependencyGraph dependencyGraph;
+    private final File sourcePath;
+    private final ExternalId externalId;
+    private final String creatorName;
+    private final String dockerImageName;
 
-    public static class Builder {
-        private final DetectCodeLocationType codeLocationType;
-        private final String sourcePath;
-        private String dockerImage;
-        private final ExternalId externalId;
-        private final DependencyGraph dependencyGraph;
+    private DetectCodeLocation(final DependencyGraph dependencyGraph, final File sourcePath, final ExternalId externalId, final String creatorName,
+        final String dockerImageName) {
+        this.dependencyGraph = dependencyGraph;
+        this.sourcePath = sourcePath;
+        this.externalId = externalId;
+        this.creatorName = creatorName;
+        this.dockerImageName = dockerImageName;
 
-        public Builder(final DetectCodeLocationType codeLocationType, final String sourcePath, final ExternalId externalId, final DependencyGraph dependencyGraph) {
-            this.codeLocationType = codeLocationType;
-            this.sourcePath = sourcePath;
-            this.externalId = externalId;
-            this.dependencyGraph = dependencyGraph;
-        }
-
-        public Builder dockerImage(final String dockerImage) {
-            this.dockerImage = dockerImage;
-            return this;
-        }
-
-        public DetectCodeLocation build() {
-            return new DetectCodeLocation(this);
+        if (StringUtils.isNotBlank(dockerImageName) && StringUtils.isNotBlank(creatorName)){
+            throw new IllegalArgumentException("Detect code location cannot have the Docker image name and the creator name set as the docker image name will means no creator exists.");
         }
     }
 
-    private DetectCodeLocation(final Builder builder) {
-        this.codeLocationType = builder.codeLocationType;
-        this.sourcePath = builder.sourcePath;
-        this.dockerImage = builder.dockerImage;
-        this.externalId = builder.externalId;
-        this.dependencyGraph = builder.dependencyGraph;
+    public static DetectCodeLocation forDocker(DependencyGraph dependencyGraph, File sourcePath, ExternalId externalId, String dockerImageName){
+        return new DetectCodeLocation(dependencyGraph, sourcePath, externalId, null, dockerImageName);
     }
 
-    public DetectCodeLocationType getCodeLocationType() {
-        return codeLocationType;
+    public static DetectCodeLocation forDetector(DependencyGraph dependencyGraph, File sourcePath, ExternalId externalId, DetectorType detectorType){
+        return new DetectCodeLocation(dependencyGraph, sourcePath, externalId, detectorType.toString(), null);
     }
 
-    public String getSourcePath() {
-        return sourcePath;
+    public static DetectCodeLocation forCreator(DependencyGraph dependencyGraph, File sourcePath, ExternalId externalId, String creatorName){
+        return new DetectCodeLocation(dependencyGraph, sourcePath, externalId, creatorName, null);
     }
 
-    public String getDockerImage() {
-        return dockerImage;
+    public DetectCodeLocation copy(DependencyGraph dependencyGraph){
+        return new DetectCodeLocation(dependencyGraph, sourcePath, externalId, creatorName, dockerImageName);
     }
 
-    public ExternalId getExternalId() {
-        return externalId;
+    public Optional<String> getCreatorName() {
+        return Optional.ofNullable(creatorName);
+    }
+
+    public Optional<String> getDockerImageName() {
+        return Optional.ofNullable(dockerImageName);
     }
 
     public DependencyGraph getDependencyGraph() {
         return dependencyGraph;
     }
 
+    public File getSourcePath() {
+        return sourcePath;
+    }
+
+    public ExternalId getExternalId() {
+        return externalId;
+    }
 }

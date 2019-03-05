@@ -51,7 +51,7 @@ public class OverviewSummaryReporter {
                     writer.writeLine("DETECTOR: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
                     writer.writeLine("\tEXTRACTABLE: " + detectorEvaluation.getExtractabilityMessage());
                     writer.writeLine("\tEXTRACTED: " + detectorEvaluation);
-                    String description = detectorEvaluation.getExtraction().description;
+                    String description = detectorEvaluation.getExtraction().getDescription();
                     if (StringUtils.isNotBlank(description)){
                         writer.writeLine("\tERROR: " + description);
 
