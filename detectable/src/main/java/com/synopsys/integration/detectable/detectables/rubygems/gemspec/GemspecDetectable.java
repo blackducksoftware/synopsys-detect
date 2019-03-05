@@ -42,7 +42,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 
 public class GemspecDetectable extends Detectable {
-    private static final String GEMSPEC_FILENAME = "Gemfile.lock";
+    private static final String GEMSPEC_FILENAME = "*.gemspec";
 
     private final FileFinder fileFinder;
     private final GemspecParser gemspecParser;
