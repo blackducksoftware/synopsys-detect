@@ -21,50 +21,43 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.rubygems.gemspec;
+package com.synopsys.integration.detectable.detectables.npm.packagejson;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 
-public class GemspecDetectable extends Detectable {
-    private static final String GEMSPEC_FILENAME = "*.gemspec";
+public class NpmPackageJsonParseDetectable extends Detectable {
+    public static final String PACKAGE_JSON = "package.json";
 
     private final FileFinder fileFinder;
-    private final GemspecParser gemspecParser;
-    private final boolean includeRuntimeDependencies;
-    private final boolean includeDevelopmentDependencies;
+    private final PackageJsonExtractor packageJsonExtractor;
+    private final boolean includeDevDependencies;
 
-    private File gemspec;
+    private File packageJsonFile;
 
-    public GemspecDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GemspecParser gemspecParser, final boolean includeRuntimeDependencies, final boolean includeDevelopmentDependencies) {
-        super(environment, "Gemspec", "RUBYGEMS");
+    public NpmPackageJsonParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PackageJsonExtractor packageJsonExtractor, final boolean includeDevDependencies) {
+        super(environment, "package.json", "NPM");
         this.fileFinder = fileFinder;
-        this.gemspecParser = gemspecParser;
-        this.includeRuntimeDependencies = includeRuntimeDependencies;
-        this.includeDevelopmentDependencies = includeDevelopmentDependencies;
+        this.packageJsonExtractor = packageJsonExtractor;
+        this.includeDevDependencies = includeDevDependencies;
     }
 
     @Override
     public DetectableResult applicable() {
-        gemspec = fileFinder.findFile(environment.getDirectory(), GEMSPEC_FILENAME);
+        packageJsonFile = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
 
-        if (gemspec == null) {
-            return new FileNotFoundDetectableResult(GEMSPEC_FILENAME);
+        if (packageJsonFile == null) {
+            return new FileNotFoundDetectableResult(PACKAGE_JSON);
         }
 
         return new PassedDetectableResult();
@@ -77,14 +70,10 @@ public class GemspecDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        try {
-            final InputStream inputStream = new FileInputStream(gemspec);
-            final DependencyGraph dependencyGraph = gemspecParser.parse(inputStream, includeRuntimeDependencies, includeDevelopmentDependencies);
-            final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.RUBYGEMS, dependencyGraph).build();
-
-            return new Extraction.Builder().codeLocations(codeLocation).build();
-        } catch (final IOException e) {
-            return new Extraction.Builder().exception(e).build();
+        try (final InputStream packageJsonInputStream = new FileInputStream(packageJsonFile)) {
+            return packageJsonExtractor.extract(packageJsonInputStream, includeDevDependencies);
+        } catch (final Exception e) {
+            return new Extraction.Builder().exception(e).failure(String.format("Failed to parse %s", PACKAGE_JSON)).build();
         }
     }
 }

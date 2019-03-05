@@ -40,15 +40,15 @@ import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectab
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorDetectable;
-import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleBuildFileDetectable;
+import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseDetectable;
 import com.synopsys.integration.detectable.detectables.hex.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenPomXmlDetectable;
+import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmShrinkwrapDetectable;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonDetectable;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
@@ -56,7 +56,7 @@ import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
-import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecDetectable;
+import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 
@@ -101,8 +101,8 @@ public class DetectableFactory implements BeanFactoryAware {
         return beanFactory.getBean(GemlockDetectable.class, environment);
     }
 
-    public GemspecDetectable createGemspecDetectable(final DetectableEnvironment environment) {
-        return beanFactory.getBean(GemspecDetectable.class, environment);
+    public GemspecParseDetectable createGemspecParseDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(GemspecParseDetectable.class, environment);
     }
 
     public GoDepCliDetectable createGoCliDetectable(final DetectableEnvironment environment) {
@@ -121,8 +121,8 @@ public class DetectableFactory implements BeanFactoryAware {
         return beanFactory.getBean(GoVendorDetectable.class, environment);
     }
 
-    public GradleBuildFileDetectable createBuildGradleDetectable(final DetectableEnvironment environment) {
-        return beanFactory.getBean(GradleBuildFileDetectable.class, environment);
+    public GradleParseDetectable createGradleParseDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(GradleParseDetectable.class, environment);
     }
 
     public GradleInspectorDetectable createGradleInspectorDetectable(final DetectableEnvironment environment) {
@@ -137,16 +137,16 @@ public class DetectableFactory implements BeanFactoryAware {
         return beanFactory.getBean(MavenPomWrapperDetectable.class, environment);
     }
 
-    public MavenPomXmlDetectable createMavenPomXmlDetectable(final DetectableEnvironment environment) {
-        return beanFactory.getBean(MavenPomXmlDetectable.class, environment);
+    public MavenParseDetectable createMavenParseDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(MavenParseDetectable.class, environment);
     }
 
     public NpmCliDetectable createNpmCliDetectable(final DetectableEnvironment environment) {
         return beanFactory.getBean(NpmCliDetectable.class, environment);
     }
 
-    public NpmPackageJsonDetectable createNpmPackageJsonDetectable(final DetectableEnvironment environment) {
-        return beanFactory.getBean(NpmPackageJsonDetectable.class, environment);
+    public NpmPackageJsonParseDetectable createNpmPackageJsonParseDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(NpmPackageJsonParseDetectable.class, environment);
     }
 
     public NpmPackageLockDetectable createNpmPackageLockDetectable(final DetectableEnvironment environment) {

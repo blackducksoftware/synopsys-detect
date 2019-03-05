@@ -21,12 +21,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.maven.parsing;
+package com.synopsys.integration.detectable.detectables.rubygems.gemspec;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.Optional;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Detectable;
@@ -39,28 +39,32 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomXmlParser;
+import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 
-public class MavenPomXmlDetectable extends Detectable {
-    public static final String POM_XML_FILENAME = "pom.xml";
+public class GemspecParseDetectable extends Detectable {
+    private static final String GEMSPEC_FILENAME = "*.gemspec";
 
     private final FileFinder fileFinder;
-    private final PomXmlParser pomXmlParser;
+    private final GemspecParser gemspecParser;
+    private final boolean includeRuntimeDependencies;
+    private final boolean includeDevelopmentDependencies;
 
-    private File pomXmlFile;
+    private File gemspec;
 
-    public MavenPomXmlDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PomXmlParser pomXmlParser) {
-        super(environment, "pom.xml", "MAVEN");
+    public GemspecParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GemspecParser gemspecParser, final boolean includeRuntimeDependencies, final boolean includeDevelopmentDependencies) {
+        super(environment, "Gemspec", "RUBYGEMS");
         this.fileFinder = fileFinder;
-        this.pomXmlParser = pomXmlParser;
+        this.gemspecParser = gemspecParser;
+        this.includeRuntimeDependencies = includeRuntimeDependencies;
+        this.includeDevelopmentDependencies = includeDevelopmentDependencies;
     }
 
     @Override
     public DetectableResult applicable() {
-        pomXmlFile = fileFinder.findFile(environment.getDirectory(), POM_XML_FILENAME);
+        gemspec = fileFinder.findFile(environment.getDirectory(), GEMSPEC_FILENAME);
 
-        if (pomXmlFile == null) {
-            return new FileNotFoundDetectableResult(POM_XML_FILENAME);
+        if (gemspec == null) {
+            return new FileNotFoundDetectableResult(GEMSPEC_FILENAME);
         }
 
         return new PassedDetectableResult();
@@ -74,16 +78,12 @@ public class MavenPomXmlDetectable extends Detectable {
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         try {
-            final InputStream pomXmlInputStream = new FileInputStream(pomXmlFile);
-            final Optional<DependencyGraph> dependencyGraph = pomXmlParser.parse(pomXmlInputStream);
+            final InputStream inputStream = new FileInputStream(gemspec);
+            final DependencyGraph dependencyGraph = gemspecParser.parse(inputStream, includeRuntimeDependencies, includeDevelopmentDependencies);
+            final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.RUBYGEMS, dependencyGraph).build();
 
-            if (dependencyGraph.isPresent()) {
-                final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.MAVEN, dependencyGraph.get()).build();
-                return new Extraction.Builder().codeLocations(codeLocation).build();
-            } else {
-                return new Extraction.Builder().failure(String.format("Failed to extract dependencies from %s", POM_XML_FILENAME)).build();
-            }
-        } catch (final Exception e) {
+            return new Extraction.Builder().codeLocations(codeLocation).build();
+        } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
     }

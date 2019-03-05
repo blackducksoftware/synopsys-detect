@@ -21,43 +21,46 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.npm.packagejson;
+package com.synopsys.integration.detectable.detectables.gradle.parsing;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Optional;
 
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocationType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.detectables.gradle.parsing.parse.BuildGradleParser;
 
-public class NpmPackageJsonDetectable extends Detectable {
-    public static final String PACKAGE_JSON = "package.json";
+public class GradleParseDetectable extends Detectable {
+    public static final String BUILD_GRADLE_FILENAME = "build.gradle";
 
     private final FileFinder fileFinder;
-    private final PackageJsonExtractor packageJsonExtractor;
-    private final boolean includeDevDependencies;
+    private final BuildGradleParser buildGradleParser;
 
-    private File packageJsonFile;
+    private File buildFile;
 
-    public NpmPackageJsonDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PackageJsonExtractor packageJsonExtractor, final boolean includeDevDependencies) {
-        super(environment, "package.json", "NPM");
+    public GradleParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final BuildGradleParser buildGradleParser) {
+        super(environment, "gradle.build", "GRADLE");
         this.fileFinder = fileFinder;
-        this.packageJsonExtractor = packageJsonExtractor;
-        this.includeDevDependencies = includeDevDependencies;
+        this.buildGradleParser = buildGradleParser;
     }
 
     @Override
     public DetectableResult applicable() {
-        packageJsonFile = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
+        buildFile = fileFinder.findFile(environment.getDirectory(), BUILD_GRADLE_FILENAME);
 
-        if (packageJsonFile == null) {
-            return new FileNotFoundDetectableResult(PACKAGE_JSON);
+        if (buildFile == null) {
+            return new FileNotFoundDetectableResult(BUILD_GRADLE_FILENAME);
         }
 
         return new PassedDetectableResult();
@@ -70,10 +73,18 @@ public class NpmPackageJsonDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        try (final InputStream packageJsonInputStream = new FileInputStream(packageJsonFile)) {
-            return packageJsonExtractor.extract(packageJsonInputStream, includeDevDependencies);
+        try {
+            final InputStream buildFileInputStream = new FileInputStream(buildFile);
+            final Optional<DependencyGraph> dependencyGraph = buildGradleParser.parse(buildFileInputStream);
+
+            if (dependencyGraph.isPresent()) {
+                final CodeLocation codeLocation = new CodeLocation.Builder(CodeLocationType.GRADLE, dependencyGraph.get()).build();
+                return new Extraction.Builder().codeLocations(codeLocation).build();
+            } else {
+                return new Extraction.Builder().failure(String.format("Failed to extract dependencies from %s", BUILD_GRADLE_FILENAME)).build();
+            }
         } catch (final Exception e) {
-            return new Extraction.Builder().exception(e).failure(String.format("Failed to parse %s", PACKAGE_JSON)).build();
+            return new Extraction.Builder().exception(e).build();
         }
     }
 }
