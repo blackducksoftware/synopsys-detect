@@ -42,7 +42,7 @@ public class CodeLocationNameGenerator {
 
     public static final int MAXIMUM_CODE_LOCATION_NAME_LENGTH = 250;
 
-    public String createBomCodeLocationName(final String detectSourcePath, final String sourcePath, final ExternalId externalId, final DetectorType detectorType, final String prefix, final String suffix) {
+    public String createBomCodeLocationName(final String detectSourcePath, final String sourcePath, final ExternalId externalId, final String creatorName, final String prefix, final String suffix) {
         final String pathPiece = FileNameUtils.relativize(detectSourcePath, sourcePath);
 
         final List<String> pieces = Arrays.asList(externalId.getExternalIdPieces());
@@ -50,7 +50,7 @@ public class CodeLocationNameGenerator {
 
         // misc pieces
         final String codeLocationTypeString = CodeLocationNameType.BOM.toString().toLowerCase();
-        final String bomToolTypeString = detectorType.toString().toLowerCase();
+        final String bomToolTypeString = creatorName.toLowerCase();
 
         final List<String> bomCodeLocationNamePieces = Arrays.asList(pathPiece, externalIdPiece);
         final List<String> bomCodeLocationEndPieces = Arrays.asList(bomToolTypeString, codeLocationTypeString);

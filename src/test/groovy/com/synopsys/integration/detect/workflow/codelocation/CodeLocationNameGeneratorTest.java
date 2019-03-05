@@ -71,7 +71,7 @@ public class CodeLocationNameGeneratorTest {
 
         final String prefix = "";
         final String suffix = "";
-        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, externalId, DetectCodeLocationType.NPM, prefix, suffix);
+        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, externalId, "NPM", prefix, suffix);
 
         assertEquals(expected, actual);
     }
@@ -88,7 +88,7 @@ public class CodeLocationNameGeneratorTest {
         final String codeLocationPath = "/Users/ekerwin/Documents/source/functional/hub-common-rest/hub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-rest";
         final String prefix = "";
         final String suffix = "";
-        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, externalId, DetectCodeLocationType.NPM, prefix, suffix);
+        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, externalId, "NPM", prefix, suffix);
 
         assertEquals(expected, actual);
     }

@@ -23,6 +23,7 @@
  */
 package com.synopsys.integration.detect.tool.detector;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -30,14 +31,22 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
+import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
+import com.synopsys.integration.detect.workflow.project.DetectorEvaluationNameVersionDecider;
+import com.synopsys.integration.detect.workflow.project.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.file.FileUtils;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorType;
@@ -55,6 +64,7 @@ import java.util.stream.Collectors;
 public class DetectorTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectContext detectContext;
+    private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
     public DetectorTool(DetectContext detectContext) {
         this.detectContext = detectContext;
@@ -89,20 +99,21 @@ public class DetectorTool {
         List<DetectorEvaluation> detectorEvaluations = DetectorEvaluationUtils.flatten(rootEvaluation);
 
         detectorToolResult.applicableDetectorTypes = detectorEvaluations.stream()
+                                                         .filter(DetectorEvaluation::isApplicable)
                                                          .map(DetectorEvaluation::getDetectorRule)
                                                          .map(DetectorRule::getDetectorType)
                                                          .collect(Collectors.toSet());
 
         detectorToolResult.bomToolCodeLocations = detectorEvaluations.stream()
                                                       .filter(DetectorEvaluation::wasExtractionSuccessful)
-                                                      .map(DetectorEvaluation::getExtraction)
-                                                      .map(Extraction::getCodeLocations)
-                                                      .flatMap(List::stream)
-                                                      .map(codeLocation -> {
-                                                          new DetectCodeLocation.Builder();
-
-                                                      })
+                                                      .flatMap(it -> convert(directory, it).stream())
                                                       .collect(Collectors.toList());
+
+        DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
+        Optional<NameVersion> bomToolNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorEvaluations, projectBomTool);
+        detectorToolResult.bomToolProjectNameVersion = bomToolNameVersion;
+        logger.info("Finished evaluating detectors for project info.");
+
         //Completed.
         logger.info("Extractions finished.");
         //detectors
@@ -132,6 +143,29 @@ public class DetectorTool {
 //        detectorToolResult.bomToolProjectNameVersion = bomToolNameVersion;
 //        logger.info("Finished evaluating detectors for project info.");
 
-        return null; //TODO: Fix
+        return detectorToolResult; //TODO: Fix
+    }
+
+    private List<DetectCodeLocation> convert(File detectSourcePath, DetectorEvaluation evaluation){
+        List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
+        if (evaluation.wasExtractionSuccessful()){
+            Extraction extraction = evaluation.getExtraction();
+            for (CodeLocation codeLocation : extraction.getCodeLocations()){
+                File sourcePath = codeLocation.getSourcePath().orElse(evaluation.getDetectableEnvironment().getDirectory());
+                ExternalId externalId;
+                if (!codeLocation.getExternalId().isPresent()){
+                    logger.warn("The detector was unable to determine an external id for this code location, so an external id will be created using the file path.");
+                    Forge detectForge = new Forge("/", "/", "Detect");
+                    final String relativePath = FileNameUtils.relativize(detectSourcePath.getAbsolutePath(), sourcePath.getAbsolutePath());
+                    externalId = externalIdFactory.createPathExternalId(detectForge, relativePath);
+                    logger.warn("The external id that was created is: " + externalId.getExternalIdPieces().toString());
+                } else {
+                    externalId = codeLocation.getExternalId().get();
+                }
+                DetectCodeLocation detectCodeLocation = DetectCodeLocation.forDetector(codeLocation.getDependencyGraph(), sourcePath, externalId, evaluation.getDetectorRule().getDetectorType());
+                detectCodeLocations.add(detectCodeLocation);
+            }
+        }
+        return detectCodeLocations;
     }
 }

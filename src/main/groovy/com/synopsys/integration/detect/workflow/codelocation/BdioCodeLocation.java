@@ -23,19 +23,26 @@
  */
 package com.synopsys.integration.detect.workflow.codelocation;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-
 public class BdioCodeLocation {
-    public String codeLocationName;
-    public String bdioName;
-    public ExternalId externalId;
-    public DependencyGraph dependencyGraph;
+    private final String codeLocationName;
+    private final String bdioName;
+    private final DetectCodeLocation detectCodeLocation;
 
-    public BdioCodeLocation(String codeLocationName, final String bdioName, ExternalId externalId, DependencyGraph dependencyGraph) {
+    public BdioCodeLocation(final DetectCodeLocation detectCodeLocation, String codeLocationName, final String bdioName) {
         this.codeLocationName = codeLocationName;
         this.bdioName = bdioName;
-        this.externalId = externalId;
-        this.dependencyGraph = dependencyGraph;
+        this.detectCodeLocation = detectCodeLocation;
+    }
+
+    public String getCodeLocationName() {
+        return codeLocationName;
+    }
+
+    public String getBdioName() {
+        return bdioName;
+    }
+
+    public DetectCodeLocation getDetectCodeLocation() {
+        return detectCodeLocation;
     }
 }
