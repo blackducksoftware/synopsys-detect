@@ -42,14 +42,6 @@ public class DetectorEvaluationTree {
     //The following are learned while being evaluated.
     private Set<DetectorType> appliedInParent = new HashSet<>();
 
-    public DetectorEvaluationTree(final File directory, final int depthFromRoot, final DetectorRuleSet detectorRuleSet) {
-        this.directory = directory;
-        this.depthFromRoot = depthFromRoot;
-        this.detectorRuleSet = detectorRuleSet;
-        this.orderedEvaluations = new ArrayList<>();
-        this.children = new HashSet<>();
-    }
-
     public DetectorEvaluationTree(final File directory, final int depthFromRoot, final DetectorRuleSet detectorRuleSet, final List<DetectorEvaluation> orderedEvaluations, final Set<DetectorEvaluationTree> children) {
         this.directory = directory;
         this.depthFromRoot = depthFromRoot;

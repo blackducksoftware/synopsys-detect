@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,24 +44,24 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 public class DetectorFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public DetectorEvaluationTree findDetectors(final File initialDirectory, DetectorRuleSet detectorRuleSet, final DetectorFinderOptions options) throws DetectorFinderDirectoryListException {
+    public Optional<DetectorEvaluationTree> findDetectors(final File initialDirectory, DetectorRuleSet detectorRuleSet, final DetectorFinderOptions options) throws DetectorFinderDirectoryListException {
         return findDetectors(initialDirectory, detectorRuleSet,0, options);
     }
 
-    private DetectorEvaluationTree findDetectors(final File directory, DetectorRuleSet detectorRuleSet, final int depth, final DetectorFinderOptions options)
+    private Optional<DetectorEvaluationTree> findDetectors(final File directory, DetectorRuleSet detectorRuleSet, final int depth, final DetectorFinderOptions options)
         throws DetectorFinderDirectoryListException {
 
         if (depth > options.getMaximumDepth()) {
-            return new DetectorEvaluationTree(directory, depth, detectorRuleSet);
+            return Optional.empty();
         }
 
         if (null == directory || !directory.isDirectory()) {
-            return new DetectorEvaluationTree(directory, depth, detectorRuleSet);
+            return Optional.empty();
         }
 
         if (depth > 0 && options.getFileFilter().test(directory)) { // NEVER skip at depth 0.
             logger.info("Skipping excluded directory: " + directory.getPath());
-            return new DetectorEvaluationTree(directory, depth, detectorRuleSet);
+            return Optional.empty();
         }
 
         logger.info("Searching directory: " + directory.getPath());
@@ -72,11 +73,13 @@ public class DetectorFinder {
 
         List<File> subDirectories = findSubDirectories(directory);
         for (final File subDirectory : subDirectories) {
-            DetectorEvaluationTree childEvaluationSet = findDetectors(subDirectory, detectorRuleSet, depth + 1, options);
-            children.add(childEvaluationSet);
+            Optional<DetectorEvaluationTree> childEvaluationSet = findDetectors(subDirectory, detectorRuleSet, depth + 1, options);
+            if (childEvaluationSet.isPresent()){
+                children.add(childEvaluationSet.get());
+            }
         }
 
-        return new DetectorEvaluationTree(directory, depth, detectorRuleSet, evaluations, children);
+        return Optional.of(new DetectorEvaluationTree(directory, depth, detectorRuleSet, evaluations, children));
     }
 
     private List<File> findSubDirectories(final File directory) throws DetectorFinderDirectoryListException {

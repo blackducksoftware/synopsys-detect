@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -63,7 +64,7 @@ public class ReportManager {
 
 //        eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event.getDetectorEvaluations()));//TODO: Fix
 //        eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event.getDetectorEvaluations()));
-//        eventSystem.registerListener(Event.DetectorsComplete, event -> bomToolsComplete(event.evaluatedDetectors));
+        eventSystem.registerListener(Event.DetectorsComplete, event -> bomToolsComplete(event));
         eventSystem.registerListener(Event.CodeLocationsCalculated, event -> codeLocationsCompleted(event.getCodeLocationNames()));
 
     }
@@ -75,19 +76,19 @@ public class ReportManager {
         detailedSearchSummaryReporter.print(traceLogWriter, rootEvaluation);
     }
 
-    public void preparationsCompleted(final List<DetectorEvaluation> detectorEvaluations) {
-        //preparationSummaryReporter.write(logWriter, detectorEvaluations);
+    public void preparationsCompleted(final DetectorEvaluationTree detectorEvaluationTree) {
+        preparationSummaryReporter.write(logWriter, detectorEvaluationTree);
     }
 
-    private List<DetectorEvaluation> completedDetectorEvaluations = new ArrayList<>();
+    private DetectorToolResult detectorToolResult;
 
-    public void bomToolsComplete(final List<DetectorEvaluation> detectorEvaluations) {
-        completedDetectorEvaluations.addAll(detectorEvaluations);
+    public void bomToolsComplete(DetectorToolResult detectorToolResult) {
+        this.detectorToolResult = detectorToolResult;
     }
 
     public void codeLocationsCompleted(final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        if (completedDetectorEvaluations.size() > 0) {
-            //extractionSummaryReporter.write(logWriter, completedDetectorEvaluations, codeLocationNameMap);//TODO: FIx
+        if (codeLocationNameMap.size() > 0) {
+            extractionSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree, detectorToolResult.codeLocationMap, codeLocationNameMap);
         } else {
             logWriter.writeLine("Will not summarize extractions, no evaluations occurred.");
         }

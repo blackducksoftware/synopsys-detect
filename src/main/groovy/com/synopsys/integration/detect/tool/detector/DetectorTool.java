@@ -24,8 +24,11 @@
 package com.synopsys.integration.detect.tool.detector;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -40,6 +43,8 @@ import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
+import com.synopsys.integration.detect.workflow.event.Event;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.project.DetectorEvaluationNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
@@ -73,18 +78,26 @@ public class DetectorTool {
     public DetectorToolResult performDetectors(File directory, DetectorFinderOptions detectorFinderOptions, String projectBomTool) throws DetectUserFriendlyException {
         logger.info("Preparing to initialize detectors.");
 
+        EventSystem eventSystem = detectContext.getBean(EventSystem.class);
         DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
         DetectorFinder detectorFinder = new DetectorFinder();
         DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
         DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectableFactory, false);//TODO add the parse flag
 
-        DetectorEvaluationTree rootEvaluation;
+        Optional<DetectorEvaluationTree> possibleRootEvaluation;
         try {
             logger.info("Finding detectors.");
-            rootEvaluation = detectorFinder.findDetectors(directory, detectRuleSet, detectorFinderOptions);
+            possibleRootEvaluation = detectorFinder.findDetectors(directory, detectRuleSet, detectorFinderOptions);
+
         } catch (DetectorFinderDirectoryListException e) {
             throw new DetectUserFriendlyException("Detect was unable to list a directory while searching for detectors.", e, ExitCodeType.FAILURE_DETECTOR);
         }
+
+        if (!possibleRootEvaluation.isPresent()){
+            return new DetectorToolResult();
+        }
+
+        DetectorEvaluationTree rootEvaluation = possibleRootEvaluation.get();
 
         logger.info("Evaluating search and applicable.");
         DetectorEvaluator detectorEvaluator = new DetectorEvaluator();
@@ -98,16 +111,22 @@ public class DetectorTool {
         DetectorToolResult detectorToolResult = new DetectorToolResult();
         List<DetectorEvaluation> detectorEvaluations = DetectorEvaluationUtils.flatten(rootEvaluation);
 
+        detectorToolResult.rootDetectorEvaluationTree = rootEvaluation;
+
         detectorToolResult.applicableDetectorTypes = detectorEvaluations.stream()
                                                          .filter(DetectorEvaluation::isApplicable)
                                                          .map(DetectorEvaluation::getDetectorRule)
                                                          .map(DetectorRule::getDetectorType)
                                                          .collect(Collectors.toSet());
 
-        detectorToolResult.bomToolCodeLocations = detectorEvaluations.stream()
+        detectorToolResult.codeLocationMap = detectorEvaluations.stream()
                                                       .filter(DetectorEvaluation::wasExtractionSuccessful)
-                                                      .flatMap(it -> convert(directory, it).stream())
-                                                      .collect(Collectors.toList());
+                                                      .map(it -> convert(directory, it))
+                                                      .map(Map::entrySet)
+                                                      .flatMap(Collection::stream)
+                                                      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        detectorToolResult.bomToolCodeLocations = new ArrayList<>(detectorToolResult.codeLocationMap.values());
 
         DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
         Optional<NameVersion> bomToolNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorEvaluations, projectBomTool);
@@ -115,7 +134,9 @@ public class DetectorTool {
         logger.info("Finished evaluating detectors for project info.");
 
         //Completed.
-        logger.info("Extractions finished.");
+        logger.info("Finished running detectors.");
+        eventSystem.publishEvent(Event.DetectorsComplete, detectorToolResult);
+
         //detectors
 
         //        logger.info("Preparing to initialize detectors.");
@@ -146,8 +167,8 @@ public class DetectorTool {
         return detectorToolResult; //TODO: Fix
     }
 
-    private List<DetectCodeLocation> convert(File detectSourcePath, DetectorEvaluation evaluation){
-        List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
+    private Map<CodeLocation, DetectCodeLocation> convert(File detectSourcePath, DetectorEvaluation evaluation){
+        Map<CodeLocation, DetectCodeLocation> detectCodeLocations = new HashMap<>();
         if (evaluation.wasExtractionSuccessful()){
             Extraction extraction = evaluation.getExtraction();
             for (CodeLocation codeLocation : extraction.getCodeLocations()){
@@ -163,7 +184,7 @@ public class DetectorTool {
                     externalId = codeLocation.getExternalId().get();
                 }
                 DetectCodeLocation detectCodeLocation = DetectCodeLocation.forDetector(codeLocation.getDependencyGraph(), sourcePath, externalId, evaluation.getDetectorRule().getDetectorType());
-                detectCodeLocations.add(detectCodeLocation);
+                detectCodeLocations.put(codeLocation, detectCodeLocation);
             }
         }
         return detectCodeLocations;

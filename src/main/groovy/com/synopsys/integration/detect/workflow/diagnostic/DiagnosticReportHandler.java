@@ -47,6 +47,7 @@ import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWrite
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class DiagnosticReportHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -93,7 +94,7 @@ public class DiagnosticReportHandler {
         this.runId = runId;
         createReports();
 
-        //eventSystem.registerListener(Event.DetectorsComplete, event -> completedBomToolEvaluations(event.evaluatedDetectors));/* TODO FiX*.
+        eventSystem.registerListener(Event.DetectorsComplete, event -> completedBomToolEvaluations(event.rootDetectorEvaluationTree));
         //eventSystem.registerListener(Event.CodeLocationsCalculated, event -> completedCodeLocations(event.getCodeLocationNames())); TODO Fix
         eventSystem.registerListener(Event.DetectorsProfiled, event -> detectorsProfiled(event));
     }
@@ -104,30 +105,29 @@ public class DiagnosticReportHandler {
 
     private List<DetectorEvaluation> completedDetectorEvaluations = null;
 
-    /* TODO FiX
-    public void completedBomToolEvaluations(final List<DetectorEvaluation> detectorEvaluations) {
-        completedDetectorEvaluations = detectorEvaluations;
+    public void completedBomToolEvaluations(final DetectorEvaluationTree rootEvaluation) {
+        //completedDetectorEvaluations = rootEvaluation;
         try {
             final SearchSummaryReporter searchReporter = new SearchSummaryReporter();
-            searchReporter.print(getReportWriter(ReportTypes.SEARCH), detectorEvaluations);
+            searchReporter.print(getReportWriter(ReportTypes.SEARCH), rootEvaluation);
         } catch (final Exception e) {
             logger.error("Failed to write search report.", e);
         }
 
         try {
             final DetailedSearchSummaryReporter searchReporter = new DetailedSearchSummaryReporter();
-            searchReporter.print(getReportWriter(ReportTypes.SEARCH_DETAILED), detectorEvaluations);
+            searchReporter.print(getReportWriter(ReportTypes.SEARCH_DETAILED), rootEvaluation);
         } catch (final Exception e) {
             logger.error("Failed to write detailed search report.", e);
         }
 
         try {
             final OverviewSummaryReporter overviewSummaryReporter = new OverviewSummaryReporter();
-            overviewSummaryReporter.writeReport(getReportWriter(ReportTypes.DETECTOR), detectorEvaluations);
+            overviewSummaryReporter.writeReport(getReportWriter(ReportTypes.DETECTOR), rootEvaluation);
         } catch (final Exception e) {
             logger.error("Failed to write detector report.", e);
         }
-    } */
+    }
 
     public void completedCodeLocations(final Map<CodeLocation, String> codeLocationNameMap) {
         if (completedDetectorEvaluations == null)

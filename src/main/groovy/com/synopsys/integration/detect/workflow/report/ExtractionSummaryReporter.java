@@ -23,44 +23,58 @@
  */
 package com.synopsys.integration.detect.workflow.report;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
+import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReporterUtils;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class ExtractionSummaryReporter {
- /*
-    public void writeSummary(ReportWriter writer, final List<DetectorEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        final ExtractionSummarizer summarizer = new ExtractionSummarizer();
 
-        final List<ExtractionSummaryData> summaries = summarizer.summarize(results, codeLocationNameMap);
-
-        writeSummaries(writer, summaries);
-    }
-
-    private void writeSummaries(ReportWriter writer, final List<ExtractionSummaryData> data) {
+    public void writeSummary(ReportWriter writer, DetectorEvaluationTree rootEvaluation, final Map<CodeLocation, DetectCodeLocation> detectableMap, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         ReporterUtils.printHeader(writer, "Extraction results:");
-        data.stream().forEach(it -> {
-            if (it.getSuccess().size() > 0 || it.getException().size() > 0 || it.getFailed().size() > 0) {
-                writer.writeLine(it.getDirectory());
-                writer.writeLine("\tCode locations: " + it.getCodeLocationNames().size());
-                it.getCodeLocationNames().stream().forEach(name -> writer.writeLine("\t\t" + name));
-                writeEvaluationsIfNotEmpty(writer, "\tSuccess: ", it.getSuccess());
-                writeEvaluationsIfNotEmpty(writer, "\tFailure: ", it.getFailed());
-                writeEvaluationsIfNotEmpty(writer, "\tException: ", it.getException());
+        rootEvaluation.asFlatList().forEach(it -> {
+            List<DetectorEvaluation> success = DetectorEvaluationUtils.filteredEvaluations(it, evaluation -> evaluation.wasExtractionSuccessful());
+            List<DetectorEvaluation> exception = DetectorEvaluationUtils.filteredEvaluations(it, evaluation -> evaluation.wasExtractionException());
+            List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredEvaluations(it, evaluation -> evaluation.wasExtractionFailure());
+
+            if (success.size() > 0 || exception.size() > 0 || exception.size() > 0) {
+                writer.writeLine(it.getDirectory().toString());
+                List<String> codeLocationNames = findCodeLocationNames(it, detectableMap, codeLocationNameMap);
+                writer.writeLine("\tCode locations: " + codeLocationNames.size());
+                codeLocationNames.stream().forEach(name -> writer.writeLine("\t\t" + name));
+                writeEvaluationsIfNotEmpty(writer, "\tSuccess: ", success);
+                writeEvaluationsIfNotEmpty(writer, "\tFailure: ", failed);
+                writeEvaluationsIfNotEmpty(writer, "\tException: ", exception);
             }
         });
         ReporterUtils.printFooter(writer);
     }
 
+    private List<String> findCodeLocationNames(DetectorEvaluationTree detectorEvaluationTree, final Map<CodeLocation, DetectCodeLocation> detectableMap, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+        List<String> codeLocationNames = new ArrayList<>();
+        detectorEvaluationTree.getOrderedEvaluations().forEach(evaluation -> {
+            if (evaluation.getExtraction() != null){
+                List<CodeLocation> codeLocations = evaluation.getExtraction().getCodeLocations();
+                List<DetectCodeLocation> detectCodeLocations = codeLocations.stream().map(it -> detectableMap.get(it)).collect(Collectors.toList());
+                codeLocationNames.addAll(detectCodeLocations.stream().map(it -> codeLocationNameMap.get(it)).collect(Collectors.toList()));
+            }
+        });
+        return codeLocationNames;
+    }
+
     private void writeEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final List<DetectorEvaluation> evaluations) {
         if (evaluations.size() > 0) {
-            writer.writeLine(prefix + evaluations.stream().map(evaluation -> evaluation.getDetector().getDescriptiveName()).collect(Collectors.joining(", ")));
+            writer.writeLine(prefix + evaluations.stream().map(evaluation -> evaluation.getDetectorRule().getDescriptiveName()).collect(Collectors.joining(", ")));
         }
     }
-    */
+
 }
