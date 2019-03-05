@@ -129,7 +129,11 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.PIP, "Pip Env", detectableFactory::createPipenvDetectable).defaultNotNested().build();
 
-        ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", detectableFactory::createGemlockDetectable).defaultNotNested().build();
+        final DetectorRule gemlock = ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", detectableFactory::createGemlockDetectable).defaultNotNested().build();
+        final DetectorRule gemspec = ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemspec", detectableFactory::createGemspecDetectable).defaultNotNested().build();
+
+        ruleSet.yield(gemspec).to(gemlock);
+
         ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", detectableFactory::createSbtResolutionCacheDetectable).defaultNotNested().build();
 
         return ruleSet.build();
