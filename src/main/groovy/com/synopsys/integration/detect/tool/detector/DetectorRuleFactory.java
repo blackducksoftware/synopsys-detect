@@ -29,22 +29,29 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.detector.rule.DetectorRuleSetBuilder;
 
 public class DetectorRuleFactory {
+    public DetectorRuleSet createRules(final DetectableFactory detectableFactory, final boolean parseOnlyMode) {
+        if (parseOnlyMode) {
+            return createParseOnlyRules(detectableFactory);
+        } else {
+            return createRules(detectableFactory);
+        }
+    }
 
-    public DetectorRuleSet createRules(DetectableFactory detectableFactory) {
-
+    private DetectorRuleSet createRules(final DetectableFactory detectableFactory) {
         final DetectorRuleSetBuilder ruleSet = new DetectorRuleSetBuilder();
 
-        ruleSet.addDetector(DetectorType.BITBAKE,"Bitbake", detectableFactory::createBitbakeDetectable).defaultNotNested().build();
+        ruleSet.addDetector(DetectorType.BITBAKE, "Bitbake", detectableFactory::createBitbakeDetectable).defaultNotNested().build();
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", detectableFactory::createPodLockDetectable).defaultNested().build();
+
         ruleSet.addDetector(DetectorType.CONDA, "Conda Cli", detectableFactory::createCondaDetectable).defaultNotNested().build();
         ruleSet.addDetector(DetectorType.CPAN, "Cpan Cli", detectableFactory::createCpanCliDetectable).defaultNotNested().build();
         ruleSet.addDetector(DetectorType.PACKAGIST, "Packrat Lock", detectableFactory::createPackratLockDetectable).defaultNotNested().build();
 
-        DetectorRule goCli = ruleSet.addDetector(DetectorType.GO_DEP, "Go Cli", detectableFactory::createGoCliDetectable).defaultNested().build();
-        DetectorRule goLock = ruleSet.addDetector(DetectorType.GO_DEP, "Go Lock", detectableFactory::createGoLockDetectable).defaultNested().build();
-        DetectorRule goVnd = ruleSet.addDetector(DetectorType.GO_VNDR, "Go Vndr", detectableFactory::createGoVndrDetectable).defaultNested().build();
-        DetectorRule goVendor = ruleSet.addDetector(DetectorType.GO_VENDOR, "Go Vendor", detectableFactory::createGoVendorDetectable).defaultNested().build();
+        final DetectorRule goCli = ruleSet.addDetector(DetectorType.GO_DEP, "Go Cli", detectableFactory::createGoCliDetectable).defaultNested().build();
+        final DetectorRule goLock = ruleSet.addDetector(DetectorType.GO_DEP, "Go Lock", detectableFactory::createGoLockDetectable).defaultNested().build();
+        final DetectorRule goVnd = ruleSet.addDetector(DetectorType.GO_VNDR, "Go Vndr", detectableFactory::createGoVndrDetectable).defaultNested().build();
+        final DetectorRule goVendor = ruleSet.addDetector(DetectorType.GO_VENDOR, "Go Vendor", detectableFactory::createGoVendorDetectable).defaultNested().build();
 
         ruleSet.yield(goCli).to(goLock);
         ruleSet.yield(goCli).to(goVnd);
@@ -56,10 +63,10 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom", detectableFactory::createMavenPomDetectable).defaultNotNested().build();
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Wrapper", detectableFactory::createMavenPomWrapperDetectable).defaultNotNested().build();
 
-        DetectorRule yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", detectableFactory::createYarnLockDetectable).defaultNested().build();
-        DetectorRule npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", detectableFactory::createNpmPackageLockDetectable).defaultNested().build();
-        DetectorRule npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", detectableFactory::createNpmShrinkwrapDetectable).defaultNested().build();
-        DetectorRule npmCli = ruleSet.addDetector(DetectorType.NPM, "Npm Cli", detectableFactory::createNpmCliDetectable).defaultNested().build();
+        final DetectorRule yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", detectableFactory::createYarnLockDetectable).defaultNested().build();
+        final DetectorRule npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", detectableFactory::createNpmPackageLockDetectable).defaultNested().build();
+        final DetectorRule npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", detectableFactory::createNpmShrinkwrapDetectable).defaultNested().build();
+        final DetectorRule npmCli = ruleSet.addDetector(DetectorType.NPM, "Npm Cli", detectableFactory::createNpmCliDetectable).defaultNested().build();
 
         ruleSet.yield(npmShrinkwrap).to(npmPackageLock);
         ruleSet.yield(npmCli).to(npmPackageLock);
@@ -69,15 +76,15 @@ public class DetectorRuleFactory {
         ruleSet.yield(npmPackageLock).to(yarnLock);
         ruleSet.yield(npmShrinkwrap).to(yarnLock);
 
-        DetectorRule nugetSolution = ruleSet.addDetector(DetectorType.NUGET, "Solution", detectableFactory::createNugetSolutionDetectable).defaultNested().build();
-        DetectorRule nugetProject = ruleSet.addDetector(DetectorType.NUGET, "Project", detectableFactory::createNugetProjectDetectable).defaultNotNested().build();
+        final DetectorRule nugetSolution = ruleSet.addDetector(DetectorType.NUGET, "Solution", detectableFactory::createNugetSolutionDetectable).defaultNested().build();
+        final DetectorRule nugetProject = ruleSet.addDetector(DetectorType.NUGET, "Project", detectableFactory::createNugetProjectDetectable).defaultNotNested().build();
 
         ruleSet.yield(nugetProject).to(nugetSolution);
 
         ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", detectableFactory::createComposerLockDetectable).defaultNotNested().build();
 
-        DetectorRule pipEnv = ruleSet.addDetector(DetectorType.PIP, "Pip Env", detectableFactory::createPipenvDetectable).defaultNotNested().build();
-        DetectorRule pipInspector = ruleSet.addDetector(DetectorType.PIP, "Pip Inspector", detectableFactory::createPipInspectorDetectable).defaultNotNested().build();
+        final DetectorRule pipEnv = ruleSet.addDetector(DetectorType.PIP, "Pip Env", detectableFactory::createPipenvDetectable).defaultNotNested().build();
+        final DetectorRule pipInspector = ruleSet.addDetector(DetectorType.PIP, "Pip Inspector", detectableFactory::createPipInspectorDetectable).defaultNotNested().build();
 
         ruleSet.yield(pipInspector).to(pipEnv);
 
@@ -86,6 +93,44 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.PEAR, "Pear", detectableFactory::createPearCliDetectable).defaultNotNested().build();
 
         ruleSet.addDetector(DetectorType.CLANG, "Clang", detectableFactory::createClangDetectable).defaultNested().build();
+
+        return ruleSet.build();
+    }
+
+    private DetectorRuleSet createParseOnlyRules(final DetectableFactory detectableFactory) {
+        final DetectorRuleSetBuilder ruleSet = new DetectorRuleSetBuilder();
+
+        ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", detectableFactory::createPodLockDetectable).defaultNested().build();
+
+        ruleSet.addDetector(DetectorType.PACKAGIST, "Packrat Lock", detectableFactory::createPackratLockDetectable).defaultNotNested().build();
+
+        ruleSet.addDetector(DetectorType.GO_DEP, "Go Lock", detectableFactory::createGoLockDetectable).defaultNested().build();
+        ruleSet.addDetector(DetectorType.GO_VNDR, "Go Vndr", detectableFactory::createGoVndrDetectable).defaultNested().build();
+        ruleSet.addDetector(DetectorType.GO_VENDOR, "Go Vendor", detectableFactory::createGoVendorDetectable).defaultNested().build();
+
+        ruleSet.addDetector(DetectorType.GRADLE, "Gradle Parse", detectableFactory::createBuildGradleDetectable).defaultNotNested().build();
+
+        ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom Parse", detectableFactory::createMavenPomXmlDetectable).defaultNotNested().build();
+
+        final DetectorRule yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", detectableFactory::createYarnLockDetectable).defaultNested().build();
+        final DetectorRule npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", detectableFactory::createNpmPackageLockDetectable).defaultNested().build();
+        final DetectorRule npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", detectableFactory::createNpmShrinkwrapDetectable).defaultNested().build();
+        final DetectorRule npmPackageJsonParse = ruleSet.addDetector(DetectorType.NPM, "Package Json Parse", detectableFactory::createNpmPackageJsonDetectable).defaultNested().build();
+
+        ruleSet.yield(npmShrinkwrap).to(npmPackageLock);
+        ruleSet.yield(npmPackageJsonParse).to(npmPackageLock);
+        ruleSet.yield(npmPackageJsonParse).to(npmShrinkwrap);
+
+        ruleSet.yield(npmPackageJsonParse).to(yarnLock);
+        ruleSet.yield(npmPackageLock).to(yarnLock);
+        ruleSet.yield(npmShrinkwrap).to(yarnLock);
+
+        ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", detectableFactory::createComposerLockDetectable).defaultNotNested().build();
+
+        ruleSet.addDetector(DetectorType.PIP, "Pip Env", detectableFactory::createPipenvDetectable).defaultNotNested().build();
+
+        ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", detectableFactory::createGemlockDetectable).defaultNotNested().build();
+        ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", detectableFactory::createSbtResolutionCacheDetectable).defaultNotNested().build();
 
         return ruleSet.build();
     }
