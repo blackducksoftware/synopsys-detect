@@ -31,14 +31,12 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.google.gson.Gson;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.impl.DetectInspectorResolver;
-import com.google.gson.Gson;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -184,10 +182,10 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public BazelExtractor bazelExtractor() {
-        BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
-        BazelExternalIdExtractionSimpleRules rules = null;//new BazelExternalIdExtractionSimpleRules(detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None));//TODO: bazel needs option object.
-        BazelCodeLocationBuilder codeLocationGenerator = new BazelCodeLocationBuilder(externalIdFactory);
-        BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor = new BazelExternalIdExtractionFullRuleJsonProcessor(gson);
+        final BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
+        final BazelExternalIdExtractionSimpleRules rules = null;//new BazelExternalIdExtractionSimpleRules(detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None));//TODO: bazel needs option object.
+        final BazelCodeLocationBuilder codeLocationGenerator = new BazelCodeLocationBuilder(externalIdFactory);
+        final BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor = new BazelExternalIdExtractionFullRuleJsonProcessor(gson);
         return new BazelExtractor(executableRunner, parser, rules, codeLocationGenerator, bazelExternalIdExtractionFullRuleJsonProcessor);
     }
 
@@ -203,15 +201,15 @@ public class DetectableBeanConfiguration {
         return new DependencyFileDetailGenerator(filePathGenerator());
     }
 
-    public ClangPackageDetailsTransformer clangPackageDetailsTransformer(){
+    public ClangPackageDetailsTransformer clangPackageDetailsTransformer() {
         return new ClangPackageDetailsTransformer(externalIdFactory);
     }
 
-    public CompileCommandDatabaseParser compileCommandDatabaseParser(){
+    public CompileCommandDatabaseParser compileCommandDatabaseParser() {
         return new CompileCommandDatabaseParser(gson);
     }
 
-    public CompileCommandParser compileCommandParser(){
+    public CompileCommandParser compileCommandParser() {
         return new CompileCommandParser();
     }
 
@@ -262,7 +260,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public PackratLockExtractor packratLockExtractor() {
-        return new PackratLockExtractor(packratDescriptionFileParser(),packratLockFileParser(), externalIdFactory, fileFinder);
+        return new PackratLockExtractor(packratDescriptionFileParser(), packratLockFileParser(), externalIdFactory, fileFinder);
     }
 
     @Bean
@@ -274,7 +272,6 @@ public class DetectableBeanConfiguration {
     public GoDepLockFileGenerator goDepLockFileGenerator() {
         return new GoDepLockFileGenerator(executableRunner);
     }
-
 
     @Bean //final GoDepLockFileGenerator goDepLockFileGenerator, final GoLockParser goLockParser,
     public GoDepExtractor goDepExtractor() {
@@ -383,7 +380,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public PearDependencyGraphTransformer pearDependencyGraphTransformer() {
-        return new PearDependencyGraphTransformer(externalIdFactory, detectableOptionFactory.createPearCliDetectableOptions());
+        return new PearDependencyGraphTransformer(externalIdFactory);
     }
 
     @Bean
@@ -457,31 +454,29 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
-    public ClangPackageManagerInfoFactory clangPackageManagerInfoFactory(){
+    public ClangPackageManagerInfoFactory clangPackageManagerInfoFactory() {
         return new ClangPackageManagerInfoFactory();
     }
 
     @Bean
-    public ClangPackageManagerFactory clangPackageManagerFactory(){
+    public ClangPackageManagerFactory clangPackageManagerFactory() {
         return new ClangPackageManagerFactory(clangPackageManagerInfoFactory());
     }
 
     @Bean
-    public ClangPackageManagerRunner clangPackageManagerRunner(){
+    public ClangPackageManagerRunner clangPackageManagerRunner() {
         return new ClangPackageManagerRunner();
     }
 
     @Bean
-    public GradleInspectorExtractor gradleInspectorExtractor(){
+    public GradleInspectorExtractor gradleInspectorExtractor() {
         return new GradleInspectorExtractor(executableRunner, fileFinder, gradleReportParser(), gradleReportTransformer(), gradleRootMetadataParser());
     }
 
     @Bean
-    public GradleInspectorScriptCreator gradleInspectorScriptCreator(){
+    public GradleInspectorScriptCreator gradleInspectorScriptCreator() {
         return new GradleInspectorScriptCreator(configuration);
     }
-
-
 
     //Detectables
     //Should be scoped to Prototype so a new Detectable is created every time one is needed.
@@ -556,7 +551,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GradleInspectorDetectable gradleInspectorBomTool(final DetectableEnvironment environment) throws ParserConfigurationException {
-        return new GradleInspectorDetectable(environment, fileFinder, detectExecutableResolver,  detectInspectorResolver, gradleInspectorExtractor(), detectableOptionFactory.createGradleInspectorOptions(), gradleInspectorScriptCreator());
+        return new GradleInspectorDetectable(environment, fileFinder, detectExecutableResolver, detectInspectorResolver, gradleInspectorExtractor(), detectableOptionFactory.createGradleInspectorOptions(), gradleInspectorScriptCreator());
     }
 
     @Bean
@@ -580,25 +575,27 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NpmPackageLockDetectable npmPackageLockBomTool(final DetectableEnvironment environment) {
-        return new NpmPackageLockDetectable(environment, fileFinder, npmLockfileExtractor(), false);//TODO: replace with option object
+        return new NpmPackageLockDetectable(environment, fileFinder, npmLockfileExtractor(), detectableOptionFactory.createNpmLockfileOptions());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetProjectDetectable nugetProjectBomTool(final DetectableEnvironment environment) {
-        return new NugetProjectDetectable(environment, fileFinder, detectableOptionFactory.createNugetInspectorOptions(), detectInspectorResolver, nugetInspectorExtractor());
+        //        return new NugetProjectDetectable(environment, fileFinder, detectableOptionFactory.createNugetInspectorOptions(), detectInspectorResolver, nugetInspectorExtractor()); // TODO: Fix NugetInspectorOptions
+        return null;
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NpmShrinkwrapDetectable npmShrinkwrapBomTool(final DetectableEnvironment environment) {
-        return new NpmShrinkwrapDetectable(environment, fileFinder, npmLockfileExtractor(), false);//TODO: replace with option object
+        return new NpmShrinkwrapDetectable(environment, fileFinder, npmLockfileExtractor(), detectableOptionFactory.createNpmLockfileOptions());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetSolutionDetectable nugetSolutionBomTool(final DetectableEnvironment environment) {
-        return new NugetSolutionDetectable(environment, fileFinder, detectInspectorResolver, nugetInspectorExtractor(), detectableOptionFactory.createNugetInspectorOptions());
+        //        return new NugetSolutionDetectable(environment, fileFinder, detectInspectorResolver, nugetInspectorExtractor(), detectableOptionFactory.createNugetInspectorOptions()); // TODO: Fix NugetInspectorOptions
+        return null;
     }
 
     @Bean
@@ -610,7 +607,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public PearCliDetectable pearCliBomTool(final DetectableEnvironment environment) {
-        return new PearCliDetectable(environment, fileFinder, detectExecutableResolver, pearCliExtractor());
+        return new PearCliDetectable(environment, fileFinder, detectExecutableResolver, pearCliExtractor(), detectableOptionFactory.createPearCliDetectableOptions());
     }
 
     @Bean
@@ -624,7 +621,7 @@ public class DetectableBeanConfiguration {
     public PipInspectorDetectable pipInspectorBomTool(final DetectableEnvironment environment) {
         //final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None); //TODO: do we need this (and replace with option object if we do.
         return new PipInspectorDetectable(environment, "", fileFinder, detectExecutableResolver, detectExecutableResolver, detectInspectorResolver,
-            pipInspectorExtractor());
+            pipInspectorExtractor(), detectableOptionFactory.createPipInspectorDetectableOptions());
     }
 
     @Bean

@@ -51,6 +51,7 @@ import static com.synopsys.integration.detect.configuration.DetectProperty.Prope
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_PROXY;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_PYTHON;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_REPORT;
+import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_RUBY;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_SBT;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_SIGNATURE_SCANNER;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_SOURCE_PATH;
@@ -608,9 +609,17 @@ public enum DetectProperty {
     @HelpDescription("The output directory for risk report in PDF. Default is the source directory")
     DETECT_RISK_REPORT_PDF_PATH("detect.risk.report.pdf.path", "Risk Report Output Path", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "."),
 
-    @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
+    @HelpGroup(primary = GROUP_REPORT, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the sbt configurations to exclude")
     DETECT_SBT_EXCLUDED_CONFIGURATIONS("detect.sbt.excluded.configurations", "SBT Configurations Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_RUBY)
+    @HelpDescription("If set to false, runtime dependencies will not be included when parsing *.gemspec files")
+    DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES("detect.ruby.include.runtime.dependencies", "Ruby Runtime Dependencies", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+
+    @HelpGroup(primary = GROUP_RUBY)
+    @HelpDescription("If set to true, development dependencies will be included when parsing *.gemspec files")
+    DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES("detect.ruby.include.dev.dependencies", "Ruby Runtime Dependencies", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the sbt configurations to include")
@@ -1033,6 +1042,7 @@ public enum DetectProperty {
         public static final String GROUP_PEAR = "pear";
         public static final String GROUP_PIP = "pip";
         public static final String GROUP_PYTHON = "python";
+        public static final String GROUP_RUBY = "ruby";
         public static final String GROUP_SBT = "sbt";
         public static final String GROUP_YARN = "yarn";
 

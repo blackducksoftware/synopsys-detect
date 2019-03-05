@@ -34,10 +34,10 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
@@ -55,13 +55,14 @@ public class PipInspectorDetectable extends Detectable {
     private final PipInspectorResolver pipInspectorResolver;
     private final PipInspectorExtractor pipInspectorExtractor;
     private final String requirementFilePath;
+    private final PipInspectorDetectableOptions pipInspectorDetectableOptions;
 
     private File pythonExe;
     private File pipInspector;
     private File setupFile;
 
     public PipInspectorDetectable(final DetectableEnvironment environment, final String requirementFilePath, final FileFinder fileFinder, final PythonResolver pythonResolver, final PipResolver pipResolver,
-        final PipInspectorResolver pipInspectorResolver, final PipInspectorExtractor pipInspectorExtractor) {
+        final PipInspectorResolver pipInspectorResolver, final PipInspectorExtractor pipInspectorExtractor, final PipInspectorDetectableOptions pipInspectorDetectableOptions) {
         super(environment, "Pip Inspector", "PIP");
         this.fileFinder = fileFinder;
         this.pythonResolver = pythonResolver;
@@ -69,6 +70,7 @@ public class PipInspectorDetectable extends Detectable {
         this.pipInspectorResolver = pipInspectorResolver;
         this.pipInspectorExtractor = pipInspectorExtractor;
         this.requirementFilePath = requirementFilePath;
+        this.pipInspectorDetectableOptions = pipInspectorDetectableOptions;
     }
 
     @Override
@@ -110,7 +112,7 @@ public class PipInspectorDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return pipInspectorExtractor.extract(environment.getDirectory(), pythonExe, pipInspector, setupFile, requirementFilePath);
+        return pipInspectorExtractor.extract(environment.getDirectory(), pythonExe, pipInspector, setupFile, requirementFilePath, pipInspectorDetectableOptions.getPipProjectName());
     }
 
 }

@@ -21,16 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip;
+package com.synopsys.integration.detectable.detectables.npm.packagejson;
 
-public class PipInspectorDetectableOptions {
-    private final String pipProjectName;
+public class NpmPackageJsonParseDetectableOptions {
+    private final boolean includeDevDependencies;
 
-    public PipInspectorDetectableOptions(final String pipProjectName) {
-        this.pipProjectName = pipProjectName;
+    public NpmPackageJsonParseDetectableOptions(final boolean includeDevDependencies) {
+        this.includeDevDependencies = includeDevDependencies;
     }
 
-    public String getPipProjectName() {
-        return pipProjectName;
+    public boolean shouldIncludeDevDependencies() {
+        return includeDevDependencies;
     }
 }

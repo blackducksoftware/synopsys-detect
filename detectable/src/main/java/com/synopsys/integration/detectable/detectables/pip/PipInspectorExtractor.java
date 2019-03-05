@@ -48,10 +48,10 @@ public class PipInspectorExtractor {
         this.pipInspectorDetectableOptions = pipInspectorDetectableOptions;
     }
 
-    public Extraction extract(final File directory, final File pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) {
+    public Extraction extract(final File directory, final File pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath, final String providedProjectName) {
         Extraction extractionResult;
         try {
-            final String projectName = getProjectName(directory, pythonExe, setupFile);
+            final String projectName = getProjectName(directory, pythonExe, setupFile, providedProjectName);
             final Optional<PipParseResult> result;
 
             final List<String> inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
@@ -85,8 +85,8 @@ public class PipInspectorExtractor {
         return executableRunner.execute(sourceDirectory, pythonExe, inspectorArguments).getStandardOutputAsList();
     }
 
-    private String getProjectName(final File directory, final File pythonExe, final File setupFile) throws ExecutableRunnerException {
-        String projectName = pipInspectorDetectableOptions.getDetectPipProjectName();
+    private String getProjectName(final File directory, final File pythonExe, final File setupFile, final String providedProjectName) throws ExecutableRunnerException {
+        String projectName = providedProjectName;
 
         if (StringUtils.isBlank(projectName) && setupFile != null && setupFile.exists()) {
             final List<String> pythonArguments = Arrays.asList(setupFile.getAbsolutePath(), "--name");

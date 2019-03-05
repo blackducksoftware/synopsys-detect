@@ -14,7 +14,6 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pear.model.PackageDependency;
 import com.synopsys.integration.detectable.detectables.pear.transform.PearDependencyGraphTransformer;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
@@ -48,8 +47,7 @@ class PearDependencyGraphTransformerTest {
 
     private DependencyGraph buildDependencyGraph(final boolean onlyGatherRequired) {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final PearCliDetectableOptions pearCliDetectableOptions = new PearCliDetectableOptions(onlyGatherRequired);
-        final PearDependencyGraphTransformer pearDependencyGraphTransformer = new PearDependencyGraphTransformer(externalIdFactory, pearCliDetectableOptions);
+        final PearDependencyGraphTransformer pearDependencyGraphTransformer = new PearDependencyGraphTransformer(externalIdFactory);
 
         final Map<String, String> nameVersionMap = new HashMap<>();
         nameVersionMap.put("Archive_Tar", "1.4.3");
@@ -59,6 +57,6 @@ class PearDependencyGraphTransformerTest {
         packageDependencies.add(new PackageDependency("Archive_Tar", true));
         packageDependencies.add(new PackageDependency("Console_Getopt", false));
 
-        return pearDependencyGraphTransformer.buildDependencyGraph(nameVersionMap, packageDependencies);
+        return pearDependencyGraphTransformer.buildDependencyGraph(nameVersionMap, packageDependencies, onlyGatherRequired);
     }
 }

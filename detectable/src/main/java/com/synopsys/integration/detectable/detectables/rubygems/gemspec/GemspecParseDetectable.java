@@ -45,17 +45,16 @@ public class GemspecParseDetectable extends Detectable {
 
     private final FileFinder fileFinder;
     private final GemspecParser gemspecParser;
-    private final boolean includeRuntimeDependencies;
-    private final boolean includeDevelopmentDependencies;
+    private final GemspecParseDetectableOptions gemspecParseDetectableOptions;
 
     private File gemspec;
 
-    public GemspecParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GemspecParser gemspecParser, final boolean includeRuntimeDependencies, final boolean includeDevelopmentDependencies) {
+    public GemspecParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GemspecParser gemspecParser,
+        final GemspecParseDetectableOptions gemspecParseDetectableOptions) {
         super(environment, "Gemspec", "RUBYGEMS");
         this.fileFinder = fileFinder;
         this.gemspecParser = gemspecParser;
-        this.includeRuntimeDependencies = includeRuntimeDependencies;
-        this.includeDevelopmentDependencies = includeDevelopmentDependencies;
+        this.gemspecParseDetectableOptions = gemspecParseDetectableOptions;
     }
 
     @Override
@@ -78,7 +77,7 @@ public class GemspecParseDetectable extends Detectable {
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         try {
             final InputStream inputStream = new FileInputStream(gemspec);
-            final DependencyGraph dependencyGraph = gemspecParser.parse(inputStream, includeRuntimeDependencies, includeDevelopmentDependencies);
+            final DependencyGraph dependencyGraph = gemspecParser.parse(inputStream, gemspecParseDetectableOptions.shouldIncludeRuntimeDependencies(), gemspecParseDetectableOptions.shouldIncludeDevelopmentDependencies());
             final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
             return new Extraction.Builder().codeLocations(codeLocation).build();
