@@ -44,7 +44,7 @@ public class GradleInspectorScriptOptions {
         return new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, gradleInspectorRepositoryUrl, null, libraryPaths);
     }
 
-    private GradleInspectorScriptOptions(final String excludedProjectNames, final String includedProjectNames, final String excludedConfigurationNames, final String includedConfigurationNames,
+    public GradleInspectorScriptOptions(final String excludedProjectNames, final String includedProjectNames, final String excludedConfigurationNames, final String includedConfigurationNames,
         final String gradleInspectorRepositoryUrl, final String onlineInspectorVersion, final String offlineLibraryPaths) {
         this.excludedProjectNames = excludedProjectNames;
         this.includedProjectNames = includedProjectNames;

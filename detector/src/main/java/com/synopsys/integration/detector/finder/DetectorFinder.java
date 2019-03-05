@@ -54,7 +54,7 @@ public class DetectorFinder {
             return new DetectorEvaluationTree(directory, depth, detectorRuleSet);
         }
 
-        if (null == directory || !directory.isFile()) {
+        if (null == directory || !directory.isDirectory()) {
             return new DetectorEvaluationTree(directory, depth, detectorRuleSet);
         }
 
@@ -76,7 +76,7 @@ public class DetectorFinder {
             children.add(childEvaluationSet);
         }
 
-        return new DetectorEvaluationTree(directory, depth, evaluations, children);
+        return new DetectorEvaluationTree(directory, depth, detectorRuleSet, evaluations, children);
     }
 
     private List<File> findSubDirectories(final File directory) throws DetectorFinderDirectoryListException {

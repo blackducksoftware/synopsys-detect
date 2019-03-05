@@ -26,7 +26,7 @@ package com.synopsys.integration.detector.exception;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
 public class DetectableDetectorException extends DetectorException {
-    public DetectableDetectorException(DetectableException e){//TODO: Finish impl
+    public DetectableDetectorException(DetectableException e){//TODO: Do we even need custom exceptions?
 
     }
 }

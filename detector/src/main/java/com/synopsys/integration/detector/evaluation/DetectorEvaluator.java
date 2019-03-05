@@ -39,6 +39,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.finder.DetectorFilter;
 import com.synopsys.integration.detector.result.DetectableDetectorResult;
 import com.synopsys.integration.detector.result.DetectorResult;
@@ -47,9 +48,14 @@ import com.synopsys.integration.detector.rule.DetectorRule;
 public class DetectorEvaluator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private SearchableEvaluator searchableEvaluator;
-    private DetectorFilter detectorFilter;
-    private boolean forceNested;
+    private SearchableEvaluator searchableEvaluator = new SearchableEvaluator();
+    private DetectorFilter detectorFilter = new DetectorFilter() {
+        @Override
+        public boolean shouldInclude(final DetectorType detectorType) {
+            return true;
+        }
+    };
+    private boolean forceNested = false;
 
     //Unfortunately, currently search and applicable are tied together due to Search needing to know about previous detectors that applied.
     //So Search and then Applicable must be evaluated of Detector 1 before the next Search can be evaluated of Detector 2.

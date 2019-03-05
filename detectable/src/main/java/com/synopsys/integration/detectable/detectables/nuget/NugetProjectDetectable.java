@@ -92,6 +92,7 @@ public class NugetProjectDetectable extends Detectable {
 
     private NugetInspector inspector;
 
+    //TODO, this option object can't stay like this.
     public NugetProjectDetectable(DetectableEnvironment detectableEnvironment, final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions, final NugetInspectorResolver nugetInspectorResolver,
         final NugetInspectorExtractor nugetInspectorExtractor) {
         super(detectableEnvironment, "nuget", "nuget");

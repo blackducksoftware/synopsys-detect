@@ -36,6 +36,7 @@ import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
+import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorDetectable;
@@ -58,7 +59,6 @@ import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockD
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
-import com.synopsys.integration.detector.detector.go.GoDepCliDetectable;
 
 public class DetectableFactory implements BeanFactoryAware {
 
