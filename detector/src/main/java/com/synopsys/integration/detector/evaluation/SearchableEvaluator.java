@@ -23,6 +23,7 @@
  */
 package com.synopsys.integration.detector.evaluation;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,11 @@ public class SearchableEvaluator { //TODO: rename? is not what i want an evaluat
             return new MaxDepthExceededDetectorResult(environment.getDepth(), maxDepth);
         }
 
-        final Set<DetectorRule> yieldTo = environment.getAppliedToParent().stream()
+        Set<DetectorRule> applied = new HashSet<>();
+        applied.addAll(environment.getAppliedToParent());
+        applied.addAll(environment.getAppliedSoFar());
+
+        final Set<DetectorRule> yieldTo = applied.stream()
                                           .filter(it -> detectorRuleSet.getYieldsTo(detectorRule).contains(it))
                                           .collect(Collectors.toSet());
 
@@ -60,7 +65,7 @@ public class SearchableEvaluator { //TODO: rename? is not what i want an evaluat
         if (environment.isForceNestedSearch()) {
             return new ForcedNestedPassedDetectorResult();
         } else if (nestable) {
-            if (environment.getAppliedToParent().stream().anyMatch(applied -> applied.equals(this))) {
+            if (environment.getAppliedToParent().stream().anyMatch(parentApplied -> parentApplied.equals(this))) {
                 return new NotSelfNestableDetectorResult();
             }
         } else if (!nestable && environment.getAppliedToParent().size() > 0) {
