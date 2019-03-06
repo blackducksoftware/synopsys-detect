@@ -32,6 +32,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
@@ -76,6 +77,9 @@ import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectabl
 import com.synopsys.integration.detectable.detectables.cran.PackratLockExtractor;
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratDescriptionFileParser;
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratLockFileParser;
+import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
+import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
+import com.synopsys.integration.detectable.detectables.docker.DockerProperties;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
@@ -478,9 +482,20 @@ public class DetectableBeanConfiguration {
         return new GradleInspectorScriptCreator(configuration);
     }
 
+    @Bean
+    public DockerExtractor dockerExtractor() { //TODO fix.
+        return new DockerExtractor(fileFinder, new DockerProperties(detectableOptionFactory.createDockerDetectableOptions()), executableRunner, new BdioTransformer(), new ExternalIdFactory(), gson);
+    }
+
     //Detectables
     //Should be scoped to Prototype so a new Detectable is created every time one is needed.
     //Should only be accessed through the DetectableFactory.
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public DockerDetectable dockerDetectable(final DetectableEnvironment environment) {
+        return new DockerDetectable(environment, detectInspectorResolver, detectExecutableResolver, detectExecutableResolver, detectExecutableResolver, dockerExtractor(), detectableOptionFactory.createDockerDetectableOptions());
+    }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)

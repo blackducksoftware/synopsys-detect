@@ -57,10 +57,6 @@ public class DetectCodeLocation {
         return new DetectCodeLocation(dependencyGraph, sourcePath, externalId, null, dockerImageName);
     }
 
-    public static DetectCodeLocation forDetector(DependencyGraph dependencyGraph, File sourcePath, ExternalId externalId, DetectorType detectorType){
-        return new DetectCodeLocation(dependencyGraph, sourcePath, externalId, detectorType.toString(), null);
-    }
-
     public static DetectCodeLocation forCreator(DependencyGraph dependencyGraph, File sourcePath, ExternalId externalId, String creatorName){
         return new DetectCodeLocation(dependencyGraph, sourcePath, externalId, creatorName, null);
     }

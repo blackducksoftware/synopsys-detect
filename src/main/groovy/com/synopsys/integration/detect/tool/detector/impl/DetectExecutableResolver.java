@@ -32,7 +32,9 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.BazelR
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
@@ -44,8 +46,8 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.YarnRe
 import com.synopsys.integration.detectable.detectable.inspector.go.GoDepResolver;
 import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 
-public class DetectExecutableResolver implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver,
-                                                     BazelResolver, GoDepResolver, GoResolver {
+public class DetectExecutableResolver implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver,
+                                                     BazelResolver, DockerResolver, GoDepResolver, GoResolver {
     @Override
     public File resolveBash() throws DetectableException {
         return null;
@@ -118,6 +120,16 @@ public class DetectExecutableResolver implements GradleResolver, BashResolver, C
 
     @Override
     public File resolveGo() throws DetectableException {
+        return null;
+    }
+
+    @Override
+    public File resolveJava() throws DetectableException {
+        return null;
+    }
+
+    @Override
+    public File resolveDocker() throws DetectableException {
         return null;
     }
 }

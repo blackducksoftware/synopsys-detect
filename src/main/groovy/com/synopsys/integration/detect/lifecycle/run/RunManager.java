@@ -28,6 +28,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
@@ -41,10 +42,15 @@ import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
+import com.synopsys.integration.detect.tool.DetectableTool;
+import com.synopsys.integration.detect.tool.DetectableToolResult;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanToolResult;
 import com.synopsys.integration.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
+import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
+import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorTool;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
+import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.tool.polaris.PolarisTool;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
@@ -69,7 +75,6 @@ import com.synopsys.integration.detect.workflow.hub.PolicyCheckOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
@@ -119,14 +124,16 @@ public class RunManager {
                 blackDuckRunData.getPhoneHomeManager().get().startPhoneHome();
             }
 
-            /*//TODO Resurrect
-            DetectorEnvironment detectorEnvironment = new DetectorEnvironment(directoryManager.getSourceDirectory(), Collections.emptySet(), 0, null, false);
-            DetectorFactory detectorFactory = detectContext.getBean(DetectorFactory.class);
+            ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
+            DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
+            CodeLocationConverter codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
+
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
                 logger.info("Will include the docker tool.");
-                ToolRunner toolRunner = new ToolRunner(eventSystem, detectorFactory.createDockerDetector(detectorEnvironment));
-                toolRunner.run(runResult);
+                DetectableTool detectableTool = new DetectableTool(detectableFactory::createDockerDetectable, extractionEnvironmentProvider, codeLocationConverter, "docker", DetectTool.DOCKER, eventSystem);
+                DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
+
                 logger.info("Docker actions finished.");
             } else {
                 logger.info("Docker tool will not be run.");
@@ -135,19 +142,19 @@ public class RunManager {
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
                 logger.info("Will include the bazel tool.");
-                ToolRunner toolRunner = new ToolRunner(eventSystem, detectorFactory.createBazelDetector(detectorEnvironment));
-                toolRunner.run(runResult);
+                DetectableTool detectableTool = new DetectableTool(detectableFactory::createBazelDetectable, extractionEnvironmentProvider, codeLocationConverter, "bazel", DetectTool.BAZEL, eventSystem);
+                DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
                 logger.info("Bazel actions finished.");
             } else {
                 logger.info("Bazel tool will not be run.");
             }
-            */
+
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
                 logger.info("Will include the detector tool.");
                 final String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DETECTOR, PropertyAuthority.None);
                 final DetectorFinderOptions finderOptions = detectConfigurationFactory.createSearchOptions(directoryManager.getSourceDirectory());
-                final DetectorTool detectorTool = new DetectorTool(detectContext);
+                final DetectorTool detectorTool = new DetectorTool(extractionEnvironmentProvider, detectableFactory, eventSystem, codeLocationConverter);
 
                 final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), finderOptions, projectBomTool);
                 runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);

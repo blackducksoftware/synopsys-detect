@@ -59,7 +59,7 @@ public class DockerDetectable extends Detectable {
     private DockerInspectorInfo dockerInspectorInfo;
 
     public DockerDetectable(final DetectableEnvironment environment, final DockerInspectorResolver dockerInspectorResolver, final JavaResolver javaResolver, final BashResolver bashResolver, final DockerResolver dockerResolver,
-        final DockerExtractor dockerExtractor, final DockerDetectableOptions dockerDetectableOptions) {
+        final DockerExtractor dockerExtractor, DockerDetectableOptions dockerDetectableOptions) {
         super(environment, "Docker", "DOCKER");
         this.environment = environment;
         this.javaResolver = javaResolver;

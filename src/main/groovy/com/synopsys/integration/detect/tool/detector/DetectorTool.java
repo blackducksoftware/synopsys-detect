@@ -25,7 +25,6 @@ package com.synopsys.integration.detect.tool.detector;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,24 +33,15 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.detect.lifecycle.DetectContext;
-import com.synopsys.integration.detect.tool.detector.impl.DetectExtractionEnvironment;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
+import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.project.DetectorEvaluationNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
-import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.ExtractionEnvironment;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluator;
@@ -66,20 +56,23 @@ import java.util.stream.Collectors;
 
 public class DetectorTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final DetectContext detectContext;
+    private final ExtractionEnvironmentProvider extractionEnvironmentProvider;
     private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-    private DirectoryManager directoryManager;
+    private final DetectableFactory detectableFactory;
+    private final EventSystem eventSystem;
+    private final CodeLocationConverter codeLocationConverter;
 
-    public DetectorTool(DetectContext detectContext) {
-        this.detectContext = detectContext;
+    public DetectorTool(ExtractionEnvironmentProvider extractionEnvironmentProvider, final DetectableFactory detectableFactory, final EventSystem eventSystem,
+        final CodeLocationConverter codeLocationConverter) {
+        this.extractionEnvironmentProvider = extractionEnvironmentProvider;
+        this.detectableFactory = detectableFactory;
+        this.eventSystem = eventSystem;
+        this.codeLocationConverter = codeLocationConverter;
     }
 
     public DetectorToolResult performDetectors(File directory, DetectorFinderOptions detectorFinderOptions, String projectBomTool) throws DetectUserFriendlyException {
         logger.info("Initializing detector system.");
 
-        directoryManager = detectContext.getBean(DirectoryManager.class);
-        EventSystem eventSystem = detectContext.getBean(EventSystem.class);
-        DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
         DetectorFinder detectorFinder = new DetectorFinder();
         DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
         DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectableFactory, false);//TODO add the parse flag
@@ -121,7 +114,7 @@ public class DetectorTool {
 
         logger.info("Total number of extractions: " + extractionCount);
 
-        detectorEvaluator.extractionEvaluation(rootEvaluation, this::createExtractionEnvironment);
+        detectorEvaluator.extractionEvaluation(rootEvaluation, extractionEnvironmentProvider::createExtractionEnvironment);
         eventSystem.publishEvent(Event.ExtractionsCompleted, rootEvaluation);
 
         DetectorToolResult detectorToolResult = new DetectorToolResult();
@@ -136,7 +129,7 @@ public class DetectorTool {
 
         detectorToolResult.codeLocationMap = detectorEvaluations.stream()
                                                       .filter(DetectorEvaluation::wasExtractionSuccessful)
-                                                      .map(it -> convert(directory, it))
+                                                      .map(it -> codeLocationConverter.toDetectCodeLocation(directory, it))
                                                       .map(Map::entrySet)
                                                       .flatMap(Collection::stream)
                                                       .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -153,37 +146,5 @@ public class DetectorTool {
         eventSystem.publishEvent(Event.DetectorsComplete, detectorToolResult);
 
         return detectorToolResult;
-    }
-
-    int count = 0; //TODO, encapsulate this in something...
-    private ExtractionEnvironment createExtractionEnvironment(DetectorEvaluation detectorEvaluation){
-        ExtractionId extractionId = new ExtractionId(detectorEvaluation.getDetectorRule().getDetectorType(), count);
-        count = count + 1;
-
-        File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
-        return new DetectExtractionEnvironment(outputDirectory, extractionId);
-    }
-
-    private Map<CodeLocation, DetectCodeLocation> convert(File detectSourcePath, DetectorEvaluation evaluation){
-        Map<CodeLocation, DetectCodeLocation> detectCodeLocations = new HashMap<>();
-        if (evaluation.wasExtractionSuccessful()){
-            Extraction extraction = evaluation.getExtraction();
-            for (CodeLocation codeLocation : extraction.getCodeLocations()){
-                File sourcePath = codeLocation.getSourcePath().orElse(evaluation.getDetectableEnvironment().getDirectory());
-                ExternalId externalId;
-                if (!codeLocation.getExternalId().isPresent()){
-                    logger.warn("The detector was unable to determine an external id for this code location, so an external id will be created using the file path.");
-                    Forge detectForge = new Forge("/", "/", "Detect");
-                    final String relativePath = FileNameUtils.relativize(detectSourcePath.getAbsolutePath(), sourcePath.getAbsolutePath());
-                    externalId = externalIdFactory.createPathExternalId(detectForge, relativePath);
-                    logger.warn("The external id that was created is: " + externalId.getExternalIdPieces().toString());
-                } else {
-                    externalId = codeLocation.getExternalId().get();
-                }
-                DetectCodeLocation detectCodeLocation = DetectCodeLocation.forDetector(codeLocation.getDependencyGraph(), sourcePath, externalId, evaluation.getDetectorRule().getDetectorType());
-                detectCodeLocations.put(codeLocation, detectCodeLocation);
-            }
-        }
-        return detectCodeLocations;
     }
 }
