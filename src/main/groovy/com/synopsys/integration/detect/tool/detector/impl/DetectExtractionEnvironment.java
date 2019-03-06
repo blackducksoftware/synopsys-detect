@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,29 +21,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector;
+package com.synopsys.integration.detect.tool.detector.impl;
 
-import com.synopsys.integration.detector.base.DetectorType;
+import java.io.File;
 
-public class ExtractionId {
-    private final Integer id;
-    private final String extractionType;
+import com.synopsys.integration.detect.tool.detector.ExtractionId;
+import com.synopsys.integration.detectable.ExtractionEnvironment;
 
-    public ExtractionId(final DetectorType detectorType, final Integer id) {
-        extractionType = detectorType.toString();
-        this.id = id;
+public class DetectExtractionEnvironment extends ExtractionEnvironment {
+    private ExtractionId extractionId;
+
+    public DetectExtractionEnvironment(final File outputDirectory, final ExtractionId extractionId) {
+        super(outputDirectory);
+        this.extractionId = extractionId;
     }
 
-    public ExtractionId(final String extractionType, final Integer id) {
-        this.id = id;
-        this.extractionType = extractionType;
-    }
-
-    public String toUniqueString() {
-        return extractionType + "-" + id;
-    }
-
-    public Integer getId() {
-        return id;
+    public ExtractionId getExtractionId() {
+        return extractionId;
     }
 }

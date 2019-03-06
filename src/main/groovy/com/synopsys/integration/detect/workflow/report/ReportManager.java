@@ -49,23 +49,29 @@ public class ReportManager {
 
     private final ReportWriter logWriter = new InfoLogReportWriter();
     private final ReportWriter traceLogWriter = new TraceLogReportWriter();
+    private final ExtractionReporter extractionReporter;
 
     public static ReportManager createDefault(EventSystem eventSystem) {
-        return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new ErrorSummaryReporter());
+        return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new ErrorSummaryReporter(), new ExtractionReporter());
     }
 
     public ReportManager(final EventSystem eventSystem,
-        final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter, ErrorSummaryReporter errorSummaryReporter) {
+        final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter, ErrorSummaryReporter errorSummaryReporter, ExtractionReporter extractionReporter) {
         this.eventSystem = eventSystem;
         this.preparationSummaryReporter = preparationSummaryReporter;
         this.extractionSummaryReporter = extractionSummaryReporter;
         this.searchSummaryReporter = searchSummaryReporter;
         this.errorSummaryReporter = errorSummaryReporter;
+        this.extractionReporter = extractionReporter;
 
         eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event));
         eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event));
         eventSystem.registerListener(Event.DetectorsComplete, event -> bomToolsComplete(event));
         eventSystem.registerListener(Event.CodeLocationsCalculated, event -> codeLocationsCompleted(event.getCodeLocationNames()));
+
+        eventSystem.registerListener(Event.ExtractionCount, event -> exractionCount(event));
+        eventSystem.registerListener(Event.ExtractionStarted, event -> exractionStarted(event));
+        eventSystem.registerListener(Event.ExtractionEnded, event -> exractionEnded(event));
 
     }
 
@@ -78,6 +84,18 @@ public class ReportManager {
 
     public void preparationsCompleted(final DetectorEvaluationTree detectorEvaluationTree) {
         preparationSummaryReporter.write(logWriter, detectorEvaluationTree);
+    }
+
+    public void exractionCount(final Integer count) {
+        extractionReporter.setExtractionCount(count);
+    }
+
+    public void exractionStarted(final DetectorEvaluation detectorEvaluation) {
+        extractionReporter.extractionStarted(logWriter, detectorEvaluation);
+    }
+
+    public void exractionEnded(final DetectorEvaluation detectorEvaluation) {
+        extractionReporter.extractionEnded(logWriter, detectorEvaluation);
     }
 
     private DetectorToolResult detectorToolResult;
