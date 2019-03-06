@@ -39,12 +39,16 @@ public class ErrorSummaryReporter {
     }
 
     private void writeSummaries(ReportWriter writer, final List<DetectorEvaluationTree> trees) {
-        ReporterUtils.printHeader(writer, "Detector Issue Summary");
+        boolean printedOne = false;
         for (DetectorEvaluationTree tree : trees){
             List<DetectorEvaluation> excepted = DetectorEvaluationUtils.filteredEvaluations(tree, DetectorEvaluation::wasExtractionException);
-            List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredEvaluations(tree, DetectorEvaluation::wasExtractionException);
-            List<DetectorEvaluation> notExtractable = DetectorEvaluationUtils.filteredEvaluations(tree, (evaluation) -> !evaluation.isExtractable());
+            List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredEvaluations(tree, DetectorEvaluation::wasExtractionFailure);
+            List<DetectorEvaluation> notExtractable = DetectorEvaluationUtils.filteredEvaluations(tree, (evaluation) -> evaluation.isApplicable() && !evaluation.isExtractable());
             if (excepted.size() > 0 || failed.size() > 0 || notExtractable.size() > 0) {
+                if (!printedOne) {
+                    printedOne = true;
+                    ReporterUtils.printHeader(writer, "Detector Issue Summary");
+                }
                 writer.writeLine(tree.getDirectory().toString());
                 String spacer = "\t\t";
                 writeEvaluationsIfNotEmpty(writer, "\tNot Extractable: ", spacer, notExtractable, detectorEvaluation -> detectorEvaluation.getExtractabilityMessage());
@@ -52,7 +56,9 @@ public class ErrorSummaryReporter {
                 writeEvaluationsIfNotEmpty(writer, "\tException: ", spacer, excepted, detectorEvaluation -> detectorEvaluation.getExtraction().getError().getMessage());
             }
         }
-        ReporterUtils.printFooter(writer);
+        if (printedOne) {
+            ReporterUtils.printFooter(writer);
+        }
     }
 
     private void writeEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, Function<DetectorEvaluation, String> reason) {
