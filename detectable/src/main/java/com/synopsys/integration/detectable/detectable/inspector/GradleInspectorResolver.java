@@ -25,6 +25,8 @@ package com.synopsys.integration.detectable.detectable.inspector;
 
 import java.io.File;
 
-public interface GradleInspectorTemplateResolver {
-    File resolveGradleInspectorTemplate();
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+
+public interface GradleInspectorResolver {
+    File resolveGradleInspector() throws DetectableException;
 }

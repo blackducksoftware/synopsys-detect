@@ -25,6 +25,7 @@ package com.synopsys.integration.detect.workflow.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -36,15 +37,15 @@ public class AirGapManager {
     public static final String GRADLE = "gradle";
     public static final String DOCKER = "docker";
 
-    private String dockerInspectorAirGapPath;
-    private String nugetInspectorAirGapPath;
-    private String gradleInspectorAirGapPath;
+    private final String dockerInspectorAirGapPath;
+    private final String nugetInspectorAirGapPath;
+    private final String gradleInspectorAirGapPath;
 
-    public AirGapManager(AirGapOptions airGapOptions) {
+    public AirGapManager(final AirGapOptions airGapOptions) {
         File detectJar = null;
         try {
             detectJar = new File(guessDetectJarLocation()).getCanonicalFile();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             logger.debug("Unable to guess detect jar location.");
         }
         dockerInspectorAirGapPath = getInspectorAirGapPath(detectJar, airGapOptions.getDockerInspectorPathOverride(), DOCKER);
@@ -52,7 +53,7 @@ public class AirGapManager {
         nugetInspectorAirGapPath = getInspectorAirGapPath(detectJar, airGapOptions.getNugetInspectorPathOverride(), NUGET);
     }
 
-    private String getInspectorAirGapPath(File detectJar, final String inspectorLocationProperty, final String inspectorName) {
+    private String getInspectorAirGapPath(final File detectJar, final String inspectorLocationProperty, final String inspectorName) {
         if (StringUtils.isBlank(inspectorLocationProperty) && detectJar != null) {
             try {
                 final File inspectorsDirectory = new File(detectJar.getParentFile(), "packaged-inspectors");
@@ -88,7 +89,7 @@ public class AirGapManager {
         return nugetInspectorAirGapPath;
     }
 
-    public String getGradleInspectorAirGapPath() {
-        return gradleInspectorAirGapPath;
+    public Optional<String> getGradleInspectorAirGapPath() {
+        return Optional.ofNullable(gradleInspectorAirGapPath);
     }
 }

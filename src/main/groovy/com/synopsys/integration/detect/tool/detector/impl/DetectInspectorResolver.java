@@ -26,15 +26,15 @@ package com.synopsys.integration.detect.tool.detector.impl;
 import java.io.File;
 
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
-import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorTemplateResolver;
+import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspector;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorInfo;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 
-public class DetectInspectorResolver implements DockerInspectorResolver, NugetInspectorResolver, PipInspectorResolver, GradleInspectorTemplateResolver {
+// TODO: Implement this class
+public class DetectInspectorResolver implements DockerInspectorResolver, NugetInspectorResolver, PipInspectorResolver, GradleInspectorResolver {
     @Override
     public File resolvePipInspector() {
         return null;
@@ -46,7 +46,7 @@ public class DetectInspectorResolver implements DockerInspectorResolver, NugetIn
     }
 
     @Override
-    public File resolveGradleInspectorTemplate() {
+    public File resolveGradleInspector() {
         return null;
     }
 

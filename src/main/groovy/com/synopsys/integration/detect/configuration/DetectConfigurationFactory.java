@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.util.EnumUtilExtension;
@@ -41,10 +42,9 @@ import com.synopsys.integration.detect.workflow.hub.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.hub.PolicyCheckOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
-import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 
 public class DetectConfigurationFactory {
-    DetectConfiguration detectConfiguration;
+    private final DetectConfiguration detectConfiguration;
 
     public DetectConfigurationFactory(final DetectConfiguration detectConfiguration) {
         this.detectConfiguration = detectConfiguration;
@@ -53,8 +53,8 @@ public class DetectConfigurationFactory {
     public RunOptions createRunOptions() {
         Optional<Boolean> sigScanDisabled = Optional.empty();
 
-        //TODO: Fix this when deprecated properties are removed
-        //This is because it is double deprecated so we must check if either property is set.
+        // TODO: Fix this when deprecated properties are removed
+        // This is because it is double deprecated so we must check if either property is set.
         final boolean originalPropertySet = detectConfiguration.wasPropertyActuallySet(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED);
         final boolean newPropertySet = detectConfiguration.wasPropertyActuallySet(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED);
         if (originalPropertySet || newPropertySet) {
@@ -161,7 +161,7 @@ public class DetectConfigurationFactory {
     }
 
     public PolicyCheckOptions createPolicyCheckOptions() {
-        String policySeverities = detectConfiguration.getPropertyValueAsString(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None);
+        final String policySeverities = detectConfiguration.getPropertyValueAsString(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None);
         final List<PolicySeverityType> severitiesToFailPolicyCheck = EnumUtilExtension.parseCommaDelimitted(policySeverities.toUpperCase(), PolicySeverityType.class);
         return new PolicyCheckOptions(severitiesToFailPolicyCheck);
     }

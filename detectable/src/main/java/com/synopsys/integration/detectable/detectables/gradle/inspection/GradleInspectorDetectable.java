@@ -25,8 +25,6 @@ package com.synopsys.integration.detectable.detectables.gradle.inspection;
 
 import java.io.File;
 
-import javax.naming.spi.DirectoryManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,13 +35,12 @@ import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorTemplateResolver;
+import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
 
 public class GradleInspectorDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -52,25 +49,21 @@ public class GradleInspectorDetectable extends Detectable {
 
     private final FileFinder fileFinder;
     private final GradleResolver gradleResolver;
-    private final GradleInspectorTemplateResolver gradleInspectorTemplateResolver;
+    private final GradleInspectorResolver gradleInspectorResolver;
     private final GradleInspectorExtractor gradleInspectorExtractor;
     private final GradleInspectorOptions gradleInspectorOptions;
-    private final GradleInspectorScriptCreator gradleInspectorScriptCreator;
 
     private File gradleExe;
     private File gradleInspector;
 
-    public GradleInspectorDetectable(final DetectableEnvironment environment, final FileFinder fileFinder,
-        final GradleResolver gradleResolver, final GradleInspectorTemplateResolver gradleInspectorTemplateResolver,
-        final GradleInspectorExtractor gradleInspectorExtractor, final GradleInspectorOptions gradleInspectorOptions,
-        final GradleInspectorScriptCreator gradleInspectorScriptCreator) {
+    public GradleInspectorDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GradleResolver gradleResolver, final GradleInspectorResolver gradleInspectorResolver,
+        final GradleInspectorExtractor gradleInspectorExtractor, final GradleInspectorOptions gradleInspectorOptions) {
         super(environment, "Gradle Inspector", "Gradle");
         this.fileFinder = fileFinder;
         this.gradleResolver = gradleResolver;
-        this.gradleInspectorTemplateResolver = gradleInspectorTemplateResolver;
+        this.gradleInspectorResolver = gradleInspectorResolver;
         this.gradleInspectorExtractor = gradleInspectorExtractor;
         this.gradleInspectorOptions = gradleInspectorOptions;
-        this.gradleInspectorScriptCreator = gradleInspectorScriptCreator;
     }
 
     @Override
@@ -90,12 +83,7 @@ public class GradleInspectorDetectable extends Detectable {
             return new ExecutableNotFoundDetectableResult("gradle");
         }
 
-        final File gradleInspectorTemplate = gradleInspectorTemplateResolver.resolveGradleInspectorTemplate();
-        if (gradleInspectorTemplate == null) {
-            return new InspectorNotFoundDetectableResult("gradle");
-        }
-
-        gradleInspector = gradleInspectorScriptCreator.createGradleInspector(gradleInspectorTemplate, gradleInspectorOptions.getGradleInspectorScriptOptions());
+        gradleInspector = gradleInspectorResolver.resolveGradleInspector();
         if (gradleInspector == null) {
             return new InspectorNotFoundDetectableResult("gradle");
         }
@@ -105,7 +93,6 @@ public class GradleInspectorDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        //File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
         return gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleInspectorOptions.getGradleBuildCommand(), gradleInspector, extractionEnvironment.getOutputDirectory());
     }
 
