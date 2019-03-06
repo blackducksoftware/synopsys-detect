@@ -44,6 +44,7 @@ public class Event {
     public static EventType<DetectorEvaluation> ApplicableEnded = new EventType(DetectorEvaluation.class);
     public static EventType<DetectorEvaluation> ExtractableStarted = new EventType(DetectorEvaluation.class);
     public static EventType<DetectorEvaluation> ExtractableEnded = new EventType(DetectorEvaluation.class);
+    public static EventType<Integer> ExtractionCount = new EventType(Integer.class);
     public static EventType<DetectorEvaluation> ExtractionStarted = new EventType(DetectorEvaluation.class);
     public static EventType<DetectorEvaluation> ExtractionEnded = new EventType(DetectorEvaluation.class);
     public static EventType<BdioCodeLocationResult> CodeLocationsCalculated = new EventType(BdioCodeLocationResult.class);

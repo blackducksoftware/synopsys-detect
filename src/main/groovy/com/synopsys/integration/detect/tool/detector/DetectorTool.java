@@ -37,24 +37,23 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
+import com.synopsys.integration.detect.tool.detector.impl.DetectExtractionEnvironment;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.project.DetectorEvaluationNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.file.FileUtils;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
-import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluator;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.finder.DetectorFinderDirectoryListException;
@@ -63,13 +62,13 @@ import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.util.NameVersion;
 import java.io.File;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DetectorTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectContext detectContext;
     private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+    private DirectoryManager directoryManager;
 
     public DetectorTool(DetectContext detectContext) {
         this.detectContext = detectContext;
@@ -78,6 +77,7 @@ public class DetectorTool {
     public DetectorToolResult performDetectors(File directory, DetectorFinderOptions detectorFinderOptions, String projectBomTool) throws DetectUserFriendlyException {
         logger.info("Initializing detector system.");
 
+        directoryManager = detectContext.getBean(DirectoryManager.class);
         EventSystem eventSystem = detectContext.getBean(EventSystem.class);
         DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
         DetectorFinder detectorFinder = new DetectorFinder();
@@ -98,9 +98,14 @@ public class DetectorTool {
         }
 
         DetectorEvaluationTree rootEvaluation = possibleRootEvaluation.get();
+        List<DetectorEvaluation> detectorEvaluations = DetectorEvaluationUtils.flatten(rootEvaluation);
+
+        logger.trace("Setting up detector events.");
+        DetectorEventBroadcaster eventBroadcaster = new DetectorEventBroadcaster(eventSystem);
+        DetectorEvaluator detectorEvaluator = new DetectorEvaluator();
+        detectorEvaluator.setDetectorEventListener(eventBroadcaster);
 
         logger.info("Starting detector search.");
-        DetectorEvaluator detectorEvaluator = new DetectorEvaluator();
         detectorEvaluator.searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
         eventSystem.publishEvent(Event.SearchCompleted, rootEvaluation);
 
@@ -109,11 +114,17 @@ public class DetectorTool {
         eventSystem.publishEvent(Event.PreparationsCompleted, rootEvaluation);
 
         logger.info("Starting detector extraction.");
-        detectorEvaluator.extractionEvaluation(rootEvaluation, detectorEvaluation -> new ExtractionEnvironment(new File("")));
+        Integer extractionCount = Math.toIntExact(detectorEvaluations.stream()
+                                  .filter(DetectorEvaluation::isExtractable)
+                                  .count());
+        eventSystem.publishEvent(Event.ExtractionCount, extractionCount);
+
+        logger.info("Total number of extractions: " + extractionCount);
+
+        detectorEvaluator.extractionEvaluation(rootEvaluation, this::createExtractionEnvironment);
         eventSystem.publishEvent(Event.ExtractionsCompleted, rootEvaluation);
 
         DetectorToolResult detectorToolResult = new DetectorToolResult();
-        List<DetectorEvaluation> detectorEvaluations = DetectorEvaluationUtils.flatten(rootEvaluation);
 
         detectorToolResult.rootDetectorEvaluationTree = rootEvaluation;
 
@@ -141,34 +152,16 @@ public class DetectorTool {
         logger.info("Finished running detectors.");
         eventSystem.publishEvent(Event.DetectorsComplete, detectorToolResult);
 
-        //detectors
+        return detectorToolResult;
+    }
 
-        //        logger.info("Preparing to initialize detectors.");
-//        DetectorFactory detectorFactory = detectContext.getBean(DetectorFactory.class);
-//        EventSystem eventSystem = detectContext.getBean(EventSystem.class);
-//
-//        logger.info("Building detector system.");
-//        DetectorSearchProvider detectorSearchProvider = new DetectorSearchProvider(detectorFactory);
-//        SearchableEvaluator detectorSearchEvaluator = new SearchableEvaluator();
-//
-//        SearchManager searchManager = new SearchManager(searchOptions, detectorSearchProvider, detectorSearchEvaluator, eventSystem);
-//        PreparationManager preparationManager = new PreparationManager(eventSystem);
-//        ExtractionManager extractionManager = new ExtractionManager();
-//
-//        DetectorManager detectorManager = new DetectorManager(searchManager, extractionManager, preparationManager, eventSystem);
-//        logger.info("Running detectors.");
-//        DetectorToolResult detectorToolResult = detectorManager.runDetectors();
-//        logger.info("Finished running detectors.");
-//        eventSystem.publishEvent(Event.DetectorsComplete, detectorToolResult);
-//
-//        logger.info("Evaluating detectors for project info.");
-//
-//        DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
-//        Optional<NameVersion> bomToolNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorToolResult.evaluatedDetectors, projectBomTool);
-//        detectorToolResult.bomToolProjectNameVersion = bomToolNameVersion;
-//        logger.info("Finished evaluating detectors for project info.");
+    int count = 0; //TODO, encapsulate this in something...
+    private ExtractionEnvironment createExtractionEnvironment(DetectorEvaluation detectorEvaluation){
+        ExtractionId extractionId = new ExtractionId(detectorEvaluation.getDetectorRule().getDetectorType(), count);
+        count = count + 1;
 
-        return detectorToolResult; //TODO: Fix
+        File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
+        return new DetectExtractionEnvironment(outputDirectory, extractionId);
     }
 
     private Map<CodeLocation, DetectCodeLocation> convert(File detectSourcePath, DetectorEvaluation evaluation){
@@ -193,66 +186,4 @@ public class DetectorTool {
         }
         return detectCodeLocations;
     }
-
-    /*
-    //TODO: replicate the old extraction logging...
-        public ExtractionResult performExtractions(final List<DetectorEvaluation> results) {
-        final List<DetectorEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
-
-        for (int i = 0; i < extractable.size(); i++) {
-            final DetectorEvaluation detectorEvaluation = extractable.get(i);
-            final String progress = Integer.toString((int) Math.floor((i * 100.0f) / extractable.size()));
-            logger.info(String.format("Extracting %d of %d (%s%%)", i + 1, extractable.size(), progress));
-            logger.info(ReportConstants.SEPERATOR);
-
-            final ExtractionId extractionId = new ExtractionId(detectorEvaluation.getDetector().getDetectorType(), Integer.toString(i));
-            detectorEvaluation.setExtractionId(extractionId);
-
-            extract(extractable.get(i));
-        }
-
-        final Set<DetectorType> succesfulBomToolGroups = extractable.stream()
-                                                             .filter(it -> it.wasExtractionSuccessful())
-                                                             .map(it -> it.getDetector().getDetectorType())
-                                                             .collect(Collectors.toSet());
-
-        final Set<DetectorType> failedBomToolGroups = extractable.stream()
-                                                          .filter(it -> !it.wasExtractionSuccessful())
-                                                          .map(it -> it.getDetector().getDetectorType())
-                                                          .collect(Collectors.toSet());
-
-        final List<DetectCodeLocation> codeLocations = extractable.stream()
-                                                           .filter(it -> it.wasExtractionSuccessful())
-                                                           .flatMap(it -> it.getExtraction().codeLocations.stream())
-                                                           .collect(Collectors.toList());
-
-        return new ExtractionResult(codeLocations, succesfulBomToolGroups, failedBomToolGroups);
-    }
-
-    private void extract(final DetectorEvaluation result) { //TODO: Replace reporting.
-
-        logger.info("Starting extraction: " + result.getDetector().getDetectorType() + " - " + result.getDetector().getName());
-        logger.info("Identifier: " + result.getExtractionId().toUniqueString());
-        ObjectPrinter.printObjectPrivate(new InfoLogReportWriter(), result.getDetector());
-        logger.info(ReportConstants.SEPERATOR);
-
-        try {
-            result.setExtraction(result.getDetector().extract(result.getExtractionId()));
-        } catch (final Exception e) {
-            result.setExtraction(new Extraction.Builder().exception(e).build());
-        }
-
-        logger.info(ReportConstants.SEPERATOR);
-        logger.info("Finished extraction: " + result.getExtraction().result.toString());
-        logger.info("Code locations found: " + result.getExtraction().codeLocations.size());
-        if (result.getExtraction().result == ExtractionResultType.EXCEPTION) {
-            logger.error("Exception:", result.getExtraction().error);
-        } else if (result.getExtraction().result == ExtractionResultType.FAILURE) {
-            logger.info(result.getExtraction().description);
-        }
-        logger.info(ReportConstants.SEPERATOR);
-
-    }
-
-     */
 }

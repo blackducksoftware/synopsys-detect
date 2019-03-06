@@ -64,6 +64,6 @@ public class DetectorEventBroadcaster implements DetectorEventListener {
 
     @Override
     public void extractionEnded(final DetectorEvaluation detectorEvaluation) {
-        eventSystem.publishEvent(Event.ExtractableEnded, detectorEvaluation);
+        eventSystem.publishEvent(Event.ExtractionEnded, detectorEvaluation);
     }
 }
