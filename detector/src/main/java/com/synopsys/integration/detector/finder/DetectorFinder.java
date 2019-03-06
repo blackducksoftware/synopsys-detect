@@ -64,7 +64,7 @@ public class DetectorFinder {
             return Optional.empty();
         }
 
-        logger.info("Searching directory: " + directory.getPath());
+        logger.info("Traversing directory: " + directory.getPath());
         List<DetectorEvaluation> evaluations = detectorRuleSet.getOrderedDetectorRules().stream()
                                                    .map(rule -> new DetectorEvaluation(rule))
                                                    .collect(Collectors.toList());

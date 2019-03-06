@@ -40,10 +40,10 @@ public class Event {
     public static EventType<DetectorEvaluationTree> ExtractionsCompleted = new EventType(DetectorEvaluationTree.class);
     public static EventType<DetectorToolResult> DetectorsComplete = new EventType(DetectorToolResult.class);
     public static EventType<DetectorTimings> DetectorsProfiled = new EventType(DetectorTimings.class);
-    public static EventType<DetectorRule> ApplicableStarted = new EventType(DetectorRule.class);
-    public static EventType<DetectorRule> ApplicableEnded = new EventType(DetectorRule.class);
-    public static EventType<DetectorRule> ExtractableStarted = new EventType(DetectorRule.class);
-    public static EventType<DetectorRule> ExtractableEnded = new EventType(DetectorRule.class);
+    public static EventType<DetectorEvaluation> ApplicableStarted = new EventType(DetectorEvaluation.class);
+    public static EventType<DetectorEvaluation> ApplicableEnded = new EventType(DetectorEvaluation.class);
+    public static EventType<DetectorEvaluation> ExtractableStarted = new EventType(DetectorEvaluation.class);
+    public static EventType<DetectorEvaluation> ExtractableEnded = new EventType(DetectorEvaluation.class);
     public static EventType<DetectorEvaluation> ExtractionStarted = new EventType(DetectorEvaluation.class);
     public static EventType<DetectorEvaluation> ExtractionEnded = new EventType(DetectorEvaluation.class);
     public static EventType<BdioCodeLocationResult> CodeLocationsCalculated = new EventType(BdioCodeLocationResult.class);

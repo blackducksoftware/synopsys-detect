@@ -76,7 +76,7 @@ public class DetectorTool {
     }
 
     public DetectorToolResult performDetectors(File directory, DetectorFinderOptions detectorFinderOptions, String projectBomTool) throws DetectUserFriendlyException {
-        logger.info("Preparing to initialize detectors.");
+        logger.info("Initializing detector system.");
 
         EventSystem eventSystem = detectContext.getBean(EventSystem.class);
         DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
@@ -86,7 +86,7 @@ public class DetectorTool {
 
         Optional<DetectorEvaluationTree> possibleRootEvaluation;
         try {
-            logger.info("Finding detectors.");
+            logger.info("Starting detector file system traversal.");
             possibleRootEvaluation = detectorFinder.findDetectors(directory, detectRuleSet, detectorFinderOptions);
 
         } catch (DetectorFinderDirectoryListException e) {
@@ -99,16 +99,16 @@ public class DetectorTool {
 
         DetectorEvaluationTree rootEvaluation = possibleRootEvaluation.get();
 
-        logger.info("Evaluating search and applicable.");
+        logger.info("Starting detector search.");
         DetectorEvaluator detectorEvaluator = new DetectorEvaluator();
         detectorEvaluator.searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
         eventSystem.publishEvent(Event.SearchCompleted, rootEvaluation);
 
-        logger.info("Evaluating extractable.");
+        logger.info("Starting detector preparation.");
         detectorEvaluator.extractableEvaluation(rootEvaluation);
         eventSystem.publishEvent(Event.PreparationsCompleted, rootEvaluation);
 
-        logger.info("Evaluating extractions.");
+        logger.info("Starting detector extraction.");
         detectorEvaluator.extractionEvaluation(rootEvaluation, detectorEvaluation -> new ExtractionEnvironment(new File("")));
         eventSystem.publishEvent(Event.ExtractionsCompleted, rootEvaluation);
 
@@ -193,4 +193,66 @@ public class DetectorTool {
         }
         return detectCodeLocations;
     }
+
+    /*
+    //TODO: replicate the old extraction logging...
+        public ExtractionResult performExtractions(final List<DetectorEvaluation> results) {
+        final List<DetectorEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
+
+        for (int i = 0; i < extractable.size(); i++) {
+            final DetectorEvaluation detectorEvaluation = extractable.get(i);
+            final String progress = Integer.toString((int) Math.floor((i * 100.0f) / extractable.size()));
+            logger.info(String.format("Extracting %d of %d (%s%%)", i + 1, extractable.size(), progress));
+            logger.info(ReportConstants.SEPERATOR);
+
+            final ExtractionId extractionId = new ExtractionId(detectorEvaluation.getDetector().getDetectorType(), Integer.toString(i));
+            detectorEvaluation.setExtractionId(extractionId);
+
+            extract(extractable.get(i));
+        }
+
+        final Set<DetectorType> succesfulBomToolGroups = extractable.stream()
+                                                             .filter(it -> it.wasExtractionSuccessful())
+                                                             .map(it -> it.getDetector().getDetectorType())
+                                                             .collect(Collectors.toSet());
+
+        final Set<DetectorType> failedBomToolGroups = extractable.stream()
+                                                          .filter(it -> !it.wasExtractionSuccessful())
+                                                          .map(it -> it.getDetector().getDetectorType())
+                                                          .collect(Collectors.toSet());
+
+        final List<DetectCodeLocation> codeLocations = extractable.stream()
+                                                           .filter(it -> it.wasExtractionSuccessful())
+                                                           .flatMap(it -> it.getExtraction().codeLocations.stream())
+                                                           .collect(Collectors.toList());
+
+        return new ExtractionResult(codeLocations, succesfulBomToolGroups, failedBomToolGroups);
+    }
+
+    private void extract(final DetectorEvaluation result) { //TODO: Replace reporting.
+
+        logger.info("Starting extraction: " + result.getDetector().getDetectorType() + " - " + result.getDetector().getName());
+        logger.info("Identifier: " + result.getExtractionId().toUniqueString());
+        ObjectPrinter.printObjectPrivate(new InfoLogReportWriter(), result.getDetector());
+        logger.info(ReportConstants.SEPERATOR);
+
+        try {
+            result.setExtraction(result.getDetector().extract(result.getExtractionId()));
+        } catch (final Exception e) {
+            result.setExtraction(new Extraction.Builder().exception(e).build());
+        }
+
+        logger.info(ReportConstants.SEPERATOR);
+        logger.info("Finished extraction: " + result.getExtraction().result.toString());
+        logger.info("Code locations found: " + result.getExtraction().codeLocations.size());
+        if (result.getExtraction().result == ExtractionResultType.EXCEPTION) {
+            logger.error("Exception:", result.getExtraction().error);
+        } else if (result.getExtraction().result == ExtractionResultType.FAILURE) {
+            logger.info(result.getExtraction().description);
+        }
+        logger.info(ReportConstants.SEPERATOR);
+
+    }
+
+     */
 }

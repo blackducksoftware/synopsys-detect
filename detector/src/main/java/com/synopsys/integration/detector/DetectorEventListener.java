@@ -24,14 +24,15 @@
 package com.synopsys.integration.detector;
 
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public interface DetectorEventListener {
-    void applicableStarted(DetectorRule detectorRule);
-    void applicableEnded(DetectorRule detectorRule);
-    void extractableStarted(DetectorRule detectorRule);
-    void extractableEnded(DetectorRule detectorRule);
-    void extractionStarted(DetectorRule detectorRule, ExtractionEnvironment extractionEnvironment);
-    void extractionEnded(DetectorRule detectorRule, ExtractionEnvironment extractionEnvironment);
+    void applicableStarted(DetectorEvaluation detectorEvaluation);
+    void applicableEnded(DetectorEvaluation detectorEvaluation);
+    void extractableStarted(DetectorEvaluation detectorEvaluation);
+    void extractableEnded(DetectorEvaluation detectorEvaluation);
+    void extractionStarted(DetectorEvaluation detectorEvaluation);
+    void extractionEnded(DetectorEvaluation detectorEvaluation);
 
 }
