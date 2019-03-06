@@ -87,7 +87,8 @@ public class DetectableOptionFactory {
         final String dockerInspectorLoggingLevel = detectConfiguration.getProperty(DetectProperty.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, PropertyAuthority.None);
         final String dockerInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION, PropertyAuthority.None);
         final Map<String, String> additionalDockerProperties = detectConfiguration.getDockerProperties();
-        return new DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties);
+        final String dockerInspectorPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH, PropertyAuthority.None);
+        return new DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath);
     }
 
     public GradleInspectorOptions createGradleInspectorOptions() {

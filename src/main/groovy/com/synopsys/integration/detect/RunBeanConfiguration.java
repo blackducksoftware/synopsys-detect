@@ -41,6 +41,7 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.impl.DetectInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.OfflineBlackDuckSignatureScanner;
 import com.synopsys.integration.detect.tool.signaturescanner.OnlineBlackDuckSignatureScanner;
@@ -58,6 +59,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 
 import freemarker.template.Configuration;
 
@@ -153,30 +155,10 @@ public class RunBeanConfiguration {
         return new DetectInspectorResolver();
     }
 
-    // TODO: Jordan fix me
-
-    //    @Bean
-    //    public DockerInspectorManager dockerInspectorManager() {
-    //        return new DockerInspectorManager(directoryManager, airGapManager(), fileFinder(), detectConfiguration, artifactResolver());
-    //    }
-    //
-    //    @Lazy
-    //    @Bean
-    //    public DockerDetectable dockerBomTool(final DetectorEnvironment detectorEnvironment) {
-    //        final DockerProperties dockerProperties = new DockerProperties(detectConfiguration);
-    //
-    //        final String tar = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_TAR, PropertyAuthority.None);
-    //        final String image = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE, PropertyAuthority.None);
-    //        final boolean dockerRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED, PropertyAuthority.None);
-    //
-    //        return new DockerDetectable(detectInfo, detectorEnvironment, directoryManager, dockerInspectorManager(), standardExecutableFinder(), dockerRequired, image, tar, dockerExtractor(dockerProperties));
-    //    }
-    //
-    //    @Lazy
-    //    @Bean
-    //    public DockerExtractor dockerExtractor(final DockerProperties dockerProperties) {
-    //        return new DockerExtractor(fileFinder(), dockerProperties, executableRunner(), bdioTransformer(), externalIdFactory(), gson);
-    //    }
+    @Bean
+    public DockerInspectorResolver dockerInspectorResolver() {
+        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fileFinder(), artifactResolver(), detectableOptionFactory().createDockerDetectableOptions());
+    }
 
     @Lazy
     @Bean

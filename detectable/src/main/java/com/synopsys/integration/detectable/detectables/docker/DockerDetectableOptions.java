@@ -35,15 +35,17 @@ public class DockerDetectableOptions {
     private final String dockerInspectorLoggingLevel;
     private final String dockerInspectorVersion;
     private final Map<String, String> additionalDockerProperties;
+    private final String dockerInspectorPath;
 
-    public DockerDetectableOptions(final boolean dockerPathRequired, final String suppliedDockerImage,
-        final String suppliedDockerTar, final String dockerInspectorLoggingLevel, final String dockerInspectorVersion, final Map<String, String> additionalDockerProperties) {
+    public DockerDetectableOptions(final boolean dockerPathRequired, final String suppliedDockerImage, final String suppliedDockerTar, final String dockerInspectorLoggingLevel, final String dockerInspectorVersion,
+        final Map<String, String> additionalDockerProperties, final String dockerInspectorPath) {
         this.dockerPathRequired = dockerPathRequired;
         this.suppliedDockerImage = suppliedDockerImage;
         this.suppliedDockerTar = suppliedDockerTar;
         this.dockerInspectorLoggingLevel = dockerInspectorLoggingLevel;
         this.dockerInspectorVersion = dockerInspectorVersion;
         this.additionalDockerProperties = additionalDockerProperties;
+        this.dockerInspectorPath = dockerInspectorPath;
     }
 
     public boolean isDockerPathRequired() {
@@ -72,5 +74,9 @@ public class DockerDetectableOptions {
 
     public Map<String, String> getAdditionalDockerProperties() {
         return additionalDockerProperties;
+    }
+
+    public String getDockerInspectorPath() {
+        return dockerInspectorPath;
     }
 }

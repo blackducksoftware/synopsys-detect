@@ -40,8 +40,9 @@ import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.impl.DetectInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.resolvers.ArtifactoryGradleInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.resolvers.LocalPipInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.LocalPipInspectorResolver;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -88,6 +89,7 @@ import com.synopsys.integration.detectable.detectables.cran.parse.PackratDescrip
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratLockFileParser;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
+import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.detectable.detectables.docker.DockerProperties;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
@@ -270,6 +272,10 @@ public class DetectableBeanConfiguration {
     @Bean
     public CpanCliExtractor cpanCliExtractor() {
         return new CpanCliExtractor(cpanListParser(), externalIdFactory, executableRunner);
+    }
+
+    public DockerInspectorResolver dockerInspectorResolver() {
+        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager, fileFinder, artifactResolver(), detectableOptionFactory.createDockerDetectableOptions());
     }
 
     @Bean
@@ -524,7 +530,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public DockerDetectable dockerDetectable(final DetectableEnvironment environment) {
-        return new DockerDetectable(environment, detectInspectorResolver, detectExecutableResolver, detectExecutableResolver, detectExecutableResolver, dockerExtractor(), detectableOptionFactory.createDockerDetectableOptions());
+        return new DockerDetectable(environment, dockerInspectorResolver(), detectExecutableResolver, detectExecutableResolver, detectExecutableResolver, dockerExtractor(), detectableOptionFactory.createDockerDetectableOptions());
     }
 
     @Bean

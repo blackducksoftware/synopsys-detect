@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector.inspectors.resolvers;
+package com.synopsys.integration.detect.tool.detector.inspectors;
 
 import java.io.File;
 import java.io.IOException;

@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.docker;
+package com.synopsys.integration.detect.tool.detector.inspectors;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,21 +34,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.inspector.impl.artifactory.ArtifactResolver;
 import com.synopsys.integration.detectable.detectable.inspector.impl.artifactory.ArtifactoryConstants;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorInfo;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class DockerInspectorManager implements DockerInspectorResolver {
+public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolver {
     private static final String IMAGE_INSPECTOR_FAMILY = "blackduck-imageinspector";
     private static final List<String> inspectorNames = Arrays.asList("ubuntu", "alpine", "centos");
 
@@ -59,19 +57,17 @@ public class DockerInspectorManager implements DockerInspectorResolver {
     private final DirectoryManager directoryManager;
     private final AirGapManager airGapManager;
     private final FileFinder fileFinder;
-    private final DetectConfiguration detectConfiguration;
     private final ArtifactResolver artifactResolver;
     private final DockerDetectableOptions dockerDetectableOptions;
 
     private DockerInspectorInfo resolvedInfo;
     private boolean hasResolvedInspector;
 
-    public DockerInspectorManager(final DirectoryManager directoryManager, final AirGapManager airGapManager, final FileFinder fileFinder, final DetectConfiguration detectConfiguration, final ArtifactResolver artifactResolver,
+    public ArtifactoryDockerInspectorResolver(final DirectoryManager directoryManager, final AirGapManager airGapManager, final FileFinder fileFinder, final ArtifactResolver artifactResolver,
         final DockerDetectableOptions dockerDetectableOptions) {
         this.directoryManager = directoryManager;
         this.airGapManager = airGapManager;
         this.fileFinder = fileFinder;
-        this.detectConfiguration = detectConfiguration;
         this.artifactResolver = artifactResolver;
         this.dockerDetectableOptions = dockerDetectableOptions;
     }
@@ -89,9 +85,9 @@ public class DockerInspectorManager implements DockerInspectorResolver {
         }
     }
 
-    private DockerInspectorInfo install() throws IntegrationException, IOException {
+    private DockerInspectorInfo install() throws IntegrationException, IOException, DetectUserFriendlyException {
         final File airGapDockerFolder = new File(airGapManager.getDockerInspectorAirGapPath());
-        final String providedJarPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH, PropertyAuthority.None);
+        final String providedJarPath = dockerDetectableOptions.getDockerInspectorPath();
 
         if (StringUtils.isNotBlank(providedJarPath)) {
             logger.info("Docker tool will attempt to use the provided docker inspector.");
@@ -160,7 +156,7 @@ public class DockerInspectorManager implements DockerInspectorResolver {
         }
     }
 
-    private DockerInspectorInfo findOrDownloadJar() throws IntegrationException, IOException {
+    private DockerInspectorInfo findOrDownloadJar() throws IntegrationException, IOException, DetectUserFriendlyException {
         logger.info("Determining the location of the Docker inspector.");
         final String dockerVersion = dockerDetectableOptions.getDockerInspectorVersion();
         final Optional<String> location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.DOCKER_INSPECTOR_REPO, ArtifactoryConstants.DOCKER_INSPECTOR_PROPERTY, dockerVersion,

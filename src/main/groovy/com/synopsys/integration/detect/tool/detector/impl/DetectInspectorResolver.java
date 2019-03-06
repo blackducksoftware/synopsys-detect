@@ -23,22 +23,14 @@
  */
 package com.synopsys.integration.detect.tool.detector.impl;
 
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspector;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
-import com.synopsys.integration.detectable.detectables.docker.DockerInspectorInfo;
-import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 
 // TODO: Implement this class
-public class DetectInspectorResolver implements DockerInspectorResolver, NugetInspectorResolver {
+public class DetectInspectorResolver implements NugetInspectorResolver {
 
     @Override
     public NugetInspector resolveNugetInspector() {
-        return null;
-    }
-
-    @Override
-    public DockerInspectorInfo resolveDockerInspector() throws DetectableException {
         return null;
     }
 }
