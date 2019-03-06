@@ -54,14 +54,13 @@ public class PipInspectorDetectable extends Detectable {
     private final PipResolver pipResolver;
     private final PipInspectorResolver pipInspectorResolver;
     private final PipInspectorExtractor pipInspectorExtractor;
-    private final String requirementFilePath;
     private final PipInspectorDetectableOptions pipInspectorDetectableOptions;
 
     private File pythonExe;
     private File pipInspector;
     private File setupFile;
 
-    public PipInspectorDetectable(final DetectableEnvironment environment, final String requirementFilePath, final FileFinder fileFinder, final PythonResolver pythonResolver, final PipResolver pipResolver,
+    public PipInspectorDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PythonResolver pythonResolver, final PipResolver pipResolver,
         final PipInspectorResolver pipInspectorResolver, final PipInspectorExtractor pipInspectorExtractor, final PipInspectorDetectableOptions pipInspectorDetectableOptions) {
         super(environment, "Pip Inspector", "PIP");
         this.fileFinder = fileFinder;
@@ -69,7 +68,6 @@ public class PipInspectorDetectable extends Detectable {
         this.pipResolver = pipResolver;
         this.pipInspectorResolver = pipInspectorResolver;
         this.pipInspectorExtractor = pipInspectorExtractor;
-        this.requirementFilePath = requirementFilePath;
         this.pipInspectorDetectableOptions = pipInspectorDetectableOptions;
     }
 
@@ -77,7 +75,7 @@ public class PipInspectorDetectable extends Detectable {
     public DetectableResult applicable() {
         setupFile = fileFinder.findFile(environment.getDirectory(), SETUPTOOLS_DEFAULT_FILE_NAME);
         final boolean hasSetups = setupFile != null;
-        final boolean hasRequirements = StringUtils.isNotBlank(requirementFilePath);
+        final boolean hasRequirements = StringUtils.isNotBlank(pipInspectorDetectableOptions.getRequirementsFilePath());
         if (hasSetups || hasRequirements) {
             logger.warn("------------------------------------------------------------------------------------------------------");
             logger.warn("The Pip inspector has been deprecated. Please use pipenv and the Pipenv Graph inspector in the future.");
@@ -101,7 +99,7 @@ public class PipInspectorDetectable extends Detectable {
             return new ExecutableNotFoundDetectableResult("pip");
         }
 
-        pipInspector = pipInspectorResolver.resolvePipInspector(); // TODO: Implementation of this should copy the pip-inspector.py from resources to temp folder
+        pipInspector = pipInspectorResolver.resolvePipInspector();
 
         if (pipInspector == null) {
             return new InspectorNotFoundDetectableResult("pip-inspector.py");
@@ -112,7 +110,7 @@ public class PipInspectorDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return pipInspectorExtractor.extract(environment.getDirectory(), pythonExe, pipInspector, setupFile, requirementFilePath, pipInspectorDetectableOptions.getPipProjectName());
+        return pipInspectorExtractor.extract(environment.getDirectory(), pythonExe, pipInspector, setupFile, pipInspectorDetectableOptions.getRequirementsFilePath(), pipInspectorDetectableOptions.getPipProjectName());
     }
 
 }

@@ -23,6 +23,8 @@
  */
 package com.synopsys.integration.detect;
 
+import java.io.File;
+
 import javax.xml.parsers.DocumentBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,7 @@ import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.impl.DetectInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.resolvers.ArtifactoryGradleInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.resolvers.LocalPipInspectorResolver;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -46,6 +49,7 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
+import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRuleJsonProcessor;
@@ -423,6 +427,12 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
+    public PipInspectorResolver pipInspectorResolver() {
+        final File outputDirectory = directoryManager.getSharedDirectory("PIP_INSPECTOR");
+        return new LocalPipInspectorResolver(outputDirectory);
+    }
+
+    @Bean
     public PipInspectorTreeParser pipInspectorTreeParser() {
         return new PipInspectorTreeParser(externalIdFactory);
     }
@@ -652,8 +662,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public PipInspectorDetectable pipInspectorBomTool(final DetectableEnvironment environment) {
-        //final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None); // TODO: do we need this (and replace with option object if we do.
-        return new PipInspectorDetectable(environment, "", fileFinder, detectExecutableResolver, detectExecutableResolver, detectInspectorResolver, pipInspectorExtractor(), detectableOptionFactory.createPipInspectorDetectableOptions());
+        return new PipInspectorDetectable(environment, fileFinder, detectExecutableResolver, detectExecutableResolver, pipInspectorResolver(), pipInspectorExtractor(), detectableOptionFactory.createPipInspectorDetectableOptions());
     }
 
     @Bean

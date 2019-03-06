@@ -1,5 +1,5 @@
 /**
- * hub-detect
+ * synopsys-detect
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package detectables.functional.pip;
+package com.synopsys.integration.detect.tool.detector.inspectors.resolvers;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,10 +31,10 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 
-public class PipInspectorManager {
+public class LocalPipInspectorResolver implements PipInspectorResolver {
     public static final String INSPECTOR_NAME = "pip-inspector.py";
 
     private final File outputDirectory;
@@ -42,11 +42,12 @@ public class PipInspectorManager {
     private File resolvedInspector = null;
     private boolean hasResolvedInspector = false;
 
-    public PipInspectorManager(final File outputDirectory) {
+    public LocalPipInspectorResolver(final File outputDirectory) {
         this.outputDirectory = outputDirectory;
     }
 
-    public File findPipInspector(final DetectableEnvironment environment) throws DetectableException {
+    @Override
+    public File resolvePipInspector() throws DetectableException {
         try {
             if (!hasResolvedInspector) {
                 hasResolvedInspector = true;
