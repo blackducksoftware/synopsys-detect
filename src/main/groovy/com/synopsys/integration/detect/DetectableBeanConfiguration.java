@@ -24,7 +24,6 @@
 package com.synopsys.integration.detect;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -550,8 +549,8 @@ public class DetectableBeanConfiguration {
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public GradleInspectorDetectable gradleInspectorBomTool(final DetectableEnvironment environment) throws ParserConfigurationException {
-        return new GradleInspectorDetectable(environment, fileFinder, detectExecutableResolver, detectInspectorResolver, gradleInspectorExtractor(), detectableOptionFactory.createGradleInspectorOptions(), gradleInspectorScriptCreator());
+    public GradleInspectorDetectable gradleInspectorBomTool(final DetectableEnvironment environment) {
+        return new GradleInspectorDetectable(environment, fileFinder, detectExecutableResolver, detectInspectorResolver, gradleInspectorExtractor(), detectableOptionFactory.createGradleInspectorOptions());
     }
 
     @Bean
@@ -617,9 +616,8 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public PipInspectorDetectable pipInspectorBomTool(final DetectableEnvironment environment) {
-        //final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None); //TODO: do we need this (and replace with option object if we do.
-        return new PipInspectorDetectable(environment, "", fileFinder, detectExecutableResolver, detectExecutableResolver, detectInspectorResolver,
-            pipInspectorExtractor(), detectableOptionFactory.createPipInspectorDetectableOptions());
+        //final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None); // TODO: do we need this (and replace with option object if we do.
+        return new PipInspectorDetectable(environment, "", fileFinder, detectExecutableResolver, detectExecutableResolver, detectInspectorResolver, pipInspectorExtractor(), detectableOptionFactory.createPipInspectorDetectableOptions());
     }
 
     @Bean

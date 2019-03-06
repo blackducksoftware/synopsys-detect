@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -53,11 +54,21 @@ public class GradleInspectorScriptCreator {
         this.configuration = configuration;
     }
 
-    public File createGradleInspector(final File templateFile, final GradleInspectorScriptOptions scriptOptions) throws DetectableException {
+    public File createOnlineGradleInspector(final File templateFile, final GradleInspectorScriptOptions scriptOptions, final String airGapLibraryPaths) throws DetectableException {
+        return createGradleInspector(templateFile, scriptOptions, null, airGapLibraryPaths);
+    }
+
+    public File createOfflineGradleInspector(final File templateFile, final GradleInspectorScriptOptions scriptOptions, final String resolvedOnlineInspectorVersion) throws DetectableException {
+        return createGradleInspector(templateFile, scriptOptions, resolvedOnlineInspectorVersion, null);
+    }
+
+    private File createGradleInspector(final File templateFile, final GradleInspectorScriptOptions scriptOptions, final String resolvedOnlineInspectorVersion, final String airGapLibraryPaths) throws DetectableException {
         logger.debug("Generating the gradle script file.");
         final Map<String, String> gradleScriptData = new HashMap<>();
-        gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(scriptOptions.getOfflineLibraryPaths().orElse("")));
-        gradleScriptData.put("gradleInspectorVersion", StringEscapeUtils.escapeJava(scriptOptions.getOnlineInspectorVersion().orElse("")));
+        final Optional<String> airGapLibPaths = Optional.ofNullable(airGapLibraryPaths);
+        final Optional<String> inspectorVersion = Optional.ofNullable(resolvedOnlineInspectorVersion);
+        gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(airGapLibPaths.orElse("")));
+        gradleScriptData.put("gradleInspectorVersion", StringEscapeUtils.escapeJava(inspectorVersion.orElse("")));
         gradleScriptData.put("excludedProjectNames", scriptOptions.getExcludedProjectNames());
         gradleScriptData.put("includedProjectNames", scriptOptions.getIncludedProjectNames());
         gradleScriptData.put("excludedConfigurationNames", scriptOptions.getExcludedConfigurationNames());

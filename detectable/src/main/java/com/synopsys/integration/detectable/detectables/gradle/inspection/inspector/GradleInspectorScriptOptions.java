@@ -31,28 +31,16 @@ public class GradleInspectorScriptOptions {
     private final String excludedConfigurationNames;
     private final String includedConfigurationNames;
     private final String gradleInspectorRepositoryUrl;
-    private final String onlineInspectorVersion;
-    private final String offlineLibraryPaths;
+    private final String providedOnlineInspectorVersion;
 
-    public static GradleInspectorScriptOptions forOnlineInspector(final String inspectorVersion, final String excludedProjectNames, final String includedProjectNames, final String excludedConfigurationNames, final String includedConfigurationNames,
-        final String gradleInspectorRepositoryUrl) {
-        return new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, gradleInspectorRepositoryUrl, inspectorVersion, null);
-    }
-
-    public static GradleInspectorScriptOptions forOfflineInspector(final String libraryPaths, final String excludedProjectNames, final String includedProjectNames, final String excludedConfigurationNames, final String includedConfigurationNames,
-        final String gradleInspectorRepositoryUrl) {
-        return new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, gradleInspectorRepositoryUrl, null, libraryPaths);
-    }
-
-    public GradleInspectorScriptOptions(final String excludedProjectNames, final String includedProjectNames, final String excludedConfigurationNames, final String includedConfigurationNames,
-        final String gradleInspectorRepositoryUrl, final String onlineInspectorVersion, final String offlineLibraryPaths) {
+    public GradleInspectorScriptOptions(final String excludedProjectNames, final String includedProjectNames, final String excludedConfigurationNames, final String includedConfigurationNames, final String gradleInspectorRepositoryUrl,
+        final String providedOnlineInspectorVersion) {
         this.excludedProjectNames = excludedProjectNames;
         this.includedProjectNames = includedProjectNames;
         this.excludedConfigurationNames = excludedConfigurationNames;
         this.includedConfigurationNames = includedConfigurationNames;
         this.gradleInspectorRepositoryUrl = gradleInspectorRepositoryUrl;
-        this.onlineInspectorVersion = onlineInspectorVersion;
-        this.offlineLibraryPaths = offlineLibraryPaths;
+        this.providedOnlineInspectorVersion = providedOnlineInspectorVersion;
     }
 
     public String getGradleInspectorRepositoryUrl() {
@@ -75,11 +63,7 @@ public class GradleInspectorScriptOptions {
         return includedConfigurationNames;
     }
 
-    public Optional<String> getOnlineInspectorVersion() {
-        return Optional.ofNullable(onlineInspectorVersion);
-    }
-
-    public Optional<String> getOfflineLibraryPaths() {
-        return Optional.ofNullable(offlineLibraryPaths);
+    public Optional<String> getProvidedOnlineInspectorVersion() {
+        return Optional.ofNullable(providedOnlineInspectorVersion);
     }
 }

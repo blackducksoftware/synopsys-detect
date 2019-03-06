@@ -25,7 +25,6 @@ package com.synopsys.integration.detect.configuration;
 
 import java.util.Map;
 
-import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
@@ -48,11 +47,9 @@ import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 
 public class DetectableOptionFactory {
     private final DetectConfiguration detectConfiguration;
-    private final AirGapManager airGapManager;
 
-    public DetectableOptionFactory(final DetectConfiguration detectConfiguration, final AirGapManager airGapManager) {
+    public DetectableOptionFactory(final DetectConfiguration detectConfiguration) {
         this.detectConfiguration = detectConfiguration;
-        this.airGapManager = airGapManager;
     }
 
     public BazelDetectableOptions createBazelDetectableOptions() {
@@ -100,9 +97,8 @@ public class DetectableOptionFactory {
         final String includedConfigurationNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS, PropertyAuthority.None);
         final String gradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL, PropertyAuthority.None);
         final String onlineInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION, PropertyAuthority.None);
-        //final String offlineLibraryPaths = airGapManager.getGradleInspectorAirGapPath(); // TODO: Not sure if this is the right thing. offlineLibraryPaths isn't very descriptive
         final GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, gradleInspectorRepositoryUrl,
-            onlineInspectorVersion, "");
+            onlineInspectorVersion);
         final String gradleBuildCommand = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND, PropertyAuthority.None);
         return new GradleInspectorOptions(gradleBuildCommand, scriptOptions);
     }

@@ -53,7 +53,6 @@ import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detect.workflow.file.AirGapOptions;
-import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
@@ -141,7 +140,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public DetectableOptionFactory detectableOptionFactory() {
-        return new DetectableOptionFactory(detectConfiguration, null);
+        return new DetectableOptionFactory(detectConfiguration);
     }
 
     @Bean
