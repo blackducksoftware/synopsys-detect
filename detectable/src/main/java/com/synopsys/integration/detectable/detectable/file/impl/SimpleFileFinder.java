@@ -31,8 +31,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -60,7 +58,6 @@ public class SimpleFileFinder implements FileFinder {
     }
 
     @Override
-    @Nullable
     public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth) {
         return findFiles(directoryToSearch, new WildcardFileFilter(filenamePatterns), depth);
     }
