@@ -46,8 +46,10 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.YarnRe
 import com.synopsys.integration.detectable.detectable.inspector.go.GoDepResolver;
 import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 
-public class DetectExecutableResolver implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver,
-                                                     BazelResolver, DockerResolver, GoDepResolver, GoResolver {
+// TODO: Implement this class. Will this do anything different from SimpleExecutableResolver?
+public class DetectExecutableResolver
+    implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver,
+                   BazelResolver, DockerResolver, GoDepResolver, GoResolver {
     @Override
     public File resolveBash() throws DetectableException {
         return null;
