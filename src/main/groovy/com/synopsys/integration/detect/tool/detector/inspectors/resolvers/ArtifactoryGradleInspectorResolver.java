@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector.resolvers.gradle;
+package com.synopsys.integration.detect.tool.detector.inspectors.resolvers;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,11 +31,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
-import com.synopsys.integration.detectable.detectable.inspector.impl.artifactory.ArtifactResolver;
 import com.synopsys.integration.detectable.detectable.inspector.impl.artifactory.ArtifactoryConstants;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
@@ -124,7 +125,7 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
     private Optional<String> findVersion(final String suppliedGradleInspectorVersion) {
         try {
             return artifactResolver.resolveArtifactVersion(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.GRADLE_INSPECTOR_REPO, ArtifactoryConstants.GRADLE_INSPECTOR_PROPERTY, suppliedGradleInspectorVersion);
-        } catch (final IntegrationException | IOException e) {
+        } catch (final IntegrationException | IOException | DetectUserFriendlyException e) {
             logger.debug("Failed to fetch Gradle inspector version from Artifactory", e);
         }
 

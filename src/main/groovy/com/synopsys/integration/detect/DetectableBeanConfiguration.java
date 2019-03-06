@@ -33,13 +33,19 @@ import org.springframework.context.annotation.Scope;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.impl.DetectInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.resolvers.ArtifactoryGradleInspectorResolver;
+import com.synopsys.integration.detect.workflow.ArtifactResolver;
+import com.synopsys.integration.detect.workflow.file.AirGapManager;
+import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRuleJsonProcessor;
@@ -164,6 +170,12 @@ public class DetectableBeanConfiguration {
     public DocumentBuilder documentBuilder;
     @Autowired
     public ExternalIdFactory externalIdFactory;
+    @Autowired
+    public ConnectionManager connectionManager;
+    @Autowired
+    public AirGapManager airGapManager;
+    @Autowired
+    public DirectoryManager directoryManager;
 
     //DetectableFactory
     //This is the ONLY class that should be taken from the Configuration manually.
@@ -182,6 +194,11 @@ public class DetectableBeanConfiguration {
 
     //Detectable-Only Dependencies
     //All detector support classes. These are classes not actually used outside of the bom tools but are necessary for some bom tools.
+
+    @Bean
+    public ArtifactResolver artifactResolver() {
+        return new ArtifactResolver(connectionManager, gson);
+    }
 
     @Bean
     public BazelExtractor bazelExtractor() {
@@ -304,6 +321,10 @@ public class DetectableBeanConfiguration {
     @Bean
     public GradleRootMetadataParser gradleRootMetadataParser() {
         return new GradleRootMetadataParser();
+    }
+
+    public GradleInspectorResolver gradleInspectorResolver() {
+        return new ArtifactoryGradleInspectorResolver(artifactResolver(), configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapManager, directoryManager);
     }
 
     @Bean
@@ -565,7 +586,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GradleInspectorDetectable gradleInspectorBomTool(final DetectableEnvironment environment) {
-        return new GradleInspectorDetectable(environment, fileFinder, detectExecutableResolver, detectInspectorResolver, gradleInspectorExtractor(), detectableOptionFactory.createGradleInspectorOptions());
+        return new GradleInspectorDetectable(environment, fileFinder, detectExecutableResolver, gradleInspectorResolver(), gradleInspectorExtractor(), detectableOptionFactory.createGradleInspectorOptions());
     }
 
     @Bean
