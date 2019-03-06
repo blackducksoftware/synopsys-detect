@@ -25,13 +25,12 @@ package com.synopsys.integration.detect.tool.detector.impl;
 
 import java.io.File;
 
-import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspector;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 
-// TODO: Implement this class
-public class DetectInspectorResolver implements NugetInspectorResolver, PipInspectorResolver, GradleInspectorResolver {
+// TODO: This is a temp file for compilation.
+public class DetectInspectorResolver implements NugetInspectorResolver, PipInspectorResolver {
     @Override
     public File resolvePipInspector() {
         return null;
@@ -39,11 +38,6 @@ public class DetectInspectorResolver implements NugetInspectorResolver, PipInspe
 
     @Override
     public NugetInspector resolveNugetInspector() {
-        return null;
-    }
-
-    @Override
-    public File resolveGradleInspector() {
         return null;
     }
 }
