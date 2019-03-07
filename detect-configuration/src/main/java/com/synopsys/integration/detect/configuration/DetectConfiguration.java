@@ -141,26 +141,8 @@ public class DetectConfiguration {
         return found.orElse(null);
     }
 
-    public Set<String> getBlackduckPropertyKeys() {
-        final Set<String> providedKeys = detectPropertySource.getBlackduckPropertyKeys();
-        final Set<String> allKeys = new HashSet<>(providedKeys);
-        Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
-            final String propertyKey = currentProperty.getPropertyKey();
-            if (propertyKey.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyKey.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
-                allKeys.add(propertyKey);
-            } else if (propertyKey.startsWith(DetectPropertySource.BLACKDUCK_PROPERTY_PREFIX) || propertyKey.startsWith(DetectPropertySource.BLACKDUCK_ENVIRONMENT_PREFIX)) {
-                allKeys.add(propertyKey);
-            }
-        });
-        return allKeys;
-    }
-
     public Map<String, String> getPhoneHomeProperties() {
         return getKeys(detectPropertySource.getPhoneHomePropertyKeys());
-    }
-
-    public Map<String, String> getBlackduckProperties() {
-        return getKeys(getBlackduckPropertyKeys());
     }
 
     public Map<String, String> getProperties(Set<String> keys) {

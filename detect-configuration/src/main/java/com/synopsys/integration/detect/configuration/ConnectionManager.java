@@ -32,11 +32,9 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.util.ProxyUtil;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.client.IntHttpClient;
@@ -44,7 +42,6 @@ import com.synopsys.integration.rest.credentials.Credentials;
 import com.synopsys.integration.rest.credentials.CredentialsBuilder;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.proxy.ProxyInfoBuilder;
-import com.synopsys.integration.util.proxy.ProxyUtil;
 
 public class ConnectionManager {
     private final DetectConfiguration detectConfiguration;
