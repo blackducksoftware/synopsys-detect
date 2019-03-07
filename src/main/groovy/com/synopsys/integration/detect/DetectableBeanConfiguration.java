@@ -39,9 +39,9 @@ import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
-import com.synopsys.integration.detect.tool.detector.impl.DetectInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryNugetInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.LocalPipInspectorResolver;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.file.AirGapManager;
@@ -51,6 +51,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
+import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRuleJsonProcessor;
@@ -164,8 +165,6 @@ public class DetectableBeanConfiguration {
     public DetectableOptionFactory detectableOptionFactory;
     @Autowired
     public DetectExecutableResolver detectExecutableResolver;
-    @Autowired
-    public DetectInspectorResolver detectInspectorResolver;
 
     //The Regular Ones
     @Autowired
@@ -182,6 +181,8 @@ public class DetectableBeanConfiguration {
     public AirGapManager airGapManager;
     @Autowired
     public DirectoryManager directoryManager;
+    @Autowired
+    public DetectInfo detectInfo;
 
     //DetectableFactory
     //This is the ONLY class that should be taken from the Configuration manually.
@@ -375,6 +376,11 @@ public class DetectableBeanConfiguration {
     @Bean
     public NpmLockfileExtractor npmLockfileExtractor() {
         return new NpmLockfileExtractor(npmLockfilePackager());
+    }
+
+    @Bean
+    public NugetInspectorResolver nugetInspectorResolver() {
+        return new ArtifactoryNugetInspectorResolver(directoryManager, detectExecutableResolver, executableRunner, airGapManager, artifactResolver(), detectInfo, fileFinder, detectableOptionFactory.createNugetInspectorOptions());
     }
 
     @Bean
@@ -632,7 +638,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetProjectDetectable nugetProjectBomTool(final DetectableEnvironment environment) {
-        return new NugetProjectDetectable(environment, fileFinder, detectableOptionFactory.createNugetInspectorOptions(), detectInspectorResolver, nugetInspectorExtractor()); // TODO: Fix NugetInspectorOptions
+        return new NugetProjectDetectable(environment, fileFinder, detectableOptionFactory.createNugetInspectorOptions(), nugetInspectorResolver(), nugetInspectorExtractor()); // TODO: Fix NugetInspectorOptions
     }
 
     @Bean
@@ -644,7 +650,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetSolutionDetectable nugetSolutionBomTool(final DetectableEnvironment environment) {
-        return new NugetSolutionDetectable(environment, fileFinder, detectInspectorResolver, nugetInspectorExtractor(), detectableOptionFactory.createNugetInspectorOptions()); // TODO: Fix NugetInspectorOptions
+        return new NugetSolutionDetectable(environment, fileFinder, nugetInspectorResolver(), nugetInspectorExtractor(), detectableOptionFactory.createNugetInspectorOptions()); // TODO: Fix NugetInspectorOptions
     }
 
     @Bean

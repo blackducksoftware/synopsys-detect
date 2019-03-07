@@ -26,10 +26,8 @@ package com.synopsys.integration.detectable.detectable.inspector.nuget.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
@@ -37,25 +35,22 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspe
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 
 public class DotNetCoreNugetInspector implements NugetInspector {
+    private final File dotnetExe;
+    private final String inspectorDll;
+    private final ExecutableRunner executableRunner;
 
-    private String dotnetExe;
-    private String inspectorDll;
-    private ExecutableRunner executableRunner;
-
-    public DotNetCoreNugetInspector(String dotnetExe, String inspectorDll, ExecutableRunner executableRunner) {
+    public DotNetCoreNugetInspector(final File dotnetExe, final String inspectorDll, final ExecutableRunner executableRunner) {
         this.dotnetExe = dotnetExe;
         this.inspectorDll = inspectorDll;
         this.executableRunner = executableRunner;
     }
 
     @Override
-    public ExecutableOutput execute(File workingDirectory, NugetInspectorOptions nugetInspectorOptions) throws ExecutableRunnerException, IOException {
-        List<String> dotnetArguments = new ArrayList<String>();
+    public ExecutableOutput execute(final File workingDirectory, final File sourcePath, final File outputDirectory, final NugetInspectorOptions nugetInspectorOptions) throws ExecutableRunnerException, IOException {
+        final List<String> dotnetArguments = new ArrayList<String>();
         dotnetArguments.add(inspectorDll);
-        dotnetArguments.addAll(NugetInspectorArguments.fromInspectorOptions(nugetInspectorOptions));
+        dotnetArguments.addAll(NugetInspectorArguments.fromInspectorOptions(nugetInspectorOptions, sourcePath, outputDirectory));
 
-        final Executable hubNugetInspectorExecutable = new Executable(workingDirectory, new HashMap<>(), dotnetExe, dotnetArguments);
-        final ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable);
-        return executableOutput;
+        return executableRunner.execute(workingDirectory, dotnetExe, dotnetArguments);
     }
 }

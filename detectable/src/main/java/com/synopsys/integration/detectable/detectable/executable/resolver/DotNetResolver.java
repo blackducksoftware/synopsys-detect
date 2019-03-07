@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,16 +21,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector.impl;
+package com.synopsys.integration.detectable.detectable.executable.resolver;
 
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspector;
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
+import java.io.File;
 
-// TODO: Implement this class
-public class DetectInspectorResolver implements NugetInspectorResolver {
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
-    @Override
-    public NugetInspector resolveNugetInspector() {
-        return null;
-    }
+public interface DotNetResolver {
+    File resolveDotNet() throws DetectableException;
 }

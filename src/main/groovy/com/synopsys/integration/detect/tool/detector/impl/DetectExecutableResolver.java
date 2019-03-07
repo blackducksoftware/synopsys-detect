@@ -33,6 +33,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.CondaR
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.DotNetResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
@@ -49,7 +50,7 @@ import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 // TODO: Implement this class. Will this do anything different from SimpleExecutableResolver?
 public class DetectExecutableResolver
     implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver,
-                   BazelResolver, DockerResolver, GoDepResolver, GoResolver {
+                   BazelResolver, DockerResolver, GoDepResolver, GoResolver, DotNetResolver {
     @Override
     public File resolveBash() throws DetectableException {
         return null;
@@ -132,6 +133,11 @@ public class DetectExecutableResolver
 
     @Override
     public File resolveDocker() throws DetectableException {
+        return null;
+    }
+
+    @Override
+    public File resolveDotNet() throws DetectableException {
         return null;
     }
 }

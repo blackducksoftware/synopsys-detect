@@ -25,10 +25,8 @@ package com.synopsys.integration.detectable.detectable.inspector.nuget.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
-import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
@@ -36,20 +34,17 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspe
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 
 public class ExeNugetInspector implements NugetInspector {
+    private final String inspectorExe;
+    private final ExecutableRunner executableRunner;
 
-    private String inspectorExe;
-    private ExecutableRunner executableRunner;
-
-    public ExeNugetInspector(ExecutableRunner executableRunner, String inspectorExe) {
+    public ExeNugetInspector(final ExecutableRunner executableRunner, final String inspectorExe) {
         this.executableRunner = executableRunner;
         this.inspectorExe = inspectorExe;
     }
 
     @Override
-    public ExecutableOutput execute(File workingDirectory, NugetInspectorOptions nugetInspectorOptions) throws ExecutableRunnerException, IOException {
-        List<String> arguments = NugetInspectorArguments.fromInspectorOptions(nugetInspectorOptions);
-        final Executable hubNugetInspectorExecutable = new Executable(workingDirectory, new HashMap<>(), inspectorExe, arguments);
-        final ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable);
-        return executableOutput;
+    public ExecutableOutput execute(final File workingDirectory, final File sourcePath, final File outputDirectory, final NugetInspectorOptions nugetInspectorOptions) throws ExecutableRunnerException, IOException {
+        final List<String> arguments = NugetInspectorArguments.fromInspectorOptions(nugetInspectorOptions, sourcePath, outputDirectory);
+        return executableRunner.execute(workingDirectory, inspectorExe, arguments);
     }
 }

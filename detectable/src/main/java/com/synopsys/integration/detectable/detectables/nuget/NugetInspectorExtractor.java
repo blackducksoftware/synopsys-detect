@@ -63,7 +63,7 @@ public class NugetInspectorExtractor {
 
     public Extraction extract(final File targetDirectory, final File outputDirectory, final NugetInspector inspector, final NugetInspectorOptions nugetInspectorOptions) {
         try {
-            final ExecutableOutput executableOutput = inspector.execute(targetDirectory, nugetInspectorOptions);
+            final ExecutableOutput executableOutput = inspector.execute(targetDirectory, targetDirectory, outputDirectory, nugetInspectorOptions);
 
             if (executableOutput.getReturnCode() != 0) {
                 return new Extraction.Builder().failure(String.format("Executing the nuget inspector failed", executableOutput.getReturnCode())).build();

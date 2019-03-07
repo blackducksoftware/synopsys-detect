@@ -40,7 +40,6 @@ import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
-import com.synopsys.integration.detect.tool.detector.impl.DetectInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.OfflineBlackDuckSignatureScanner;
@@ -148,11 +147,6 @@ public class RunBeanConfiguration {
     @Bean
     public DetectExecutableResolver detectExecutableResolver() {
         return new DetectExecutableResolver();
-    }
-
-    @Bean
-    public DetectInspectorResolver detectInspectorResolver() {
-        return new DetectInspectorResolver();
     }
 
     @Bean

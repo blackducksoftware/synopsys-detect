@@ -30,5 +30,5 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 
 public interface NugetInspector {
-    ExecutableOutput execute(File workingDirectory, NugetInspectorOptions nugetInspectorOptions) throws ExecutableRunnerException, IOException;
+    ExecutableOutput execute(final File workingDirectory, final File sourcePath, final File outputDirectory, final NugetInspectorOptions nugetInspectorOptions) throws ExecutableRunnerException, IOException;
 }
