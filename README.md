@@ -14,7 +14,7 @@ Synopsys Detect consolidates the functionality of Black Duck™ , Black Duck Bin
 Upon release of 5.3.0
 
 *Available from GitHub for Linux by running:*  
-bash <(curl -s https://detect.synopsys.com/detect.sh)
+bash <(curl -s -L https://detect.synopsys.com/detect.sh)
 
 *Available from GitHub for Windows by running:*  
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
