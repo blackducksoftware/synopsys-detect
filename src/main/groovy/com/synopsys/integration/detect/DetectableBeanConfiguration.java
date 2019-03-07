@@ -107,6 +107,8 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.inspect
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
+import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseDetectable;
+import com.synopsys.integration.detectable.detectables.gradle.parsing.parse.BuildGradleParser;
 import com.synopsys.integration.detectable.detectables.hex.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.hex.RebarExtractor;
 import com.synopsys.integration.detectable.detectables.hex.parse.Rebar3TreeParser;
@@ -114,6 +116,9 @@ import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtract
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocationPackager;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
+import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
+import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomXmlParser;
+import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomXmlParserInstantiationException;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
@@ -121,6 +126,8 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileE
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmShrinkwrapDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfileParser;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectable;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
 import com.synopsys.integration.detectable.detectables.nuget.NugetInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
@@ -142,6 +149,9 @@ import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTr
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvGraphParser;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockExtractor;
+import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
+import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
+import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
@@ -529,6 +539,31 @@ public class DetectableBeanConfiguration {
         return new DockerExtractor(fileFinder, new DockerProperties(detectableOptionFactory.createDockerDetectableOptions()), executableRunner, new BdioTransformer(), new ExternalIdFactory(), gson);
     }
 
+    @Bean
+    public GemspecLineParser gemspecLineParser() {
+        return new GemspecLineParser();
+    }
+
+    @Bean
+    public GemspecParser gemspecParser() {
+        return new GemspecParser(externalIdFactory, gemspecLineParser());
+    }
+
+    @Bean
+    public PackageJsonExtractor packageJsonExtractor() {
+        return new PackageJsonExtractor(gson, externalIdFactory);
+    }
+
+    @Bean
+    public PomXmlParser pomXmlParser() throws PomXmlParserInstantiationException {
+        return new PomXmlParser(externalIdFactory);
+    }
+
+    @Bean
+    public BuildGradleParser buildGradleParser() {
+        return new BuildGradleParser(externalIdFactory);
+    }
+
     //Detectables
     //Should be scoped to Prototype so a new Detectable is created every time one is needed.
     //Should only be accessed through the DetectableFactory.
@@ -613,6 +648,18 @@ public class DetectableBeanConfiguration {
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public GradleParseDetectable gradleParseDetectable(final DetectableEnvironment environment) {
+        return new GradleParseDetectable(environment, fileFinder, buildGradleParser());
+    }
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public GemspecParseDetectable gemspecParseDetectable(final DetectableEnvironment environment) {
+        return new GemspecParseDetectable(environment, fileFinder, gemspecParser(), detectableOptionFactory.createGemspecParseDetectableOptions());
+    }
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public MavenPomDetectable mavenPomBomTool(final DetectableEnvironment environment) {
         return new MavenPomDetectable(environment, fileFinder, detectExecutableResolver, mavenCliExtractor());
     }
@@ -621,6 +668,12 @@ public class DetectableBeanConfiguration {
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public MavenPomWrapperDetectable mavenPomWrapperBomTool(final DetectableEnvironment environment) {
         return new MavenPomWrapperDetectable(environment, fileFinder, detectExecutableResolver, mavenCliExtractor());
+    }
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public MavenParseDetectable mavenParseDetectable(final DetectableEnvironment environment) throws PomXmlParserInstantiationException {
+        return new MavenParseDetectable(environment, fileFinder, pomXmlParser());
     }
 
     @Bean
@@ -645,6 +698,12 @@ public class DetectableBeanConfiguration {
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NpmShrinkwrapDetectable npmShrinkwrapBomTool(final DetectableEnvironment environment) {
         return new NpmShrinkwrapDetectable(environment, fileFinder, npmLockfileExtractor(), detectableOptionFactory.createNpmLockfileOptions());
+    }
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public NpmPackageJsonParseDetectable npmPackageJsonParseDetectable(final DetectableEnvironment environment) {
+        return new NpmPackageJsonParseDetectable(environment, fileFinder, packageJsonExtractor(), detectableOptionFactory.createNpmPackageJsonParseDetectableOptions());
     }
 
     @Bean
