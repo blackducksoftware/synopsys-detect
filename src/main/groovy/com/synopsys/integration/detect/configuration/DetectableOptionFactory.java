@@ -25,6 +25,11 @@ package com.synopsys.integration.detect.configuration;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
@@ -47,6 +52,8 @@ import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDet
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 
 public class DetectableOptionFactory {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final DetectConfiguration detectConfiguration;
 
     public DetectableOptionFactory(final DetectConfiguration detectConfiguration) {
@@ -97,10 +104,15 @@ public class DetectableOptionFactory {
         final String includedProjectNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_PROJECTS, PropertyAuthority.None);
         final String excludedConfigurationNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS, PropertyAuthority.None);
         final String includedConfigurationNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS, PropertyAuthority.None);
-        final String gradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL, PropertyAuthority.None);
+        final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL, PropertyAuthority.None);
+        String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
+        if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
+            logger.warn("Using a custom gradle repository will not be supported in the future.");
+            customRepository = configuredGradleInspectorRepositoryUrl;
+        }
+
         final String onlineInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION, PropertyAuthority.None);
-        final GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, gradleInspectorRepositoryUrl,
-            onlineInspectorVersion);
+        final GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion);
         final String gradleBuildCommand = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND, PropertyAuthority.None);
         return new GradleInspectorOptions(gradleBuildCommand, scriptOptions);
     }

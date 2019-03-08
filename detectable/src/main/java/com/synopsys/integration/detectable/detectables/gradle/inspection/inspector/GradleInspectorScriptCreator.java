@@ -73,13 +73,8 @@ public class GradleInspectorScriptCreator {
         gradleScriptData.put("includedProjectNames", scriptOptions.getIncludedProjectNames());
         gradleScriptData.put("excludedConfigurationNames", scriptOptions.getExcludedConfigurationNames());
         gradleScriptData.put("includedConfigurationNames", scriptOptions.getIncludedConfigurationNames());
-        final String configuredGradleInspectorRepositoryUrl = scriptOptions.getGradleInspectorRepositoryUrl();
-        String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
-        if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
-            logger.warn("Using a custom gradle repository will not be supported in the future.");
-            customRepository = configuredGradleInspectorRepositoryUrl;
-        }
-        gradleScriptData.put("customRepositoryUrl", customRepository);
+        final String gradleInspectorRepositoryUrl = scriptOptions.getGradleInspectorRepositoryUrl();
+        gradleScriptData.put("customRepositoryUrl", gradleInspectorRepositoryUrl);
 
         try {
             populateGradleScriptWithData(templateFile, gradleScriptData);
