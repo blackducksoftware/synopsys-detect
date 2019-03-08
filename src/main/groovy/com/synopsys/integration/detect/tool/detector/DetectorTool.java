@@ -23,6 +23,7 @@
  */
 package com.synopsys.integration.detect.tool.detector;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,11 +31,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
@@ -55,51 +56,50 @@ import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.util.NameVersion;
-import java.io.File;
-import java.util.stream.Collectors;
 
 public class DetectorTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExtractionEnvironmentProvider extractionEnvironmentProvider;
-    private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
     private final DetectableFactory detectableFactory;
     private final EventSystem eventSystem;
     private final CodeLocationConverter codeLocationConverter;
+    private final boolean buildless;
 
-    public DetectorTool(ExtractionEnvironmentProvider extractionEnvironmentProvider, final DetectableFactory detectableFactory, final EventSystem eventSystem,
-        final CodeLocationConverter codeLocationConverter) {
+    public DetectorTool(final ExtractionEnvironmentProvider extractionEnvironmentProvider, final DetectableFactory detectableFactory, final EventSystem eventSystem, final CodeLocationConverter codeLocationConverter,
+        final boolean buildless) {
         this.extractionEnvironmentProvider = extractionEnvironmentProvider;
         this.detectableFactory = detectableFactory;
         this.eventSystem = eventSystem;
         this.codeLocationConverter = codeLocationConverter;
+        this.buildless = buildless;
     }
 
-    public DetectorToolResult performDetectors(File directory, DetectorFinderOptions detectorFinderOptions, String projectBomTool) throws DetectUserFriendlyException {
+    public DetectorToolResult performDetectors(final File directory, final DetectorFinderOptions detectorFinderOptions, final String projectBomTool) throws DetectUserFriendlyException {
         logger.info("Initializing detector system.");
 
-        DetectorFinder detectorFinder = new DetectorFinder();
-        DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
-        DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectableFactory, false);//TODO add the parse flag
+        final DetectorFinder detectorFinder = new DetectorFinder();
+        final DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
+        final DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectableFactory, buildless);
 
-        Optional<DetectorEvaluationTree> possibleRootEvaluation;
+        final Optional<DetectorEvaluationTree> possibleRootEvaluation;
         try {
             logger.info("Starting detector file system traversal.");
             possibleRootEvaluation = detectorFinder.findDetectors(directory, detectRuleSet, detectorFinderOptions);
 
-        } catch (DetectorFinderDirectoryListException e) {
+        } catch (final DetectorFinderDirectoryListException e) {
             throw new DetectUserFriendlyException("Detect was unable to list a directory while searching for detectors.", e, ExitCodeType.FAILURE_DETECTOR);
         }
 
-        if (!possibleRootEvaluation.isPresent()){
+        if (!possibleRootEvaluation.isPresent()) {
             return new DetectorToolResult();
         }
 
-        DetectorEvaluationTree rootEvaluation = possibleRootEvaluation.get();
-        List<DetectorEvaluation> detectorEvaluations = DetectorEvaluationUtils.flatten(rootEvaluation);
+        final DetectorEvaluationTree rootEvaluation = possibleRootEvaluation.get();
+        final List<DetectorEvaluation> detectorEvaluations = DetectorEvaluationUtils.flatten(rootEvaluation);
 
         logger.trace("Setting up detector events.");
-        DetectorEventBroadcaster eventBroadcaster = new DetectorEventBroadcaster(eventSystem);
-        DetectorEvaluator detectorEvaluator = new DetectorEvaluator();
+        final DetectorEventBroadcaster eventBroadcaster = new DetectorEventBroadcaster(eventSystem);
+        final DetectorEvaluator detectorEvaluator = new DetectorEvaluator();
         detectorEvaluator.setDetectorEventListener(eventBroadcaster);
 
         logger.info("Starting detector search.");
@@ -111,9 +111,9 @@ public class DetectorTool {
         eventSystem.publishEvent(Event.PreparationsCompleted, rootEvaluation);
 
         logger.info("Starting detector extraction.");
-        Integer extractionCount = Math.toIntExact(detectorEvaluations.stream()
-                                  .filter(DetectorEvaluation::isExtractable)
-                                  .count());
+        final Integer extractionCount = Math.toIntExact(detectorEvaluations.stream()
+                                                            .filter(DetectorEvaluation::isExtractable)
+                                                            .count());
         eventSystem.publishEvent(Event.ExtractionCount, extractionCount);
 
         logger.info("Total number of extractions: " + extractionCount);
@@ -121,10 +121,10 @@ public class DetectorTool {
         detectorEvaluator.extractionEvaluation(rootEvaluation, extractionEnvironmentProvider::createExtractionEnvironment);
         eventSystem.publishEvent(Event.ExtractionsCompleted, rootEvaluation);
 
-        Map<DetectorType, StatusType> statusMap = extractStatus(detectorEvaluations);
+        final Map<DetectorType, StatusType> statusMap = extractStatus(detectorEvaluations);
         statusMap.forEach((detectorType, statusType) -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(detectorType, statusType)));
 
-        DetectorToolResult detectorToolResult = new DetectorToolResult();
+        final DetectorToolResult detectorToolResult = new DetectorToolResult();
 
         detectorToolResult.rootDetectorEvaluationTree = rootEvaluation;
 
@@ -135,16 +135,16 @@ public class DetectorTool {
                                                          .collect(Collectors.toSet());
 
         detectorToolResult.codeLocationMap = detectorEvaluations.stream()
-                                                      .filter(DetectorEvaluation::wasExtractionSuccessful)
-                                                      .map(it -> codeLocationConverter.toDetectCodeLocation(directory, it))
-                                                      .map(Map::entrySet)
-                                                      .flatMap(Collection::stream)
-                                                      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                                                 .filter(DetectorEvaluation::wasExtractionSuccessful)
+                                                 .map(it -> codeLocationConverter.toDetectCodeLocation(directory, it))
+                                                 .map(Map::entrySet)
+                                                 .flatMap(Collection::stream)
+                                                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         detectorToolResult.bomToolCodeLocations = new ArrayList<>(detectorToolResult.codeLocationMap.values());
 
-        DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
-        Optional<NameVersion> bomToolNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorEvaluations, projectBomTool);
+        final DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
+        final Optional<NameVersion> bomToolNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorEvaluations, projectBomTool);
         detectorToolResult.bomToolProjectNameVersion = bomToolNameVersion;
         logger.info("Finished evaluating detectors for project info.");
 
@@ -155,16 +155,16 @@ public class DetectorTool {
         return detectorToolResult;
     }
 
-    private  Map<DetectorType, StatusType> extractStatus(List<DetectorEvaluation> detectorEvaluations) {
-        Map<DetectorType, StatusType> statusMap = new HashMap<>();
-        for (DetectorEvaluation detectorEvaluation : detectorEvaluations) {
-            DetectorType detectorType = detectorEvaluation.getDetectorRule().getDetectorType();
-            if (detectorEvaluation.isApplicable()){
-                StatusType statusType;
-                if (detectorEvaluation.isExtractable()){
-                    if (detectorEvaluation.wasExtractionSuccessful()){
+    private Map<DetectorType, StatusType> extractStatus(final List<DetectorEvaluation> detectorEvaluations) {
+        final Map<DetectorType, StatusType> statusMap = new HashMap<>();
+        for (final DetectorEvaluation detectorEvaluation : detectorEvaluations) {
+            final DetectorType detectorType = detectorEvaluation.getDetectorRule().getDetectorType();
+            if (detectorEvaluation.isApplicable()) {
+                final StatusType statusType;
+                if (detectorEvaluation.isExtractable()) {
+                    if (detectorEvaluation.wasExtractionSuccessful()) {
                         statusType = StatusType.SUCCESS;
-                    } else if (detectorEvaluation.wasExtractionFailure()){
+                    } else if (detectorEvaluation.wasExtractionFailure()) {
                         statusType = StatusType.FAILURE;
                     } else if (detectorEvaluation.wasExtractionException()) {
                         statusType = StatusType.FAILURE;
