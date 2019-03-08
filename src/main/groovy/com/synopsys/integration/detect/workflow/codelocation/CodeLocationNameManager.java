@@ -41,7 +41,7 @@ public class CodeLocationNameManager {
         this.codeLocationNameGenerator = codeLocationNameGenerator;
     }
 
-    public String createAggregateCodeLocationName(NameVersion projectNameVersion) {
+    public String createAggregateCodeLocationName(final NameVersion projectNameVersion) {
         final String aggregateCodeLocationName;
         if (useCodeLocationOverride()) {
             // The aggregate is exclusively used for the bdio and not the scans
@@ -64,7 +64,9 @@ public class CodeLocationNameManager {
             if (detectCodeLocation.getDockerImageName().isPresent()) { //TODO: Get more defensive with docker or bom not being present.
                 codeLocationName = codeLocationNameGenerator.createDockerCodeLocationName(detectCodeLocation.getSourcePath().toString(), projectName, projectVersionName, detectCodeLocation.getDockerImageName().get(), prefix, suffix);
             } else {
-                codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath().toString(), detectCodeLocation.getExternalId(), detectCodeLocation.getCreatorName().get(), prefix, suffix);
+                // TODO: Fix unchecked optional
+                codeLocationName = codeLocationNameGenerator
+                                       .createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath().toString(), detectCodeLocation.getExternalId(), detectCodeLocation.getCreatorName().get(), prefix, suffix);
             }
         }
         return codeLocationName;
