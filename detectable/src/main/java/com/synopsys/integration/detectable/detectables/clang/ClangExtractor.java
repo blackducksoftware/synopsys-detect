@@ -60,22 +60,22 @@ public class ClangExtractor {
     }
 
     // TODO: Why do we need the root sourcePath?
-    public Extraction extract(final ClangPackageManager currentPackageManager, final ClangPackageManagerRunner packageManagerRunner, final File rootSourcePath, final File outputDirectory, final File jsonCompilationDatabaseFile,
+    public Extraction extract(final ClangPackageManager currentPackageManager, final ClangPackageManagerRunner packageManagerRunner, final File sourceDirectory, final File outputDirectory, final File jsonCompilationDatabaseFile,
         final boolean cleanup) {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
 
             final List<CompileCommand> compileCommands = compileCommandDatabaseParser.parseCompileCommandDatabase(jsonCompilationDatabaseFile);
-            final Set<DependencyFileDetails> dependencyFileDetails = dependencyFileDetailGenerator.fromCompileCommands(compileCommands, rootSourcePath, outputDirectory, cleanup);
-            final PackageDetailsResult results = packageManagerRunner.getAllPackages(currentPackageManager, rootSourcePath, executableRunner, dependencyFileDetails);
+            final Set<DependencyFileDetails> dependencyFileDetails = dependencyFileDetailGenerator.fromCompileCommands(compileCommands, sourceDirectory, outputDirectory, cleanup);
+            final PackageDetailsResult results = packageManagerRunner.getAllPackages(currentPackageManager, sourceDirectory, executableRunner, dependencyFileDetails);
 
             logger.trace("Found : " + results.getFoundPackages() + " packages.");
             logger.trace("Found : " + results.getUnmanagedDependencies() + " unmanaged files.");
 
             final Forge defaultForge = currentPackageManager.getPackageManagerInfo().getDefaultForge();
             final List<Forge> packageForges = currentPackageManager.getPackageManagerInfo().getForges();
-            final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(defaultForge, packageForges, rootSourcePath, results.getFoundPackages());
+            final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(defaultForge, packageForges, sourceDirectory, results.getFoundPackages());
 
             logSummary(results.getUnmanagedDependencies());
 

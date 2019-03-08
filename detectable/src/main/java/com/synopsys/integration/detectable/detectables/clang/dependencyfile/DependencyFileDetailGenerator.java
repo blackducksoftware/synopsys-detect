@@ -42,14 +42,14 @@ public class DependencyFileDetailGenerator {
 
     public DependencyFileDetailGenerator(final FilePathGenerator filePathGenerator) {this.filePathGenerator = filePathGenerator;}
 
-    public Set<DependencyFileDetails> fromCompileCommands(List<CompileCommand> compileCommands, File rootDir, File outputDirectory, boolean cleanup) {
+    public Set<DependencyFileDetails> fromCompileCommands(List<CompileCommand> compileCommands, File sourceDirectory, File outputDirectory, boolean cleanup) {
 
         final Set<DependencyFileDetails> dependencyFileDetails = compileCommands.parallelStream()
                                                                      .flatMap(command -> filePathGenerator.fromCompileCommand(outputDirectory, command, cleanup).stream())
                                                                      .filter(StringUtils::isNotBlank)
                                                                      .map(File::new)
                                                                      .filter(File::exists)
-                                                                     .map(file -> new DependencyFileDetails(FileUtils.isFileChildOfDirectory(file, rootDir), file))//TODO: check this works the same as fileFinder.isFileUnderDir(rootDir, file)
+                                                                     .map(file -> new DependencyFileDetails(FileUtils.isFileChildOfDirectory(file, sourceDirectory), file))
                                                                      .collect(Collectors.toSet());
 
         logger.trace("Found : " + dependencyFileDetails.size() + " files to process.");

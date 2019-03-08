@@ -39,17 +39,17 @@ public class ApkArchitectureResolver {
     public Optional<String> resolveArchitecture(ClangPackageManagerInfo currentPackageManager, File workingDirectory, ExecutableRunner executableRunner) throws ExecutableRunnerException {
         if (hasAttemptedResolution){
             return architecture;
-        } else if (currentPackageManager.getPkgArchitectureArgs().isPresent()){
-            hasAttemptedResolution = true;
-            String cmd = currentPackageManager.getPkgMgrCmdString();
+        }
+
+        hasAttemptedResolution = true;
+        if (currentPackageManager.getPkgArchitectureArgs().isPresent()){
             List<String> args = currentPackageManager.getPkgArchitectureArgs().get();
+            String cmd = currentPackageManager.getPkgMgrCmdString();
             ExecutableOutput architectureOutput = executableRunner.execute(workingDirectory, cmd, args);
             architecture = Optional.ofNullable(architectureOutput.getStandardOutput().trim());
-            return architecture;
         } else {
-            hasAttemptedResolution = true;
             architecture = Optional.empty();
-            return architecture;
         }
+        return architecture;
     }
 }

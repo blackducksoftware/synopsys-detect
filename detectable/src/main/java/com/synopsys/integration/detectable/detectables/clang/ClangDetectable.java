@@ -26,6 +26,9 @@ package com.synopsys.integration.detectable.detectables.clang;
 import java.io.File;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
@@ -42,6 +45,8 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Clan
 import com.synopsys.integration.exception.IntegrationException;
 
 public class ClangDetectable extends Detectable {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private static final String JSON_COMPILATION_DATABASE_FILENAME = "compile_commands.json";
     private final ClangExtractor clangExtractor;
     private final ClangDetectableOptions options;
@@ -75,10 +80,10 @@ public class ClangDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        try {
-            selectedPackageManager = findPkgMgr(environment.getDirectory());
-        } catch (final IntegrationException e) {
-            return new ExecutableNotFoundDetectableResult("supported Linux package manager");
+        selectedPackageManager = findPkgMgr(environment.getDirectory());
+        if (selectedPackageManager == null) {
+            logger.warn("Unable to execute any supported package manager; Please make sure that one of the supported clang package managers is on the PATH");
+            return new ExecutableNotFoundDetectableResult("Any supported Linux package manager");
         }
         return new PassedDetectableResult();
     }
@@ -89,12 +94,12 @@ public class ClangDetectable extends Detectable {
         return clangExtractor.extract(selectedPackageManager, packageManagerRunner, environment.getDirectory(), extractionEnvironment.getOutputDirectory(), jsonCompilationDatabaseFile, options.isCleanup());
     }
 
-    private ClangPackageManager findPkgMgr(final File workingDirectory) throws IntegrationException {
+    private ClangPackageManager findPkgMgr(final File workingDirectory) {
         for (final ClangPackageManager pkgMgrCandidate : availablePackageManagers) {
             if (packageManagerRunner.applies(pkgMgrCandidate, workingDirectory, executableRunner)) {
                 return pkgMgrCandidate;
             }
         }
-        throw new IntegrationException("Unable to execute any supported package manager; Please make sure that one of the supported package managers is on the PATH");
+        return null;
     }
 }
