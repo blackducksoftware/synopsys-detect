@@ -79,7 +79,7 @@ public class CpanCliDetectable extends Detectable {
             cpanExe = cpan;
         }
 
-        final File cpanm = cpanmResolver.resolveCpan();
+        final File cpanm = cpanmResolver.resolveCpanm();
 
         if (cpanm == null) {
             return new ExecutableNotFoundDetectableResult("cpanm");

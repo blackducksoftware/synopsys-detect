@@ -31,6 +31,7 @@ import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSyst
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 
+// TODO: Maybe example module???
 public class UtilityFactory {
     public FileFinder simpleFileFinder() {
         return new SimpleFileFinder();
@@ -49,8 +50,7 @@ public class UtilityFactory {
     }
 
     public SimpleExecutableResolver executableResolver() {
-        CachedExecutableResolverOptions options = new CachedExecutableResolverOptions(python3);
-        options.python3 = false;
+        final CachedExecutableResolverOptions options = new CachedExecutableResolverOptions(false);
         return new SimpleExecutableResolver(options, simpleLocalExecutableFinder(), simpleSystemExecutableFinder());
     }
 }
