@@ -24,19 +24,19 @@
 package com.synopsys.integration.detectable.detectable.executable.impl;
 
 import java.io.File;
-import java.lang.reflect.Executable;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.DotNetResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
@@ -47,8 +47,10 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3
 import com.synopsys.integration.detectable.detectable.executable.resolver.YarnResolver;
 
 //this will cache the find result.
-public class SimpleExecutableResolver implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver,
-                                                     BazelResolver {
+public class SimpleExecutableResolver
+    implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, JavaResolver,
+                   DotNetResolver, DockerResolver {
+
     private final CachedExecutableResolverOptions executableResolverOptions;
     private final SimpleLocalExecutableFinder localExecutableFinder;
     private final SimpleSystemExecutableFinder systemExecutableFinder;
@@ -104,6 +106,11 @@ public class SimpleExecutableResolver implements GradleResolver, BashResolver, C
     }
 
     @Override
+    public File resolveCpanm() {
+        return findCachedSystem("cpanm");
+    }
+
+    @Override
     public File resolvePear() {
         return findCachedSystem("pear");
     }
@@ -120,13 +127,13 @@ public class SimpleExecutableResolver implements GradleResolver, BashResolver, C
 
     @Override
     public File resolvePip() {
-        final String suffix = executableResolverOptions.python3 ? "3" : "";
+        final String suffix = executableResolverOptions.isPython3() ? "3" : "";
         return findCachedSystem("python" + suffix);
     }
 
     @Override
     public File resolvePython() {
-        final String suffix = executableResolverOptions.python3 ? "3" : "";
+        final String suffix = executableResolverOptions.isPython3() ? "3" : "";
         return findCachedSystem("pip" + suffix);
     }
 
@@ -146,8 +153,8 @@ public class SimpleExecutableResolver implements GradleResolver, BashResolver, C
     }
 
     @Override
-    public File resolveBazel() throws DetectableException {
-        File bazel = findCachedSystem("bazel");
+    public File resolveBazel() {
+        final File bazel = findCachedSystem("bazel");
         //TODO: replicate bazel version call?
         /*
         try {
@@ -159,5 +166,20 @@ public class SimpleExecutableResolver implements GradleResolver, BashResolver, C
             resolvedBazel = null;
         }*/
         return bazel;
+    }
+
+    @Override
+    public File resolveDotNet() {
+        return findCachedSystem("dotnet");
+    }
+
+    @Override
+    public File resolveJava() {
+        return findCachedSystem("java");
+    }
+
+    @Override
+    public File resolveDocker() {
+        return findCachedSystem("docker");
     }
 }

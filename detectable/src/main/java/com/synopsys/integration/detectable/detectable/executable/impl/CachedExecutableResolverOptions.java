@@ -24,5 +24,13 @@
 package com.synopsys.integration.detectable.detectable.executable.impl;
 
 public class CachedExecutableResolverOptions {
-    public boolean python3 = false;
+    private final boolean python3;
+
+    public CachedExecutableResolverOptions(final boolean python3) {
+        this.python3 = python3;
+    }
+
+    public boolean isPython3() {
+        return python3;
+    }
 }

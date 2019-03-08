@@ -35,8 +35,9 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleLocalExecutableFinder;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
 import com.synopsys.integration.detectable.detectable.inspector.go.GoDepResolver;
+import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 
-public class GithubGoDepResolver implements GoDepResolver {
+public class GithubGoDepResolver implements GoDepResolver, GoResolver {
     private final Logger logger = LoggerFactory.getLogger(GithubGoDepResolver.class);
 
     private final ExecutableRunner executableRunner;
@@ -44,29 +45,30 @@ public class GithubGoDepResolver implements GoDepResolver {
     private final SimpleSystemExecutableFinder simpleSystemExecutableFinder;
     private final File downloadDirectory;
 
-    public GithubGoDepResolver(final ExecutableRunner executableRunner, final SimpleLocalExecutableFinder simpleLocalExecutableFinder,
-        final SimpleSystemExecutableFinder simpleSystemExecutableFinder, File downloadDirectory){
+    public GithubGoDepResolver(final ExecutableRunner executableRunner, final SimpleLocalExecutableFinder simpleLocalExecutableFinder, final SimpleSystemExecutableFinder simpleSystemExecutableFinder, final File downloadDirectory) {
         this.executableRunner = executableRunner;
         this.simpleLocalExecutableFinder = simpleLocalExecutableFinder;
         this.simpleSystemExecutableFinder = simpleSystemExecutableFinder;
         this.downloadDirectory = downloadDirectory;
     }
 
-    public File resolveGoDep(File location) throws DetectableException {
+    @Override
+    public File resolveGoDep(final File location) throws DetectableException {
         File goDep = simpleLocalExecutableFinder.findExecutable("dep", location);
 
         if (goDep == null) {
-            File go = resolveGo();
+            final File go = resolveGo();
             try {
                 goDep = installGoDep(go);
-            } catch (ExecutableRunnerException e){
+            } catch (final ExecutableRunnerException e) {
                 throw new DetectableException("Failed to install go dep.", e);
             }
         }
         return goDep;
     }
 
-    public File resolveGo(){
+    @Override
+    public File resolveGo() {
         return simpleSystemExecutableFinder.findExecutable("go");
     }
 

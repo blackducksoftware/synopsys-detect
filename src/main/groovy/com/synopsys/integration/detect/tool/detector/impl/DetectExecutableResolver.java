@@ -24,9 +24,17 @@
 package com.synopsys.integration.detect.tool.detector.impl;
 
 import java.io.File;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.synopsys.integration.detect.configuration.DetectConfiguration;
+import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
@@ -46,98 +54,130 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3
 import com.synopsys.integration.detectable.detectable.executable.resolver.YarnResolver;
 import com.synopsys.integration.detectable.detectable.inspector.go.GoDepResolver;
 import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
+import com.synopsys.integration.detectable.detectable.inspector.go.impl.GithubGoDepResolver;
 
-// TODO: Implement this class. Will this do anything different from SimpleExecutableResolver?
 public class DetectExecutableResolver
-    implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver,
-                   BazelResolver, DockerResolver, GoDepResolver, GoResolver, DotNetResolver {
-    @Override
-    public File resolveBash() throws DetectableException {
-        return null;
+    implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
+                   DockerResolver, GoDepResolver, GoResolver, DotNetResolver {
+
+    private final SimpleExecutableResolver simpleExecutableResolver;
+    private final GithubGoDepResolver githubGoDepResolver;
+    private final DetectConfiguration detectConfiguration;
+
+    public DetectExecutableResolver(final SimpleExecutableResolver simpleExecutableResolver, final GithubGoDepResolver githubGoDepResolver, final DetectConfiguration detectConfiguration) {
+        this.simpleExecutableResolver = simpleExecutableResolver;
+        this.githubGoDepResolver = githubGoDepResolver;
+        this.detectConfiguration = detectConfiguration;
+    }
+
+    private File resolveExecutable(final Supplier<File> resolveExecutable, final String executableOverride) {
+        if (StringUtils.isBlank(executableOverride)) {
+            return resolveExecutable.get();
+        } else {
+            return new File(executableOverride);
+        }
+    }
+
+    private File resolveExecutable(final Function<DetectableEnvironment, File> resolveExecutable, final DetectableEnvironment environment, final String executableOverride) {
+        if (StringUtils.isBlank(executableOverride)) {
+            return resolveExecutable.apply(environment);
+        } else {
+            return new File(executableOverride);
+        }
     }
 
     @Override
-    public File resolveBazel() throws DetectableException {
-        return null;
+    public File resolveBash() {
+        return resolveExecutable(simpleExecutableResolver::resolveBash, detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH, PropertyAuthority.None));
     }
 
     @Override
-    public File resolveConda() throws DetectableException {
-        return null;
+    public File resolveBazel() {
+        return resolveExecutable(simpleExecutableResolver::resolveBazel, detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_PATH, PropertyAuthority.None));
     }
 
     @Override
-    public File resolveCpan() throws DetectableException {
-        return null;
+    public File resolveConda() {
+        return resolveExecutable(simpleExecutableResolver::resolveConda, detectConfiguration.getProperty(DetectProperty.DETECT_CONDA_PATH, PropertyAuthority.None));
     }
 
     @Override
-    public File resolveGradle(final DetectableEnvironment environment) throws DetectableException {
-        return null;
+    public File resolveCpan() {
+        return resolveExecutable(simpleExecutableResolver::resolveCpan, detectConfiguration.getProperty(DetectProperty.DETECT_CPAN_PATH, PropertyAuthority.None));
+    }
+
+    @Override
+    public File resolveCpanm() {
+        return resolveExecutable(simpleExecutableResolver::resolveCpanm, detectConfiguration.getProperty(DetectProperty.DETECT_CPANM_PATH, PropertyAuthority.None));
+    }
+
+    @Override
+    public File resolveGradle(final DetectableEnvironment environment) {
+        return resolveExecutable(simpleExecutableResolver::resolveGradle, environment, detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolveMaven(final DetectableEnvironment environment) {
-        return null;
+        return resolveExecutable(simpleExecutableResolver::resolveMaven, environment, detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolveNpm(final DetectableEnvironment environment) {
-        return null;
+        return resolveExecutable(simpleExecutableResolver::resolveNpm, environment, detectConfiguration.getProperty(DetectProperty.DETECT_NPM_PATH, PropertyAuthority.None));
     }
 
     @Override
-    public File resolvePear() throws DetectableException {
-        return null;
+    public File resolvePear() {
+        return resolveExecutable(simpleExecutableResolver::resolvePear, detectConfiguration.getProperty(DetectProperty.DETECT_PEAR_PATH, PropertyAuthority.None));
     }
 
     @Override
-    public File resolvePip() throws DetectableException {
-        return null;
+    public File resolvePip() {
+        return resolveExecutable(simpleExecutableResolver::resolvePip, null);
     }
 
     @Override
     public File resolvePipenv() {
-        return null;
+        return resolveExecutable(simpleExecutableResolver::resolvePipenv, detectConfiguration.getProperty(DetectProperty.DETECT_PIPENV_PATH, PropertyAuthority.None));
     }
 
     @Override
-    public File resolvePython() throws DetectableException {
-        return null;
+    public File resolvePython() {
+        return resolveExecutable(simpleExecutableResolver::resolvePython, detectConfiguration.getProperty(DetectProperty.DETECT_PYTHON_PATH, PropertyAuthority.None));
     }
 
     @Override
-    public File resolveRebar3() throws DetectableException {
-        return null;
+    public File resolveRebar3() {
+        return resolveExecutable(simpleExecutableResolver::resolveRebar3, detectConfiguration.getProperty(DetectProperty.DETECT_HEX_REBAR3_PATH, PropertyAuthority.None));
     }
 
     @Override
-    public File resolveYarn() throws DetectableException {
-        return null;
+    public File resolveYarn() {
+        return resolveExecutable(simpleExecutableResolver::resolveYarn, detectConfiguration.getProperty(DetectProperty.DETECT_YARN_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolveGoDep(final File location) throws DetectableException {
-        return null;
+        return githubGoDepResolver.resolveGoDep(location);
     }
 
     @Override
-    public File resolveGo() throws DetectableException {
-        return null;
+    public File resolveGo() {
+        return githubGoDepResolver.resolveGo();
     }
 
     @Override
-    public File resolveJava() throws DetectableException {
-        return null;
+    public File resolveJava() {
+        return resolveExecutable(simpleExecutableResolver::resolveJava, detectConfiguration.getProperty(DetectProperty.DETECT_JAVA_PATH, PropertyAuthority.None));
     }
 
     @Override
-    public File resolveDocker() throws DetectableException {
-        return null;
+    public File resolveDocker() {
+        return resolveExecutable(simpleExecutableResolver::resolveDocker, detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_PATH, PropertyAuthority.None));
     }
 
     @Override
-    public File resolveDotNet() throws DetectableException {
-        return null;
+    public File resolveDotNet() {
+        return resolveExecutable(simpleExecutableResolver::resolveDotNet, detectConfiguration.getProperty(DetectProperty.DETECT_DOTNET_PATH, PropertyAuthority.None));
     }
 }

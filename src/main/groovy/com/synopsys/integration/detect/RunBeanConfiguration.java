@@ -55,9 +55,14 @@ import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detect.workflow.file.AirGapOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleLocalExecutableFinder;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detectable.detectable.inspector.go.impl.GithubGoDepResolver;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 
 import freemarker.template.Configuration;
@@ -145,8 +150,33 @@ public class RunBeanConfiguration {
     }
 
     @Bean
+    public SimpleExecutableFinder simpleExecutableFinder() {
+        return SimpleExecutableFinder.forCurrentOperatingSystem(fileFinder());
+    }
+
+    @Bean
+    public SimpleLocalExecutableFinder simpleLocalExecutableFinder() {
+        return new SimpleLocalExecutableFinder(simpleExecutableFinder());
+    }
+
+    @Bean
+    public SimpleSystemExecutableFinder simpleSystemExecutableFinder() {
+        return new SimpleSystemExecutableFinder(simpleExecutableFinder());
+    }
+
+    @Bean
+    public SimpleExecutableResolver simpleExecutableResolver() {
+        return new SimpleExecutableResolver(detectableOptionFactory().createCachedExecutableResolverOptions(), simpleLocalExecutableFinder(), simpleSystemExecutableFinder());
+    }
+
+    @Bean
+    public GithubGoDepResolver githubGoDepResolver() {
+        return new GithubGoDepResolver(executableRunner(), simpleLocalExecutableFinder(), simpleSystemExecutableFinder(), directoryManager.getPermanentDirectory("go")); // TODO: Make sure this is the right download directory
+    }
+
+    @Bean
     public DetectExecutableResolver detectExecutableResolver() {
-        return new DetectExecutableResolver();
+        return new DetectExecutableResolver(simpleExecutableResolver(), githubGoDepResolver(), detectConfiguration);
     }
 
     @Bean

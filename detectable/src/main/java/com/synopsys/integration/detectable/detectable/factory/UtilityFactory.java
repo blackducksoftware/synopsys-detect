@@ -49,7 +49,7 @@ public class UtilityFactory {
     }
 
     public SimpleExecutableResolver executableResolver() {
-        CachedExecutableResolverOptions options = new CachedExecutableResolverOptions();
+        CachedExecutableResolverOptions options = new CachedExecutableResolverOptions(python3);
         options.python3 = false;
         return new SimpleExecutableResolver(options, simpleLocalExecutableFinder(), simpleSystemExecutableFinder());
     }

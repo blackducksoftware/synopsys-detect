@@ -25,6 +25,7 @@ package com.synopsys.integration.detect.configuration;
 
 import java.util.Map;
 
+import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
@@ -172,5 +173,10 @@ public class DetectableOptionFactory {
         final String nugetInspectorName = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME, PropertyAuthority.None);
         final String nugetInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_VERSION, PropertyAuthority.None);
         return new NugetInspectorOptions(ignoreFailures, excludedModules, includedModules, packagesRepoUrl, nugetConfigPath, nugetInspectorName, nugetInspectorVersion);
+    }
+
+    public CachedExecutableResolverOptions createCachedExecutableResolverOptions() {
+        final boolean python3 = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PYTHON_PYTHON3, PropertyAuthority.None);
+        return new CachedExecutableResolverOptions(python3);
     }
 }

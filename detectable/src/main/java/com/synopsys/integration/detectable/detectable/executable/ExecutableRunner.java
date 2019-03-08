@@ -32,23 +32,22 @@ import org.antlr.v4.runtime.misc.NotNull;
 
 public interface ExecutableRunner {
     @NotNull
-    default ExecutableOutput execute(File workingDirectory, final String exeCmd, final String... args) throws ExecutableRunnerException {
+    default ExecutableOutput execute(final File workingDirectory, final String exeCmd, final String... args) throws ExecutableRunnerException {
         return execute(new Executable(workingDirectory, new HashMap<>(), exeCmd, Arrays.asList(args)));
     }
 
-
     @NotNull
-    default ExecutableOutput execute(File workingDirectory, final String exeCmd, final List<String> args) throws ExecutableRunnerException {
+    default ExecutableOutput execute(final File workingDirectory, final String exeCmd, final List<String> args) throws ExecutableRunnerException {
         return execute(new Executable(workingDirectory, new HashMap<>(), exeCmd, args));
     }
 
     @NotNull
-    default ExecutableOutput execute(File workingDirectory, final File exeFile, final String... args) throws ExecutableRunnerException {
+    default ExecutableOutput execute(final File workingDirectory, final File exeFile, final String... args) throws ExecutableRunnerException {
         return execute(new Executable(workingDirectory, new HashMap<>(), exeFile.toString(), Arrays.asList(args)));
     }
 
     @NotNull
-    default ExecutableOutput execute(File workingDirectory, final File exeFile, final List<String> args) throws ExecutableRunnerException{
+    default ExecutableOutput execute(final File workingDirectory, final File exeFile, final List<String> args) throws ExecutableRunnerException {
         return execute(new Executable(workingDirectory, new HashMap<>(), exeFile.toString(), args));
     }
 
