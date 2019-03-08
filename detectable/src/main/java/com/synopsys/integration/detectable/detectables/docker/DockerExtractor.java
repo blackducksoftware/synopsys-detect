@@ -47,6 +47,7 @@ import com.synopsys.integration.bdio.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.ExtractionMetadata;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
@@ -54,8 +55,8 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 
 public class DockerExtractor {
-    public static final String DOCKER_TAR_META_DATA_KEY = "dockerTar";
-    public static final String DOCKER_IMAGE_NAME_META_DATA_KEY = " dockerImage";
+    public static final ExtractionMetadata<File> DOCKER_TAR_META_DATA = new ExtractionMetadata<>("dockerTar", File.class);
+    public static final ExtractionMetadata<String> DOCKER_IMAGE_NAME_META_DATA = new ExtractionMetadata<>("dockerImage", String.class);
 
     public static final String TAR_FILENAME_PATTERN = "*.tar.gz";
     public static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
@@ -153,7 +154,7 @@ public class DockerExtractor {
         }
 
         final Extraction.Builder extractionBuilder = findCodeLocations(outputDirectory, directory);
-        extractionBuilder.metaData(DOCKER_TAR_META_DATA_KEY, scanFile).metaData(DOCKER_IMAGE_NAME_META_DATA_KEY, imagePiece);
+        extractionBuilder.metaData(DOCKER_TAR_META_DATA, scanFile).metaData(DOCKER_IMAGE_NAME_META_DATA, imagePiece);
         return extractionBuilder.build();
     }
 

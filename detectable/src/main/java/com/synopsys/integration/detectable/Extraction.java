@@ -32,14 +32,14 @@ import java.util.Optional;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 
 public class Extraction {
-    private List<CodeLocation> codeLocations;
-    private ExtractionResultType result;
-    private Exception error;
-    private String description;
+    private final List<CodeLocation> codeLocations;
+    private final ExtractionResultType result;
+    private final Exception error;
+    private final String description;
 
-    private String projectVersion;
-    private String projectName;
-    private Map<String, Object> metaData; //TODO: Typesafe way to provide meta data?
+    private final String projectVersion;
+    private final String projectName;
+    private final Map<ExtractionMetadata, Object> metaData; //TODO: Typesafe way to provide meta data?
 
     private Extraction(final Builder builder) {
         this.codeLocations = builder.codeLocations;
@@ -52,9 +52,9 @@ public class Extraction {
         this.metaData = builder.metaData;
     }
 
-    public Optional<Object> getMetaDataValue(String key) {
-        if (metaData.containsKey(key)) {
-            return Optional.ofNullable(metaData.get(key));
+    public <T> Optional<T> getMetaData(final ExtractionMetadata<T> extractionMetadata) {
+        if (metaData.containsKey(extractionMetadata)) {
+            return Optional.ofNullable((T) metaData.get(extractionMetadata));
         } else {
             return Optional.empty();
         }
@@ -84,7 +84,7 @@ public class Extraction {
         return projectName;
     }
 
-    public ExtractionResultType getResult(){
+    public ExtractionResultType getResult() {
         return result;
     }
 
@@ -96,7 +96,7 @@ public class Extraction {
 
         private String projectVersion;
         private String projectName;
-        private Map<String, Object> metaData = new HashMap<>();
+        private final Map<ExtractionMetadata, Object> metaData = new HashMap<>();
 
         public Builder projectName(final String projectName) {
             this.projectName = projectName;
@@ -147,7 +147,7 @@ public class Extraction {
             return this;
         }
 
-        public Builder metaData(String key, Object value) {
+        public <T> Builder metaData(final ExtractionMetadata<T> key, final T value) {
             this.metaData.put(key, value);
             return this;
         }
