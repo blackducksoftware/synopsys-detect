@@ -39,7 +39,7 @@ public class Extraction {
 
     private final String projectVersion;
     private final String projectName;
-    private final Map<ExtractionMetadata, Object> metaData; //TODO: Typesafe way to provide meta data?
+    private final Map<ExtractionMetadata, Object> metaData;
 
     private Extraction(final Builder builder) {
         this.codeLocations = builder.codeLocations;
