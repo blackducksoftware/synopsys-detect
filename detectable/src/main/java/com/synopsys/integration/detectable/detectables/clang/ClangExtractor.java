@@ -34,7 +34,6 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.file.FileUtils;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
@@ -53,30 +52,30 @@ public class ClangExtractor {
     private final CompileCommandDatabaseParser compileCommandDatabaseParser;
 
     public ClangExtractor(final ExecutableRunner executableRunner, final DependencyFileDetailGenerator dependencyFileDetailGenerator,
-        final ClangPackageDetailsTransformer clangPackageDetailsTransformer, CompileCommandDatabaseParser compileCommandDatabaseParser) {
+        final ClangPackageDetailsTransformer clangPackageDetailsTransformer, final CompileCommandDatabaseParser compileCommandDatabaseParser) {
         this.executableRunner = executableRunner;
         this.dependencyFileDetailGenerator = dependencyFileDetailGenerator;
         this.clangPackageDetailsTransformer = clangPackageDetailsTransformer;
         this.compileCommandDatabaseParser = compileCommandDatabaseParser;
     }
 
-    public Extraction extract(ClangPackageManager currentPackageManager, final ClangPackageManagerRunner packageManagerRunner, final File givenDir, final int depth, File outputDirectory, final File jsonCompilationDatabaseFile,
-        boolean cleanup) {
+    // TODO: Why do we need the root sourcePath?
+    public Extraction extract(final ClangPackageManager currentPackageManager, final ClangPackageManagerRunner packageManagerRunner, final File rootSourcePath, final File outputDirectory, final File jsonCompilationDatabaseFile,
+        final boolean cleanup) {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
-            final File rootDir = FileUtils.getParent(givenDir, depth);//TODO: Make sure we need this
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
 
             final List<CompileCommand> compileCommands = compileCommandDatabaseParser.parseCompileCommandDatabase(jsonCompilationDatabaseFile);
-            final Set<DependencyFileDetails> dependencyFileDetails = dependencyFileDetailGenerator.fromCompileCommands(compileCommands, rootDir, outputDirectory, cleanup);
-            final PackageDetailsResult results = packageManagerRunner.getAllPackages(currentPackageManager, rootDir, executableRunner, dependencyFileDetails);
+            final Set<DependencyFileDetails> dependencyFileDetails = dependencyFileDetailGenerator.fromCompileCommands(compileCommands, rootSourcePath, outputDirectory, cleanup);
+            final PackageDetailsResult results = packageManagerRunner.getAllPackages(currentPackageManager, rootSourcePath, executableRunner, dependencyFileDetails);
 
             logger.trace("Found : " + results.getFoundPackages() + " packages.");
             logger.trace("Found : " + results.getUnmanagedDependencies() + " unmanaged files.");
 
-            Forge defaultForge = currentPackageManager.getPackageManagerInfo().getDefaultForge();
-            List<Forge> packageForges = currentPackageManager.getPackageManagerInfo().getForges();
-            final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(defaultForge, packageForges, rootDir, results.getFoundPackages());
+            final Forge defaultForge = currentPackageManager.getPackageManagerInfo().getDefaultForge();
+            final List<Forge> packageForges = currentPackageManager.getPackageManagerInfo().getForges();
+            final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(defaultForge, packageForges, rootSourcePath, results.getFoundPackages());
 
             logSummary(results.getUnmanagedDependencies());
 

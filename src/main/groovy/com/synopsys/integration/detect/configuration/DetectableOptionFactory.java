@@ -74,8 +74,7 @@ public class DetectableOptionFactory {
 
     public ClangDetectableOptions createClangDetectableOptions() {
         final boolean cleanup = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.None);
-        final int depth = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_DETECTOR_SEARCH_DEPTH, PropertyAuthority.None); // TODO: Don't use this property. Figure out what it actually needs
-        return new ClangDetectableOptions(cleanup, depth);
+        return new ClangDetectableOptions(cleanup);
     }
 
     public ComposerLockDetectableOptions createComposerLockDetectableOptions() {
