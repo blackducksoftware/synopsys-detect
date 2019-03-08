@@ -53,7 +53,7 @@ public class ErrorSummaryReporter {
                 String spacer = "\t\t";
                 writeEvaluationsIfNotEmpty(writer, "\tNot Extractable: ", spacer, notExtractable, detectorEvaluation -> detectorEvaluation.getExtractabilityMessage());
                 writeEvaluationsIfNotEmpty(writer, "\tFailure: ", spacer, failed, detectorEvaluation -> detectorEvaluation.getExtraction().getDescription());
-                writeEvaluationsIfNotEmpty(writer, "\tException: ", spacer, excepted, detectorEvaluation -> detectorEvaluation.getExtraction().getError().getMessage());
+                writeEvaluationsIfNotEmpty(writer, "\tException: ", spacer, excepted, detectorEvaluation -> detectorEvaluation.getExtraction().getError().getMessage()); //TODO: need to print the full exception.
             }
         }
         if (printedOne) {

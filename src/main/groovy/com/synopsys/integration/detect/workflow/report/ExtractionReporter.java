@@ -65,7 +65,8 @@ public class ExtractionReporter {
         writer.writeLine("Finished extraction: " + detectorEvaluation.getExtraction().getResult().toString());
         writer.writeLine("Code locations found: " + detectorEvaluation.getExtraction().getCodeLocations().size());
         if (detectorEvaluation.getExtraction().getResult() == Extraction.ExtractionResultType.EXCEPTION) {
-            writer.writeLine("Exception:" + detectorEvaluation.getExtraction().getDescription());//TODO: print error
+            //writer.writeLine("Exception: " + detectorEvaluation.getExtraction().getDescription());//TODO: print error
+            writer.writeLine("Exception: ", detectorEvaluation.getExtraction().getError());
         } else if (detectorEvaluation.getExtraction().getResult() == Extraction.ExtractionResultType.FAILURE) {
             writer.writeLine(detectorEvaluation.getExtraction().getDescription());
         }

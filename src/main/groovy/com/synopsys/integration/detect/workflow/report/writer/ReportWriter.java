@@ -28,6 +28,8 @@ public interface ReportWriter {
 
     public void writeLine(final String line);
 
+    public void writeLine(final String line, Exception e);
+
     public void writeSeperator();
 
     public void writeHeader();

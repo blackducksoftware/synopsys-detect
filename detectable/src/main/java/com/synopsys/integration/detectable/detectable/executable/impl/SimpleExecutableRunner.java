@@ -26,6 +26,7 @@ package com.synopsys.integration.detectable.detectable.executable.impl;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -42,22 +43,22 @@ public class SimpleExecutableRunner implements ExecutableRunner {
 
     @Override
     public ExecutableOutput execute(final File workingDirectory, final String exeCmd, final String... args) throws ExecutableRunnerException {
-        return execute(new Executable(workingDirectory, null, exeCmd, Arrays.asList(args)));
+        return execute(new Executable(workingDirectory, new HashMap<>(), exeCmd, Arrays.asList(args)));
     }
 
     @Override
     public ExecutableOutput execute(final File workingDirectory, final String exeCmd, final List<String> args) throws ExecutableRunnerException {
-        return execute(new Executable(workingDirectory, null, exeCmd, args));
+        return execute(new Executable(workingDirectory, new HashMap<>(), exeCmd, args));
     }
 
     @Override
     public ExecutableOutput execute(final File workingDirectory, final File exeFile, final String... args) throws ExecutableRunnerException {
-        return execute(new Executable(workingDirectory, null, exeFile.getAbsolutePath(), Arrays.asList(args)));
+        return execute(new Executable(workingDirectory, new HashMap<>(), exeFile.getAbsolutePath(), Arrays.asList(args)));
     }
 
     @Override
     public ExecutableOutput execute(final File workingDirectory, final File exeFile, final List<String> args) throws ExecutableRunnerException {
-        return execute(new Executable(workingDirectory, null, exeFile.getAbsolutePath(), args));
+        return execute(new Executable(workingDirectory, new HashMap<>(), exeFile.getAbsolutePath(), args));
     }
 
     @Override

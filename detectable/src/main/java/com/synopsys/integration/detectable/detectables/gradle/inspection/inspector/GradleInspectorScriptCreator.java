@@ -37,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.inspector.impl.artifactory.ArtifactoryConstants;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
