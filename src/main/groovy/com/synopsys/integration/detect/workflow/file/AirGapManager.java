@@ -92,4 +92,18 @@ public class AirGapManager {
     public Optional<String> getGradleInspectorAirGapPath() {
         return Optional.ofNullable(gradleInspectorAirGapPath);
     }
+
+    public Optional<File> getGradleInspectorAirGapFile() { //TODO: make more better
+        final Optional<String> gradleInspectorAirGapDirectoryPath = getGradleInspectorAirGapPath();
+
+        File gradleInspectorAirGapDirectory = null;
+        if (gradleInspectorAirGapDirectoryPath.isPresent() && StringUtils.isNotBlank(gradleInspectorAirGapDirectoryPath.get())) {
+            gradleInspectorAirGapDirectory = new File(gradleInspectorAirGapDirectoryPath.get());
+            if (!gradleInspectorAirGapDirectory.exists()) {
+                gradleInspectorAirGapDirectory = null;
+            }
+        }
+        logger.trace(String.format("gradleInspectorAirGapDirectory: %s", gradleInspectorAirGapDirectory));
+        return Optional.ofNullable(gradleInspectorAirGapDirectory);
+    }
 }

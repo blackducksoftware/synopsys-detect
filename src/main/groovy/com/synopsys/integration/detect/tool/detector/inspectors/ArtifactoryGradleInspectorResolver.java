@@ -73,10 +73,12 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
             try {
-                final File airGapPath = deriveGradleAirGapDir();
+                final Optional<File> airGapPath = airGapManager.getGradleInspectorAirGapFile();
                 final File generatedGradleScriptFile = directoryManager.getSharedFile(GRADLE_DIR_NAME, GENERATED_GRADLE_SCRIPT_NAME);
                 final GradleInspectorScriptCreator gradleInspectorScriptCreator = new GradleInspectorScriptCreator(configuration);
-                if (airGapPath == null) {
+                if (airGapPath.isPresent()) {
+                    generatedGradleScriptPath = gradleInspectorScriptCreator.createOfflineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions, airGapPath.get().getCanonicalPath());
+                } else {
                     final Optional<String> version = gradleInspectorScriptOptions.getProvidedOnlineInspectorVersion()
                                                          .map(this::findVersion)
                                                          .filter(Optional::isPresent)
@@ -87,8 +89,6 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
                     } else {
                         throw new DetectableException("Unable to find the gradle inspector version from artifactory.");
                     }
-                } else {
-                    generatedGradleScriptPath = gradleInspectorScriptCreator.createOfflineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions, airGapPath.getCanonicalPath());
                 }
             } catch (final Exception e) {
                 throw new DetectableException(e);
@@ -108,19 +108,7 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
         return generatedGradleScriptPath;
     }
 
-    private File deriveGradleAirGapDir() {
-        final Optional<String> gradleInspectorAirGapDirectoryPath = airGapManager.getGradleInspectorAirGapPath();
 
-        File gradleInspectorAirGapDirectory = null;
-        if (gradleInspectorAirGapDirectoryPath.isPresent() && StringUtils.isNotBlank(gradleInspectorAirGapDirectoryPath.get())) {
-            gradleInspectorAirGapDirectory = new File(gradleInspectorAirGapDirectoryPath.get());
-            if (!gradleInspectorAirGapDirectory.exists()) {
-                gradleInspectorAirGapDirectory = null;
-            }
-        }
-        logger.trace(String.format("gradleInspectorAirGapDirectory: %s", gradleInspectorAirGapDirectory));
-        return gradleInspectorAirGapDirectory;
-    }
 
     private Optional<String> findVersion(final String suppliedGradleInspectorVersion) {
         try {
