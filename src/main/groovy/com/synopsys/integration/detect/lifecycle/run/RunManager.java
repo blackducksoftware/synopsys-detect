@@ -113,6 +113,21 @@ public class RunManager {
 
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
 
+        if (productRunData.shouldUsePolarisProduct()) {
+            logger.info(ReportConstants.RUN_SEPARATOR);
+            if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
+                logger.info("Will include the Polaris tool.");
+                PolarisServerConfig polarisServerConfig = productRunData.getPolarisRunData().getPolarisServerConfig();
+                final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, new ExecutableRunner(), connectionManager, detectConfiguration, polarisServerConfig);
+                polarisTool.runPolaris(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
+                logger.info("Polaris actions finished.");
+            } else {
+                logger.info("Polaris CLI tool will not be run.");
+            }
+        } else {
+            logger.info("Polaris tools will NOT be run.");
+        }
+        
         if (productRunData.shouldUseBlackDuckProduct()) {
             logger.info("Black Duck tools will run.");
 
@@ -278,21 +293,6 @@ public class RunManager {
             }
         } else {
             logger.info("Black Duck tools will NOT be run.");
-        }
-
-        if (productRunData.shouldUsePolarisProduct()) {
-            logger.info(ReportConstants.RUN_SEPARATOR);
-            if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
-                logger.info("Will include the Polaris tool.");
-                PolarisServerConfig polarisServerConfig = productRunData.getPolarisRunData().getPolarisServerConfig();
-                final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, new ExecutableRunner(), connectionManager, detectConfiguration, polarisServerConfig);
-                polarisTool.runPolaris(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
-                logger.info("Polaris actions finished.");
-            } else {
-                logger.info("Polaris CLI tool will not be run.");
-            }
-        } else {
-            logger.info("Polaris tools will NOT be run.");
         }
 
         logger.info("All tools have finished.");
