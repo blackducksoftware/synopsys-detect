@@ -26,14 +26,14 @@ package com.synopsys.integration.detect.lifecycle.boot.product;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.response.CurrentVersionView;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.ConnectionResult;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -41,12 +41,12 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 public class BlackDuckConnectivityChecker {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public BlackDuckConnectivityResult determineConnectivity(BlackDuckServerConfig blackDuckServerConfig)
+    public BlackDuckConnectivityResult determineConnectivity(final BlackDuckServerConfig blackDuckServerConfig)
         throws DetectUserFriendlyException {
 
         logger.info("Detect will check if it can communicate with the Black Duck Server.");
 
-        ConnectionResult connectionResult = blackDuckServerConfig.attemptConnection(new SilentIntLogger());
+        final ConnectionResult connectionResult = blackDuckServerConfig.attemptConnection(new SilentIntLogger());
 
         if (connectionResult.isFailure()) {
             logger.error("Failed to connect to the Black Duck server");
@@ -54,15 +54,15 @@ public class BlackDuckConnectivityChecker {
             return BlackDuckConnectivityResult.failure(connectionResult.getFailureMessage().orElse("Could not reach the Black Duck server or the credentials were invalid."));
         }
 
-        logger.info("Connection to the Black Duck server was successful");//TODO: Get a detailed reason of why canConnect failed.
+        logger.info("Connection to the Black Duck server was successful");
 
-        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new Slf4jIntLogger(logger));
+        final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new Slf4jIntLogger(logger));
 
         try {
             final BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService();
             final CurrentVersionView currentVersion = blackDuckService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
             logger.info(String.format("Successfully connected to BlackDuck (version %s)!", currentVersion.getVersion()));
-        } catch (IntegrationException e) {
+        } catch (final IntegrationException e) {
             throw new DetectUserFriendlyException("Could not determine which version of Black Duck detect connected to.", e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         }
 

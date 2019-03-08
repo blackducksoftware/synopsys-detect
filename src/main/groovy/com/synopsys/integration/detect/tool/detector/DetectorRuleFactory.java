@@ -29,9 +29,9 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.detector.rule.DetectorRuleSetBuilder;
 
 public class DetectorRuleFactory {
-    public DetectorRuleSet createRules(final DetectableFactory detectableFactory, final boolean parseOnlyMode) {
-        if (parseOnlyMode) {
-            return createParseOnlyRules(detectableFactory);
+    public DetectorRuleSet createRules(final DetectableFactory detectableFactory, final boolean buildless) {
+        if (buildless) {
+            return createBuildlessRules(detectableFactory);
         } else {
             return createRules(detectableFactory);
         }
@@ -97,7 +97,7 @@ public class DetectorRuleFactory {
         return ruleSet.build();
     }
 
-    private DetectorRuleSet createParseOnlyRules(final DetectableFactory detectableFactory) {
+    private DetectorRuleSet createBuildlessRules(final DetectableFactory detectableFactory) {
         final DetectorRuleSetBuilder ruleSet = new DetectorRuleSetBuilder();
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", detectableFactory::createPodLockDetectable).defaultNested().build();
