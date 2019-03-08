@@ -38,6 +38,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetails;
+import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.ClangPackageManagerResolver;
 
 public class ClangPackageManagerRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -62,40 +63,14 @@ public class ClangPackageManagerRunner {
     }
 
     public PackageDetailsResult getAllPackages(ClangPackageManager currentPackageManager, File workingDirectory, final ExecutableRunner executableRunner, final Set<DependencyFileDetails> dependencyFiles) {
-
-        List<PackageDetailsResult> packageDetailsResults = dependencyFiles.parallelStream()
-                                                               .map(dependencyFile -> getPackages(currentPackageManager, workingDirectory, executableRunner, dependencyFile))
-                                                               .collect(Collectors.toList());
-        //Option 1: custom collect
-        packageDetailsResults.parallelStream()
-            .collect(() -> new PackageDetailsResult(Collections.emptySet(), Collections.emptySet()),
-                (r, o) -> {
-                    r.getFoundPackages().addAll(o.getFoundPackages());
-                    r.getUnmanagedDependencies().addAll(o.getUnmanagedDependencies());
-                },
-                (r, r2) -> {
-                    r.getFoundPackages().addAll(r2.getFoundPackages());
-                    r.getUnmanagedDependencies().addAll(r2.getUnmanagedDependencies());
-                });
-
-        //Option 2: map it
-        Set<PackageDetails> packageDetails = packageDetailsResults.parallelStream()
-                                                 .flatMap(packageDetailsResult -> packageDetailsResult.getFoundPackages().stream())
-                                                 .collect(Collectors.toSet());
-
-        Set<File> unmanagedDependencies = packageDetailsResults.parallelStream()
-                                              .flatMap(packageDetailsResult -> packageDetailsResult.getUnmanagedDependencies().stream())
-                                              .collect(Collectors.toSet());
-
-        //Option 3: iterate
-        Set<PackageDetails> packageDetails3 = new HashSet<>();
-        Set<File> unmanagedDependencies3 = new HashSet<>();
-        for (PackageDetailsResult packageDetailsResult : packageDetailsResults) {
-            packageDetails3.addAll(packageDetailsResult.getFoundPackages());
-            unmanagedDependencies3.addAll(packageDetailsResult.getUnmanagedDependencies());
+        Set<PackageDetails> packageDetails = new HashSet<>();
+        Set<File> unmanagedDependencies = new HashSet<>();
+        for (DependencyFileDetails dependencyFile : dependencyFiles) {
+            PackageDetailsResult packageDetailsResult = getPackages(currentPackageManager, workingDirectory, executableRunner, dependencyFile);
+            packageDetails.addAll(packageDetailsResult.getFoundPackages());
+            unmanagedDependencies.addAll(packageDetailsResult.getUnmanagedDependencies());
         }
 
-        //Option 4???
         return new PackageDetailsResult(packageDetails, unmanagedDependencies);
     }
 
@@ -107,9 +82,10 @@ public class ClangPackageManagerRunner {
             final List<String> fileSpecificGetOwnerArgs = new ArrayList<>(packageManagerInfo.getPkgMgrGetOwnerCmdArgs());
             fileSpecificGetOwnerArgs.add(dependencyFile.getFile().getAbsolutePath());
             final ExecutableOutput queryPackageOutput = executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetOwnerArgs);
-            logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput));
 
-            dependencyDetails.addAll(currentPackageManager.getPackageResolver().resolvePackages(currentPackageManager.getPackageManagerInfo(), executableRunner, workingDirectory, queryPackageOutput.getStandardOutput()));
+            ClangPackageManagerResolver resolver = currentPackageManager.getPackageResolver();
+            List<PackageDetails> packageDetails = resolver.resolvePackages(currentPackageManager.getPackageManagerInfo(), executableRunner, workingDirectory, queryPackageOutput.getStandardOutput());
+            dependencyDetails.addAll(packageDetails);
         } catch (final ExecutableRunnerException e) {
             logger.error(String.format("Error executing %s: %s", packageManagerInfo.getPkgMgrCmdString(), e.getMessage()));
             if (!dependencyFile.isInBuildDir()) {
