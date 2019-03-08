@@ -31,7 +31,6 @@ import java.util.Optional;
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
-import com.synopsys.integration.detect.util.EnumUtilExtension;
 import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.workflow.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
@@ -42,6 +41,7 @@ import com.synopsys.integration.detect.workflow.hub.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.hub.PolicyCheckOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
+import com.synopsys.integration.util.EnumUtils;
 
 public class DetectConfigurationFactory {
     private final DetectConfiguration detectConfiguration;
@@ -162,7 +162,7 @@ public class DetectConfigurationFactory {
 
     public PolicyCheckOptions createPolicyCheckOptions() {
         final String policySeverities = detectConfiguration.getPropertyValueAsString(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None);
-        final List<PolicySeverityType> severitiesToFailPolicyCheck = EnumUtilExtension.parseCommaDelimitted(policySeverities.toUpperCase(), PolicySeverityType.class);
+        final List<PolicySeverityType> severitiesToFailPolicyCheck = EnumUtils.parseCommaDelimitted(policySeverities.toUpperCase(), PolicySeverityType.class);
         return new PolicyCheckOptions(severitiesToFailPolicyCheck);
     }
 
