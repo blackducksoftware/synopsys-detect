@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
+import javax.swing.text.html.Option;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +83,7 @@ public class AirGapManager {
         return "";
     }
 
+
     public String getDockerInspectorAirGapPath() {
         return dockerInspectorAirGapPath;
     }
@@ -89,8 +92,27 @@ public class AirGapManager {
         return nugetInspectorAirGapPath;
     }
 
+    public Optional<File> getNugetInspectorAirGapFile() {
+        final File airGapNugetInspectorDirectory = new File(getNugetInspectorAirGapPath());
+        if (airGapNugetInspectorDirectory.exists()){
+            return Optional.of(airGapNugetInspectorDirectory);
+        } else {
+            return Optional.empty();
+        }
+    }
+
     public Optional<String> getGradleInspectorAirGapPath() {
         return Optional.ofNullable(gradleInspectorAirGapPath);
+    }
+
+    public Optional<File> getDockerInspectorAirGapFile() {
+        final String airGapDirPath = getDockerInspectorAirGapPath();
+        final File airGapDir = new File(airGapDirPath);
+        if (airGapDir.exists()){
+            return Optional.of(airGapDir);
+        } else {
+            return Optional.empty();
+        }
     }
 
     public Optional<File> getGradleInspectorAirGapFile() { //TODO: make more better

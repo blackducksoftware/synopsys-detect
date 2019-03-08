@@ -137,11 +137,14 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
     }
 
     private File getAirGapJar() {
-        final String airGapDirPath = airGapManager.getDockerInspectorAirGapPath();
-        final File airGapDir = new File(airGapDirPath);
+        final Optional<File> airGapDirPath = airGapManager.getDockerInspectorAirGapFile();
+        if (!airGapDirPath.isPresent()){
+            return null;
+        }
+
         logger.debug(String.format("Checking for air gap docker inspector jar file in: %s", airGapDirPath));
         try {
-            final List<File> possibleJars = fileFinder.findFiles(airGapDir, "*.jar", 1);
+            final List<File> possibleJars = fileFinder.findFiles(airGapDirPath.get(), "*.jar", 1);
             if (possibleJars == null || possibleJars.size() == 0) {
                 logger.error("Unable to locate air gap jar.");
                 return null;

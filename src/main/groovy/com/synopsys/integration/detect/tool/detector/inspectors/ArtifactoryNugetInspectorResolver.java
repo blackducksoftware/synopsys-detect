@@ -107,17 +107,16 @@ public class ArtifactoryNugetInspectorResolver implements NugetInspectorResolver
             }
         }
 
-        if (shouldUseAirGap()) {
+        Optional<File> nugetAirGapPath = airGapManager.getNugetInspectorAirGapFile();
+        if (nugetAirGapPath.isPresent()) {
             logger.debug("Running in airgap mode. Resolving from local path");
-            final File nugetFolder = new File(airGapManager.getNugetInspectorAirGapPath());
             if (useDotnet) {
-                final File dotnetFolder = new File(nugetFolder, "nuget_dotnet");
+                final File dotnetFolder = new File(nugetAirGapPath.get(), "nuget_dotnet");
                 return findDotnetCoreInspector(dotnetFolder, dotnetExecutable);
             } else {
-                final File classicFolder = new File(nugetFolder, "nuget_classic");
+                final File classicFolder = new File(nugetAirGapPath.get(), "nuget_classic");
                 return findExeInspector(classicFolder);
             }
-
         } else {
             logger.info("Determining the nuget inspector version.");
             final File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
@@ -216,10 +215,5 @@ public class ArtifactoryNugetInspectorResolver implements NugetInspectorResolver
             }
         }
         return false;
-    }
-
-    private boolean shouldUseAirGap() {
-        final File airGapNugetInspectorDirectory = new File(airGapManager.getNugetInspectorAirGapPath());
-        return airGapNugetInspectorDirectory.exists();
     }
 }
