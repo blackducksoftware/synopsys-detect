@@ -128,10 +128,10 @@ task runDetect(type: JavaExec) {
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
-    args = ['--detect.tools.excluded=POLARIS', '--detect.ignore.connection.failures=true', '--detect.risk.report.pdf=true']
+    args = ['--detect.risk.report.pdf=true']
 }
 
-task verifyDetect() {
+task verifyBlackDuckDetect() {
     dependsOn runDetect
 
     doLast {
