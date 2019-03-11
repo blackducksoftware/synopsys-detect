@@ -27,8 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-import javax.swing.text.html.Option;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,49 +81,32 @@ public class AirGapManager {
         return "";
     }
 
-
     public String getDockerInspectorAirGapPath() {
         return dockerInspectorAirGapPath;
     }
 
-    public String getNugetInspectorAirGapPath() {
+    private String getNugetInspectorAirGapPath() {
         return nugetInspectorAirGapPath;
     }
 
     public Optional<File> getNugetInspectorAirGapFile() {
-        final File airGapNugetInspectorDirectory = new File(getNugetInspectorAirGapPath());
-        if (airGapNugetInspectorDirectory.exists()){
-            return Optional.of(airGapNugetInspectorDirectory);
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    public Optional<String> getGradleInspectorAirGapPath() {
-        return Optional.ofNullable(gradleInspectorAirGapPath);
+        return getFileFromPath(getNugetInspectorAirGapPath());
     }
 
     public Optional<File> getDockerInspectorAirGapFile() {
-        final String airGapDirPath = getDockerInspectorAirGapPath();
-        final File airGapDir = new File(airGapDirPath);
-        if (airGapDir.exists()){
-            return Optional.of(airGapDir);
-        } else {
-            return Optional.empty();
-        }
+        return getFileFromPath(getDockerInspectorAirGapPath());
     }
 
-    public Optional<File> getGradleInspectorAirGapFile() { //TODO: make more better
-        final Optional<String> gradleInspectorAirGapDirectoryPath = getGradleInspectorAirGapPath();
+    public Optional<File> getGradleInspectorAirGapFile() {
+        final Optional<File> gradleInspectorAirGapDirectoryPath = getFileFromPath(gradleInspectorAirGapPath);
+        gradleInspectorAirGapDirectoryPath.ifPresent(airGapDirectory -> logger.trace(String.format("gradleInspectorAirGapDirectory: %s", airGapDirectory)));
+        return gradleInspectorAirGapDirectoryPath;
+    }
 
-        File gradleInspectorAirGapDirectory = null;
-        if (gradleInspectorAirGapDirectoryPath.isPresent() && StringUtils.isNotBlank(gradleInspectorAirGapDirectoryPath.get())) {
-            gradleInspectorAirGapDirectory = new File(gradleInspectorAirGapDirectoryPath.get());
-            if (!gradleInspectorAirGapDirectory.exists()) {
-                gradleInspectorAirGapDirectory = null;
-            }
-        }
-        logger.trace(String.format("gradleInspectorAirGapDirectory: %s", gradleInspectorAirGapDirectory));
-        return Optional.ofNullable(gradleInspectorAirGapDirectory);
+    private Optional<File> getFileFromPath(final String path) {
+        return Optional.ofNullable(path)
+                   .filter(StringUtils::isNotBlank)
+                   .map(File::new)
+                   .filter(File::exists);
     }
 }
