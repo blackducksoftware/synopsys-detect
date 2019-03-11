@@ -61,7 +61,6 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
     private final DockerDetectableOptions dockerDetectableOptions;
 
     private DockerInspectorInfo resolvedInfo;
-    private boolean hasResolvedInspector;
 
     public ArtifactoryDockerInspectorResolver(final DirectoryManager directoryManager, final AirGapManager airGapManager, final FileFinder fileFinder, final ArtifactResolver artifactResolver,
         final DockerDetectableOptions dockerDetectableOptions) {
@@ -75,8 +74,7 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
     @Override
     public DockerInspectorInfo resolveDockerInspector() throws DetectableException {
         try {
-            if (!hasResolvedInspector) {
-                hasResolvedInspector = true;
+            if (resolvedInfo == null) {
                 resolvedInfo = install();
             }
             return resolvedInfo;
