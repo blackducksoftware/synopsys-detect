@@ -23,6 +23,8 @@
  */
 package com.synopsys.integration.detect.workflow.report;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.function.Function;
 
@@ -34,26 +36,26 @@ import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class ErrorSummaryReporter {
 
-    public void writeSummary(ReportWriter writer, final DetectorEvaluationTree rootEvaluationTree) {
+    public void writeSummary(final ReportWriter writer, final DetectorEvaluationTree rootEvaluationTree) {
         writeSummaries(writer, rootEvaluationTree.asFlatList());
     }
 
-    private void writeSummaries(ReportWriter writer, final List<DetectorEvaluationTree> trees) {
+    private void writeSummaries(final ReportWriter writer, final List<DetectorEvaluationTree> trees) {
         boolean printedOne = false;
-        for (DetectorEvaluationTree tree : trees){
-            List<DetectorEvaluation> excepted = DetectorEvaluationUtils.filteredEvaluations(tree, DetectorEvaluation::wasExtractionException);
-            List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredEvaluations(tree, DetectorEvaluation::wasExtractionFailure);
-            List<DetectorEvaluation> notExtractable = DetectorEvaluationUtils.filteredEvaluations(tree, (evaluation) -> evaluation.isApplicable() && !evaluation.isExtractable());
+        for (final DetectorEvaluationTree tree : trees) {
+            final List<DetectorEvaluation> excepted = DetectorEvaluationUtils.filteredEvaluations(tree, DetectorEvaluation::wasExtractionException);
+            final List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredEvaluations(tree, DetectorEvaluation::wasExtractionFailure);
+            final List<DetectorEvaluation> notExtractable = DetectorEvaluationUtils.filteredEvaluations(tree, (evaluation) -> evaluation.isApplicable() && !evaluation.isExtractable());
             if (excepted.size() > 0 || failed.size() > 0 || notExtractable.size() > 0) {
                 if (!printedOne) {
                     printedOne = true;
                     ReporterUtils.printHeader(writer, "Detector Issue Summary");
                 }
                 writer.writeLine(tree.getDirectory().toString());
-                String spacer = "\t\t";
-                writeEvaluationsIfNotEmpty(writer, "\tNot Extractable: ", spacer, notExtractable, detectorEvaluation -> detectorEvaluation.getExtractabilityMessage());
+                final String spacer = "\t\t";
+                writeEvaluationsIfNotEmpty(writer, "\tNot Extractable: ", spacer, notExtractable, DetectorEvaluation::getExtractabilityMessage);
                 writeEvaluationsIfNotEmpty(writer, "\tFailure: ", spacer, failed, detectorEvaluation -> detectorEvaluation.getExtraction().getDescription());
-                writeEvaluationsIfNotEmpty(writer, "\tException: ", spacer, excepted, detectorEvaluation -> detectorEvaluation.getExtraction().getError().getMessage()); //TODO: need to print the full exception.
+                writeEvaluationsIfNotEmpty(writer, "\tException: ", spacer, excepted, detectorEvaluation -> reasonFromException(detectorEvaluation.getExtraction().getError()));
             }
         }
         if (printedOne) {
@@ -61,7 +63,13 @@ public class ErrorSummaryReporter {
         }
     }
 
-    private void writeEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, Function<DetectorEvaluation, String> reason) {
+    private String reasonFromException(final Exception exception) {
+        final StringWriter errors = new StringWriter();
+        exception.printStackTrace(new PrintWriter(errors));
+        return errors.toString();
+    }
+
+    private void writeEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, final Function<DetectorEvaluation, String> reason) {
         if (evaluations.size() > 0) {
             evaluations.stream().forEach(evaluation -> {
                 writer.writeLine(prefix + evaluation.getDetectorRule());
