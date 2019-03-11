@@ -56,7 +56,7 @@ public class GradleReportTransformer {
         return new CodeLocation(graph, projectId);
     }
 
-    public void addConfigurationToGraph(final MutableDependencyGraph graph, final GradleConfiguration configuration) {
+    private void addConfigurationToGraph(final MutableDependencyGraph graph, final GradleConfiguration configuration) {
         final DependencyHistory history = new DependencyHistory();
         for (final GradleTreeNode currentNode : configuration.children) {
             history.clearDependenciesDeeperThan(currentNode.getLevel());

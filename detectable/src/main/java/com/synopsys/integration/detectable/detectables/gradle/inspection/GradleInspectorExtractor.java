@@ -86,6 +86,8 @@ public class GradleInspectorExtractor {
                 if (reportFiles != null) {
                     reportFiles.stream()
                         .map(gradleReportParser::parseReport)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
                         .map(gradleReportTransformer::trasnform)
                         .forEach(codeLocations::add);
 
