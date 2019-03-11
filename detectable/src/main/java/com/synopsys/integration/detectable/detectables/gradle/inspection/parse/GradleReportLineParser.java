@@ -100,7 +100,7 @@ public class GradleReportLineParser {
 
         String modifiedLine = DetectableStringUtils.removeEvery(line, TREE_LEVEL_TERMINALS);
 
-        if (!modifiedLine.startsWith("|")) {
+        if (!modifiedLine.startsWith("|") && modifiedLine.startsWith(" ")) {
             modifiedLine = "|" + modifiedLine;
         }
         modifiedLine = modifiedLine.replace("     ", "    |");

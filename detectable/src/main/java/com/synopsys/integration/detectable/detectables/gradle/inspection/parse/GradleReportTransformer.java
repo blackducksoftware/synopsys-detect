@@ -23,6 +23,8 @@
  */
 package com.synopsys.integration.detectable.detectables.gradle.inspection.parse;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,9 +60,19 @@ public class GradleReportTransformer {
 
     private void addConfigurationToGraph(final MutableDependencyGraph graph, final GradleConfiguration configuration) {
         final DependencyHistory history = new DependencyHistory();
+        Optional<Integer> skipUntil = Optional.empty();
+
         for (final GradleTreeNode currentNode : configuration.children) {
+
+            if (skipUntil.isPresent() && currentNode.getLevel() <= skipUntil.get()) {
+                skipUntil = Optional.empty();
+            } else if (skipUntil.isPresent()) {
+                continue;
+            }
+
             history.clearDependenciesDeeperThan(currentNode.getLevel());
             if (currentNode.getNodeType() != GradleTreeNode.NodeType.GAV) {
+                skipUntil = Optional.of(currentNode.getLevel());
                 continue;
             }
 
@@ -75,5 +87,6 @@ public class GradleReportTransformer {
             }
             history.add(currentDependency);
         }
+
     }
 }

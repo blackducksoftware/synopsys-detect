@@ -66,7 +66,7 @@ public class GradleReportParser {
     public Optional<GradleReport> parseReport(final File reportFile) {
         GradleReport gradleReport = new GradleReport();
         boolean processingMetaData = false;
-        final List<String> configurationLines = new ArrayList<String>();
+        final List<String> configurationLines = new ArrayList<>();
         try (final FileInputStream dependenciesInputStream = new FileInputStream(reportFile); final BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8))) {
             while (reader.ready()) {
                 final String line = reader.readLine();
@@ -95,7 +95,7 @@ public class GradleReportParser {
                 }
 
                 if (StringUtils.isBlank(line)) {//TODO: Does this handle the 'header block' and 'footer block' of the output the same way?
-                    if (configurationLines.size() > 1) {
+                    if (configurationLines.size() > 1 && isConfigurationHeader(configurationLines)) {
                         final String header = configurationLines.get(0);
                         final List<String> dependencyTree = configurationLines.stream().skip(1).collect(Collectors.toList());
                         final GradleConfiguration configuration = gradleReportConfigurationParser.parse(header, dependencyTree);
@@ -112,5 +112,13 @@ public class GradleReportParser {
         }
 
         return Optional.ofNullable(gradleReport);
+    }
+
+    private boolean isConfigurationHeader(final List<String> lines) {
+        if (lines.get(0).contains(" - ")) {
+            return true;
+        } else {
+            return StringUtils.isAlphanumeric(lines.get(0));
+        }
     }
 }

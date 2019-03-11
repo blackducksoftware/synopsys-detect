@@ -25,4 +25,5 @@ compile
 |    \--- should-suppress:project-child: -> 6
 +--- some.group:parent:5.0.0
 |    \--- some.group:child:2.2.2
-\--- terminal:child:6.2.3ok
+\--- terminal:child:6.2.3
+
