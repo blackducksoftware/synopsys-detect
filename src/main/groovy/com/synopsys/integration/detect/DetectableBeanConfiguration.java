@@ -535,7 +535,7 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
-    public DockerExtractor dockerExtractor() { //TODO fix.
+    public DockerExtractor dockerExtractor() {
         return new DockerExtractor(fileFinder, new DockerProperties(detectableOptionFactory.createDockerDetectableOptions()), executableRunner, new BdioTransformer(), new ExternalIdFactory(), gson);
     }
 
@@ -691,7 +691,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetProjectDetectable nugetProjectBomTool(final DetectableEnvironment environment) {
-        return new NugetProjectDetectable(environment, fileFinder, detectableOptionFactory.createNugetInspectorOptions(), nugetInspectorResolver(), nugetInspectorExtractor()); // TODO: Fix NugetInspectorOptions
+        return new NugetProjectDetectable(environment, fileFinder, detectableOptionFactory.createNugetInspectorOptions(), nugetInspectorResolver(), nugetInspectorExtractor());
     }
 
     @Bean
@@ -709,7 +709,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NugetSolutionDetectable nugetSolutionBomTool(final DetectableEnvironment environment) {
-        return new NugetSolutionDetectable(environment, fileFinder, nugetInspectorResolver(), nugetInspectorExtractor(), detectableOptionFactory.createNugetInspectorOptions()); // TODO: Fix NugetInspectorOptions
+        return new NugetSolutionDetectable(environment, fileFinder, nugetInspectorResolver(), nugetInspectorExtractor(), detectableOptionFactory.createNugetInspectorOptions());
     }
 
     @Bean
