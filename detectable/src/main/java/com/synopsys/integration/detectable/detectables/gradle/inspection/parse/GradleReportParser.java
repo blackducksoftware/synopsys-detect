@@ -94,24 +94,30 @@ public class GradleReportParser {
                     continue;
                 }
 
-                if (StringUtils.isBlank(line)) {//TODO: Does this handle the 'header block' and 'footer block' of the output the same way?
-                    if (configurationLines.size() > 1 && isConfigurationHeader(configurationLines)) {
-                        final String header = configurationLines.get(0);
-                        final List<String> dependencyTree = configurationLines.stream().skip(1).collect(Collectors.toList());
-                        final GradleConfiguration configuration = gradleReportConfigurationParser.parse(header, dependencyTree);
-                        gradleReport.configurations.add(configuration);
-                    }
+                if (StringUtils.isBlank(line)) {
+                    parseConfigurationLines(configurationLines, gradleReport);
                     configurationLines.clear();
                 } else {
                     configurationLines.add(line);
                 }
 
             }
+
+            parseConfigurationLines(configurationLines, gradleReport);
         } catch (final IOException e) {
             gradleReport = null; //TODO?
         }
 
         return Optional.ofNullable(gradleReport);
+    }
+
+    private void parseConfigurationLines(final List<String> configurationLines, final GradleReport gradleReport) {
+        if (configurationLines.size() > 1 && isConfigurationHeader(configurationLines)) {
+            final String header = configurationLines.get(0);
+            final List<String> dependencyTree = configurationLines.stream().skip(1).collect(Collectors.toList());
+            final GradleConfiguration configuration = gradleReportConfigurationParser.parse(header, dependencyTree);
+            gradleReport.configurations.add(configuration);
+        }
     }
 
     private boolean isConfigurationHeader(final List<String> lines) {

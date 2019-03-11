@@ -26,4 +26,3 @@ compile
 +--- some.group:parent:5.0.0
 |    \--- some.group:child:2.2.2
 \--- terminal:child:6.2.3
-
