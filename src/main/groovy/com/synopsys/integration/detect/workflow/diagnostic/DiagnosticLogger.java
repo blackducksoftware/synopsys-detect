@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.tool.detector.ExtractionId;
+import com.synopsys.integration.detect.tool.detector.impl.DetectExtractionEnvironment;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 
@@ -45,17 +46,17 @@ import ch.qos.logback.core.FileAppender;
 public class DiagnosticLogger {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static String logFilePath = "log.txt";
-    private static String stdOutFilePath = "out.txt";
+    private static final String logFilePath = "log.txt";
+    private static final String stdOutFilePath = "out.txt";
     private static final String LOGBACK_LOGGER_NAME = "com.blackducksoftware.integration";
 
-    private File logDirectory;
+    private final File logDirectory;
     private File stdOutFile;
     private FileOutputStream stdOutStream;
     private FileAppender<ILoggingEvent> fileAppender;
     private FileAppender<ILoggingEvent> extractionAppender;
 
-    public DiagnosticLogger(File logDirectory, EventSystem eventSystem) {
+    public DiagnosticLogger(final File logDirectory, final EventSystem eventSystem) {
 
         this.logDirectory = logDirectory;
 
@@ -72,9 +73,8 @@ public class DiagnosticLogger {
         logger.info("Attempting to redirect sysout.");
         captureStdOut();
 
-        //TODO: Bring back
-        //eventSystem.registerListener(Event.ExtractionStarted, it -> startLoggingExtraction(it.getExtractionId()));
-        //eventSystem.registerListener(Event.ExtractionEnded, it -> stopLoggingExtraction(it.getExtractionId()));
+        eventSystem.registerListener(Event.ExtractionStarted, it -> startLoggingExtraction(((DetectExtractionEnvironment) it.getExtractionEnvironment()).getExtractionId()));
+        eventSystem.registerListener(Event.ExtractionEnded, it -> stopLoggingExtraction(((DetectExtractionEnvironment) it.getExtractionEnvironment()).getExtractionId()));
     }
 
     public void finish() {
@@ -137,7 +137,7 @@ public class DiagnosticLogger {
         ple.setPattern("%date %level [%file:%line] %msg%n");
         ple.setContext(lc);
         ple.start();
-        FileAppender<ILoggingEvent> appender;
+        final FileAppender<ILoggingEvent> appender;
         appender = new FileAppender<>();
         appender.setFile(file);
         appender.setEncoder(ple);
