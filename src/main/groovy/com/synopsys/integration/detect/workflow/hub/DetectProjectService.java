@@ -23,7 +23,6 @@
  */
 package com.synopsys.integration.detect.workflow.hub;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -34,17 +33,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.blackduck.service.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -53,15 +53,15 @@ public class DetectProjectService {
 
     private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final DetectProjectServiceOptions detectProjectServiceOptions;
-    private final DetectProjectMappingService projectMappingService;
+    private final ProjectMappingService projectMappingService;
 
-    public DetectProjectService(final BlackDuckServicesFactory blackDuckServicesFactory, final DetectProjectServiceOptions detectProjectServiceOptions, final DetectProjectMappingService projectMappingService) {
+    public DetectProjectService(final BlackDuckServicesFactory blackDuckServicesFactory, final DetectProjectServiceOptions detectProjectServiceOptions, final ProjectMappingService projectMappingService) {
         this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.detectProjectServiceOptions = detectProjectServiceOptions;
         this.projectMappingService = projectMappingService;
     }
 
-    public ProjectVersionWrapper createOrUpdateHubProject(final NameVersion projectNameVersion, final String applicationId) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
+    public ProjectVersionWrapper createOrUpdateHubProject(final NameVersion projectNameVersion, final String applicationId) throws IntegrationException, DetectUserFriendlyException {
         final ProjectService projectService = blackDuckServicesFactory.createProjectService();
         final BlackDuckService hubService = blackDuckServicesFactory.createBlackDuckService();
         final ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectService, hubService);
@@ -77,38 +77,33 @@ public class DetectProjectService {
         // TODO need to determine if this property actually exists in the ConfigurableEnvironment - just omit this one?
         projectSyncModel.setProjectLevelAdjustments(detectProjectServiceOptions.isProjectLevelAdjustments());
 
-        Optional<ProjectVersionPhaseType> phase = tryGetEnumValue(ProjectVersionPhaseType.class, detectProjectServiceOptions.getProjectVersionPhase());
-        if (phase.isPresent()) {
-            projectSyncModel.setPhase(phase.get());
-        }
+        final Optional<ProjectVersionPhaseType> phase = tryGetEnumValue(ProjectVersionPhaseType.class, detectProjectServiceOptions.getProjectVersionPhase());
+        phase.ifPresent(projectSyncModel::setPhase);
 
-        Optional<ProjectVersionDistributionType> distribution = tryGetEnumValue(ProjectVersionDistributionType.class, detectProjectServiceOptions.getProjectVersionDistribution());
-        if (distribution.isPresent()) {
-            projectSyncModel.setDistribution(distribution.get());
-        }
+        final Optional<ProjectVersionDistributionType> distribution = tryGetEnumValue(ProjectVersionDistributionType.class, detectProjectServiceOptions.getProjectVersionDistribution());
+        distribution.ifPresent(projectSyncModel::setDistribution);
 
-        Integer projectTier = detectProjectServiceOptions.getProjectTier();
+        final Integer projectTier = detectProjectServiceOptions.getProjectTier();
         if (null != projectTier && projectTier >= 1 && projectTier <= 5) {
             projectSyncModel.setProjectTier(projectTier);
         }
 
-        String description = detectProjectServiceOptions.getProjectDescription();
+        final String description = detectProjectServiceOptions.getProjectDescription();
         if (StringUtils.isNotBlank(description)) {
             projectSyncModel.setDescription(description);
         }
 
-
-        String releaseComments = detectProjectServiceOptions.getProjectVersionNotes();
+        final String releaseComments = detectProjectServiceOptions.getProjectVersionNotes();
         if (StringUtils.isNotBlank(releaseComments)) {
             projectSyncModel.setReleaseComments(releaseComments);
         }
 
-        List<ProjectCloneCategoriesType> cloneCategories = convertClonePropertyToEnum(detectProjectServiceOptions.getCloneCategories());
+        final List<ProjectCloneCategoriesType> cloneCategories = convertClonePropertyToEnum(detectProjectServiceOptions.getCloneCategories());
         if (!cloneCategories.isEmpty()) {
             projectSyncModel.setCloneCategories(cloneCategories);
         }
 
-        String nickname = detectProjectServiceOptions.getProjectVersionNickname();
+        final String nickname = detectProjectServiceOptions.getProjectVersionNickname();
         if (StringUtils.isNotBlank(nickname)) {
             projectSyncModel.setNickname(nickname);
         }
@@ -123,7 +118,7 @@ public class DetectProjectService {
     }
 
     public static <E extends Enum<E>> Optional<E> tryGetEnumValue(final Class<E> enumClass, final String value) {
-        String enumName = StringUtils.trimToEmpty(value).toUpperCase();
+        final String enumName = StringUtils.trimToEmpty(value).toUpperCase();
         try {
             return Optional.of(Enum.valueOf(enumClass, enumName));
         } catch (final IllegalArgumentException ex) {
@@ -133,10 +128,10 @@ public class DetectProjectService {
 
     private List<ProjectCloneCategoriesType> convertClonePropertyToEnum(final String[] cloneCategories) {
         final List<ProjectCloneCategoriesType> categories = Arrays
-                .stream(cloneCategories)
-                .filter(cloneCategoryValue -> EnumUtils.isValidEnum(ProjectCloneCategoriesType.class, cloneCategoryValue))
-                .map(ProjectCloneCategoriesType::valueOf)
-                .collect(Collectors.toList());
+                                                                .stream(cloneCategories)
+                                                                .filter(cloneCategoryValue -> EnumUtils.isValidEnum(ProjectCloneCategoriesType.class, cloneCategoryValue))
+                                                                .map(ProjectCloneCategoriesType::valueOf)
+                                                                .collect(Collectors.toList());
         logger.debug("Found clone categories:" + categories.stream().map(it -> it.toString()).collect(Collectors.joining(",")));
         return categories;
     }
@@ -168,8 +163,8 @@ public class DetectProjectService {
         }
 
         try {
-            logger.info("Setting project Application ID");
-            projectMappingService.setApplicationId(projectView, applicationId);
+            logger.info("Populating project Application ID");
+            projectMappingService.populateApplicationId(projectView, applicationId);
         } catch (final IntegrationException e) {
             throw new DetectUserFriendlyException(String.format("Unable to set Application ID for project: %s", projectView.getName()), e, ExitCodeType.FAILURE_CONFIGURATION);
         }

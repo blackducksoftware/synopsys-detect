@@ -35,6 +35,7 @@ import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.blackduck.service.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectTool;
@@ -75,7 +76,6 @@ import com.synopsys.integration.detect.workflow.hub.BlackduckReportOptions;
 import com.synopsys.integration.detect.workflow.hub.CodeLocationWaitData;
 import com.synopsys.integration.detect.workflow.hub.DetectBdioUploadService;
 import com.synopsys.integration.detect.workflow.hub.DetectCodeLocationUnmapService;
-import com.synopsys.integration.detect.workflow.hub.DetectProjectMappingService;
 import com.synopsys.integration.detect.workflow.hub.DetectProjectService;
 import com.synopsys.integration.detect.workflow.hub.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.hub.PolicyCheckOptions;
@@ -188,7 +188,7 @@ public class RunManager {
                 final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
                 logger.info("Getting or creating project.");
                 final DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
-                final DetectProjectMappingService detectProjectMappingService = new DetectProjectMappingService(blackDuckServicesFactory.createBlackDuckService());
+                final ProjectMappingService detectProjectMappingService = blackDuckServicesFactory.createProjectMappingService();
                 final DetectProjectService detectProjectService = new DetectProjectService(blackDuckServicesFactory, options, detectProjectMappingService);
                 projectVersionWrapper = Optional.of(detectProjectService.createOrUpdateHubProject(projectNameVersion, options.getApplicationId()));
 
