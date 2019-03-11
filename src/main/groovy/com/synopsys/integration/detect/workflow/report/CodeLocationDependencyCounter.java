@@ -63,7 +63,7 @@ public class CodeLocationDependencyCounter {
     }
 
     private int countCodeLocationDependencies(final CodeLocation codeLocation) {
-        return countDependencies(new ArrayList<ExternalId>(), codeLocation.getDependencyGraph().getRootDependencyExternalIds(), codeLocation.getDependencyGraph());
+        return countDependencies(new ArrayList<>(), codeLocation.getDependencyGraph().getRootDependencyExternalIds(), codeLocation.getDependencyGraph());
     }
 
     private int countDependencies(final List<ExternalId> processed, final Set<ExternalId> remaining, final DependencyGraph graph) {
