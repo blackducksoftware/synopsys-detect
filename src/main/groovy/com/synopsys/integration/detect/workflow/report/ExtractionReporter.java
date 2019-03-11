@@ -23,33 +23,26 @@
  */
 package com.synopsys.integration.detect.workflow.report;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import com.synopsys.integration.detect.tool.detector.impl.DetectExtractionEnvironment;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.util.ObjectPrinter;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
-import com.synopsys.integration.detect.workflow.report.util.ReporterUtils;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class ExtractionReporter {
     private Integer extractionCount = 0;
 
-    public void setExtractionCount(Integer count){
+    public void setExtractionCount(final Integer count) {
         extractionCount = count;
     }
 
-    public void extractionStarted(ReportWriter writer, DetectorEvaluation detectorEvaluation){
-        DetectExtractionEnvironment detectExtractionEnvironment = (DetectExtractionEnvironment) detectorEvaluation.getExtractionEnvironment();
-        Integer i = detectExtractionEnvironment.getExtractionId().getId();
+    public void extractionStarted(final ReportWriter writer, final DetectorEvaluation detectorEvaluation) {
+        final DetectExtractionEnvironment detectExtractionEnvironment = (DetectExtractionEnvironment) detectorEvaluation.getExtractionEnvironment();
+        final Integer i = detectExtractionEnvironment.getExtractionId().getId();
         final String progress = Integer.toString((int) Math.floor((i * 100.0f) / extractionCount));
         writer.writeLine(String.format("Extracting %d of %d (%s%%)", i + 1, extractionCount, progress));
         writer.writeLine(ReportConstants.SEPERATOR);
@@ -60,12 +53,15 @@ public class ExtractionReporter {
         writer.writeLine(ReportConstants.SEPERATOR);
     }
 
-    public void extractionEnded(ReportWriter writer, DetectorEvaluation detectorEvaluation) {
+    public void extractionEnded(final ReportWriter writer, final DetectorEvaluation detectorEvaluation) {
         writer.writeLine(ReportConstants.SEPERATOR);
         writer.writeLine("Finished extraction: " + detectorEvaluation.getExtraction().getResult().toString());
         writer.writeLine("Code locations found: " + detectorEvaluation.getExtraction().getCodeLocations().size());
         if (detectorEvaluation.getExtraction().getResult() == Extraction.ExtractionResultType.EXCEPTION) {
-            //writer.writeLine("Exception: " + detectorEvaluation.getExtraction().getDescription());//TODO: print error
+            final Exception exception = detectorEvaluation.getExtraction().getError();
+            final StringWriter errorsWriter = new StringWriter();
+            exception.printStackTrace(new PrintWriter(errorsWriter));
+            writer.writeLine("Exception: " + errorsWriter.toString());
             writer.writeLine("Exception: ", detectorEvaluation.getExtraction().getError());
         } else if (detectorEvaluation.getExtraction().getResult() == Extraction.ExtractionResultType.FAILURE) {
             writer.writeLine(detectorEvaluation.getExtraction().getDescription());
