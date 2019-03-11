@@ -23,16 +23,13 @@
  */
 package com.synopsys.integration.detect.workflow.codelocation;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -41,15 +38,10 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detect.util.DetectEnumUtil;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.DependencyGraphCombiner;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
@@ -69,7 +61,7 @@ public class BdioCodeLocationCreator {
         this.eventSystem = eventSystem;
     }
 
-    public BdioCodeLocationResult createFromDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations, NameVersion projectNameVersion) {
+    public BdioCodeLocationResult createFromDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations, final NameVersion projectNameVersion) {
         final Set<DetectorType> failedBomToolGroups = new HashSet<>();
 
         final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.None);
@@ -79,15 +71,14 @@ public class BdioCodeLocationCreator {
         final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, directoryManager.getSourceDirectory().getAbsolutePath(), projectNameVersion, prefix, suffix);
         final Map<String, List<DetectCodeLocation>> codeLocationsByName = seperateCodeLocationsByName(codeLocationsAndNames);
 
-        // We can create a DetectProperty to combine duplicate code location names in the future if users want that
-        final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName, directoryManager.getSourceDirectory(), false);
+        final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName);
 
         final BdioCodeLocationResult result = new BdioCodeLocationResult(bdioCodeLocations, failedBomToolGroups, codeLocationsAndNames);
         eventSystem.publishEvent(Event.CodeLocationsCalculated, result);
         return result;
     }
 
-    private Map<DetectCodeLocation, String> createCodeLocationNameMap(final List<DetectCodeLocation> codeLocations, final String detectSourcePath, NameVersion projectNameVersion, final String prefix,
+    private Map<DetectCodeLocation, String> createCodeLocationNameMap(final List<DetectCodeLocation> codeLocations, final String detectSourcePath, final NameVersion projectNameVersion, final String prefix,
         final String suffix) {
         final Map<DetectCodeLocation, String> nameMap = new HashMap<>();
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
@@ -117,55 +108,42 @@ public class BdioCodeLocationCreator {
         for (final DetectCodeLocation detectCodeLocation : detectCodeLocationNameMap.keySet()) {
             final String codeLocationName = detectCodeLocationNameMap.get(detectCodeLocation);
             if (!codeLocationNameMap.containsKey(codeLocationName)) {
-                codeLocationNameMap.put(codeLocationName, new ArrayList<DetectCodeLocation>());
+                codeLocationNameMap.put(codeLocationName, new ArrayList<>());
             }
             codeLocationNameMap.get(codeLocationName).add(detectCodeLocation);
         }
         return codeLocationNameMap;
     }
 
-    private List<BdioCodeLocation> createBdioCodeLocations(final Map<String, List<DetectCodeLocation>> codeLocationsByName, final File sourcePath, final boolean combineCodeLocations) {
+    private List<BdioCodeLocation> createBdioCodeLocations(final Map<String, List<DetectCodeLocation>> codeLocationsByName) {
         final List<BdioCodeLocation> bdioCodeLocations = new ArrayList<>();
 
         for (final String codeLocationName : codeLocationsByName.keySet()) {
             final List<DetectCodeLocation> codeLocations = codeLocationsByName.get(codeLocationName);
-            final List<BdioCodeLocation> transformedBdioCodeLocations = transformDetectCodeLocationsIntoBdioCodeLocations(codeLocations, codeLocationName, combineCodeLocations);
+            final List<BdioCodeLocation> transformedBdioCodeLocations = transformDetectCodeLocationsIntoBdioCodeLocations(codeLocations, codeLocationName);
             bdioCodeLocations.addAll(transformedBdioCodeLocations);
         }
 
         return bdioCodeLocations;
     }
 
-    private List<BdioCodeLocation> transformDetectCodeLocationsIntoBdioCodeLocations(final List<DetectCodeLocation> codeLocations, final String codeLocationName, final boolean combineCodeLocations) {
+    private List<BdioCodeLocation> transformDetectCodeLocationsIntoBdioCodeLocations(final List<DetectCodeLocation> codeLocations, final String codeLocationName) {
         final List<BdioCodeLocation> bdioCodeLocations;
         final IntegrationEscapeUtil integrationEscapeUtil = new IntegrationEscapeUtil();
 
         if (codeLocations.size() > 1) {
-            // we must either combine or create a unique name.
-            if (combineCodeLocations) {
-                final DependencyGraphCombiner combiner = new DependencyGraphCombiner();
-                logger.info("Combining duplicate code locations with name: " + codeLocationName);
-                final MutableDependencyGraph combinedGraph = new MutableMapDependencyGraph();
-                final DetectCodeLocation finalCodeLocation = codeLocations.get(0).copy(combinedGraph);
-                codeLocations.stream()
-                    .filter(codeLocation -> shouldCombine(logger, finalCodeLocation, codeLocation))
-                    .forEach(codeLocation -> combiner.addGraphAsChildrenToRoot(combinedGraph, codeLocation.getDependencyGraph()));
+            bdioCodeLocations = new ArrayList<>();
+            for (int i = 0; i < codeLocations.size(); i++) {
+                final DetectCodeLocation codeLocation = codeLocations.get(i);
+                final String newCodeLocationName = String.format("%s %s", codeLocationName, Integer.toString(i));
+                final BdioCodeLocation bdioCodeLocation = new BdioCodeLocation(codeLocation, newCodeLocationName, createBdioName(newCodeLocationName, integrationEscapeUtil));
+                bdioCodeLocations.add(bdioCodeLocation);
 
-                final BdioCodeLocation bdioCodeLocation = new BdioCodeLocation(finalCodeLocation, codeLocationName, createBdioName(codeLocationName, integrationEscapeUtil));
-                bdioCodeLocations = Arrays.asList(bdioCodeLocation);
-            } else {
-                bdioCodeLocations = new ArrayList<>();
-                for (int i = 0; i < codeLocations.size(); i++) {
-                    final DetectCodeLocation codeLocation = codeLocations.get(i);
-                    final String newCodeLocationName = String.format("%s %s", codeLocationName, Integer.toString(i));
-                    final BdioCodeLocation bdioCodeLocation = new BdioCodeLocation(codeLocation, newCodeLocationName, createBdioName(newCodeLocationName, integrationEscapeUtil));
-                    bdioCodeLocations.add(bdioCodeLocation);
-                }
             }
         } else if (codeLocations.size() == 1) {
             final DetectCodeLocation codeLocation = codeLocations.get(0);
             final BdioCodeLocation bdioCodeLocation = new BdioCodeLocation(codeLocation, codeLocationName, createBdioName(codeLocationName, integrationEscapeUtil));
-            bdioCodeLocations = Arrays.asList(bdioCodeLocation);
+            bdioCodeLocations = Collections.singletonList(bdioCodeLocation);
         } else {
             logger.error("Created a code location name but no code locations.");
             bdioCodeLocations = new ArrayList<>();
@@ -179,31 +157,4 @@ public class BdioCodeLocationCreator {
         final String filename = integrationEscapeUtil.escapeForUri(filenameRaw);
         return filename + ".jsonld";
     }
-
-    private boolean shouldCombine(final Logger logger, final DetectCodeLocation codeLocationLeft, final DetectCodeLocation codeLocationRight) {
-        return true;//TODO update this
-
-//        if (codeLocationLeft.getCreatorName() != codeLocationRight.getCreatorName()) {
-//            logger.error("Cannot combine code locations with different types.");
-//            return false;
-//        }
-//
-//        if (codeLocationLeft.getDockerImageName() != codeLocationRight.getDockerImageName()) {
-//            logger.error("Cannot combine code locations with different docker images.");
-//            return false;
-//        }
-//
-//        if (codeLocationLeft.getSourcePath() != codeLocationRight.getSourcePath()) {
-//            logger.error("Cannot combine code locations with different source paths.");
-//            return false;
-//        }
-//
-//        if (codeLocationLeft.getExternalId() != codeLocationRight.getExternalId()) {
-//            logger.error("Cannot combine code locations with different external ids.");
-//            return false;
-//        }
-//
-//        return true;
-    }
-
 }
