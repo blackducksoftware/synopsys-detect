@@ -26,7 +26,7 @@ package com.synopsys.integration.detectable.detectables.gradle.inspection.parse;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -38,7 +38,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleConfiguration;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleReport;
 
@@ -54,24 +53,17 @@ public class GradleReportParser {
     public static final String DETECT_META_DATA_HEADER = "DETECT META DATA START";
     public static final String DETECT_META_DATA_FOOTER = "DETECT META DATA END";
 
-    private final ExternalIdFactory externalIdFactory;
-
     private final GradleReportConfigurationParser gradleReportConfigurationParser = new GradleReportConfigurationParser();
 
-    public GradleReportParser(final ExternalIdFactory externalIdFactory) {
-        this.externalIdFactory = externalIdFactory;
-    }
-
-    // TODO: Take in an input stream instead of a file
     public Optional<GradleReport> parseReport(final File reportFile) {
         GradleReport gradleReport = new GradleReport();
         boolean processingMetaData = false;
         final List<String> configurationLines = new ArrayList<>();
-        try (final FileInputStream dependenciesInputStream = new FileInputStream(reportFile); final BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8))) {
+        try (final InputStream dependenciesInputStream = new FileInputStream(reportFile); final BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8))) {
             while (reader.ready()) {
                 final String line = reader.readLine();
-                /**
-                 * The meta data section will be at the end of the file after all of the "gradle dependencies" output
+                /*
+                  The meta data section will be at the end of the file after all of the "gradle dependencies" output
                  */
                 if (line.startsWith(DETECT_META_DATA_HEADER)) {
                     processingMetaData = true;
@@ -104,8 +96,9 @@ public class GradleReportParser {
             }
 
             parseConfigurationLines(configurationLines, gradleReport);
-        } catch (final IOException e) {
-            gradleReport = null; //TODO?
+        } catch (final Exception e) {
+            logger.debug(String.format("Failed to read report file: %s", reportFile.getAbsolutePath()), e);
+            gradleReport = null;
         }
 
         return Optional.ofNullable(gradleReport);

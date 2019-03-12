@@ -36,7 +36,7 @@ public class GradleReportParserFunctionalTest {
 
     @Test
     void extractCodeLocationTest() {
-        final GradleReportParser gradleReportParser = new GradleReportParser(new ExternalIdFactory());
+        final GradleReportParser gradleReportParser = new GradleReportParser();
         final Optional<GradleReport> gradleReport = gradleReportParser.parseReport(FunctionalTestFiles.asFile("/gradle/dependencyGraph.txt"));
         Assert.assertTrue(gradleReport.isPresent());
         final GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory());
@@ -88,7 +88,7 @@ public class GradleReportParserFunctionalTest {
 
     private Optional<CodeLocation> buildCodeLocation(final String resource) {
         final File file = FunctionalTestFiles.asFile(resource);
-        final GradleReportParser gradleReportParser = new GradleReportParser(new ExternalIdFactory());
+        final GradleReportParser gradleReportParser = new GradleReportParser();
         final GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory());
 
         return gradleReportParser.parseReport(file)

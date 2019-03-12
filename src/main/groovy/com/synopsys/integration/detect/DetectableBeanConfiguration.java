@@ -331,7 +331,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public GradleReportParser gradleReportParser() {
-        return new GradleReportParser(externalIdFactory);
+        return new GradleReportParser();
     }
 
     @Bean
