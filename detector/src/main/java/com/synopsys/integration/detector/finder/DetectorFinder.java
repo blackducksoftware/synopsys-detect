@@ -37,18 +37,18 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
 public class DetectorFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public Optional<DetectorEvaluationTree> findDetectors(final File initialDirectory, DetectorRuleSet detectorRuleSet, final DetectorFinderOptions options) throws DetectorFinderDirectoryListException {
-        return findDetectors(initialDirectory, detectorRuleSet,0, options);
+    public Optional<DetectorEvaluationTree> findDetectors(final File initialDirectory, final DetectorRuleSet detectorRuleSet, final DetectorFinderOptions options) throws DetectorFinderDirectoryListException {
+        return findDetectors(initialDirectory, detectorRuleSet, 0, options);
     }
 
-    private Optional<DetectorEvaluationTree> findDetectors(final File directory, DetectorRuleSet detectorRuleSet, final int depth, final DetectorFinderOptions options)
+    private Optional<DetectorEvaluationTree> findDetectors(final File directory, final DetectorRuleSet detectorRuleSet, final int depth, final DetectorFinderOptions options)
         throws DetectorFinderDirectoryListException {
 
         if (depth > options.getMaximumDepth()) {
@@ -65,37 +65,28 @@ public class DetectorFinder {
         }
 
         logger.info("Traversing directory: " + directory.getPath());
-        List<DetectorEvaluation> evaluations = detectorRuleSet.getOrderedDetectorRules().stream()
-                                                   .map(rule -> new DetectorEvaluation(rule))
-                                                   .collect(Collectors.toList());
+        final List<DetectorEvaluation> evaluations = detectorRuleSet.getOrderedDetectorRules().stream()
+                                                         .map(DetectorEvaluation::new)
+                                                         .collect(Collectors.toList());
 
-        Set<DetectorEvaluationTree> children = new HashSet<>();
+        final Set<DetectorEvaluationTree> children = new HashSet<>();
 
-        List<File> subDirectories = findSubDirectories(directory);
+        final List<File> subDirectories = findSubDirectories(directory);
         for (final File subDirectory : subDirectories) {
-            Optional<DetectorEvaluationTree> childEvaluationSet = findDetectors(subDirectory, detectorRuleSet, depth + 1, options);
-            if (childEvaluationSet.isPresent()){
-                children.add(childEvaluationSet.get());
-            }
+            final Optional<DetectorEvaluationTree> childEvaluationSet = findDetectors(subDirectory, detectorRuleSet, depth + 1, options);
+            childEvaluationSet.ifPresent(children::add);
         }
 
         return Optional.of(new DetectorEvaluationTree(directory, depth, detectorRuleSet, evaluations, children));
     }
 
     private List<File> findSubDirectories(final File directory) throws DetectorFinderDirectoryListException {
-        Stream<Path> stream = null;
-        try {
-            stream = Files.list(directory.toPath());
-            return stream.map(path -> path.toFile())
-                       .filter(file -> file.isDirectory())
+        try (final Stream<Path> pathStream = Files.list(directory.toPath())) {
+            return pathStream.map(Path::toFile)
+                       .filter(File::isDirectory)
                        .collect(Collectors.toList());
-
         } catch (final IOException e) {
             throw new DetectorFinderDirectoryListException(String.format("Could not get the subdirectories for %s. %s", directory.getAbsolutePath(), e.getMessage()), e);
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
         }
     }
 }

@@ -27,6 +27,6 @@ import java.io.IOException;
 
 public class DetectorFinderDirectoryListException extends Exception {
     public DetectorFinderDirectoryListException(final String message, final IOException e) {
-        //TODO: Implement
+        super(message, e);
     }
 }
