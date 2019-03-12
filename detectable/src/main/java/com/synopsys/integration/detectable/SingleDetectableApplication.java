@@ -25,47 +25,54 @@ package com.synopsys.integration.detectable;
 
 import java.io.File;
 
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.factory.DetectableFactory;
 import com.synopsys.integration.detectable.detectable.factory.ExtractorFactory;
 import com.synopsys.integration.detectable.detectable.factory.UtilityFactory;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
-import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
+import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
+import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
+import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractorOptions;
+import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
 
 //This sample application will an example detectable tool and execute it against the current folder.
 public class SingleDetectableApplication {
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
 
     }
 
     //In this example, we use the Detectable to determine if we can extract and if all necessary pieces are present.
     public Extraction DetectableExample() {
         //Factory
-        UtilityFactory utilityFactory = new UtilityFactory();
-        ExtractorFactory extractorFactory = new ExtractorFactory(utilityFactory);
-        DetectableFactory detectableFactory = new DetectableFactory(utilityFactory, extractorFactory);
+        final UtilityFactory utilityFactory = new UtilityFactory();
+        final ExtractorFactory extractorFactory = new ExtractorFactory(utilityFactory);
+        final DetectableFactory detectableFactory = new DetectableFactory(utilityFactory, extractorFactory);
 
         //Data
-        File sourceDirectory = new File("");
-        File outputDirectory = new File("");
-        DetectableEnvironment environment = new DetectableEnvironment(sourceDirectory);
-        BitbakeDetectableOptions options = new BitbakeDetectableOptions("", new String[] { "" });
+        final File sourceDirectory = new File("");
+        final File outputDirectory = new File("");
+        final DetectableEnvironment environment = new DetectableEnvironment(sourceDirectory);
+        final NpmCliExtractorOptions npmCliExtractorOptions = new NpmCliExtractorOptions(true, null);
 
         //Objects
-        BitbakeDetectable bitbakeDetectable = detectableFactory.bitbakeDetectable(environment, options);
+        final FileFinder simpleFileFinder = utilityFactory.simpleFileFinder();
+        final NpmResolver npmResolver = utilityFactory.executableResolver();
+        final ExecutableRunner executableRunner = new SimpleExecutableRunner();
+        final NpmCliParser npmCliParser = new NpmCliParser(new ExternalIdFactory());
+        final NpmCliExtractor npmCliExtractor = new NpmCliExtractor(executableRunner, npmCliParser, npmCliExtractorOptions);
+        final NpmCliDetectable npmCliDetectable = new NpmCliDetectable(environment, simpleFileFinder, npmResolver, npmCliExtractor);
 
         //Extraction
-        try {
-            if (bitbakeDetectable.applicable().getPassed()) {
-                if (bitbakeDetectable.extractable().getPassed()) {
-                    return bitbakeDetectable.extract(new ExtractionEnvironment(outputDirectory));
-                }
+        if (npmCliDetectable.applicable().getPassed()) {
+            if (npmCliDetectable.extractable().getPassed()) {
+                return npmCliDetectable.extract(new ExtractionEnvironment(outputDirectory));
             }
-        } catch (DetectableException exception) {
-            return null;
         }
         return null;
     }
@@ -73,21 +80,21 @@ public class SingleDetectableApplication {
     //In this example, we use the factory to create the objects but will manually look for the files and perform the extraction.
     public Extraction ExtractorExample() throws DetectableException {
         //Factory
-        UtilityFactory utilityFactory = new UtilityFactory();
-        ExtractorFactory extractorFactory = new ExtractorFactory(utilityFactory);
+        final UtilityFactory utilityFactory = new UtilityFactory();
+        final ExtractorFactory extractorFactory = new ExtractorFactory(utilityFactory);
 
         //Data
-        File sourceDirectory = new File("");
-        File outputDirectory = new File("");
+        final File sourceDirectory = new File("");
+        final File outputDirectory = new File("");
 
         //Objects
-        FileFinder simpleFileFinder = utilityFactory.simpleFileFinder();
-        SimpleExecutableResolver executableResolver = utilityFactory.executableResolver();
-        BitbakeExtractor bitbakeExtractor = extractorFactory.bitbakeExtractor();
+        final FileFinder simpleFileFinder = utilityFactory.simpleFileFinder();
+        final SimpleExecutableResolver executableResolver = utilityFactory.executableResolver();
+        final BitbakeExtractor bitbakeExtractor = extractorFactory.bitbakeExtractor();
 
         //Search
-        File bitbakeFile = simpleFileFinder.findFile(sourceDirectory, "*.bitbake");//TODO: bitbake is a terrible example
-        File bashExecutable = executableResolver.resolveBash();
+        final File bitbakeFile = simpleFileFinder.findFile(sourceDirectory, "oe-init-build-env");
+        final File bashExecutable = executableResolver.resolveBash();
 
         //Extraction
         return bitbakeExtractor.extract(new ExtractionEnvironment(outputDirectory), bitbakeFile, sourceDirectory, new String[] { "" }, bashExecutable);

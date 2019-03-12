@@ -33,15 +33,15 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParser
 public class ExtractorFactory {
     private final UtilityFactory utilityFactory;
 
-    public ExtractorFactory(UtilityFactory utilityFactory) {
+    public ExtractorFactory(final UtilityFactory utilityFactory) {
         this.utilityFactory = utilityFactory;
     }
 
     public BitbakeExtractor bitbakeExtractor() {
-        GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
-        BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        BitbakeArchitectureParser bitbakeArchitectureParser = new BitbakeArchitectureParser();
-        BitbakeExtractor bitbakeExtractor = new BitbakeExtractor(new SimpleExecutableRunner(), this.utilityFactory.simpleFileFinder(), graphParserTransformer, bitbakeGraphTransformer, bitbakeArchitectureParser);
+        final GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
+        final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
+        final BitbakeArchitectureParser bitbakeArchitectureParser = new BitbakeArchitectureParser();
+        final BitbakeExtractor bitbakeExtractor = new BitbakeExtractor(new SimpleExecutableRunner(), this.utilityFactory.simpleFileFinder(), graphParserTransformer, bitbakeGraphTransformer, bitbakeArchitectureParser);
         return bitbakeExtractor;
     }
 }
