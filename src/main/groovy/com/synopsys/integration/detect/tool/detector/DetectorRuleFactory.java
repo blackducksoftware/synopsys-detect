@@ -46,6 +46,7 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.CONDA, "Conda Cli", detectableFactory::createCondaDetectable).defaultNotNested().build();
         ruleSet.addDetector(DetectorType.CPAN, "Cpan Cli", detectableFactory::createCpanCliDetectable).defaultNotNested().build();
+        // TODO: ADD Cran
         ruleSet.addDetector(DetectorType.PACKAGIST, "Packrat Lock", detectableFactory::createPackratLockDetectable).defaultNotNested().build();
 
         final DetectorRule goCli = ruleSet.addDetector(DetectorType.GO_DEP, "Go Cli", detectableFactory::createGoCliDetectable).defaultNested().build();
@@ -101,7 +102,7 @@ public class DetectorRuleFactory {
         final DetectorRuleSetBuilder ruleSet = new DetectorRuleSetBuilder();
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", detectableFactory::createPodLockDetectable).defaultNested().build();
-
+        // TODO: ADD Cran
         ruleSet.addDetector(DetectorType.PACKAGIST, "Packrat Lock", detectableFactory::createPackratLockDetectable).defaultNotNested().build();
 
         ruleSet.addDetector(DetectorType.GO_DEP, "Go Lock", detectableFactory::createGoLockDetectable).defaultNested().build();
