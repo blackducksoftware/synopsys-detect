@@ -23,6 +23,9 @@
  */
 package com.synopsys.integration.detectable.detectables.go.godep.parse;
 
+import java.io.InputStream;
+import java.util.Optional;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.moandjiezana.toml.Toml;
@@ -35,7 +38,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.go.godep.model.GoLock;
 import com.synopsys.integration.detectable.detectables.go.godep.model.Project;
-import com.synopsys.integration.util.NameVersion;
 
 public class GoLockParser {
     private final ExternalIdFactory externalIdFactory;
@@ -44,33 +46,22 @@ public class GoLockParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph parseDepLock(final String depLockContents) {
+    public DependencyGraph parseDepLock(final InputStream depLockInputStream) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        final GoLock goLock = new Toml().read(depLockContents).to(GoLock.class);
+        final GoLock goLock = new Toml().read(depLockInputStream).to(GoLock.class);
 
         for (final Project project : goLock.projects) {
             if (project != null) {
-                final NameVersion projectNameVersion = createProjectNameVersion(project);
+                final String projectName = project.name;
+                final String projectVersion = Optional.ofNullable(StringUtils.stripToNull(project.version)).orElse(project.revision);
                 project.packages.stream()
-                    .map(packageName -> createDependencyName(projectNameVersion.getName(), packageName))
-                    .map(dependencyName -> createGoDependency(dependencyName, projectNameVersion.getVersion()))
+                    .map(packageName -> createDependencyName(projectName, packageName))
+                    .map(dependencyName -> createGoDependency(dependencyName, projectVersion))
                     .forEach(graph::addChildToRoot);
             }
         }
 
         return graph;
-    }
-
-    private NameVersion createProjectNameVersion(final Project project) {
-        final String version;
-
-        if (StringUtils.isNotBlank(project.version)) {
-            version = project.version;
-        } else {
-            version = project.revision;
-        }
-
-        return new NameVersion(project.name, version);
     }
 
     private String createDependencyName(final String projectName, final String parsedPackageName) {

@@ -37,6 +37,7 @@ import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
+import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
@@ -114,6 +115,11 @@ public class DetectableOptionFactory {
         final GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion);
         final String gradleBuildCommand = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND, PropertyAuthority.None);
         return new GradleInspectorOptions(gradleBuildCommand, scriptOptions);
+    }
+
+    public GoDepCliDetectableOptions createGoDepCliDetectableOptions() {
+        final boolean allowsInitRun = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_GO_RUN_DEP_INIT, PropertyAuthority.None);
+        return new GoDepCliDetectableOptions(allowsInitRun);
     }
 
     public MavenCliExtractorOptions createMavenCliOptions() {

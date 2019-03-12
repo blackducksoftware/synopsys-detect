@@ -619,7 +619,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GoDepCliDetectable goCliBomTool(final DetectableEnvironment environment) {
-        return new GoDepCliDetectable(environment, fileFinder, detectExecutableResolver, detectExecutableResolver, goDepExtractor());
+        return new GoDepCliDetectable(environment, fileFinder, detectExecutableResolver, detectExecutableResolver, goDepExtractor(), detectableOptionFactory.createGoDepCliDetectableOptions());
     }
 
     @Bean

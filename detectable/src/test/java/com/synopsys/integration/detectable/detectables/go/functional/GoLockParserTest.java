@@ -11,15 +11,11 @@
  */
 package com.synopsys.integration.detectable.detectables.go.functional;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.go.godep.parse.GoLockParser;
@@ -27,13 +23,11 @@ import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.GraphCompare;
 
 public class GoLockParserTest {
-    Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-
     @Test
-    public void gopkgParserTest() throws IOException {
+    public void gopkgParserTest() {
         final GoLockParser gopkgLockParser = new GoLockParser(new ExternalIdFactory());
-        final String gopkgLockContents = FunctionalTestFiles.asString("/go/Gopkg.lock");
-        final DependencyGraph dependencyGraph = gopkgLockParser.parseDepLock(gopkgLockContents);
+        final InputStream gopkgLockInputStream = FunctionalTestFiles.asInputStream("/go/Gopkg.lock");
+        final DependencyGraph dependencyGraph = gopkgLockParser.parseDepLock(gopkgLockInputStream);
         Assert.assertNotNull(dependencyGraph);
 
         GraphCompare.assertEqualsResource("/go/Go_GopkgExpected_graph.json", dependencyGraph);

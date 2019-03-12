@@ -39,7 +39,6 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
 
 public class GoDepCliDetectable extends Detectable {
     public static final String GOFILE_FILENAME_PATTERN = "*.go";
@@ -48,16 +47,18 @@ public class GoDepCliDetectable extends Detectable {
     private final GoDepResolver goDepResolver;
     private final GoResolver goResolver;
     private final GoDepExtractor goDepExtractor;
+    private final GoDepCliDetectableOptions goDepCliDetectableOptions;
 
-    private File goExe;
     private File goDepInspector;
 
-    public GoDepCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GoResolver goResolver, final GoDepResolver goDepResolver, final GoDepExtractor goDepExtractor) {
+    public GoDepCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GoResolver goResolver, final GoDepResolver goDepResolver, final GoDepExtractor goDepExtractor,
+        final GoDepCliDetectableOptions goDepCliDetectableOptions) {
         super(environment, "Go Dep Cli", "Go Dep");
         this.fileFinder = fileFinder;
         this.goResolver = goResolver;
         this.goDepResolver = goDepResolver;
         this.goDepExtractor = goDepExtractor;
+        this.goDepCliDetectableOptions = goDepCliDetectableOptions;
     }
 
     @Override
@@ -72,7 +73,7 @@ public class GoDepCliDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        goExe = goResolver.resolveGo();
+        final File goExe = goResolver.resolveGo();
         if (goExe == null) {
             return new ExecutableNotFoundDetectableResult("go");
         }
@@ -87,6 +88,6 @@ public class GoDepCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return goDepExtractor.extract(environment.getDirectory(), goExe, goDepInspector);
+        return goDepExtractor.extract(environment.getDirectory(), goDepInspector, goDepCliDetectableOptions.isAllowingRunInit());
     }
 }

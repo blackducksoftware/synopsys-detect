@@ -24,10 +24,9 @@
 package com.synopsys.integration.detectable.detectables.go.godep;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Optional;
-
-import org.apache.commons.io.FileUtils;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
@@ -48,12 +47,14 @@ public class GoDepExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(final File directory, final File goExe, final File goDep) {//TODO: forward go onto godep resolver?
+    public Extraction extract(final File directory, final File goDepInspector, final boolean allowsRunInit) {
         try {
-            final Optional<File> lockFile = goDepLockFileGenerator.findOrMakeLockFile(directory, goDep, true);//TODO pass allows init
+            final Optional<File> lockFile = goDepLockFileGenerator.findOrMakeLockFile(directory, goDepInspector, allowsRunInit);
 
             if (lockFile.isPresent()) {
-                return extract(directory, lockFile.get());
+                try (final InputStream lockInputStream = new FileInputStream(lockFile.get())) {
+                    return extract(directory, lockInputStream);
+                }
             } else {
                 return new Extraction.Builder().failure("Failed to find a go lock file.").build();
             }
@@ -62,17 +63,11 @@ public class GoDepExtractor {
         }
     }
 
-    public Extraction extract(final File directory, final File goLock) {
-        try {
-            final String lockContents = FileUtils.readFileToString(goLock, StandardCharsets.UTF_8);
-            final DependencyGraph graph = goLockParser.parseDepLock(lockContents);
-
-            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString());//TODO, don't use directory as external id
-            final CodeLocation codeLocation = new CodeLocation(graph, externalId);
-            return new Extraction.Builder().success(codeLocation).build();
-        } catch (final Exception e) {
-            return new Extraction.Builder().exception(e).build();
-        }
+    public Extraction extract(final File directory, final InputStream goLockInputStream) {
+        final DependencyGraph graph = goLockParser.parseDepLock(goLockInputStream);
+        final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString()); // TODO: don't use directory as external id
+        final CodeLocation codeLocation = new CodeLocation(graph, externalId);
+        return new Extraction.Builder().success(codeLocation).build();
     }
 
 }
