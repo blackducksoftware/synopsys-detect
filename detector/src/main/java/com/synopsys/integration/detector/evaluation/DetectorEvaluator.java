@@ -50,43 +50,44 @@ import com.synopsys.integration.detector.rule.DetectorRule;
 public class DetectorEvaluator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private SearchableEvaluator searchableEvaluator = new SearchableEvaluator();
-    private DetectorFilter detectorFilter = new DetectorFilter() {
+    private final DetectorRuleSetEvaluator detectorRuleSetEvaluator = new DetectorRuleSetEvaluator();
+    private final DetectorFilter detectorFilter = new DetectorFilter() {
         @Override
         public boolean shouldInclude(final DetectorType detectorType) {
-            return true;
+            return true; // TODO: Needs to be fed by Detect
         }
     };
-    private boolean forceNested = false;
+    private final boolean forceNested = false; // TODO: Needs to be fed by Detect
 
     private DetectorEventListener detectorEventListener;
 
     //Unfortunately, currently search and applicable are tied together due to Search needing to know about previous detectors that applied.
     //So Search and then Applicable must be evaluated of Detector 1 before the next Search can be evaluated of Detector 2.
-    public void searchAndApplicableEvaluation(DetectorEvaluationTree detectorEvaluationTree, Set<DetectorRule> appliedInParent) {
+    public void searchAndApplicableEvaluation(final DetectorEvaluationTree detectorEvaluationTree, final Set<DetectorRule> appliedInParent) {
         logger.info("Determining applicable detectors on the directory: " + detectorEvaluationTree.getDirectory().toString());
 
-        Set<DetectorRule> appliedSoFar = new HashSet<>();
+        final Set<DetectorRule> appliedSoFar = new HashSet<>();
 
-        for (DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()){
+        for (final DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
             getDetectorEventListener().ifPresent(it -> it.applicableStarted(detectorEvaluation));
 
-            DetectorRule detectorRule = detectorEvaluation.getDetectorRule();
+            final DetectorRule detectorRule = detectorEvaluation.getDetectorRule();
             logger.trace("Evaluating detector: " + detectorRule.getDescriptiveName());
-            SearchEnvironment searchEnvironment = new SearchEnvironment(detectorEvaluationTree.getDepthFromRoot(), detectorFilter, forceNested, appliedInParent, appliedSoFar);
+            final SearchEnvironment searchEnvironment = new SearchEnvironment(detectorEvaluationTree.getDepthFromRoot(), detectorFilter, forceNested, appliedInParent, appliedSoFar);
             detectorEvaluation.setSearchEnvironment(searchEnvironment);
-            DetectorResult searchableResult = searchableEvaluator.evaluate(detectorEvaluationTree.getDetectorRuleSet(), detectorEvaluation.getDetectorRule(), searchEnvironment);
+            final DetectorResult searchableResult = detectorRuleSetEvaluator.evaluateSearchable(detectorEvaluationTree.getDetectorRuleSet(), detectorEvaluation.getDetectorRule(), searchEnvironment);
             detectorEvaluation.setSearchable(searchableResult);
 
-            if (detectorEvaluation.isSearchable()){
+            if (detectorEvaluation.isSearchable()) {
                 logger.trace("Searchable passed, will continue evaluating.");
-                DetectableEnvironment detectableEnvironment = new DetectableEnvironment(detectorEvaluationTree.getDirectory()); //TODO: potential todo, this could be invoked as part of the rule (file could be given to the creatable and the creatable could create the env)
+                final DetectableEnvironment detectableEnvironment = new DetectableEnvironment(
+                    detectorEvaluationTree.getDirectory()); //TODO: potential todo, this could be invoked as part of the rule (file could be given to the creatable and the creatable could create the env)
                 detectorEvaluation.setDetectableEnvironment(detectableEnvironment);
-                Detectable detectable = detectorRule.createDetectable(detectableEnvironment);
+                final Detectable detectable = detectorRule.createDetectable(detectableEnvironment);
                 detectorEvaluation.setDetectable(detectable);
-                DetectorResult applicableResult = new DetectableDetectorResult(detectable.applicable());
+                final DetectorResult applicableResult = new DetectableDetectorResult(detectable.applicable());
                 detectorEvaluation.setApplicable(applicableResult);
-                if (detectorEvaluation.isApplicable()){
+                if (detectorEvaluation.isApplicable()) {
                     logger.trace("Applicable passed. Will add to applicable list. Done evaluating for now.");
                     appliedSoFar.add(detectorRule);
                 } else {
@@ -99,33 +100,33 @@ public class DetectorEvaluator {
             getDetectorEventListener().ifPresent(it -> it.applicableEnded(detectorEvaluation));
         }
 
-        Set<DetectorRule> nextAppliedInParent = new HashSet<>();
+        final Set<DetectorRule> nextAppliedInParent = new HashSet<>();
         nextAppliedInParent.addAll(appliedInParent);
         nextAppliedInParent.addAll(appliedSoFar);
 
-        for (DetectorEvaluationTree childDetectorEvaluationTree : detectorEvaluationTree.getChildren()){
-            searchAndApplicableEvaluation(childDetectorEvaluationTree, appliedInParent);
+        for (final DetectorEvaluationTree childDetectorEvaluationTree : detectorEvaluationTree.getChildren()) {
+            searchAndApplicableEvaluation(childDetectorEvaluationTree, nextAppliedInParent);
         }
     }
 
-    public void extractableEvaluation(DetectorEvaluationTree detectorEvaluationTree){
+    public void extractableEvaluation(final DetectorEvaluationTree detectorEvaluationTree) {
         logger.info("Determining extractable detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
-        for (DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
-            if (detectorEvaluation.isSearchable() && detectorEvaluation.isApplicable()){
+        for (final DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
+            if (detectorEvaluation.isSearchable() && detectorEvaluation.isApplicable()) {
 
                 getDetectorEventListener().ifPresent(it -> it.extractableStarted(detectorEvaluation));
 
                 logger.trace("Detector was searchable and applicable, will check extractable: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
-                Detectable detectable = detectorEvaluation.getDetectable();
+                final Detectable detectable = detectorEvaluation.getDetectable();
                 DetectableResult detectableExtractableResult;
                 try {
                     detectableExtractableResult = detectable.extractable();
-                } catch (DetectableException e) {
+                } catch (final DetectableException e) {
                     detectableExtractableResult = new ExceptionDetectableResult(e);
                 }
-                DetectorResult extractableResult = new DetectableDetectorResult(detectableExtractableResult);
+                final DetectorResult extractableResult = new DetectableDetectorResult(detectableExtractableResult);
                 detectorEvaluation.setExtractable(extractableResult);
-                if (detectorEvaluation.isExtractable()){
+                if (detectorEvaluation.isExtractable()) {
                     logger.trace("Extractable passed. Done evaluating for now.");
                 } else {
                     logger.trace("Extractable did not pass, will not continue evaluating.");
@@ -135,24 +136,24 @@ public class DetectorEvaluator {
             }
         }
 
-        for (DetectorEvaluationTree childDetectorEvaluationTree : detectorEvaluationTree.getChildren()){
+        for (final DetectorEvaluationTree childDetectorEvaluationTree : detectorEvaluationTree.getChildren()) {
             extractableEvaluation(childDetectorEvaluationTree);
         }
     }
 
-    public void extractionEvaluation(DetectorEvaluationTree detectorEvaluationTree, Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider){
+    public void extractionEvaluation(final DetectorEvaluationTree detectorEvaluationTree, final Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider) {
         logger.info("Extracting detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
-        for (DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
-            if (detectorEvaluation.isSearchable() && detectorEvaluation.isApplicable() && detectorEvaluation.isExtractable()){
+        for (final DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
+            if (detectorEvaluation.isSearchable() && detectorEvaluation.isApplicable() && detectorEvaluation.isExtractable()) {
 
                 logger.trace("Detector was searchable, applicable and extractable, will perform extraction: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
-                Detectable detectable = detectorEvaluation.getDetectable();
-                ExtractionEnvironment extractionEnvironment = extractionEnvironmentProvider.apply(detectorEvaluation);
+                final Detectable detectable = detectorEvaluation.getDetectable();
+                final ExtractionEnvironment extractionEnvironment = extractionEnvironmentProvider.apply(detectorEvaluation);
                 detectorEvaluation.setExtractionEnvironment(extractionEnvironment);
 
                 getDetectorEventListener().ifPresent(it -> it.extractionStarted(detectorEvaluation));
 
-                Extraction extraction = detectable.extract(extractionEnvironment);
+                final Extraction extraction = detectable.extract(extractionEnvironment);
                 detectorEvaluation.setExtraction(extraction);
 
                 getDetectorEventListener().ifPresent(it -> it.extractionEnded(detectorEvaluation));
@@ -161,7 +162,7 @@ public class DetectorEvaluator {
             }
         }
 
-        for (DetectorEvaluationTree childDetectorEvaluationTree : detectorEvaluationTree.getChildren()){
+        for (final DetectorEvaluationTree childDetectorEvaluationTree : detectorEvaluationTree.getChildren()) {
             extractionEvaluation(childDetectorEvaluationTree, extractionEnvironmentProvider);
         }
     }

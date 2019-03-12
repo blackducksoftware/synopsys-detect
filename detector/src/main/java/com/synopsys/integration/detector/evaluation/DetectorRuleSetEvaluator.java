@@ -38,8 +38,8 @@ import com.synopsys.integration.detector.result.YieldedDetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
-public class SearchableEvaluator { //TODO: rename? is not what i want an evaluator to be.
-    public DetectorResult evaluate(DetectorRuleSet detectorRuleSet, DetectorRule detectorRule, SearchEnvironment environment) {
+public class DetectorRuleSetEvaluator { //TODO: rename? is not what i want an evaluator to be.
+    public DetectorResult evaluateSearchable(final DetectorRuleSet detectorRuleSet, final DetectorRule detectorRule, final SearchEnvironment environment) {
         if (!environment.getDetectorFilter().shouldInclude(detectorRule.getDetectorType())) {
             return new ExcludedDetectorResult();
         }
@@ -49,13 +49,13 @@ public class SearchableEvaluator { //TODO: rename? is not what i want an evaluat
             return new MaxDepthExceededDetectorResult(environment.getDepth(), maxDepth);
         }
 
-        Set<DetectorRule> applied = new HashSet<>();
+        final Set<DetectorRule> applied = new HashSet<>();
         applied.addAll(environment.getAppliedToParent());
         applied.addAll(environment.getAppliedSoFar());
 
         final Set<DetectorRule> yieldTo = applied.stream()
-                                          .filter(it -> detectorRuleSet.getYieldsTo(detectorRule).contains(it))
-                                          .collect(Collectors.toSet());
+                                              .filter(it -> detectorRuleSet.getYieldsTo(detectorRule).contains(it))
+                                              .collect(Collectors.toSet());
 
         if (yieldTo.size() > 0) {
             return new YieldedDetectorResult(yieldTo);
@@ -65,7 +65,7 @@ public class SearchableEvaluator { //TODO: rename? is not what i want an evaluat
         if (environment.isForceNestedSearch()) {
             return new ForcedNestedPassedDetectorResult();
         } else if (nestable) {
-            if (environment.getAppliedToParent().stream().anyMatch(parentApplied -> parentApplied.equals(this))) {
+            if (environment.getAppliedToParent().stream().anyMatch(parentApplied -> parentApplied.equals(detectorRule))) {
                 return new NotSelfNestableDetectorResult();
             }
         } else if (!nestable && environment.getAppliedToParent().size() > 0) {
