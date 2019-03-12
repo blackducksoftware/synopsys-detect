@@ -38,7 +38,7 @@ import com.synopsys.integration.detector.result.YieldedDetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
-public class DetectorRuleSetEvaluator { //TODO: rename? is not what i want an evaluator to be.
+public class DetectorRuleSetEvaluator {
     public DetectorResult evaluateSearchable(final DetectorRuleSet detectorRuleSet, final DetectorRule detectorRule, final SearchEnvironment environment) {
         if (!environment.getDetectorFilter().shouldInclude(detectorRule.getDetectorType())) {
             return new ExcludedDetectorResult();
