@@ -81,17 +81,18 @@ public class PearCliExtractor {
             final List<PackageDependency> packageDependencies = pearPackageDependenciesParser.parse(packageDependenciesOutput.getStandardOutputAsList());
             final DependencyGraph dependencyGraph = pearDependencyGraphTransformer.buildDependencyGraph(dependencyNameVersionMap, packageDependencies, onlyGatherRequired);
 
-            final InputStream packageXmlInputStream = new FileInputStream(packageXmlFile);
-            final NameVersion projectNameVersion = pearPackageXmlParser.parse(packageXmlInputStream);
+            try (final InputStream packageXmlInputStream = new FileInputStream(packageXmlFile)) {
+                final NameVersion projectNameVersion = pearPackageXmlParser.parse(packageXmlInputStream);
 
-            final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PEAR, projectNameVersion.getName(), projectNameVersion.getVersion());
-            final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, externalId);
+                final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PEAR, projectNameVersion.getName(), projectNameVersion.getVersion());
+                final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, externalId);
 
-            return new Extraction.Builder()
-                       .success(detectCodeLocation)
-                       .projectName(projectNameVersion.getName())
-                       .projectVersion(projectNameVersion.getVersion())
-                       .build();
+                return new Extraction.Builder()
+                           .success(detectCodeLocation)
+                           .projectName(projectNameVersion.getName())
+                           .projectVersion(projectNameVersion.getVersion())
+                           .build();
+            }
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

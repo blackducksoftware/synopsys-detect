@@ -75,8 +75,7 @@ public class GemspecParseDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        try {
-            final InputStream inputStream = new FileInputStream(gemspec);
+        try (final InputStream inputStream = new FileInputStream(gemspec)) {
             final DependencyGraph dependencyGraph = gemspecParser.parse(inputStream, gemspecParseDetectableOptions.shouldIncludeRuntimeDependencies(), gemspecParseDetectableOptions.shouldIncludeDevelopmentDependencies());
             final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 

@@ -72,8 +72,7 @@ public class MavenParseDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        try {
-            final InputStream pomXmlInputStream = new FileInputStream(pomXmlFile);
+        try (final InputStream pomXmlInputStream = new FileInputStream(pomXmlFile)) {
             final Optional<DependencyGraph> dependencyGraph = pomXmlParser.parse(pomXmlInputStream);
 
             if (dependencyGraph.isPresent()) {

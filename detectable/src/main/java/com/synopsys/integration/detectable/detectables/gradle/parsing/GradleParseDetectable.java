@@ -72,8 +72,7 @@ public class GradleParseDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        try {
-            final InputStream buildFileInputStream = new FileInputStream(buildFile);
+        try (final InputStream buildFileInputStream = new FileInputStream(buildFile)) {
             final Optional<DependencyGraph> dependencyGraph = buildGradleParser.parse(buildFileInputStream);
 
             if (dependencyGraph.isPresent()) {
