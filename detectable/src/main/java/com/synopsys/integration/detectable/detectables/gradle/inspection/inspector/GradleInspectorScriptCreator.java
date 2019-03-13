@@ -53,11 +53,11 @@ public class GradleInspectorScriptCreator {
         this.configuration = configuration;
     }
 
-    public File createOnlineGradleInspector(final File templateFile, final GradleInspectorScriptOptions scriptOptions, final String airGapLibraryPaths) throws DetectableException {
+    public File createOfflineGradleInspector(final File templateFile, final GradleInspectorScriptOptions scriptOptions, final String airGapLibraryPaths) throws DetectableException {
         return createGradleInspector(templateFile, scriptOptions, null, airGapLibraryPaths);
     }
 
-    public File createOfflineGradleInspector(final File templateFile, final GradleInspectorScriptOptions scriptOptions, final String resolvedOnlineInspectorVersion) throws DetectableException {
+    public File createOnlineGradleInspector(final File templateFile, final GradleInspectorScriptOptions scriptOptions, final String resolvedOnlineInspectorVersion) throws DetectableException {
         return createGradleInspector(templateFile, scriptOptions, resolvedOnlineInspectorVersion, null);
     }
 
