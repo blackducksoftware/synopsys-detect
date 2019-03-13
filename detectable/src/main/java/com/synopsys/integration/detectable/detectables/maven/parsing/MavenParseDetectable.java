@@ -77,7 +77,7 @@ public class MavenParseDetectable extends Detectable {
 
             if (dependencyGraph.isPresent()) {
                 final CodeLocation codeLocation = new CodeLocation(dependencyGraph.get());
-                return new Extraction.Builder().codeLocations(codeLocation).build();
+                return new Extraction.Builder().success(codeLocation).build();
             } else {
                 return new Extraction.Builder().failure(String.format("Failed to extract dependencies from %s", POM_XML_FILENAME)).build();
             }

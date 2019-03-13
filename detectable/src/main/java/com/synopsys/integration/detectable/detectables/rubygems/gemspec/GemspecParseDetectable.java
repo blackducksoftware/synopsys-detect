@@ -79,7 +79,7 @@ public class GemspecParseDetectable extends Detectable {
             final DependencyGraph dependencyGraph = gemspecParser.parse(inputStream, gemspecParseDetectableOptions.shouldIncludeRuntimeDependencies(), gemspecParseDetectableOptions.shouldIncludeDevelopmentDependencies());
             final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
-            return new Extraction.Builder().codeLocations(codeLocation).build();
+            return new Extraction.Builder().success(codeLocation).build();
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();
         }

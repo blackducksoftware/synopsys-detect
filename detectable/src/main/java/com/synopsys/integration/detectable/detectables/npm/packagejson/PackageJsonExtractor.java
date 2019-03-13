@@ -79,9 +79,9 @@ public class PackageJsonExtractor {
         final String projectVersion = StringUtils.stripToNull(packageJson.version);
 
         return new Extraction.Builder()
+                   .success(codeLocation)
                    .projectName(projectName)
                    .projectVersion(projectVersion)
-                   .codeLocations(codeLocation)
                    .build();
     }
 
