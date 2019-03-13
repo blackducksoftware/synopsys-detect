@@ -23,8 +23,10 @@
  */
 package com.synopsys.integration.detectable.detectables.gradle.inspection.parse;
 
+import java.io.File;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +57,11 @@ public class GradleReportTransformer {
         }
 
         final ExternalId projectId = externalIdFactory.createMavenExternalId(gradleReport.projectGroup, gradleReport.projectName, gradleReport.projectVersionName);
-        return new CodeLocation(graph, projectId);
+        if (StringUtils.isNotBlank(gradleReport.projectSourcePath)){
+            return new CodeLocation(graph, projectId, new File(gradleReport.projectSourcePath));
+        } else {
+            return new CodeLocation(graph, projectId);
+        }
     }
 
     private void addConfigurationToGraph(final MutableDependencyGraph graph, final GradleConfiguration configuration) {
