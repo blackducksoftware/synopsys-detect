@@ -9,12 +9,14 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.blackducksoftware.integration:common-gradle-plugin:0.0.49'
+        classpath 'com.blackducksoftware.integration:common-gradle-plugin:0.0.+'
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
 }
 
+group = 'com.synopsys.integration'
 version = '5.4.0-SNAPSHOT'
+
 apply plugin: 'com.blackducksoftware.integration.solution'
 apply plugin: 'org.springframework.boot'
 apply from: 'airgap.gradle'
@@ -32,6 +34,7 @@ allprojects {
 }
 
 subprojects {
+    group = rootProject.group
     version = rootProject.version
     apply plugin: 'com.blackducksoftware.integration.simple'
 
@@ -69,10 +72,8 @@ test {
 
 dependencies {
     implementation project(":detect-configuration")
-    implementation project(":detectable")
-    implementation project(":detector")
 
-    implementation 'com.synopsys.integration:polaris-common:0.7.1'
+    implementation 'com.synopsys.integration:polaris-common:0.7.3'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'

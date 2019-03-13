@@ -1,5 +1,3 @@
-def artifactName = "synopsys-detect";
-
 task updateArtifactoryProperties() {
     dependsOn artifactoryPublish
     doLast {
@@ -33,7 +31,7 @@ task updateArtifactoryProperties() {
 
 def findCurrentArtifact(def defaultCurlArgs) {
     try {
-        def url = "${project.ext.artifactoryUrl}/api/search/artifact?name=${artifactName}-${project.version}.jar&repos=${project.ext.artifactoryRepo}"
+        def url = "${project.ext.artifactoryUrl}/api/search/artifact?name=${project.name}-${project.version}.jar&repos=${project.ext.artifactoryRepo}"
         def artifactoryItems = getArtifactoryItems(url, defaultCurlArgs)
 
         if (artifactoryItems != null && artifactoryItems.size() == 1) {
@@ -68,7 +66,7 @@ def getArtifactoryItems(String url, def defaultCurlArgs) {
 
 def setArtifactoryProperty(def defaultCurlArgs, String propertyKey, String propertyValue) {
     println "Setting ${propertyKey} to ${propertyValue}."
-    def curlArgs = defaultCurlArgs + ['--request', 'PATCH', '--data', "{\"props\":{\"${propertyKey}\":\"${propertyValue}\"}}", "${project.ext.artifactoryUrl}/api/metadata/${project.ext.artifactoryRepo}/com/blackducksoftware/integration/${artifactName}"]
+    def curlArgs = defaultCurlArgs + ['--request', 'PATCH', '--data', "{\"props\":{\"${propertyKey}\":\"${propertyValue}\"}}", "${project.ext.artifactoryUrl}/api/metadata/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}"]
 
     curlResponse(curlArgs)
 }

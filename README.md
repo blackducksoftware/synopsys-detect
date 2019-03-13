@@ -1,5 +1,5 @@
 ## Overview ##
-Synopsys Detect offers package management level analysis combined with signature scanning.
+Synopsys Detect consolidates the functionality of Black Duck™ , Black Duck Binary Analysis™ (formerly known as Protecode SC) and Coverity™ on Polaris™ into a single solution. Synopsys Detect is designed to integrate natively into the build/CI environment and support all Coverity languages for Static Analysis. For Black Duck & Black Duck Binary Analysis, it makes it easier to set up and scan code bases using a variety of languages and package managers to identify open source risk.
 
 ## Build ##
 
@@ -14,10 +14,10 @@ Synopsys Detect offers package management level analysis combined with signature
 Upon release of 5.3.0
 
 *Available from GitHub for Linux by running:*  
-bash <(curl -s https://synopsys-sig.github.io/synopsys-detect-scripts/detect.sh)
+bash <(curl -s -L https://detect.synopsys.com/detect.sh)
 
 *Available from GitHub for Windows by running:*  
-powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://synopsys-sig.github.io/synopsys-detect-scripts/detect.ps1?$(Get-Random) | iex; detect"
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 
 ## Documentation
 
