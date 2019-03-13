@@ -45,6 +45,7 @@ import com.synopsys.integration.detect.workflow.project.DetectorEvaluationNameVe
 import com.synopsys.integration.detect.workflow.project.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
+import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
@@ -91,6 +92,9 @@ public class DetectorTool {
         }
 
         if (!possibleRootEvaluation.isPresent()) {
+            logger.error("The source directory could not be searched for detectors - detector tool failed.");
+            logger.error("Please ensure the provided source path is a directory and detect has access.");
+            eventSystem.publishEvent(Event.StatusSummary, new Status("DETECTOR", StatusType.FAILURE));
             return new DetectorToolResult();
         }
 
@@ -126,7 +130,7 @@ public class DetectorTool {
 
         final DetectorToolResult detectorToolResult = new DetectorToolResult();
 
-        detectorToolResult.rootDetectorEvaluationTree = rootEvaluation;
+        detectorToolResult.rootDetectorEvaluationTree = Optional.of(rootEvaluation);
 
         detectorToolResult.applicableDetectorTypes = detectorEvaluations.stream()
                                                          .filter(DetectorEvaluation::isApplicable)

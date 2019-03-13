@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,8 +106,17 @@ public class DiagnosticReportHandler {
 
     private List<DetectorEvaluation> completedDetectorEvaluations = null;
 
-    public void completedBomToolEvaluations(final DetectorEvaluationTree rootEvaluation) {
+    public void completedBomToolEvaluations(final Optional<DetectorEvaluationTree> rootEvaluationOptional) {
         //completedDetectorEvaluations = rootEvaluation;
+
+        DetectorEvaluationTree rootEvaluation;
+        if (rootEvaluationOptional.isPresent()){
+            rootEvaluation = rootEvaluationOptional.get();
+        } else {
+            logger.warn("Detectors completed, but no evaluation was found, unable to write detector reports.");
+            return;
+        }
+
         try {
             final SearchSummaryReporter searchReporter = new SearchSummaryReporter();
             searchReporter.print(getReportWriter(ReportTypes.SEARCH), rootEvaluation);

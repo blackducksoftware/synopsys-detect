@@ -50,6 +50,10 @@ public class Extraction {
         this.projectVersion = builder.projectVersion;
         this.projectName = builder.projectName;
         this.metaData = builder.metaData;
+
+        if (result == null){
+            throw new IllegalArgumentException("An extraction requires a result type.");
+        }
     }
 
     public <T> Optional<T> getMetaData(final ExtractionMetadata<T> extractionMetadata) {
