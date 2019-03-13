@@ -105,15 +105,19 @@ public class ReportManager {
     }
 
     public void codeLocationsCompleted(final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        if (codeLocationNameMap.size() > 0) {
-            extractionSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree, detectorToolResult.codeLocationMap, codeLocationNameMap);
+        if (codeLocationNameMap.size() > 0 && detectorToolResult != null && detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
+            extractionSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get(), detectorToolResult.codeLocationMap, codeLocationNameMap);
         } else {
-            logWriter.writeLine("Will not summarize extractions, no evaluations occurred.");
+            logWriter.writeLine("Extractions cannot be summarized - detectors did not complete or did no evaluation.");
         }
 
     }
 
     public void printDetectorIssues() {
-        errorSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree);
+        if (detectorToolResult != null && detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
+            errorSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get());
+        } else {
+            logWriter.writeLine("Detector issues cannot be summarized - detectors did not complete or did no evaluation.");
+        }
     }
 }

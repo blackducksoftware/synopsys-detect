@@ -52,10 +52,12 @@ public class DetectorFinder {
         throws DetectorFinderDirectoryListException {
 
         if (depth > options.getMaximumDepth()) {
+            logger.info("Skipping directory as it exceeds max depth: " + directory.toString());
             return Optional.empty();
         }
 
         if (null == directory || !directory.isDirectory()) {
+            logger.info("Skipping file as it is not a directory: " + directory.toString());
             return Optional.empty();
         }
 

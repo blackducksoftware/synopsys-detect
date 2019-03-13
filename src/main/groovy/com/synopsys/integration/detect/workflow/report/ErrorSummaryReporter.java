@@ -55,7 +55,7 @@ public class ErrorSummaryReporter {
                 final String spacer = "\t\t";
                 writeEvaluationsIfNotEmpty(writer, "\tNot Extractable: ", spacer, notExtractable, DetectorEvaluation::getExtractabilityMessage);
                 writeEvaluationsIfNotEmpty(writer, "\tFailure: ", spacer, failed, detectorEvaluation -> detectorEvaluation.getExtraction().getDescription());
-                writeEvaluationsIfNotEmpty(writer, "\tException: ", spacer, excepted, detectorEvaluation -> reasonFromException(detectorEvaluation.getExtraction().getError()));
+                writeEvaluationsIfNotEmpty(writer, "\tException: ", spacer, excepted, detectorEvaluation -> ExceptionUtil.oneSentenceDescription(detectorEvaluation.getExtraction().getError()));
             }
         }
         if (printedOne) {
@@ -63,11 +63,7 @@ public class ErrorSummaryReporter {
         }
     }
 
-    private String reasonFromException(final Exception exception) {
-        final StringWriter errors = new StringWriter();
-        exception.printStackTrace(new PrintWriter(errors));
-        return errors.toString();
-    }
+
 
     private void writeEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, final Function<DetectorEvaluation, String> reason) {
         if (evaluations.size() > 0) {
