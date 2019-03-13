@@ -100,7 +100,7 @@ public class DetectConfigurationFactory {
         final String excluded = detectConfiguration.getProperty(DetectProperty.DETECT_EXCLUDED_DETECTOR_TYPES, PropertyAuthority.None).toUpperCase();
         final String included = detectConfiguration.getProperty(DetectProperty.DETECT_INCLUDED_DETECTOR_TYPES, PropertyAuthority.None).toUpperCase();
         final DetectOverrideableFilter bomToolFilter = new DetectOverrideableFilter(excluded, included);
-        return new DetectorFinderOptions(file -> true, maxDepth);//TODO Create filter
+        return new DetectorFinderOptions(file -> false, maxDepth);//TODO Create filter
     }
 
     public BdioOptions createBdioOptions() {
