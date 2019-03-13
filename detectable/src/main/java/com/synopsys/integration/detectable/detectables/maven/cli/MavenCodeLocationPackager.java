@@ -200,7 +200,11 @@ public class MavenCodeLocationPackager {
     private MavenParseResult createMavenParseResult(final String sourcePath, final String line, final DependencyGraph graph) {
         final Dependency dependency = textToProject(line);
         if (null != dependency) {
-            final CodeLocation codeLocation = new CodeLocation(graph, dependency.externalId, new File(sourcePath));
+            String codeLocationSourcePath = sourcePath;
+            if (!sourcePath.endsWith(dependency.name)) {
+                codeLocationSourcePath += "/" + dependency.name;
+            }
+            final CodeLocation codeLocation = new CodeLocation(graph, dependency.externalId, new File(codeLocationSourcePath));
             return new MavenParseResult(dependency.name, dependency.version, codeLocation);
         }
         return null;
