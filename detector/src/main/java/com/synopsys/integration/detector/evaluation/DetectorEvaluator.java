@@ -153,8 +153,12 @@ public class DetectorEvaluator {
 
                 getDetectorEventListener().ifPresent(it -> it.extractionStarted(detectorEvaluation));
 
-                final Extraction extraction = detectable.extract(extractionEnvironment);
-                detectorEvaluation.setExtraction(extraction);
+                try {
+                    final Extraction extraction = detectable.extract(extractionEnvironment);
+                    detectorEvaluation.setExtraction(extraction);
+                }catch (Exception e){
+                    detectorEvaluation.setExtraction(new Extraction.Builder().exception(e).build());
+                }
 
                 getDetectorEventListener().ifPresent(it -> it.extractionEnded(detectorEvaluation));
 
