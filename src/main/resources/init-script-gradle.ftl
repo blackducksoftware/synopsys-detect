@@ -8,7 +8,7 @@ import com.blackducksoftware.integration.gradle.DependencyGatherer
 
 initscript {
     repositories {
-<#if airGapLibsPath??>
+<#if airGapLibsPath?has_content>
         flatDir {
             dirs '${airGapLibsPath}'
         }
@@ -22,7 +22,7 @@ initscript {
     }
 
     dependencies {
-<#if airGapLibsPath??>
+<#if airGapLibsPath?has_content>
         new File('${airGapLibsPath}').eachFile {
             String fileName = it.name.find('.*\\.jar')?.replace('.jar', '')
             if (fileName) {
