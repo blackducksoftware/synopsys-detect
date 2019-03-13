@@ -447,7 +447,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public PipInspectorResolver pipInspectorResolver() {
-        final File outputDirectory = directoryManager.getSharedDirectory("PIP_INSPECTOR");
+        final File outputDirectory = directoryManager.getSharedDirectory("pip");
         return new LocalPipInspectorResolver(outputDirectory);
     }
 

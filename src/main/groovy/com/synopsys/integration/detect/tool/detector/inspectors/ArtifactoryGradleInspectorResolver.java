@@ -79,7 +79,7 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
                 if (airGapPath.isPresent()) {
                     generatedGradleScriptPath = gradleInspectorScriptCreator.createOfflineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions, airGapPath.get().getCanonicalPath());
                 } else {
-                    final Optional<String> version = gradleInspectorScriptOptions.getProvidedOnlineInspectorVersion()
+                    final Optional<String> version = gradleInspectorScriptOptions.getProvidedOnlineInspectorVersion() //TODO: i don't like this because it looks like stateless stream ops but is not, we call a method that makes web requests... - jp
                                                          .map(this::findVersion)
                                                          .filter(Optional::isPresent)
                                                          .map(Optional::get);
