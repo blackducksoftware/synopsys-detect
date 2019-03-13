@@ -23,6 +23,7 @@
  */
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -199,7 +200,7 @@ public class MavenCodeLocationPackager {
     private MavenParseResult createMavenParseResult(final String sourcePath, final String line, final DependencyGraph graph) {
         final Dependency dependency = textToProject(line);
         if (null != dependency) {
-            final CodeLocation codeLocation = new CodeLocation(graph, dependency.externalId);
+            final CodeLocation codeLocation = new CodeLocation(graph, dependency.externalId, new File(sourcePath));
             return new MavenParseResult(dependency.name, dependency.version, codeLocation);
         }
         return null;
