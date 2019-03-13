@@ -193,6 +193,8 @@ public class DetectableBeanConfiguration {
     public DirectoryManager directoryManager;
     @Autowired
     public DetectInfo detectInfo;
+    @Autowired
+    public ArtifactResolver artifactResolver;
 
     //DetectableFactory
     //This is the ONLY class that should be taken from the Configuration manually.
@@ -211,11 +213,6 @@ public class DetectableBeanConfiguration {
 
     //Detectable-Only Dependencies
     //All detector support classes. These are classes not actually used outside of the bom tools but are necessary for some bom tools.
-
-    @Bean
-    public ArtifactResolver artifactResolver() {
-        return new ArtifactResolver(connectionManager, gson);
-    }
 
     @Bean
     public BazelExtractor bazelExtractor() {
@@ -286,7 +283,7 @@ public class DetectableBeanConfiguration {
     }
 
     public DockerInspectorResolver dockerInspectorResolver() {
-        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager, fileFinder, artifactResolver(), detectableOptionFactory.createDockerDetectableOptions());
+        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager, fileFinder, artifactResolver, detectableOptionFactory.createDockerDetectableOptions());
     }
 
     @Bean
@@ -345,7 +342,7 @@ public class DetectableBeanConfiguration {
     }
 
     public GradleInspectorResolver gradleInspectorResolver() {
-        return new ArtifactoryGradleInspectorResolver(artifactResolver(), configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapManager, directoryManager);
+        return new ArtifactoryGradleInspectorResolver(artifactResolver, configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapManager, directoryManager);
     }
 
     @Bean
@@ -390,7 +387,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public NugetInspectorResolver nugetInspectorResolver() {
-        return new ArtifactoryNugetInspectorResolver(directoryManager, detectExecutableResolver, executableRunner, airGapManager, artifactResolver(), detectInfo, fileFinder, detectableOptionFactory.createNugetInspectorOptions());
+        return new ArtifactoryNugetInspectorResolver(directoryManager, detectExecutableResolver, executableRunner, airGapManager, artifactResolver, detectInfo, fileFinder, detectableOptionFactory.createNugetInspectorOptions());
     }
 
     @Bean
