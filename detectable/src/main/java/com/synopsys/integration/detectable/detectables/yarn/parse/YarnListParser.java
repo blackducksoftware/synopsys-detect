@@ -23,86 +23,63 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
 import com.synopsys.integration.util.NameVersion;
 
-public class YarnListParser extends BaseYarnParser {
-    private final Logger logger = LoggerFactory.getLogger(YarnListParser.class);
-    private final ExternalIdFactory externalIdFactory;
-    private final YarnLockParser yarnLockParser;
+public class YarnListParser {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final YarnLineLevelParser lineLevelParser;
 
-    public static final String LAST_DEPENDENCY_PREFIX = "\u2514\u2500";
-    public static final String NTH_DEPENDENCY_PREFIX = "\u251C\u2500";
-    public static final String INNER_LEVEL_CHARACTER = "\u2502";
-
-    public YarnListParser(final ExternalIdFactory externalIdFactory, final YarnLockParser yarnLockParser) {
-        this.externalIdFactory = externalIdFactory;
-        this.yarnLockParser = yarnLockParser;
+    public YarnListParser(final YarnLineLevelParser lineLevelParser) {
+        this.lineLevelParser = lineLevelParser;
     }
 
-    public DependencyGraph parseYarnList(final List<String> yarnLockText, final List<String> yarnListAsList) {
-        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        final DependencyHistory history = new DependencyHistory();
-
-        final Map<String, String> yarnLockVersionMap = yarnLockParser.getYarnLockResolvedVersionMap(yarnLockText);
+    public List<YarnListNode> parseYarnList(final List<String> yarnListAsList) {
+        List<YarnListNode> yarnListNodes = new ArrayList<>();
 
         for (final String line : yarnListAsList) {
             final String lowerCaseLine = line.toLowerCase().trim();
-            final String cleanedLine = line.replaceAll(NTH_DEPENDENCY_PREFIX, "").replaceAll(INNER_LEVEL_CHARACTER, "").replaceAll(LAST_DEPENDENCY_PREFIX, "");
-            if (!cleanedLine.contains("@") || lowerCaseLine.startsWith("yarn list") || lowerCaseLine.startsWith("done in") || lowerCaseLine.startsWith("warning")) {
-                continue;
-            }
+            final String cleanedLine = lineLevelParser.replaceTreeCharactersWithSpaces(lowerCaseLine);
 
-            final Dependency dependency = parseDependencyFromLine(cleanedLine, yarnLockVersionMap);
-            final int lineLevel = getLineLevel(cleanedLine);
-            try {
-                history.clearDependenciesDeeperThan(lineLevel);
-            } catch (final IllegalStateException e) {
-                logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
+            if (shouldParseLine(line)){
+                YarnListNode yarnListNode = parseDependencyFromLine(cleanedLine);
+                yarnListNodes.add(yarnListNode);
             }
-
-            if (history.isEmpty()) {
-                graph.addChildToRoot(dependency);
-            } else {
-                graph.addChildWithParents(dependency, history.getLastDependency());
-            }
-
-            history.add(dependency);
         }
 
-        return graph;
+        return yarnListNodes;
     }
 
-    public Dependency parseDependencyFromLine(final String cleanedLine, final Map<String, String> yarnLockVersionMap) {
-        final String fuzzyNameVersionString = cleanedLine.trim();
-        String cleanedFuzzyNameVersionString = fuzzyNameVersionString;
-        if (fuzzyNameVersionString.startsWith("@")) {
-            cleanedFuzzyNameVersionString = fuzzyNameVersionString.substring(1);
+    private boolean shouldParseLine(String line) {
+        if (!line.contains("@") || line.startsWith("yarn list") || line.startsWith("done in") || line.startsWith("warning")) {
+            return false;
+        }
+        return true;
+    }
+
+
+
+    public YarnListNode parseDependencyFromLine(final String cleanedLine) {
+        final String fuzzyNameVersion = cleanedLine.trim();
+        final NameVersion nameVersion = parseNameVersion(fuzzyNameVersion);
+
+        final int lineLevel = lineLevelParser.parseTreeLevel(cleanedLine);
+
+        return new YarnListNode(lineLevel, fuzzyNameVersion, nameVersion.getName(), nameVersion.getVersion());
+    }
+
+    public NameVersion parseNameVersion(String nameVersionLine) {
+        String cleanedFuzzyNameVersionString = nameVersionLine;
+        if (nameVersionLine.startsWith("@")) {
+            cleanedFuzzyNameVersionString = nameVersionLine.substring(1);
         }
 
         final String[] nameVersionArray = cleanedFuzzyNameVersionString.split("@");
-        final NameVersion nameVersion = new NameVersion(nameVersionArray[0], nameVersionArray[1]);
-        final String resolvedVersion = yarnLockVersionMap.get(fuzzyNameVersionString);
-
-        if (resolvedVersion != null) {
-            nameVersion.setVersion(resolvedVersion);
-        }
-
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, nameVersion.getName(), nameVersion.getVersion());
-        return new Dependency(nameVersion.getName(), nameVersion.getVersion(), externalId);
+        return new NameVersion(nameVersionArray[0], nameVersionArray[1]);
     }
-
 }

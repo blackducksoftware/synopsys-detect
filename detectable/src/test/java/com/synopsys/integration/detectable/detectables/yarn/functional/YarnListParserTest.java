@@ -1,7 +1,6 @@
 package com.synopsys.integration.detectable.detectables.yarn.functional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -9,8 +8,12 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLineLevelParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListNode;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.GraphCompare;
 
@@ -31,10 +34,8 @@ public class YarnListParserTest {
         designedYarnLock.add("  resolved \"http://nexus/nexus3/repository/npm-all/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d\"");
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final YarnLockParser yarnLockParser = new YarnLockParser();
-        final YarnListParser yarnListParser = new YarnListParser(externalIdFactory, yarnLockParser);
-        final String yarnListText = FunctionalTestFiles.asString("/yarn/yarn-list.txt");
-        final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, Arrays.asList(yarnListText.split(System.lineSeparator())));
+        final List<String> yarnListText = FunctionalTestFiles.asListOfStrings("/yarn/yarn-list.txt");
+        DependencyGraph dependencyGraph = createDependencyGraph(designedYarnLock, yarnListText);
         GraphCompare.assertEqualsResource("/yarn/list-expected-graph.json", dependencyGraph);
     }
 
@@ -68,11 +69,22 @@ public class YarnListParserTest {
         designedYarnLock.add("  version \"4.2.1\"");
         designedYarnLock.add("  resolved \"http://nexus/nexus3/repository/npm-all/hoek/-/hoek-4.2.1.tgz#9634502aa12c445dd5a7c5734b572bb8738aacbb\"");
 
-        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final YarnLockParser yarnLockParser = new YarnLockParser();
-        final YarnListParser yarnListParser = new YarnListParser(externalIdFactory, yarnLockParser);
-        final String yarnListText = FunctionalTestFiles.asString("/yarn/yarn-list-res.txt");
-        final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, Arrays.asList(yarnListText.split(System.lineSeparator())));
+        final List<String> yarnListText = FunctionalTestFiles.asListOfStrings("/yarn/yarn-list-res.txt");
+        final DependencyGraph dependencyGraph = createDependencyGraph(designedYarnLock, yarnListText);
         GraphCompare.assertEqualsResource("/yarn/list-expected-graph-2.json", dependencyGraph);
+    }
+
+    private DependencyGraph createDependencyGraph(List<String> yarnLockText, List<String> yarnListText){
+        final YarnLineLevelParser lineLevelParser = new YarnLineLevelParser();
+        final YarnLockParser yarnLockParser = new YarnLockParser(lineLevelParser);
+        final YarnListParser yarnListParser = new YarnListParser(lineLevelParser);
+
+        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        final YarnTransformer yarnTransformer = new YarnTransformer(externalIdFactory);
+
+        YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
+        List<YarnListNode> yarnList = yarnListParser.parseYarnList(yarnListText);
+        final DependencyGraph dependencyGraph = yarnTransformer.transform(yarnList, yarnLock);
+        return dependencyGraph;
     }
 }

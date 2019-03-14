@@ -12,8 +12,12 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLineLevelParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListNode;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 @UnitTest
@@ -30,9 +34,7 @@ public class YarnListParserTest {
         testLines.add("├─ abab@1.0.4");
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final YarnLockParser yarnLockParser = new YarnLockParser();
-        final YarnListParser yarnListParser = new YarnListParser(externalIdFactory, yarnLockParser);
-        final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
+        DependencyGraph dependencyGraph = createDependencyGraph(designedYarnLock, testLines);
 
         final GraphAssert graphAssert = new GraphAssert(Forge.NPM, dependencyGraph);
         graphAssert.hasRootDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "abab", "1.0.4"));
@@ -53,9 +55,7 @@ public class YarnListParserTest {
         testLines.add("├─ abab@1.0.4");
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final YarnLockParser yarnLockParser = new YarnLockParser();
-        final YarnListParser yarnListParser = new YarnListParser(externalIdFactory, yarnLockParser);
-        final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
+        DependencyGraph dependencyGraph = createDependencyGraph(designedYarnLock, testLines);
 
         final GraphAssert graphAssert = new GraphAssert(Forge.NPM, dependencyGraph);
         graphAssert.hasRootDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "abab", "1.0.4"));
@@ -79,9 +79,7 @@ public class YarnListParserTest {
         testLines.add("└─ extsprintf@1.3.0");
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final YarnLockParser yarnLockParser = new YarnLockParser();
-        final YarnListParser yarnListParser = new YarnListParser(externalIdFactory, yarnLockParser);
-        final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
+        DependencyGraph dependencyGraph = createDependencyGraph(designedYarnLock, testLines);
 
         final GraphAssert graphAssert = new GraphAssert(Forge.NPM, dependencyGraph);
         graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "esprima", "3.1.3"));
@@ -103,9 +101,7 @@ public class YarnListParserTest {
         testLines.add("│  └─ camelcase@^3.0.0");
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final YarnLockParser yarnLockParser = new YarnLockParser();
-        final YarnListParser yarnListParser = new YarnListParser(externalIdFactory, yarnLockParser);
-        final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
+        DependencyGraph dependencyGraph = createDependencyGraph(designedYarnLock, testLines);
 
         final GraphAssert graphAssert = new GraphAssert(Forge.NPM, dependencyGraph);
         final ExternalId rootDependency = graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "yargs-parse", "4.2.1"));
@@ -131,13 +127,25 @@ public class YarnListParserTest {
         testLines.add("│  │  └─ ms@0.7.2");
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final YarnLockParser yarnLockParser = new YarnLockParser();
-        final YarnListParser yarnListParser = new YarnListParser(externalIdFactory, yarnLockParser);
-        final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
+        DependencyGraph dependencyGraph = createDependencyGraph(designedYarnLock, testLines);
 
         final GraphAssert graphAssert = new GraphAssert(Forge.NPM, dependencyGraph);
         final ExternalId rootDependency = graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "yargs-parse", "4.2.1"));
         final ExternalId childDependency = graphAssert.hasParentChildRelationship(rootDependency, externalIdFactory.createNameVersionExternalId(Forge.NPM, "camelcase", "5.5.2"));
         graphAssert.hasParentChildRelationship(childDependency, externalIdFactory.createNameVersionExternalId(Forge.NPM, "ms", "0.7.2"));
+    }
+
+    private DependencyGraph createDependencyGraph(List<String> yarnLockText, List<String> yarnListText){
+        final YarnLineLevelParser lineLevelParser = new YarnLineLevelParser();
+        final YarnLockParser yarnLockParser = new YarnLockParser(lineLevelParser);
+        final YarnListParser yarnListParser = new YarnListParser(lineLevelParser);
+
+        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        final YarnTransformer yarnTransformer = new YarnTransformer(externalIdFactory);
+
+        YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
+        List<YarnListNode> yarnList = yarnListParser.parseYarnList(yarnListText);
+        final DependencyGraph dependencyGraph = yarnTransformer.transform(yarnList, yarnLock);
+        return dependencyGraph;
     }
 }

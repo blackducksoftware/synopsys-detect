@@ -32,22 +32,28 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class YarnLockParser extends BaseYarnParser {
+public class YarnLockParser {
     public static final String COMMENT_PREFIX = "#";
     public static final String VERSION_PREFIX = "version \"";
     public static final String VERSION_SUFFIX = "\"";
 
-    public Map<String, String> getYarnLockResolvedVersionMap(final List<String> yarnLockFileAsList) {
-        final Map<String, String> yarnLockResolvedVersions = new HashMap<>();
-        final List<String> fuzzyIds = new ArrayList<>();
+    private final YarnLineLevelParser lineLevelParser;
 
+    public YarnLockParser(final YarnLineLevelParser lineLevelParser) {
+        this.lineLevelParser = lineLevelParser;
+    }
+
+    public YarnLock parseYarnLock(final List<String> yarnLockFileAsList) {
+        final Map<String, String> yarnLockResolvedVersions = new HashMap<>();
+
+        final List<String> fuzzyIds = new ArrayList<>();
         for (final String line : yarnLockFileAsList) {
             if (StringUtils.isBlank(line) || line.trim().startsWith(COMMENT_PREFIX)) {
                 continue;
             }
 
             final String trimmedLine = line.trim();
-            final int level = getLineLevel(line);
+            final int level = lineLevelParser.parseIndentLevel(line);
             if (level == 0) {
                 fuzzyIds.addAll(getFuzzyIdsFromLine(line));
             } else if (level == 1 && trimmedLine.startsWith(VERSION_PREFIX)) {
@@ -57,7 +63,7 @@ public class YarnLockParser extends BaseYarnParser {
             }
         }
 
-        return yarnLockResolvedVersions;
+        return new YarnLock(yarnLockResolvedVersions);
     }
 
     private List<String> getFuzzyIdsFromLine(final String s) {
@@ -66,5 +72,4 @@ public class YarnLockParser extends BaseYarnParser {
                    .map(line -> line.trim().replaceAll("\"", "").replaceAll(":", ""))
                    .collect(Collectors.toList());
     }
-
 }

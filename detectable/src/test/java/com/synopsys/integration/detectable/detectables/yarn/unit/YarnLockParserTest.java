@@ -4,11 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.annotations.UnitTest;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLineLevelParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 
 @UnitTest
@@ -27,11 +28,11 @@ public class YarnLockParserTest {
         yarnLockText.add("  version \"1.0.3\"");
         yarnLockText.add("  resolved \"http://nexus.fr.murex.com/nexus3/repository/npm-all/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b\"");
 
-        final YarnLockParser yarnLockParser = new YarnLockParser();
-        final Map<String, String> lockResolvedVersions = yarnLockParser.getYarnLockResolvedVersionMap(yarnLockText);
+        final YarnLockParser yarnLockParser = new YarnLockParser(new YarnLineLevelParser());
+        final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
-        assertEquals("0.9.0", lockResolvedVersions.get("async@0.9.0"));
-        assertEquals("1.0.3", lockResolvedVersions.get("colors@1.0.3"));
+        assertEquals("0.9.0", yarnLock.versionForFuzzyId("async@0.9.0").get());
+        assertEquals("1.0.3", yarnLock.versionForFuzzyId("colors@1.0.3").get());
     }
 
     @Test
@@ -47,11 +48,11 @@ public class YarnLockParserTest {
         yarnLockText.add("  version \"0.9.0\"");
         yarnLockText.add("  resolved \"http://nexus.fr.murex.com/nexus3/repository/npm-all/http-server/-/http-server-0.9.0.tgz#8f1b06bdc733618d4dc42831c7ba1aff4e06001a\"");
 
-        final YarnLockParser yarnLockParser = new YarnLockParser();
-        final Map<String, String> lockResolvedVersions = yarnLockParser.getYarnLockResolvedVersionMap(yarnLockText);
+        final YarnLockParser yarnLockParser = new YarnLockParser(new YarnLineLevelParser());
+        final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
-        assertEquals("1.16.2", lockResolvedVersions.get("http-proxy@^1.8.1"));
-        assertEquals("0.9.0", lockResolvedVersions.get("http-server@^0.9.0"));
+        assertEquals("1.16.2", yarnLock.versionForFuzzyId("http-proxy@^1.8.1").get());
+        assertEquals("0.9.0", yarnLock.versionForFuzzyId("http-server@^0.9.0").get());
     }
 
     @Test
@@ -63,15 +64,15 @@ public class YarnLockParserTest {
         yarnLockText.add("  dependencies:");
         yarnLockText.add("    ms \"2.0.0\"");
 
-        final YarnLockParser yarnLockParser = new YarnLockParser();
-        final Map<String, String> lockResolvedVersions = yarnLockParser.getYarnLockResolvedVersionMap(yarnLockText);
+        final YarnLockParser yarnLockParser = new YarnLockParser(new YarnLineLevelParser());
+        final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
-        assertEquals("2.6.9", lockResolvedVersions.get("debug@2"));
-        assertEquals("2.6.9", lockResolvedVersions.get("debug@2.6.9"));
-        assertEquals("2.6.9", lockResolvedVersions.get("debug@^2.2.0"));
-        assertEquals("2.6.9", lockResolvedVersions.get("debug@^2.3.3"));
-        assertEquals("2.6.9", lockResolvedVersions.get("debug@~2.6.4"));
-        assertEquals("2.6.9", lockResolvedVersions.get("debug@~2.6.6"));
+        assertEquals("2.6.9", yarnLock.versionForFuzzyId("debug@2").get());
+        assertEquals("2.6.9", yarnLock.versionForFuzzyId("debug@2.6.9").get());
+        assertEquals("2.6.9", yarnLock.versionForFuzzyId("debug@^2.2.0").get());
+        assertEquals("2.6.9", yarnLock.versionForFuzzyId("debug@^2.3.3").get());
+        assertEquals("2.6.9", yarnLock.versionForFuzzyId("debug@~2.6.4").get());
+        assertEquals("2.6.9", yarnLock.versionForFuzzyId("debug@~2.6.6").get());
     }
 
     @Test
@@ -83,10 +84,10 @@ public class YarnLockParserTest {
         yarnLockText.add("  dependencies:");
         yarnLockText.add("    cssom \"0.3.x\"");
 
-        final YarnLockParser yarnLockParser = new YarnLockParser();
-        final Map<String, String> lockResolvedVersions = yarnLockParser.getYarnLockResolvedVersionMap(yarnLockText);
+        final YarnLockParser yarnLockParser = new YarnLockParser(new YarnLineLevelParser());
+        final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
-        assertEquals("0.2.37", lockResolvedVersions.get("cssstyle@>= 0.2.37 < 0.3.0"));
+        assertEquals("0.2.37", yarnLock.versionForFuzzyId("cssstyle@>= 0.2.37 < 0.3.0").get());
     }
 
 }

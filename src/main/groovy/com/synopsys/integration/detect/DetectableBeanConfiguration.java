@@ -158,6 +158,8 @@ import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLineLevelParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 
 import freemarker.template.Configuration;
 
@@ -473,17 +475,27 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public YarnListParser yarnListParser() {
-        return new YarnListParser(externalIdFactory, yarnLockParser());
+        return new YarnListParser(yarnLineLevelParser());
     }
 
     @Bean
     public YarnLockParser yarnLockParser() {
-        return new YarnLockParser();
+        return new YarnLockParser(yarnLineLevelParser());
+    }
+
+    @Bean
+    public YarnTransformer yarnTransformer() {
+        return new YarnTransformer(externalIdFactory);
+    }
+
+    @Bean
+    public YarnLineLevelParser yarnLineLevelParser() {
+        return new YarnLineLevelParser();
     }
 
     @Bean
     public YarnLockExtractor yarnLockExtractor() {
-        return new YarnLockExtractor(externalIdFactory, yarnListParser(), executableRunner, detectableOptionFactory.createYarnLockOptions());
+        return new YarnLockExtractor(externalIdFactory, yarnListParser(), executableRunner, yarnLockParser(), detectableOptionFactory.createYarnLockOptions(), yarnTransformer());
     }
 
     @Bean

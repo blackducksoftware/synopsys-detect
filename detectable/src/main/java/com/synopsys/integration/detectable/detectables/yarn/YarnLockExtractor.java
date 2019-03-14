@@ -39,7 +39,11 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListNode;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 
 public class YarnLockExtractor {
     public static final String OUTPUT_FILE = "detect_yarn_proj_dependencies.txt";
@@ -47,14 +51,19 @@ public class YarnLockExtractor {
 
     private final ExternalIdFactory externalIdFactory;
     private final YarnListParser yarnListParser;
-    private final ExecutableRunner executableRunner;
+    private final YarnLockParser yarnLockParser;
     private final YarnLockOptions yarnLockOptions;
+    private final ExecutableRunner executableRunner;
+    private final YarnTransformer yarnTransformer;
 
-    public YarnLockExtractor(final ExternalIdFactory externalIdFactory, final YarnListParser yarnListParser, final ExecutableRunner executableRunner, final YarnLockOptions yarnLockOptions) {
+    public YarnLockExtractor(final ExternalIdFactory externalIdFactory, final YarnListParser yarnListParser, final ExecutableRunner executableRunner,
+        final YarnLockParser yarnLockParser, final YarnLockOptions yarnLockOptions, final YarnTransformer yarnTransformer) {
         this.externalIdFactory = externalIdFactory;
         this.yarnListParser = yarnListParser;
+        this.yarnLockParser = yarnLockParser;
         this.executableRunner = executableRunner;
         this.yarnLockOptions = yarnLockOptions;
+        this.yarnTransformer = yarnTransformer;
     }
 
     public Extraction extract(final File directory, final File yarnlock, final File yarnExe) {
@@ -73,9 +82,12 @@ public class YarnLockExtractor {
                 return builder.build();
             }
 
-            final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(yarnLockText, executableOutput.getStandardOutputAsList());
+            YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
+            List<YarnListNode> yarnList = yarnListParser.parseYarnList(executableOutput.getStandardOutputAsList());
 
-            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, directory.getCanonicalPath());
+            final DependencyGraph dependencyGraph = yarnTransformer.transform(yarnList, yarnLock);
+
+            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, directory.getCanonicalPath()); //TODO: Don't do this...
             final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, externalId);
 
             return new Extraction.Builder().success(detectCodeLocation).build();
