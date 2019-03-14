@@ -43,10 +43,8 @@ public class YarnListParser {
         List<YarnListNode> yarnListNodes = new ArrayList<>();
 
         for (final String line : yarnListAsList) {
-            final String lowerCaseLine = line.toLowerCase().trim();
-            final String cleanedLine = lineLevelParser.replaceTreeCharactersWithSpaces(lowerCaseLine);
-
-            if (shouldParseLine(line)){
+            if (shouldParseLine(line.toLowerCase().trim())){
+                final String cleanedLine = lineLevelParser.replaceTreeCharactersWithSpaces(line);
                 YarnListNode yarnListNode = parseDependencyFromLine(cleanedLine);
                 yarnListNodes.add(yarnListNode);
             }
@@ -61,8 +59,6 @@ public class YarnListParser {
         }
         return true;
     }
-
-
 
     public YarnListNode parseDependencyFromLine(final String cleanedLine) {
         final String fuzzyNameVersion = cleanedLine.trim();

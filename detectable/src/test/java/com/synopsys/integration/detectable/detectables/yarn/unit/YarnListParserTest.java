@@ -23,6 +23,19 @@ import com.synopsys.integration.detectable.util.graph.GraphAssert;
 @UnitTest
 public class YarnListParserTest {
     @Test
+    void testCapitalNamePreserverd() {
+        final List<String> testLines = new ArrayList<>();
+        testLines.add("yarn list v1.5.1");
+        testLines.add("├─ SOMEcapital@1.0.4");
+
+        YarnListParser yarnListParser = new YarnListParser(new YarnLineLevelParser());
+        List<YarnListNode> result = yarnListParser.parseYarnList(testLines);
+
+        assertEquals(1, result.size());
+        assertEquals("SOMEcapital", result.get(0).getPackageName());
+    }
+
+    @Test
     void testDependencyInYarnListAndNotInLock() {
         final List<String> designedYarnLock = new ArrayList<>();
         designedYarnLock.add("ajv@5.5.2:");
