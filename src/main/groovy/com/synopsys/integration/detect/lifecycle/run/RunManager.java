@@ -58,6 +58,7 @@ import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorTool;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
+import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFilter;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.tool.polaris.PolarisTool;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
@@ -83,6 +84,8 @@ import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecide
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
+import com.synopsys.integration.detector.base.DetectorType;
+import com.synopsys.integration.detector.finder.DetectorFilter;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -157,7 +160,13 @@ public class RunManager {
                 final boolean buildless = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BUILDLESS, PropertyAuthority.None);
                 final DetectorTool detectorTool = new DetectorTool(extractionEnvironmentProvider, detectableFactory, eventSystem, codeLocationConverter, buildless);
 
-                final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), finderOptions, projectBomTool);
+                boolean forceNested = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DETECTOR_SEARCH_CONTINUE, PropertyAuthority.None);
+                String included = detectConfiguration.getProperty(DetectProperty.DETECT_INCLUDED_DETECTOR_TYPES, PropertyAuthority.None);
+                String excluded = detectConfiguration.getProperty(DetectProperty.DETECT_INCLUDED_DETECTOR_TYPES, PropertyAuthority.None);
+                DetectorFilter detectorFilter = new DetectDetectorFilter(excluded, included);
+
+                final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), finderOptions, detectorFilter, forceNested, projectBomTool);
+
                 runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
                 runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);
                 runResult.addApplicableDetectors(detectorToolResult.applicableDetectorTypes);
