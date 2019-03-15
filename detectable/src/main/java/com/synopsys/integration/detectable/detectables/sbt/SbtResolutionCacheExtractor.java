@@ -85,7 +85,7 @@ public class SbtResolutionCacheExtractor {
             String projectName = null;
             String projectVersion = null;
             for (final SbtDependencyModule module : project.modules) {
-                final CodeLocation codeLocation = new CodeLocation(module.graph, project.projectExternalId, module.sourcePath);
+                final CodeLocation codeLocation = new CodeLocation(module.graph, project.projectExternalId);
                 if (projectName == null) {
                     projectName = project.projectName;
                     projectVersion = project.projectVersion;
