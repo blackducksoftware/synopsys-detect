@@ -44,7 +44,6 @@ import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.project.DetectorEvaluationNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.DetectorNameVersionDecider;
-import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -103,9 +102,9 @@ public class DetectorTool {
         final List<DetectorEvaluation> detectorEvaluations = rootEvaluation.allDescendentEvaluations();
 
         logger.trace("Setting up detector events.");
-        final DetectorEventBroadcaster eventBroadcaster = new DetectorEventBroadcaster(eventSystem);
+        final DetectorEvaluatorBroadcaster eventBroadcaster = new DetectorEvaluatorBroadcaster(eventSystem);
         final DetectorEvaluator detectorEvaluator = new DetectorEvaluator();
-        detectorEvaluator.setDetectorEventListener(eventBroadcaster);
+        detectorEvaluator.setDetectorEvaluatorListener(eventBroadcaster);
 
         logger.info("Starting detector search.");
         detectorEvaluator.searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());

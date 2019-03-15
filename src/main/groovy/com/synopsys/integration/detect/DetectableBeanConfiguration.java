@@ -207,12 +207,6 @@ public class DetectableBeanConfiguration {
         return new DetectableFactory();
     }
 
-    //Temporary dependencies
-
-    public ExecutableRunner getExecutableRunner() {
-        return null; //TODO: imple
-    }
-
     //Detectable-Only Dependencies
     //All detector support classes. These are classes not actually used outside of the bom tools but are necessary for some bom tools.
 

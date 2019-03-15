@@ -25,15 +25,13 @@ package com.synopsys.integration.detect.tool.detector;
 
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detectable.ExtractionEnvironment;
-import com.synopsys.integration.detector.DetectorEventListener;
+import com.synopsys.integration.detector.evaluation.DetectorEvaluatorListener;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.rule.DetectorRule;
 
-public class DetectorEventBroadcaster implements DetectorEventListener {
+public class DetectorEvaluatorBroadcaster implements DetectorEvaluatorListener {
     private final EventSystem eventSystem;
 
-    public DetectorEventBroadcaster(final EventSystem eventSystem) {
+    public DetectorEvaluatorBroadcaster(final EventSystem eventSystem) {
         this.eventSystem = eventSystem;
     }
 

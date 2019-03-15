@@ -21,18 +21,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector;
+package com.synopsys.integration.detector.evaluation;
 
-import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.rule.DetectorRule;
 
-public interface DetectorEventListener {
+public interface DetectorEvaluatorListener {
     void applicableStarted(DetectorEvaluation detectorEvaluation);
     void applicableEnded(DetectorEvaluation detectorEvaluation);
     void extractableStarted(DetectorEvaluation detectorEvaluation);
     void extractableEnded(DetectorEvaluation detectorEvaluation);
     void extractionStarted(DetectorEvaluation detectorEvaluation);
     void extractionEnded(DetectorEvaluation detectorEvaluation);
-
 }
