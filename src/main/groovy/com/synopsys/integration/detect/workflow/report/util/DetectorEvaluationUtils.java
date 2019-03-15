@@ -31,23 +31,32 @@ import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class DetectorEvaluationUtils {
-    public static List<DetectorEvaluation> flatten(DetectorEvaluationTree tree){
-        return tree.asFlatList().stream().flatMap(it -> it.getOrderedEvaluations().stream()).collect(Collectors.toList());
+
+    public static List<DetectorEvaluation> applicableChildren(DetectorEvaluationTree tree){
+        return filteredChildren(tree, DetectorEvaluation::isApplicable);
     }
 
-    public static List<DetectorEvaluation> allApplicable(DetectorEvaluationTree tree){
-        return filteredEvaluations(tree, DetectorEvaluation::isApplicable);
+    public static List<DetectorEvaluation> applicableDescendants(DetectorEvaluationTree tree){
+        return filteredDescendents(tree, DetectorEvaluation::isApplicable);
     }
 
-    public static List<DetectorEvaluation> notApplicable(DetectorEvaluationTree tree){
-        return filteredEvaluations(tree, detectorEvaluation -> !detectorEvaluation.isApplicable());
+    public static List<DetectorEvaluation> notApplicableChildren(DetectorEvaluationTree tree){
+        return filteredChildren(tree, detectorEvaluation -> !detectorEvaluation.isApplicable());
     }
 
-    public static List<DetectorEvaluation> notSearchable(DetectorEvaluationTree tree){
-        return filteredEvaluations(tree, detectorEvaluation -> !detectorEvaluation.isSearchable());
+    public static List<DetectorEvaluation> notSearchableChildren(DetectorEvaluationTree tree){
+        return filteredChildren(tree, detectorEvaluation -> !detectorEvaluation.isSearchable());
     }
 
-    public static List<DetectorEvaluation> filteredEvaluations(DetectorEvaluationTree tree, Predicate<DetectorEvaluation> predicate){
+    public static List<DetectorEvaluation> extractionSuccessDescendents(DetectorEvaluationTree tree){
+        return filteredDescendents(tree, DetectorEvaluation::wasExtractionSuccessful);
+    }
+
+    public static List<DetectorEvaluation> filteredChildren(DetectorEvaluationTree tree, Predicate<DetectorEvaluation> predicate){
         return tree.getOrderedEvaluations().stream().filter(predicate).collect(Collectors.toList());
+    }
+
+    public static List<DetectorEvaluation> filteredDescendents(DetectorEvaluationTree tree, Predicate<DetectorEvaluation> predicate){
+        return tree.allDescendentEvaluations().stream().filter(predicate).collect(Collectors.toList());
     }
 }

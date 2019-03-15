@@ -101,7 +101,6 @@ public class DetectorRuleFactory {
         final DetectorRuleSetBuilder ruleSet = new DetectorRuleSetBuilder();
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", detectableFactory::createPodLockDetectable).defaultNested().build();
-        // TODO: ADD Cran
         ruleSet.addDetector(DetectorType.PACKAGIST, "Packrat Lock", detectableFactory::createPackratLockDetectable).defaultNotNested().build();
 
         ruleSet.addDetector(DetectorType.GO_DEP, "Go Lock", detectableFactory::createGoLockDetectable).defaultNested().build();

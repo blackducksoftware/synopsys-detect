@@ -51,9 +51,9 @@ public class CodeLocationDependencyCounter {
         return dependencyCounts;
     }
 
-    public Map<CodeLocation, Integer> countCodeLocations(final List<CodeLocation> codeLocations) {
-        final Map<CodeLocation, Integer> dependencyCounts = new HashMap<>();
-        for (final CodeLocation codeLocation : codeLocations) {
+    public Map<DetectCodeLocation, Integer> countCodeLocations(final Set<DetectCodeLocation> codeLocations) {
+        final Map<DetectCodeLocation, Integer> dependencyCounts = new HashMap<>();
+        for (final DetectCodeLocation codeLocation : codeLocations) {
             if (!dependencyCounts.containsKey(codeLocation)) {
                 dependencyCounts.put(codeLocation, 0);
             }
@@ -62,7 +62,7 @@ public class CodeLocationDependencyCounter {
         return dependencyCounts;
     }
 
-    private int countCodeLocationDependencies(final CodeLocation codeLocation) {
+    private int countCodeLocationDependencies(final DetectCodeLocation codeLocation) {
         return countDependencies(new ArrayList<>(), codeLocation.getDependencyGraph().getRootDependencyExternalIds(), codeLocation.getDependencyGraph());
     }
 

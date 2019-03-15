@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detector
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,24 +21,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.profiling;
+package com.synopsys.integration.detector.evaluation;
 
-import com.synopsys.integration.detectable.Detectable;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 
-public class DetectableTime {
-    private final long ms;
-    private final Detectable detector;
-
-    public DetectableTime(final Detectable detector, final long ms) {
-        this.ms = ms;
-        this.detector = detector;
-    }
-
-    public long getMs() {
-        return ms;
-    }
-
-    public Detectable getDetectable() {
-        return detector;
-    }
+public interface DetectorEvaluatorListener {
+    void applicableStarted(DetectorEvaluation detectorEvaluation);
+    void applicableEnded(DetectorEvaluation detectorEvaluation);
+    void extractableStarted(DetectorEvaluation detectorEvaluation);
+    void extractableEnded(DetectorEvaluation detectorEvaluation);
+    void extractionStarted(DetectorEvaluation detectorEvaluation);
+    void extractionEnded(DetectorEvaluation detectorEvaluation);
 }

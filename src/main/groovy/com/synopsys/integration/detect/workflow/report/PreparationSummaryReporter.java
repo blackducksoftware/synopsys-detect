@@ -41,7 +41,7 @@ public class PreparationSummaryReporter {
     private void writeSummary(final ReportWriter writer, final List<DetectorEvaluationTree> detectorEvaluationTrees) {
         ReporterUtils.printHeader(writer, "Preparation for extraction");
         for (final DetectorEvaluationTree detectorEvaluationTree : detectorEvaluationTrees) {
-            List<DetectorEvaluation> applicable = DetectorEvaluationUtils.allApplicable(detectorEvaluationTree);
+            List<DetectorEvaluation> applicable = DetectorEvaluationUtils.applicableChildren(detectorEvaluationTree);
             List<DetectorEvaluation> ready = applicable.stream().filter(it -> it.isExtractable()).collect(Collectors.toList());
             List<DetectorEvaluation> failed = applicable.stream().filter(it -> !it.isExtractable()).collect(Collectors.toList());
 

@@ -70,7 +70,7 @@ public class FileReportWriter implements ReportWriter {
 
     @Override
     public void writeLine(final String line, final Exception e) {
-        //TODO: print full exception if applicable.
+        //TODO: print full exception if applicableChildren.
         writeLine(line);
         writeLine(e.getMessage());
         for (StackTraceElement element : e.getStackTrace()){

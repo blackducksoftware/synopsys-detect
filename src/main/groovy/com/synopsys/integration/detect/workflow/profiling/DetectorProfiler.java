@@ -27,62 +27,63 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 
-public class DetectableProfiler { //TODO: Bring back
-    public DetectableTimekeeper applicableTimekeeper = new DetectableTimekeeper();
-    public DetectableTimekeeper extractableTimekeeper = new DetectableTimekeeper();
-    public DetectableTimekeeper extractionTimekeeper = new DetectableTimekeeper();
+public class DetectorProfiler {
+    public Timekeeper<DetectorEvaluation> applicableTimekeeper = new Timekeeper();
+    public Timekeeper<DetectorEvaluation> extractableTimekeeper = new Timekeeper();
+    public Timekeeper<DetectorEvaluation> extractionTimekeeper = new Timekeeper();
     private EventSystem eventSystem;
 
-    public DetectableProfiler(EventSystem eventSystem) {
+    public DetectorProfiler(EventSystem eventSystem) {
         this.eventSystem = eventSystem;
-        /*
+
         eventSystem.registerListener(Event.ApplicableStarted, event -> applicableStarted(event));
         eventSystem.registerListener(Event.ApplicableEnded, event -> applicableEnded(event));
         eventSystem.registerListener(Event.ExtractableStarted, event -> extractableStarted(event));
         eventSystem.registerListener(Event.ExtractableEnded, event -> extractableEnded(event));
-        eventSystem.registerListener(Event.ExtractionStarted, event -> extractionStarted(event.getDetector()));
-        eventSystem.registerListener(Event.ExtractionEnded, event -> extractionEnded(event.getDetector()));
-        eventSystem.registerListener(Event.DetectorsComplete, event -> bomToolsComplete());*/
-    }
-    /*
-
-    private void applicableStarted(final Detector detector) {
-        applicableTimekeeper.started(detector);
+        eventSystem.registerListener(Event.ExtractionStarted, event -> extractionStarted(event));
+        eventSystem.registerListener(Event.ExtractionEnded, event -> extractionEnded(event));
+        eventSystem.registerListener(Event.DetectorsComplete, event -> bomToolsComplete());
     }
 
-    private void applicableEnded(final Detector detector) {
-        applicableTimekeeper.ended(detector);
+
+    private void applicableStarted(final DetectorEvaluation evaluation) {
+        applicableTimekeeper.started(evaluation);
     }
 
-    private void extractableStarted(final Detector detector) {
-        extractableTimekeeper.started(detector);
+    private void applicableEnded(final DetectorEvaluation evaluation) {
+        applicableTimekeeper.ended(evaluation);
     }
 
-    private void extractableEnded(final Detector detector) {
-        extractableTimekeeper.ended(detector);
+    private void extractableStarted(final DetectorEvaluation evaluation) {
+        extractableTimekeeper.started(evaluation);
     }
 
-    private void extractionStarted(final Detector detector) {
-        extractionTimekeeper.started(detector);
+    private void extractableEnded(final DetectorEvaluation evaluation) {
+        extractableTimekeeper.ended(evaluation);
     }
 
-    private void extractionEnded(final Detector detector) {
-        extractionTimekeeper.ended(detector);
+    private void extractionStarted(final DetectorEvaluation evaluation) {
+        extractionTimekeeper.started(evaluation);
     }
 
-    public List<DetectorTime> getApplicableTimings() {
+    private void extractionEnded(final DetectorEvaluation evaluation) {
+        extractionTimekeeper.ended(evaluation);
+    }
+
+    public List<Timing<DetectorEvaluation>> getApplicableTimings() {
         return applicableTimekeeper.getTimings();
     }
 
-    public List<DetectorTime> getExtractableTimings() {
+    public List<Timing<DetectorEvaluation>> getExtractableTimings() {
         return extractableTimekeeper.getTimings();
     }
 
-    public List<DetectorTime> getExtractionTimings() {
+    public List<Timing<DetectorEvaluation>> getExtractionTimings() {
         return extractionTimekeeper.getTimings();
     }
 
@@ -91,26 +92,23 @@ public class DetectableProfiler { //TODO: Bring back
         eventSystem.publishEvent(Event.DetectorsProfiled, timings);
     }
 
-    private void addAggregateByBomToolGroupType(final Map<DetectorType, Long> aggregate, final List<DetectorTime> detectorTimes) {
-        for (final DetectorTime detectorTime : detectorTimes) {
-            final DetectorType type = detectorTime.getDetector().getDetectorType();
+    private void addAggregateByBomToolGroupType(final Map<DetectorType, Long> aggregate, final List<Timing<DetectorEvaluation>> timings) {
+        for (final Timing<DetectorEvaluation> timing : timings) {
+            final DetectorType type = timing.getKey().getDetectorRule().getDetectorType();
             if (!aggregate.containsKey(type)) {
                 aggregate.put(type, 0L);
             }
-            final long time = detectorTime.getMs();
+            final long time = timing.getMs();
             final Long currentTime = aggregate.get(type);
             final Long sum = time + currentTime;
             aggregate.put(type, sum);
         }
-    }*/
+    }
 
     public Map<DetectorType, Long> getAggregateBomToolGroupTimes() {
         final Map<DetectorType, Long> aggregate = new HashMap<>();
+        addAggregateByBomToolGroupType(aggregate, getExtractableTimings());
+        addAggregateByBomToolGroupType(aggregate, getExtractionTimings());
         return aggregate;
-//        addAggregateByBomToolGroupType(aggregate, getExtractableTimings());
-  //      addAggregateByBomToolGroupType(aggregate, getExtractionTimings());
     }
-
-
-
 }

@@ -1,5 +1,5 @@
 /**
- * detector
+ * synopsys-detect
  *
  * Copyright (C) 2019 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,18 +21,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector;
+package com.synopsys.integration.detect.workflow.profiling;
 
-import com.synopsys.integration.detectable.ExtractionEnvironment;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.rule.DetectorRule;
+import com.synopsys.integration.detectable.Detectable;
+import com.synopsys.integration.detector.base.DetectorType;
 
-public interface DetectorEventListener {
-    void applicableStarted(DetectorEvaluation detectorEvaluation);
-    void applicableEnded(DetectorEvaluation detectorEvaluation);
-    void extractableStarted(DetectorEvaluation detectorEvaluation);
-    void extractableEnded(DetectorEvaluation detectorEvaluation);
-    void extractionStarted(DetectorEvaluation detectorEvaluation);
-    void extractionEnded(DetectorEvaluation detectorEvaluation);
+public class Timing<T> {
+    private final long ms;
+    private final T key;
 
+    public Timing(final T key, final long ms) {
+        this.ms = ms;
+        this.key = key;
+    }
+
+    public long getMs() {
+        return ms;
+    }
+
+    public T getKey() {
+        return key;
+    }
 }

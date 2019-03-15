@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -43,7 +44,6 @@ import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.project.DetectorEvaluationNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.DetectorNameVersionDecider;
-import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -99,15 +99,23 @@ public class DetectorTool {
         }
 
         final DetectorEvaluationTree rootEvaluation = possibleRootEvaluation.get();
-        final List<DetectorEvaluation> detectorEvaluations = DetectorEvaluationUtils.flatten(rootEvaluation);
+        final List<DetectorEvaluation> detectorEvaluations = rootEvaluation.allDescendentEvaluations();
 
         logger.trace("Setting up detector events.");
-        final DetectorEventBroadcaster eventBroadcaster = new DetectorEventBroadcaster(eventSystem);
+        final DetectorEvaluatorBroadcaster eventBroadcaster = new DetectorEvaluatorBroadcaster(eventSystem);
         final DetectorEvaluator detectorEvaluator = new DetectorEvaluator();
-        detectorEvaluator.setDetectorEventListener(eventBroadcaster);
+        detectorEvaluator.setDetectorEvaluatorListener(eventBroadcaster);
 
         logger.info("Starting detector search.");
         detectorEvaluator.searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
+
+        Set<DetectorType> applicable = detectorEvaluations.stream()
+                                                         .filter(DetectorEvaluation::isApplicable)
+                                                         .map(DetectorEvaluation::getDetectorRule)
+                                                         .map(DetectorRule::getDetectorType)
+                                                         .collect(Collectors.toSet());
+
+        eventSystem.publishEvent(Event.ApplicableCompleted, applicable);
         eventSystem.publishEvent(Event.SearchCompleted, rootEvaluation);
 
         logger.info("Starting detector preparation.");
@@ -132,11 +140,7 @@ public class DetectorTool {
 
         detectorToolResult.rootDetectorEvaluationTree = Optional.of(rootEvaluation);
 
-        detectorToolResult.applicableDetectorTypes = detectorEvaluations.stream()
-                                                         .filter(DetectorEvaluation::isApplicable)
-                                                         .map(DetectorEvaluation::getDetectorRule)
-                                                         .map(DetectorRule::getDetectorType)
-                                                         .collect(Collectors.toSet());
+        detectorToolResult.applicableDetectorTypes = applicable;
 
         detectorToolResult.codeLocationMap = detectorEvaluations.stream()
                                                  .filter(DetectorEvaluation::wasExtractionSuccessful)

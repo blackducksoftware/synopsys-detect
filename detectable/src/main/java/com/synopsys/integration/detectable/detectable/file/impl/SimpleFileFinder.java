@@ -48,7 +48,7 @@ public class SimpleFileFinder implements FileFinder {
             foundFiles.addAll(subFiles);
         }
 
-        final File[] matchingFiles = directoryToSearch.listFiles(filenameFilter); //TODO: I'm sure we could do this without iterating the directory twice, but premature optimization and whatnot.
+        final File[] matchingFiles = directoryToSearch.listFiles(filenameFilter); //We could do this without iterating the directory twice - but this works and is clean.
         if (matchingFiles != null && matchingFiles.length > 0) {
             foundFiles.addAll(Arrays.asList(matchingFiles));
         }

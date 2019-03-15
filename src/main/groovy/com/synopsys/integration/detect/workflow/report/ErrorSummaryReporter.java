@@ -23,8 +23,6 @@
  */
 package com.synopsys.integration.detect.workflow.report;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
 import java.util.function.Function;
 
@@ -43,9 +41,9 @@ public class ErrorSummaryReporter {
     private void writeSummaries(final ReportWriter writer, final List<DetectorEvaluationTree> trees) {
         boolean printedOne = false;
         for (final DetectorEvaluationTree tree : trees) {
-            final List<DetectorEvaluation> excepted = DetectorEvaluationUtils.filteredEvaluations(tree, DetectorEvaluation::wasExtractionException);
-            final List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredEvaluations(tree, DetectorEvaluation::wasExtractionFailure);
-            final List<DetectorEvaluation> notExtractable = DetectorEvaluationUtils.filteredEvaluations(tree, (evaluation) -> evaluation.isApplicable() && !evaluation.isExtractable());
+            final List<DetectorEvaluation> excepted = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionException);
+            final List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionFailure);
+            final List<DetectorEvaluation> notExtractable = DetectorEvaluationUtils.filteredChildren(tree, (evaluation) -> evaluation.isApplicable() && !evaluation.isExtractable());
             if (excepted.size() > 0 || failed.size() > 0 || notExtractable.size() > 0) {
                 if (!printedOne) {
                     printedOne = true;

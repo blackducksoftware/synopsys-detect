@@ -38,7 +38,6 @@ import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
-import com.synopsys.integration.detector.DetectorEventListener;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorType;
@@ -59,7 +58,7 @@ public class DetectorEvaluator {
     };
     private final boolean forceNested = false; // TODO: Needs to be fed by Detect
 
-    private DetectorEventListener detectorEventListener;
+    private DetectorEvaluatorListener detectorEvaluatorListener;
 
     //Unfortunately, currently search and applicable are tied together due to Search needing to know about previous detectors that applied.
     //So Search and then Applicable must be evaluated of Detector 1 before the next Search can be evaluated of Detector 2.
@@ -69,7 +68,7 @@ public class DetectorEvaluator {
         final Set<DetectorRule> appliedSoFar = new HashSet<>();
 
         for (final DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
-            getDetectorEventListener().ifPresent(it -> it.applicableStarted(detectorEvaluation));
+            getDetectorEvaluatorListener().ifPresent(it -> it.applicableStarted(detectorEvaluation));
 
             final DetectorRule detectorRule = detectorEvaluation.getDetectorRule();
             logger.trace("Evaluating detector: " + detectorRule.getDescriptiveName());
@@ -97,7 +96,7 @@ public class DetectorEvaluator {
                 logger.trace("Searchable did not pass, will not continue evaluating.");
             }
 
-            getDetectorEventListener().ifPresent(it -> it.applicableEnded(detectorEvaluation));
+            getDetectorEvaluatorListener().ifPresent(it -> it.applicableEnded(detectorEvaluation));
         }
 
         final Set<DetectorRule> nextAppliedInParent = new HashSet<>();
@@ -114,7 +113,7 @@ public class DetectorEvaluator {
         for (final DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
             if (detectorEvaluation.isSearchable() && detectorEvaluation.isApplicable()) {
 
-                getDetectorEventListener().ifPresent(it -> it.extractableStarted(detectorEvaluation));
+                getDetectorEvaluatorListener().ifPresent(it -> it.extractableStarted(detectorEvaluation));
 
                 logger.trace("Detector was searchable and applicable, will check extractable: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
                 final Detectable detectable = detectorEvaluation.getDetectable();
@@ -132,7 +131,7 @@ public class DetectorEvaluator {
                     logger.trace("Extractable did not pass, will not continue evaluating.");
                 }
 
-                getDetectorEventListener().ifPresent(it -> it.extractableEnded(detectorEvaluation));
+                getDetectorEvaluatorListener().ifPresent(it -> it.extractableEnded(detectorEvaluation));
             }
         }
 
@@ -151,7 +150,7 @@ public class DetectorEvaluator {
                 final ExtractionEnvironment extractionEnvironment = extractionEnvironmentProvider.apply(detectorEvaluation);
                 detectorEvaluation.setExtractionEnvironment(extractionEnvironment);
 
-                getDetectorEventListener().ifPresent(it -> it.extractionStarted(detectorEvaluation));
+                getDetectorEvaluatorListener().ifPresent(it -> it.extractionStarted(detectorEvaluation));
 
                 try {
                     final Extraction extraction = detectable.extract(extractionEnvironment);
@@ -160,7 +159,7 @@ public class DetectorEvaluator {
                     detectorEvaluation.setExtraction(new Extraction.Builder().exception(e).build());
                 }
 
-                getDetectorEventListener().ifPresent(it -> it.extractionEnded(detectorEvaluation));
+                getDetectorEvaluatorListener().ifPresent(it -> it.extractionEnded(detectorEvaluation));
 
                 logger.trace("Extraction result: " + detectorEvaluation.wasExtractionSuccessful());
             }
@@ -171,11 +170,11 @@ public class DetectorEvaluator {
         }
     }
 
-    public Optional<DetectorEventListener> getDetectorEventListener() {
-        return Optional.ofNullable(detectorEventListener);
+    public Optional<DetectorEvaluatorListener> getDetectorEvaluatorListener() {
+        return Optional.ofNullable(detectorEvaluatorListener);
     }
 
-    public void setDetectorEventListener(final DetectorEventListener detectorEventListener) {
-        this.detectorEventListener = detectorEventListener;
+    public void setDetectorEvaluatorListener(final DetectorEvaluatorListener detectorEvaluatorListener) {
+        this.detectorEvaluatorListener = detectorEvaluatorListener;
     }
 }

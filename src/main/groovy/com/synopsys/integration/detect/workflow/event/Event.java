@@ -24,6 +24,7 @@
 package com.synopsys.integration.detect.workflow.event;
 
 import java.io.File;
+import java.util.Set;
 
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
@@ -32,9 +33,11 @@ import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
+import com.synopsys.integration.detector.base.DetectorType;
 
 public class Event {
-    public static EventType<DetectorEvaluationTree> SearchCompleted = new EventType(DetectorEvaluationTree.class); //TODO: Listen
+    public static EventType<DetectorEvaluationTree> SearchCompleted = new EventType(DetectorEvaluationTree.class);
+    public static EventType<Set<DetectorType>> ApplicableCompleted = new EventType(Set.class);
     public static EventType<DetectorEvaluationTree> PreparationsCompleted = new EventType(DetectorEvaluationTree.class);
     public static EventType<DetectorEvaluationTree> ExtractionsCompleted = new EventType(DetectorEvaluationTree.class);
     public static EventType<DetectorToolResult> DetectorsComplete = new EventType(DetectorToolResult.class);
