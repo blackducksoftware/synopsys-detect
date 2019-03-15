@@ -128,13 +128,13 @@ public class SimpleExecutableResolver
     @Override
     public File resolvePip() {
         final String suffix = executableResolverOptions.isPython3() ? "3" : "";
-        return findCachedSystem("python" + suffix);
+        return findCachedSystem("pip" + suffix);
     }
 
     @Override
     public File resolvePython() {
         final String suffix = executableResolverOptions.isPython3() ? "3" : "";
-        return findCachedSystem("pip" + suffix);
+        return findCachedSystem("python" + suffix);
     }
 
     @Override

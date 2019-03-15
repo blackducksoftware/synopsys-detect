@@ -156,9 +156,9 @@ import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDet
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLineLevelParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLineLevelParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 
 import freemarker.template.Configuration;
@@ -460,7 +460,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public PipInspectorExtractor pipInspectorExtractor() {
-        return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser(), detectableOptionFactory.createPipInspectorDetectableOptions());
+        return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser());
     }
 
     @Bean
