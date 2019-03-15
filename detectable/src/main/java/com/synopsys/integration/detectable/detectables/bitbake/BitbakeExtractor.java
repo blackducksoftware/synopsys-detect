@@ -63,8 +63,7 @@ public class BitbakeExtractor {
     private final BitbakeGraphTransformer bitbakeGraphTransformer;
     private final BitbakeArchitectureParser bitbakeArchitectureParser;
 
-    public BitbakeExtractor(final ExecutableRunner executableRunner,
-        final FileFinder fileFinder, final GraphParserTransformer graphParserTransformer, final BitbakeGraphTransformer bitbakeGraphTransformer,
+    public BitbakeExtractor(final ExecutableRunner executableRunner, final FileFinder fileFinder, final GraphParserTransformer graphParserTransformer, final BitbakeGraphTransformer bitbakeGraphTransformer,
         final BitbakeArchitectureParser bitbakeArchitectureParser) {
         this.executableRunner = executableRunner;
         this.fileFinder = fileFinder;
@@ -73,14 +72,14 @@ public class BitbakeExtractor {
         this.bitbakeArchitectureParser = bitbakeArchitectureParser;
     }
 
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment, final File buildEnvScript, final File sourcePath, final String[] packageNames, final File bash) {
+    public Extraction extract(final ExtractionEnvironment extractionEnvironment, final File buildEnvScript, final File sourcePath, final String[] packageNames, final File bash, final String referenceImplementation) {
         final File outputDirectory = extractionEnvironment.getOutputDirectory();
         final File bitbakeBuildDirectory = new File(outputDirectory, "build");
 
         final List<CodeLocation> codeLocations = new ArrayList<>();
         for (final String packageName : packageNames) {
             final File dependsFile = executeBitbakeForRecipeDependsFile(outputDirectory, bitbakeBuildDirectory, buildEnvScript, packageName, bash);
-            final String targetArchitecture = executeBitbakeForTargetArchitecture(outputDirectory, buildEnvScript, packageName, bash);
+            final String targetArchitecture = executeBitbakeForTargetArchitecture(outputDirectory, buildEnvScript, packageName, bash).replace(referenceImplementation, "");
 
             try {
                 if (dependsFile == null) {

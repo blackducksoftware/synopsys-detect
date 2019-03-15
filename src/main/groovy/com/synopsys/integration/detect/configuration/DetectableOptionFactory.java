@@ -70,7 +70,8 @@ public class DetectableOptionFactory {
     public BitbakeDetectableOptions createBitbakeDetectableOptions() {
         final String buildEnvName = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_BUILD_ENV_NAME, PropertyAuthority.None);
         final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES, PropertyAuthority.None);
-        return new BitbakeDetectableOptions(buildEnvName, packageNames);
+        final String referenceImplementation = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_REFERENCE_IMPL, PropertyAuthority.None);
+        return new BitbakeDetectableOptions(buildEnvName, packageNames, referenceImplementation);
     }
 
     public ClangDetectableOptions createClangDetectableOptions() {
