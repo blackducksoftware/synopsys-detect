@@ -40,12 +40,10 @@ import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTr
 public class PipInspectorExtractor {
     private final ExecutableRunner executableRunner;
     private final PipInspectorTreeParser pipInspectorTreeParser;
-    private final PipInspectorDetectableOptions pipInspectorDetectableOptions;
 
-    public PipInspectorExtractor(final ExecutableRunner executableRunner, final PipInspectorTreeParser pipInspectorTreeParser, final PipInspectorDetectableOptions pipInspectorDetectableOptions) {
+    public PipInspectorExtractor(final ExecutableRunner executableRunner, final PipInspectorTreeParser pipInspectorTreeParser) {
         this.executableRunner = executableRunner;
         this.pipInspectorTreeParser = pipInspectorTreeParser;
-        this.pipInspectorDetectableOptions = pipInspectorDetectableOptions;
     }
 
     public Extraction extract(final File directory, final File pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath, final String providedProjectName) {
