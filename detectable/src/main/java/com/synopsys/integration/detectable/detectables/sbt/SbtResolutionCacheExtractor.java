@@ -85,7 +85,7 @@ public class SbtResolutionCacheExtractor {
             String projectName = null;
             String projectVersion = null;
             for (final SbtDependencyModule module : project.modules) {
-                final CodeLocation codeLocation = new CodeLocation(module.graph, project.projectExternalId);
+                final CodeLocation codeLocation = new CodeLocation(module.graph, project.projectExternalId, module.sourcePath);
                 if (projectName == null) {
                     projectName = project.projectName;
                     projectVersion = project.projectVersion;
@@ -227,7 +227,7 @@ public class SbtResolutionCacheExtractor {
                     for (final SbtDependencyModule aggregatedModule : aggregatedModules) {
                         logger.debug(String.format("Generated root node of %s %s", aggregatedModule.name, aggregatedModule.version));
 
-                        aggregatedModule.sourcePath = source.getCanonicalPath();
+                        aggregatedModule.sourcePath = source;
 
                         modules.add(aggregatedModule);
                     }

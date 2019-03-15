@@ -23,10 +23,12 @@
  */
 package com.synopsys.integration.detectable.detectables.sbt.model;
 
+import java.io.File;
+
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 
 public class SbtDependencyModule {
-    public String sourcePath;
+    public File sourcePath;
     public String name;
     public String version;
     public String org;
@@ -38,7 +40,7 @@ public class SbtDependencyModule {
     public SbtDependencyModule() {
     }
 
-    public SbtDependencyModule(final String name, final String version, final String org, final DependencyGraph graph, final String sourcePath) {
+    public SbtDependencyModule(final String name, final String version, final String org, final DependencyGraph graph, final File sourcePath) {
         this.sourcePath = sourcePath;
         this.graph = graph;
 
