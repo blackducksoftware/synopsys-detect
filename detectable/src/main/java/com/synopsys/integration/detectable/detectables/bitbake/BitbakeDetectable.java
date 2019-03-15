@@ -77,6 +77,8 @@ public class BitbakeDetectable extends Detectable {
             return new ExecutableNotFoundDetectableResult("bash");
         }
 
+        // TODO: Get bitbake from PATH
+
         return new PassedDetectableResult();
     }
 
