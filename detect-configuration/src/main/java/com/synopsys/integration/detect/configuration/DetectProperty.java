@@ -222,7 +222,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_GENERAL)
     @HelpDescription("If set to true, only Detector's capable of running without a build will be run")
-    DETECT_BUILDLESS("detect.detectors.buildless", "Buildless Mode", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_BUILDLESS("detect.detector.buildless", "Buildless Mode", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_CLEANUP, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If true, the files created by Detect will be cleaned up.")
