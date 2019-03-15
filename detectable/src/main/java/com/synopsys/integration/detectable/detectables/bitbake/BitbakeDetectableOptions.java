@@ -24,12 +24,14 @@
 package com.synopsys.integration.detectable.detectables.bitbake;
 
 public class BitbakeDetectableOptions {
-    private String buildEnvName;
-    private String[] packageNames;
+    private final String buildEnvName;
+    private final String[] packageNames;
+    private final String referenceImplementation;
 
-    public BitbakeDetectableOptions(final String buildEnvName, final String[] packageNames) {
+    public BitbakeDetectableOptions(final String buildEnvName, final String[] packageNames, final String referenceImplementation) {
         this.buildEnvName = buildEnvName;
         this.packageNames = packageNames;
+        this.referenceImplementation = referenceImplementation;
     }
 
     public String getBuildEnvName() {
@@ -38,5 +40,9 @@ public class BitbakeDetectableOptions {
 
     public String[] getPackageNames() {
         return packageNames;
+    }
+
+    public String getReferenceImplementation() {
+        return referenceImplementation;
     }
 }

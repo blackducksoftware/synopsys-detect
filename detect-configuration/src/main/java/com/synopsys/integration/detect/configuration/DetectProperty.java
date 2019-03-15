@@ -160,6 +160,10 @@ public enum DetectProperty {
     DETECT_BITBAKE_BUILD_ENV_NAME("detect.bitbake.build.env.name", "BitBake Init Script Name", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "oe-init-build-env"),
 
     @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
+    @HelpDescription("The reference implementation of the yocto project. These characters will be stripped from the discovered target architecture.")
+    DETECT_BITBAKE_REFERENCE_IMPL("detect.bitbake.reference.impl", "Reference implementation", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "_poky_linux"),
+
+    @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
     @HelpDescription("A comma separated list of package names to extract dependencies from")
     DETECT_BITBAKE_PACKAGE_NAMES("detect.bitbake.package.names", "BitBake Package Names", "4.4.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
