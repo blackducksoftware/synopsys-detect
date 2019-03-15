@@ -7,12 +7,23 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory
 import com.synopsys.integration.blackduck.service.ProjectService
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper
 import com.synopsys.integration.log.PrintStreamIntLogger
+import com.synopsys.integration.polaris.common.api.generated.common.BranchV0
+import com.synopsys.integration.polaris.common.api.generated.common.ProjectV0
+import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
+import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder
+import com.synopsys.integration.polaris.common.model.Issue
+import com.synopsys.integration.polaris.common.model.QueryIssue
+import com.synopsys.integration.polaris.common.service.BranchService
+import com.synopsys.integration.polaris.common.service.IssueService
+import com.synopsys.integration.polaris.common.service.PolarisService
+import com.synopsys.integration.polaris.common.service.PolarisServicesFactory
 
 buildscript {
     ext {
         springBootVersion = '2.0.3.RELEASE'
     }
     repositories {
+        mavenLocal()
         jcenter()
         mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
@@ -21,7 +32,8 @@ buildscript {
     dependencies {
         classpath 'com.blackducksoftware.integration:common-gradle-plugin:0.0.+'
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-        classpath 'com.blackducksoftware.integration:blackduck-common:42.2.1'
+        classpath 'com.blackducksoftware.integration:blackduck-common:42.3.0-SNAPSHOT'
+        classpath 'com.synopsys.integration:polaris-common:0.9.0'
     }
 }
 
@@ -42,7 +54,7 @@ allprojects {
     apply plugin: 'io.spring.dependency-management'
 
     dependencies {
-        implementation 'com.blackducksoftware.integration:blackduck-common:42.2.1'
+        implementation 'com.blackducksoftware.integration:blackduck-common:42.3.0-SNAPSHOT'
         implementation 'com.paypal.digraph:digraph-parser:1.0'
     }
 }
@@ -87,7 +99,7 @@ test {
 dependencies {
     implementation project(":detect-configuration")
 
-    implementation 'com.synopsys.integration:polaris-common:0.8.0'
+    implementation 'com.synopsys.integration:polaris-common:0.9.0'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
@@ -128,7 +140,7 @@ task runDetect(type: JavaExec) {
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
-    args = ['--detect.risk.report.pdf=true']
+    args = ['--detect.risk.report.pdf=true', '--detect.tools.excluded=POLARIS']
 }
 
 task verifyBlackDuckDetect() {
@@ -148,6 +160,7 @@ task verifyBlackDuckDetect() {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new PrintStreamIntLogger(System.out, com.synopsys.integration.log.LogLevel.INFO))
         BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService()
         ProjectService projectService = blackDuckServicesFactory.createProjectService()
+
         ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(project.name, version).get()
         List<VersionBomComponentView> bomComponents = blackDuckService.getAllResponses(projectVersionWrapper.projectVersionView, ProjectVersionView.COMPONENTS_LINK_RESPONSE)
         if (bomComponents.isEmpty()) {
@@ -157,4 +170,40 @@ task verifyBlackDuckDetect() {
             println "${it.componentName} - ${it.componentVersionName}"
         }
     }
+
+    task verifyPolarisDetect() {
+        dependsOn runDetect
+
+        doLast {
+            PolarisServerConfigBuilder polarisServerConfigBuilder = PolarisServerConfig.newBuilder()
+            Set<String> environmentKeys = polarisServerConfigBuilder.getEnvironmentVariableKeys()
+            environmentKeys.each {
+                String value = System.getenv().get(it)
+                if (value) {
+                    polarisServerConfigBuilder.setProperty(it, value)
+                }
+            }
+
+            PolarisServerConfig polarisServerConfig = polarisServerConfigBuilder.build()
+            PolarisServicesFactory polarisServicesFactory = polarisServerConfig.createPolarisServicesFactory(new PrintStreamIntLogger(System.out, com.synopsys.integration.log.LogLevel.INFO))
+            com.synopsys.integration.polaris.common.service.ProjectService projectService = polarisServicesFactory.createProjectService()
+            BranchService branchService = polarisServicesFactory.createBranchService()
+            IssueService issueService = polarisServicesFactory.createIssueService()
+
+            ProjectV0 project = projectService.getProjectByName(project.name).get()
+            BranchV0 branch = branchService.getBranchForProjectByName(project.getId(), 'master').get()
+            List<QueryIssue> queryIssues = issueService.getIssuesForProjectAndBranch(project.getId(), branch.getId())
+            println "Found ${queryIssues.size()} issues."
+            queryIssues.each {
+                Issue issue = issueService.getIssueForProjectBranchAndIssueKey(project.getId(), branch.getId(), it.attributes.issueKey)
+                println issue.getLabel() + " " + issue.getSourcePath()
+            }
+        }
+    }
+
+    task verifyDetect() {
+        dependsOn verifyBlackDuckDetect
+        dependsOn verifyPolarisDetect
+    }
+
 }
