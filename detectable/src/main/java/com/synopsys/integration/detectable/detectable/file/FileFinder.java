@@ -47,7 +47,7 @@ public interface FileFinder {
 
     @NotNull
     default List<File> findFiles(File directoryToSearch, String filenamePattern, int depth) {
-        return findFiles(directoryToSearch, Arrays.asList(filenamePattern), 0);
+        return findFiles(directoryToSearch, Arrays.asList(filenamePattern), depth);
     }
 
     @NotNull

@@ -37,13 +37,7 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 
 public class SimpleFileFinder implements FileFinder {
     private List<File> findFiles(final File directoryToSearch, final FilenameFilter filenameFilter, final int depth) {
-        final File[] foundFiles = directoryToSearch.listFiles(filenameFilter);
-
-        if (foundFiles == null || foundFiles.length == 0) {
-            return Collections.emptyList();
-        }
-
-        final List<File> aggregatedFiles = new ArrayList<>(Arrays.asList(foundFiles));
+        List<File> foundFiles = new ArrayList<>();
 
         final File[] allFiles = directoryToSearch.listFiles();
         if (allFiles != null && depth > 0) {
@@ -51,10 +45,15 @@ public class SimpleFileFinder implements FileFinder {
                                             .filter(File::isDirectory)
                                             .flatMap(file -> findFiles(file, filenameFilter, depth - 1).stream())
                                             .collect(Collectors.toList());
-            aggregatedFiles.addAll(subFiles);
+            foundFiles.addAll(subFiles);
         }
 
-        return aggregatedFiles;
+        final File[] matchingFiles = directoryToSearch.listFiles(filenameFilter); //TODO: I'm sure we could do this without iterating the directory twice, but premature optimization and whatnot.
+        if (matchingFiles != null && matchingFiles.length > 0) {
+            foundFiles.addAll(Arrays.asList(matchingFiles));
+        }
+
+        return foundFiles;
     }
 
     @Override
