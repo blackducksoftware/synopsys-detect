@@ -490,16 +490,16 @@ public enum DetectProperty {
     @HelpDescription("The path of the Pipenv executable")
     DETECT_PIPENV_PATH("detect.pipenv.path", "Pipenv Executable", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP })
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, SEARCH_GROUP_GLOBAL })
     @HelpDescription("The url of your polaris instance.")
     POLARIS_URL("polaris.url", "Polaris Url", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP })
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, SEARCH_GROUP_GLOBAL })
     @HelpDescription("The access token for your polaris instance.")
     POLARIS_ACCESS_TOKEN("polaris.access.token", "Polaris Access Token", "5.3.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP })
-    @HelpDescription("Additional arguments to pass to palaris.")
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, GROUP_SOURCE_SCAN })
+    @HelpDescription("Additional arguments to pass to polaris.")
     POLARIS_ARGUMENTS("polaris.arguments", "Polaris Arguments", "5.3.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_POLICY })
