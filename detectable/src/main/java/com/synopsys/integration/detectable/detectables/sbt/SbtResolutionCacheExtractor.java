@@ -227,7 +227,7 @@ public class SbtResolutionCacheExtractor {
                     for (final SbtDependencyModule aggregatedModule : aggregatedModules) {
                         logger.debug(String.format("Generated root node of %s %s", aggregatedModule.name, aggregatedModule.version));
 
-                        aggregatedModule.sourcePath = source;
+                        aggregatedModule.sourcePath = reportPath;
 
                         modules.add(aggregatedModule);
                     }
