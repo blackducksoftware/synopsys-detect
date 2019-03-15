@@ -40,9 +40,9 @@ public class DetailedSearchSummaryReporter {
     private void printDirectoriesDebug(final ReportWriter writer, List<DetectorEvaluationTree> trees) {
         for (final DetectorEvaluationTree tree : trees) {
             final List<String> toPrint = new ArrayList<>();
-            toPrint.addAll(printDetails(writer, "      APPLIED: ", DetectorEvaluationUtils.allApplicable(tree), DetectorEvaluation::getApplicabilityMessage));
-            toPrint.addAll(printDetails(writer, "DID NOT APPLY: ", DetectorEvaluationUtils.notApplicable(tree), DetectorEvaluation::getApplicabilityMessage));
-            toPrint.addAll(printDetails(writer, "DID NOT APPLY: ", DetectorEvaluationUtils.notSearchable(tree), DetectorEvaluation::getSearchabilityMessage));
+            toPrint.addAll(printDetails(writer, "      APPLIED: ", DetectorEvaluationUtils.applicableChildren(tree), DetectorEvaluation::getApplicabilityMessage));
+            toPrint.addAll(printDetails(writer, "DID NOT APPLY: ", DetectorEvaluationUtils.notApplicableChildren(tree), DetectorEvaluation::getApplicabilityMessage));
+            toPrint.addAll(printDetails(writer, "DID NOT APPLY: ", DetectorEvaluationUtils.notSearchableChildren(tree), DetectorEvaluation::getSearchabilityMessage));
 
             if (toPrint.size() > 0) {
                 writer.writeSeperator();

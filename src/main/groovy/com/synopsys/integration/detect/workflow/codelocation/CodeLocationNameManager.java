@@ -61,12 +61,13 @@ public class CodeLocationNameManager {
                 codeLocationName = getNextCodeLocationOverrideName(CodeLocationNameType.BOM);
             }
         } else {
-            if (detectCodeLocation.getDockerImageName().isPresent()) { //TODO: Get more defensive with docker or bom not being present.
-                codeLocationName = codeLocationNameGenerator.createDockerCodeLocationName(detectCodeLocation.getSourcePath().toString(), projectName, projectVersionName, detectCodeLocation.getDockerImageName().get(), prefix, suffix);
+            String sourcePath = detectCodeLocation.getSourcePath().toString();
+            if (detectCodeLocation.getDockerImageName().isPresent()) {
+                String dockerImage = detectCodeLocation.getDockerImageName().get();
+                codeLocationName = codeLocationNameGenerator.createDockerCodeLocationName(sourcePath, projectName, projectVersionName, dockerImage, prefix, suffix);
             } else {
-                // TODO: Fix unchecked optional
-                codeLocationName = codeLocationNameGenerator
-                                       .createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath().toString(), detectCodeLocation.getExternalId(), detectCodeLocation.getCreatorName().get(), prefix, suffix);
+                String creator = detectCodeLocation.getCreatorName().orElse("detect");
+                codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, sourcePath, detectCodeLocation.getExternalId(), creator, prefix, suffix);
             }
         }
         return codeLocationName;

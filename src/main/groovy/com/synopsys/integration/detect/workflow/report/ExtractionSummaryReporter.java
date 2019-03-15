@@ -24,7 +24,6 @@
 package com.synopsys.integration.detect.workflow.report;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,9 +41,9 @@ public class ExtractionSummaryReporter {
     public void writeSummary(ReportWriter writer, DetectorEvaluationTree rootEvaluation, final Map<CodeLocation, DetectCodeLocation> detectableMap, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         ReporterUtils.printHeader(writer, "Extraction results:");
         rootEvaluation.asFlatList().forEach(it -> {
-            List<DetectorEvaluation> success = DetectorEvaluationUtils.filteredEvaluations(it, evaluation -> evaluation.wasExtractionSuccessful());
-            List<DetectorEvaluation> exception = DetectorEvaluationUtils.filteredEvaluations(it, evaluation -> evaluation.wasExtractionException());
-            List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredEvaluations(it, evaluation -> evaluation.wasExtractionFailure());
+            List<DetectorEvaluation> success = DetectorEvaluationUtils.filteredChildren(it, evaluation -> evaluation.wasExtractionSuccessful());
+            List<DetectorEvaluation> exception = DetectorEvaluationUtils.filteredChildren(it, evaluation -> evaluation.wasExtractionException());
+            List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredChildren(it, evaluation -> evaluation.wasExtractionFailure());
 
             if (success.size() > 0 || exception.size() > 0 || exception.size() > 0) {
                 writer.writeLine(it.getDirectory().toString());

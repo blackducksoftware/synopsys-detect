@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.help.DetectOption;
+import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
+import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
@@ -58,7 +60,7 @@ public class DiagnosticReportHandler {
     public enum ReportTypes {
         SEARCH("search_report", "Search Result Report", "A breakdown of detector searching by directory."),
         SEARCH_DETAILED("search_detailed_report", "Search Result Report", "A breakdown of detector searching by directory."),
-        DETECTOR("detector_report", "Detector Report", "A breakdown of detector's that were applicable and their preparation and extraction results."),
+        DETECTOR("detector_report", "Detector Report", "A breakdown of detector's that were applicableChildren and their preparation and extraction results."),
         DETECTOR_PROFILE("detector_profile_report", "Detector Profile Report", "A breakdown of timing and profiling for all detectors."),
         CODE_LOCATIONS("code_location_report", "Code Location Report", "A breakdown of code locations created, their dependencies and status results."),
         DEPENDENCY_COUNTS("dependency_counts_report", "Dependency Count Report", "A breakdown of how many dependencies each detector group generated in their graphs."),
@@ -95,8 +97,8 @@ public class DiagnosticReportHandler {
         this.runId = runId;
         createReports();
 
-        eventSystem.registerListener(Event.DetectorsComplete, event -> completedBomToolEvaluations(event.rootDetectorEvaluationTree));
-        //eventSystem.registerListener(Event.CodeLocationsCalculated, event -> completedCodeLocations(event.getCodeLocationNames())); TODO Fix
+        eventSystem.registerListener(Event.DetectorsComplete, event -> completedBomToolEvaluations(event));
+        eventSystem.registerListener(Event.CodeLocationsCalculated, event -> completedCodeLocations(event.getCodeLocationNames()));
         eventSystem.registerListener(Event.DetectorsProfiled, event -> detectorsProfiled(event));
     }
 
@@ -104,14 +106,14 @@ public class DiagnosticReportHandler {
         closeReportWriters();
     }
 
-    private List<DetectorEvaluation> completedDetectorEvaluations = null;
+    private DetectorToolResult detectorToolResult;
 
-    public void completedBomToolEvaluations(final Optional<DetectorEvaluationTree> rootEvaluationOptional) {
-        //completedDetectorEvaluations = rootEvaluation;
+    public void completedBomToolEvaluations(final DetectorToolResult detectorToolResult) {
+        this.detectorToolResult = detectorToolResult;
 
         DetectorEvaluationTree rootEvaluation;
-        if (rootEvaluationOptional.isPresent()){
-            rootEvaluation = rootEvaluationOptional.get();
+        if (detectorToolResult.rootDetectorEvaluationTree.isPresent()){
+            rootEvaluation = detectorToolResult.rootDetectorEvaluationTree.get();
         } else {
             logger.warn("Detectors completed, but no evaluation was found, unable to write detector reports.");
             return;
@@ -139,15 +141,15 @@ public class DiagnosticReportHandler {
         }
     }
 
-    public void completedCodeLocations(final Map<CodeLocation, String> codeLocationNameMap) {
-        if (completedDetectorEvaluations == null)
+    public void completedCodeLocations(final Map<DetectCodeLocation, String> codeLocationNameMap) {
+        if (detectorToolResult == null || !detectorToolResult.rootDetectorEvaluationTree.isPresent())
             return;
 
         try {
             final ReportWriter clWriter = getReportWriter(ReportTypes.CODE_LOCATIONS);
             final ReportWriter dcWriter = getReportWriter(ReportTypes.DEPENDENCY_COUNTS);
             final CodeLocationReporter clReporter = new CodeLocationReporter();
-            clReporter.writeCodeLocationReport(clWriter, dcWriter, completedDetectorEvaluations, codeLocationNameMap);
+            clReporter.writeCodeLocationReport(clWriter, dcWriter, detectorToolResult.rootDetectorEvaluationTree.get(), detectorToolResult.codeLocationMap, codeLocationNameMap);
         } catch (final Exception e) {
             logger.error("Failed to write code location report.", e);
         }

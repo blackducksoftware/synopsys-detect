@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.io.File;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
@@ -57,6 +58,13 @@ public class DetectorEvaluationTree {
             evaluationTrees.addAll(detectorEvaluationTree.asFlatList());
         }
         return evaluationTrees;
+    }
+
+    public List<DetectorEvaluation> allDescendentEvaluations(){
+        return asFlatList()
+                   .stream()
+                   .flatMap(it -> it.getOrderedEvaluations().stream())
+                   .collect(Collectors.toList());
     }
 
     public File getDirectory() {

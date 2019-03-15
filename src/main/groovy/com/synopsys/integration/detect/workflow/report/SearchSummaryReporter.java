@@ -41,7 +41,7 @@ public class SearchSummaryReporter {
     private void printDirectoriesInfo(ReportWriter writer, List<DetectorEvaluationTree> trees) {
         ReporterUtils.printHeader(writer, "Search results");
         for (final DetectorEvaluationTree tree : trees) {
-            List<DetectorEvaluation> applicable = DetectorEvaluationUtils.allApplicable(tree);
+            List<DetectorEvaluation> applicable = DetectorEvaluationUtils.applicableChildren(tree);
             if (applicable.size() > 0){
                 writer.writeLine(tree.getDirectory().toString());
                 writer.writeLine("\tAPPLIES: " + applicable.stream().map(it -> it.getDetectorRule().getDescriptiveName()).sorted().collect(Collectors.joining(", ")));

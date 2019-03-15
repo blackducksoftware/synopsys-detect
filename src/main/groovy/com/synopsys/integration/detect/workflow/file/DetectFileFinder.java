@@ -75,12 +75,12 @@ public class DetectFileFinder {
         final File foundFile;
         final List<File> foundFiles = findFiles(sourceDirectory, filenamePattern);
         if (foundFiles == null || foundFiles.isEmpty()) {
-            logger.debug(String.format("Could not find any filteredEvaluations for %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
+            logger.debug(String.format("Could not find any filteredChildren for %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
             foundFile = null;
         } else {
             foundFile = foundFiles.get(0);
             if (foundFiles.size() > 1) {
-                logger.debug(String.format("Found multiple filteredEvaluations for %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
+                logger.debug(String.format("Found multiple filteredChildren for %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
                 logger.debug(String.format("Using %s", foundFile));
             } else {
                 logger.debug(String.format("Found a match %s for file %s in %s", foundFile.getAbsolutePath(), filenamePattern, sourceDirectory.getAbsolutePath()));
