@@ -30,37 +30,37 @@ import java.util.Map;
 
 import org.apache.commons.lang3.time.StopWatch;
 
-import com.synopsys.integration.detectable.Detectable;
+import com.synopsys.integration.detector.base.DetectorType;
 
-public class DetectableTimekeeper {
+public class Timekeeper<T> {
 
-    private final Map<Detectable, StopWatch> stopWatches = new HashMap<>();
+    private final Map<T, StopWatch> stopWatches = new HashMap<>();
 
-    private StopWatch getStopWatch(final Detectable detector) {
-        if (stopWatches.containsKey(detector)) {
-            return stopWatches.get(detector);
+    private StopWatch getStopWatch(final T key) {
+        if (stopWatches.containsKey(key)) {
+            return stopWatches.get(key);
         } else {
             final StopWatch sw = new StopWatch();
-            stopWatches.put(detector, sw);
+            stopWatches.put(key, sw);
             return sw;
         }
     }
 
-    public void started(final Detectable detector) {
-        getStopWatch(detector).start();
+    public void started(final T key) {
+        getStopWatch(key).start();
     }
 
-    public void ended(final Detectable detector) {
-        getStopWatch(detector).stop();
+    public void ended(final T key) {
+        getStopWatch(key).stop();
     }
 
-    public List<DetectableTime> getTimings() {
-        final List<DetectableTime> bomToolTimings = new ArrayList<>();
-        for (final Detectable detector : stopWatches.keySet()) {
-            final StopWatch sw = stopWatches.get(detector);
+    public List<Timing<T>> getTimings() {
+        final List<Timing<T>> bomToolTimings = new ArrayList<>();
+        for (final T key : stopWatches.keySet()) {
+            final StopWatch sw = stopWatches.get(key);
             final long ms = sw.getTime();
-            final DetectableTime detectorTime = new DetectableTime(detector, ms);
-            bomToolTimings.add(detectorTime);
+            final Timing timing = new Timing(key, ms);
+            bomToolTimings.add(timing);
         }
         return bomToolTimings;
     }

@@ -80,11 +80,11 @@ public abstract class PhoneHomeManager {
         safelyPhoneHome(metadata);
     }
 
-    public void startPhoneHome(final Map<DetectorType, Long> applicableDetectorTimes) {
+    public void startPhoneHome(final Map<DetectorType, Long> aggregateTimes) {
         final Map<String, String> metadata = new HashMap<>();
-        if (applicableDetectorTimes != null) {
-            final String applicableBomToolsString = applicableDetectorTimes.keySet().stream()
-                                                        .map(it -> String.format("%s:%s", it.toString(), applicableDetectorTimes.get(it)))
+        if (aggregateTimes != null) {
+            final String applicableBomToolsString = aggregateTimes.keySet().stream()
+                                                        .map(it -> String.format("%s:%s", it.toString(), aggregateTimes.get(it)))
                                                         .collect(Collectors.joining(","));
             metadata.put("bomToolTypes", applicableBomToolsString);
         }

@@ -158,8 +158,8 @@ public class DiagnosticReportHandler {
     private void detectorsProfiled(DetectorTimings detectorTimings) {
         try {
             final ReportWriter profileWriter = getReportWriter(ReportTypes.DETECTOR_PROFILE);
-            //final ProfilingReporter reporter = new ProfilingReporter();
-            //reporter.writeReport(profileWriter, detectorTimings);
+            final ProfilingReporter reporter = new ProfilingReporter();
+            reporter.writeReport(profileWriter, detectorTimings);
         } catch (final Exception e) {
             logger.error("Failed to write profiling report.", e);
         }
