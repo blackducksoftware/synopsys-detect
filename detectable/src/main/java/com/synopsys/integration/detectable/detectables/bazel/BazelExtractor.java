@@ -48,15 +48,13 @@ public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
     private final BazelQueryXmlOutputParser parser;
-    private final BazelExternalIdExtractionSimpleRules simpleRules;
     private final BazelCodeLocationBuilder codeLocationGenerator;
     private final BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor;
 
-    public BazelExtractor(final ExecutableRunner executableRunner, BazelQueryXmlOutputParser parser, final BazelExternalIdExtractionSimpleRules simpleRules,
+    public BazelExtractor(final ExecutableRunner executableRunner, BazelQueryXmlOutputParser parser,
         final BazelCodeLocationBuilder codeLocationGenerator, final BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor) {
         this.executableRunner = executableRunner;
         this.parser = parser;
-        this.simpleRules = simpleRules;
         this.codeLocationGenerator = codeLocationGenerator;
         this.bazelExternalIdExtractionFullRuleJsonProcessor = bazelExternalIdExtractionFullRuleJsonProcessor;
     }
@@ -70,6 +68,7 @@ public class BazelExtractor {
                 fullRules = loadXPathRulesFromFile(fullRulesPath);
                 logger.debug(String.format("Read %d rule(s) from %s", fullRules.size(), fullRulesPath));
             } else {
+                BazelExternalIdExtractionSimpleRules simpleRules = new BazelExternalIdExtractionSimpleRules(fullRulesPath);
                 fullRules = simpleRules.getRules().stream()
                                       .map(RuleConverter::simpleToFull).collect(Collectors.toList());
                 if (logger.isDebugEnabled()) {

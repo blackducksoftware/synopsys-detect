@@ -213,10 +213,9 @@ public class DetectableBeanConfiguration {
     @Bean
     public BazelExtractor bazelExtractor() {
         final BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
-        final BazelExternalIdExtractionSimpleRules rules = null;//new BazelExternalIdExtractionSimpleRules(detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None));//TODO: bazel needs option object.
         final BazelCodeLocationBuilder codeLocationGenerator = new BazelCodeLocationBuilder(externalIdFactory);
         final BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor = new BazelExternalIdExtractionFullRuleJsonProcessor(gson);
-        return new BazelExtractor(executableRunner, parser, rules, codeLocationGenerator, bazelExternalIdExtractionFullRuleJsonProcessor);
+        return new BazelExtractor(executableRunner, parser, codeLocationGenerator, bazelExternalIdExtractionFullRuleJsonProcessor);
     }
 
     public FilePathGenerator filePathGenerator() {
