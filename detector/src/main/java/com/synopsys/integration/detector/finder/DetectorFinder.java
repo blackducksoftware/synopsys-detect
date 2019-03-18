@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -67,13 +68,13 @@ public class DetectorFinder {
         }
 
         logger.info("Traversing directory: " + directory.getPath());
-        final List<DetectorEvaluation> evaluations = detectorRuleSet.getOrderedDetectorRules().stream()
+        final List<DetectorEvaluation> evaluations = detectorRuleSet.getOrderedDetectorRules().stream() //Detectors are filtered during Evaluation.
                                                          .map(DetectorEvaluation::new)
                                                          .collect(Collectors.toList());
 
         final Set<DetectorEvaluationTree> children = new HashSet<>();
 
-        final List<File> subDirectories = findSubDirectories(directory);
+        final List<File> subDirectories = findSubDirectories(directory, options.getFileFilter());
         for (final File subDirectory : subDirectories) {
             final Optional<DetectorEvaluationTree> childEvaluationSet = findDetectors(subDirectory, detectorRuleSet, depth + 1, options);
             childEvaluationSet.ifPresent(children::add);
@@ -82,10 +83,11 @@ public class DetectorFinder {
         return Optional.of(new DetectorEvaluationTree(directory, depth, detectorRuleSet, evaluations, children));
     }
 
-    private List<File> findSubDirectories(final File directory) throws DetectorFinderDirectoryListException {
+    private List<File> findSubDirectories(final File directory, Predicate<File> filePredicate) throws DetectorFinderDirectoryListException {
         try (final Stream<Path> pathStream = Files.list(directory.toPath())) {
             return pathStream.map(Path::toFile)
                        .filter(File::isDirectory)
+                       .filter(it -> filePredicate.test(it))
                        .collect(Collectors.toList());
         } catch (final IOException e) {
             throw new DetectorFinderDirectoryListException(String.format("Could not get the subdirectories for %s. %s", directory.getAbsolutePath(), e.getMessage()), e);

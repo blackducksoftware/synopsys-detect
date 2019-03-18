@@ -70,6 +70,7 @@ public class DetectExecutableResolver
         this.detectConfiguration = detectConfiguration;
     }
 
+    //TODO: should cache the resolved executable.
     private File resolveExecutable(final Supplier<File> resolveExecutable, final String executableOverride) {
         if (StringUtils.isBlank(executableOverride)) {
             return resolveExecutable.get();

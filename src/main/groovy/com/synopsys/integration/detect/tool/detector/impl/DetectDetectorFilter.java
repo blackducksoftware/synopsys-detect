@@ -1,17 +1,17 @@
 package com.synopsys.integration.detect.tool.detector.impl;
 
-import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detector.finder.DetectorFilter;
-import com.synopsys.integration.util.ExcludedIncludedFilter;
+import java.util.function.Predicate;
 
-public class DetectDetectorFilter implements DetectorFilter {
-    private final ExcludedIncludedFilter filter;
+import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
+import com.synopsys.integration.detector.rule.DetectorRule;
+
+public class DetectDetectorFilter extends DetectOverrideableFilter implements Predicate<DetectorRule> {
     public DetectDetectorFilter(String excluded, String included){
-        filter = new ExcludedIncludedFilter(excluded, included);
+        super(excluded, included);
     }
 
     @Override
-    public boolean shouldInclude(final DetectorType detectorType) {
-        return filter.shouldInclude(detectorType.toString());
+    public boolean test(final DetectorRule detectorRule) {
+        return shouldInclude(detectorRule.getDetectorType().toString());
     }
 }

@@ -40,7 +40,6 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
-import com.synopsys.integration.detector.finder.DetectorFilter;
 import com.synopsys.integration.detector.result.DetectableDetectorResult;
 import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
@@ -49,14 +48,12 @@ public class DetectorEvaluator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DetectorRuleSetEvaluator detectorRuleSetEvaluator = new DetectorRuleSetEvaluator();
-    private final DetectorFilter detectorFilter;
-    private final boolean forceNested;
-
     private DetectorEvaluatorListener detectorEvaluatorListener;
 
-    public DetectorEvaluator(final DetectorFilter detectorFilter, final boolean forceNested) {
-        this.detectorFilter = detectorFilter;
-        this.forceNested = forceNested;
+    private final DetectorEvaluationOptions evaluationOptions;
+
+    public DetectorEvaluator(final DetectorEvaluationOptions evaluationOptions) {
+        this.evaluationOptions = evaluationOptions;
     }
 
     //Unfortunately, currently search and applicable are tied together due to Search needing to know about previous detectors that applied.
@@ -71,20 +68,23 @@ public class DetectorEvaluator {
 
             final DetectorRule detectorRule = detectorEvaluation.getDetectorRule();
             logger.trace("Evaluating detector: " + detectorRule.getDescriptiveName());
-            final SearchEnvironment searchEnvironment = new SearchEnvironment(detectorEvaluationTree.getDepthFromRoot(), detectorFilter, forceNested, appliedInParent, appliedSoFar);
+            final SearchEnvironment searchEnvironment = new SearchEnvironment(detectorEvaluationTree.getDepthFromRoot(), evaluationOptions.getDetectorFilter(), evaluationOptions.isForceNested(), appliedInParent, appliedSoFar);
             detectorEvaluation.setSearchEnvironment(searchEnvironment);
             final DetectorResult searchableResult = detectorRuleSetEvaluator.evaluateSearchable(detectorEvaluationTree.getDetectorRuleSet(), detectorEvaluation.getDetectorRule(), searchEnvironment);
             detectorEvaluation.setSearchable(searchableResult);
 
             if (detectorEvaluation.isSearchable()) {
                 logger.trace("Searchable passed, will continue evaluating.");
-                final DetectableEnvironment detectableEnvironment = new DetectableEnvironment(
-                    detectorEvaluationTree.getDirectory()); //TODO: potential todo, this could be invoked as part of the rule (file could be given to the creatable and the creatable could create the env)
+                //TODO: potential todo, this could be invoked as part of the rule - ie we make a DetectableEnvironmentCreatable and the file could be given to the creatable (detectorRule.createEnvironment(file)
+                final DetectableEnvironment detectableEnvironment = new DetectableEnvironment(detectorEvaluationTree.getDirectory());
                 detectorEvaluation.setDetectableEnvironment(detectableEnvironment);
+
                 final Detectable detectable = detectorRule.createDetectable(detectableEnvironment);
                 detectorEvaluation.setDetectable(detectable);
+
                 final DetectorResult applicableResult = new DetectableDetectorResult(detectable.applicable());
                 detectorEvaluation.setApplicable(applicableResult);
+
                 if (detectorEvaluation.isApplicable()) {
                     logger.trace("Applicable passed. Will add to applicable list. Done evaluating for now.");
                     appliedSoFar.add(detectorRule);

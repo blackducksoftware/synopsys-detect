@@ -24,18 +24,17 @@
 package com.synopsys.integration.detector.evaluation;
 
 import java.util.Set;
-
-import com.synopsys.integration.detector.finder.DetectorFilter;
+import java.util.function.Predicate;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class SearchEnvironment {
     private final int depth;
-    private final DetectorFilter detectorFilter;
+    private final Predicate<DetectorRule> detectorFilter;
     private final boolean forceNestedSearch;
     private final Set<DetectorRule> appliedToParent;
     private final Set<DetectorRule> appliedSoFar;
 
-    public SearchEnvironment(final int depth, final DetectorFilter detectorFilter, final boolean forceNestedSearch, final Set<DetectorRule> appliedToParent,
+    public SearchEnvironment(final int depth, final Predicate<DetectorRule> detectorFilter, final boolean forceNestedSearch, final Set<DetectorRule> appliedToParent,
         final Set<DetectorRule> appliedSoFar) {
         this.depth = depth;
         this.detectorFilter = detectorFilter;
@@ -48,7 +47,7 @@ public class SearchEnvironment {
         return depth;
     }
 
-    public DetectorFilter getDetectorFilter() {
+    public Predicate<DetectorRule> getDetectorFilter() {
         return detectorFilter;
     }
 

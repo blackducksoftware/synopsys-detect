@@ -56,15 +56,15 @@ import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanToolResult;
 import com.synopsys.integration.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
+import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorTool;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
-import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFilter;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.tool.polaris.PolarisTool;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
-import com.synopsys.integration.detect.workflow.DetectToolFilter;
+import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
@@ -84,9 +84,9 @@ import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecide
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
-import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detector.finder.DetectorFilter;
+import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
+import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
@@ -156,16 +156,16 @@ public class RunManager {
             if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
                 logger.info("Will include the detector tool.");
                 final String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DETECTOR, PropertyAuthority.None);
-                final DetectorFinderOptions finderOptions = detectConfigurationFactory.createSearchOptions(directoryManager.getSourceDirectory());
                 final boolean buildless = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BUILDLESS, PropertyAuthority.None);
-                final DetectorTool detectorTool = new DetectorTool(extractionEnvironmentProvider, detectableFactory, eventSystem, codeLocationConverter, buildless);
 
-                boolean forceNested = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DETECTOR_SEARCH_CONTINUE, PropertyAuthority.None);
-                String included = detectConfiguration.getProperty(DetectProperty.DETECT_INCLUDED_DETECTOR_TYPES, PropertyAuthority.None);
-                String excluded = detectConfiguration.getProperty(DetectProperty.DETECT_INCLUDED_DETECTOR_TYPES, PropertyAuthority.None);
-                DetectorFilter detectorFilter = new DetectDetectorFilter(excluded, included);
+                final DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
+                final DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectableFactory, buildless);
 
-                final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), finderOptions, detectorFilter, forceNested, projectBomTool);
+                final DetectorFinderOptions finderOptions = detectConfigurationFactory.createSearchOptions();
+                DetectorEvaluationOptions detectorEvaluationOptions = detectConfigurationFactory.createDetectorEvaluationOptions();
+
+                final DetectorTool detectorTool = new DetectorTool(extractionEnvironmentProvider, eventSystem, codeLocationConverter);
+                final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool);
 
                 runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
                 runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);

@@ -50,8 +50,8 @@ import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorType;
+import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluator;
-import com.synopsys.integration.detector.finder.DetectorFilter;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.finder.DetectorFinderDirectoryListException;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
@@ -62,31 +62,23 @@ import com.synopsys.integration.util.NameVersion;
 public class DetectorTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExtractionEnvironmentProvider extractionEnvironmentProvider;
-    private final DetectableFactory detectableFactory;
     private final EventSystem eventSystem;
     private final CodeLocationConverter codeLocationConverter;
-    private final boolean buildless;
 
-    public DetectorTool(final ExtractionEnvironmentProvider extractionEnvironmentProvider, final DetectableFactory detectableFactory, final EventSystem eventSystem, final CodeLocationConverter codeLocationConverter,
-        final boolean buildless) {
+    public DetectorTool(final ExtractionEnvironmentProvider extractionEnvironmentProvider, final EventSystem eventSystem, final CodeLocationConverter codeLocationConverter) {
         this.extractionEnvironmentProvider = extractionEnvironmentProvider;
-        this.detectableFactory = detectableFactory;
         this.eventSystem = eventSystem;
         this.codeLocationConverter = codeLocationConverter;
-        this.buildless = buildless;
     }
 
-    public DetectorToolResult performDetectors(final File directory, final DetectorFinderOptions detectorFinderOptions, DetectorFilter detectorFilter, boolean forceNested, final String projectBomTool) throws DetectUserFriendlyException {
+    public DetectorToolResult performDetectors(final File directory, DetectorRuleSet detectorRuleSet, final DetectorFinderOptions detectorFinderOptions, DetectorEvaluationOptions evaluationOptions, final String projectBomTool) throws DetectUserFriendlyException {
         logger.info("Initializing detector system.");
 
         final DetectorFinder detectorFinder = new DetectorFinder();
-        final DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
-        final DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectableFactory, buildless);
-
         final Optional<DetectorEvaluationTree> possibleRootEvaluation;
         try {
             logger.info("Starting detector file system traversal.");
-            possibleRootEvaluation = detectorFinder.findDetectors(directory, detectRuleSet, detectorFinderOptions);
+            possibleRootEvaluation = detectorFinder.findDetectors(directory, detectorRuleSet, detectorFinderOptions);
 
         } catch (final DetectorFinderDirectoryListException e) {
             throw new DetectUserFriendlyException("Detect was unable to list a directory while searching for detectors.", e, ExitCodeType.FAILURE_DETECTOR);
@@ -104,7 +96,7 @@ public class DetectorTool {
 
         logger.trace("Setting up detector events.");
         final DetectorEvaluatorBroadcaster eventBroadcaster = new DetectorEvaluatorBroadcaster(eventSystem);
-        final DetectorEvaluator detectorEvaluator = new DetectorEvaluator(detectorFilter, forceNested);
+        final DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions);
         detectorEvaluator.setDetectorEvaluatorListener(eventBroadcaster);
 
         logger.info("Starting detector search.");

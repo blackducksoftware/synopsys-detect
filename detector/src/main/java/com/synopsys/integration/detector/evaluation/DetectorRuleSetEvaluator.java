@@ -40,7 +40,7 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
 public class DetectorRuleSetEvaluator {
     public DetectorResult evaluateSearchable(final DetectorRuleSet detectorRuleSet, final DetectorRule detectorRule, final SearchEnvironment environment) {
-        if (!environment.getDetectorFilter().shouldInclude(detectorRule.getDetectorType())) {
+        if (!environment.getDetectorFilter().test(detectorRule)) {
             return new ExcludedDetectorResult();
         }
 

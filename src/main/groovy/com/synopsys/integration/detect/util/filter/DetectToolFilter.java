@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow;
+package com.synopsys.integration.detect.util.filter;
 
 import java.util.Optional;
 

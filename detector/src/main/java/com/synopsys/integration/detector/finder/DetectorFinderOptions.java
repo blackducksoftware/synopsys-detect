@@ -26,8 +26,9 @@ package com.synopsys.integration.detector.finder;
 import java.io.File;
 import java.util.function.Predicate;
 
-public class DetectorFinderOptions {
+import com.synopsys.integration.detector.rule.DetectorRule;
 
+public class DetectorFinderOptions {
     private final Predicate<File> fileFilter;
     private final int maximumDepth;
 

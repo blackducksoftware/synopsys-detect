@@ -23,16 +23,16 @@
  */
 package com.synopsys.integration.detect.configuration;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
+import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFileFilter;
+import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFilter;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
-import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
-import com.synopsys.integration.detect.workflow.DetectToolFilter;
+import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.file.AirGapOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
@@ -40,6 +40,7 @@ import com.synopsys.integration.detect.workflow.hub.BlackduckReportOptions;
 import com.synopsys.integration.detect.workflow.hub.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.hub.PolicyCheckOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
+import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.util.EnumUtils;
 
@@ -92,15 +93,27 @@ public class DetectConfigurationFactory {
         return new AirGapOptions(dockerOverride, gradleOverride, nugetOverride);
     }
 
-    public DetectorFinderOptions createSearchOptions(final File directory) {
+    public DetectorFinderOptions createSearchOptions() {
+        //Normal settings
+        final int maxDepth = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_DETECTOR_SEARCH_DEPTH, PropertyAuthority.None);
+
+        //File Filter
         final List<String> excludedDirectories = Arrays.asList(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION, PropertyAuthority.None));
         final List<String> excludedDirectoryPatterns = Arrays.asList(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS, PropertyAuthority.None));
+        DetectDetectorFileFilter fileFilter = new DetectDetectorFileFilter(excludedDirectories, excludedDirectoryPatterns);
+
+        return new DetectorFinderOptions(fileFilter, maxDepth);
+    }
+
+    public DetectorEvaluationOptions createDetectorEvaluationOptions(){
         final boolean forceNestedSearch = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DETECTOR_SEARCH_CONTINUE, PropertyAuthority.None);
-        final int maxDepth = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_DETECTOR_SEARCH_DEPTH, PropertyAuthority.None);
+
+        //Detector Filter
         final String excluded = detectConfiguration.getProperty(DetectProperty.DETECT_EXCLUDED_DETECTOR_TYPES, PropertyAuthority.None).toUpperCase();
         final String included = detectConfiguration.getProperty(DetectProperty.DETECT_INCLUDED_DETECTOR_TYPES, PropertyAuthority.None).toUpperCase();
-        final DetectOverrideableFilter bomToolFilter = new DetectOverrideableFilter(excluded, included);
-        return new DetectorFinderOptions(file -> false, maxDepth);//TODO Create filter
+        final DetectDetectorFilter detectorFilter = new DetectDetectorFilter(excluded, included);
+
+        return new DetectorEvaluationOptions(forceNestedSearch, detectorFilter);
     }
 
     public BdioOptions createBdioOptions() {

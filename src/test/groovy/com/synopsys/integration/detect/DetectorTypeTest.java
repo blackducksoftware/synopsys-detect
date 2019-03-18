@@ -1,4 +1,4 @@
-package com.synopsys.integration.detector.detector;
+package com.synopsys.integration.detect;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

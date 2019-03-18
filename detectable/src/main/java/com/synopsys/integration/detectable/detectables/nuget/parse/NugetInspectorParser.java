@@ -106,7 +106,7 @@ public class NugetInspectorParser {
         return Optional.ofNullable(parseResult);
     }
 
-    private File convertSourcePath(final String sourcePath) {
+    private File convertSourcePath(final String sourcePath) {//TODO: Seem to be getting a relative path for nuget... not sure where to look, something like "folder/./project/"
         File fileSourcePath = null;
         if (StringUtils.isNotBlank(sourcePath)) {
             fileSourcePath = new File(sourcePath);
