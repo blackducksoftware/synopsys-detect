@@ -37,6 +37,7 @@ public class DetectorRuleFactory {
         }
     }
 
+    //TODO: It would just be nice not to have to call 'build' after each of the addDetectors.
     private DetectorRuleSet createRules(final DetectableFactory detectableFactory) {
         final DetectorRuleSetBuilder ruleSet = new DetectorRuleSetBuilder();
 

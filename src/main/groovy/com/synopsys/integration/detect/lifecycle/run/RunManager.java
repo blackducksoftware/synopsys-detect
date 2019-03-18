@@ -118,6 +118,7 @@ public class RunManager {
 
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
 
+        logger.info(ReportConstants.RUN_SEPARATOR);
         if (productRunData.shouldUseBlackDuckProduct()) {
             logger.info("Black Duck tools will run.");
 
