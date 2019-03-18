@@ -23,6 +23,7 @@
  */
 package com.synopsys.integration.detect.workflow.report;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,27 +40,33 @@ public class PreparationSummaryReporter {
     }
 
     private void writeSummary(final ReportWriter writer, final List<DetectorEvaluationTree> detectorEvaluationTrees) {
-        ReporterUtils.printHeader(writer, "Preparation for extraction");
+        List<String> lines = new ArrayList<>();
         for (final DetectorEvaluationTree detectorEvaluationTree : detectorEvaluationTrees) {
             List<DetectorEvaluation> applicable = DetectorEvaluationUtils.applicableChildren(detectorEvaluationTree);
             List<DetectorEvaluation> ready = applicable.stream().filter(it -> it.isExtractable()).collect(Collectors.toList());
             List<DetectorEvaluation> failed = applicable.stream().filter(it -> !it.isExtractable()).collect(Collectors.toList());
 
-            writer.writeLine(detectorEvaluationTree.getDirectory().toString());
-            if (ready.size() > 0) {
-                writer.writeLine("\t READY: " + ready.stream()
-                                                    .map(it -> it.getDetectorRule().getDescriptiveName())
-                                                    .sorted()
-                                                    .collect(Collectors.joining(", ")));
-            }
-            if (failed.size() > 0) {
-                failed.stream()
-                    .map(it -> "\tFAILED: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
-                    .sorted()
-                    .forEach(writer::writeLine);
+            if (ready.size() > 0 || failed.size() > 0) {
+                lines.add(detectorEvaluationTree.getDirectory().toString());
+                if (ready.size() > 0) {
+                    lines.add("\t READY: " + ready.stream()
+                                                        .map(it -> it.getDetectorRule().getDescriptiveName())
+                                                        .sorted()
+                                                        .collect(Collectors.joining(", ")));
+                }
+                if (failed.size() > 0) {
+                    lines.addAll(failed.stream()
+                        .map(it -> "\tFAILED: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
+                        .sorted()
+                        .collect(Collectors.toList()));
+                }
             }
         }
-        ReporterUtils.printFooter(writer);
+        if (lines.size() > 0) {
+            ReporterUtils.printHeader(writer, "Preparation for extraction");
+            lines.forEach(writer::writeLine);
+            ReporterUtils.printFooter(writer);
+        }
     }
 
 }

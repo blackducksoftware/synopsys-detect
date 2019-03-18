@@ -129,6 +129,8 @@ public class DetectorTool {
         final Map<DetectorType, StatusType> statusMap = extractStatus(detectorEvaluations);
         statusMap.forEach((detectorType, statusType) -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(detectorType, statusType)));
 
+        logger.info("Finished extractions.");
+
         final DetectorToolResult detectorToolResult = new DetectorToolResult();
 
         detectorToolResult.rootDetectorEvaluationTree = Optional.of(rootEvaluation);
