@@ -108,7 +108,7 @@ public class ReportManager {
         if (codeLocationNameMap.size() > 0 && detectorToolResult != null && detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
             extractionSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get(), detectorToolResult.codeLocationMap, codeLocationNameMap);
         } else {
-            logWriter.writeLine("Extractions cannot be summarized - detectors did not complete or did no evaluation.");
+            logWriter.writeLine("There were no extractions to be summarized - no code locations were generated or no detectors were evaluated.");
         }
 
     }
@@ -117,7 +117,7 @@ public class ReportManager {
         if (detectorToolResult != null && detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
             errorSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get());
         } else {
-            logWriter.writeLine("Detector issues cannot be summarized - detectors did not complete or did no evaluation.");
+            logWriter.writeLine("There were no detector issues to be summarized - detectors did not run or no detectors were evaluated.");
         }
     }
 }
