@@ -23,7 +23,7 @@
  */
 package com.synopsys.integration.detect.lifecycle.run;
 
-import com.synopsys.integration.detect.workflow.DetectToolFilter;
+import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 
 public class RunOptions {
     private final boolean unmapCodeLocations;

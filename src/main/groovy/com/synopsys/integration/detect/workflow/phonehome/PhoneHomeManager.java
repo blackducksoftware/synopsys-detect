@@ -24,6 +24,7 @@
 package com.synopsys.integration.detect.workflow.phonehome;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,11 +33,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.detector.DetectorType;
+import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
+import com.synopsys.integration.detector.base.DetectorEvaluationTree;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.search.SearchResult;
-import com.google.gson.Gson;
 import com.synopsys.integration.phonehome.PhoneHomeResponse;
 
 public abstract class PhoneHomeManager {
@@ -52,19 +53,19 @@ public abstract class PhoneHomeManager {
         this.eventSystem = eventSystem;
         this.additionalMetaData = additionalMetaData;
 
-        eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event));
+        eventSystem.registerListener(Event.ApplicableCompleted, event -> startPhoneHome(event));
         eventSystem.registerListener(Event.DetectorsProfiled, event -> startPhoneHome(event.getAggregateTimings()));
     }
 
     public abstract PhoneHomeResponse phoneHome(final Map<String, String> metadata);
 
     public void startPhoneHome() {
-        // hub-detect will attempt to phone home twice - once upon startup and
+        // detect will attempt to phone home twice - once upon startup and
         // once upon getting all the detector metadata.
         //
         // We would prefer to always wait for all the detector metadata, but
         // sometimes there is not enough time to complete a phone home before
-        // hub-detect exits (if the scanner is disabled, for example).
+        // detect exits (if the scanner is disabled, for example).
         safelyPhoneHome(new HashMap<>());
     }
 
@@ -79,19 +80,15 @@ public abstract class PhoneHomeManager {
         safelyPhoneHome(metadata);
     }
 
-    public void startPhoneHome(final Map<DetectorType, Long> applicableDetectorTimes) {
+    public void startPhoneHome(final Map<DetectorType, Long> aggregateTimes) {
         final Map<String, String> metadata = new HashMap<>();
-        if (applicableDetectorTimes != null) {
-            final String applicableBomToolsString = applicableDetectorTimes.keySet().stream()
-                                                        .map(it -> String.format("%s:%s", it.toString(), applicableDetectorTimes.get(it)))
+        if (aggregateTimes != null) {
+            final String applicableBomToolsString = aggregateTimes.keySet().stream()
+                                                        .map(it -> String.format("%s:%s", it.toString(), aggregateTimes.get(it)))
                                                         .collect(Collectors.joining(","));
             metadata.put("bomToolTypes", applicableBomToolsString);
         }
         safelyPhoneHome(metadata);
-    }
-
-    public void searchCompleted(final SearchResult searchResult) {
-        startPhoneHome(searchResult.getApplicableBomTools());
     }
 
     private void safelyPhoneHome(final Map<String, String> metadata) {

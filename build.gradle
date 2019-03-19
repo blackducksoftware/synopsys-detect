@@ -72,6 +72,8 @@ test {
 
 dependencies {
     implementation project(":detect-configuration")
+    implementation project(":detectable")
+    implementation project(":detector")
 
     implementation 'com.synopsys.integration:polaris-common:0.7.3'
 

@@ -33,5 +33,10 @@ public class DebugLogReportWriter extends LogReportWriter {
     public void writeLine(final String line) {
         logger.debug(line);
     }
+
+    @Override
+    public void writeLine(final String line, final Exception e) {
+        logger.debug(line, e);
+    }
 }
 

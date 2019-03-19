@@ -1,0 +1,27 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url 'https://plugins.gradle.org/m2/' }
+    }
+    dependencies { classpath 'com.blackducksoftware.integration:common-gradle-plugin:0.0.+' }
+}
+
+version = '13.1.1-SNAPSHOT'
+
+apply plugin: 'com.blackducksoftware.integration.library'
+
+dependencies {
+    compile 'org.apache.httpcomponents:httpmime:4.5.6'
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2.2'
+    compile 'org.apache.commons:commons-lang3:3.7'
+    compile 'org.apache.commons:commons-text:1.3'
+    compile 'commons-io:commons-io:2.6'
+    compile 'org.apache.commons:commons-compress:1.17'
+
+    //this is a GStringExpression, that for now, is ignored
+    compile "commons-codec:commons-codec:${commons-codec-version}"
+
+    compile 'com.google.code.gson:gson:2.8.4'
+    compile 'org.slf4j:slf4j-api:1.7.25'
+}

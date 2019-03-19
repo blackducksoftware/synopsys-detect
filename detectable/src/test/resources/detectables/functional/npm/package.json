@@ -1,0 +1,12 @@
+{
+  "name": "@cogizmo/cogizmo",
+  "version": "0.5.5",
+  "dependencies": {
+    "name1": "version1",
+    "name2": "version2"
+  },
+  "devDependencies": {
+    "nameDev1": "versionDev1",
+    "nameDev2": "versionDev2"
+  }
+}

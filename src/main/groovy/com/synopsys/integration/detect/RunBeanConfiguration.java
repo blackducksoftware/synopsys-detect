@@ -29,22 +29,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 
+import com.google.gson.Gson;
+import com.synopsys.integration.bdio.BdioTransformer;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.detect.detector.DetectorEnvironment;
-import com.synopsys.integration.detect.tool.docker.DockerDetector;
-import com.synopsys.integration.detect.tool.docker.DockerExtractor;
-import com.synopsys.integration.detect.tool.docker.DockerInspectorManager;
-import com.synopsys.integration.detect.tool.docker.DockerProperties;
+import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
+import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.OfflineBlackDuckSignatureScanner;
 import com.synopsys.integration.detect.tool.signaturescanner.OnlineBlackDuckSignatureScanner;
-import com.synopsys.integration.detect.util.executable.CacheableExecutableFinder;
-import com.synopsys.integration.detect.util.executable.ExecutableFinder;
-import com.synopsys.integration.detect.util.executable.ExecutableRunner;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
@@ -54,14 +53,17 @@ import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detect.workflow.file.AirGapOptions;
-import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.google.gson.Gson;
-import com.synopsys.integration.bdio.BdioTransformer;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleLocalExecutableFinder;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
+import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detectable.detectable.inspector.go.impl.GithubGoDepResolver;
+import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 
 import freemarker.template.Configuration;
 
@@ -92,8 +94,8 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public DetectFileFinder detectFileFinder() {
-        return new DetectFileFinder();
+    public FileFinder fileFinder() {
+        return new SimpleFileFinder();
     }
 
     @Bean
@@ -113,7 +115,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public CodeLocationNameGenerator codeLocationNameService() {
-        return new CodeLocationNameGenerator(detectFileFinder());
+        return new CodeLocationNameGenerator();
     }
 
     @Bean
@@ -127,18 +129,8 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public ExecutableRunner executableRunner() {
-        return new ExecutableRunner();
-    }
-
-    @Bean
-    public ExecutableFinder executableManager() {
-        return new ExecutableFinder(detectFileFinder(), detectInfo);
-    }
-
-    @Bean
     public AirGapManager airGapManager() {
-        AirGapOptions airGapOptions = detectConfigurationFactory().createAirGapOptions();
+        final AirGapOptions airGapOptions = detectConfigurationFactory().createAirGapOptions();
         return new AirGapManager(airGapOptions);
     }
 
@@ -148,44 +140,61 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public CacheableExecutableFinder standardExecutableFinder() {
-        return new CacheableExecutableFinder(directoryManager, executableManager(), detectConfiguration);
+    public ExecutableRunner executableRunner() {
+        return new SimpleExecutableRunner();
     }
 
     @Bean
-    public DockerInspectorManager dockerInspectorManager() {
-        return new DockerInspectorManager(directoryManager, airGapManager(), detectFileFinder(), detectConfiguration, artifactResolver());
+    public DetectableOptionFactory detectableOptionFactory() {
+        return new DetectableOptionFactory(detectConfiguration);
+    }
+
+    @Bean
+    public SimpleExecutableFinder simpleExecutableFinder() {
+        return SimpleExecutableFinder.forCurrentOperatingSystem(fileFinder());
+    }
+
+    @Bean
+    public SimpleLocalExecutableFinder simpleLocalExecutableFinder() {
+        return new SimpleLocalExecutableFinder(simpleExecutableFinder());
+    }
+
+    @Bean
+    public SimpleSystemExecutableFinder simpleSystemExecutableFinder() {
+        return new SimpleSystemExecutableFinder(simpleExecutableFinder());
+    }
+
+    @Bean
+    public SimpleExecutableResolver simpleExecutableResolver() {
+        return new SimpleExecutableResolver(detectableOptionFactory().createCachedExecutableResolverOptions(), simpleLocalExecutableFinder(), simpleSystemExecutableFinder());
+    }
+
+    @Bean
+    public GithubGoDepResolver githubGoDepResolver() {
+        return new GithubGoDepResolver(executableRunner(), simpleLocalExecutableFinder(), simpleSystemExecutableFinder(), directoryManager.getPermanentDirectory("go")); // TODO: Make sure this is the right download directory
+    }
+
+    @Bean
+    public DetectExecutableResolver detectExecutableResolver() {
+        return new DetectExecutableResolver(simpleExecutableResolver(), githubGoDepResolver(), detectConfiguration);
+    }
+
+    @Bean
+    public DockerInspectorResolver dockerInspectorResolver() {
+        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fileFinder(), artifactResolver(), detectableOptionFactory().createDockerDetectableOptions());
     }
 
     @Lazy
     @Bean
-    public DockerDetector dockerBomTool(DetectorEnvironment detectorEnvironment) {
-        DockerProperties dockerProperties = new DockerProperties(detectConfiguration);
-
-        final String tar = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_TAR, PropertyAuthority.None);
-        final String image = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE, PropertyAuthority.None);
-        final boolean dockerRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED, PropertyAuthority.None);
-
-        return new DockerDetector(detectInfo, detectorEnvironment, directoryManager, dockerInspectorManager(), standardExecutableFinder(), dockerRequired, image, tar, dockerExtractor(dockerProperties));
+    public OnlineBlackDuckSignatureScanner onlineBlackDuckSignatureScanner(final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, final ScanBatchRunner scanBatchRunner,
+        final CodeLocationCreationService codeLocationCreationService, final BlackDuckServerConfig hubServerConfig) {
+        return new OnlineBlackDuckSignatureScanner(directoryManager, fileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, codeLocationCreationService, hubServerConfig);
     }
 
     @Lazy
     @Bean
-    public DockerExtractor dockerExtractor(DockerProperties dockerProperties) {
-        return new DockerExtractor(detectFileFinder(), dockerProperties, executableRunner(), bdioTransformer(), externalIdFactory(), gson);
-    }
-
-    @Lazy
-    @Bean
-    public OnlineBlackDuckSignatureScanner onlineBlackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner, CodeLocationCreationService codeLocationCreationService,
-        BlackDuckServerConfig hubServerConfig) {
-        return new OnlineBlackDuckSignatureScanner(directoryManager, detectFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, codeLocationCreationService, hubServerConfig);
-    }
-
-    @Lazy
-    @Bean
-    public OfflineBlackDuckSignatureScanner offlineBlackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner) {
-        return new OfflineBlackDuckSignatureScanner(directoryManager, detectFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner);
+    public OfflineBlackDuckSignatureScanner offlineBlackDuckSignatureScanner(final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, final ScanBatchRunner scanBatchRunner) {
+        return new OfflineBlackDuckSignatureScanner(directoryManager, fileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner);
     }
 
 }

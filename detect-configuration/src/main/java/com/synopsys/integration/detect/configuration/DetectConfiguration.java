@@ -23,6 +23,7 @@
  */
 package com.synopsys.integration.detect.configuration;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -71,10 +72,10 @@ public class DetectConfiguration {
             }
         });
         //TODO: Find a better way to do this - or - hopefully remove this if the scan cli gets better.
-        String bdScanPaths = detectPropertySource.getProperty("BD_HUB_SCAN_PATH");
+        final String bdScanPaths = detectPropertySource.getProperty("BD_HUB_SCAN_PATH");
         if (StringUtils.isNotBlank(bdScanPaths)) {
             logger.warn("The environment variable BD_HUB_SCAN_PATH was set but you should use --" + DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS.getPropertyKey() + " instead.");
-            List<String> values = new ArrayList<>();
+            final List<String> values = new ArrayList<>();
             values.addAll(Arrays.asList(getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, PropertyAuthority.None)));
             values.addAll(Arrays.asList(bdScanPaths.split(",")));
             setDetectProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, values.stream().collect(Collectors.joining(",")));
@@ -163,7 +164,7 @@ public class DetectConfiguration {
         return getKeys(getBlackduckPropertyKeys());
     }
 
-    public Map<String, String> getProperties(Set<String> keys) {
+    public Map<String, String> getProperties(final Set<String> keys) {
         return getKeys(keys);
     }
 
@@ -182,7 +183,7 @@ public class DetectConfiguration {
         logger.info("Configuration has finished.");
     }
 
-    private void authorize(DetectProperty property, PropertyAuthority authority) {
+    private void authorize(final DetectProperty property, final PropertyAuthority authority) {
         if (!isLocked)
             return;
         if (property.getPropertyAuthority() != authority) {
@@ -191,32 +192,36 @@ public class DetectConfiguration {
     }
 
     // Redirect to the underlying map
-    public boolean getBooleanProperty(final DetectProperty detectProperty, PropertyAuthority authority) {
+    public boolean getBooleanProperty(final DetectProperty detectProperty, final PropertyAuthority authority) {
         authorize(detectProperty, authority);
         return detectPropertyMap.getBooleanProperty(detectProperty);
     }
 
-    public Long getLongProperty(final DetectProperty detectProperty, PropertyAuthority authority) {
+    public Long getLongProperty(final DetectProperty detectProperty, final PropertyAuthority authority) {
         authorize(detectProperty, authority);
         return detectPropertyMap.getLongProperty(detectProperty);
     }
 
-    public Integer getIntegerProperty(final DetectProperty detectProperty, PropertyAuthority authority) {
+    public Integer getIntegerProperty(final DetectProperty detectProperty, final PropertyAuthority authority) {
         authorize(detectProperty, authority);
         return detectPropertyMap.getIntegerProperty(detectProperty);
     }
 
-    public String[] getStringArrayProperty(final DetectProperty detectProperty, PropertyAuthority authority) {
+    public String[] getStringArrayProperty(final DetectProperty detectProperty, final PropertyAuthority authority) {
         authorize(detectProperty, authority);
         return detectPropertyMap.getStringArrayProperty(detectProperty);
     }
 
-    public Optional<String[]> getOptionalStringArrayProperty(final DetectProperty detectProperty, PropertyAuthority authority) {
-        authorize(detectProperty, authority);
-        return Optional.ofNullable(getStringArrayProperty(detectProperty, authority));
+    public Optional<File> getFileProperty(final DetectProperty detectProperty, final PropertyAuthority authority) {
+        final String value = getPropertyValueAsString(detectProperty, authority);
+        File file = null;
+        if (StringUtils.isNotBlank(value)) {
+            file = new File(value);
+        }
+        return Optional.ofNullable(file);
     }
 
-    public String getProperty(final DetectProperty detectProperty, PropertyAuthority authority) {
+    public String getProperty(final DetectProperty detectProperty, final PropertyAuthority authority) {
         authorize(detectProperty, authority);
         return detectPropertyMap.getProperty(detectProperty);
     }
@@ -224,7 +229,7 @@ public class DetectConfiguration {
     /**
      * Same as <code>getProperty()</code>, but returns an optional after performing a <code>StringUtils.isBlank()</code> check
      */
-    public Optional<String> getOptionalProperty(final DetectProperty detectProperty, PropertyAuthority authority) {
+    public Optional<String> getOptionalProperty(final DetectProperty detectProperty, final PropertyAuthority authority) {
         authorize(detectProperty, authority);
         final String property = getProperty(detectProperty, authority);
         Optional<String> optionalProperty = Optional.empty();
@@ -235,7 +240,7 @@ public class DetectConfiguration {
         return optionalProperty;
     }
 
-    public String getPropertyValueAsString(final DetectProperty detectProperty, PropertyAuthority authority) {
+    public String getPropertyValueAsString(final DetectProperty detectProperty, final PropertyAuthority authority) {
         authorize(detectProperty, authority);
         return detectPropertyMap.getPropertyValueAsString(detectProperty);
     }

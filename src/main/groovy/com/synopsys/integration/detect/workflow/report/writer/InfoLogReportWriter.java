@@ -33,4 +33,9 @@ public class InfoLogReportWriter extends LogReportWriter {
     public void writeLine(final String line) {
         logger.info(line);
     }
+
+    @Override
+    public void writeLine(final String line, final Exception e) {
+        logger.info(line, e);
+    }
 }

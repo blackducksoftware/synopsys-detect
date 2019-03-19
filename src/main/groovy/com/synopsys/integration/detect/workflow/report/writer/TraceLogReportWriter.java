@@ -33,4 +33,9 @@ public class TraceLogReportWriter extends LogReportWriter {
     public void writeLine(final String line) {
         logger.trace(line);
     }
+
+    @Override
+    public void writeLine(final String line, final Exception e) {
+        logger.trace(line, e);
+    }
 }

@@ -51,6 +51,7 @@ import static com.synopsys.integration.detect.configuration.DetectProperty.Prope
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_PROXY;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_PYTHON;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_REPORT;
+import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_RUBY;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_SBT;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_SIGNATURE_SCANNER;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_SOURCE_PATH;
@@ -159,6 +160,10 @@ public enum DetectProperty {
     DETECT_BITBAKE_BUILD_ENV_NAME("detect.bitbake.build.env.name", "BitBake Init Script Name", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "oe-init-build-env"),
 
     @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
+    @HelpDescription("The reference implementation of the yocto project. These characters will be stripped from the discovered target architecture.")
+    DETECT_BITBAKE_REFERENCE_IMPL("detect.bitbake.reference.impl", "Reference implementation", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "_poky_linux"),
+
+    @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
     @HelpDescription("A comma separated list of package names to extract dependencies from")
     DETECT_BITBAKE_PACKAGE_NAMES("detect.bitbake.package.names", "BitBake Package Names", "4.4.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
@@ -214,6 +219,10 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.")
     DETECT_BOM_AGGREGATE_NAME("detect.bom.aggregate.name", "Aggregate BDIO File Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_GENERAL)
+    @HelpDescription("If set to true, only Detector's capable of running without a build will be run")
+    DETECT_BUILDLESS("detect.detector.buildless", "Buildless Mode", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_CLEANUP, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If true, the files created by Detect will be cleaned up.")
@@ -485,16 +494,16 @@ public enum DetectProperty {
     @HelpDescription("The path of the Pipenv executable")
     DETECT_PIPENV_PATH("detect.pipenv.path", "Pipenv Executable", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP })
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, SEARCH_GROUP_GLOBAL })
     @HelpDescription("The url of your polaris instance.")
     POLARIS_URL("polaris.url", "Polaris Url", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP })
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, SEARCH_GROUP_GLOBAL })
     @HelpDescription("The access token for your polaris instance.")
     POLARIS_ACCESS_TOKEN("polaris.access.token", "Polaris Access Token", "5.3.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP })
-    @HelpDescription("Additional arguments to pass to palaris.")
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, GROUP_SOURCE_SCAN })
+    @HelpDescription("Additional arguments to pass to polaris.")
     POLARIS_ARGUMENTS("polaris.arguments", "Polaris Arguments", "5.3.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_POLICY })
@@ -604,9 +613,17 @@ public enum DetectProperty {
     @HelpDescription("The output directory for risk report in PDF. Default is the source directory")
     DETECT_RISK_REPORT_PDF_PATH("detect.risk.report.pdf.path", "Risk Report Output Path", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "."),
 
-    @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
+    @HelpGroup(primary = GROUP_REPORT, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the sbt configurations to exclude")
     DETECT_SBT_EXCLUDED_CONFIGURATIONS("detect.sbt.excluded.configurations", "SBT Configurations Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_RUBY)
+    @HelpDescription("If set to false, runtime dependencies will not be included when parsing *.gemspec files")
+    DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES("detect.ruby.include.runtime.dependencies", "Ruby Runtime Dependencies", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+
+    @HelpGroup(primary = GROUP_RUBY)
+    @HelpDescription("If set to true, development dependencies will be included when parsing *.gemspec files")
+    DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES("detect.ruby.include.dev.dependencies", "Ruby Runtime Dependencies", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the sbt configurations to include")
@@ -1029,6 +1046,7 @@ public enum DetectProperty {
         public static final String GROUP_PEAR = "pear";
         public static final String GROUP_PIP = "pip";
         public static final String GROUP_PYTHON = "python";
+        public static final String GROUP_RUBY = "ruby";
         public static final String GROUP_SBT = "sbt";
         public static final String GROUP_YARN = "yarn";
 

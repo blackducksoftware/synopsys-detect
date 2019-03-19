@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.workflow.project.decisions;
 
 import org.slf4j.Logger;
 
-import com.synopsys.integration.detect.detector.DetectorType;
+import com.synopsys.integration.detector.base.DetectorType;
 
 public class TooManyPreferredDetectorTypesFoundDecision extends NameVersionDecision {
     private final DetectorType detectorType;

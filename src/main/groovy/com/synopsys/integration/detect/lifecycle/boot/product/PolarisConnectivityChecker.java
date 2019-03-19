@@ -23,27 +23,11 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot.product;
 
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.synopsys.integration.blackduck.api.component.ErrorResponse;
-import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
-import com.synopsys.integration.blackduck.api.generated.response.CurrentVersionView;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.ConnectionResult;
-import com.synopsys.integration.blackduck.rest.BlackDuckHttpClient;
-import com.synopsys.integration.blackduck.service.BlackDuckService;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.SilentIntLogger;
-import com.synopsys.integration.log.Slf4jIntLogger;
-import com.synopsys.integration.polaris.common.configuration.PolarisAccessTokenResolver;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 import com.synopsys.integration.polaris.common.rest.AccessTokenPolarisHttpClient;
 import com.synopsys.integration.rest.request.Response;
@@ -51,12 +35,11 @@ import com.synopsys.integration.rest.request.Response;
 public class PolarisConnectivityChecker {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public PolarisConnectivityResult determineConnectivity(PolarisServerConfig polarisServerConfig)
-        throws DetectUserFriendlyException {
+    public PolarisConnectivityResult determineConnectivity(final PolarisServerConfig polarisServerConfig) {
 
         logger.info("Detect will check if it can communicate with the Polaris Server.");
 
-        ConnectionResult connectionResult = attemptConnection(polarisServerConfig);
+        final ConnectionResult connectionResult = attemptConnection(polarisServerConfig);
 
         if (connectionResult.isFailure()) {
             logger.error("Failed to connect to the Polaris server");
@@ -64,25 +47,25 @@ public class PolarisConnectivityChecker {
             return PolarisConnectivityResult.failure(connectionResult.getFailureMessage().orElse("Could not reach the Polaris server or the credentials were invalid."));
         }
 
-        logger.info("Connection to the Polaris server was successful");//TODO: Get a detailed reason of why canConnect failed.
+        logger.info("Connection to the Polaris server was successful");
 
         return PolarisConnectivityResult.success();
     }
 
-    public ConnectionResult attemptConnection(PolarisServerConfig polarisServerConfig) {
+    private ConnectionResult attemptConnection(final PolarisServerConfig polarisServerConfig) {
         String errorMessage = null;
         int httpStatusCode = 0;
 
         try {
-            AccessTokenPolarisHttpClient blackDuckHttpClient = polarisServerConfig.createPolarisHttpClient(new SilentIntLogger());
-            try (Response response = blackDuckHttpClient.attemptAuthentication()) {
+            final AccessTokenPolarisHttpClient blackDuckHttpClient = polarisServerConfig.createPolarisHttpClient(new SilentIntLogger());
+            try (final Response response = blackDuckHttpClient.attemptAuthentication()) {
                 // if you get an error response, you know that a connection could not be made
                 httpStatusCode = response.getStatusCode();
                 if (response.isStatusCodeError()) {
                     errorMessage = response.getContentString();
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             errorMessage = e.getMessage();
         }
 

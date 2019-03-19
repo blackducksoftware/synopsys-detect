@@ -1,0 +1,7 @@
+
+------------------------------------------------------------
+Tests that we handle no dependencies
+------------------------------------------------------------
+
+noDependency - this configuration has no dependencies
+No dependencies

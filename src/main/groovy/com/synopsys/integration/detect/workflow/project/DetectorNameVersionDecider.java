@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.detector.DetectorType;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.workflow.project.decisions.ArbitraryNameVersionDecision;
 import com.synopsys.integration.detect.workflow.project.decisions.NameVersionDecision;
 import com.synopsys.integration.detect.workflow.project.decisions.PreferredDetectorDecision;

@@ -32,7 +32,7 @@ class TestNpmBdio {
         // process.waitFor()
         //
         // NpmCliParser npmCliDependencyFinder = new NpmCliParser()
-        // DetectCodeLocation detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(stdOut, "C:\\Users\\jpiscitelli\\Documents\\node\\test")
+        // DetectCodeLocation detectCodeLocation = npmCliDependencyFinder.toCodeLocation(stdOut, "C:\\Users\\jpiscitelli\\Documents\\node\\test")
         //
         // DetectProject detectProject = new DetectProject()
         // detectProject.projectName = "ek unit test"

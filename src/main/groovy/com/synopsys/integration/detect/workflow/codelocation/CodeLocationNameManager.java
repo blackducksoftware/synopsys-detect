@@ -41,7 +41,7 @@ public class CodeLocationNameManager {
         this.codeLocationNameGenerator = codeLocationNameGenerator;
     }
 
-    public String createAggregateCodeLocationName(NameVersion projectNameVersion) {
+    public String createAggregateCodeLocationName(final NameVersion projectNameVersion) {
         final String aggregateCodeLocationName;
         if (useCodeLocationOverride()) {
             // The aggregate is exclusively used for the bdio and not the scans
@@ -54,16 +54,21 @@ public class CodeLocationNameManager {
 
     public String createCodeLocationName(final DetectCodeLocation detectCodeLocation, final String detectSourcePath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String codeLocationName;
-        if (useCodeLocationOverride() && DetectCodeLocationType.DOCKER.equals(detectCodeLocation.getCodeLocationType())) {
-            codeLocationName = getNextCodeLocationOverrideName(CodeLocationNameType.DOCKER);
-        } else if (useCodeLocationOverride()) {
-            codeLocationName = getNextCodeLocationOverrideName(CodeLocationNameType.BOM);
-        } else if (DetectCodeLocationType.DOCKER.equals(detectCodeLocation.getCodeLocationType())) {
-            codeLocationName = codeLocationNameGenerator
-                                   .createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getCodeLocationType(), prefix,
-                                       suffix);
+        if (useCodeLocationOverride()) {
+            if (detectCodeLocation.getDockerImageName().isPresent()) {
+                codeLocationName = getNextCodeLocationOverrideName(CodeLocationNameType.DOCKER);
+            } else {
+                codeLocationName = getNextCodeLocationOverrideName(CodeLocationNameType.BOM);
+            }
         } else {
-            codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getCodeLocationType(), prefix, suffix);
+            String sourcePath = detectCodeLocation.getSourcePath().toString();
+            if (detectCodeLocation.getDockerImageName().isPresent()) {
+                String dockerImage = detectCodeLocation.getDockerImageName().get();
+                codeLocationName = codeLocationNameGenerator.createDockerCodeLocationName(sourcePath, projectName, projectVersionName, dockerImage, prefix, suffix);
+            } else {
+                String creator = detectCodeLocation.getCreatorName().orElse("detect");
+                codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, sourcePath, detectCodeLocation.getExternalId(), creator, prefix, suffix);
+            }
         }
         return codeLocationName;
     }
