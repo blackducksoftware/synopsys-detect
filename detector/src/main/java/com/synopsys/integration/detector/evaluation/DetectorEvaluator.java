@@ -59,7 +59,7 @@ public class DetectorEvaluator {
     //Unfortunately, currently search and applicable are tied together due to Search needing to know about previous detectors that applied.
     //So Search and then Applicable must be evaluated of Detector 1 before the next Search can be evaluated of Detector 2.
     public void searchAndApplicableEvaluation(final DetectorEvaluationTree detectorEvaluationTree, final Set<DetectorRule> appliedInParent) {
-        logger.info("Determining applicable detectors on the directory: " + detectorEvaluationTree.getDirectory().toString());
+        logger.trace("Determining applicable detectors on the directory: " + detectorEvaluationTree.getDirectory().toString());
 
         final Set<DetectorRule> appliedSoFar = new HashSet<>();
 
@@ -86,16 +86,20 @@ public class DetectorEvaluator {
                 detectorEvaluation.setApplicable(applicableResult);
 
                 if (detectorEvaluation.isApplicable()) {
-                    logger.trace("Applicable passed. Will add to applicable list. Done evaluating for now.");
+                    logger.trace("Found applicable detector: " + detectorRule.getDescriptiveName());
                     appliedSoFar.add(detectorRule);
                 } else {
-                    logger.trace("Applicable did not pass, will not continue evaluating.");
+                    logger.trace("Applicable did not pass: " + detectorEvaluation.getApplicabilityMessage());
                 }
             } else {
-                logger.trace("Searchable did not pass, will not continue evaluating.");
+                logger.trace("Searchable did not pass: " + detectorEvaluation.getSearchabilityMessage());
             }
 
             getDetectorEvaluatorListener().ifPresent(it -> it.applicableEnded(detectorEvaluation));
+        }
+
+        if (appliedSoFar.size() > 0){
+            logger.info("Found (" + appliedSoFar.size() + ") applicable detectors in: " + detectorEvaluationTree.getDirectory().toString()); //TODO: Perfect log level also matters here. To little and we may appear stuck, but we may also be flooding the logs.
         }
 
         final Set<DetectorRule> nextAppliedInParent = new HashSet<>();
@@ -108,7 +112,7 @@ public class DetectorEvaluator {
     }
 
     public void extractableEvaluation(final DetectorEvaluationTree detectorEvaluationTree) {
-        logger.info("Determining extractable detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
+        logger.trace("Determining extractable detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
         for (final DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
             if (detectorEvaluation.isSearchable() && detectorEvaluation.isApplicable()) {
 
@@ -127,7 +131,7 @@ public class DetectorEvaluator {
                 if (detectorEvaluation.isExtractable()) {
                     logger.trace("Extractable passed. Done evaluating for now.");
                 } else {
-                    logger.trace("Extractable did not pass, will not continue evaluating.");
+                    logger.trace("Extractable did not pass: " + detectorEvaluation.getExtractabilityMessage());
                 }
 
                 getDetectorEvaluatorListener().ifPresent(it -> it.extractableEnded(detectorEvaluation));
@@ -140,7 +144,7 @@ public class DetectorEvaluator {
     }
 
     public void extractionEvaluation(final DetectorEvaluationTree detectorEvaluationTree, final Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider) {
-        logger.info("Extracting detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
+        logger.trace("Extracting detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
         for (final DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
             if (detectorEvaluation.isSearchable() && detectorEvaluation.isApplicable() && detectorEvaluation.isExtractable()) {
 

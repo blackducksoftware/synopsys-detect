@@ -53,28 +53,23 @@ public class DetectorFinder {
         throws DetectorFinderDirectoryListException {
 
         if (depth > options.getMaximumDepth()) {
-            logger.info("Skipping directory as it exceeds max depth: " + directory.toString());
+            logger.trace("Skipping directory as it exceeds max depth: " + directory.toString());
             return Optional.empty();
         }
 
         if (null == directory || !directory.isDirectory()) {
-            logger.info("Skipping file as it is not a directory: " + directory.toString());
+            logger.trace("Skipping file as it is not a directory: " + directory.toString());
             return Optional.empty();
         }
 
-        if (depth > 0 && options.getFileFilter().test(directory)) { // NEVER skip at depth 0.
-            logger.info("Skipping excluded directory: " + directory.getPath());
-            return Optional.empty();
-        }
-
-        logger.info("Traversing directory: " + directory.getPath());
+        logger.info("Traversing directory: " + directory.getPath()); //TODO: Finding the perfect log level here is important. At INFO, we log a lot during a deep traversal but if we don't we might look stuck.
         final List<DetectorEvaluation> evaluations = detectorRuleSet.getOrderedDetectorRules().stream() //Detectors are filtered during Evaluation.
                                                          .map(DetectorEvaluation::new)
                                                          .collect(Collectors.toList());
 
         final Set<DetectorEvaluationTree> children = new HashSet<>();
 
-        final List<File> subDirectories = findSubDirectories(directory, options.getFileFilter());
+        final List<File> subDirectories = findFilteredSubDirectories(directory, options.getFileFilter());
         for (final File subDirectory : subDirectories) {
             final Optional<DetectorEvaluationTree> childEvaluationSet = findDetectors(subDirectory, detectorRuleSet, depth + 1, options);
             childEvaluationSet.ifPresent(children::add);
@@ -83,7 +78,7 @@ public class DetectorFinder {
         return Optional.of(new DetectorEvaluationTree(directory, depth, detectorRuleSet, evaluations, children));
     }
 
-    private List<File> findSubDirectories(final File directory, Predicate<File> filePredicate) throws DetectorFinderDirectoryListException {
+    private List<File> findFilteredSubDirectories(final File directory, Predicate<File> filePredicate) throws DetectorFinderDirectoryListException {
         try (final Stream<Path> pathStream = Files.list(directory.toPath())) {
             return pathStream.map(Path::toFile)
                        .filter(File::isDirectory)

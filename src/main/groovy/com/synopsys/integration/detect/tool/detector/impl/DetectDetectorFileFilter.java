@@ -20,6 +20,10 @@ public class DetectDetectorFileFilter implements Predicate<File> {
 
     @Override
     public boolean test(final File file) {
+        return !isExcluded(file);
+    }
+
+    public boolean isExcluded(final File file){
         for (final String excludedDirectory : excludedDirectories) {
             if (FilenameUtils.wildcardMatchOnSystem(file.getName(), excludedDirectory)) {
                 return true;

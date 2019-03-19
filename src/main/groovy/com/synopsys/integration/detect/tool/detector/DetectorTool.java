@@ -99,7 +99,7 @@ public class DetectorTool {
         final DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions);
         detectorEvaluator.setDetectorEvaluatorListener(eventBroadcaster);
 
-        logger.info("Starting detector search.");
+        logger.info("Starting detector evaluations.");
         detectorEvaluator.searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
 
         Set<DetectorType> applicable = detectorEvaluations.stream()
