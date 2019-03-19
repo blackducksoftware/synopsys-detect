@@ -336,6 +336,7 @@ public class DetectableBeanConfiguration {
         return new GradleRootMetadataParser();
     }
 
+    @Bean
     public GradleInspectorResolver gradleInspectorResolver() {
         return new ArtifactoryGradleInspectorResolver(artifactResolver, configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapManager, directoryManager);
     }
