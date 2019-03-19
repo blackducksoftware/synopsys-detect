@@ -65,16 +65,28 @@ public class BlackDuckBinaryScannerTool {
         this.eventSystem = eventSystem;
     }
 
+    public boolean shouldRun() {
+        final String binaryScanFilePath = getBinaryScanFilePath();
+        if (StringUtils.isBlank(binaryScanFilePath)) {
+            logger.info("No binary scan file path provided; binary scan will not run");
+            return false;
+        }
+        final File binaryScanFile = new File(binaryScanFilePath);
+        if (binaryScanFile.isFile() && binaryScanFile.canRead()) {
+            logger.info("Valid binary scan file path provided; binary scan will run");
+            return true;
+        }
+        logger.warn("A binary scan file path was provided, but it does not point to a readable file, so binary scan will not run");
+        return false;
+    }
+
     public BinaryScanToolResult performBinaryScanActions(final NameVersion projectNameVersion) throws DetectUserFriendlyException {
-        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None))) {
+        if (StringUtils.isNotBlank(getBinaryScanFilePath())) {
             final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.None);
             final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.None);
-
-            final File file = new File(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None));
-
-            NotificationTaskRange taskRange = calculateTaskRange();
-            Set<String> codeLocationNames = uploadBinaryScanFile(blackDuckServicesFactory.createBinaryScannerService(), file, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);
-
+            final File binaryScanFile = new File(getBinaryScanFilePath());
+            final NotificationTaskRange taskRange = calculateTaskRange();
+            final Set<String> codeLocationNames = uploadBinaryScanFile(blackDuckServicesFactory.createBinaryScannerService(), binaryScanFile, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);
             return new BinaryScanToolResult(taskRange, codeLocationNames, true);
         } else {
             logger.debug("No binary scan path was provided, so binary scan will not occur.");
@@ -90,11 +102,11 @@ public class BlackDuckBinaryScannerTool {
             throw new DetectUserFriendlyException("Failed to calculate binary scan notification range", e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
         }
     }
-    public Set<String> uploadBinaryScanFile(final BinaryScannerService binaryService, final File file, final String projectName, final String projectVersionName, final String prefix, final String suffix) throws DetectUserFriendlyException {
-        final String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(file.getName(), projectName, projectVersionName, prefix, suffix);
+    public Set<String> uploadBinaryScanFile(final BinaryScannerService binaryService, final File binaryScanFile, final String projectName, final String projectVersionName, final String prefix, final String suffix) throws DetectUserFriendlyException {
+        final String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(binaryScanFile.getName(), projectName, projectVersionName, prefix, suffix);
         try {
             logger.info("Preparing to upload binary scan file: " + codeLocationName);
-            binaryService.scanBinary(file, projectName, projectVersionName, codeLocationName);
+            binaryService.scanBinary(binaryScanFile, projectName, projectVersionName, codeLocationName);
             logger.info("Successfully uploaded binary scan file: " + codeLocationName);
             eventSystem.publishEvent(Event.StatusSummary, new Status("BINARY_SCAN", StatusType.SUCCESS));
             Set<String> names = new HashSet<String>();
@@ -107,4 +119,7 @@ public class BlackDuckBinaryScannerTool {
         }
     }
 
+    private String getBinaryScanFilePath() {
+        return detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None);
+    }
 }
