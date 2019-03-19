@@ -66,7 +66,7 @@ public class ErrorSummaryReporter {
     private void writeEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, final Function<DetectorEvaluation, String> reason) {
         if (evaluations.size() > 0) {
             evaluations.stream().forEach(evaluation -> {
-                writer.writeLine(prefix + evaluation.getDetectorRule());
+                writer.writeLine(prefix + evaluation.getDetectorRule().getDescriptiveName());
                 writer.writeLine(spacer + reason.apply(evaluation));
             });
         }

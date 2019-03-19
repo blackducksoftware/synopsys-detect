@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -128,6 +129,9 @@ public class DetectorTool {
 
         final Map<DetectorType, StatusType> statusMap = extractStatus(detectorEvaluations);
         statusMap.forEach((detectorType, statusType) -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(detectorType, statusType)));
+        if (statusMap.containsValue(StatusType.FAILURE)){
+            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "One or more detectors were not succesfull."));
+        }
 
         logger.info("Finished extractions.");
 
@@ -178,7 +182,9 @@ public class DetectorTool {
                 } else {
                     statusType = StatusType.FAILURE;
                 }
-                statusMap.put(detectorType, statusType);
+                if (statusType == StatusType.FAILURE || !statusMap.containsKey(detectorType)){
+                    statusMap.put(detectorType, statusType);
+                }
             }
         }
         return statusMap;
