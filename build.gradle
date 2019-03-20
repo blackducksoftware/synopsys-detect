@@ -13,7 +13,6 @@ buildscript {
         springBootVersion = '2.0.3.RELEASE'
     }
     repositories {
-        mavenLocal()
         jcenter()
         mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
