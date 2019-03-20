@@ -113,6 +113,7 @@ public class RunManager {
         final BdioCodeLocationCreator bdioCodeLocationCreator = detectContext.getBean(BdioCodeLocationCreator.class);
         final ConnectionManager connectionManager = detectContext.getBean(ConnectionManager.class);
         final DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
+        final ExecutableRunner executableRunner = detectContext.getBean(ExecutableRunner.class);
 
         final RunResult runResult = new RunResult();
         final RunOptions runOptions = detectConfigurationFactory.createRunOptions();
@@ -124,7 +125,7 @@ public class RunManager {
             if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
                 logger.info("Will include the Polaris tool.");
                 PolarisServerConfig polarisServerConfig = productRunData.getPolarisRunData().getPolarisServerConfig();
-                final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, new ExecutableRunner(), connectionManager, detectConfiguration, polarisServerConfig);
+                final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, executableRunner, connectionManager, detectConfiguration, polarisServerConfig);
                 polarisTool.runPolaris(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
                 logger.info("Polaris actions finished.");
             } else {

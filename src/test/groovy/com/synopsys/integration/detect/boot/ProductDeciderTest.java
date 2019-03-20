@@ -95,6 +95,7 @@ public class ProductDeciderTest {
         }
         DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
         Mockito.when(detectConfiguration.getProperties(Mockito.any())).thenReturn(keyMap);
+        Mockito.when(detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT, PropertyAuthority.None)).thenReturn(120);
 
         return detectConfiguration;
     }
