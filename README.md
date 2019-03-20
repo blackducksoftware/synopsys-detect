@@ -11,13 +11,13 @@ Synopsys Detect consolidates the functionality of Black Duck™ , Black Duck Bin
 
 ## Where can I get the latest release? ##
 
-Upon release of 5.3.0
-
 *Available from GitHub for Linux by running:*  
 bash <(curl -s -L https://detect.synopsys.com/detect.sh)
 
 *Available from GitHub for Windows by running:*  
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+
+For AirGap, please use our [Artifactory](https://repo.blackducksoftware.com/artifactory/webapp/#/artifacts/browse/tree/General/bds-integrations-release/com/synopsys/integration/synopsys-detect).
 
 ## Documentation
 
