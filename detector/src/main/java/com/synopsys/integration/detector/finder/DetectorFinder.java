@@ -58,7 +58,7 @@ public class DetectorFinder {
             return Optional.empty();
         }
 
-        if (null == directory || !directory.isDirectory()) {
+        if (null == directory || Files.isSymbolicLink(directory.toPath()) || !directory.isDirectory()) {
             logger.trace("Skipping file as it is not a directory: " + directory.toString());
             return Optional.empty();
         }
