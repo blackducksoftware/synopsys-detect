@@ -30,13 +30,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 
 public class SimpleFileFinder implements FileFinder {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private List<File> findFiles(final File directoryToSearch, final FilenameFilter filenameFilter, final int depth) {
+        logger.info(String.format("*** findFiles: %s", directoryToSearch));
         List<File> foundFiles = new ArrayList<>();
 
         final File[] allFiles = directoryToSearch.listFiles();

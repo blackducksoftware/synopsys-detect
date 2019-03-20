@@ -34,7 +34,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 
@@ -50,13 +49,16 @@ public class ExclusionPatternCreator {
     }
 
     public Set<String> determineExclusionPatterns(final String maxDepthHitMsg, final int maxDepth, final String... hubSignatureScannerExclusionNamePatterns) {
+        logger.info(String.format("*** determineExclusionPatterns"));
         if (null == hubSignatureScannerExclusionNamePatterns || hubSignatureScannerExclusionNamePatterns.length < 1 && scanTarget.isDirectory()) {
+            logger.info(String.format("*** determineExclusionPatterns: None provided"));
             return Collections.emptySet();
         }
         final Set<String> scanExclusionPatterns = new HashSet<>();
         try {
             final String scanTargetPath = scanTarget.getCanonicalPath();
             final List<File> matchingFiles = fileFinder.findFiles(scanTarget, Arrays.asList(hubSignatureScannerExclusionNamePatterns), maxDepth); //TODO: re-add the depth hit message creator?
+            logger.info(String.format("*** determineExclusionPatterns: %d matching files found", matchingFiles.size()));
             for (final File matchingFile : matchingFiles) {
                 final String matchingFilePath = matchingFile.getCanonicalPath();
                 final String scanExclusionPattern = createExclusionPatternFromPaths(scanTargetPath, matchingFilePath);

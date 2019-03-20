@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 
-import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
@@ -44,7 +43,6 @@ public class CodeLocationNameGeneratorTest {
     public void testDockerScanCodeLocationName() {
         final String expected = "dockerTar.tar.gz/hub-common-rest/2.5.1-SNAPSHOT scan";
 
-        final DetectFileFinder detectFileFinder = mock(DetectFileFinder.class);
         final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator();
 
         final String dockerTarFileName = "dockerTar.tar.gz";
