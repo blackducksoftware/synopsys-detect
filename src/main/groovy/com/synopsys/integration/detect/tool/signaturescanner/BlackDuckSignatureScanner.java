@@ -53,6 +53,7 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanTarget;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
+import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -60,16 +61,16 @@ public abstract class BlackDuckSignatureScanner {
     private final Logger logger = LoggerFactory.getLogger(BlackDuckSignatureScanner.class);
 
     private final DirectoryManager directoryManager;
-    private final DetectFileFinder detectFileFinder;
+    private final FileFinder fileFinder;
     private final CodeLocationNameManager codeLocationNameManager;
     private final BlackDuckSignatureScannerOptions signatureScannerOptions;
     private final EventSystem eventSystem;
     private final ScanBatchRunner scanJobManager;
 
-    public BlackDuckSignatureScanner(final DirectoryManager directoryManager, final DetectFileFinder detectFileFinder, final CodeLocationNameManager codeLocationNameManager,
+    public BlackDuckSignatureScanner(final DirectoryManager directoryManager, final FileFinder fileFinder, final CodeLocationNameManager codeLocationNameManager,
             final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanBatchRunner scanJobManager) {
         this.directoryManager = directoryManager;
-        this.detectFileFinder = detectFileFinder;
+        this.fileFinder = fileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
         this.signatureScannerOptions = signatureScannerOptions;
         this.eventSystem = eventSystem;
@@ -186,7 +187,7 @@ public abstract class BlackDuckSignatureScanner {
         try {
             final File target = new File(path);
             final String targetPath = target.getCanonicalPath();
-            final ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(detectFileFinder, target);
+            final ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(fileFinder, target);
 
             final String maxDepthHitMsg = String.format("Maximum depth %d hit while traversing source tree to generate signature scanner exclusion patterns. To search deeper, adjust the value of property %s",
                     maxDepth, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH.getPropertyName());

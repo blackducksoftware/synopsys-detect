@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
-import com.synopsys.integration.detect.DetectorBeanConfiguration;
+import com.synopsys.integration.detect.DetectableBeanConfiguration;
 import com.synopsys.integration.detect.RunBeanConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
@@ -74,7 +74,7 @@ import com.synopsys.integration.detect.workflow.diagnostic.RelevantFileTracker;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detect.workflow.profiling.BomToolProfiler;
+import com.synopsys.integration.detect.workflow.profiling.DetectorProfiler;
 import com.synopsys.integration.detect.workflow.report.DetectConfigurationReporter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.exception.IntegrationException;
@@ -166,7 +166,7 @@ public class DetectBoot {
         }
 
         //TODO: Only need this if in diagnostic or online (for phone home):
-        BomToolProfiler profiler = new BomToolProfiler(eventSystem);
+        DetectorProfiler profiler = new DetectorProfiler(eventSystem);
 
         //lock the configuration, boot has completed.
         logger.debug("Configuration is now complete. No changes should occur to configuration.");
@@ -188,7 +188,7 @@ public class DetectBoot {
         detectContext.registerBean(configuration);
 
         detectContext.registerConfiguration(RunBeanConfiguration.class);
-        detectContext.registerConfiguration(DetectorBeanConfiguration.class);
+        detectContext.registerConfiguration(DetectableBeanConfiguration.class);
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
         return DetectBootResult.run(detectConfiguration, productRunData);

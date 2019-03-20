@@ -40,13 +40,7 @@ import org.slf4j.LoggerFactory;
 public class DetectFileFinder {
     private final Logger logger = LoggerFactory.getLogger(DetectFileFinder.class);
 
-    public String extractFinalPieceFromPath(final String path) {
-        if (path == null || path.length() == 0) {
-            return "";
-        }
-        final String normalizedPath = FilenameUtils.normalizeNoEndSeparator(path, true);
-        return normalizedPath.substring(normalizedPath.lastIndexOf("/") + 1, normalizedPath.length());
-    }
+
 
     public List<File> findFilesToDepth(final String sourceDirectory, final String filenamePattern, final int maxDepth) {
         return findFilesToDepth(new File(sourceDirectory), filenamePattern, maxDepth);
@@ -81,12 +75,12 @@ public class DetectFileFinder {
         final File foundFile;
         final List<File> foundFiles = findFiles(sourceDirectory, filenamePattern);
         if (foundFiles == null || foundFiles.isEmpty()) {
-            logger.debug(String.format("Could not find any matches for %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
+            logger.debug(String.format("Could not find any filteredChildren for %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
             foundFile = null;
         } else {
             foundFile = foundFiles.get(0);
             if (foundFiles.size() > 1) {
-                logger.debug(String.format("Found multiple matches for %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
+                logger.debug(String.format("Found multiple filteredChildren for %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
                 logger.debug(String.format("Using %s", foundFile));
             } else {
                 logger.debug(String.format("Found a match %s for file %s in %s", foundFile.getAbsolutePath(), filenamePattern, sourceDirectory.getAbsolutePath()));

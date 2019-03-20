@@ -1,0 +1,541 @@
+{
+  "rootExternalDataIds": [
+    "http:maven/org_apache_maven/maven_project/2_0_6",
+    "http:maven/junit/junit/4_12",
+    "http:maven/com_google_guava/guava/19_0",
+    "http:maven/com_github_tomakehurst/wiremock/2_6_0",
+    "http:maven/commons_logging/commons_logging/1_2",
+    "http:maven/org_slf4j/slf4j_api/1_8_0_alpha2",
+    "http:maven/org_apache_commons/commons_lang3/3_3_2",
+    "http:maven/org_codehaus_sonar/sonar_plugin_api/4_5_4",
+    "http:maven/org_codehaus_sonar/sonar_ws_client/4_5_4",
+    "http:maven/commons_httpclient/commons_httpclient/3_1",
+    "http:maven/org_slf4j/slf4j_jdk14/1_8_0_alpha2",
+    "http:maven/com_github_stefanbirkner/system_rules/1_16_0",
+    "http:maven/org_mockito/mockito_core/1_9_5",
+    "http:maven/org_asynchttpclient/async_http_client/2_0_28",
+    "http:maven/com_googlecode_json_simple/json_simple/1_1_1"
+  ],
+  "externalDataIdRelationships": {
+    "http:maven/org_apache_maven/maven_project/2_0_6": [
+      "http:maven/org_apache_maven/maven_artifact/2_0_6",
+      "http:maven/org_codehaus_plexus/plexus_utils/1_4_1",
+      "http:maven/org_apache_maven/maven_model/2_0_6",
+      "http:maven/org_apache_maven/maven_artifact_manager/2_0_6",
+      "http:maven/org_apache_maven/maven_profile/2_0_6",
+      "http:maven/org_codehaus_plexus/plexus_container_default/1_0_alpha_9_stable_1",
+      "http:maven/org_apache_maven/maven_plugin_registry/2_0_6",
+      "http:maven/org_apache_maven/maven_settings/2_0_6"
+    ],
+    "http:maven/net_minidev/json_smart/2_2_1": [
+      "http:maven/net_minidev/accessors_smart/1_1"
+    ],
+    "http:maven/junit/junit/4_12": [
+      "http:maven/org_hamcrest/hamcrest_core/1_3"
+    ],
+    "http:maven/org_codehaus_sonar/sonar_graph/4_5_4": [
+      "http:maven/commons_lang/commons_lang/2_6"
+    ],
+    "http:maven/org_codehaus_sonar/sonar_plugin_api/4_5_4": [
+      "http:maven/commons_configuration/commons_configuration/1_6",
+      "http:maven/com_thoughtworks_xstream/xstream/1_3_1",
+      "http:maven/org_codehaus_sonar/sonar_duplications/4_5_4",
+      "http:maven/org_codehaus_woodstox/stax2_api/3_1_4",
+      "http:maven/org_codehaus_staxmate/staxmate/2_0_1",
+      "http:maven/org_codehaus_sonar/sonar_graph/4_5_4",
+      "http:maven/com_google_code_findbugs/jsr305/1_3_9",
+      "http:maven/org_slf4j/log4j_over_slf4j/1_7_5",
+      "http:maven/xpp3/xpp3/1_1_3_3",
+      "http:maven/org_codehaus_sonar/sonar_check_api/4_5_4",
+      "http:maven/org_codehaus_sonar/sonar_squid/4_1",
+      "http:maven/org_hibernate/hibernate_annotations/3_4_0_GA",
+      "http:maven/commons_codec/commons_codec/1_8",
+      "http:maven/org_codehaus_sonar/sonar_colorizer/4_5_4",
+      "http:maven/org_codehaus_woodstox/woodstox_core_lgpl/4_4_0",
+      "http:maven/org_slf4j/jcl_over_slf4j/1_7_5"
+    ],
+    "http:maven/io_netty/netty_transport_native_epoll/4_0_44_Final": [
+      "http:maven/io_netty/netty_common/4_0_44_Final",
+      "http:maven/io_netty/netty_transport/4_0_44_Final"
+    ],
+    "http:maven/org_eclipse_jetty/jetty_webapp/9_2_13_v20150730": [
+      "http:maven/org_eclipse_jetty/jetty_xml/9_2_13_v20150730"
+    ],
+    "http:maven/org_eclipse_jetty/jetty_servlet/9_2_13_v20150730": [
+      "http:maven/org_eclipse_jetty/jetty_security/9_2_13_v20150730"
+    ],
+    "http:maven/org_mockito/mockito_core/1_9_5": [
+      "http:maven/org_objenesis/objenesis/1_0"
+    ],
+    "http:maven/dom4j/dom4j/1_6_1": [
+      "http:maven/xml_apis/xml_apis/1_0_b2"
+    ],
+    "http:maven/org_asynchttpclient/netty_resolver_dns/2_0_28": [
+      "http:maven/org_asynchttpclient/netty_resolver/2_0_28",
+      "http:maven/org_asynchttpclient/netty_codec_dns/2_0_28"
+    ],
+    "http:maven/io_netty/netty_codec_http/4_0_44_Final": [
+      "http:maven/io_netty/netty_codec/4_0_44_Final",
+      "http:maven/io_netty/netty_handler/4_0_44_Final"
+    ],
+    "http:maven/org_eclipse_jetty/jetty_server/9_2_13_v20150730": [
+      "http:maven/javax_servlet/javax_servlet_api/3_1_0",
+      "http:maven/org_eclipse_jetty/jetty_http/9_2_13_v20150730",
+      "http:maven/org_eclipse_jetty/jetty_io/9_2_13_v20150730"
+    ],
+    "http:maven/org_codehaus_sonar/sonar_colorizer/4_5_4": [
+      "http:maven/org_codehaus_sonar/sonar_channel/4_1"
+    ],
+    "http:maven/com_flipkart_zjsonpatch/zjsonpatch/0_3_0": [
+      "http:maven/org_apache_commons/commons_collections4/4_1"
+    ],
+    "http:maven/commons_configuration/commons_configuration/1_6": [
+      "http:maven/commons_collections/commons_collections/3_2_1"
+    ],
+    "http:maven/com_jayway_jsonpath/json_path/2_2_0": [
+      "http:maven/net_minidev/json_smart/2_2_1"
+    ],
+    "http:maven/com_github_tomakehurst/wiremock/2_6_0": [
+      "http:maven/org_xmlunit/xmlunit_core/2_3_0",
+      "http:maven/com_jayway_jsonpath/json_path/2_2_0",
+      "http:maven/org_apache_httpcomponents/httpclient/4_5_1",
+      "http:maven/org_eclipse_jetty/jetty_servlets/9_2_13_v20150730",
+      "http:maven/org_xmlunit/xmlunit_legacy/2_3_0",
+      "http:maven/org_eclipse_jetty/jetty_webapp/9_2_13_v20150730",
+      "http:maven/org_eclipse_jetty/jetty_servlet/9_2_13_v20150730",
+      "http:maven/com_fasterxml_jackson_core/jackson_core/2_6_1",
+      "http:maven/com_fasterxml_jackson_core/jackson_databind/2_6_1",
+      "http:maven/com_fasterxml_jackson_core/jackson_annotations/2_6_1",
+      "http:maven/org_eclipse_jetty/jetty_server/9_2_13_v20150730",
+      "http:maven/com_github_jknack/handlebars/4_0_6",
+      "http:maven/net_sf_jopt_simple/jopt_simple/4_9",
+      "http:maven/com_flipkart_zjsonpatch/zjsonpatch/0_3_0"
+    ],
+    "http:maven/org_apache_httpcomponents/httpclient/4_5_1": [
+      "http:maven/org_apache_httpcomponents/httpcore/4_4_3"
+    ],
+    "http:maven/org_eclipse_jetty/jetty_servlets/9_2_13_v20150730": [
+      "http:maven/org_eclipse_jetty/jetty_util/9_2_13_v20150730",
+      "http:maven/org_eclipse_jetty/jetty_continuation/9_2_13_v20150730"
+    ],
+    "http:maven/org_apache_maven/maven_artifact_manager/2_0_6": [
+      "http:maven/org_apache_maven_wagon/wagon_provider_api/1_0_beta_2",
+      "http:maven/org_apache_maven/maven_repository_metadata/2_0_6"
+    ],
+    "http:maven/net_minidev/accessors_smart/1_1": [
+      "http:maven/org_ow2_asm/asm/5_0_3"
+    ],
+    "http:maven/org_asynchttpclient/async_http_client_netty_utils/2_0_28": [
+      "http:maven/io_netty/netty_buffer/4_0_44_Final"
+    ],
+    "http:maven/org_codehaus_sonar/sonar_squid/4_1": [
+      "http:maven/commons_io/commons_io/2_4",
+      "http:maven/org_picocontainer/picocontainer/2_14_3"
+    ],
+    "http:maven/org_asynchttpclient/async_http_client/2_0_28": [
+      "http:maven/org_asynchttpclient/async_http_client_netty_utils/2_0_28",
+      "http:maven/org_asynchttpclient/netty_resolver_dns/2_0_28",
+      "http:maven/io_netty/netty_codec_http/4_0_44_Final",
+      "http:maven/org_javassist/javassist/3_21_0_GA",
+      "http:maven/org_reactivestreams/reactive_streams/1_0_0",
+      "http:maven/com_typesafe_netty/netty_reactive_streams/1_0_8",
+      "http:maven/io_netty/netty_transport_native_epoll/4_0_44_Final"
+    ],
+    "http:maven/org_hibernate/hibernate_annotations/3_4_0_GA": [
+      "http:maven/dom4j/dom4j/1_6_1",
+      "http:maven/org_hibernate/ejb3_persistence/1_0_2_GA",
+      "http:maven/org_hibernate/hibernate_commons_annotations/3_1_0_GA"
+    ],
+    "http:maven/com_github_jknack/handlebars/4_0_6": [
+      "http:maven/org_antlr/antlr4_runtime/4_5_1_1"
+    ],
+    "http:maven/org_codehaus_woodstox/woodstox_core_lgpl/4_4_0": [
+      "http:maven/javax_xml_stream/stax_api/1_0_2"
+    ],
+    "http:maven/org_codehaus_plexus/plexus_container_default/1_0_alpha_9_stable_1": [
+      "http:maven/classworlds/classworlds/1_1_alpha_2"
+    ]
+  },
+  "dependencySummaries": {
+    "http:maven/io_netty/netty_common/4_0_44_Final": {
+      "name": "netty-common",
+      "version": "4.0.44.Final"
+    },
+    "http:maven/junit/junit/4_12": {
+      "name": "junit",
+      "version": "4.12"
+    },
+    "http:maven/com_google_guava/guava/19_0": {
+      "name": "guava",
+      "version": "19.0"
+    },
+    "http:maven/org_eclipse_jetty/jetty_util/9_2_13_v20150730": {
+      "name": "jetty-util",
+      "version": "9.2.13.v20150730"
+    },
+    "http:maven/org_antlr/antlr4_runtime/4_5_1_1": {
+      "name": "antlr4-runtime",
+      "version": "4.5.1-1"
+    },
+    "http:maven/org_codehaus_staxmate/staxmate/2_0_1": {
+      "name": "staxmate",
+      "version": "2.0.1"
+    },
+    "http:maven/commons_logging/commons_logging/1_2": {
+      "name": "commons-logging",
+      "version": "1.2"
+    },
+    "http:maven/org_slf4j/slf4j_api/1_8_0_alpha2": {
+      "name": "slf4j-api",
+      "version": "1.8.0-alpha2"
+    },
+    "http:maven/org_javassist/javassist/3_21_0_GA": {
+      "name": "javassist",
+      "version": "3.21.0-GA"
+    },
+    "http:maven/org_codehaus_sonar/sonar_plugin_api/4_5_4": {
+      "name": "sonar-plugin-api",
+      "version": "4.5.4"
+    },
+    "http:maven/org_codehaus_sonar/sonar_ws_client/4_5_4": {
+      "name": "sonar-ws-client",
+      "version": "4.5.4"
+    },
+    "http:maven/io_netty/netty_transport_native_epoll/4_0_44_Final": {
+      "name": "netty-transport-native-epoll",
+      "version": "4.0.44.Final"
+    },
+    "http:maven/org_eclipse_jetty/jetty_webapp/9_2_13_v20150730": {
+      "name": "jetty-webapp",
+      "version": "9.2.13.v20150730"
+    },
+    "http:maven/io_netty/netty_transport/4_0_44_Final": {
+      "name": "netty-transport",
+      "version": "4.0.44.Final"
+    },
+    "http:maven/org_eclipse_jetty/jetty_servlet/9_2_13_v20150730": {
+      "name": "jetty-servlet",
+      "version": "9.2.13.v20150730"
+    },
+    "http:maven/commons_io/commons_io/2_4": {
+      "name": "commons-io",
+      "version": "2.4"
+    },
+    "http:maven/org_mockito/mockito_core/1_9_5": {
+      "name": "mockito-core",
+      "version": "1.9.5"
+    },
+    "http:maven/org_asynchttpclient/netty_resolver_dns/2_0_28": {
+      "name": "netty-resolver-dns",
+      "version": "2.0.28"
+    },
+    "http:maven/io_netty/netty_codec/4_0_44_Final": {
+      "name": "netty-codec",
+      "version": "4.0.44.Final"
+    },
+    "http:maven/org_apache_maven/maven_model/2_0_6": {
+      "name": "maven-model",
+      "version": "2.0.6"
+    },
+    "http:maven/org_eclipse_jetty/jetty_server/9_2_13_v20150730": {
+      "name": "jetty-server",
+      "version": "9.2.13.v20150730"
+    },
+    "http:maven/org_codehaus_sonar/sonar_colorizer/4_5_4": {
+      "name": "sonar-colorizer",
+      "version": "4.5.4"
+    },
+    "http:maven/org_hibernate/hibernate_commons_annotations/3_1_0_GA": {
+      "name": "hibernate-commons-annotations",
+      "version": "3.1.0.GA"
+    },
+    "http:maven/org_apache_maven_wagon/wagon_provider_api/1_0_beta_2": {
+      "name": "wagon-provider-api",
+      "version": "1.0-beta-2"
+    },
+    "http:maven/com_typesafe_netty/netty_reactive_streams/1_0_8": {
+      "name": "netty-reactive-streams",
+      "version": "1.0.8"
+    },
+    "http:maven/com_flipkart_zjsonpatch/zjsonpatch/0_3_0": {
+      "name": "zjsonpatch",
+      "version": "0.3.0"
+    },
+    "http:maven/org_slf4j/jcl_over_slf4j/1_7_5": {
+      "name": "jcl-over-slf4j",
+      "version": "1.7.5"
+    },
+    "http:maven/commons_configuration/commons_configuration/1_6": {
+      "name": "commons-configuration",
+      "version": "1.6"
+    },
+    "http:maven/com_jayway_jsonpath/json_path/2_2_0": {
+      "name": "json-path",
+      "version": "2.2.0"
+    },
+    "http:maven/com_github_tomakehurst/wiremock/2_6_0": {
+      "name": "wiremock",
+      "version": "2.6.0"
+    },
+    "http:maven/org_apache_commons/commons_collections4/4_1": {
+      "name": "commons-collections4",
+      "version": "4.1"
+    },
+    "http:maven/org_codehaus_plexus/plexus_utils/1_4_1": {
+      "name": "plexus-utils",
+      "version": "1.4.1"
+    },
+    "http:maven/org_eclipse_jetty/jetty_servlets/9_2_13_v20150730": {
+      "name": "jetty-servlets",
+      "version": "9.2.13.v20150730"
+    },
+    "http:maven/org_eclipse_jetty/jetty_http/9_2_13_v20150730": {
+      "name": "jetty-http",
+      "version": "9.2.13.v20150730"
+    },
+    "http:maven/org_eclipse_jetty/jetty_security/9_2_13_v20150730": {
+      "name": "jetty-security",
+      "version": "9.2.13.v20150730"
+    },
+    "http:maven/com_google_code_findbugs/jsr305/1_3_9": {
+      "name": "jsr305",
+      "version": "1.3.9"
+    },
+    "http:maven/org_slf4j/log4j_over_slf4j/1_7_5": {
+      "name": "log4j-over-slf4j",
+      "version": "1.7.5"
+    },
+    "http:maven/xml_apis/xml_apis/1_0_b2": {
+      "name": "xml-apis",
+      "version": "1.0.b2"
+    },
+    "http:maven/org_xmlunit/xmlunit_legacy/2_3_0": {
+      "name": "xmlunit-legacy",
+      "version": "2.3.0"
+    },
+    "http:maven/org_eclipse_jetty/jetty_io/9_2_13_v20150730": {
+      "name": "jetty-io",
+      "version": "9.2.13.v20150730"
+    },
+    "http:maven/org_asynchttpclient/netty_codec_dns/2_0_28": {
+      "name": "netty-codec-dns",
+      "version": "2.0.28"
+    },
+    "http:maven/org_objenesis/objenesis/1_0": {
+      "name": "objenesis",
+      "version": "1.0"
+    },
+    "http:maven/org_apache_maven/maven_settings/2_0_6": {
+      "name": "maven-settings",
+      "version": "2.0.6"
+    },
+    "http:maven/classworlds/classworlds/1_1_alpha_2": {
+      "name": "classworlds",
+      "version": "1.1-alpha-2"
+    },
+    "http:maven/org_codehaus_sonar/sonar_squid/4_1": {
+      "name": "sonar-squid",
+      "version": "4.1"
+    },
+    "http:maven/org_apache_httpcomponents/httpcore/4_4_3": {
+      "name": "httpcore",
+      "version": "4.4.3"
+    },
+    "http:maven/org_asynchttpclient/async_http_client/2_0_28": {
+      "name": "async-http-client",
+      "version": "2.0.28"
+    },
+    "http:maven/org_codehaus_woodstox/woodstox_core_lgpl/4_4_0": {
+      "name": "woodstox-core-lgpl",
+      "version": "4.4.0"
+    },
+    "http:maven/net_sf_jopt_simple/jopt_simple/4_9": {
+      "name": "jopt-simple",
+      "version": "4.9"
+    },
+    "http:maven/org_codehaus_plexus/plexus_container_default/1_0_alpha_9_stable_1": {
+      "name": "plexus-container-default",
+      "version": "1.0-alpha-9-stable-1"
+    },
+    "http:maven/com_googlecode_json_simple/json_simple/1_1_1": {
+      "name": "json-simple",
+      "version": "1.1.1"
+    },
+    "http:maven/org_apache_maven/maven_project/2_0_6": {
+      "name": "maven-project",
+      "version": "2.0.6"
+    },
+    "http:maven/net_minidev/json_smart/2_2_1": {
+      "name": "json-smart",
+      "version": "2.2.1"
+    },
+    "http:maven/org_picocontainer/picocontainer/2_14_3": {
+      "name": "picocontainer",
+      "version": "2.14.3"
+    },
+    "http:maven/org_xmlunit/xmlunit_core/2_3_0": {
+      "name": "xmlunit-core",
+      "version": "2.3.0"
+    },
+    "http:maven/com_thoughtworks_xstream/xstream/1_3_1": {
+      "name": "xstream",
+      "version": "1.3.1"
+    },
+    "http:maven/org_apache_maven/maven_artifact/2_0_6": {
+      "name": "maven-artifact",
+      "version": "2.0.6"
+    },
+    "http:maven/org_asynchttpclient/netty_resolver/2_0_28": {
+      "name": "netty-resolver",
+      "version": "2.0.28"
+    },
+    "http:maven/org_ow2_asm/asm/5_0_3": {
+      "name": "asm",
+      "version": "5.0.3"
+    },
+    "http:maven/org_codehaus_woodstox/stax2_api/3_1_4": {
+      "name": "stax2-api",
+      "version": "3.1.4"
+    },
+    "http:maven/org_codehaus_sonar/sonar_graph/4_5_4": {
+      "name": "sonar-graph",
+      "version": "4.5.4"
+    },
+    "http:maven/commons_collections/commons_collections/3_2_1": {
+      "name": "commons-collections",
+      "version": "3.2.1"
+    },
+    "http:maven/org_apache_commons/commons_lang3/3_3_2": {
+      "name": "commons-lang3",
+      "version": "3.3.2"
+    },
+    "http:maven/commons_lang/commons_lang/2_6": {
+      "name": "commons-lang",
+      "version": "2.6"
+    },
+    "http:maven/org_reactivestreams/reactive_streams/1_0_0": {
+      "name": "reactive-streams",
+      "version": "1.0.0"
+    },
+    "http:maven/commons_httpclient/commons_httpclient/3_1": {
+      "name": "commons-httpclient",
+      "version": "3.1"
+    },
+    "http:maven/com_github_stefanbirkner/system_rules/1_16_0": {
+      "name": "system-rules",
+      "version": "1.16.0"
+    },
+    "http:maven/com_fasterxml_jackson_core/jackson_databind/2_6_1": {
+      "name": "jackson-databind",
+      "version": "2.6.1"
+    },
+    "http:maven/org_codehaus_sonar/sonar_check_api/4_5_4": {
+      "name": "sonar-check-api",
+      "version": "4.5.4"
+    },
+    "http:maven/dom4j/dom4j/1_6_1": {
+      "name": "dom4j",
+      "version": "1.6.1"
+    },
+    "http:maven/org_codehaus_sonar/sonar_channel/4_1": {
+      "name": "sonar-channel",
+      "version": "4.1"
+    },
+    "http:maven/io_netty/netty_handler/4_0_44_Final": {
+      "name": "netty-handler",
+      "version": "4.0.44.Final"
+    },
+    "http:maven/io_netty/netty_codec_http/4_0_44_Final": {
+      "name": "netty-codec-http",
+      "version": "4.0.44.Final"
+    },
+    "http:maven/org_hamcrest/hamcrest_core/1_3": {
+      "name": "hamcrest-core",
+      "version": "1.3"
+    },
+    "http:maven/commons_codec/commons_codec/1_8": {
+      "name": "commons-codec",
+      "version": "1.8"
+    },
+    "http:maven/io_netty/netty_buffer/4_0_44_Final": {
+      "name": "netty-buffer",
+      "version": "4.0.44.Final"
+    },
+    "http:maven/javax_servlet/javax_servlet_api/3_1_0": {
+      "name": "javax.servlet-api",
+      "version": "3.1.0"
+    },
+    "http:maven/org_apache_httpcomponents/httpclient/4_5_1": {
+      "name": "httpclient",
+      "version": "4.5.1"
+    },
+    "http:maven/org_codehaus_sonar/sonar_duplications/4_5_4": {
+      "name": "sonar-duplications",
+      "version": "4.5.4"
+    },
+    "http:maven/org_apache_maven/maven_artifact_manager/2_0_6": {
+      "name": "maven-artifact-manager",
+      "version": "2.0.6"
+    },
+    "http:maven/net_minidev/accessors_smart/1_1": {
+      "name": "accessors-smart",
+      "version": "1.1"
+    },
+    "http:maven/org_slf4j/slf4j_jdk14/1_8_0_alpha2": {
+      "name": "slf4j-jdk14",
+      "version": "1.8.0-alpha2"
+    },
+    "http:maven/org_asynchttpclient/async_http_client_netty_utils/2_0_28": {
+      "name": "async-http-client-netty-utils",
+      "version": "2.0.28"
+    },
+    "http:maven/xpp3/xpp3/1_1_3_3": {
+      "name": "xpp3",
+      "version": "1.1.3.3"
+    },
+    "http:maven/com_fasterxml_jackson_core/jackson_core/2_6_1": {
+      "name": "jackson-core",
+      "version": "2.6.1"
+    },
+    "http:maven/org_hibernate/hibernate_annotations/3_4_0_GA": {
+      "name": "hibernate-annotations",
+      "version": "3.4.0.GA"
+    },
+    "http:maven/org_hibernate/ejb3_persistence/1_0_2_GA": {
+      "name": "ejb3-persistence",
+      "version": "1.0.2.GA"
+    },
+    "http:maven/javax_xml_stream/stax_api/1_0_2": {
+      "name": "stax-api",
+      "version": "1.0-2"
+    },
+    "http:maven/com_fasterxml_jackson_core/jackson_annotations/2_6_1": {
+      "name": "jackson-annotations",
+      "version": "2.6.1"
+    },
+    "http:maven/org_apache_maven/maven_profile/2_0_6": {
+      "name": "maven-profile",
+      "version": "2.0.6"
+    },
+    "http:maven/com_github_jknack/handlebars/4_0_6": {
+      "name": "handlebars",
+      "version": "4.0.6"
+    },
+    "http:maven/org_eclipse_jetty/jetty_continuation/9_2_13_v20150730": {
+      "name": "jetty-continuation",
+      "version": "9.2.13.v20150730"
+    },
+    "http:maven/org_apache_maven/maven_plugin_registry/2_0_6": {
+      "name": "maven-plugin-registry",
+      "version": "2.0.6"
+    },
+    "http:maven/org_apache_maven/maven_repository_metadata/2_0_6": {
+      "name": "maven-repository-metadata",
+      "version": "2.0.6"
+    },
+    "http:maven/org_eclipse_jetty/jetty_xml/9_2_13_v20150730": {
+      "name": "jetty-xml",
+      "version": "9.2.13.v20150730"
+    }
+  }
+}

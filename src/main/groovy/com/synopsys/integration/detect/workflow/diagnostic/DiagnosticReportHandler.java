@@ -27,12 +27,14 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.help.DetectOption;
+import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -46,7 +48,9 @@ import com.synopsys.integration.detect.workflow.report.SearchSummaryReporter;
 import com.synopsys.integration.detect.workflow.report.writer.FileReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class DiagnosticReportHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -56,7 +60,7 @@ public class DiagnosticReportHandler {
     public enum ReportTypes {
         SEARCH("search_report", "Search Result Report", "A breakdown of detector searching by directory."),
         SEARCH_DETAILED("search_detailed_report", "Search Result Report", "A breakdown of detector searching by directory."),
-        DETECTOR("detector_report", "Detector Report", "A breakdown of detector's that were applicable and their preparation and extraction results."),
+        DETECTOR("detector_report", "Detector Report", "A breakdown of detector's that were applicableChildren and their preparation and extraction results."),
         DETECTOR_PROFILE("detector_profile_report", "Detector Profile Report", "A breakdown of timing and profiling for all detectors."),
         CODE_LOCATIONS("code_location_report", "Code Location Report", "A breakdown of code locations created, their dependencies and status results."),
         DEPENDENCY_COUNTS("dependency_counts_report", "Dependency Count Report", "A breakdown of how many dependencies each detector group generated in their graphs."),
@@ -93,7 +97,7 @@ public class DiagnosticReportHandler {
         this.runId = runId;
         createReports();
 
-        eventSystem.registerListener(Event.DetectorsComplete, event -> completedBomToolEvaluations(event.evaluatedDetectors));
+        eventSystem.registerListener(Event.DetectorsComplete, event -> completedBomToolEvaluations(event));
         eventSystem.registerListener(Event.CodeLocationsCalculated, event -> completedCodeLocations(event.getCodeLocationNames()));
         eventSystem.registerListener(Event.DetectorsProfiled, event -> detectorsProfiled(event));
     }
@@ -102,41 +106,50 @@ public class DiagnosticReportHandler {
         closeReportWriters();
     }
 
-    private List<DetectorEvaluation> completedDetectorEvaluations = null;
+    private DetectorToolResult detectorToolResult;
 
-    public void completedBomToolEvaluations(final List<DetectorEvaluation> detectorEvaluations) {
-        completedDetectorEvaluations = detectorEvaluations;
+    public void completedBomToolEvaluations(final DetectorToolResult detectorToolResult) {
+        this.detectorToolResult = detectorToolResult;
+
+        DetectorEvaluationTree rootEvaluation;
+        if (detectorToolResult.rootDetectorEvaluationTree.isPresent()){
+            rootEvaluation = detectorToolResult.rootDetectorEvaluationTree.get();
+        } else {
+            logger.warn("Detectors completed, but no evaluation was found, unable to write detector reports.");
+            return;
+        }
+
         try {
             final SearchSummaryReporter searchReporter = new SearchSummaryReporter();
-            searchReporter.print(getReportWriter(ReportTypes.SEARCH), detectorEvaluations);
+            searchReporter.print(getReportWriter(ReportTypes.SEARCH), rootEvaluation);
         } catch (final Exception e) {
             logger.error("Failed to write search report.", e);
         }
 
         try {
             final DetailedSearchSummaryReporter searchReporter = new DetailedSearchSummaryReporter();
-            searchReporter.print(getReportWriter(ReportTypes.SEARCH_DETAILED), detectorEvaluations);
+            searchReporter.print(getReportWriter(ReportTypes.SEARCH_DETAILED), rootEvaluation);
         } catch (final Exception e) {
             logger.error("Failed to write detailed search report.", e);
         }
 
         try {
             final OverviewSummaryReporter overviewSummaryReporter = new OverviewSummaryReporter();
-            overviewSummaryReporter.writeReport(getReportWriter(ReportTypes.DETECTOR), detectorEvaluations);
+            overviewSummaryReporter.writeReport(getReportWriter(ReportTypes.DETECTOR), rootEvaluation);
         } catch (final Exception e) {
             logger.error("Failed to write detector report.", e);
         }
     }
 
     public void completedCodeLocations(final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        if (completedDetectorEvaluations == null)
+        if (detectorToolResult == null || !detectorToolResult.rootDetectorEvaluationTree.isPresent())
             return;
 
         try {
             final ReportWriter clWriter = getReportWriter(ReportTypes.CODE_LOCATIONS);
             final ReportWriter dcWriter = getReportWriter(ReportTypes.DEPENDENCY_COUNTS);
             final CodeLocationReporter clReporter = new CodeLocationReporter();
-            clReporter.writeCodeLocationReport(clWriter, dcWriter, completedDetectorEvaluations, codeLocationNameMap);
+            clReporter.writeCodeLocationReport(clWriter, dcWriter, detectorToolResult.rootDetectorEvaluationTree.get(), detectorToolResult.codeLocationMap, codeLocationNameMap);
         } catch (final Exception e) {
             logger.error("Failed to write code location report.", e);
         }

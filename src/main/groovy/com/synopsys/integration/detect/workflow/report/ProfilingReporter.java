@@ -27,9 +27,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.synopsys.integration.detect.workflow.profiling.DetectorTime;
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
+import com.synopsys.integration.detect.workflow.profiling.Timing;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorType;
 
 public class ProfilingReporter {
     public void writeReport(final ReportWriter writer, final DetectorTimings detectorTimings) {
@@ -47,11 +49,11 @@ public class ProfilingReporter {
         writeReport(writer, detectorTimings.getExtractionTimings());
     }
 
-    private void writeAggregateReport(final ReportWriter writer, final List<DetectorTime> timings) {
+    private void writeAggregateReport(final ReportWriter writer, final List<Timing<DetectorEvaluation>> timings) {
         final Map<String, Long> aggregated = new HashMap<>();
 
-        for (final DetectorTime detectorTime : timings) {
-            final String name = detectorTime.getDetector().getDescriptiveName();
+        for (final Timing<DetectorEvaluation> detectorTime : timings) {
+            final String name = detectorTime.getKey().getDetectorRule().getDescriptiveName();
             if (!aggregated.containsKey(name)) {
                 aggregated.put(name, 0L);
             }
@@ -63,10 +65,9 @@ public class ProfilingReporter {
         }
     }
 
-    private void writeReport(final ReportWriter writer, final List<DetectorTime> timings) {
-
-        for (final DetectorTime detectorTime : timings) {
-            writer.writeLine("\t" + padToLength(detectorTime.getDetector().getDescriptiveName(), 30) + "\t" + detectorTime.getMs());
+    private void writeReport(final ReportWriter writer, final List<Timing<DetectorEvaluation>> timings) {
+        for (final Timing<DetectorEvaluation> detectorTime : timings) {
+            writer.writeLine("\t" + padToLength(detectorTime.getKey().getDetectorRule().getDescriptiveName(), 30) + "\t" + detectorTime.getMs());
         }
 
     }

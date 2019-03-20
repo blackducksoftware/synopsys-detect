@@ -23,7 +23,7 @@
  */
 package com.synopsys.integration.detect.workflow.status;
 
-import com.synopsys.integration.detect.detector.DetectorType;
+import com.synopsys.integration.detector.base.DetectorType;
 
 public class DetectorStatus extends Status {
     public DetectorStatus(final DetectorType detectorType, final StatusType statusType) {

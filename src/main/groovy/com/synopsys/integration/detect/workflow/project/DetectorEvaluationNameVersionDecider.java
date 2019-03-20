@@ -31,8 +31,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.detector.DetectorType;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorType;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorEvaluationNameVersionDecider {
@@ -63,14 +63,14 @@ public class DetectorEvaluationNameVersionDecider {
     private List<DetectorProjectInfo> transformIntoProjectInfo(final List<DetectorEvaluation> detectorEvaluations) {
         return detectorEvaluations.stream()
                    .filter(DetectorEvaluation::wasExtractionSuccessful)
-                   .filter(detectorEvaluation -> StringUtils.isNotBlank(detectorEvaluation.getExtraction().projectName))
+                   .filter(detectorEvaluation -> StringUtils.isNotBlank(detectorEvaluation.getExtraction().getProjectName()))
                    .map(this::transformDetectorEvaluation)
                    .collect(Collectors.toList());
     }
 
     private DetectorProjectInfo transformDetectorEvaluation(DetectorEvaluation detectorEvaluation) {
-        final NameVersion nameVersion = new NameVersion(detectorEvaluation.getExtraction().projectName, detectorEvaluation.getExtraction().projectVersion);
-        final DetectorProjectInfo possibility = new DetectorProjectInfo(detectorEvaluation.getDetector().getDetectorType(), detectorEvaluation.getEnvironment().getDepth(), nameVersion);
+        final NameVersion nameVersion = new NameVersion(detectorEvaluation.getExtraction().getProjectName(), detectorEvaluation.getExtraction().getProjectVersion());
+        final DetectorProjectInfo possibility = new DetectorProjectInfo(detectorEvaluation.getDetectorRule().getDetectorType(), detectorEvaluation.getSearchEnvironment().getDepth(), nameVersion);
         return possibility;
     }
 }

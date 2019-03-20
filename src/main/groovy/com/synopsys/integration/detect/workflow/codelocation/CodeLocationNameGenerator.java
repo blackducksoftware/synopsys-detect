@@ -34,18 +34,15 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
+import com.synopsys.integration.detector.base.DetectorType;
 
 public class CodeLocationNameGenerator {
     private final Logger logger = LoggerFactory.getLogger(CodeLocationNameGenerator.class);
 
     public static final int MAXIMUM_CODE_LOCATION_NAME_LENGTH = 250;
-    private final DetectFileFinder detectFileFinder;
 
-    public CodeLocationNameGenerator(final DetectFileFinder detectFileFinder) {
-        this.detectFileFinder = detectFileFinder;
-    }
-
-    public String createBomCodeLocationName(final String detectSourcePath, final String sourcePath, final ExternalId externalId, final DetectCodeLocationType detectCodeLocationType, final String prefix, final String suffix) {
+    public String createBomCodeLocationName(final String detectSourcePath, final String sourcePath, final ExternalId externalId, final String creatorName, final String prefix, final String suffix) {
         final String pathPiece = FileNameUtils.relativize(detectSourcePath, sourcePath);
 
         final List<String> pieces = Arrays.asList(externalId.getExternalIdPieces());
@@ -53,7 +50,7 @@ public class CodeLocationNameGenerator {
 
         // misc pieces
         final String codeLocationTypeString = CodeLocationNameType.BOM.toString().toLowerCase();
-        final String bomToolTypeString = detectCodeLocationType.toString().toLowerCase();
+        final String bomToolTypeString = creatorName.toLowerCase();
 
         final List<String> bomCodeLocationNamePieces = Arrays.asList(pathPiece, externalIdPiece);
         final List<String> bomCodeLocationEndPieces = Arrays.asList(bomToolTypeString, codeLocationTypeString);
@@ -61,11 +58,11 @@ public class CodeLocationNameGenerator {
         return createCodeLocationName(prefix, bomCodeLocationNamePieces, suffix, bomCodeLocationEndPieces);
     }
 
-    public String createDockerCodeLocationName(final String sourcePath, final String projectName, final String projectVersionName, final String dockerImage, final DetectCodeLocationType detectCodeLocationType, final String prefix,
+    public String createDockerCodeLocationName(final String sourcePath, final String projectName, final String projectVersionName, final String dockerImage, final String prefix,
         final String suffix) {
-        final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(sourcePath);
+        final String finalSourcePathPiece = DetectFileUtils.extractFinalPieceFromPath(sourcePath);
         final String codeLocationTypeString = CodeLocationNameType.DOCKER.toString().toLowerCase();
-        final String bomToolTypeString = detectCodeLocationType.toString().toLowerCase();
+        final String bomToolTypeString = "docker";
 
         final List<String> dockerCodeLocationNamePieces = Arrays.asList(finalSourcePathPiece, projectName, projectVersionName, dockerImage);
         final List<String> dockerCodeLocationEndPieces = Arrays.asList(codeLocationTypeString, bomToolTypeString);
@@ -112,7 +109,7 @@ public class CodeLocationNameGenerator {
     }
 
     private String cleanScanTargetPath(final String scanTargetPath, final String sourcePath) {
-        final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(sourcePath);
+        final String finalSourcePathPiece = DetectFileUtils.extractFinalPieceFromPath(sourcePath);
         String cleanedTargetPath = "";
         if (StringUtils.isNotBlank(scanTargetPath) && StringUtils.isNotBlank(finalSourcePathPiece)) {
             cleanedTargetPath = scanTargetPath.replace(sourcePath, finalSourcePathPiece);

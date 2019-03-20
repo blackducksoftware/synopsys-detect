@@ -24,13 +24,25 @@
 package com.synopsys.integration.detect.workflow.codelocation;
 
 public class BdioCodeLocation {
-    public String codeLocationName;
-    public String bdioName;
-    public DetectCodeLocation codeLocation;
+    private final String codeLocationName;
+    private final String bdioName;
+    private final DetectCodeLocation detectCodeLocation;
 
-    public BdioCodeLocation(final DetectCodeLocation codeLocation, final String codeLocationName, final String bdioName) {
-        this.codeLocation = codeLocation;
+    public BdioCodeLocation(final DetectCodeLocation detectCodeLocation, String codeLocationName, final String bdioName) {
         this.codeLocationName = codeLocationName;
         this.bdioName = bdioName;
+        this.detectCodeLocation = detectCodeLocation;
+    }
+
+    public String getCodeLocationName() {
+        return codeLocationName;
+    }
+
+    public String getBdioName() {
+        return bdioName;
+    }
+
+    public DetectCodeLocation getDetectCodeLocation() {
+        return detectCodeLocation;
     }
 }

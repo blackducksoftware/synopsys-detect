@@ -1,0 +1,9 @@
+
+------------------------------------------------------------
+Tests that a project dependency with a child project dependency works
+------------------------------------------------------------
+
+nestedDependency - this configuration contains a project dependency with another project dependency
++--- project :nested-parent
+|    \--- project :nested-child
+\--- example:normal-component:1.0.0

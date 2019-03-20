@@ -1,0 +1,7 @@
+
+------------------------------------------------------------
+Tests that a project dependency does not show up.
+------------------------------------------------------------
+
+projectTest - this configuration has a single project dependency that should not appear
+\--- project :child-project

@@ -25,29 +25,29 @@ package com.synopsys.integration.detect.workflow.report;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
+import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class DetailedSearchSummaryReporter {
-    public void print(final ReportWriter writer, final List<DetectorEvaluation> results) {
-        final DetailedSearchSummarizer detailedSearchSummarizer = new DetailedSearchSummarizer();
-        final List<DetailedSearchSummaryData> detailedSearchData = detailedSearchSummarizer.summarize(results);
-
-        printDirectoriesDebug(writer, detailedSearchData);
+    public void print(final ReportWriter writer, final DetectorEvaluationTree rootEvaluation) {
+        printDirectoriesDebug(writer, rootEvaluation.asFlatList());
     }
 
-    private void printDirectoriesDebug(final ReportWriter writer, final List<DetailedSearchSummaryData> detailedSearchData) {
-        for (final DetailedSearchSummaryData data : detailedSearchData) {
+    private void printDirectoriesDebug(final ReportWriter writer, List<DetectorEvaluationTree> trees) {
+        for (final DetectorEvaluationTree tree : trees) {
             final List<String> toPrint = new ArrayList<>();
-            toPrint.addAll(printDetails(writer, "      APPLIED: ", data.getApplicable()));
-            toPrint.addAll(printDetails(writer, "DID NOT APPLY: ", data.getNotApplicable()));
-            toPrint.addAll(printDetails(writer, "DID NOT APPLY: ", data.getNotSearchable()));
+            toPrint.addAll(printDetails(writer, "      APPLIED: ", DetectorEvaluationUtils.applicableChildren(tree), DetectorEvaluation::getApplicabilityMessage));
+            toPrint.addAll(printDetails(writer, "DID NOT APPLY: ", DetectorEvaluationUtils.notApplicableChildren(tree), DetectorEvaluation::getApplicabilityMessage));
+            toPrint.addAll(printDetails(writer, "DID NOT APPLY: ", DetectorEvaluationUtils.notSearchableChildren(tree), DetectorEvaluation::getSearchabilityMessage));
 
             if (toPrint.size() > 0) {
                 writer.writeSeperator();
                 writer.writeLine("Detailed search results for directory");
-                writer.writeLine(data.getDirectory());
+                writer.writeLine(tree.getDirectory().toString());
                 writer.writeSeperator();
                 toPrint.stream().sorted().forEach(it -> writer.writeLine(it));
                 writer.writeSeperator();
@@ -55,10 +55,10 @@ public class DetailedSearchSummaryReporter {
         }
     }
 
-    private List<String> printDetails(final ReportWriter writer, final String prefix, final List<DetailedSearchSummaryBomToolData> details) {
+    private List<String> printDetails(final ReportWriter writer, final String prefix, final List<DetectorEvaluation> details, Function<DetectorEvaluation, String> reason) {
         final List<String> toPrint = new ArrayList<>();
-        for (final DetailedSearchSummaryBomToolData detail : details) {
-            toPrint.add(prefix + detail.getDetector().getDescriptiveName() + ": " + detail.getReason());
+        for (final DetectorEvaluation detail : details) {
+            toPrint.add(prefix + detail.getDetectorRule().getDescriptiveName() + ": " + reason.apply(detail));
         }
         return toPrint;
     }

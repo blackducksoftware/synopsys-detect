@@ -24,28 +24,29 @@
 package com.synopsys.integration.detect.workflow.event;
 
 import java.io.File;
+import java.util.Set;
 
-import com.synopsys.integration.detect.detector.Detector;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
-import com.synopsys.integration.detect.workflow.extraction.ExtractionResult;
-import com.synopsys.integration.detect.workflow.extraction.PreparationResult;
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
-import com.synopsys.integration.detect.workflow.search.SearchResult;
-import com.synopsys.integration.detect.workflow.search.result.DetectorEvaluation;
 import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluationTree;
+import com.synopsys.integration.detector.base.DetectorType;
 
 public class Event {
-    public static EventType<SearchResult> SearchCompleted = new EventType(SearchResult.class);
-    public static EventType<PreparationResult> PreparationsCompleted = new EventType(PreparationResult.class);
-    public static EventType<ExtractionResult> ExtractionsCompleted = new EventType(ExtractionResult.class);
+    public static EventType<DetectorEvaluationTree> SearchCompleted = new EventType(DetectorEvaluationTree.class);
+    public static EventType<Set<DetectorType>> ApplicableCompleted = new EventType(Set.class);
+    public static EventType<DetectorEvaluationTree> PreparationsCompleted = new EventType(DetectorEvaluationTree.class);
+    public static EventType<DetectorEvaluationTree> ExtractionsCompleted = new EventType(DetectorEvaluationTree.class);
     public static EventType<DetectorToolResult> DetectorsComplete = new EventType(DetectorToolResult.class);
     public static EventType<DetectorTimings> DetectorsProfiled = new EventType(DetectorTimings.class);
-    public static EventType<Detector> ApplicableStarted = new EventType(Detector.class);
-    public static EventType<Detector> ApplicableEnded = new EventType(Detector.class);
-    public static EventType<Detector> ExtractableStarted = new EventType(Detector.class);
-    public static EventType<Detector> ExtractableEnded = new EventType(Detector.class);
+    public static EventType<DetectorEvaluation> ApplicableStarted = new EventType(DetectorEvaluation.class);
+    public static EventType<DetectorEvaluation> ApplicableEnded = new EventType(DetectorEvaluation.class);
+    public static EventType<DetectorEvaluation> ExtractableStarted = new EventType(DetectorEvaluation.class);
+    public static EventType<DetectorEvaluation> ExtractableEnded = new EventType(DetectorEvaluation.class);
+    public static EventType<Integer> ExtractionCount = new EventType(Integer.class);
     public static EventType<DetectorEvaluation> ExtractionStarted = new EventType(DetectorEvaluation.class);
     public static EventType<DetectorEvaluation> ExtractionEnded = new EventType(DetectorEvaluation.class);
     public static EventType<BdioCodeLocationResult> CodeLocationsCalculated = new EventType(BdioCodeLocationResult.class);

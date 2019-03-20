@@ -1,0 +1,5 @@
+digraph depends {
+"acl" [label="acl\n:2.2.52-r0\n/home/jake/poky/meta/recipes-support/attr/acl_2.2.52.bb"]
+"acl" -> "attr"
+"attr" [label="attr\n:2.4.47-r0\n/home/jake/poky/meta/recipes-support/attr/attr_2.4.47.bb"]
+}

@@ -1,0 +1,28 @@
+
+------------------------------------------------------------
+Project :complex-test - Tests different project positions, components and opening characters
+------------------------------------------------------------
+
+archives - test that we can handle no dependencies
+No dependencies
+
+projectTest - test that this project dependency does not show up
+\--- project :child-project
+
+junitTest - test an only component under a config that opens with indicator
+\--- solo:component:4.12
+
+dependency - Compile classpath for source set 'main'.
++--- project :nested-parent
+|    \--- project :nested-child
+\--- non-project:with-nested:1.0.0
+
+compile
++--- project :spring-webflux
+|    +--- project :spring-beans (*)
+|    +--- project :spring-core (*)
+|    +--- project :spring-web (*)
+|    \--- should-suppress:project-child: -> 6
++--- some.group:parent:5.0.0
+|    \--- some.group:child:2.2.2
+\--- terminal:child:6.2.3

@@ -31,7 +31,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.detector.ExtractionId;
+import com.synopsys.integration.detect.tool.detector.ExtractionId;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 
 //In some cases, when debugging detect it is helpful to have access to files not available in detect's output folder
