@@ -8,12 +8,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
+import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 
 public class ProductDeciderTest {
 
@@ -23,9 +25,24 @@ public class ProductDeciderTest {
         DetectConfiguration detectConfiguration = polarisConfiguration("POLARIS_ACCESS_TOKEN", "access token text", "POLARIS_URL", "http://polaris.com");
 
         ProductDecider productDecider = new ProductDecider();
-        ProductDecision productDecision = productDecider.decide(detectConfiguration, userHome);
+        DetectToolFilter detectToolFilter = Mockito.mock(DetectToolFilter.class);
+        Mockito.when(detectToolFilter.shouldInclude(DetectTool.POLARIS)).thenReturn(Boolean.TRUE);
+        ProductDecision productDecision = productDecider.decide(detectConfiguration, userHome, detectToolFilter);
 
         Assert.assertTrue(productDecision.getPolarisDecision().shouldRun());
+    }
+
+    @Test()
+    public void shouldRunPolarisWhenExcluded() throws DetectUserFriendlyException {
+        File userHome = Mockito.mock(File.class);
+        DetectConfiguration detectConfiguration = polarisConfiguration("POLARIS_ACCESS_TOKEN", "access token text", "POLARIS_URL", "http://polaris.com");
+
+        ProductDecider productDecider = new ProductDecider();
+        DetectToolFilter detectToolFilter = Mockito.mock(DetectToolFilter.class);
+        Mockito.when(detectToolFilter.shouldInclude(DetectTool.POLARIS)).thenReturn(Boolean.FALSE);
+        ProductDecision productDecision = productDecider.decide(detectConfiguration, userHome, detectToolFilter);
+
+        Assert.assertFalse(productDecision.getPolarisDecision().shouldRun());
     }
 
     @Test()
@@ -35,7 +52,9 @@ public class ProductDeciderTest {
         Mockito.when(detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None)).thenReturn(true);
 
         ProductDecider productDecider = new ProductDecider();
-        ProductDecision productDecision = productDecider.decide(detectConfiguration, userHome);
+        DetectToolFilter detectToolFilter = Mockito.mock(DetectToolFilter.class);
+        Mockito.when(detectToolFilter.shouldInclude(DetectTool.POLARIS)).thenReturn(Boolean.TRUE);
+        ProductDecision productDecision = productDecider.decide(detectConfiguration, userHome, detectToolFilter);
 
         Assert.assertTrue(productDecision.getBlackDuckDecision().shouldRun());
         Assert.assertTrue(productDecision.getBlackDuckDecision().isOffline());
@@ -48,7 +67,9 @@ public class ProductDeciderTest {
         Mockito.when(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None)).thenReturn("some-url");
 
         ProductDecider productDecider = new ProductDecider();
-        ProductDecision productDecision = productDecider.decide(detectConfiguration, userHome);
+        DetectToolFilter detectToolFilter = Mockito.mock(DetectToolFilter.class);
+        Mockito.when(detectToolFilter.shouldInclude(DetectTool.POLARIS)).thenReturn(Boolean.TRUE);
+        ProductDecision productDecision = productDecider.decide(detectConfiguration, userHome, detectToolFilter);
 
         Assert.assertTrue(productDecision.getBlackDuckDecision().shouldRun());
         Assert.assertFalse(productDecision.getBlackDuckDecision().isOffline());
@@ -60,7 +81,9 @@ public class ProductDeciderTest {
         DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
 
         ProductDecider productDecider = new ProductDecider();
-        ProductDecision productDecision = productDecider.decide(detectConfiguration, userHome);
+        DetectToolFilter detectToolFilter = Mockito.mock(DetectToolFilter.class);
+        Mockito.when(detectToolFilter.shouldInclude(DetectTool.POLARIS)).thenReturn(Boolean.TRUE);
+        ProductDecision productDecision = productDecider.decide(detectConfiguration, userHome, detectToolFilter);
 
         Assert.assertFalse(productDecision.willRunAny());
     }

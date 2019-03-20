@@ -29,7 +29,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detect.property.PropertySource;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 
 public class DetectPropertySource {
     public static final String PHONE_HOME_PROPERTY_PREFIX = "detect.phone.home.passthrough.";

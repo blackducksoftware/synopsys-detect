@@ -63,10 +63,12 @@ import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectiv
 import com.synopsys.integration.detect.lifecycle.boot.product.PolarisConnectivityChecker;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory;
+import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.property.SpringPropertySource;
 import com.synopsys.integration.detect.util.TildeInPathResolver;
+import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticManager;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
@@ -152,8 +154,10 @@ public class DetectBoot {
 
         logger.info("Main boot completed. Deciding what detect should do.");
 
+        final RunOptions runOptions = factory.createRunOptions();
+        final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
         ProductDecider productDecider = new ProductDecider();
-        ProductDecision productDecision = productDecider.decide(detectConfiguration, directoryManager.getUserHome());
+        ProductDecision productDecision = productDecider.decide(detectConfiguration, directoryManager.getUserHome(), detectToolFilter);
 
         logger.info("Decided what products will be run. Starting product boot.");
 

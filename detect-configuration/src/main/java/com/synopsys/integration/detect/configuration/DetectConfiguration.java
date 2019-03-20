@@ -38,8 +38,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
-
 //Instead of Source of Truth, this is the initial configuration.
 public class DetectConfiguration {
     private final Logger logger = LoggerFactory.getLogger(DetectConfiguration.class);
@@ -135,9 +133,9 @@ public class DetectConfiguration {
     // TODO: Remove in version 6.
     private DetectProperty fromOverrideToDeprecated(final DetectProperty detectProperty) {
         final Optional<DetectProperty> found = DetectPropertyDeprecations.PROPERTY_OVERRIDES.entrySet().stream()
-                                                   .filter(it -> it.getValue().equals(detectProperty))
-                                                   .map(it -> it.getKey())
-                                                   .findFirst();
+                                                       .filter(it -> it.getValue().equals(detectProperty))
+                                                       .map(it -> it.getKey())
+                                                       .findFirst();
 
         return found.orElse(null);
     }

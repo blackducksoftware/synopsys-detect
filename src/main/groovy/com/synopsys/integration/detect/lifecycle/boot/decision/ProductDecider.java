@@ -32,11 +32,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.builder.BuilderStatus;
+import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.log.SilentIntLogger;
+import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder;
 
@@ -47,14 +50,18 @@ public class ProductDecider {
         PolarisServerConfigBuilder polarisServerConfigBuilder = PolarisServerConfig.newBuilder();
         Set<String> allPolarisKeys = polarisServerConfigBuilder.getPropertyKeys();
         Map<String, String> polarisProperties = detectConfiguration.getProperties(allPolarisKeys);
-        polarisServerConfigBuilder.setLogger(new SilentIntLogger());
+        polarisServerConfigBuilder.setLogger(new Slf4jIntLogger(logger));
         polarisServerConfigBuilder.setProperties(polarisProperties.entrySet());
         polarisServerConfigBuilder.setUserHome(userHome.getAbsolutePath());
-        polarisServerConfigBuilder.setTimeoutInSeconds(120);
+        polarisServerConfigBuilder.setTimeoutInSeconds(detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT, PropertyAuthority.None));
         return polarisServerConfigBuilder;
     }
 
-    public PolarisDecision determinePolaris(DetectConfiguration detectConfiguration, File userHome) {
+    public PolarisDecision determinePolaris(DetectConfiguration detectConfiguration, File userHome, final DetectToolFilter detectToolFilter) {
+        if (!detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
+            logger.info("Polaris will NOT run because it is excluded");
+            return PolarisDecision.skip();
+        }
         PolarisServerConfigBuilder polarisServerConfigBuilder = createPolarisServerConfigBuilder(detectConfiguration, userHome);
         BuilderStatus builderStatus = polarisServerConfigBuilder.validateAndGetBuilderStatus();
         boolean polarisCanRun = builderStatus.isValid();
@@ -83,8 +90,8 @@ public class ProductDecider {
         }
     }
 
-    public ProductDecision decide(DetectConfiguration detectConfiguration, File userHome) throws DetectUserFriendlyException {
-        return new ProductDecision(determineBlackDuck(detectConfiguration), determinePolaris(detectConfiguration, userHome));
+    public ProductDecision decide(DetectConfiguration detectConfiguration, File userHome, final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
+        return new ProductDecision(determineBlackDuck(detectConfiguration), determinePolaris(detectConfiguration, userHome, detectToolFilter));
     }
 
 }
