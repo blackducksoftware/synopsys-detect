@@ -64,14 +64,14 @@ public class ScanBatchRunnerFactory {
     public ScanBatchRunner withHubInstall(BlackDuckServerConfig hubServerConfig) {
         // will will use the hub server to download/update the scanner - this is the most likely situation
         ScannerZipInstaller scannerZipInstaller = ScannerZipInstaller.defaultUtility(slf4jIntLogger, hubServerConfig, scanPathsUtility, operatingSystemType);
-        ScanBatchRunner scanBatchManager = ScanBatchRunner.createComplete(slf4jIntLogger, intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
+        ScanBatchRunner scanBatchManager = ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
         return scanBatchManager;
     }
 
     public ScanBatchRunner withoutInstall(File defaultInstallDirectory) {
         // either we were given an existing path for the scanner or
         // we are offline - either way, we won't attempt to manage the install
-        return ScanBatchRunner.createWithNoInstaller(slf4jIntLogger, intEnvironmentVariables, defaultInstallDirectory, scanPathsUtility, scanCommandRunner);
+        return ScanBatchRunner.createWithNoInstaller(intEnvironmentVariables, defaultInstallDirectory, scanPathsUtility, scanCommandRunner);
     }
 
     public ScanBatchRunner withUserProvidedUrl(String userProvidedScannerInstallUrl, ConnectionManager connectionManager) throws DetectUserFriendlyException {
@@ -80,7 +80,7 @@ public class ScanBatchRunnerFactory {
         final CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
         final ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, restConnection, cleanupZipExpander, scanPathsUtility, userProvidedScannerInstallUrl, operatingSystemType);
 
-        return ScanBatchRunner.createComplete(slf4jIntLogger, intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
+        return ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
     }
 
 }

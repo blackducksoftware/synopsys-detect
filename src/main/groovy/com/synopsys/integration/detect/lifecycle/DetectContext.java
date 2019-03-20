@@ -29,7 +29,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.synopsys.integration.detect.workflow.DetectRun;
 
 public class DetectContext {
-
     AnnotationConfigApplicationContext springContext;
     ConfigurableListableBeanFactory beanFactory;
 
