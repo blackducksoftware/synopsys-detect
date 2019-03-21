@@ -205,12 +205,12 @@ public class DetectBoot {
 
     private void printHelpHtmlDocument(List<DetectOption> detectOptions, DetectInfo detectInfo, Configuration configuration) {
         HelpHtmlWriter helpHtmlWriter = new HelpHtmlWriter(configuration);
-        helpHtmlWriter.writeHtmlDocument(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()), detectOptions);
+        helpHtmlWriter.writeHtmlDocument(String.format("synopsys-detect-%s-help.html", detectInfo.getDetectVersion()), detectOptions);
     }
 
     private void printHelpJsonDocument(List<DetectOption> detectOptions, DetectInfo detectInfo, Configuration configuration, Gson gson) {
         HelpJsonWriter helpJsonWriter = new HelpJsonWriter(configuration, gson);
-        helpJsonWriter.writeGsonDocument(String.format("hub-detect-%s-help.json", detectInfo.getDetectVersion()), detectOptions);
+        helpJsonWriter.writeGsonDocument(String.format("synopsys-detect-%s-help.json", detectInfo.getDetectVersion()), detectOptions);
     }
 
     private void printDetectInfo(DetectInfo detectInfo) {
