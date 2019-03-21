@@ -40,7 +40,6 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.hub.ExclusionPatternCreator;
 import com.synopsys.integration.detect.workflow.status.SignatureScanStatus;

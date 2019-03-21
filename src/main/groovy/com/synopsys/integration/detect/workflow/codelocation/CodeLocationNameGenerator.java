@@ -32,10 +32,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
-import com.synopsys.integration.detector.base.DetectorType;
 
 public class CodeLocationNameGenerator {
     private final Logger logger = LoggerFactory.getLogger(CodeLocationNameGenerator.class);

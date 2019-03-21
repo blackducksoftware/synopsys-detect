@@ -28,7 +28,6 @@ import java.util.List;
 
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.file.DetectFileFinder;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchBuilder;
