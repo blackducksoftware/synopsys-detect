@@ -13,11 +13,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.rule.DetectorRule;
@@ -26,12 +24,12 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 public class DetectorFinderTest {
     private static Path initialDirectoryPath;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws IOException {
         initialDirectoryPath = Files.createTempDirectory("DetectorFinderTest");
     }
 
-    @AfterClass
+    @AfterAll
     public static void cleanup() {
         initialDirectoryPath.toFile().delete();
     }
@@ -56,7 +54,7 @@ public class DetectorFinderTest {
         final int maximumDepth = 10;
         final DetectorFinderOptions options = new DetectorFinderOptions(fileFilter, maximumDepth);
 
-        final DetectorFinder finder = new com.synopsys.integration.detector.finder.DetectorFinder();
+        final DetectorFinder finder = new DetectorFinder();
         final Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options);
 
         // make sure the symlink was omitted from results

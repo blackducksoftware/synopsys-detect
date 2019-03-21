@@ -25,9 +25,9 @@ package com.synopsys.integration.detectable.detectable.file.impl;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -37,16 +37,17 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 
 public class SimpleFileFinder implements FileFinder {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private List<File> findFiles(final File directoryToSearch, final FilenameFilter filenameFilter, final int depth) {
-        logger.info(String.format("*** findFiles: %s", directoryToSearch));
-        List<File> foundFiles = new ArrayList<>();
-
+        final List<File> foundFiles = new ArrayList<>();
+        if (Files.isSymbolicLink(directoryToSearch.toPath())) {
+            return foundFiles;
+        }
         final File[] allFiles = directoryToSearch.listFiles();
         if (allFiles != null && depth > 0) {
             final List<File> subFiles = Arrays.stream(allFiles)
                                             .filter(File::isDirectory)
+                                            .filter(file -> !Files.isSymbolicLink(file.toPath()))
                                             .flatMap(file -> findFiles(file, filenameFilter, depth - 1).stream())
                                             .collect(Collectors.toList());
             foundFiles.addAll(subFiles);

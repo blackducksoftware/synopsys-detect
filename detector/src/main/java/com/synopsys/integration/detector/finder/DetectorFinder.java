@@ -51,7 +51,6 @@ public class DetectorFinder {
 
     private Optional<DetectorEvaluationTree> findDetectors(final File directory, final DetectorRuleSet detectorRuleSet, final int depth, final DetectorFinderOptions options)
         throws DetectorFinderDirectoryListException {
-        logger.info(String.format("*** findDetectors: processing dir: %s", directory.getAbsolutePath()));
 
         if (depth > options.getMaximumDepth()) {
             logger.trace("Skipping directory as it exceeds max depth: " + directory.toString());
