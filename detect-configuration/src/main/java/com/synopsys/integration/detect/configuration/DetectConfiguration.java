@@ -38,8 +38,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
-
 //Instead of Source of Truth, this is the initial configuration.
 public class DetectConfiguration {
     private final Logger logger = LoggerFactory.getLogger(DetectConfiguration.class);
@@ -135,36 +133,18 @@ public class DetectConfiguration {
     // TODO: Remove in version 6.
     private DetectProperty fromOverrideToDeprecated(final DetectProperty detectProperty) {
         final Optional<DetectProperty> found = DetectPropertyDeprecations.PROPERTY_OVERRIDES.entrySet().stream()
-                                                   .filter(it -> it.getValue().equals(detectProperty))
-                                                   .map(it -> it.getKey())
-                                                   .findFirst();
+                                                       .filter(it -> it.getValue().equals(detectProperty))
+                                                       .map(it -> it.getKey())
+                                                       .findFirst();
 
         return found.orElse(null);
-    }
-
-    public Set<String> getBlackduckPropertyKeys() {
-        final Set<String> providedKeys = detectPropertySource.getBlackduckPropertyKeys();
-        final Set<String> allKeys = new HashSet<>(providedKeys);
-        Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
-            final String propertyKey = currentProperty.getPropertyKey();
-            if (propertyKey.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyKey.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
-                allKeys.add(propertyKey);
-            } else if (propertyKey.startsWith(DetectPropertySource.BLACKDUCK_PROPERTY_PREFIX) || propertyKey.startsWith(DetectPropertySource.BLACKDUCK_ENVIRONMENT_PREFIX)) {
-                allKeys.add(propertyKey);
-            }
-        });
-        return allKeys;
     }
 
     public Map<String, String> getPhoneHomeProperties() {
         return getKeys(detectPropertySource.getPhoneHomePropertyKeys());
     }
 
-    public Map<String, String> getBlackduckProperties() {
-        return getKeys(getBlackduckPropertyKeys());
-    }
-
-    public Map<String, String> getProperties(final Set<String> keys) {
+    public Map<String, String> getProperties(Set<String> keys) {
         return getKeys(keys);
     }
 

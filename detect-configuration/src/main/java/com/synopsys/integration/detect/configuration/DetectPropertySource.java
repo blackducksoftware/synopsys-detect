@@ -29,16 +29,12 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detect.property.PropertySource;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 
 public class DetectPropertySource {
     public static final String PHONE_HOME_PROPERTY_PREFIX = "detect.phone.home.passthrough.";
     public static final String DOCKER_PROPERTY_PREFIX = "detect.docker.passthrough.";
     public static final String DOCKER_ENVIRONMENT_PREFIX = "DETECT_DOCKER_PASSTHROUGH_";
-    public static final String BLACKDUCK_PROPERTY_PREFIX = "blackduck."; // TODO: Remove these in major version 6 and when hub common supports them.
-    public static final String BLACKDUCK_ENVIRONMENT_PREFIX = "BLACKDUCK_"; // TODO: Remove these in major version 6 and when hub common supports them.
 
-    private final Set<String> blackduckPropertyKeys = new HashSet<>();
     private final Set<String> dockerPropertyKeys = new HashSet<>();
     private final Set<String> dockerEnvironmentKeys = new HashSet<>();
     private final Set<String> phoneHomePropertyKeys = new HashSet<>();
@@ -48,7 +44,6 @@ public class DetectPropertySource {
     public DetectPropertySource(PropertySource propertySource) {
         this.propertySource = propertySource;
 
-        // TODO: Remove redirection from "blackduck.hub." to "blackduck." in version 6.
         for (final String propertyKey : propertySource.getPropertyKeys()) {
             if (StringUtils.isNotBlank(propertyKey)) {
                 if (propertyKey.startsWith(DOCKER_PROPERTY_PREFIX)) {
@@ -57,10 +52,6 @@ public class DetectPropertySource {
                     dockerEnvironmentKeys.add(propertyKey);
                 } else if (propertyKey.startsWith(PHONE_HOME_PROPERTY_PREFIX)) {
                     phoneHomePropertyKeys.add(propertyKey);
-                } else if (propertyKey.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyKey.startsWith(BlackDuckServerConfigBuilder.BLACKDUCK_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
-                    blackduckPropertyKeys.add(propertyKey);
-                } else if (propertyKey.startsWith(BLACKDUCK_PROPERTY_PREFIX) || propertyKey.startsWith(BLACKDUCK_ENVIRONMENT_PREFIX)) {
-                    blackduckPropertyKeys.add(propertyKey);
                 }
             }
         }
@@ -76,10 +67,6 @@ public class DetectPropertySource {
 
     public String getProperty(String property) {
         return propertySource.getProperty(property);
-    }
-
-    public Set<String> getBlackduckPropertyKeys() {
-        return blackduckPropertyKeys;
     }
 
     public Set<String> getDockerPropertyKeys() {

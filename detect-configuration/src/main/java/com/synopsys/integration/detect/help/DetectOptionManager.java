@@ -29,8 +29,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
@@ -45,11 +49,9 @@ import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.interactive.InteractiveOption;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.synopsys.integration.detect.util.ProxyUtil;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.SilentIntLogger;
-import com.synopsys.integration.util.proxy.ProxyUtil;
 
 public class DetectOptionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class);
@@ -110,10 +112,11 @@ public class DetectOptionManager {
     public BlackDuckServerConfig createBlackduckServerConfig(IntLogger logger) throws DetectUserFriendlyException {
         final BlackDuckServerConfigBuilder hubServerConfigBuilder = new BlackDuckServerConfigBuilder().setLogger(logger);
 
-        final Map<String, String> blackduckBlackDuckProperties = detectConfiguration.getBlackduckProperties();
+        Set<String> allBlackDuckKeys = new HashSet<>(hubServerConfigBuilder.getPropertyKeys());
+        Map<String, String> blackduckBlackDuckProperties = detectConfiguration.getProperties(allBlackDuckKeys);
         final Map<String, String> blackduckBlackDuckPropertiesNoProxy = blackduckBlackDuckProperties.entrySet().stream()
                                                                             .filter(it -> !it.getKey().toLowerCase().contains("proxy"))
-                                                                            .collect(Collectors.toMap(it -> it.getKey(), it -> it.getValue()));
+                                                                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         final List<Pattern> ignoredProxyHostPatterns = ProxyUtil.getIgnoredProxyHostPatterns(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS, PropertyAuthority.None));
         boolean ignoreProxy = false;
@@ -124,9 +127,9 @@ public class DetectOptionManager {
         }
 
         if (ignoreProxy) {
-            hubServerConfigBuilder.setFromProperties(blackduckBlackDuckPropertiesNoProxy);
+            hubServerConfigBuilder.setProperties(blackduckBlackDuckPropertiesNoProxy.entrySet());
         } else {
-            hubServerConfigBuilder.setFromProperties(blackduckBlackDuckProperties);
+            hubServerConfigBuilder.setProperties(blackduckBlackDuckProperties.entrySet());
         }
 
         try {

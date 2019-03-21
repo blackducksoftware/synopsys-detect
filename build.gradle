@@ -1,3 +1,13 @@
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView
+import com.synopsys.integration.blackduck.api.generated.view.VersionBomComponentView
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder
+import com.synopsys.integration.blackduck.service.BlackDuckService
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory
+import com.synopsys.integration.blackduck.service.ProjectService
+import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper
+import com.synopsys.integration.log.PrintStreamIntLogger
+
 buildscript {
     ext {
         springBootVersion = '2.0.3.RELEASE'
@@ -11,6 +21,8 @@ buildscript {
     dependencies {
         classpath 'com.blackducksoftware.integration:common-gradle-plugin:0.0.+'
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath 'com.blackducksoftware.integration:blackduck-common:42.3.0'
+        classpath 'com.synopsys.integration:polaris-common:0.9.1'
     }
 }
 
@@ -22,13 +34,16 @@ apply plugin: 'org.springframework.boot'
 apply from: 'airgap.gradle'
 apply from: 'artifactory-properties.gradle'
 
+def createArtifactName() {
+    return "${buildDir}/libs/${project.name}-${version}.jar"
+}
+
 allprojects {
     apply plugin: 'groovy'
-    apply plugin: 'maven-publish'
     apply plugin: 'io.spring.dependency-management'
 
     dependencies {
-        implementation 'com.blackducksoftware.integration:blackduck-common:42.1.0'
+        implementation 'com.blackducksoftware.integration:blackduck-common:42.3.0'
         implementation 'com.paypal.digraph:digraph-parser:1.0'
     }
 }
@@ -52,7 +67,7 @@ subprojects {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            def jarName = "${buildDir}/libs/${project.name}-${version}.jar"
+            def jarName = createArtifactName()
             artifact(jarName)
         }
     }
@@ -75,7 +90,8 @@ dependencies {
     implementation project(":detectable")
     implementation project(":detector")
 
-    implementation 'com.synopsys.integration:polaris-common:0.7.3'
+    implementation 'com.synopsys.integration:polaris-common:0.9.1'
+    implementation 'org.yaml:snakeyaml:1.24'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
@@ -108,4 +124,47 @@ if ("true" == project.findProperty('refresh.cache')) {
             }
         }
     }
+}
+
+task runDetect(type: JavaExec) {
+    dependsOn build
+
+    classpath = files(createArtifactName())
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'com.synopsys.integration.detect.Application'
+    args = ['--detect.risk.report.pdf=true']
+}
+
+task verifyBlackDuckDetect() {
+    dependsOn runDetect
+
+    doLast {
+        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder()
+        Set<String> environmentKeys = blackDuckServerConfigBuilder.getEnvironmentVariableKeys()
+        environmentKeys.each {
+            String value = System.getenv().get(it)
+            if (value) {
+                blackDuckServerConfigBuilder.setProperty(it, value)
+            }
+        }
+
+        BlackDuckServerConfig blackDuckServerConfig = blackDuckServerConfigBuilder.build()
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new PrintStreamIntLogger(System.out, com.synopsys.integration.log.LogLevel.INFO))
+        BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService()
+        ProjectService projectService = blackDuckServicesFactory.createProjectService()
+
+        ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(project.name, version).get()
+        List<VersionBomComponentView> bomComponents = blackDuckService.getAllResponses(projectVersionWrapper.projectVersionView, ProjectVersionView.COMPONENTS_LINK_RESPONSE)
+        if (bomComponents.isEmpty()) {
+            throw new GradleException("No bom components were found for ${project.name} - ${version}");
+        }
+        bomComponents.each {
+            println "${it.componentName} - ${it.componentVersionName}"
+        }
+    }
+
+    task verifyDetect() {
+        dependsOn verifyBlackDuckDetect
+    }
+
 }
