@@ -64,36 +64,23 @@ public class DetectProjectService {
         this.projectMappingService = projectMappingService;
     }
 
-    public ProjectVersionWrapper createOrUpdateHubProject(final NameVersion projectNameVersion, final String applicationId) throws IntegrationException, DetectUserFriendlyException {
+    public ProjectVersionWrapper createOrUpdateHubProject(final NameVersion projectNameVersion, final String applicationId,
+        final String[] groupsToAddToProject) throws IntegrationException, DetectUserFriendlyException {
         final ProjectService projectService = blackDuckServicesFactory.createProjectService();
         final BlackDuckService hubService = blackDuckServicesFactory.createBlackDuckService();
         final ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectService, hubService);
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
         final ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
         setApplicationId(projectVersionWrapper.getProjectView(), applicationId);
-
-
-
-        /////////// TODO Experimental //////////////
-        final String givenGroupName = "testGroup1";
-
-        final UserGroupService userGroupService = blackDuckServicesFactory.createUserGroupService();
-        final Optional<UserGroupView> givenGroup;
-        try {
-            givenGroup = userGroupService.getGroupByName(givenGroupName);
-        } catch (final IntegrationException e) {
-            throw new DetectUserFriendlyException(String.format("Error finding given group (%s) to add to project.", givenGroupName), e, ExitCodeType.FAILURE_CONFIGURATION);
-        }
-        if (givenGroup.isPresent()) {
-            logger.info(String.format("*** Found Group: %s", givenGroup.get().getName()));
-            final ProjectUsersService projectUsersService = blackDuckServicesFactory.createProjectUsersService();
-//            projectUsersService.getAssignedGroupsToProject()
-        } else {
-            logger.info("*** Did NOT find Group: testGroup1");
-        }
-
-        ////////////////////////////////////////////
+        final ProjectUsersService projectUsersService = blackDuckServicesFactory.createProjectUsersService();
+        addUserGroupsToProject(projectUsersService, projectVersionWrapper, groupsToAddToProject);
         return projectVersionWrapper;
+    }
+
+    private void addUserGroupsToProject(final ProjectUsersService projectUsersService, final ProjectVersionWrapper projectVersionWrapper, final String[] groupsToAddToProject) throws IntegrationException {
+        for (final String userGroupName : groupsToAddToProject) {
+            projectUsersService.addGroupToProject(projectVersionWrapper.getProjectView(), userGroupName);
+        }
     }
 
     public ProjectSyncModel createProjectSyncModel(final NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService hubService) throws DetectUserFriendlyException {

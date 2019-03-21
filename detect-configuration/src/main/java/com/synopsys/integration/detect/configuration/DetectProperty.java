@@ -536,6 +536,10 @@ public enum DetectProperty {
     @HelpDescription("If project description is specified, your project version will be created with this description.")
     DETECT_PROJECT_DESCRIPTION("detect.project.description", "Project Description", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
+    @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
+    @HelpDescription("A comma-separated list of names of user groups to add to the project.")
+    DETECT_PROJECT_USER_GROUPS("detect.project.user.groups", "Project User Groups", "5.4.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, ""),
+
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The detector to choose when multiple detector types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.")
     DETECT_PROJECT_DETECTOR("detect.project.detector", "Project Name/Version Detector", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
