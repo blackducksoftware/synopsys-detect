@@ -216,6 +216,10 @@ public enum DetectProperty {
     @HelpDescription("If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE("detect.blackduck.signature.scanner.snippet.mode", "Snippet Scanning", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
+    @HelpDescription("If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck.")
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE("detect.blackduck.signature.scanner.upload.source.mode", "Upload source mode", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.")
     DETECT_BOM_AGGREGATE_NAME("detect.bom.aggregate.name", "Aggregate BDIO File Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),

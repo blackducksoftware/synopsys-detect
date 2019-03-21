@@ -33,13 +33,14 @@ public class BlackDuckSignatureScannerOptions {
     private final Boolean cleanupOutput;
     private final Boolean dryRun;
     private final Boolean snippetMatching;
+    private final Boolean uploadSource;
     private final String codeLocationPrefix;
     private final String codeLocationSuffix;
     private final String additionalArguments;
     private final Integer maxDepth;
 
     public BlackDuckSignatureScannerOptions(final String[] signatureScannerPaths, final String[] exclusionPatterns, final String[] exclusionNamePatterns, final Integer scanMemory, final Integer parrallelProcessors,
-        final Boolean cleanupOutput, final Boolean dryRun, final Boolean snippetMatching, final String codeLocationPrefix, final String codeLocationSuffix, final String additionalArguments, final Integer maxDepth) {
+        final Boolean cleanupOutput, final Boolean dryRun, final Boolean snippetMatching, final Boolean uploadSource, final String codeLocationPrefix, final String codeLocationSuffix, final String additionalArguments, final Integer maxDepth) {
         this.signatureScannerPaths = signatureScannerPaths;
         this.exclusionPatterns = exclusionPatterns;
         this.exclusionNamePatterns = exclusionNamePatterns;
@@ -48,6 +49,7 @@ public class BlackDuckSignatureScannerOptions {
         this.cleanupOutput = cleanupOutput;
         this.dryRun = dryRun;
         this.snippetMatching = snippetMatching;
+        this.uploadSource = uploadSource;
         this.codeLocationPrefix = codeLocationPrefix;
         this.codeLocationSuffix = codeLocationSuffix;
         this.additionalArguments = additionalArguments;
@@ -84,6 +86,10 @@ public class BlackDuckSignatureScannerOptions {
 
     public Boolean getSnippetMatching() {
         return snippetMatching;
+    }
+
+    public Boolean getUploadSource() {
+        return uploadSource;
     }
 
     public String getCodeLocationPrefix() {

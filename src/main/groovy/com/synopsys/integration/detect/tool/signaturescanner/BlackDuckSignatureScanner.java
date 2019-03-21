@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +58,7 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public abstract class BlackDuckSignatureScanner {
+    public static final String SIGNATURE_SCAN_UPLOAD_SOURCE_OPTION = "--upload-source";
     private final Logger logger = LoggerFactory.getLogger(BlackDuckSignatureScanner.class);
 
     private final DirectoryManager directoryManager;
@@ -218,7 +220,17 @@ public abstract class BlackDuckSignatureScanner {
         if (signatureScannerOptions.getSnippetMatching()) {
             scanJobBuilder.snippetMatching(SnippetMatching.SNIPPET_MATCHING);
         }
-        scanJobBuilder.additionalScanArguments(signatureScannerOptions.getAdditionalArguments());
+
+        // TODO: Have requested (INTCMN-365) the ability to enable "upload source" via scanJobBuilder; for now: add to additionalArguments
+        String additionalArguments =  signatureScannerOptions.getAdditionalArguments();
+        if (signatureScannerOptions.getUploadSource()) {
+            if (StringUtils.isBlank(additionalArguments)) {
+                additionalArguments = SIGNATURE_SCAN_UPLOAD_SOURCE_OPTION;
+            } else {
+                additionalArguments = String.format("%s %s", SIGNATURE_SCAN_UPLOAD_SOURCE_OPTION, additionalArguments);
+            }
+        }
+        scanJobBuilder.additionalScanArguments(additionalArguments);
 
         final String projectName = projectNameVersion.getName();
         final String projectVersionName = projectNameVersion.getVersion();
