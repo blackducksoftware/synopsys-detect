@@ -1,6 +1,7 @@
 package com.synopsys.integration.detector.finder;
 
-import static com.sun.javafx.PlatformUtil.isWindows;
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.Assume;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -36,7 +37,7 @@ public class DetectorFinderTest {
 
     @Test
     public void testSymLinksNotFollowed() throws IOException, DetectorFinderDirectoryListException {
-        org.junit.Assume.assumeFalse(isWindows());
+        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         // Create a subDir with a symlink that loops back to its parent
         final File initialDirectory = initialDirectoryPath.toFile();
