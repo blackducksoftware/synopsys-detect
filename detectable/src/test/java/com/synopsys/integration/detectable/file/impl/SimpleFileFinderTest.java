@@ -50,7 +50,7 @@ public class SimpleFileFinderTest {
         final SimpleFileFinder finder = new SimpleFileFinder();
         final List<String> filenamePatterns = Arrays.asList("sub", "linkToInitial", "regularDir", "regularFile");
         final List<File> foundFiles = finder.findFiles(initialDirectoryPath.toFile(), filenamePatterns, 10);
-        
+
         // make sure symlink not followed during dir traversal
         assertEquals(4, foundFiles.size());
     }
