@@ -37,10 +37,13 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectClone
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
+import com.synopsys.integration.blackduck.api.generated.view.UserGroupView;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.ProjectService;
+import com.synopsys.integration.blackduck.service.ProjectUsersService;
+import com.synopsys.integration.blackduck.service.UserGroupService;
 import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -68,6 +71,28 @@ public class DetectProjectService {
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
         final ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
         setApplicationId(projectVersionWrapper.getProjectView(), applicationId);
+
+
+
+        /////////// TODO Experimental //////////////
+        final String givenGroupName = "testGroup1";
+
+        final UserGroupService userGroupService = blackDuckServicesFactory.createUserGroupService();
+        final Optional<UserGroupView> givenGroup;
+        try {
+            givenGroup = userGroupService.getGroupByName(givenGroupName);
+        } catch (final IntegrationException e) {
+            throw new DetectUserFriendlyException(String.format("Error finding given group (%s) to add to project.", givenGroupName), e, ExitCodeType.FAILURE_CONFIGURATION);
+        }
+        if (givenGroup.isPresent()) {
+            logger.info(String.format("*** Found Group: %s", givenGroup.get().getName()));
+            final ProjectUsersService projectUsersService = blackDuckServicesFactory.createProjectUsersService();
+//            projectUsersService.getAssignedGroupsToProject()
+        } else {
+            logger.info("*** Did NOT find Group: testGroup1");
+        }
+
+        ////////////////////////////////////////////
         return projectVersionWrapper;
     }
 
