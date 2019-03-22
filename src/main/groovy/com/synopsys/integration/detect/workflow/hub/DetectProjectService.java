@@ -78,6 +78,9 @@ public class DetectProjectService {
     }
 
     private void addUserGroupsToProject(final ProjectUsersService projectUsersService, final ProjectVersionWrapper projectVersionWrapper, final String[] groupsToAddToProject) throws IntegrationException {
+        if (groupsToAddToProject == null) {
+            return;
+        }
         for (final String userGroupName : groupsToAddToProject) {
             if (StringUtils.isNotBlank(userGroupName)) {
                 logger.debug(String.format("Adding user group %s to project %s", userGroupName, projectVersionWrapper.getProjectView().getName()));
