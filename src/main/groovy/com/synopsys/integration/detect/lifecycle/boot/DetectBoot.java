@@ -139,7 +139,7 @@ public class DetectBoot {
 
         printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT, PropertyAuthority.None), options);
 
-        logger.info("Initializing detect.");
+        logger.info("Initializing Detect.");
 
         DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
         DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
@@ -152,7 +152,7 @@ public class DetectBoot {
             return DetectBootResult.exit(detectConfiguration);
         }
 
-        logger.info("Main boot completed. Deciding what detect should do.");
+        logger.info("Main boot completed. Deciding what Detect should do.");
 
         final RunOptions runOptions = factory.createRunOptions();
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();

@@ -91,7 +91,7 @@ public class Application implements ApplicationRunner {
         ReportManager reportManager = ReportManager.createDefault(eventSystem);
 
         //Before boot even begins, we create a new Spring context for Detect to work within.
-        logger.info("Preparing detect.");
+        logger.info("Preparing Detect.");
         DetectRun detectRun = DetectRun.createDefault();
         DetectContext detectContext = new DetectContext(detectRun);
 
@@ -139,7 +139,7 @@ public class Application implements ApplicationRunner {
             logger.debug("Detect will NOT attempt to run.");
         }
 
-        logger.info("All detect actions completed.");
+        logger.info("All Detect actions completed.");
 
         //Determine how detect should actually exit
         boolean printOutput = true;

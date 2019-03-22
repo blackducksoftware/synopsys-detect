@@ -48,7 +48,7 @@ public class ProductBoot {
     public ProductRunData boot(final ProductDecision productDecision, final DetectConfiguration detectConfiguration, final BlackDuckConnectivityChecker blackDuckConnectivityChecker, final PolarisConnectivityChecker polarisConnectivityChecker,
         final ProductBootFactory productBootFactory) throws DetectUserFriendlyException {
         if (!productDecision.willRunAny()) {
-            throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
+            throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
         }
 
         logger.info("Detect product boot start.");

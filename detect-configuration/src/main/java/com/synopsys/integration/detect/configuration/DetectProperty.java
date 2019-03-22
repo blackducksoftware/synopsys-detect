@@ -140,7 +140,7 @@ public enum DetectProperty {
     DETECT_BAZEL_PATH("detect.bazel.path", "Bazel Executable", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = GROUP_SOURCE_SCAN)
-    @HelpDescription("The bazel target (e.g. //foo:foolib) to collect dependencies for. For detect to run bazel this property must be set.")
+    @HelpDescription("The bazel target (e.g. //foo:foolib) to collect dependencies for. For Detect to run bazel this property must be set.")
     DETECT_BAZEL_TARGET("detect.bazel.target", "Bazel Target", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = GROUP_SOURCE_SCAN)
@@ -176,12 +176,12 @@ public enum DetectProperty {
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN("detect.blackduck.signature.scanner.dry.run", "Signature Scanner Dry Run", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma-separated list of directory name patterns detect will search for and add to the Signature Scanner --exclude flag values.")
+    @HelpDescription("A comma-separated list of directory name patterns Detect will search for and add to the Signature Scanner --exclude flag values.")
     @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.blackduck.signature.scanner.exclusion.name.patterns", "Directory Name Exclusion Patterns", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "node_modules"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("Enables you to adjust the depth to which detect will search when creating signature scanner exclusion patterns")
+    @HelpDescription("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH("detect.blackduck.signature.scanner.exclusion.pattern.search.depth", "Exclusion Patterns Search Depth", "5.0.0", PropertyType.INTEGER, PropertyAuthority.None, "4"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_SCAN })
@@ -237,7 +237,7 @@ public enum DetectProperty {
     DETECT_CLONE_PROJECT_VERSION_NAME("detect.clone.project.version.name", "Clone Project Version Name", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("An override for the name detect will use for the scan file it creates. If supplied and multiple scans are found, detect will append an index to each scan name.")
+    @HelpDescription("An override for the name Detect will use for the scan file it creates. If supplied and multiple scans are found, Detect will append an index to each scan name.")
     DETECT_CODE_LOCATION_NAME("detect.code.location.name", "Scan Name", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_CONDA, additional = { GROUP_SOURCE_SCAN })
@@ -291,12 +291,12 @@ public enum DetectProperty {
     DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS("detect.detector.search.exclusion.defaults", "Detector Exclude Default Directories", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_GENERAL, additional = { GROUP_BLACKDUCK_SERVER, GROUP_POLARIS })
-    @HelpDescription("If true, detect will ignore any products that it cannot connect to.")
-    @HelpDetailed("If true, when detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.")
+    @HelpDescription("If true, Detect will ignore any products that it cannot connect to.")
+    @HelpDetailed("If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.")
     DETECT_IGNORE_CONNECTION_FAILURES("detect.ignore.connection.failures", "Detect Ignore Connection Failures", "5.3.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
-    @HelpDescription("The docker image name to inspect. For detect to run docker either this property or detect.docker.tar must be set.")
+    @HelpDescription("The docker image name to inspect. For Detect to run docker either this property or detect.docker.tar must be set.")
     DETECT_DOCKER_IMAGE("detect.docker.image", "Docker Image Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
@@ -308,7 +308,7 @@ public enum DetectProperty {
     DETECT_DOCKER_INSPECTOR_PATH("detect.docker.inspector.path", "Docker Inspector Path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Version of the Docker Inspector to use. By default detect will attempt to automatically determine the version to use.")
+    @HelpDescription("Version of the Docker Inspector to use. By default Detect will attempt to automatically determine the version to use.")
     DETECT_DOCKER_INSPECTOR_VERSION("detect.docker.inspector.version", "Docker Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
@@ -316,11 +316,11 @@ public enum DetectProperty {
     DETECT_DOCKER_PATH("detect.docker.path", "Docker Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("If set to false, detect will attempt to run docker even if it cannot find a docker path.")
+    @HelpDescription("If set to false, Detect will attempt to run docker even if it cannot find a docker path.")
     DETECT_DOCKER_PATH_REQUIRED("detect.docker.path.required", "Run Without Docker in Path", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
-    @HelpDescription("A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.")
+    @HelpDescription("A saved docker image - must be a .tar file. For Detect to run docker either this property or detect.docker.image must be set.")
     DETECT_DOCKER_TAR("detect.docker.tar", "Docker Image Archive File", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
@@ -332,7 +332,7 @@ public enum DetectProperty {
     DETECT_EXCLUDED_DETECTOR_TYPES("detect.excluded.detector.types", "Detector Types Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("If true, detect will always exit with code 0.")
+    @HelpDescription("If true, Detect will always exit with code 0.")
     DETECT_FORCE_SUCCESS("detect.force.success", "Force Success", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_GO, additional = { SEARCH_GROUP_GLOBAL })
@@ -368,7 +368,7 @@ public enum DetectProperty {
     DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH("detect.gradle.inspector.air.gap.path", "Gradle Inspector AirGap Path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The override version of the Gradle Inspector to use. By default, detect will try to automatically determine the correct gradle version.")
+    @HelpDescription("The override version of the Gradle Inspector to use. By default, Detect will try to automatically determine the correct gradle version.")
     DETECT_GRADLE_INSPECTOR_VERSION("detect.gradle.inspector.version", "Gradle Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_GRADLE)
@@ -452,7 +452,7 @@ public enum DetectProperty {
     DETECT_NUGET_INSPECTOR_AIR_GAP_PATH("detect.nuget.inspector.air.gap.path", "Nuget Inspector AirGap Path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Version of the Nuget Inspector. By default detect will communicate with Artifactory.")
+    @HelpDescription("Version of the Nuget Inspector. By default Detect will communicate with Artifactory.")
     DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version", "Nuget Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
@@ -511,7 +511,7 @@ public enum DetectProperty {
     POLARIS_ARGUMENTS("polaris.arguments", "Polaris Arguments", "5.3.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_POLICY })
-    @HelpDescription("A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except UNSPECIFIED.")
+    @HelpDescription("A comma-separated list of policy violation severities that will fail Detect. If this is not set, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except UNSPECIFIED.")
     @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL", "UNSPECIFIED" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
     DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES("detect.policy.check.fail.on.severities", "Fail on Policy Violation Severities", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
@@ -553,7 +553,7 @@ public enum DetectProperty {
     DETECT_PROJECT_LEVEL_ADJUSTMENTS("detect.project.level.adjustments", "Allow Project Level Adjustments", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("An override for the name to use for the Black Duck project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.")
+    @HelpDescription("An override for the name to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.")
     DETECT_PROJECT_NAME("detect.project.name", "Project Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
@@ -572,7 +572,7 @@ public enum DetectProperty {
     DETECT_PROJECT_VERSION_DISTRIBUTION("detect.project.version.distribution", "Version Distribution", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "External"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("An override for the version to use for the Black Duck project. If not supplied, detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.")
+    @HelpDescription("An override for the version to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.")
     DETECT_PROJECT_VERSION_NAME("detect.project.version.name", "Version Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
@@ -602,11 +602,11 @@ public enum DetectProperty {
     DETECT_PYTHON_PYTHON3("detect.python.python3", "Use Python3", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The amount of time in seconds detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
+    @HelpDescription("The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
     DETECT_REPORT_TIMEOUT("detect.report.timeout", "Report Generation Timeout", "5.2.0", PropertyType.LONG, PropertyAuthority.None, "300"),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("If set, detect will fail if it does not find the detector types supplied here.")
+    @HelpDescription("If set, Detect will fail if it does not find the detector types supplied here.")
     DETECT_REQUIRED_DETECTOR_TYPES("detect.required.detector.types", "Required Detect Types", "4.3.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
@@ -654,12 +654,12 @@ public enum DetectProperty {
     DETECT_TEST_CONNECTION("detect.test.connection", "Test Connection to Black Duck", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The tools detect should allow in a comma-separated list. Included and not excluded tools will be allowed to run if all criteria of the tool is met. Exclusion rules always win.")
+    @HelpDescription("The tools Detect should allow in a comma-separated list. Included and not excluded tools will be allowed to run if all criteria of the tool is met. Exclusion rules always win.")
     @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
     DETECT_TOOLS("detect.tools", "Detect Tools Included", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The tools detect should not allow in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.")
+    @HelpDescription("The tools Detect should not allow in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.")
     @AcceptableValues(value = { "BAZEL", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
     DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "Detect Tools Excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
@@ -840,7 +840,7 @@ public enum DetectProperty {
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.required.detector.types in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_DETECTOR, additional = { GROUP_DETECTOR })
-    @HelpDescription("If set, detect will fail if it does not find the bom tool types supplied here.")
+    @HelpDescription("If set, Detect will fail if it does not find the bom tool types supplied here.")
     DETECT_REQUIRED_BOM_TOOL_TYPES("detect.required.bom.tool.types", "", "4.3.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
@@ -857,14 +857,14 @@ public enum DetectProperty {
     DETECT_GRADLE_INSPECTOR_REPOSITORY_URL("detect.gradle.inspector.repository.url", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
-    @DetectDeprecation(description = "In the future, detect will not look for a custom named inspector.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @DetectDeprecation(description = "In the future, Detect will not look for a custom named inspector.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_NUGET)
     @HelpDescription("Name of the Nuget Inspector package and the Nuget Inspector exe. (Do not include .exe)")
-    @HelpDetailed("The nuget inspector (previously) could be hosted on a custom nuget feed. In this case, detect needed to know the name of the package to pull and the name of the exe file (which has to match). In the future, detect will only retreive it from Artifactory or from Air Gap so a custom name is no longer supported.")
+    @HelpDetailed("The nuget inspector (previously) could be hosted on a custom nuget feed. In this case, Detect needed to know the name of the package to pull and the name of the exe file (which has to match). In the future, Detect will only retreive it from Artifactory or from Air Gap so a custom name is no longer supported.")
     DETECT_NUGET_INSPECTOR_NAME("detect.nuget.inspector.name", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "IntegrationNugetInspector"),
 
     @Deprecated
-    @DetectDeprecation(description = "In the future, detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @DetectDeprecation(description = "In the future, Detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_NUGET)
     @HelpDescription("The path of the Nuget executable. Nuget is used to download the classic inspectors nuget package.")
     DETECT_NUGET_PATH("detect.nuget.path", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
@@ -896,7 +896,7 @@ public enum DetectProperty {
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.name.patterns in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
-    @HelpDescription("A comma-separated list of directory name patterns detect will search for and add to the Signature Scanner --exclude flag values.")
+    @HelpDescription("A comma-separated list of directory name patterns Detect will search for and add to the Signature Scanner --exclude flag values.")
     @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns")
     DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.hub.signature.scanner.exclusion.name.patterns", "", "4.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "node_modules"),
 

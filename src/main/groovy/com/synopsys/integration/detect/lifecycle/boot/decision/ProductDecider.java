@@ -85,7 +85,7 @@ public class ProductDecider {
             logger.info("Black Duck will run: A Black Duck url was found.");
             return BlackDuckDecision.runOnline();
         } else {
-            logger.info("Black Duck will NOT run: The Black Duck url must be provided or offline mode must true.");
+            logger.info("Black Duck will NOT run: The Black Duck url must be provided or offline mode must be set to true.");
             return BlackDuckDecision.skip();
         }
     }
