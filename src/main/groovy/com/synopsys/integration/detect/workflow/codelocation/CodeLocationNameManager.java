@@ -23,6 +23,9 @@
  */
 package com.synopsys.integration.detect.workflow.codelocation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
@@ -33,8 +36,7 @@ import com.synopsys.integration.util.NameVersion;
 public class CodeLocationNameManager {
     private final DetectConfiguration detectConfiguration;
     private final CodeLocationNameGenerator codeLocationNameGenerator;
-
-    private int givenCodeLocationOverrideCount = 0;
+    private final Map<String, Integer> nameCounters = new HashMap<>();
 
     public CodeLocationNameManager(final DetectConfiguration detectConfiguration, final CodeLocationNameGenerator codeLocationNameGenerator) {
         this.detectConfiguration = detectConfiguration;
@@ -102,14 +104,32 @@ public class CodeLocationNameManager {
     }
 
     private String getNextCodeLocationOverrideName(final CodeLocationNameType codeLocationNameType) { // returns "override", then "override 2", then "override 3", etc
-        givenCodeLocationOverrideCount++;
-        final String base = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None) + " " + codeLocationNameType.name();
-        if (givenCodeLocationOverrideCount == 1) {
-            return base;
+        final String baseName = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None) + " " + codeLocationNameType.name();
+        final int nameIndex = deriveNameIndex(baseName);
+        final String nextName = deriveCodeLocationName(baseName, nameIndex);
+        return nextName;
+    }
+
+    private String deriveCodeLocationName(final String baseName, final int nameIndex) {
+        final String nextName;
+        if (nameIndex > 0) {
+            nextName = baseName + " " + nameIndex;
         } else {
-            final String codeLocationName = base + " " + Integer.toString(givenCodeLocationOverrideCount);
-            return codeLocationName;
+            nextName = baseName;
         }
+        return nextName;
+    }
+
+    private int deriveNameIndex(final String baseName) {
+        int nameIndex;
+        if (nameCounters.containsKey(baseName)) {
+            nameIndex = nameCounters.get(baseName);
+            nameIndex++;
+        } else {
+            nameIndex = 0;
+        }
+        nameCounters.put(baseName, nameIndex);
+        return nameIndex;
     }
 
 }
