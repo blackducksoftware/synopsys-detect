@@ -112,7 +112,7 @@ public class CodeLocationNameManager {
 
     private String deriveCodeLocationName(final String baseName, final int nameIndex) {
         final String nextName;
-        if (nameIndex > 0) {
+        if (nameIndex > 1) {
             nextName = baseName + " " + nameIndex;
         } else {
             nextName = baseName;
@@ -126,7 +126,7 @@ public class CodeLocationNameManager {
             nameIndex = nameCounters.get(baseName);
             nameIndex++;
         } else {
-            nameIndex = 0;
+            nameIndex = 1;
         }
         nameCounters.put(baseName, nameIndex);
         return nameIndex;
