@@ -12,20 +12,19 @@
 package com.synopsys.integration.detect.workflow.codelocation;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 
 public class CodeLocationNameGeneratorTest {
     @Test
@@ -110,5 +109,45 @@ public class CodeLocationNameGeneratorTest {
         final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, detectCodeLocation, prefix, suffix);
 
         assertEquals(expected, actual);
+    }
+
+
+    @Test
+    public void testExternalId() {
+        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
+        DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
+
+        final ExternalId externalId = new ExternalId(Forge.MAVEN);
+        externalId.name = "externalIdName";
+        externalId.version = "externalIdVersion";
+        externalId.group = "externalIdGroup";
+        externalId.architecture = "externalIdArch";
+        externalId.path = "externalIdPath";
+        Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
+
+        assertEquals("testPrefix/aaa/bbb/externalIdPath/testSuffix detect/bom", codeLocationNameGenerator.createBomCodeLocationName("/tmp/aaa", "/tmp/aaa/bbb", detectCodeLocation, "testPrefix", "testSuffix"));
+    }
+
+    @Test
+    public void testGivenNameCounters() {
+        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
+        Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None)).thenReturn("myscanname");
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
+
+        assertTrue(codeLocationNameGenerator.useCodeLocationOverride());
+
+        DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
+        Mockito.when(detectCodeLocation.getCreatorName()).thenReturn(Optional.of("testCreator"));
+        assertEquals("testCreator", codeLocationNameGenerator.deriveCreator(detectCodeLocation));
+
+        assertEquals("myscanname scan", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN));
+        assertEquals("myscanname scan 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN));
+        assertEquals("myscanname bom", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
+        assertEquals("myscanname bom 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
+
+        assertEquals("myscanname testcreator/bom", codeLocationNameGenerator.getNextCodeLocationOverrideNameSourcedBom(detectCodeLocation));
+        assertEquals("myscanname testcreator/bom 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameSourcedBom(detectCodeLocation));
+        assertEquals("myscanname testcreator/bom 3", codeLocationNameGenerator.getNextCodeLocationOverrideNameSourcedBom(detectCodeLocation));
     }
 }
