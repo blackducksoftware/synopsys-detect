@@ -115,12 +115,12 @@ public class RunBeanConfiguration {
 
     @Bean
     public CodeLocationNameGenerator codeLocationNameService() {
-        return new CodeLocationNameGenerator();
+        return new CodeLocationNameGenerator(detectConfiguration);
     }
 
     @Bean
     public CodeLocationNameManager codeLocationNameManager() {
-        return new CodeLocationNameManager(detectConfiguration, codeLocationNameService());
+        return new CodeLocationNameManager(codeLocationNameService());
     }
 
     @Bean

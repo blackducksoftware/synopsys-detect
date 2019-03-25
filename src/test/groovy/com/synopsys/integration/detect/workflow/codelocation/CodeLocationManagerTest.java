@@ -2,6 +2,8 @@ package com.synopsys.integration.detect.workflow.codelocation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.File;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -13,11 +15,12 @@ import com.synopsys.integration.util.NameVersion;
 public class CodeLocationManagerTest {
 
     @Test
-    public void test() {
+    public void testOverride() {
+        // TODO this is really testing code location name generator; move it to the right test
         final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
         Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None)).thenReturn("myscanname");
-        final CodeLocationNameGenerator codeLocationNameGenerator = Mockito.mock(CodeLocationNameGenerator.class);
-        final CodeLocationNameManager mgr = new CodeLocationNameManager(detectConfiguration, codeLocationNameGenerator);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
+        final CodeLocationNameManager mgr = new CodeLocationNameManager(codeLocationNameGenerator);
         final String firstScanName = mgr.createScanCodeLocationName("sourcePath", "targetPath", null, "projectName", "projectVersionName", "prefix", "suffix");
         assertEquals("myscanname SCAN", firstScanName);
 
@@ -35,4 +38,23 @@ public class CodeLocationManagerTest {
         final String thirdScanName = mgr.createScanCodeLocationName("sourcePath", "targetPath", null, "projectName", "projectVersionName", "prefix", "suffix");
         assertEquals("myscanname SCAN 3", thirdScanName);
     }
+
+    // TODO
+//    @Test
+//    public void testNoOverride() {
+//        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
+//        Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None)).thenReturn(null);
+//        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
+//        final CodeLocationNameManager mgr = new CodeLocationNameManager(detectConfiguration, codeLocationNameGenerator);
+//
+//        final DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
+//        Mockito.when(detectCodeLocation.getSourcePath()).thenReturn(new File("sourcePath"));
+//        final String detectSourcePath = "sourcePath";
+//        final String projectName = "projectName";
+//        final String projectVersionName = "projectVersion";
+//        final String prefix = "prefix";
+//        final String suffix = "suffix";
+//        final String bomCodeLocationName = mgr.createCodeLocationName(detectCodeLocation,   detectSourcePath,   projectName,   projectVersionName,   prefix,   suffix);
+//        assertEquals("tbd", bomCodeLocationName);
+//    }
 }

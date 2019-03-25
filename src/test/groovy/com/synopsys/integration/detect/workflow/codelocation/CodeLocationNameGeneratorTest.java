@@ -15,18 +15,25 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detect.configuration.DetectConfiguration;
+import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 
 public class CodeLocationNameGeneratorTest {
     @Test
     public void testScanCodeLocationName() {
         final String expected = "hub-common-rest/target/hub-common-rest/2.5.1-SNAPSHOT scan";
-
-        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator();
+        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
+        Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None)).thenReturn(null);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
 
         final String sourcePath = "/Users/ekerwin/Documents/source/functional/hub-common-rest";
         final String scanTargetPath = "/Users/ekerwin/Documents/source/functional/hub-common-rest/target";
@@ -43,7 +50,9 @@ public class CodeLocationNameGeneratorTest {
     public void testDockerScanCodeLocationName() {
         final String expected = "dockerTar.tar.gz/hub-common-rest/2.5.1-SNAPSHOT scan";
 
-        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator();
+        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
+        Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None)).thenReturn(null);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
 
         final String dockerTarFileName = "dockerTar.tar.gz";
         final String projectName = "hub-common-rest";
@@ -62,14 +71,20 @@ public class CodeLocationNameGeneratorTest {
 
         final ExternalIdFactory factory = new ExternalIdFactory();
         final ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
-        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator();
+        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
+        Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None)).thenReturn(null);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
+
+        final DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
+        Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
+        Mockito.when(detectCodeLocation.getCreatorName()).thenReturn(Optional.of("NPM"));
 
         final String sourcePath = "/Users/ekerwin/Documents/source/functional/hub-common-rest";
         final String codeLocationPath = "/Users/ekerwin/Documents/source/functional/hub-common-rest/child";
 
         final String prefix = "";
         final String suffix = "";
-        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, externalId, "NPM", prefix, suffix);
+        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, detectCodeLocation, prefix, suffix);
 
         assertEquals(expected, actual);
     }
@@ -80,13 +95,19 @@ public class CodeLocationNameGeneratorTest {
 
         final ExternalIdFactory factory = new ExternalIdFactory();
         final ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
-        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator();
+        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
+        Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None)).thenReturn(null);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
+
+        final DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
+        Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
+        Mockito.when(detectCodeLocation.getCreatorName()).thenReturn(Optional.of("NPM"));
 
         final String sourcePath = "/Users/ekerwin/Documents/source/functional/hub-common-rest";
         final String codeLocationPath = "/Users/ekerwin/Documents/source/functional/hub-common-rest/hub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-rest";
         final String prefix = "";
         final String suffix = "";
-        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, externalId, "NPM", prefix, suffix);
+        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, detectCodeLocation, prefix, suffix);
 
         assertEquals(expected, actual);
     }
