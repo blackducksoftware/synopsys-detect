@@ -25,7 +25,9 @@ package com.synopsys.integration.detect.workflow.codelocation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,22 +35,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.detect.configuration.DetectConfiguration;
+import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 
 public class CodeLocationNameGenerator {
     private final Logger logger = LoggerFactory.getLogger(CodeLocationNameGenerator.class);
-
+    private final DetectConfiguration detectConfiguration;
+    private final Map<String, Integer> nameCounters = new HashMap<>();
     public static final int MAXIMUM_CODE_LOCATION_NAME_LENGTH = 250;
 
-    public String createBomCodeLocationName(final String detectSourcePath, final String sourcePath, final ExternalId externalId, final String creatorName, final String prefix, final String suffix) {
+    public CodeLocationNameGenerator(final DetectConfiguration detectConfiguration) {
+        this.detectConfiguration = detectConfiguration;
+    }
+
+    public String createBomCodeLocationName(final String detectSourcePath, final String sourcePath, final DetectCodeLocation detectCodeLocation, final String prefix, final String suffix) {
         final String pathPiece = FileNameUtils.relativize(detectSourcePath, sourcePath);
 
-        final List<String> pieces = Arrays.asList(externalId.getExternalIdPieces());
+        final List<String> pieces = Arrays.asList(detectCodeLocation.getExternalId().getExternalIdPieces());
         final String externalIdPiece = StringUtils.join(pieces, "/");
 
         // misc pieces
         final String codeLocationTypeString = CodeLocationNameType.BOM.toString().toLowerCase();
-        final String bomToolTypeString = creatorName.toLowerCase();
+        final String bomToolTypeString = deriveCreator(detectCodeLocation).toLowerCase();
 
         final List<String> bomCodeLocationNamePieces = Arrays.asList(pathPiece, externalIdPiece);
         final List<String> bomCodeLocationEndPieces = Arrays.asList(bomToolTypeString, codeLocationTypeString);
@@ -150,6 +160,69 @@ public class CodeLocationNameGenerator {
         final String endPiece = StringUtils.join(endPieces, "/");
 
         return String.format("%s %s", name, endPiece);
+    }
+
+    public boolean useCodeLocationOverride() {
+        return StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None));
+    }
+
+    public String getNextCodeLocationOverrideNameUnSourced(final CodeLocationNameType codeLocationNameType) { // returns "override", then "override 2", then "override 3", etc
+        final String baseName = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None) + " " + codeLocationNameType.toString().toLowerCase();
+        final int nameIndex = deriveNameNumber(baseName);
+        final String nextName = deriveUniqueCodeLocationName(baseName, nameIndex);
+        return nextName;
+    }
+
+    public String getNextCodeLocationOverrideNameSourcedBom(final DetectCodeLocation detectCodeLocation) { // returns "override", then "override 2", then "override 3", etc
+        final String givenCodeLocationName = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None);
+        String creator = deriveCreator(detectCodeLocation);
+        final String baseName = createBomCodeLocationName(givenCodeLocationName, creator);
+
+        final int nameIndex = deriveNameNumber(baseName);
+        final String nextName = deriveUniqueCodeLocationName(baseName, nameIndex);
+        return nextName;
+    }
+
+    public String deriveCreator(final DetectCodeLocation detectCodeLocation) {
+        return detectCodeLocation.getCreatorName().orElse("detect");
+    }
+
+    private String createBomCodeLocationName(final String givenCodeLocationName, final String creatorName) {
+        final String codeLocationTypeString = CodeLocationNameType.BOM.toString().toLowerCase();
+        final String bomToolTypeString = creatorName.toLowerCase();
+
+        final int givenNameMaxLength = MAXIMUM_CODE_LOCATION_NAME_LENGTH - bomToolTypeString.length() - codeLocationTypeString.length() - 2;
+        final String adjustedGivenCodeLocationName;
+        if (givenCodeLocationName.length() > givenNameMaxLength) {
+            adjustedGivenCodeLocationName = givenCodeLocationName.substring(0, givenNameMaxLength);
+        } else {
+            adjustedGivenCodeLocationName = givenCodeLocationName;
+        }
+        String codeLocationName = String.format("%s %s/%s", adjustedGivenCodeLocationName, bomToolTypeString, codeLocationTypeString);
+
+        return codeLocationName;
+    }
+
+    private String deriveUniqueCodeLocationName(final String baseName, final int nameIndex) {
+        final String nextName;
+        if (nameIndex > 1) {
+            nextName = baseName + " " + nameIndex;
+        } else {
+            nextName = baseName;
+        }
+        return nextName;
+    }
+
+    private int deriveNameNumber(final String baseName) {
+        int nameIndex;
+        if (nameCounters.containsKey(baseName)) {
+            nameIndex = nameCounters.get(baseName);
+            nameIndex++;
+        } else {
+            nameIndex = 1;
+        }
+        nameCounters.put(baseName, nameIndex);
+        return nameIndex;
     }
 
 }
