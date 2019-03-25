@@ -47,6 +47,9 @@ public class ProductRunData {
     }
 
     public boolean shouldUsePolarisProduct() {
-        return polarisRunData != null;
+        return (polarisRunData != null) && (polarisRunData.isConnectionSucceeded());
+    }
+    public boolean polarisConnectionFailed() {
+        return (polarisRunData != null) && (!polarisRunData.isConnectionSucceeded());
     }
 }

@@ -55,6 +55,8 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.report.ReportManager;
 import com.synopsys.integration.detect.workflow.status.DetectStatusManager;
+import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
 //@SpringBootApplication
@@ -109,10 +111,13 @@ public class Application implements ApplicationRunner {
         if (detectBootResult != null && detectBootResult.bootType == DetectBootResult.BootType.RUN) {
             logger.info("Detect will attempt to run.");
             RunManager runManager = new RunManager(detectContext);
+            DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
             try {
                 logger.info("Detect run begin: " + detectRun.getRunId());
                 runResult = Optional.ofNullable(runManager.run(detectBootResult.productRunData));
                 logger.info("Detect run completed.");
+                boolean ignoreConnectionFailures = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES, PropertyAuthority.None);
+                checkForPolarisConnectionFailure(runResult, statusManager, ignoreConnectionFailures);
             } catch (final Exception e) {
                 if (e.getMessage() != null){
                     logger.error("Detect run failed: " + e.getMessage());
@@ -126,7 +131,6 @@ public class Application implements ApplicationRunner {
                 logger.info("Detect will attempt to shutdown.");
                 DiagnosticManager diagnosticManager = detectContext.getBean(DiagnosticManager.class);
                 DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
-                DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
                 ShutdownManager shutdownManager = new ShutdownManager(detectBootResult.productRunData, statusManager, exitCodeManager, directoryManager, detectConfiguration, reportManager, diagnosticManager);
                 logger.info("Detect shutdown begin.");
                 shutdownManager.shutdown(runResult);
@@ -176,5 +180,17 @@ public class Application implements ApplicationRunner {
         }
 
         System.exit(finalExitCode.getExitCode());
+    }
+
+    private void checkForPolarisConnectionFailure(final Optional<RunResult> runResult, final DetectStatusManager statusManager, final boolean ignoreConnectionFailures) {
+        if (runResult.isPresent()) {
+            if (runResult.get().isPolarisConnectionFailed()) {
+                if (ignoreConnectionFailures) {
+                    statusManager.addStatusSummary(new Status(DetectTool.POLARIS.toString(), StatusType.IGNORED_CONNECTION_ERROR));
+                } else {
+                    statusManager.addStatusSummary(new Status(DetectTool.POLARIS.toString(), StatusType.FAILURE));
+                }
+            }
+        }
     }
 }

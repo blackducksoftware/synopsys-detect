@@ -85,11 +85,12 @@ public class ProductBoot {
             final PolarisConnectivityResult polarisConnectivityResult = polarisConnectivityChecker.determineConnectivity(polarisServerConfig);
 
             if (polarisConnectivityResult.isSuccessfullyConnected()) {
-                polarisRunData = new PolarisRunData(polarisDecision.getPolarisServerConfig());
+                polarisRunData = new PolarisRunData(polarisDecision.getPolarisServerConfig(), true);
             } else {
                 if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES, PropertyAuthority.None)) {
                     logger.info("Failed to connect to Polaris: " + polarisConnectivityResult.getFailureReason());
                     logger.info(String.format("%s is set to 'true' so Detect will simply disable the Polaris product.", DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES.getPropertyName()));
+                    polarisRunData = new PolarisRunData(polarisDecision.getPolarisServerConfig(), false);
                 } else {
                     throw new DetectUserFriendlyException("Could not communicate with Polaris: " + polarisConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_POLARIS_CONNECTIVITY);
                 }

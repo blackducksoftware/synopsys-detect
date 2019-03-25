@@ -42,6 +42,7 @@ public class RunResult {
     private final List<DetectToolProjectInfo> detectToolProjectInfo = new ArrayList<>();
     private final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
     private final Set<DetectorType> applicableDetectors = new HashSet<>();
+    private boolean polarisConnectionFailed = false;
 
     public void addToolNameVersionIfPresent(DetectTool detectTool, Optional<NameVersion> toolNameVersion) {
         if (toolNameVersion.isPresent()) {
@@ -76,5 +77,13 @@ public class RunResult {
 
     public Set<DetectorType> getApplicableDetectors() {
         return applicableDetectors;
+    }
+
+    public void setPolarisConnectionFailed(final boolean polarisConnectionFailed) {
+        this.polarisConnectionFailed = polarisConnectionFailed;
+    }
+
+    public boolean isPolarisConnectionFailed() {
+        return polarisConnectionFailed;
     }
 }

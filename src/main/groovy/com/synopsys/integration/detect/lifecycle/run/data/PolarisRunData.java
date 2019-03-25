@@ -27,12 +27,18 @@ import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
 
 public class PolarisRunData {
     private final PolarisServerConfig polarisServerConfig;
+    private final boolean connectionSucceeded;
 
-    public PolarisRunData(final PolarisServerConfig polarisServerConfig) {
+    public PolarisRunData(final PolarisServerConfig polarisServerConfig, final boolean connectionSucceeded) {
         this.polarisServerConfig = polarisServerConfig;
+        this.connectionSucceeded = connectionSucceeded;
     }
 
     public PolarisServerConfig getPolarisServerConfig() {
         return polarisServerConfig;
+    }
+
+    public boolean isConnectionSucceeded() {
+        return connectionSucceeded;
     }
 }
