@@ -166,14 +166,14 @@ public class CodeLocationNameGenerator {
         return StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None));
     }
 
-    public String getNextCodeLocationOverrideNameUnSourced(final CodeLocationNameType codeLocationNameType) { // returns "override", then "override 2", then "override 3", etc
+    public String getNextCodeLocationOverrideNameUnSourced(final CodeLocationNameType codeLocationNameType) {
         final String baseName = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None) + " " + codeLocationNameType.toString().toLowerCase();
         final int nameIndex = deriveNameNumber(baseName);
         final String nextName = deriveUniqueCodeLocationName(baseName, nameIndex);
         return nextName;
     }
 
-    public String getNextCodeLocationOverrideNameSourcedBom(final DetectCodeLocation detectCodeLocation) { // returns "override", then "override 2", then "override 3", etc
+    public String getNextCodeLocationOverrideNameSourcedBom(final DetectCodeLocation detectCodeLocation) {
         final String givenCodeLocationName = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None);
         String creator = deriveCreator(detectCodeLocation);
         final String baseName = createBomCodeLocationName(givenCodeLocationName, creator);
