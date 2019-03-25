@@ -61,11 +61,9 @@ public class CodeLocationNameManager {
             if (detectCodeLocation.getDockerImageName().isPresent()) {
                 codeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.DOCKER);
             } else {
-                logger.info(String.format("*** OOO createCodeLocationName(): generating bom name"));
                 codeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameSourced(detectCodeLocation, CodeLocationNameType.BOM);
             }
         } else {
-            logger.info(String.format("*** === createCodeLocationName(): no override"));
             String sourcePath = detectCodeLocation.getSourcePath().toString();
             if (detectCodeLocation.getDockerImageName().isPresent()) {
                 String dockerImage = detectCodeLocation.getDockerImageName().get();
@@ -77,11 +75,8 @@ public class CodeLocationNameManager {
         return codeLocationName;
     }
 
-
     public String createScanCodeLocationName(final String sourcePath, final String scanTargetPath, final String dockerTarFilename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String scanCodeLocationName;
-
-        // TODO push this code into codeLocationNameGenerator?
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
             scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN);
         } else if (StringUtils.isNotBlank(dockerTarFilename)) {
@@ -95,7 +90,6 @@ public class CodeLocationNameManager {
     public String createBinaryScanCodeLocationName(final String filename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String scanCodeLocationName;
 
-        // TODO push this code into codeLocationNameGenerator?
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
             scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN);
         } else {

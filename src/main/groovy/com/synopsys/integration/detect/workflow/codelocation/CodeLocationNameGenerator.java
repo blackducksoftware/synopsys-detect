@@ -174,7 +174,6 @@ public class CodeLocationNameGenerator {
     }
 
     public String getNextCodeLocationOverrideNameSourced(final DetectCodeLocation detectCodeLocation, final CodeLocationNameType codeLocationNameType) { // returns "override", then "override 2", then "override 3", etc
-        logger.info(String.format("*** getNextCodeLocationOverrideName(): codeLocationType: %s", codeLocationNameType.toString()));
         final String givenCodeLocationName = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None);
         String creator = deriveCreator(detectCodeLocation);
         final String baseName = createBomCodeLocationName(givenCodeLocationName, creator);
@@ -192,11 +191,16 @@ public class CodeLocationNameGenerator {
 
         final String codeLocationTypeString = CodeLocationNameType.BOM.toString().toLowerCase();
         final String bomToolTypeString = creatorName.toLowerCase();
-        String codeLocationName = String.format("%s %s/%s", givenCodeLocationName, bomToolTypeString, codeLocationTypeString);
 
-        if (codeLocationName.length() > MAXIMUM_CODE_LOCATION_NAME_LENGTH) {
-            throw new RuntimeException("tbd"); // TODO
+        final int givenNameMaxLength = MAXIMUM_CODE_LOCATION_NAME_LENGTH - bomToolTypeString.length() - codeLocationTypeString.length() - 2;
+        final String adjustedGivenCodeLocationName;
+        if (givenCodeLocationName.length() > givenNameMaxLength) {
+            adjustedGivenCodeLocationName = givenCodeLocationName.substring(0, givenNameMaxLength);
+        } else {
+            adjustedGivenCodeLocationName = givenCodeLocationName;
         }
+        String codeLocationName = String.format("%s %s/%s", adjustedGivenCodeLocationName, bomToolTypeString, codeLocationTypeString);
+
         return codeLocationName;
     }
 
