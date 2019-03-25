@@ -167,13 +167,13 @@ public class CodeLocationNameGenerator {
     }
 
     public String getNextCodeLocationOverrideNameUnSourced(final CodeLocationNameType codeLocationNameType) { // returns "override", then "override 2", then "override 3", etc
-        final String baseName = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None) + " " + codeLocationNameType.name();
+        final String baseName = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None) + " " + codeLocationNameType.toString().toLowerCase();
         final int nameIndex = deriveNameNumber(baseName);
         final String nextName = deriveUniqueCodeLocationName(baseName, nameIndex);
         return nextName;
     }
 
-    public String getNextCodeLocationOverrideNameSourced(final DetectCodeLocation detectCodeLocation, final CodeLocationNameType codeLocationNameType) { // returns "override", then "override 2", then "override 3", etc
+    public String getNextCodeLocationOverrideNameSourcedBom(final DetectCodeLocation detectCodeLocation) { // returns "override", then "override 2", then "override 3", etc
         final String givenCodeLocationName = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None);
         String creator = deriveCreator(detectCodeLocation);
         final String baseName = createBomCodeLocationName(givenCodeLocationName, creator);
@@ -188,7 +188,6 @@ public class CodeLocationNameGenerator {
     }
 
     private String createBomCodeLocationName(final String givenCodeLocationName, final String creatorName) {
-
         final String codeLocationTypeString = CodeLocationNameType.BOM.toString().toLowerCase();
         final String bomToolTypeString = creatorName.toLowerCase();
 

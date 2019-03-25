@@ -61,7 +61,7 @@ public class CodeLocationNameManager {
             if (detectCodeLocation.getDockerImageName().isPresent()) {
                 codeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.DOCKER);
             } else {
-                codeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameSourced(detectCodeLocation, CodeLocationNameType.BOM);
+                codeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameSourcedBom(detectCodeLocation);
             }
         } else {
             String sourcePath = detectCodeLocation.getSourcePath().toString();
