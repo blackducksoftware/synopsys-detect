@@ -36,6 +36,7 @@ import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
+import com.synopsys.integration.detect.lifecycle.run.ConnectionStatus;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.PolarisRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
@@ -85,12 +86,12 @@ public class ProductBoot {
             final PolarisConnectivityResult polarisConnectivityResult = polarisConnectivityChecker.determineConnectivity(polarisServerConfig);
 
             if (polarisConnectivityResult.isSuccessfullyConnected()) {
-                polarisRunData = new PolarisRunData(polarisDecision.getPolarisServerConfig(), true);
+                polarisRunData = new PolarisRunData(polarisDecision.getPolarisServerConfig(), ConnectionStatus.SUCCEEDED);
             } else {
                 if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES, PropertyAuthority.None)) {
                     logger.info("Failed to connect to Polaris: " + polarisConnectivityResult.getFailureReason());
                     logger.info(String.format("%s is set to 'true' so Detect will simply disable the Polaris product.", DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES.getPropertyName()));
-                    polarisRunData = new PolarisRunData(polarisDecision.getPolarisServerConfig(), false);
+                    polarisRunData = new PolarisRunData(polarisDecision.getPolarisServerConfig(), ConnectionStatus.FAILED);
                 } else {
                     throw new DetectUserFriendlyException("Could not communicate with Polaris: " + polarisConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_POLARIS_CONNECTIVITY);
                 }

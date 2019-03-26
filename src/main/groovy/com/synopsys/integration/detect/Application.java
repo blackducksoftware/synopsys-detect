@@ -42,6 +42,7 @@ import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootFactory;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBoot;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootResult;
+import com.synopsys.integration.detect.lifecycle.run.ConnectionStatus;
 import com.synopsys.integration.detect.lifecycle.run.RunManager;
 import com.synopsys.integration.detect.lifecycle.run.RunResult;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
@@ -184,7 +185,7 @@ public class Application implements ApplicationRunner {
 
     private void checkForPolarisConnectionFailure(final Optional<RunResult> runResult, final DetectStatusManager statusManager, final boolean ignoreConnectionFailures) {
         if (runResult.isPresent()) {
-            if (runResult.get().getPolarisConnectionStatus() == RunResult.ConnectionStatus.FAILED) {
+            if (runResult.get().getPolarisConnectionStatus() == ConnectionStatus.FAILED) {
                 if (ignoreConnectionFailures) {
                     statusManager.addStatusSummary(new Status(DetectTool.POLARIS.toString(), StatusType.IGNORED_CONNECTION_ERROR));
                 } else {

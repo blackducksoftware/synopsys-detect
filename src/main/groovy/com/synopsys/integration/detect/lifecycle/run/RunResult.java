@@ -37,7 +37,6 @@ import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
 import com.synopsys.integration.util.NameVersion;
 
 public class RunResult {
-    public enum ConnectionStatus { NOT_ATTEMPTED, SUCCEEDED, FAILED };
     private Optional<File> dockerTar = Optional.empty();
     private final List<DetectToolProjectInfo> detectToolProjectInfo = new ArrayList<>();
     private final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();

@@ -23,22 +23,23 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.data;
 
+import com.synopsys.integration.detect.lifecycle.run.ConnectionStatus;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 
 public class PolarisRunData {
     private final PolarisServerConfig polarisServerConfig;
-    private final boolean connectionSucceeded;
+    private final ConnectionStatus connectionStatus;
 
-    public PolarisRunData(final PolarisServerConfig polarisServerConfig, final boolean connectionSucceeded) {
+    public PolarisRunData(final PolarisServerConfig polarisServerConfig, final ConnectionStatus connectionStatus) {
         this.polarisServerConfig = polarisServerConfig;
-        this.connectionSucceeded = connectionSucceeded;
+        this.connectionStatus = connectionStatus;
     }
 
     public PolarisServerConfig getPolarisServerConfig() {
         return polarisServerConfig;
     }
 
-    public boolean isConnectionSucceeded() {
-        return connectionSucceeded;
+    public ConnectionStatus getConnectionStatus() {
+        return connectionStatus;
     }
 }

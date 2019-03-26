@@ -134,7 +134,7 @@ public class RunManager {
         } else {
             logger.info("Polaris tools will NOT be run.");
             if (productRunData.polarisConnectionFailed()) {
-                runResult.setPolarisConnectionStatus(RunResult.ConnectionStatus.FAILED);
+                runResult.setPolarisConnectionStatus(ConnectionStatus.FAILED);
             }
         }
 

@@ -23,7 +23,7 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.data;
 
-import java.util.Optional;
+import com.synopsys.integration.detect.lifecycle.run.ConnectionStatus;
 
 public class ProductRunData {
     private final PolarisRunData polarisRunData;
@@ -47,9 +47,9 @@ public class ProductRunData {
     }
 
     public boolean shouldUsePolarisProduct() {
-        return (polarisRunData != null) && (polarisRunData.isConnectionSucceeded());
+        return (polarisRunData != null) && (polarisRunData.getConnectionStatus() == ConnectionStatus.SUCCEEDED);
     }
     public boolean polarisConnectionFailed() {
-        return (polarisRunData != null) && (!polarisRunData.isConnectionSucceeded());
+        return (polarisRunData != null) && (polarisRunData.getConnectionStatus() == ConnectionStatus.FAILED);
     }
 }
