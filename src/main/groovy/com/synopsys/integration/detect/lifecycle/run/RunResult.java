@@ -37,12 +37,12 @@ import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
 import com.synopsys.integration.util.NameVersion;
 
 public class RunResult {
-
+    public enum ConnectionStatus { NOT_ATTEMPTED, SUCCEEDED, FAILED };
     private Optional<File> dockerTar = Optional.empty();
     private final List<DetectToolProjectInfo> detectToolProjectInfo = new ArrayList<>();
     private final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
     private final Set<DetectorType> applicableDetectors = new HashSet<>();
-    private boolean polarisConnectionFailed = false;
+    private ConnectionStatus polarisConnectionStatus = ConnectionStatus.NOT_ATTEMPTED;
 
     public void addToolNameVersionIfPresent(DetectTool detectTool, Optional<NameVersion> toolNameVersion) {
         if (toolNameVersion.isPresent()) {
@@ -79,11 +79,11 @@ public class RunResult {
         return applicableDetectors;
     }
 
-    public void setPolarisConnectionFailed(final boolean polarisConnectionFailed) {
-        this.polarisConnectionFailed = polarisConnectionFailed;
+    public void setPolarisConnectionStatus(final ConnectionStatus polarisConnectionStatus) {
+        this.polarisConnectionStatus = polarisConnectionStatus;
     }
 
-    public boolean isPolarisConnectionFailed() {
-        return polarisConnectionFailed;
+    public ConnectionStatus getPolarisConnectionStatus() {
+        return polarisConnectionStatus;
     }
 }

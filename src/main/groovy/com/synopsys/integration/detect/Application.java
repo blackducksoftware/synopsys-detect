@@ -184,7 +184,7 @@ public class Application implements ApplicationRunner {
 
     private void checkForPolarisConnectionFailure(final Optional<RunResult> runResult, final DetectStatusManager statusManager, final boolean ignoreConnectionFailures) {
         if (runResult.isPresent()) {
-            if (runResult.get().isPolarisConnectionFailed()) {
+            if (runResult.get().getPolarisConnectionStatus() == RunResult.ConnectionStatus.FAILED) {
                 if (ignoreConnectionFailures) {
                     statusManager.addStatusSummary(new Status(DetectTool.POLARIS.toString(), StatusType.IGNORED_CONNECTION_ERROR));
                 } else {
