@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.synopsys.integration.detect.DetectTool;
+import com.synopsys.integration.detect.tool.DetectableToolResult;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
@@ -52,6 +53,12 @@ public class RunResult {
 
     public void addDetectCodeLocations(List<DetectCodeLocation> codeLocations) {
         detectCodeLocations.addAll(codeLocations);
+    }
+
+    public void addDetectableToolResult(DetectableToolResult detectableToolResult) {
+        detectableToolResult.getDetectToolProjectInfo().ifPresent(detectToolProjectInfo1 -> addToolNameVersionIfPresent(detectToolProjectInfo1.getDetectTool(), Optional.of(detectToolProjectInfo1.getSuggestedNameVersion())));
+        detectableToolResult.getDockerTar().ifPresent(dockerTar -> addDockerFile(Optional.of(dockerTar)));
+        detectCodeLocations.addAll(detectableToolResult.getDetectCodeLocations());
     }
 
     public void addDockerFile(Optional<File> dockerFile) {
