@@ -80,6 +80,7 @@ import com.synopsys.integration.detect.workflow.hub.DetectCodeLocationUnmapServi
 import com.synopsys.integration.detect.workflow.hub.DetectProjectService;
 import com.synopsys.integration.detect.workflow.hub.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.hub.PolicyCheckOptions;
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
@@ -141,9 +142,7 @@ public class RunManager {
 
             final BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
 
-            if (blackDuckRunData.getPhoneHomeManager().isPresent()) {
-                blackDuckRunData.getPhoneHomeManager().get().startPhoneHome();
-            }
+            blackDuckRunData.getPhoneHomeManager().ifPresent(PhoneHomeManager::startPhoneHome);
 
             final ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
             final DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
@@ -154,7 +153,7 @@ public class RunManager {
                 logger.info("Will include the docker tool.");
                 final DetectableTool detectableTool = new DetectableTool(detectableFactory::createDockerDetectable, extractionEnvironmentProvider, codeLocationConverter, "docker", DetectTool.DOCKER, eventSystem);
                 final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
-
+                runResult.addDetectableToolResult(detectableToolResult);
                 logger.info("Docker actions finished.");
             } else {
                 logger.info("Docker tool will not be run.");
@@ -165,6 +164,7 @@ public class RunManager {
                 logger.info("Will include the bazel tool.");
                 final DetectableTool detectableTool = new DetectableTool(detectableFactory::createBazelDetectable, extractionEnvironmentProvider, codeLocationConverter, "bazel", DetectTool.BAZEL, eventSystem);
                 final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
+                runResult.addDetectableToolResult(detectableToolResult);
                 logger.info("Bazel actions finished.");
             } else {
                 logger.info("Bazel tool will not be run.");

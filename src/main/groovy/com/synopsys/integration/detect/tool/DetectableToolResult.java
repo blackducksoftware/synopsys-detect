@@ -51,4 +51,16 @@ public class DetectableToolResult {
     public static DetectableToolResult complete(List<DetectCodeLocation> codeLocations, DetectToolProjectInfo projectInfo, File dockerTar) {
         return new DetectableToolResult(Optional.of(projectInfo), codeLocations, Optional.of(dockerTar));
     }
+
+    public Optional<File> getDockerTar() {
+        return dockerTar;
+    }
+
+    public Optional<DetectToolProjectInfo> getDetectToolProjectInfo() {
+        return detectToolProjectInfo;
+    }
+
+    public List<DetectCodeLocation> getDetectCodeLocations() {
+        return detectCodeLocations;
+    }
 }
