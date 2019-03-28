@@ -41,72 +41,29 @@ import com.synopsys.integration.log.LogLevel;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.classic.filter.LevelFilter;
+import ch.qos.logback.classic.filter.ThresholdFilter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
 
 public class DiagnosticLogger {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final String logFilePath = "log.txt";
-    private static final String stdOutFilePath = "out.txt";
     private static final String LOGBACK_LOGGER_NAME = "com.synopsys.integration";
-    private static final Level DIAGNOSTIC_LEVEL = Level.DEBUG;
-
-    private final File logDirectory;
-    private File stdOutFile;
-    private FileOutputStream stdOutStream;
     private FileAppender<ILoggingEvent> fileAppender;
-    private FileAppender<ILoggingEvent> extractionAppender;
+    private File logFile;
+    private Level level;
 
-    public DiagnosticLogger(final File logDirectory, final EventSystem eventSystem) {
 
-        this.logDirectory = logDirectory;
-
-        logger.info("Attempting to set log level.");
-        setLevel(DIAGNOSTIC_LEVEL);
-
-        logger.info("Attempting to redirect log messages.");
-        try {
-            fileAppender = addAppender(getLogFile().getCanonicalPath());
-        } catch (final IOException e) {
-            logger.info("Failed to redirect.", e);
-        }
-
-        logger.info("Attempting to redirect sysout.");
-        captureStdOut();
-
-        eventSystem.registerListener(Event.ExtractionStarted, it -> startLoggingExtraction(((DetectExtractionEnvironment) it.getExtractionEnvironment()).getExtractionId()));
-        eventSystem.registerListener(Event.ExtractionEnded, it -> stopLoggingExtraction(((DetectExtractionEnvironment) it.getExtractionEnvironment()).getExtractionId()));
+    public DiagnosticLogger(File logFile, Level level){
+        this.logFile = logFile;
+        this.level = level;
     }
 
-    public void finish() {
-        closeOut();
-        fileAppender.stop();
-    }
-
-    private void captureStdOut() {
-        try {
-            stdOutFile = new File(logDirectory, stdOutFilePath);
-            stdOutStream = new FileOutputStream(stdOutFile);
-            final TeeOutputStream myOut = new TeeOutputStream(System.out, stdOutStream);
-            final PrintStream ps = new PrintStream(myOut, true); // true - auto-flush after println
-            System.setOut(ps);
-
-            logger.info("Writing sysout to file: " + stdOutFile.getCanonicalPath());
-
-        } catch (final Exception e) {
-            logger.info("Failed to capture sysout.", e);
-        }
-    }
-
-    public void startLoggingExtraction(final ExtractionId extractionId) {
-        logger.info("Diagnostics attempting to redirect extraction logs: " + extractionId.toUniqueString());
-        final File logDir = new File(logDirectory, "extractions");
-        logDir.mkdirs();
-        final File logFile = new File(logDir, extractionId.toUniqueString() + ".txt");
+    public void startLogging() {
         try {
             final String logFilePath = logFile.getCanonicalPath();
-            extractionAppender = addAppender(logFilePath);
+            fileAppender = addAppender(logFilePath);
             logger.info("Redirected to file: " + logFilePath);
         } catch (final IOException e) {
             logger.info("Failed to redirect.", e);
@@ -114,22 +71,16 @@ public class DiagnosticLogger {
 
     }
 
-    public void stopLoggingExtraction(final ExtractionId extractionId) {
-        logger.info("Diagnostics finished redirecting for extraction: " + extractionId.toUniqueString());
-        if (extractionAppender != null) {
-            removeAppender(extractionAppender);
-            extractionAppender.stop();
+    public void stopLogging() {
+        if (fileAppender != null) {
+            removeAppender(fileAppender);
+            fileAppender.stop();
         }
-    }
-
-    private void setLevel(final Level targetLevel) {
-        final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(LOGBACK_LOGGER_NAME);
-        root.setLevel(DIAGNOSTIC_LEVEL);
     }
 
     private void removeAppender(final FileAppender<ILoggingEvent> appender) {
         final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(LOGBACK_LOGGER_NAME);
-        logbackLogger.detachAppender(extractionAppender);
+        logbackLogger.detachAppender(appender);
     }
 
     private FileAppender<ILoggingEvent> addAppender(final String file) {
@@ -139,39 +90,22 @@ public class DiagnosticLogger {
         ple.setPattern("%date %level [%file:%line] %msg%n");
         ple.setContext(lc);
         ple.start();
+
         final FileAppender<ILoggingEvent> appender;
         appender = new FileAppender<>();
         appender.setFile(file);
         appender.setEncoder(ple);
         appender.setContext(lc);
+        ThresholdFilter levelFilter = new ThresholdFilter();
+        levelFilter.setLevel(this.level.levelStr);
+        levelFilter.start();
+        appender.addFilter(levelFilter);
+
         appender.start();
 
-        final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(LOGBACK_LOGGER_NAME);
+        final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
         logbackLogger.addAppender(appender);
-        logbackLogger.setLevel(DIAGNOSTIC_LEVEL);
 
         return appender;
     }
-
-    private File getStdOutFile() {
-        final File dest = new File(logDirectory, stdOutFilePath);
-        return dest;
-    }
-
-    private File getLogFile() {
-        final File dest = new File(logDirectory, logFilePath);
-        return dest;
-    }
-
-    private void closeOut() {
-        try {
-            stdOutStream.flush();
-            stdOutStream.close();
-            stdOutFile.renameTo(getStdOutFile());
-
-        } catch (final Exception e) {
-            logger.debug("Failed to close out", e);
-        }
-    }
-
 }
