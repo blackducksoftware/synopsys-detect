@@ -36,6 +36,7 @@ import com.synopsys.integration.detect.tool.detector.ExtractionId;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExtractionEnvironment;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.log.LogLevel;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
@@ -48,7 +49,8 @@ public class DiagnosticLogger {
 
     private static final String logFilePath = "log.txt";
     private static final String stdOutFilePath = "out.txt";
-    private static final String LOGBACK_LOGGER_NAME = "com.blackducksoftware.integration";
+    private static final String LOGBACK_LOGGER_NAME = "com.synopsys.integration";
+    private static final Level DIAGNOSTIC_LEVEL = Level.DEBUG;
 
     private final File logDirectory;
     private File stdOutFile;
@@ -61,7 +63,7 @@ public class DiagnosticLogger {
         this.logDirectory = logDirectory;
 
         logger.info("Attempting to set log level.");
-        setLevel(Level.ALL);
+        setLevel(DIAGNOSTIC_LEVEL);
 
         logger.info("Attempting to redirect log messages.");
         try {
@@ -122,7 +124,7 @@ public class DiagnosticLogger {
 
     private void setLevel(final Level targetLevel) {
         final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(LOGBACK_LOGGER_NAME);
-        root.setLevel(Level.ALL);
+        root.setLevel(DIAGNOSTIC_LEVEL);
     }
 
     private void removeAppender(final FileAppender<ILoggingEvent> appender) {
@@ -146,7 +148,7 @@ public class DiagnosticLogger {
 
         final ch.qos.logback.classic.Logger logbackLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(LOGBACK_LOGGER_NAME);
         logbackLogger.addAppender(appender);
-        logbackLogger.setLevel(Level.ALL);
+        logbackLogger.setLevel(DIAGNOSTIC_LEVEL);
 
         return appender;
     }
