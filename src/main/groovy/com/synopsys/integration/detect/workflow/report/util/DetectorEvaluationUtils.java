@@ -44,6 +44,10 @@ public class DetectorEvaluationUtils {
         return filteredChildren(tree, detectorEvaluation -> !detectorEvaluation.isApplicable());
     }
 
+    public static List<DetectorEvaluation> searchableButNotApplicableChildren(DetectorEvaluationTree tree){
+        return filteredChildren(tree, detectorEvaluation -> detectorEvaluation.isSearchable() && !detectorEvaluation.isApplicable());
+    }
+
     public static List<DetectorEvaluation> notSearchableChildren(DetectorEvaluationTree tree){
         return filteredChildren(tree, detectorEvaluation -> !detectorEvaluation.isSearchable());
     }

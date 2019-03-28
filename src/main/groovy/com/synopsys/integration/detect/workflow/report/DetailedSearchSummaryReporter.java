@@ -40,9 +40,9 @@ public class DetailedSearchSummaryReporter {
     private void printDirectoriesDebug(final ReportWriter writer, List<DetectorEvaluationTree> trees) {
         for (final DetectorEvaluationTree tree : trees) {
             final List<String> toPrint = new ArrayList<>();
-            toPrint.addAll(printDetails(writer, "      APPLIED: ", DetectorEvaluationUtils.applicableChildren(tree), DetectorEvaluation::getApplicabilityMessage));
-            toPrint.addAll(printDetails(writer, "DID NOT APPLY: ", DetectorEvaluationUtils.notApplicableChildren(tree), DetectorEvaluation::getApplicabilityMessage));
-            toPrint.addAll(printDetails(writer, "DID NOT APPLY: ", DetectorEvaluationUtils.notSearchableChildren(tree), DetectorEvaluation::getSearchabilityMessage));
+            toPrint.addAll(printDetails("      APPLIED: ", DetectorEvaluationUtils.applicableChildren(tree), DetectorEvaluation::getApplicabilityMessage));
+            toPrint.addAll(printDetails("DID NOT APPLY: ", DetectorEvaluationUtils.notSearchableChildren(tree), DetectorEvaluation::getSearchabilityMessage));
+            toPrint.addAll(printDetails("DID NOT APPLY: ", DetectorEvaluationUtils.searchableButNotApplicableChildren(tree), DetectorEvaluation::getApplicabilityMessage));
 
             if (toPrint.size() > 0) {
                 writer.writeSeperator();
@@ -55,7 +55,7 @@ public class DetailedSearchSummaryReporter {
         }
     }
 
-    private List<String> printDetails(final ReportWriter writer, final String prefix, final List<DetectorEvaluation> details, Function<DetectorEvaluation, String> reason) {
+    private List<String> printDetails(final String prefix, final List<DetectorEvaluation> details, Function<DetectorEvaluation, String> reason) {
         final List<String> toPrint = new ArrayList<>();
         for (final DetectorEvaluation detail : details) {
             toPrint.add(prefix + detail.getDetectorRule().getDescriptiveName() + ": " + reason.apply(detail));
