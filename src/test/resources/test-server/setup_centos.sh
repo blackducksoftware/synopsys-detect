@@ -44,8 +44,6 @@ cd testng
 # Install Detect
 cd /opt/blackduck
 curl -O https://detect.synopsys.com/detect.sh; chmod +x detect.sh
-curl -O https://repo.blackducksoftware.com:443/artifactory/bds-integrations-snapshot/com/synopsys/integration/synopsys-detect/5.4.0-SNAPSHOT/synopsys-detect-5.4.0-20190326.211416-26.jar
-mv synopsys-detect-5.4.0-20190326.211416-26.jar synopsys-detect-5.4.0-SNAPSHOT.jar
 
 # Create README.txt
 echo "Currently installed: one Maven project, and one Gradle project." > README.txt
@@ -56,9 +54,13 @@ echo "You should be able to execute the latest released version of Detect by doi
 echo "	cd /opt/blackduck/projects/<repos dir>/<project>" >> README.txt
 echo "	/opt/blackduck/detect.sh --blackduck.url=https://int-hub04.dc1.lan --blackduck.username=sysadmin --blackduck.password=blackduck --blackduck.trust.cert=true" >> README.txt
 echo "" >> README.txt
-echo "You should be able to execute an early build of Detect 5.4.0 in any of the projects by doing something like this:" >> README.txt
+echo "" >> README.txt
+echo "You may want to download a newer snapshot version to test. You can do this with a command like:" >> README.txt
+echo "curl -O https://repo.blackducksoftware.com:443/artifactory/bds-integrations-snapshot/com/synopsys/integration/synopsys-detect/5.4.0-SNAPSHOT/synopsys-detect-5.4.0-20190326.211416-26.jar" >> README.txt
+echo "" >> README.txt
+echo "Then you could execute that early version by doing something like this:" >> README.txt
 echo "	cd /opt/blackduck/projects/<repos-dir>/<project>" >> README.txt
-echo "	java -jar /opt/blackduck/synopsys-detect-5.4.0-SNAPSHOT.jar --blackduck.url=https://int-hub04.dc1.lan --blackduck.username=sysadmin --blackduck.password=blackduck --blackduck.trust.cert=true" >> README.txt
+echo "	java -jar /opt/blackduck/<the .jar you downloaded> --blackduck.url=https://int-hub04.dc1.lan --blackduck.username=sysadmin --blackduck.password=blackduck --blackduck.trust.cert=true" >> README.txt
 echo "" >> README.txt
 echo "To run Detect on a docker image:" >> README.txt
 echo "" >> README.txt
