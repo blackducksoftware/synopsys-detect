@@ -3,6 +3,7 @@ package com.synopsys.integration.detector.finder;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assume;
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.util.function.Predicate;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
 
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.rule.DetectorRule;
@@ -35,7 +37,7 @@ public class DetectorFinderTest {
         initialDirectoryPath.toFile().delete();
     }
 
-    @Test
+    @DisabledOnOs(WINDOWS)
     public void testSymLinksNotFollowed() throws IOException, DetectorFinderDirectoryListException {
         Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 

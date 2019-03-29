@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 
+import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 
 
@@ -34,11 +35,9 @@ public class SimpleFileFinderTest {
         initialDirectoryPath.toFile().delete();
     }
 
-
+    @UnitTest
     @DisabledOnOs(WINDOWS)
     public void testSymlinksNotFollowed() throws IOException {
-        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
-
         // Create a subDir with a symlink that loops back to its parent
         final File initialDirectory = initialDirectoryPath.toFile();
         final File subDir = new File(initialDirectory, "sub");
