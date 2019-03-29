@@ -34,6 +34,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDependency;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmProject;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLockDependency;
@@ -44,37 +45,29 @@ public class NpmDependencyConverter {
 
     public NpmDependencyConverter(final ExternalIdFactory externalIdFactory) {this.externalIdFactory = externalIdFactory;}
 
-    public NpmDependency convertLockFile(final PackageLock packageLock, final Optional<PackageJson> packageJsonOptional) {
+    public NpmProject convertLockFile(final PackageLock packageLock, final Optional<PackageJson> packageJsonOptional) {
 
-        final NpmDependency root = createNpmDependency(packageLock.name, packageLock.version, false);
+        final NpmProject project = new NpmProject(packageLock.name, packageLock.version);
 
         if (packageLock.dependencies != null) {
-            final List<NpmDependency> children = convertPackageMapToDependencies(root, packageLock.dependencies);
-            root.addAllDependencies(children);
+            final List<NpmDependency> children = convertPackageMapToDependencies(null, packageLock.dependencies);
+            project.addAllResolvedDependencies(children);
         }
 
         if (packageJsonOptional.isPresent()) {
             final PackageJson packageJson = packageJsonOptional.get();
             if (packageJson.dependencies != null) {
                 final List<NpmRequires> rootRequires = convertNameVersionMapToRequires(packageJson.dependencies);
-                root.addAllRequires(rootRequires);
+                project.addAllDependencies(rootRequires);
             }
 
             if (packageJson.devDependencies != null) {
                 final List<NpmRequires> rootDevRequires = convertNameVersionMapToRequires(packageJson.devDependencies);
-                root.addAllRequires(rootDevRequires);
-            }
-        } else {
-            if (packageLock.dependencies != null) {
-                final List<NpmRequires> requires = packageLock.dependencies.entrySet().stream()
-                                                       .map(entry -> new NpmRequires(entry.getKey(), entry.getValue().version))
-                                                       .collect(Collectors.toList());
-
-                root.addAllRequires(requires);
+                project.addAllDevDependencies(rootDevRequires);
             }
         }
 
-        return root;
+        return project;
     }
 
     public List<NpmDependency> convertPackageMapToDependencies(final NpmDependency parent, final Map<String, PackageLockDependency> packageLockDependencyMap) {
