@@ -1,8 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (C) 2019 Black Duck Software, Inc.
- * http://www.blackducksoftware.com/
+ * Copyright (c) 2019 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -42,6 +41,10 @@ public class DetectorEvaluationUtils {
 
     public static List<DetectorEvaluation> notApplicableChildren(DetectorEvaluationTree tree){
         return filteredChildren(tree, detectorEvaluation -> !detectorEvaluation.isApplicable());
+    }
+
+    public static List<DetectorEvaluation> searchableButNotApplicableChildren(DetectorEvaluationTree tree){
+        return filteredChildren(tree, detectorEvaluation -> detectorEvaluation.isSearchable() && !detectorEvaluation.isApplicable());
     }
 
     public static List<DetectorEvaluation> notSearchableChildren(DetectorEvaluationTree tree){

@@ -1,8 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (C) 2019 Black Duck Software, Inc.
- * http://www.blackducksoftware.com/
+ * Copyright (c) 2019 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -41,7 +40,7 @@ public class DiagnosticSystem {
 
     private final List<DetectOption> detectOptions;
     private DiagnosticReportHandler diagnosticReportHandler;
-    private DiagnosticLogger diagnosticLogManager;
+    private DiagnosticLogSystem diagnosticLogSystem;
     private final DetectRun detectRun;
     private final DetectInfo detectInfo;
     private final RelevantFileTracker relevantFileTracker;
@@ -76,7 +75,7 @@ public class DiagnosticSystem {
         logger.info("Initializing diagnostic components.");
         try {
             diagnosticReportHandler = new DiagnosticReportHandler(directoryManager.getReportOutputDirectory(), detectRun.getRunId(), eventSystem);
-            diagnosticLogManager = new DiagnosticLogger(directoryManager.getLogOutputDirectory(), eventSystem);
+            diagnosticLogSystem = new DiagnosticLogSystem(directoryManager.getLogOutputDirectory(), eventSystem);
         } catch (final Exception e) {
             logger.error("Failed to process.", e);
         }
@@ -100,7 +99,7 @@ public class DiagnosticSystem {
 
         try {
             logger.info("Finishing logging.");
-            diagnosticLogManager.finish();
+            diagnosticLogSystem.finish();
         } catch (final Exception e) {
             logger.error("Failed to finish.", e);
         }
