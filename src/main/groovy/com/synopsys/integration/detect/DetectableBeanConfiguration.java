@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect;
 
 import java.io.File;
+import java.util.Optional;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -38,10 +39,11 @@ import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.AirgapNugetInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryNugetInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.LocalPipInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.OnlineNugetInspectorResolver;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -54,7 +56,6 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspe
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRuleJsonProcessor;
-import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionSimpleRules;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelQueryXmlOutputParser;
 import com.synopsys.integration.detectable.detectables.bazel.parse.XPathParser;
@@ -382,7 +383,12 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public NugetInspectorResolver nugetInspectorResolver() {
-        return new ArtifactoryNugetInspectorResolver(directoryManager, detectExecutableResolver, executableRunner, airGapManager, artifactResolver, detectInfo, fileFinder, detectableOptionFactory.createNugetInspectorOptions());
+        Optional<File> nugetAirGapPath = airGapManager.getNugetInspectorAirGapFile();
+        if (nugetAirGapPath.isPresent()) {
+            return new AirgapNugetInspectorResolver(detectExecutableResolver, executableRunner, detectInfo, fileFinder, detectableOptionFactory.createNugetInspectorOptions(), airGapManager);
+        } else {
+            return new OnlineNugetInspectorResolver(detectExecutableResolver, executableRunner, detectInfo, fileFinder, detectableOptionFactory.createNugetInspectorOptions(), directoryManager, artifactResolver);
+        }
     }
 
     @Bean

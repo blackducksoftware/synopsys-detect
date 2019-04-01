@@ -24,7 +24,6 @@ package com.synopsys.integration.detect.tool.detector.inspectors;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -34,11 +33,6 @@ import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.type.OperatingSystemType;
-import com.synopsys.integration.detect.util.DetectZipUtil;
-import com.synopsys.integration.detect.workflow.ArtifactResolver;
-import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
-import com.synopsys.integration.detect.workflow.file.AirGapManager;
-import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -49,28 +43,22 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.impl.DotNe
 import com.synopsys.integration.detectable.detectable.inspector.nuget.impl.ExeNugetInspector;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class ArtifactoryNugetInspectorResolver implements NugetInspectorResolver {
-    private final Logger logger = LoggerFactory.getLogger(ArtifactoryNugetInspectorResolver.class);
+public abstract class AutomaticInstallerNugetInspectorResolver implements NugetInspectorResolver {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final DirectoryManager directoryManager;
     private final DetectExecutableResolver executableResolver;
     private final ExecutableRunner executableRunner;
-    private final AirGapManager airGapManager;
-    private final ArtifactResolver artifactResolver;
     private final DetectInfo detectInfo;
     private final FileFinder fileFinder;
-    private final NugetInspectorOptions nugetInspectorOptions;
+    protected final NugetInspectorOptions nugetInspectorOptions;
 
     private boolean hasResolvedInspector;
     private NugetInspector resolvedNugetInspector;
 
-    public ArtifactoryNugetInspectorResolver(final DirectoryManager directoryManager, final DetectExecutableResolver executableResolver, final ExecutableRunner executableRunner, final AirGapManager airGapManager,
-        final ArtifactResolver artifactResolver, final DetectInfo detectInfo, final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions) {
-        this.directoryManager = directoryManager;
+    public AutomaticInstallerNugetInspectorResolver(final DetectExecutableResolver executableResolver, final ExecutableRunner executableRunner, final DetectInfo detectInfo,
+        final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions) {
         this.executableResolver = executableResolver;
         this.executableRunner = executableRunner;
-        this.airGapManager = airGapManager;
-        this.artifactResolver = artifactResolver;
         this.detectInfo = detectInfo;
         this.fileFinder = fileFinder;
         this.nugetInspectorOptions = nugetInspectorOptions;
@@ -90,6 +78,12 @@ public class ArtifactoryNugetInspectorResolver implements NugetInspectorResolver
         }
     }
 
+    //Return the File of the nuget inspector nupkg (unzipped).
+    public abstract File installExeInspector() throws DetectableException;
+
+    //Return the File of the nuget inspector nupkg (unzipped).
+    public abstract File installDotnetInspector() throws DetectableException;
+
     private NugetInspector install() throws DetectUserFriendlyException, IntegrationException, IOException {
         //dotnet
         final File dotnetExecutable = executableResolver.resolveDotNet();
@@ -106,58 +100,12 @@ public class ArtifactoryNugetInspectorResolver implements NugetInspectorResolver
             }
         }
 
-        Optional<File> nugetAirGapPath = airGapManager.getNugetInspectorAirGapFile();
-        if (nugetAirGapPath.isPresent()) {
-            logger.debug("Running in airgap mode. Resolving from local path");
-            if (useDotnet) {
-                final File dotnetFolder = new File(nugetAirGapPath.get(), "nuget_dotnet");
-                return findDotnetCoreInspector(dotnetFolder, dotnetExecutable);
-            } else {
-                final File classicFolder = new File(nugetAirGapPath.get(), "nuget_classic");
-                return findExeInspector(classicFolder);
-            }
+        if (useDotnet){
+            final File dotnetFolder = installDotnetInspector();
+            return findDotnetCoreInspector(dotnetFolder, dotnetExecutable);
         } else {
-            logger.info("Determining the nuget inspector version.");
-            final File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
-            //create the artifact
-            final String nugetInspectorVersion = nugetInspectorOptions.getNugetInspectorVersion();
-            final Optional<String> source;
-            if (useDotnet) {
-                logger.info("Will attempt to resolve the dotnet inspector version.");
-                source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.NUGET_INSPECTOR_REPO, ArtifactoryConstants.NUGET_INSPECTOR_PROPERTY, nugetInspectorVersion,
-                    ArtifactoryConstants.NUGET_INSPECTOR_VERSION_OVERRIDE);
-
-            } else {
-                logger.info("Will attempt to resolve the classic inspector version.");
-                source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_REPO, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_PROPERTY, nugetInspectorVersion,
-                    ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_VERSION_OVERRIDE);
-            }
-            if (source.isPresent()) {
-                logger.debug("Resolved the nuget inspector url: " + source.get());
-                final String nupkgName = artifactResolver.parseFileName(source.get());
-                logger.debug("Parsed artifact name: " + nupkgName);
-                final File nupkgFile = new File(nugetDirectory, nupkgName);
-                final String inspectorFolderName = nupkgName.replace(".nupkg", "");
-                final File inspectorFolder = new File(nugetDirectory, inspectorFolderName);
-                if (!inspectorFolder.exists()) {
-                    logger.info("Downloading nuget inspector.");
-                    artifactResolver.downloadArtifact(nupkgFile, source.get());
-                    logger.info("Extracting nuget inspector.");
-                    DetectZipUtil.unzip(nupkgFile, inspectorFolder, Charset.defaultCharset());
-                }
-                if (inspectorFolder.exists()) {
-                    logger.info("Found nuget inspector folder. Looking for inspector.");
-                    if (useDotnet) {
-                        return findDotnetCoreInspector(inspectorFolder, dotnetExecutable);
-                    } else {
-                        return findExeInspector(inspectorFolder);
-                    }
-                } else {
-                    throw new DetectableException("Unable to find inspector folder even after zip extraction attempt.");
-                }
-            } else {
-                throw new DetectableException("Unable to find nuget inspector location in Artifactory.");
-            }
+            final File classicFolder = installExeInspector();
+            return findExeInspector(classicFolder);
         }
     }
 
