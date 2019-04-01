@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.file.impl;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assume;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +15,9 @@ import java.util.List;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
 
+import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 
 
@@ -32,10 +35,9 @@ public class SimpleFileFinderTest {
         initialDirectoryPath.toFile().delete();
     }
 
-    @Test
+    @UnitTest
+    @DisabledOnOs(WINDOWS)
     public void testSymlinksNotFollowed() throws IOException {
-        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
-
         // Create a subDir with a symlink that loops back to its parent
         final File initialDirectory = initialDirectoryPath.toFile();
         final File subDir = new File(initialDirectory, "sub");
@@ -56,6 +58,4 @@ public class SimpleFileFinderTest {
         // make sure symlink not followed during dir traversal
         assertEquals(4, foundFiles.size());
     }
-
-
 }

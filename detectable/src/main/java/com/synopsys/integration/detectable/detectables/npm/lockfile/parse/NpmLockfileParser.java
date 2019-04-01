@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectables.npm.lockfile.parse;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -37,6 +38,8 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmDependencyConverter;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDependency;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmProject;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
@@ -69,8 +72,27 @@ public class NpmLockfileParser {
             logger.info(String.format("Found %d dependencies.", packageLock.dependencies.size()));
             //Convert to our custom format
             final NpmDependencyConverter dependencyConverter = new NpmDependencyConverter(externalIdFactory);
-            final NpmDependency rootDependency = dependencyConverter.convertLockFile(packageLock, packageJson);
-            traverse(rootDependency, dependencyGraph, true, includeDevDependencies);
+            final NpmProject project = dependencyConverter.convertLockFile(packageLock, packageJson);
+
+            //First we will recreate the graph from the resolved npm dependencies
+            for (NpmDependency resolved : project.getResolvedDependencies()){
+                transformTreeToGraph(resolved, project, dependencyGraph, includeDevDependencies);
+            }
+
+            //Then we will add relationships between the project (root) and the graph
+            boolean atLeastOneRequired = project.getDeclaredDependencies().size() > 0 || project.getDeclaredDevDependencies().size() > 0;
+            if (atLeastOneRequired) {
+                addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDependencies(), dependencyGraph);
+                if (includeDevDependencies) {
+                    addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDevDependencies(), dependencyGraph);
+                }
+            } else {
+                project.getResolvedDependencies()
+                    .stream()
+                    .map(NpmDependency::getGraphDependency)
+                    .forEach(dependencyGraph::addChildToRoot);
+            }
+
         } else {
             logger.info("Lock file did not have a 'dependencies' section.");
         }
@@ -80,44 +102,60 @@ public class NpmLockfileParser {
         return new NpmParseResult(packageLock.name, packageLock.version, codeLocation);
     }
 
-    private void traverse(final NpmDependency npmDependency, final MutableDependencyGraph dependencyGraph, final boolean atRoot, final boolean includeDevDependencies) {
-        if (!shouldInclude(npmDependency, includeDevDependencies))
+    private void addRootDependencies(List<NpmDependency> resolvedDependencies, List<NpmRequires> requires, final MutableDependencyGraph dependencyGraph) {
+        for (NpmRequires dependency : requires) {
+            NpmDependency resolved = firstDependencyWithName(resolvedDependencies, dependency.getName());
+            if (resolved != null) {
+                dependencyGraph.addChildToRoot(resolved.getGraphDependency());
+            } else {
+                logger.error("No dependency found for package: " + dependency.getName());
+            }
+        }
+    }
+
+    private void transformTreeToGraph(final NpmDependency npmDependency, final NpmProject npmProject, final MutableDependencyGraph dependencyGraph, final boolean includeDevDependencies) {
+        if (!shouldIncludeDependency(npmDependency, includeDevDependencies))
             return;
 
         npmDependency.getRequires().forEach(required -> {
-            final NpmDependency resolved = lookupDependency(npmDependency, required.getName());
             logger.debug("Required package: " + required.getName() + " of version: " + required.getFuzzyVersion());
+            final NpmDependency resolved = lookupDependency(npmDependency, npmProject, required.getName());
             if (resolved != null) {
                 logger.debug("Found package: " + resolved.getName() + "with version: " + resolved.getVersion());
-                if (atRoot) {
-                    dependencyGraph.addChildToRoot(resolved.getGraphDependency());
-                } else {
-                    dependencyGraph.addChildWithParent(resolved.getGraphDependency(), npmDependency.getGraphDependency());
-                }
+                dependencyGraph.addChildWithParent(resolved.getGraphDependency(), npmDependency.getGraphDependency());
             } else {
                 logger.error("No dependency found for package: " + required.getName());
             }
         });
 
-        npmDependency.getDependencies().forEach(child -> traverse(child, dependencyGraph, false, includeDevDependencies));
+        npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, includeDevDependencies));
     }
 
-    //returns the first dependency directly under this dependency or under a parent
-    private NpmDependency lookupDependency(final NpmDependency npmDependency, final String name) {
-        for (final NpmDependency current : npmDependency.getDependencies()) {
+    //returns the first dependency in the following order: directly under this dependency, under a parent, under the project
+    private NpmDependency lookupDependency(final NpmDependency npmDependency, final NpmProject project, final String name) {
+        NpmDependency resolved = firstDependencyWithName(npmDependency.getDependencies(), name);
+
+        if (resolved != null) {
+            return resolved;
+        } else {
+            if (npmDependency.getParent().isPresent()) {
+                return lookupDependency(npmDependency.getParent().get(), project, name);
+            } else {
+                return firstDependencyWithName(project.getResolvedDependencies(), name);
+            }
+        }
+    }
+
+    private NpmDependency firstDependencyWithName(final List<NpmDependency> dependencies, final String name) {
+        for (final NpmDependency current : dependencies) {
             if (current.getName().equals(name)) {
                 return current;
             }
         }
-
-        if (npmDependency.getParent().isPresent()) {
-            return lookupDependency(npmDependency.getParent().get(), name);
-        } else {
-            return null;
-        }
+        return null;
     }
 
-    private boolean shouldInclude(final NpmDependency packageLockDependency, final boolean includeDevDependencies) {
+    private boolean shouldIncludeDependency(final NpmDependency packageLockDependency, final boolean includeDevDependencies) {
         if (packageLockDependency.isDevDependency()) {
             return includeDevDependencies;
         }

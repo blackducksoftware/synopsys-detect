@@ -54,20 +54,8 @@ public class NpmDependency {
         this.parent = parent;
     }
 
-    public void addRequires(final String name, final String fuzzyVersion) {
-        this.addRequires(new NpmRequires(name, fuzzyVersion));
-    }
-
-    public void addRequires(final NpmRequires required) {
-        this.requires.add(required);
-    }
-
     public void addAllRequires(final Collection<NpmRequires> required) {
         this.requires.addAll(required);
-    }
-
-    public void addDependency(final NpmDependency dependency) {
-        dependencies.add(dependency);
     }
 
     public void addAllDependencies(final Collection<NpmDependency> dependencies) {
