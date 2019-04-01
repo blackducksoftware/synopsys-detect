@@ -30,31 +30,25 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.util.DetectZipUtil;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class OnlineNugetInspectorResolver extends AutomaticInstallerNugetInspectorResolver {
-    private final Logger logger = LoggerFactory.getLogger(OnlineNugetInspectorResolver.class);
+public class OnlineNugetInspectorInstaller implements NugetInspectorInstaller {
+    private final Logger logger = LoggerFactory.getLogger(OnlineNugetInspectorInstaller.class);
 
     private final DirectoryManager directoryManager;
     private final ArtifactResolver artifactResolver;
+    private final String overrideVersion;
 
-    public OnlineNugetInspectorResolver(final DetectExecutableResolver executableResolver,
-        final ExecutableRunner executableRunner, final DetectInfo detectInfo,
-        final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions, final DirectoryManager directoryManager, final ArtifactResolver artifactResolver) {
-        super(executableResolver, executableRunner, detectInfo, fileFinder, nugetInspectorOptions);
+    public OnlineNugetInspectorInstaller(final DirectoryManager directoryManager, final ArtifactResolver artifactResolver, final String overrideVersion) {
         this.directoryManager = directoryManager;
         this.artifactResolver = artifactResolver;
+        this.overrideVersion = overrideVersion;
     }
 
     @Override
@@ -62,7 +56,7 @@ public class OnlineNugetInspectorResolver extends AutomaticInstallerNugetInspect
         try {
             logger.info("Will attempt to resolve the dotnet inspector version.");
             Optional<String> source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.NUGET_INSPECTOR_REPO, ArtifactoryConstants.NUGET_INSPECTOR_PROPERTY,
-                nugetInspectorOptions.getNugetInspectorVersion(),
+                overrideVersion,
                 ArtifactoryConstants.NUGET_INSPECTOR_VERSION_OVERRIDE);
             return installFromSource(source);
         } catch (Exception e){
@@ -75,7 +69,7 @@ public class OnlineNugetInspectorResolver extends AutomaticInstallerNugetInspect
         try {
             logger.info("Will attempt to resolve the classic inspector version.");
             Optional<String> source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_REPO, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_PROPERTY,
-                nugetInspectorOptions.getNugetInspectorVersion(),
+                overrideVersion,
                 ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_VERSION_OVERRIDE);
             return installFromSource(source);
         } catch (Exception e){

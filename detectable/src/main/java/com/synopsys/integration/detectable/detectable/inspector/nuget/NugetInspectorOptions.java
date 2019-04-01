@@ -28,18 +28,13 @@ public class NugetInspectorOptions {
     private final String includedModules;
     private final String[] packagesRepoUrl;
     private final String nugetConfigPath;
-    private final String nugetInspectorName;
-    private final String nugetInspectorVersion;
 
-    public NugetInspectorOptions(final boolean ignoreFailures, final String excludedModules, final String includedModules, final String[] packagesRepoUrl, final String nugetConfigPath, final String nugetInspectorName,
-        final String nugetInspectorVersion) {
+    public NugetInspectorOptions(final boolean ignoreFailures, final String excludedModules, final String includedModules, final String[] packagesRepoUrl, final String nugetConfigPath) {
         this.ignoreFailures = ignoreFailures;
         this.excludedModules = excludedModules;
         this.includedModules = includedModules;
         this.packagesRepoUrl = packagesRepoUrl;
         this.nugetConfigPath = nugetConfigPath;
-        this.nugetInspectorName = nugetInspectorName;
-        this.nugetInspectorVersion = nugetInspectorVersion;
     }
 
     public boolean isIgnoreFailures() {
@@ -60,13 +55,5 @@ public class NugetInspectorOptions {
 
     public String getNugetConfigPath() {
         return nugetConfigPath;
-    }
-
-    public String getNugetInspectorName() {
-        return nugetInspectorName;
-    }
-
-    public String getNugetInspectorVersion() {
-        return nugetInspectorVersion;
     }
 }

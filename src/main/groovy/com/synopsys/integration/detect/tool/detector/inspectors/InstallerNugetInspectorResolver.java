@@ -43,25 +43,29 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.impl.DotNe
 import com.synopsys.integration.detectable.detectable.inspector.nuget.impl.ExeNugetInspector;
 import com.synopsys.integration.exception.IntegrationException;
 
-public abstract class AutomaticInstallerNugetInspectorResolver implements NugetInspectorResolver {
+public class InstallerNugetInspectorResolver implements NugetInspectorResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DetectExecutableResolver executableResolver;
     private final ExecutableRunner executableRunner;
     private final DetectInfo detectInfo;
     private final FileFinder fileFinder;
-    protected final NugetInspectorOptions nugetInspectorOptions;
+    private final String nugetInspectorName;
+    private final String[] packagesRepoUrl;
 
     private boolean hasResolvedInspector;
     private NugetInspector resolvedNugetInspector;
+    private NugetInspectorInstaller nugetInspectorInstaller;
 
-    public AutomaticInstallerNugetInspectorResolver(final DetectExecutableResolver executableResolver, final ExecutableRunner executableRunner, final DetectInfo detectInfo,
-        final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions) {
+    public InstallerNugetInspectorResolver(final DetectExecutableResolver executableResolver, final ExecutableRunner executableRunner, final DetectInfo detectInfo,
+        final FileFinder fileFinder, String nugetInspectorName, String[] packagesRepoUrl, NugetInspectorInstaller nugetInspectorInstaller) {
         this.executableResolver = executableResolver;
         this.executableRunner = executableRunner;
         this.detectInfo = detectInfo;
         this.fileFinder = fileFinder;
-        this.nugetInspectorOptions = nugetInspectorOptions;
+        this.nugetInspectorName = nugetInspectorName;
+        this.packagesRepoUrl = packagesRepoUrl;
+        this.nugetInspectorInstaller = nugetInspectorInstaller;
     }
 
     @Override
@@ -77,12 +81,6 @@ public abstract class AutomaticInstallerNugetInspectorResolver implements NugetI
             throw new DetectableException(e);
         }
     }
-
-    //Return the File of the nuget inspector nupkg (unzipped).
-    public abstract File installExeInspector() throws DetectableException;
-
-    //Return the File of the nuget inspector nupkg (unzipped).
-    public abstract File installDotnetInspector() throws DetectableException;
 
     private NugetInspector install() throws DetectUserFriendlyException, IntegrationException, IOException {
         //dotnet
@@ -101,10 +99,10 @@ public abstract class AutomaticInstallerNugetInspectorResolver implements NugetI
         }
 
         if (useDotnet){
-            final File dotnetFolder = installDotnetInspector();
+            final File dotnetFolder = nugetInspectorInstaller.installDotnetInspector();
             return findDotnetCoreInspector(dotnetFolder, dotnetExecutable);
         } else {
-            final File classicFolder = installExeInspector();
+            final File classicFolder = nugetInspectorInstaller.installExeInspector();
             return findExeInspector(classicFolder);
         }
     }
@@ -126,7 +124,7 @@ public abstract class AutomaticInstallerNugetInspectorResolver implements NugetI
 
     private ExeNugetInspector findExeInspector(final File nupkgFolder) throws DetectableException {
         //original inspector
-        final String exeName = nugetInspectorOptions.getNugetInspectorName() + ".exe";
+        final String exeName = nugetInspectorName + ".exe";
         logger.info("Searching for: " + exeName);
         final File toolsFolder = new File(nupkgFolder, "tools");
         logger.debug("Searching in: " + toolsFolder.getAbsolutePath());
@@ -155,7 +153,7 @@ public abstract class AutomaticInstallerNugetInspectorResolver implements NugetI
 
         //if customers have overridden the repo url's and include a v2 api, we must use the old nuget inspector (exe inspector) until 5.0.0 of detect.
         //TODO: Remove in 6.0.0
-        for (final String source : nugetInspectorOptions.getPackagesRepoUrl()) {
+        for (final String source : packagesRepoUrl) {
             if (source.contains("v2")) {
                 logger.warn("You are using Version 2 of the Nuget Api. Please update to version 3. Support for 2 is deprecated.");
                 return true;

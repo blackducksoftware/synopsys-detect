@@ -35,13 +35,11 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 
-public class AirgapNugetInspectorResolver extends AutomaticInstallerNugetInspectorResolver {
-    private final Logger logger = LoggerFactory.getLogger(AirgapNugetInspectorResolver.class);
+public class AirgapNugetInspectorInstaller implements NugetInspectorInstaller {
+    private final Logger logger = LoggerFactory.getLogger(AirgapNugetInspectorInstaller.class);
     private AirGapManager airGapManager;
 
-    public AirgapNugetInspectorResolver(final DetectExecutableResolver executableResolver, final ExecutableRunner executableRunner, final DetectInfo detectInfo,
-        final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions, final AirGapManager airGapManager) {
-        super(executableResolver, executableRunner, detectInfo, fileFinder, nugetInspectorOptions);
+    public AirgapNugetInspectorInstaller(final AirGapManager airGapManager) {
         this.airGapManager = airGapManager;
     }
 
