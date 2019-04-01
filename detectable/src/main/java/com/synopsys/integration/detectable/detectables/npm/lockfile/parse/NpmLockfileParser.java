@@ -80,11 +80,11 @@ public class NpmLockfileParser {
             }
 
             //Then we will add relationships between the project (root) and the graph
-            boolean atLeastOneRequired = project.getDependencies().size() > 0 || project.getDevDependencies().size() > 0;
+            boolean atLeastOneRequired = project.getDeclaredDependencies().size() > 0 || project.getDeclaredDevDependencies().size() > 0;
             if (atLeastOneRequired) {
-                addRootDependencies(project.getResolvedDependencies(), project.getDependencies(), dependencyGraph);
+                addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDependencies(), dependencyGraph);
                 if (includeDevDependencies) {
-                    addRootDependencies(project.getResolvedDependencies(), project.getDevDependencies(), dependencyGraph);
+                    addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDevDependencies(), dependencyGraph);
                 }
             } else {
                 project.getResolvedDependencies()
