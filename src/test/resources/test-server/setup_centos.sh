@@ -55,8 +55,9 @@ echo "	cd /opt/blackduck/projects/<repos dir>/<project>" >> README.txt
 echo "	/opt/blackduck/detect.sh --blackduck.url=https://int-hub04.dc1.lan --blackduck.username=sysadmin --blackduck.password=blackduck --blackduck.trust.cert=true" >> README.txt
 echo "" >> README.txt
 echo "" >> README.txt
-echo "You may want to download a newer snapshot version to test. You can do this with a command like:" >> README.txt
-echo "curl -O https://repo.blackducksoftware.com:443/artifactory/bds-integrations-snapshot/com/synopsys/integration/synopsys-detect/5.4.0-SNAPSHOT/synopsys-detect-5.4.0-20190326.211416-26.jar" >> README.txt
+echo "You may want to download a newer Detect snapshot version to test. You can do this with a command like:" >> README.txt
+echo "    curl -O https://repo.blackducksoftware.com:443/artifactory/bds-integrations-snapshot/com/synopsys/integration/synopsys-detect/5.4.0-SNAPSHOT/synopsys-detect-5.4.0-20190326.211416-26.jar" >> README.txt
+echo "To determine the URL to the .jar, point your browser to: https://repo.blackducksoftware.com:443/artifactory/bds-integrations-snapshot/com/synopsys/integration/synopsys-detect" >> README.txt
 echo "" >> README.txt
 echo "Then you could execute that early version by doing something like this:" >> README.txt
 echo "	cd /opt/blackduck/projects/<repos-dir>/<project>" >> README.txt
