@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.clang.unit;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +24,9 @@ public class CompileCommandParserTest {
         sampleCommand.command = "g++ -DDOUBLEQUOTED=\"A value for the compiler\" -DSINGLEQUOTED='Another value for the compiler' file.c -o file.o";
 
         CompileCommandParser compileCommandParser = new CompileCommandParser();
-        String compilerCommand = compileCommandParser.parseActualCommand(sampleCommand);
+        List<String> compilerCommand = compileCommandParser.parseCommand(sampleCommand, Collections.emptyMap());
 
-        assertEquals("g++", compilerCommand);
+        assertEquals("g++", compilerCommand.get(0));
     }
 
     @Test
@@ -37,14 +38,15 @@ public class CompileCommandParserTest {
         optionOverrides.put("-o", "/dev/null");
 
         CompileCommandParser compileCommandParser = new CompileCommandParser();
-        List<String> result = compileCommandParser.parseArguments(sampleCommand, optionOverrides);
+        List<String> result = compileCommandParser.parseCommand(sampleCommand, optionOverrides);
 
         for (String part : result) {
             System.out.printf("compiler arg: %s\n", part);
         }
 
-        assertEquals(5, result.size());
+        assertEquals(6, result.size());
         int i = 0;
+        assertEquals("g++", result.get(i++));
         assertEquals("-DDOUBLEQUOTED=A value for the compiler", result.get(i++));
         assertEquals("-DSINGLEQUOTED=Another value for the compiler", result.get(i++));
         assertEquals("file.c", result.get(i++));
@@ -61,10 +63,11 @@ public class CompileCommandParserTest {
 
         CompileCommandDatabaseParser compileCommandDatabaseParser = new CompileCommandDatabaseParser(new Gson());
         CompileCommandParser compileCommandParser = new CompileCommandParser();
-        List<String> result = compileCommandParser.parseArguments(command, new HashMap<>());
+        List<String> result = compileCommandParser.parseCommand(command, Collections.emptyMap());
 
-        assertEquals(65, result.size());
+        assertEquals(66, result.size());
         int i = 0;
+        assertEquals("/usr/bin/env", result.get(i++));
         assertEquals("CCACHE_CPP2=yes", result.get(i++));
         assertEquals("/usr/bin/ccache", result.get(i++));
         assertEquals("/usr/bin/clang++-3.6", result.get(i++));

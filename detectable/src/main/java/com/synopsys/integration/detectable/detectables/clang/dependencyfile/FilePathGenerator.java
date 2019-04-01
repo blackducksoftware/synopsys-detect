@@ -36,6 +36,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
@@ -77,11 +78,10 @@ public class FilePathGenerator {
         Map<String, String> optionOverrides = new HashMap<>(1);
         optionOverrides.put(COMPILER_OUTPUT_FILE_OPTION, REPLACEMENT_OUTPUT_FILENAME);
         try {
-            File compileCommandDirectory = new File(compileCommand.directory);
-            String command = compileCommandParser.parseActualCommand(compileCommand);
-            List<String> args = compileCommandParser.parseArguments(compileCommand, optionOverrides);
-            args.addAll(Arrays.asList("-M", "-MF", depsMkFile.getAbsolutePath()));
-            executableRunner.execute(compileCommandDirectory, command, args);
+            List<String> command = compileCommandParser.parseCommand(compileCommand, optionOverrides);
+            command.addAll(Arrays.asList("-M", "-MF", depsMkFile.getAbsolutePath()));
+            Executable executable = new Executable(new File(compileCommand.directory), Collections.emptyMap(), command);
+            executableRunner.execute(executable);
         } catch (final ExecutableRunnerException e) {
             logger.debug(String.format("Error generating dependencies file for command '%s': %s", compileCommand.command, e.getMessage()));
             return Optional.empty();
