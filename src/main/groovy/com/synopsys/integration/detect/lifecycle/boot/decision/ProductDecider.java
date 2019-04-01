@@ -49,7 +49,7 @@ public class ProductDecider {
         PolarisServerConfigBuilder polarisServerConfigBuilder = PolarisServerConfig.newBuilder();
         Set<String> allPolarisKeys = polarisServerConfigBuilder.getPropertyKeys();
         Map<String, String> polarisProperties = detectConfiguration.getProperties(allPolarisKeys);
-        polarisServerConfigBuilder.setLogger(new Slf4jIntLogger(logger));
+        polarisServerConfigBuilder.setLogger(new SilentIntLogger());
         polarisServerConfigBuilder.setProperties(polarisProperties.entrySet());
         polarisServerConfigBuilder.setUserHome(userHome.getAbsolutePath());
         polarisServerConfigBuilder.setTimeoutInSeconds(detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT, PropertyAuthority.None));
