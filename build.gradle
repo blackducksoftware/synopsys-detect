@@ -27,7 +27,7 @@ buildscript {
 }
 
 group = 'com.synopsys.integration'
-version = '5.4.0-RC3'
+version = '5.4.0-RC4'
 
 apply plugin: 'com.blackducksoftware.integration.solution'
 apply plugin: 'org.springframework.boot'
