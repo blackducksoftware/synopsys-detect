@@ -83,7 +83,6 @@ public class PipInspectorDetectable extends Detectable {
         } else {
             return new FileNotFoundDetectableResult(SETUPTOOLS_DEFAULT_FILE_NAME);
         }
-
     }
 
     @Override
@@ -111,5 +110,4 @@ public class PipInspectorDetectable extends Detectable {
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         return pipInspectorExtractor.extract(environment.getDirectory(), pythonExe, pipInspector, setupFile, pipInspectorDetectableOptions.getRequirementsFilePath(), pipInspectorDetectableOptions.getPipProjectName());
     }
-
 }
