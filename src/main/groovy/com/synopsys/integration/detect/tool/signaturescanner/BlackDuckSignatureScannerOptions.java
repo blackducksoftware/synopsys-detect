@@ -28,7 +28,7 @@ public class BlackDuckSignatureScannerOptions {
     private final String[] exclusionNamePatterns;
 
     private final Integer scanMemory;
-    private final Integer parrallelProcessors;
+    private final Integer parallelProcessors;
     private final Boolean cleanupOutput;
     private final Boolean dryRun;
     private final Boolean snippetMatching;
@@ -38,13 +38,13 @@ public class BlackDuckSignatureScannerOptions {
     private final String additionalArguments;
     private final Integer maxDepth;
 
-    public BlackDuckSignatureScannerOptions(final String[] signatureScannerPaths, final String[] exclusionPatterns, final String[] exclusionNamePatterns, final Integer scanMemory, final Integer parrallelProcessors,
+    public BlackDuckSignatureScannerOptions(final String[] signatureScannerPaths, final String[] exclusionPatterns, final String[] exclusionNamePatterns, final Integer scanMemory, final Integer parallelProcessors,
         final Boolean cleanupOutput, final Boolean dryRun, final Boolean snippetMatching, final Boolean uploadSource, final String codeLocationPrefix, final String codeLocationSuffix, final String additionalArguments, final Integer maxDepth) {
         this.signatureScannerPaths = signatureScannerPaths;
         this.exclusionPatterns = exclusionPatterns;
         this.exclusionNamePatterns = exclusionNamePatterns;
         this.scanMemory = scanMemory;
-        this.parrallelProcessors = parrallelProcessors;
+        this.parallelProcessors = parallelProcessors;
         this.cleanupOutput = cleanupOutput;
         this.dryRun = dryRun;
         this.snippetMatching = snippetMatching;
@@ -71,8 +71,16 @@ public class BlackDuckSignatureScannerOptions {
         return scanMemory;
     }
 
+    /**
+     * @deprecated Please use the correctly spelled getParallelProcessors().
+     */
+    @Deprecated
     public Integer getParrallelProcessors() {
-        return parrallelProcessors;
+        return parallelProcessors;
+    }
+
+    public Integer getParallelProcessors() {
+        return parallelProcessors;
     }
 
     public Boolean getCleanupOutput() {
