@@ -48,10 +48,10 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.CPAN, "Cpan Cli", detectableFactory::createCpanCliDetectable).defaultNotNested().build();
         ruleSet.addDetector(DetectorType.CRAN, "Packrat Lock", detectableFactory::createPackratLockDetectable).defaultNotNested().build();
 
-        final DetectorRule goCli = ruleSet.addDetector(DetectorType.GO_DEP, "Go Cli", detectableFactory::createGoCliDetectable).defaultNested().build();
         final DetectorRule goLock = ruleSet.addDetector(DetectorType.GO_DEP, "Go Lock", detectableFactory::createGoLockDetectable).defaultNested().build();
         final DetectorRule goVnd = ruleSet.addDetector(DetectorType.GO_VNDR, "Go Vndr", detectableFactory::createGoVndrDetectable).defaultNested().build();
         final DetectorRule goVendor = ruleSet.addDetector(DetectorType.GO_VENDOR, "Go Vendor", detectableFactory::createGoVendorDetectable).defaultNested().build();
+        final DetectorRule goCli = ruleSet.addDetector(DetectorType.GO_DEP, "Go Cli", detectableFactory::createGoCliDetectable).defaultNested().build();
 
         ruleSet.yield(goCli).to(goLock);
         ruleSet.yield(goCli).to(goVnd);
