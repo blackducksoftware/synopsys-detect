@@ -21,8 +21,8 @@ buildscript {
     dependencies {
         classpath 'com.blackducksoftware.integration:common-gradle-plugin:0.0.+'
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-        classpath 'com.blackducksoftware.integration:blackduck-common:42.3.0'
-        classpath 'com.synopsys.integration:polaris-common:0.9.1'
+        classpath 'com.blackducksoftware.integration:blackduck-common:42.4.0'
+        classpath 'com.synopsys.integration:polaris-common:0.11.0'
     }
 }
 
@@ -43,7 +43,7 @@ allprojects {
     apply plugin: 'io.spring.dependency-management'
 
     dependencies {
-        implementation 'com.blackducksoftware.integration:blackduck-common:42.3.0'
+        implementation 'com.blackducksoftware.integration:blackduck-common:42.4.0'
         implementation 'com.paypal.digraph:digraph-parser:1.0'
     }
 }
