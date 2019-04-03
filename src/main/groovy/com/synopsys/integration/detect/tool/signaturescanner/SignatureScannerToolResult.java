@@ -29,9 +29,9 @@ import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
 
 public class SignatureScannerToolResult {
-    private Optional<CodeLocationCreationData<ScanBatchOutput>> creationData;
-    private ScanBatchOutput scanBatchOutput;
-    private Result result;
+    private final Optional<CodeLocationCreationData<ScanBatchOutput>> creationData;
+    private final ScanBatchOutput scanBatchOutput;
+    private final Result result;
 
     public static SignatureScannerToolResult createOnlineResult(CodeLocationCreationData<ScanBatchOutput> creationData) {
         return new SignatureScannerToolResult(creationData, creationData.getOutput(), Result.SUCCESS);
@@ -48,6 +48,7 @@ public class SignatureScannerToolResult {
     private SignatureScannerToolResult(final CodeLocationCreationData<ScanBatchOutput> creationData, final ScanBatchOutput scanBatchOutput, Result result) {
         this.creationData = Optional.ofNullable(creationData);
         this.scanBatchOutput = scanBatchOutput;
+        this.result = result;
     }
 
     public Optional<CodeLocationCreationData<ScanBatchOutput>> getCreationData() {

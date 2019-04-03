@@ -36,6 +36,7 @@ import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectable;
+import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorDetectable;
@@ -108,8 +109,8 @@ public class DetectableFactory implements BeanFactoryAware {
         return beanFactory.getBean(GoDepCliDetectable.class, environment);
     }
 
-    public GoVendorDetectable createGoLockDetectable(final DetectableEnvironment environment) {
-        return beanFactory.getBean(GoVendorDetectable.class, environment);
+    public GoDepLockDetectable createGoLockDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(GoDepLockDetectable.class, environment);
     }
 
     public GoVndrDetectable createGoVndrDetectable(final DetectableEnvironment environment) {

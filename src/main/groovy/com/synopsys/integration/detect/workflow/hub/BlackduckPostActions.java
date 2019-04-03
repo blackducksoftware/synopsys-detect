@@ -55,6 +55,7 @@ public class BlackduckPostActions {
     public void perform(BlackduckReportOptions blackduckReportOptions, PolicyCheckOptions policyCheckOptions, CodeLocationWaitData codeLocationWaitData, ProjectVersionWrapper projectVersionWrapper, long timeoutInSeconds)
         throws DetectUserFriendlyException {
         try {
+            final long timeoutInMillisec = 1000L * timeoutInSeconds;
             ProjectView projectView = projectVersionWrapper.getProjectView();
             ProjectVersionView projectVersionView = projectVersionWrapper.getProjectVersionView();
 
@@ -88,7 +89,7 @@ public class BlackduckPostActions {
             }
 
             if (blackduckReportOptions.shouldGenerateAnyReport()) {
-                ReportService reportService = blackDuckServicesFactory.createReportService(timeoutInSeconds);
+                ReportService reportService = blackDuckServicesFactory.createReportService(timeoutInMillisec);
                 if (blackduckReportOptions.shouldGenerateRiskReport()) {
                     logger.info("Creating risk report pdf");
                     File reportDirectory = new File(blackduckReportOptions.getRiskReportPdfPath());
