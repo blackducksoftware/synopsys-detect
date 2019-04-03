@@ -58,6 +58,7 @@ public class BazelExtractor {
         this.bazelExternalIdExtractionFullRuleJsonProcessor = bazelExternalIdExtractionFullRuleJsonProcessor;
     }
 
+    //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
     public Extraction extract(final File bazelExe, final File workspaceDir, String bazelTarget, String fullRulesPath) {
         logger.debug("Bazel extractAndPublishResults()");
         try {

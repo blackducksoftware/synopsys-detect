@@ -47,6 +47,7 @@ public class MavenCliExtractor {
         this.mavenCliExtractorOptions = mavenCliExtractorOptions;
     }
 
+    //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
     public Extraction extract(final File directory, final File mavenExe) {
         try {
             String mavenCommand = mavenCliExtractorOptions.getMavenBuildCommand();

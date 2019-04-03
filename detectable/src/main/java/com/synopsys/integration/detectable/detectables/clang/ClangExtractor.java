@@ -59,7 +59,6 @@ public class ClangExtractor {
         this.compileCommandDatabaseParser = compileCommandDatabaseParser;
     }
 
-    // TODO: Why do we need the root sourcePath?
     public Extraction extract(final ClangPackageManager currentPackageManager, final ClangPackageManagerRunner packageManagerRunner, final File sourceDirectory, final File outputDirectory, final File jsonCompilationDatabaseFile,
         final boolean cleanup) {
         try {
