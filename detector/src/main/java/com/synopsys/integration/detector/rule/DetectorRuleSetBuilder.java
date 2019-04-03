@@ -71,7 +71,6 @@ public class DetectorRuleSetBuilder {
         List<DetectorRule> orderedRules = new ArrayList<>();
         boolean atLeastOneRuleAdded = true;
 
-
         while (orderedRules.size() < rules.size() && atLeastOneRuleAdded) {
             List<DetectorRule> satisfiedRules = rules.stream()
                 .filter(rule -> !orderedRules.contains(rule))
