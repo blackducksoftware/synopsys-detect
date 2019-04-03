@@ -89,7 +89,7 @@ public class DetectorRuleSetBuilder {
         return new DetectorRuleSet(orderedRules, yieldsToRules);
     }
 
-    private boolean yieldSatisfied(DetectorRule rule, List<DetectorRule> orderedRules, Map<DetectorRule, Set<DetectorRule> yieldsToRules) {
+    private boolean yieldSatisfied(DetectorRule rule, List<DetectorRule> orderedRules, Map<DetectorRule, Set<DetectorRule>> yieldsToRules) {
         if (yieldsToRules.containsKey(rule)){
             boolean yieldedSatisfied = true;
             for (DetectorRule yield : yieldsToRules.get(rule)) {
