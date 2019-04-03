@@ -25,11 +25,15 @@ package com.synopsys.integration.detect;
 import java.io.File;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
+import org.xml.sax.SAXException;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
@@ -54,7 +58,6 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspe
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRuleJsonProcessor;
-import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionSimpleRules;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelQueryXmlOutputParser;
 import com.synopsys.integration.detectable.detectables.bazel.parse.XPathParser;
@@ -117,8 +120,7 @@ import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocati
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
-import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomXmlParser;
-import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomXmlParserInstantiationException;
+import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
@@ -558,8 +560,13 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
-    public PomXmlParser pomXmlParser() throws PomXmlParserInstantiationException {
-        return new PomXmlParser(externalIdFactory);
+    public SAXParser saxParser() throws ParserConfigurationException, SAXException {
+        return SAXParserFactory.newInstance().newSAXParser();
+    }
+
+    @Bean
+    public MavenParseExtractor mavenParseExtractor() throws ParserConfigurationException, SAXException {
+        return new MavenParseExtractor(externalIdFactory, saxParser());
     }
 
     @Bean
@@ -680,8 +687,8 @@ public class DetectableBeanConfiguration {
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public MavenParseDetectable mavenParseDetectable(final DetectableEnvironment environment) throws PomXmlParserInstantiationException {
-        return new MavenParseDetectable(environment, fileFinder, pomXmlParser());
+    public MavenParseDetectable mavenParseDetectable(final DetectableEnvironment environment) throws ParserConfigurationException, SAXException {
+        return new MavenParseDetectable(environment, fileFinder, mavenParseExtractor());
     }
 
     @Bean
