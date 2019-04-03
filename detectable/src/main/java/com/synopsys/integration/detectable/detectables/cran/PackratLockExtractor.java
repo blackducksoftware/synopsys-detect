@@ -62,8 +62,7 @@ public class PackratLockExtractor {
 
             final List<String> packratLockText = Files.readAllLines(packratlock.toPath(), StandardCharsets.UTF_8);
             final DependencyGraph dependencyGraph = packRatLockFileParser.parseProjectDependencies(packratLockText);
-            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CRAN, directory.toString());
-            final CodeLocation codeLocation = new CodeLocation(dependencyGraph, externalId);
+            final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
             return new Extraction.Builder().success(codeLocation).projectName(nameVersion.getName()).projectVersion(nameVersion.getVersion()).build();
         } catch (final Exception e) {

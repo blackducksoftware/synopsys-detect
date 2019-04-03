@@ -56,6 +56,7 @@ public class PipInspectorTreeParser {
         this.externalIdFactory = externalIdFactory;
     }
 
+
     public Optional<PipParseResult> parse(final List<String> pipInspectorOutputAsList, final String sourcePath) {
         PipParseResult parseResult = null;
 
@@ -121,7 +122,7 @@ public class PipInspectorTreeParser {
         String version = segments[1].trim();
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version);
 
-        if (name.equals(UNKNOWN_PROJECT_NAME) || version.equals(UNKNOWN_PROJECT_VERSION)) {
+        if (name.equals(UNKNOWN_PROJECT_NAME) || version.equals(UNKNOWN_PROJECT_VERSION)) {    //TODO: Pip needs some love. It shouldn't have to do this here but the change seems non-trivial. A code location with no external id should be created as such.
             externalId = externalIdFactory.createPathExternalId(Forge.PYPI, sourcePath);
         }
 

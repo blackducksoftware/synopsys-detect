@@ -47,15 +47,13 @@ public class GoVndrExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(final File directory, final File vndrConfig) {
+    public Extraction extract(final File vndrConfig) {
         try {
             final VndrParser vndrParser = new VndrParser(externalIdFactory);
             final List<String> venderConfContents = Files.readAllLines(vndrConfig.toPath(), StandardCharsets.UTF_8);
             logger.debug(venderConfContents.stream().collect(Collectors.joining("\n")));
             final DependencyGraph dependencyGraph = vndrParser.parseVendorConf(venderConfContents);
-            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString());//TODO remove directory as ID
-
-            final CodeLocation codeLocation = new CodeLocation(dependencyGraph, externalId);
+            final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
             return new Extraction.Builder().success(codeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

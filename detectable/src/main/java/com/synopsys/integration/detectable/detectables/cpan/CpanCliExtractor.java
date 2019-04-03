@@ -55,8 +55,7 @@ public class CpanCliExtractor {
             final List<String> showdeps = showdepsOutput.getStandardOutputAsList();
 
             final DependencyGraph dependencyGraph = cpanListParser.parse(listText, showdeps);
-            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CPAN, directory.toString());
-            final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, externalId);
+            final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

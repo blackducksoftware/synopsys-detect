@@ -54,7 +54,8 @@ public class ClangPackageDetailsTransformer {
                                                   .collect(Collectors.toList());
         logger.trace("Generated : " + dependencies.size() + " dependencies.");
 
-        return toCodeLocation(codeLocationForge, rootDir, dependencies);
+        final MutableDependencyGraph dependencyGraph = populateGraph(dependencies);
+        return new CodeLocation(dependencyGraph);
     }
 
     private List<Dependency> toDependency(final List<Forge> forges, final PackageDetails details) {
@@ -72,12 +73,6 @@ public class ClangPackageDetailsTransformer {
             dependencies.add(dep);
         }
         return dependencies;
-    }
-
-    private CodeLocation toCodeLocation(final Forge defaultForge, final File rootDir, final List<Dependency> bdioComponents) {
-        final MutableDependencyGraph dependencyGraph = populateGraph(bdioComponents);
-        final ExternalId externalId = externalIdFactory.createPathExternalId(defaultForge, rootDir.toString());
-        return new CodeLocation(dependencyGraph, externalId); //TODO: add back in file?
     }
 
     private MutableDependencyGraph populateGraph(final List<Dependency> bdioComponents) {

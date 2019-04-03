@@ -81,17 +81,14 @@ public class PackagistParser {
                 }
             });
         });
-
-        final ExternalId projectExternalId;
-        if (projectNameVersion.getName() == null || projectNameVersion.getVersion() == null) {
-            projectExternalId = externalIdFactory.createPathExternalId(Forge.PACKAGIST, sourcePath);
-        } else {
-            projectExternalId = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, projectNameVersion.getName(), projectNameVersion.getVersion());
-        }
-
         final DependencyGraph graph = builder.build();
-        final CodeLocation codeLocation = new CodeLocation(graph, projectExternalId);
 
+        final CodeLocation codeLocation;
+        if (projectNameVersion.getName() == null || projectNameVersion.getVersion() == null) {
+            codeLocation = new CodeLocation(graph);
+        } else {
+            codeLocation = new CodeLocation(graph, externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, projectNameVersion.getName(), projectNameVersion.getVersion()));
+        }
         return new PackagistParseResult(projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocation);
     }
 
