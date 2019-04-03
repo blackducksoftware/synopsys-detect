@@ -107,6 +107,7 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseDetectable;
+import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseExtractor;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.parse.BuildGradleParser;
 import com.synopsys.integration.detectable.detectables.hex.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.hex.RebarExtractor;
@@ -566,6 +567,11 @@ public class DetectableBeanConfiguration {
         return new BuildGradleParser(externalIdFactory);
     }
 
+    @Bean
+    public GradleParseExtractor gradleParseExtractor() {
+        return new GradleParseExtractor(buildGradleParser());
+    }
+
     //Detectables
     //Should be scoped to Prototype so a new Detectable is created every time one is needed.
     //Should only be accessed through the DetectableFactory.
@@ -651,7 +657,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GradleParseDetectable gradleParseDetectable(final DetectableEnvironment environment) {
-        return new GradleParseDetectable(environment, fileFinder, buildGradleParser());
+        return new GradleParseDetectable(environment, fileFinder, gradleParseExtractor());
     }
 
     @Bean

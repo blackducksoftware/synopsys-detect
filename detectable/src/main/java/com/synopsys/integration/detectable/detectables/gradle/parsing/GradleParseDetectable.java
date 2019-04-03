@@ -43,14 +43,14 @@ public class GradleParseDetectable extends Detectable {
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
 
     private final FileFinder fileFinder;
-    private final BuildGradleParser buildGradleParser;
+    private final GradleParseExtractor gradleParseExtractor;
 
     private File buildFile;
 
-    public GradleParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final BuildGradleParser buildGradleParser) {
+    public GradleParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GradleParseExtractor gradleParseExtractor) {
         super(environment, "gradle.build", "GRADLE");
         this.fileFinder = fileFinder;
-        this.buildGradleParser = buildGradleParser;
+        this.gradleParseExtractor = gradleParseExtractor;
     }
 
     @Override
@@ -71,17 +71,6 @@ public class GradleParseDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        try (final InputStream buildFileInputStream = new FileInputStream(buildFile)) {
-            final Optional<DependencyGraph> dependencyGraph = buildGradleParser.parse(buildFileInputStream);
-
-            if (dependencyGraph.isPresent()) {
-                final CodeLocation codeLocation = new CodeLocation(dependencyGraph.get());
-                return new Extraction.Builder().success(codeLocation).build();
-            } else {
-                return new Extraction.Builder().failure(String.format("Failed to extract dependencies from %s", BUILD_GRADLE_FILENAME)).build();
-            }
-        } catch (final Exception e) {
-            return new Extraction.Builder().exception(e).build();
-        }
+        return gradleParseExtractor.extract(buildFile);
     }
 }
