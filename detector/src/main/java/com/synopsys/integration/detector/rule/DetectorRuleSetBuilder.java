@@ -23,17 +23,22 @@
 package com.synopsys.integration.detector.rule;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.Stack;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import com.synopsys.integration.detector.base.DetectableCreatable;
 import com.synopsys.integration.detector.base.DetectorType;
 
 public class DetectorRuleSetBuilder {
-
     private List<DetectorRule> rules = new ArrayList<>();
     private List<DetectorRuleYieldBuilder> yieldBuilders = new ArrayList<>();
 
@@ -63,6 +68,38 @@ public class DetectorRuleSetBuilder {
             yieldsToRules.get(yieldBuilder.getYieldingDetector()).add(yieldBuilder.getYieldingToDetector());
         }
 
-        return new DetectorRuleSet(rules, yieldsToRules);//TODO: Confirm I don't need to recalcute detector order here.
+        List<DetectorRule> orderedRules = new ArrayList<>();
+        boolean atLeastOneRuleAdded = true;
+
+
+        while (orderedRules.size() < rules.size() && atLeastOneRuleAdded) {
+            List<DetectorRule> satisfiedRules = rules.stream()
+                .filter(rule -> !orderedRules.contains(rule))
+                .filter(rule -> yieldSatisfied(rule, orderedRules, yieldsToRules))
+                .collect(Collectors.toList());
+
+            atLeastOneRuleAdded = satisfiedRules.size() > 0;
+            orderedRules.addAll(satisfiedRules);
+        }
+
+        if (orderedRules.size() != rules.size()){
+            throw new RuntimeException("Unable to order detector rules.");
+        }
+
+        return new DetectorRuleSet(orderedRules, yieldsToRules);
+    }
+
+    private boolean yieldSatisfied(DetectorRule rule, List<DetectorRule> orderedRules, Map<DetectorRule, Set<DetectorRule> yieldsToRules) {
+        if (yieldsToRules.containsKey(rule)){
+            boolean yieldedSatisfied = true;
+            for (DetectorRule yield : yieldsToRules.get(rule)) {
+                if (!orderedRules.contains(yield)) {
+                    yieldedSatisfied = false;
+                }
+            }
+            return yieldedSatisfied;
+        } else {
+            return true;
+        }
     }
 }
