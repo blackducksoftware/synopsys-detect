@@ -39,41 +39,21 @@ import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetecta
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 
-public class GemspecParseDetectable extends Detectable {
-    private static final String GEMSPEC_FILENAME = "*.gemspec";
+public class GemspecParseExtractor {
+    private final GemspecParser gemspecParser;
 
-    private final FileFinder fileFinder;
-    private final GemspecParseExtractor gemspecParseExtractor;
-    private final GemspecParseDetectableOptions gemspecParseDetectableOptions;
-
-    private File gemspec;
-
-    public GemspecParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GemspecParseExtractor gemspecParseExtractor,
-        final GemspecParseDetectableOptions gemspecParseDetectableOptions) {
-        super(environment, "Gemspec", "RUBYGEMS");
-        this.fileFinder = fileFinder;
-        this.gemspecParseExtractor = gemspecParseExtractor;
-        this.gemspecParseDetectableOptions = gemspecParseDetectableOptions;
+    public GemspecParseExtractor(final GemspecParser gemspecParser) {
+        this.gemspecParser = gemspecParser;
     }
 
-    @Override
-    public DetectableResult applicable() {
-        gemspec = fileFinder.findFile(environment.getDirectory(), GEMSPEC_FILENAME);
+    public Extraction extract(File gemspec, boolean includeRuntime, boolean includeDev) {
+        try (final InputStream inputStream = new FileInputStream(gemspec)) {
+            final DependencyGraph dependencyGraph = gemspecParser.parse(inputStream, includeRuntime, includeDev);
+            final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
-        if (gemspec == null) {
-            return new FileNotFoundDetectableResult(GEMSPEC_FILENAME);
+            return new Extraction.Builder().success(codeLocation).build();
+        } catch (final IOException e) {
+            return new Extraction.Builder().exception(e).build();
         }
-
-        return new PassedDetectableResult();
-    }
-
-    @Override
-    public DetectableResult extractable() {
-        return new PassedDetectableResult();
-    }
-
-    @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return gemspecParseExtractor.extract(gemspec, gemspecParseDetectableOptions.shouldIncludeRuntimeDependencies(), gemspecParseDetectableOptions.shouldIncludeDevelopmentDependencies());
     }
 }

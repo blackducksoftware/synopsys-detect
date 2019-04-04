@@ -159,6 +159,7 @@ import com.synopsys.integration.detectable.detectables.pip.parser.PipenvGraphPar
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockExtractor;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
+import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseExtractor;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectable;
@@ -570,6 +571,11 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
+    public GemspecParseExtractor gemspecExtractor() {
+        return new GemspecParseExtractor(gemspecParser());
+    }
+
+    @Bean
     public PackageJsonExtractor packageJsonExtractor() {
         return new PackageJsonExtractor(gson, externalIdFactory);
     }
@@ -685,7 +691,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GemspecParseDetectable gemspecParseDetectable(final DetectableEnvironment environment) {
-        return new GemspecParseDetectable(environment, fileFinder, gemspecParser(), detectableOptionFactory.createGemspecParseDetectableOptions());
+        return new GemspecParseDetectable(environment, fileFinder, gemspecExtractor(), detectableOptionFactory.createGemspecParseDetectableOptions());
     }
 
     @Bean
