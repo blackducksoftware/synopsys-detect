@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect;
 
 import java.io.File;
+import java.util.Optional;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -39,13 +40,19 @@ import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
+import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
+import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.AirgapNugetInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryNugetInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.InstallerNugetInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.LocalPipInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.NugetInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.NugetInstallerOptions;
+import com.synopsys.integration.detect.tool.detector.inspectors.OnlineNugetInspectorInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -385,7 +392,15 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public NugetInspectorResolver nugetInspectorResolver() {
-        return new ArtifactoryNugetInspectorResolver(directoryManager, detectExecutableResolver, executableRunner, airGapManager, artifactResolver, detectInfo, fileFinder, detectableOptionFactory.createNugetInspectorOptions());
+        NugetInstallerOptions installerOptions = detectableOptionFactory.createNugetInstallerOptions();
+        NugetInspectorInstaller installer;
+        Optional<File> nugetAirGapPath = airGapManager.getNugetInspectorAirGapFile();
+        if (nugetAirGapPath.isPresent()) {
+            installer = new AirgapNugetInspectorInstaller(airGapManager);
+        } else {
+            installer = new OnlineNugetInspectorInstaller(directoryManager, artifactResolver, installerOptions.getNugetInspectorVersion());
+        }
+        return new InstallerNugetInspectorResolver(detectExecutableResolver, executableRunner, detectInfo, fileFinder, installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), installer);
     }
 
     @Bean
