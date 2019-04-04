@@ -74,9 +74,11 @@ public class GemspecParser {
                 logger.info(String.format("Excluding component '%s' from graph because it is a development dependency", gemspecDependency.getName()));
                 continue;
             }
+            String name = gemspecDependency.getName();
+            String version = gemspecDependency.getVersion().orElse("No version");
 
-            final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, gemspecDependency.getName(), gemspecDependency.getVersion().orElse("No version"));
-            final Dependency dependency = new Dependency(externalId);
+            final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, name, version);
+            final Dependency dependency = new Dependency(name, version, externalId);
 
             dependencyGraph.addChildrenToRoot(dependency);
         }
