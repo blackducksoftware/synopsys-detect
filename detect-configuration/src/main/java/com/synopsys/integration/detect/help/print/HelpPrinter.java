@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.help.print;
 
 import java.io.PrintStream;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,11 +33,20 @@ import com.synopsys.integration.detect.help.DetectOption;
 
 public class HelpPrinter {
 
+    private static final Comparator<DetectOption> OPTION_SORTER = Comparator.comparing((DetectOption t) -> t.getDetectProperty().getPropertyKey(),
+            String.CASE_INSENSITIVE_ORDER);
+
     public void printAppropriateHelpMessage(final PrintStream printStream, final List<DetectOption> allOptions, final DetectArgumentState state) {
         final HelpTextWriter writer = new HelpTextWriter();
 
-        final List<DetectOption> currentOptions = allOptions.stream().filter(it -> !it.getDetectOptionHelp().isDeprecated).collect(Collectors.toList());
-        final List<DetectOption> deprecatedOptions = allOptions.stream().filter(it -> it.getDetectOptionHelp().isDeprecated).collect(Collectors.toList());
+        final List<DetectOption> currentOptions = allOptions.stream()
+                .filter(it -> !it.getDetectOptionHelp().isDeprecated)
+                .sorted(OPTION_SORTER)
+                .collect(Collectors.toList());
+        final List<DetectOption> deprecatedOptions = allOptions.stream()
+                .filter(it -> it.getDetectOptionHelp().isDeprecated)
+                .sorted(OPTION_SORTER)
+                .collect(Collectors.toList());
         final List<String> allPrintGroups = getPrintGroups(currentOptions);
 
         if (state.isVerboseHelp()) {
