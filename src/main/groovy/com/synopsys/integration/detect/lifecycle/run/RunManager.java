@@ -150,7 +150,7 @@ public class RunManager {
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
                 logger.info("Will include the docker tool.");
-                final DetectableTool detectableTool = new DetectableTool(detectableFactory::createDockerDetectable, extractionEnvironmentProvider, codeLocationConverter, "docker", DetectTool.DOCKER, eventSystem);
+                final DetectableTool detectableTool = new DetectableTool(detectableFactory::createDockerDetectable, extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER, eventSystem);
                 final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
                 runResult.addDetectableToolResult(detectableToolResult);
                 logger.info("Docker actions finished.");
@@ -161,7 +161,7 @@ public class RunManager {
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
                 logger.info("Will include the bazel tool.");
-                final DetectableTool detectableTool = new DetectableTool(detectableFactory::createBazelDetectable, extractionEnvironmentProvider, codeLocationConverter, "bazel", DetectTool.BAZEL, eventSystem);
+                final DetectableTool detectableTool = new DetectableTool(detectableFactory::createBazelDetectable, extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL, eventSystem);
                 final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
                 runResult.addDetectableToolResult(detectableToolResult);
                 logger.info("Bazel actions finished.");

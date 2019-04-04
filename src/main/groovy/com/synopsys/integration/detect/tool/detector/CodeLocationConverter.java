@@ -25,6 +25,7 @@ package com.synopsys.integration.detect.tool.detector;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class CodeLocationConverter {
@@ -71,7 +73,14 @@ public class CodeLocationConverter {
             } else {
                 externalId = codeLocation.getExternalId().get();
             }
-            DetectCodeLocation detectCodeLocation = DetectCodeLocation.forCreator(codeLocation.getDependencyGraph(), sourcePath, externalId, overrideName);
+            Optional<String> dockerImageName = extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA);
+            DetectCodeLocation detectCodeLocation;
+            if (dockerImageName.isPresent()){
+                 detectCodeLocation = DetectCodeLocation.forDocker(codeLocation.getDependencyGraph(), sourcePath, externalId, dockerImageName.get());
+            } else {
+                 detectCodeLocation = DetectCodeLocation.forCreator(codeLocation.getDependencyGraph(), sourcePath, externalId, overrideName);
+            }
+
             detectCodeLocations.put(codeLocation, detectCodeLocation);
         }
 

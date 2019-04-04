@@ -84,7 +84,7 @@ public class DetectableTool {
         final DetectableResult applicable = detectable.applicable();
 
         if (!applicable.getPassed()) {
-            logger.info("Was not applicableChildren.");
+            logger.info("Was not applicable.");
             return DetectableToolResult.skip();
         }
 
