@@ -64,8 +64,7 @@ public class DetectProjectService {
     public ProjectVersionWrapper createOrUpdateBlackDuckProject(final NameVersion projectNameVersion, final String applicationId,
         final String[] groupsToAddToProject) throws IntegrationException, DetectUserFriendlyException {
         final ProjectService projectService = blackDuckServicesFactory.createProjectService();
-        final BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService();
-        final ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectService, blackDuckService);
+        final ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectService);
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
         final ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
         setApplicationId(projectVersionWrapper.getProjectView(), applicationId);
@@ -86,7 +85,7 @@ public class DetectProjectService {
         }
     }
 
-    public ProjectSyncModel createProjectSyncModel(final NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService blackDuckService) throws DetectUserFriendlyException {
+    public ProjectSyncModel createProjectSyncModel(final NameVersion projectNameVersion, final ProjectService projectService) throws DetectUserFriendlyException {
         final ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectNameVersion.getName(), projectNameVersion.getVersion());
 
         // TODO: Handle a boolean property not being set in detect configuration - ie need to determine if this property actually exists in the ConfigurableEnvironment - just omit this one?
@@ -123,7 +122,7 @@ public class DetectProjectService {
             projectSyncModel.setNickname(nickname);
         }
 
-        final Optional<String> cloneUrl = findCloneUrl(projectNameVersion, projectService, blackDuckService);
+        final Optional<String> cloneUrl = findCloneUrl(projectNameVersion, projectService);
         if (cloneUrl.isPresent()) {
             logger.info("Cloning project version from release url: " + cloneUrl.get());
             projectSyncModel.setCloneFromReleaseUrl(cloneUrl.get());
@@ -151,7 +150,7 @@ public class DetectProjectService {
         return categories;
     }
 
-    public Optional<String> findCloneUrl(final NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService blackDuckService) throws DetectUserFriendlyException {
+    public Optional<String> findCloneUrl(final NameVersion projectNameVersion, final ProjectService projectService) throws DetectUserFriendlyException {
         final String cloneProjectName = projectNameVersion.getName();
         final String cloneProjectVersionName = detectProjectServiceOptions.getCloneVersionName();
         if (StringUtils.isBlank(cloneProjectName) || StringUtils.isBlank(cloneProjectVersionName)) {
