@@ -46,7 +46,7 @@ public class DetectConfigurationManager {
     private final TildeInPathResolver tildeInPathResolver;
     private final DetectConfiguration detectConfiguration;
 
-    private List<String> bomToolSearchDirectoryExclusions;
+    private List<String> detectorSearchDirectoryExclusions;
 
     // properties to be updated
     private String policyCheckFailOnSeverities;
@@ -63,7 +63,7 @@ public class DetectConfigurationManager {
         resolveTildeInPaths();
         resolvePolicyProperties();
         resolveSignatureScannerProperties(detectOptions);
-        resolveBomToolSearchProperties();
+        resolveDetectorSearchProperties();
 
         updateDetectProperties(detectOptions);
     }
@@ -130,14 +130,14 @@ public class DetectConfigurationManager {
         }
     }
 
-    private void resolveBomToolSearchProperties() {
-        bomToolSearchDirectoryExclusions = new ArrayList<>();
-        for (final String exclusion : detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, PropertyAuthority.None)) {
-            bomToolSearchDirectoryExclusions.add(exclusion);
+    private void resolveDetectorSearchProperties() {
+        detectorSearchDirectoryExclusions = new ArrayList<>();
+        for (final String exclusion : detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION, PropertyAuthority.None)) {
+            detectorSearchDirectoryExclusions.add(exclusion);
         }
-        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS, PropertyAuthority.None)) {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS, PropertyAuthority.None)) {
             final List<String> defaultExcludedNames = Arrays.stream(DetectorSearchExcludedDirectories.values()).map(DetectorSearchExcludedDirectories::getDirectoryName).collect(Collectors.toList());
-            bomToolSearchDirectoryExclusions.addAll(defaultExcludedNames);
+            detectorSearchDirectoryExclusions.addAll(defaultExcludedNames);
         }
     }
 
@@ -151,8 +151,8 @@ public class DetectConfigurationManager {
         updateOptionValue(detectOptions, DetectProperty.BLACKDUCK_OFFLINE_MODE, String.valueOf(hubOfflineMode));
         detectConfiguration.setDetectProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, String.valueOf(hubOfflineMode));
 
-        updateOptionValue(detectOptions, DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, StringUtils.join(bomToolSearchDirectoryExclusions, ","));
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, StringUtils.join(bomToolSearchDirectoryExclusions, ","));
+        updateOptionValue(detectOptions, DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION, StringUtils.join(detectorSearchDirectoryExclusions, ","));
+        detectConfiguration.setDetectProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION, StringUtils.join(detectorSearchDirectoryExclusions, ","));
 
     }
 
