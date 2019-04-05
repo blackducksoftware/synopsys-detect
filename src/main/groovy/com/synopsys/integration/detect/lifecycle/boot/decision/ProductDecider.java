@@ -76,11 +76,11 @@ public class ProductDecider {
 
     public BlackDuckDecision determineBlackDuck(DetectConfiguration detectConfiguration) {
         boolean offline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
-        String hubUrl = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None);
+        String blackDuckUrl = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None);
         if (offline) {
             logger.info("Black Duck will run: Black Duck offline mode was set to true.");
             return BlackDuckDecision.runOffline();
-        } else if (StringUtils.isNotBlank(hubUrl)) {
+        } else if (StringUtils.isNotBlank(blackDuckUrl)) {
             logger.info("Black Duck will run: A Black Duck url was found.");
             return BlackDuckDecision.runOnline();
         } else {

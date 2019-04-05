@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.hub;
+package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +38,6 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.PolicySummar
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.VersionBomPolicyStatusView;
 import com.synopsys.integration.blackduck.service.ProjectBomService;
-import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -66,7 +65,7 @@ public class PolicyChecker {
     }
 
     /**
-     * For the given DetectProject, find the matching Hub project/version, then all of its code locations, then all of their scan summaries, wait until they are all complete, then get the policy status.
+     * For the given DetectProject, find the matching Black Duck project/version, then all of its code locations, then all of their scan summaries, wait until they are all complete, then get the policy status.
      * @throws IntegrationException
      */
     public Optional<PolicyStatusDescription> getPolicyStatus(final ProjectBomService projectBomService, final ProjectVersionView version) throws IntegrationException {

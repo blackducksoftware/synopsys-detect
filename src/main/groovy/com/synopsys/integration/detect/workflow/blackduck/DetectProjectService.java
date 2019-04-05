@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.hub;
+package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,13 +36,11 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectClone
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
-import com.synopsys.integration.blackduck.api.generated.view.UserGroupView;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.ProjectUsersService;
-import com.synopsys.integration.blackduck.service.UserGroupService;
 import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -63,11 +61,11 @@ public class DetectProjectService {
         this.projectMappingService = projectMappingService;
     }
 
-    public ProjectVersionWrapper createOrUpdateHubProject(final NameVersion projectNameVersion, final String applicationId,
+    public ProjectVersionWrapper createOrUpdateBlackDuckProject(final NameVersion projectNameVersion, final String applicationId,
         final String[] groupsToAddToProject) throws IntegrationException, DetectUserFriendlyException {
         final ProjectService projectService = blackDuckServicesFactory.createProjectService();
-        final BlackDuckService hubService = blackDuckServicesFactory.createBlackDuckService();
-        final ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectService, hubService);
+        final BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService();
+        final ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectService, blackDuckService);
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
         final ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
         setApplicationId(projectVersionWrapper.getProjectView(), applicationId);
@@ -88,7 +86,7 @@ public class DetectProjectService {
         }
     }
 
-    public ProjectSyncModel createProjectSyncModel(final NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService hubService) throws DetectUserFriendlyException {
+    public ProjectSyncModel createProjectSyncModel(final NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService blackDuckService) throws DetectUserFriendlyException {
         final ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectNameVersion.getName(), projectNameVersion.getVersion());
 
         // TODO: Handle a boolean property not being set in detect configuration - ie need to determine if this property actually exists in the ConfigurableEnvironment - just omit this one?
@@ -125,7 +123,7 @@ public class DetectProjectService {
             projectSyncModel.setNickname(nickname);
         }
 
-        final Optional<String> cloneUrl = findCloneUrl(projectNameVersion, projectService, hubService);
+        final Optional<String> cloneUrl = findCloneUrl(projectNameVersion, projectService, blackDuckService);
         if (cloneUrl.isPresent()) {
             logger.info("Cloning project version from release url: " + cloneUrl.get());
             projectSyncModel.setCloneFromReleaseUrl(cloneUrl.get());
@@ -153,7 +151,7 @@ public class DetectProjectService {
         return categories;
     }
 
-    public Optional<String> findCloneUrl(final NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService hubService) throws DetectUserFriendlyException {
+    public Optional<String> findCloneUrl(final NameVersion projectNameVersion, final ProjectService projectService, final BlackDuckService blackDuckService) throws DetectUserFriendlyException {
         final String cloneProjectName = projectNameVersion.getName();
         final String cloneProjectVersionName = detectProjectServiceOptions.getCloneVersionName();
         if (StringUtils.isBlank(cloneProjectName) || StringUtils.isBlank(cloneProjectVersionName)) {

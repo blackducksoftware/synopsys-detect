@@ -186,8 +186,8 @@ public class RunBeanConfiguration {
     @Lazy
     @Bean
     public OnlineBlackDuckSignatureScanner onlineBlackDuckSignatureScanner(final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, final ScanBatchRunner scanBatchRunner,
-        final CodeLocationCreationService codeLocationCreationService, final BlackDuckServerConfig hubServerConfig) {
-        return new OnlineBlackDuckSignatureScanner(directoryManager, fileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, codeLocationCreationService, hubServerConfig);
+        final CodeLocationCreationService codeLocationCreationService, final BlackDuckServerConfig blackDuckServerConfig) {
+        return new OnlineBlackDuckSignatureScanner(directoryManager, fileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, codeLocationCreationService, blackDuckServerConfig);
     }
 
     @Lazy

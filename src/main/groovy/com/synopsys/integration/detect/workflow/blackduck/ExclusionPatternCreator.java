@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.hub;
+package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 
 public class ExclusionPatternCreator {
     private final Logger logger = LoggerFactory.getLogger(ExclusionPatternCreator.class);
@@ -47,14 +46,14 @@ public class ExclusionPatternCreator {
         this.scanTarget = scanTarget;
     }
 
-    public Set<String> determineExclusionPatterns(final String maxDepthHitMsg, final int maxDepth, final String... hubSignatureScannerExclusionNamePatterns) {
-        if (null == hubSignatureScannerExclusionNamePatterns || hubSignatureScannerExclusionNamePatterns.length < 1 && scanTarget.isDirectory()) {
+    public Set<String> determineExclusionPatterns(final String maxDepthHitMsg, final int maxDepth, final String... signatureScannerExclusionNamePatterns) {
+        if (null == signatureScannerExclusionNamePatterns || signatureScannerExclusionNamePatterns.length < 1 && scanTarget.isDirectory()) {
             return Collections.emptySet();
         }
         final Set<String> scanExclusionPatterns = new HashSet<>();
         try {
             final String scanTargetPath = scanTarget.getCanonicalPath();
-            final List<File> matchingFiles = fileFinder.findFiles(scanTarget, Arrays.asList(hubSignatureScannerExclusionNamePatterns), maxDepth); //TODO: re-add the depth hit message creator?
+            final List<File> matchingFiles = fileFinder.findFiles(scanTarget, Arrays.asList(signatureScannerExclusionNamePatterns), maxDepth); //TODO: re-add the depth hit message creator?
             for (final File matchingFile : matchingFiles) {
                 final String matchingFilePath = matchingFile.getCanonicalPath();
                 final String scanExclusionPattern = createExclusionPatternFromPaths(scanTargetPath, matchingFilePath);

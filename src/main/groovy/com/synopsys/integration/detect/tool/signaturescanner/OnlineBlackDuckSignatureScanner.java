@@ -44,14 +44,15 @@ import com.synopsys.integration.util.NameVersion;
 
 public class OnlineBlackDuckSignatureScanner extends BlackDuckSignatureScanner {
     private final CodeLocationCreationService codeLocationCreationService;
-    private final BlackDuckServerConfig hubServerConfig;
+    private final BlackDuckServerConfig blackDuckServerConfig;
 
     public OnlineBlackDuckSignatureScanner(final DirectoryManager directoryManager, final FileFinder fileFinder,
-        final CodeLocationNameManager codeLocationNameManager, final BlackDuckSignatureScannerOptions signatureScannerOptions, final EventSystem eventSystem, final ScanBatchRunner scanBatchRunner, final CodeLocationCreationService codeLocationCreationService,
-        final BlackDuckServerConfig hubServerConfig) {
+        final CodeLocationNameManager codeLocationNameManager, final BlackDuckSignatureScannerOptions signatureScannerOptions, final EventSystem eventSystem, final ScanBatchRunner scanBatchRunner,
+        final CodeLocationCreationService codeLocationCreationService,
+        final BlackDuckServerConfig blackDuckServerConfig) {
         super(directoryManager, fileFinder, codeLocationNameManager, signatureScannerOptions, eventSystem, scanBatchRunner);
         this.codeLocationCreationService = codeLocationCreationService;
-        this.hubServerConfig = hubServerConfig;
+        this.blackDuckServerConfig = blackDuckServerConfig;
     }
 
     public CodeLocationCreationData<ScanBatchOutput> performOnlineScan(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws InterruptedException, IntegrationException, DetectUserFriendlyException, IOException {
@@ -64,7 +65,7 @@ public class OnlineBlackDuckSignatureScanner extends BlackDuckSignatureScanner {
     @Override
     protected ScanBatch createScanBatch(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
         final ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
-        scanJobBuilder.fromBlackDuckServerConfig(hubServerConfig);
+        scanJobBuilder.fromBlackDuckServerConfig(blackDuckServerConfig);
         return scanJobBuilder.build();
     }
 

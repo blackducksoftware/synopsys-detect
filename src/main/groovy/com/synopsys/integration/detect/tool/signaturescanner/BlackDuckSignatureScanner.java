@@ -41,7 +41,7 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameMan
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detect.workflow.hub.ExclusionPatternCreator;
+import com.synopsys.integration.detect.workflow.blackduck.ExclusionPatternCreator;
 import com.synopsys.integration.detect.workflow.status.SignatureScanStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.blackduck.codelocation.Result;
@@ -68,7 +68,7 @@ public abstract class BlackDuckSignatureScanner {
     private final ScanBatchRunner scanJobManager;
 
     public BlackDuckSignatureScanner(final DirectoryManager directoryManager, final FileFinder fileFinder, final CodeLocationNameManager codeLocationNameManager,
-            final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanBatchRunner scanJobManager) {
+        final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanBatchRunner scanJobManager) {
         this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
@@ -105,8 +105,8 @@ public abstract class BlackDuckSignatureScanner {
         boolean anyExitCodeIs64 = false;
         for (final SignatureScanPath target : signatureScanPaths) {
             Optional<ScanCommandOutput> targetOutput = scanCommandOutputList.stream()
-                                                               .filter(output -> output.getScanTarget().equals(target.targetPath))
-                                                               .findFirst();
+                                                           .filter(output -> output.getScanTarget().equals(target.targetPath))
+                                                           .findFirst();
 
             StatusType scanStatus;
             if (!targetOutput.isPresent()) {
@@ -158,17 +158,17 @@ public abstract class BlackDuckSignatureScanner {
         final String[] providedSignatureScanPaths = signatureScannerOptions.getSignatureScannerPaths();
         final boolean userProvidedScanTargets = null != providedSignatureScanPaths && providedSignatureScanPaths.length > 0;
         final String[] providedExclusionPatterns = signatureScannerOptions.getExclusionPatterns();
-        final String[] hubSignatureScannerExclusionNamePatterns = signatureScannerOptions.getExclusionNamePatterns();
+        final String[] signatureScannerExclusionNamePatterns = signatureScannerOptions.getExclusionNamePatterns();
 
         List<SignatureScanPath> signatureScanPaths = new ArrayList<>();
         if (null != projectNameVersion.getName() && null != projectNameVersion.getVersion() && userProvidedScanTargets) {
             for (final String path : providedSignatureScanPaths) {
                 logger.info(String.format("Registering explicit scan path %s", path));
-                SignatureScanPath scanPath = createScanPath(path, maxDepth, hubSignatureScannerExclusionNamePatterns, providedExclusionPatterns);
+                SignatureScanPath scanPath = createScanPath(path, maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
                 signatureScanPaths.add(scanPath);
             }
         } else if (dockerTarFile != null) {
-            SignatureScanPath scanPath = createScanPath(dockerTarFile.getCanonicalPath(), maxDepth, hubSignatureScannerExclusionNamePatterns, providedExclusionPatterns);
+            SignatureScanPath scanPath = createScanPath(dockerTarFile.getCanonicalPath(), maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
             signatureScanPaths.add(scanPath);
         } else {
             final String sourcePath = directoryManager.getSourceDirectory().getAbsolutePath();
@@ -177,22 +177,22 @@ public abstract class BlackDuckSignatureScanner {
             } else {
                 logger.info(String.format("No scan targets provided - registering the source path %s to scan", sourcePath));
             }
-            SignatureScanPath scanPath = createScanPath(sourcePath, maxDepth, hubSignatureScannerExclusionNamePatterns, providedExclusionPatterns);
+            SignatureScanPath scanPath = createScanPath(sourcePath, maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
             signatureScanPaths.add(scanPath);
         }
         return signatureScanPaths;
     }
 
-    private SignatureScanPath createScanPath(final String path, Integer maxDepth, final String[] hubSignatureScannerExclusionNamePatterns, final String[] providedExclusionPatterns) throws IntegrationException {
+    private SignatureScanPath createScanPath(final String path, Integer maxDepth, final String[] signatureScannerExclusionNamePatterns, final String[] providedExclusionPatterns) throws IntegrationException {
         try {
             final File target = new File(path);
             final String targetPath = target.getCanonicalPath();
             final ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(fileFinder, target);
 
             final String maxDepthHitMsg = String.format("Maximum depth %d hit while traversing source tree to generate signature scanner exclusion patterns. To search deeper, adjust the value of property %s",
-                    maxDepth, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH.getPropertyName());
+                maxDepth, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH.getPropertyName());
 
-            final Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepthHitMsg, maxDepth, hubSignatureScannerExclusionNamePatterns);
+            final Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepthHitMsg, maxDepth, signatureScannerExclusionNamePatterns);
             if (null != providedExclusionPatterns) {
                 for (final String providedExclusionPattern : providedExclusionPatterns) {
                     scanExclusionPatterns.add(providedExclusionPattern);
@@ -221,7 +221,7 @@ public abstract class BlackDuckSignatureScanner {
         }
 
         // TODO: Have requested (INTCMN-365) the ability to enable "upload source" via scanJobBuilder; for now: add to additionalArguments
-        String additionalArguments =  signatureScannerOptions.getAdditionalArguments();
+        String additionalArguments = signatureScannerOptions.getAdditionalArguments();
         if (signatureScannerOptions.getUploadSource()) {
             if (StringUtils.isBlank(additionalArguments)) {
                 additionalArguments = SIGNATURE_SCAN_UPLOAD_SOURCE_OPTION;

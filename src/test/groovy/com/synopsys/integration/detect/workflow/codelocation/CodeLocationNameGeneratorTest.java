@@ -29,14 +29,14 @@ import com.synopsys.integration.detect.configuration.PropertyAuthority;
 public class CodeLocationNameGeneratorTest {
     @Test
     public void testScanCodeLocationName() {
-        final String expected = "hub-common-rest/target/hub-common-rest/2.5.1-SNAPSHOT scan";
+        final String expected = "common-rest/target/common-rest/2.5.1-SNAPSHOT scan";
         final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
         Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None)).thenReturn(null);
         final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
 
-        final String sourcePath = "/Users/ekerwin/Documents/source/functional/hub-common-rest";
-        final String scanTargetPath = "/Users/ekerwin/Documents/source/functional/hub-common-rest/target";
-        final String projectName = "hub-common-rest";
+        final String sourcePath = "/Users/ekerwin/Documents/source/functional/common-rest";
+        final String scanTargetPath = "/Users/ekerwin/Documents/source/functional/common-rest/target";
+        final String projectName = "common-rest";
         final String projectVersionName = "2.5.1-SNAPSHOT";
         final String prefix = "";
         final String suffix = "";
@@ -47,14 +47,14 @@ public class CodeLocationNameGeneratorTest {
 
     @Test
     public void testDockerScanCodeLocationName() {
-        final String expected = "dockerTar.tar.gz/hub-common-rest/2.5.1-SNAPSHOT scan";
+        final String expected = "dockerTar.tar.gz/common-rest/2.5.1-SNAPSHOT scan";
 
         final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
         Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None)).thenReturn(null);
         final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
 
         final String dockerTarFileName = "dockerTar.tar.gz";
-        final String projectName = "hub-common-rest";
+        final String projectName = "common-rest";
         final String projectVersionName = "2.5.1-SNAPSHOT";
         final String prefix = "";
         final String suffix = "";
@@ -65,7 +65,7 @@ public class CodeLocationNameGeneratorTest {
 
     @Test
     public void testBomCodeLocationName() {
-        final String expected = "hub-common-rest/child/group/name/version npm/bom";
+        final String expected = "common-rest/child/group/name/version npm/bom";
         // = path/externalId tool/type
 
         final ExternalIdFactory factory = new ExternalIdFactory();
@@ -78,8 +78,8 @@ public class CodeLocationNameGeneratorTest {
         Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
         Mockito.when(detectCodeLocation.getCreatorName()).thenReturn(Optional.of("NPM"));
 
-        final String sourcePath = "/Users/ekerwin/Documents/source/functional/hub-common-rest";
-        final String codeLocationPath = "/Users/ekerwin/Documents/source/functional/hub-common-rest/child";
+        final String sourcePath = "/Users/ekerwin/Documents/source/functional/common-rest";
+        final String codeLocationPath = "/Users/ekerwin/Documents/source/functional/common-rest/child";
 
         final String prefix = "";
         final String suffix = "";
@@ -90,7 +90,7 @@ public class CodeLocationNameGeneratorTest {
 
     @Test
     public void testLongCodeLocationNames() {
-        final String expected = "hub-common-rest/hub...esthub-common-rest/group/name/version npm/bom";
+        final String expected = "common-rest/common-...n-rest-common-rest/group/name/version npm/bom";
 
         final ExternalIdFactory factory = new ExternalIdFactory();
         final ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
@@ -102,15 +102,14 @@ public class CodeLocationNameGeneratorTest {
         Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
         Mockito.when(detectCodeLocation.getCreatorName()).thenReturn(Optional.of("NPM"));
 
-        final String sourcePath = "/Users/ekerwin/Documents/source/functional/hub-common-rest";
-        final String codeLocationPath = "/Users/ekerwin/Documents/source/functional/hub-common-rest/hub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-rest";
+        final String sourcePath = "/Users/ekerwin/Documents/source/functional/common-rest";
+        final String codeLocationPath = "/Users/ekerwin/Documents/source/functional/common-rest/common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest";
         final String prefix = "";
         final String suffix = "";
         final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, detectCodeLocation, prefix, suffix);
 
         assertEquals(expected, actual);
     }
-
 
     @Test
     public void testExternalId() {

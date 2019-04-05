@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.hub;
+package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.util.Set;
 

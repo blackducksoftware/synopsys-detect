@@ -109,9 +109,9 @@ public class DetectOptionManager {
     }
 
     public BlackDuckServerConfig createBlackduckServerConfig(IntLogger logger) throws DetectUserFriendlyException {
-        final BlackDuckServerConfigBuilder hubServerConfigBuilder = new BlackDuckServerConfigBuilder().setLogger(logger);
+        final BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = new BlackDuckServerConfigBuilder().setLogger(logger);
 
-        Set<String> allBlackDuckKeys = new HashSet<>(hubServerConfigBuilder.getPropertyKeys());
+        Set<String> allBlackDuckKeys = new HashSet<>(blackDuckServerConfigBuilder.getPropertyKeys());
         Map<String, String> blackduckBlackDuckProperties = detectConfiguration.getProperties(allBlackDuckKeys);
         final Map<String, String> blackduckBlackDuckPropertiesNoProxy = blackduckBlackDuckProperties.entrySet().stream()
                                                                             .filter(it -> !it.getKey().toLowerCase().contains("proxy"))
@@ -122,19 +122,19 @@ public class DetectOptionManager {
         try {
             ignoreProxy = ProxyUtil.shouldIgnoreHost(new URL(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None)).getHost(), ignoredProxyHostPatterns);
         } catch (MalformedURLException e) {
-            logger.error("Unable to decide if proxy should be used for the given hub host, will use proxy.");
+            logger.error("Unable to decide if proxy should be used for the given host, will use proxy.");
         }
 
         if (ignoreProxy) {
-            hubServerConfigBuilder.setProperties(blackduckBlackDuckPropertiesNoProxy.entrySet());
+            blackDuckServerConfigBuilder.setProperties(blackduckBlackDuckPropertiesNoProxy.entrySet());
         } else {
-            hubServerConfigBuilder.setProperties(blackduckBlackDuckProperties.entrySet());
+            blackDuckServerConfigBuilder.setProperties(blackduckBlackDuckProperties.entrySet());
         }
 
         try {
-            BlackDuckServerConfig blackDuckServerConfig = hubServerConfigBuilder.build();
+            BlackDuckServerConfig blackDuckServerConfig = blackDuckServerConfigBuilder.build();
             return blackDuckServerConfig;
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new DetectUserFriendlyException("Failed to configure Black Duck server connection: " + e.getMessage(), e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }

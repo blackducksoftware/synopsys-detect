@@ -12,16 +12,16 @@ public class TildeInPathResolverTest {
     public void testResolvingTilde() throws IllegalArgumentException, IllegalAccessException {
         final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin", OperatingSystemType.LINUX);
 
-        final Optional<String> resolved = resolver.resolveTildeInValue("~/Documents/source/funtional/hub-detect");
+        final Optional<String> resolved = resolver.resolveTildeInValue("~/Documents/source/funtional/detect");
 
-        Assert.assertEquals("/Users/ekerwin/Documents/source/funtional/hub-detect", resolved.get());
+        Assert.assertEquals("/Users/ekerwin/Documents/source/funtional/detect", resolved.get());
     }
 
     @Test
     public void testResolvingTildeInWindows() throws IllegalArgumentException, IllegalAccessException {
         final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin", OperatingSystemType.WINDOWS);
 
-        final Optional<String> resolved = resolver.resolveTildeInValue("~/Documents/source/funtional/hub-detect");
+        final Optional<String> resolved = resolver.resolveTildeInValue("~/Documents/source/funtional/detect");
 
         Assert.assertFalse(resolved.isPresent());
     }
@@ -30,7 +30,7 @@ public class TildeInPathResolverTest {
     public void testResolvingTildeInTheMiddleOfAPath() throws IllegalArgumentException, IllegalAccessException {
         final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin", OperatingSystemType.LINUX);
 
-        final Optional<String> resolved = resolver.resolveTildeInValue("/Documents/~source/~/funtional/hub-detect");
+        final Optional<String> resolved = resolver.resolveTildeInValue("/Documents/~source/~/funtional/detect");
 
         Assert.assertFalse(resolved.isPresent());
     }
