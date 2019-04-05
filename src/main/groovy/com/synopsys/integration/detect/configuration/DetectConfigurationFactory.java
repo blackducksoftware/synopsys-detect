@@ -104,7 +104,7 @@ public class DetectConfigurationFactory {
         return new DetectorFinderOptions(fileFilter, maxDepth);
     }
 
-    public DetectorEvaluationOptions createDetectorEvaluationOptions(){
+    public DetectorEvaluationOptions createDetectorEvaluationOptions() {
         final boolean forceNestedSearch = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DETECTOR_SEARCH_CONTINUE, PropertyAuthority.None);
 
         //Detector Filter

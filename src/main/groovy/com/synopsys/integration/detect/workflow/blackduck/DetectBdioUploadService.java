@@ -65,8 +65,8 @@ public class DetectBdioUploadService {
 
         BdioUploadCodeLocationCreationRequest uploadRequest = bdioUploadService.createUploadRequest(uploadBatch);
         CodeLocationCreationData<UploadBatchOutput> response = bdioUploadService.uploadBdio(uploadRequest);
-        for (UploadOutput uploadOutput : response.getOutput()){
-            if (uploadOutput.getResult() == Result.FAILURE){
+        for (UploadOutput uploadOutput : response.getOutput()) {
+            if (uploadOutput.getResult() == Result.FAILURE) {
                 logger.error("Failed to upload code location: " + uploadOutput.getCodeLocationName());
                 logger.error("Reason: " + uploadOutput.getErrorMessage().orElse("Unknown reason."));
                 throw new DetectUserFriendlyException("An error occurred uploading a bdio file.", uploadOutput.getException().orElse(null), ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
