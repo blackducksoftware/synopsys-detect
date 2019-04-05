@@ -132,9 +132,9 @@ public class DetectConfiguration {
     // TODO: Remove in version 6.
     private DetectProperty fromOverrideToDeprecated(final DetectProperty detectProperty) {
         final Optional<DetectProperty> found = DetectPropertyDeprecations.PROPERTY_OVERRIDES.entrySet().stream()
-                                                       .filter(it -> it.getValue().equals(detectProperty))
-                                                       .map(it -> it.getKey())
-                                                       .findFirst();
+                                                   .filter(it -> it.getValue().equals(detectProperty))
+                                                   .map(it -> it.getKey())
+                                                   .findFirst();
 
         return found.orElse(null);
     }
@@ -283,5 +283,4 @@ public class DetectConfiguration {
     private String getKeyWithoutPrefix(final String key, final String prefix) {
         return key.substring(prefix.length());
     }
-
 }

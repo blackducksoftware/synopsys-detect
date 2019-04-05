@@ -96,5 +96,4 @@ public class ConnectionManager {
             return new IntHttpClient(intLogger, timeout, alwaysTrust, getBlackDuckProxyInfo());
         }
     }
-
 }
