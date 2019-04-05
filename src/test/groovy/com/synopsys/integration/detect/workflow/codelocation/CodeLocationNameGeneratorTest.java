@@ -30,9 +30,7 @@ public class CodeLocationNameGeneratorTest {
     @Test
     public void testScanCodeLocationName() {
         final String expected = "common-rest/target/common-rest/2.5.1-SNAPSHOT scan";
-        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
-        Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None)).thenReturn(null);
-        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
 
         final String sourcePath = "/Users/ekerwin/Documents/source/functional/common-rest";
         final String scanTargetPath = "/Users/ekerwin/Documents/source/functional/common-rest/target";
@@ -48,10 +46,7 @@ public class CodeLocationNameGeneratorTest {
     @Test
     public void testDockerScanCodeLocationName() {
         final String expected = "dockerTar.tar.gz/common-rest/2.5.1-SNAPSHOT scan";
-
-        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
-        Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None)).thenReturn(null);
-        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
 
         final String dockerTarFileName = "dockerTar.tar.gz";
         final String projectName = "common-rest";
@@ -70,9 +65,7 @@ public class CodeLocationNameGeneratorTest {
 
         final ExternalIdFactory factory = new ExternalIdFactory();
         final ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
-        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
-        Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None)).thenReturn(null);
-        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
 
         final DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
         Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
@@ -94,9 +87,7 @@ public class CodeLocationNameGeneratorTest {
 
         final ExternalIdFactory factory = new ExternalIdFactory();
         final ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
-        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
-        Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None)).thenReturn(null);
-        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
 
         final DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
         Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
@@ -113,8 +104,7 @@ public class CodeLocationNameGeneratorTest {
 
     @Test
     public void testExternalId() {
-        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
-        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
         DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
 
         final ExternalId externalId = new ExternalId(Forge.MAVEN);
@@ -130,9 +120,7 @@ public class CodeLocationNameGeneratorTest {
 
     @Test
     public void testGivenNameCounters() {
-        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
-        Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None)).thenReturn("myscanname");
-        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfiguration);
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator("myscanname");
 
         assertTrue(codeLocationNameGenerator.useCodeLocationOverride());
 
