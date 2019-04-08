@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.help.print;
 
 import java.io.PrintStream;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,15 +33,27 @@ import com.synopsys.integration.detect.help.DetectOption;
 
 public class HelpPrinter {
 
+    private static final Comparator<DetectOption> SORT_BY_GROUP_THEN_KEY = (o1, o2) -> {
+        if (o1.getDetectOptionHelp().primaryGroup.equals(o2.getDetectOptionHelp().primaryGroup)) {
+            return o1.getDetectProperty().getPropertyKey().compareTo(o2.getDetectProperty().getPropertyKey());
+        } else {
+            return o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup);
+        }
+    };
+
     public void printAppropriateHelpMessage(final PrintStream printStream, final List<DetectOption> allOptions, final DetectArgumentState state) {
         final HelpTextWriter writer = new HelpTextWriter();
 
-        final List<DetectOption> currentOptions = allOptions.stream().filter(it -> !it.getDetectOptionHelp().isDeprecated).collect(Collectors.toList());
-        final List<DetectOption> deprecatedOptions = allOptions.stream().filter(it -> it.getDetectOptionHelp().isDeprecated).collect(Collectors.toList());
+        final List<DetectOption> currentOptions = allOptions.stream()
+                .filter(it -> !it.getDetectOptionHelp().isDeprecated)
+                .collect(Collectors.toList());
+        final List<DetectOption> deprecatedOptions = allOptions.stream()
+                .filter(it -> it.getDetectOptionHelp().isDeprecated)
+                .collect(Collectors.toList());
         final List<String> allPrintGroups = getPrintGroups(currentOptions);
 
         if (state.isVerboseHelp()) {
-            printVerboseOptions(writer, currentOptions, null);
+            printOptions(writer, currentOptions, null);
         } else if (state.isDeprecatedHelp()) {
             printOptions(writer, deprecatedOptions, "Showing only deprecated properties.");
         } else {
@@ -60,17 +73,6 @@ public class HelpPrinter {
         printStandardFooter(writer, getPrintGroupText(allPrintGroups));
 
         writer.write(printStream);
-    }
-
-    private void printVerboseOptions(final HelpTextWriter writer, final List<DetectOption> options, final String notes) {
-        final List<DetectOption> sorted = options.stream().sorted((o1, o2) -> {
-            if (o1.getDetectOptionHelp().primaryGroup.equals(o2.getDetectOptionHelp().primaryGroup)) {
-                return o1.getDetectProperty().getPropertyKey().compareTo(o2.getDetectProperty().getPropertyKey());
-            } else {
-                return o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup);
-            }
-        }).collect(Collectors.toList());
-        printOptions(writer, sorted, notes);
     }
 
     private void printDetailedHelp(final HelpTextWriter writer, final List<DetectOption> options, final String optionName) {
@@ -94,7 +96,6 @@ public class HelpPrinter {
 
         final List<DetectOption> filteredOptions = options.stream()
                 .filter(it -> it.getDetectOptionHelp().groups.stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
-                .sorted((o1, o2) -> o1.getDetectProperty().getPropertyKey().compareTo(o2.getDetectProperty().getPropertyKey()))
                 .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
@@ -140,19 +141,25 @@ public class HelpPrinter {
         writer.printColumns("Property Name", "Default", "Description");
         writer.printSeperator();
 
+        List<DetectOption> sorted = options.stream()
+                                        .sorted(SORT_BY_GROUP_THEN_KEY)
+                                        .collect(Collectors.toList());
+
         if (notes != null) {
             writer.println(notes);
             writer.println();
         }
 
         String group = null;
-        for (final DetectOption detectOption : options) {
+        for (final DetectOption detectOption : sorted) {
             final String currentGroup = detectOption.getDetectOptionHelp().primaryGroup;
             if (group == null) {
                 group = currentGroup;
+                writer.println("[" + group + "]");
             } else if (!group.equals(currentGroup)) {
-                writer.println();
                 group = currentGroup;
+                writer.println();
+                writer.println("[" + group + "]");
             }
             detectOption.printOption(writer);
         }

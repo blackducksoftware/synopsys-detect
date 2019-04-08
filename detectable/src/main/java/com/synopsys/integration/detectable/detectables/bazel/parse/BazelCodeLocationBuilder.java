@@ -68,8 +68,7 @@ public class BazelCodeLocationBuilder {
 
     public List<CodeLocation> build() {
         final Forge forge = new Forge("/", "/", "DETECT");
-        final ExternalId externalId = externalIdFactory.createPathExternalId(forge, workspaceDir.toString()); //TODO: don't use workspace as ID
-        final CodeLocation codeLocation = new CodeLocation(dependencyGraph, externalId);
+        final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
         final List<CodeLocation> codeLocations = new ArrayList<>(1);
         codeLocations.add(codeLocation);
         return codeLocations;

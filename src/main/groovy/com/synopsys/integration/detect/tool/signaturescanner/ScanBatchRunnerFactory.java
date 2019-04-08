@@ -60,9 +60,9 @@ public class ScanBatchRunnerFactory {
         scanCommandRunner = new ScanCommandRunner(slf4jIntLogger, intEnvironmentVariables, scanPathsUtility, executorService);
     }
 
-    public ScanBatchRunner withHubInstall(BlackDuckServerConfig hubServerConfig) {
-        // will will use the hub server to download/update the scanner - this is the most likely situation
-        ScannerZipInstaller scannerZipInstaller = ScannerZipInstaller.defaultUtility(slf4jIntLogger, hubServerConfig, scanPathsUtility, operatingSystemType);
+    public ScanBatchRunner withInstall(BlackDuckServerConfig blackDuckServerConfig) {
+        // will will use the server to download/update the scanner - this is the most likely situation
+        ScannerZipInstaller scannerZipInstaller = ScannerZipInstaller.defaultUtility(slf4jIntLogger, blackDuckServerConfig, scanPathsUtility, operatingSystemType);
         ScanBatchRunner scanBatchManager = ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
         return scanBatchManager;
     }

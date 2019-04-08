@@ -37,7 +37,9 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
+import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
+import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
@@ -114,7 +116,8 @@ public class RunBeanConfiguration {
 
     @Bean
     public CodeLocationNameGenerator codeLocationNameService() {
-        return new CodeLocationNameGenerator(detectConfiguration);
+        String codeLocationNameOverride = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.None);
+        return new CodeLocationNameGenerator(codeLocationNameOverride);
     }
 
     @Bean
@@ -186,8 +189,8 @@ public class RunBeanConfiguration {
     @Lazy
     @Bean
     public OnlineBlackDuckSignatureScanner onlineBlackDuckSignatureScanner(final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, final ScanBatchRunner scanBatchRunner,
-        final CodeLocationCreationService codeLocationCreationService, final BlackDuckServerConfig hubServerConfig) {
-        return new OnlineBlackDuckSignatureScanner(directoryManager, fileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, codeLocationCreationService, hubServerConfig);
+        final CodeLocationCreationService codeLocationCreationService, final BlackDuckServerConfig blackDuckServerConfig) {
+        return new OnlineBlackDuckSignatureScanner(directoryManager, fileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, codeLocationCreationService, blackDuckServerConfig);
     }
 
     @Lazy

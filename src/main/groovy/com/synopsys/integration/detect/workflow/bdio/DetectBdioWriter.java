@@ -52,9 +52,9 @@ public class DetectBdioWriter {
         }
 
         try {
-            final String hubDetectVersion = detectInfo.getDetectVersion();
-            final SpdxCreator hubDetectCreator = SpdxCreator.createToolSpdxCreator("Detect", hubDetectVersion);
-            simpleBdioDocument.billOfMaterials.creationInfo.setPrimarySpdxCreator(hubDetectCreator);
+            final String detectVersion = detectInfo.getDetectVersion();
+            final SpdxCreator detectCreator = SpdxCreator.createToolSpdxCreator("Detect", detectVersion);
+            simpleBdioDocument.billOfMaterials.creationInfo.setPrimarySpdxCreator(detectCreator);
             simpleBdioFactory.writeSimpleBdioDocumentToFile(outputFile, simpleBdioDocument);
             logger.info(String.format("BDIO Generated: %s", outputFile.getAbsolutePath()));
         } catch (final IOException e) {

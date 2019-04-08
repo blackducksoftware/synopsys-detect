@@ -84,7 +84,12 @@ public class SbtResolutionCacheExtractor {
             String projectName = null;
             String projectVersion = null;
             for (final SbtDependencyModule module : project.modules) {
-                final CodeLocation codeLocation = new CodeLocation(module.graph, project.projectExternalId);
+                final CodeLocation codeLocation;
+                if (project.projectExternalId != null){
+                    codeLocation = new CodeLocation(module.graph, project.projectExternalId);
+                } else {
+                    codeLocation = new CodeLocation(module.graph);
+                }
                 if (projectName == null) {
                     projectName = project.projectName;
                     projectVersion = project.projectVersion;
@@ -122,10 +127,10 @@ public class SbtResolutionCacheExtractor {
             result.projectVersion = modules.get(0).version;
             result.projectExternalId = externalIdFactory.createMavenExternalId(modules.get(0).org, modules.get(0).name, modules.get(0).version);
         } else {
-            logger.warn("Unable to find exactly one root module. Using source path for root project name.");
+            logger.warn("Unable to find exactly one root module. Using source path for root project name - will not set an external id.");
             result.projectName = path.getName();
             result.projectVersion = findFirstModuleVersion(modules, result.projectName, "root");
-            result.projectExternalId = externalIdFactory.createPathExternalId(Forge.MAVEN, path.getAbsolutePath());
+            result.projectExternalId = null;
 
             if (result.projectVersion == null && modules.size() > 1) {
                 logger.warn(String.format("Getting version from first project: %s", modules.get(0).name));

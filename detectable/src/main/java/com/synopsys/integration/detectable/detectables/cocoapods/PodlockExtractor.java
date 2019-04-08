@@ -68,9 +68,7 @@ public class PodlockExtractor {
             return new Extraction.Builder().exception(e).build();
         }
 
-        final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, directory.toString());
-
-        final CodeLocation codeLocation = new CodeLocation(dependencyGraph, externalId);
+        final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
         return new Extraction.Builder().success(codeLocation).build();
     }

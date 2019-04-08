@@ -71,20 +71,19 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameMan
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detect.workflow.hub.BlackduckPostActions;
-import com.synopsys.integration.detect.workflow.hub.BlackduckReportOptions;
-import com.synopsys.integration.detect.workflow.hub.CodeLocationWaitData;
-import com.synopsys.integration.detect.workflow.hub.DetectBdioUploadService;
-import com.synopsys.integration.detect.workflow.hub.DetectCodeLocationUnmapService;
-import com.synopsys.integration.detect.workflow.hub.DetectProjectService;
-import com.synopsys.integration.detect.workflow.hub.DetectProjectServiceOptions;
-import com.synopsys.integration.detect.workflow.hub.PolicyCheckOptions;
+import com.synopsys.integration.detect.workflow.blackduck.BlackduckPostActions;
+import com.synopsys.integration.detect.workflow.blackduck.BlackduckReportOptions;
+import com.synopsys.integration.detect.workflow.blackduck.CodeLocationWaitData;
+import com.synopsys.integration.detect.workflow.blackduck.DetectBdioUploadService;
+import com.synopsys.integration.detect.workflow.blackduck.DetectCodeLocationUnmapService;
+import com.synopsys.integration.detect.workflow.blackduck.DetectProjectService;
+import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
+import com.synopsys.integration.detect.workflow.blackduck.PolicyCheckOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
@@ -150,7 +149,7 @@ public class RunManager {
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
                 logger.info("Will include the docker tool.");
-                final DetectableTool detectableTool = new DetectableTool(detectableFactory::createDockerDetectable, extractionEnvironmentProvider, codeLocationConverter, "docker", DetectTool.DOCKER, eventSystem);
+                final DetectableTool detectableTool = new DetectableTool(detectableFactory::createDockerDetectable, extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER, eventSystem);
                 final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
                 runResult.addDetectableToolResult(detectableToolResult);
                 logger.info("Docker actions finished.");
@@ -161,7 +160,7 @@ public class RunManager {
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
                 logger.info("Will include the bazel tool.");
-                final DetectableTool detectableTool = new DetectableTool(detectableFactory::createBazelDetectable, extractionEnvironmentProvider, codeLocationConverter, "bazel", DetectTool.BAZEL, eventSystem);
+                final DetectableTool detectableTool = new DetectableTool(detectableFactory::createBazelDetectable, extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL, eventSystem);
                 final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
                 runResult.addDetectableToolResult(detectableToolResult);
                 logger.info("Bazel actions finished.");
@@ -217,7 +216,7 @@ public class RunManager {
                 final ProjectMappingService detectProjectMappingService = blackDuckServicesFactory.createProjectMappingService();
                 final DetectProjectService detectProjectService = new DetectProjectService(blackDuckServicesFactory, options, detectProjectMappingService);
                 final String[] groupsToAddToProject = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PROJECT_USER_GROUPS, PropertyAuthority.None);
-                projectVersionWrapper = Optional.of(detectProjectService.createOrUpdateHubProject(projectNameVersion, options.getApplicationId(), groupsToAddToProject));
+                projectVersionWrapper = Optional.of(detectProjectService.createOrUpdateBlackDuckProject(projectNameVersion, options.getApplicationId(), groupsToAddToProject));
 
                 if (projectVersionWrapper.isPresent() && runOptions.shouldUnmapCodeLocations()) {
                     logger.info("Unmapping code locations.");

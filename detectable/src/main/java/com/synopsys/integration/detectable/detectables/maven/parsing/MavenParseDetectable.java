@@ -37,20 +37,19 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomXmlParser;
 
 public class MavenParseDetectable extends Detectable {
     public static final String POM_XML_FILENAME = "pom.xml";
 
     private final FileFinder fileFinder;
-    private final PomXmlParser pomXmlParser;
+    private final MavenParseExtractor mavenParseExtractor;
 
     private File pomXmlFile;
 
-    public MavenParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PomXmlParser pomXmlParser) {
+    public MavenParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final MavenParseExtractor mavenParseExtractor) {
         super(environment, "pom.xml", "MAVEN");
         this.fileFinder = fileFinder;
-        this.pomXmlParser = pomXmlParser;
+        this.mavenParseExtractor = mavenParseExtractor;
     }
 
     @Override
@@ -71,17 +70,6 @@ public class MavenParseDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        try (final InputStream pomXmlInputStream = new FileInputStream(pomXmlFile)) {
-            final Optional<DependencyGraph> dependencyGraph = pomXmlParser.parse(pomXmlInputStream);
-
-            if (dependencyGraph.isPresent()) {
-                final CodeLocation codeLocation = new CodeLocation(dependencyGraph.get());
-                return new Extraction.Builder().success(codeLocation).build();
-            } else {
-                return new Extraction.Builder().failure(String.format("Failed to extract dependencies from %s", POM_XML_FILENAME)).build();
-            }
-        } catch (final Exception e) {
-            return new Extraction.Builder().exception(e).build();
-        }
+        return mavenParseExtractor.extract(pomXmlFile);
     }
 }

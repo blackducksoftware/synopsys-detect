@@ -20,44 +20,40 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.go.vendr;
+package com.synopsys.integration.detectable.detectables.rubygems.gemspec;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.Detectable;
+import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.go.vendr.parse.VndrParser;
+import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 
-public class GoVndrExtractor {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final ExternalIdFactory externalIdFactory;
+public class GemspecParseExtractor {
+    private final GemspecParser gemspecParser;
 
-    public GoVndrExtractor(final ExternalIdFactory externalIdFactory) {
-        this.externalIdFactory = externalIdFactory;
+    public GemspecParseExtractor(final GemspecParser gemspecParser) {
+        this.gemspecParser = gemspecParser;
     }
 
-    public Extraction extract(final File vndrConfig) {
-        try {
-            final VndrParser vndrParser = new VndrParser(externalIdFactory);
-            final List<String> venderConfContents = Files.readAllLines(vndrConfig.toPath(), StandardCharsets.UTF_8);
-            logger.debug(venderConfContents.stream().collect(Collectors.joining("\n")));
-            final DependencyGraph dependencyGraph = vndrParser.parseVendorConf(venderConfContents);
+    public Extraction extract(File gemspec, boolean includeRuntime, boolean includeDev) {
+        try (final InputStream inputStream = new FileInputStream(gemspec)) {
+            final DependencyGraph dependencyGraph = gemspecParser.parse(inputStream, includeRuntime, includeDev);
             final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
+
             return new Extraction.Builder().success(codeLocation).build();
-        } catch (final Exception e) {
+        } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
-
 }

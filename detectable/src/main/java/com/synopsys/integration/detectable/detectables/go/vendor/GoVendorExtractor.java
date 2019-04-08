@@ -55,9 +55,7 @@ public class GoVendorExtractor {
             logger.debug(vendorJsonContents);
 
             final DependencyGraph dependencyGraph = vendorJsonParser.parseVendorJson(gson, vendorJsonContents);
-            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString()); //TODO dont use directory for id
-
-            final CodeLocation codeLocation = new CodeLocation(dependencyGraph, externalId);
+            final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
             return new Extraction.Builder().success(codeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

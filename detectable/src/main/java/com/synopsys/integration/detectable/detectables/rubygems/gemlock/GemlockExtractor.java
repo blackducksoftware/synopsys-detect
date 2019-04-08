@@ -53,9 +53,8 @@ public class GemlockExtractor {
 
             final GemlockParser gemlockParser = new GemlockParser(externalIdFactory);
             final DependencyGraph dependencyGraph = gemlockParser.parseProjectDependencies(gemlockText);
-            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.RUBYGEMS, directory.toString());
 
-            final CodeLocation codeLocation = new CodeLocation(dependencyGraph, externalId);
+            final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
             return new Extraction.Builder().success(codeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

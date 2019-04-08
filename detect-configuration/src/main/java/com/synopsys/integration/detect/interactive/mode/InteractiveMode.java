@@ -168,7 +168,7 @@ public abstract class InteractiveMode {
         for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
             String fieldValue = interactiveOption.getInteractiveValue();
             final String propertyKey = interactiveOption.getDetectProperty().getPropertyKey().toLowerCase();
-            if (propertyKey.contains("password") || propertyKey.contains("api.token")) {
+            if (propertyKey.contains("password") || propertyKey.contains("api.token")|| propertyKey.contains("access.token")) {
                 fieldValue = "";
                 for (int i = 0; i < interactiveOption.getInteractiveValue().length(); i++) {
                     fieldValue += "*";

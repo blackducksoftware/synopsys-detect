@@ -36,14 +36,14 @@ import com.synopsys.integration.util.NameVersion;
 
 public class OfflineBlackDuckSignatureScanner extends BlackDuckSignatureScanner {
     public OfflineBlackDuckSignatureScanner(final DirectoryManager directoryManager, final FileFinder fileFinder,
-            final CodeLocationNameManager codeLocationNameManager, final BlackDuckSignatureScannerOptions signatureScannerOptions, final EventSystem eventSystem, final ScanBatchRunner scanBatchRunner) {
+        final CodeLocationNameManager codeLocationNameManager, final BlackDuckSignatureScannerOptions signatureScannerOptions, final EventSystem eventSystem, final ScanBatchRunner scanBatchRunner) {
         super(directoryManager, fileFinder, codeLocationNameManager, signatureScannerOptions, eventSystem, scanBatchRunner);
     }
 
     @Override
     protected ScanBatch createScanBatch(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, final File dockerTarFile) {
         final ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
-        scanJobBuilder.fromBlackDuckServerConfig(null);//temporarily need to do this. fix when hub common updates;
+        scanJobBuilder.fromBlackDuckServerConfig(null);//temporarily need to do this. fix when black duck common updates;
         return scanJobBuilder.build();
     }
 

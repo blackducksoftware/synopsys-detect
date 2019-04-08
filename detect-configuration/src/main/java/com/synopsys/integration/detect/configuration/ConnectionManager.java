@@ -50,7 +50,7 @@ public class ConnectionManager {
         this.detectConfiguration = detectConfiguration;
     }
 
-    public ProxyInfo getHubProxyInfo() throws DetectUserFriendlyException {
+    public ProxyInfo getBlackDuckProxyInfo() throws DetectUserFriendlyException {
         CredentialsBuilder proxyCredentialsBuilder = new CredentialsBuilder();
         proxyCredentialsBuilder.setUsername(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_USERNAME, PropertyAuthority.None));
         proxyCredentialsBuilder.setPassword(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PASSWORD, PropertyAuthority.None));
@@ -93,8 +93,7 @@ public class ConnectionManager {
         if (ignoreProxy) {
             return new IntHttpClient(intLogger, timeout, alwaysTrust, ProxyInfo.NO_PROXY_INFO);
         } else {
-            return new IntHttpClient(intLogger, timeout, alwaysTrust, getHubProxyInfo());
+            return new IntHttpClient(intLogger, timeout, alwaysTrust, getBlackDuckProxyInfo());
         }
     }
-
 }

@@ -86,8 +86,7 @@ public class YarnLockExtractor {
 
             final DependencyGraph dependencyGraph = yarnTransformer.transform(yarnList, yarnLock);
 
-            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, directory.getCanonicalPath()); //TODO: Don't do this...
-            final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, externalId);
+            final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
 
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {

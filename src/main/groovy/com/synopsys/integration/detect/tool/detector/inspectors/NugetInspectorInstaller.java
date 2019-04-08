@@ -1,5 +1,5 @@
 /**
- * detectable
+ * synopsys-detect
  *
  * Copyright (c) 2019 Synopsys, Inc.
  *
@@ -20,24 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.clang.dependencyfile;
+package com.synopsys.integration.detect.tool.detector.inspectors;
 
 import java.io.File;
 
-public class DependencyFileDetails { //TODO: he may need a good hash code
-    private final boolean inBuildDir;
-    private final File file;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
-    public DependencyFileDetails(final boolean inBuildDir, final File file) {
-        this.inBuildDir = inBuildDir;
-        this.file = file;
-    }
-
-    public boolean isInBuildDir() {
-        return inBuildDir;
-    }
-
-    public File getFile() {
-        return file;
-    }
+public interface NugetInspectorInstaller {
+    File installDotnetInspector() throws DetectableException;
+    File installExeInspector() throws DetectableException;
 }

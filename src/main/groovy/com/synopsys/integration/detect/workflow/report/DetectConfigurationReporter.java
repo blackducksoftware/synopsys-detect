@@ -51,7 +51,7 @@ public class DetectConfigurationReporter {
             String fieldValue = option.getFinalValue();
             final DetectOption.FinalValueType fieldType = option.getFinalValueType();
             if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(fieldValue) && "metaClass" != key) {
-                final boolean containsPassword = key.toLowerCase().contains("password") || key.toLowerCase().contains("api.token");
+                final boolean containsPassword = key.toLowerCase().contains("password") || key.toLowerCase().contains("api.token") || key.toLowerCase().contains("access.token");
                 if (containsPassword) {
                     fieldValue = StringUtils.repeat("*", fieldValue.length());
                 }

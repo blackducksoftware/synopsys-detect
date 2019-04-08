@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.hub;
+package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.util.List;
 
@@ -33,17 +33,17 @@ import com.synopsys.integration.blackduck.service.CodeLocationService;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectCodeLocationUnmapService {
-    private final BlackDuckService hubService;
+    private final BlackDuckService blackDuckService;
     private CodeLocationService codeLocationService;
 
-    public DetectCodeLocationUnmapService(BlackDuckService hubService, CodeLocationService codeLocationService) {
-        this.hubService = hubService;
+    public DetectCodeLocationUnmapService(BlackDuckService blackDuckService, CodeLocationService codeLocationService) {
+        this.blackDuckService = blackDuckService;
         this.codeLocationService = codeLocationService;
     }
 
     public void unmapCodeLocations(ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
         try {
-            final List<CodeLocationView> codeLocationViews = hubService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
+            final List<CodeLocationView> codeLocationViews = blackDuckService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
 
             for (final CodeLocationView codeLocationView : codeLocationViews) {
                 codeLocationService.unmapCodeLocation(codeLocationView);

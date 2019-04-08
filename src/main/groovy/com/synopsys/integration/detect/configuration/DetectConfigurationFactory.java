@@ -35,9 +35,9 @@ import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.file.AirGapOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
-import com.synopsys.integration.detect.workflow.hub.BlackduckReportOptions;
-import com.synopsys.integration.detect.workflow.hub.DetectProjectServiceOptions;
-import com.synopsys.integration.detect.workflow.hub.PolicyCheckOptions;
+import com.synopsys.integration.detect.workflow.blackduck.BlackduckReportOptions;
+import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
+import com.synopsys.integration.detect.workflow.blackduck.PolicyCheckOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
@@ -104,7 +104,7 @@ public class DetectConfigurationFactory {
         return new DetectorFinderOptions(fileFilter, maxDepth);
     }
 
-    public DetectorEvaluationOptions createDetectorEvaluationOptions(){
+    public DetectorEvaluationOptions createDetectorEvaluationOptions() {
         final boolean forceNestedSearch = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DETECTOR_SEARCH_CONTINUE, PropertyAuthority.None);
 
         //Detector Filter

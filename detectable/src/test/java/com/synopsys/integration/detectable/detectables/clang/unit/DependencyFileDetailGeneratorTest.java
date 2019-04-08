@@ -20,7 +20,6 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetailGenerator;
-import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetails;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.FilePathGenerator;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 
@@ -35,7 +34,7 @@ public class DependencyFileDetailGeneratorTest {
 
         DependencyFileDetailGenerator dependencyFileDetailGenerator = new DependencyFileDetailGenerator(filePathGenerator);
 
-        Set<DependencyFileDetails> fileDetailsSet = dependencyFileDetailGenerator.fromCompileCommands(Arrays.asList(new CompileCommand()), null, null, true);
+        Set<File> fileDetailsSet = dependencyFileDetailGenerator.fromCompileCommands(Arrays.asList(new CompileCommand()),null, true);
         Assert.assertEquals(0, fileDetailsSet.size());
     }
 

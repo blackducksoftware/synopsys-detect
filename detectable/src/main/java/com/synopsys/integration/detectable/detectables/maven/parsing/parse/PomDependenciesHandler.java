@@ -119,5 +119,4 @@ public class PomDependenciesHandler extends DefaultHandler {
         parsingNothingImportant();
         parsingVersion = true;
     }
-
 }

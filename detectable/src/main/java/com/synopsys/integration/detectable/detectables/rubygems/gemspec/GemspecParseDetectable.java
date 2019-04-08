@@ -43,16 +43,16 @@ public class GemspecParseDetectable extends Detectable {
     private static final String GEMSPEC_FILENAME = "*.gemspec";
 
     private final FileFinder fileFinder;
-    private final GemspecParser gemspecParser;
+    private final GemspecParseExtractor gemspecParseExtractor;
     private final GemspecParseDetectableOptions gemspecParseDetectableOptions;
 
     private File gemspec;
 
-    public GemspecParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GemspecParser gemspecParser,
+    public GemspecParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GemspecParseExtractor gemspecParseExtractor,
         final GemspecParseDetectableOptions gemspecParseDetectableOptions) {
         super(environment, "Gemspec", "RUBYGEMS");
         this.fileFinder = fileFinder;
-        this.gemspecParser = gemspecParser;
+        this.gemspecParseExtractor = gemspecParseExtractor;
         this.gemspecParseDetectableOptions = gemspecParseDetectableOptions;
     }
 
@@ -74,13 +74,6 @@ public class GemspecParseDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        try (final InputStream inputStream = new FileInputStream(gemspec)) {
-            final DependencyGraph dependencyGraph = gemspecParser.parse(inputStream, gemspecParseDetectableOptions.shouldIncludeRuntimeDependencies(), gemspecParseDetectableOptions.shouldIncludeDevelopmentDependencies());
-            final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
-
-            return new Extraction.Builder().success(codeLocation).build();
-        } catch (final IOException e) {
-            return new Extraction.Builder().exception(e).build();
-        }
+        return gemspecParseExtractor.extract(gemspec, gemspecParseDetectableOptions.shouldIncludeRuntimeDependencies(), gemspecParseDetectableOptions.shouldIncludeDevelopmentDependencies());
     }
 }

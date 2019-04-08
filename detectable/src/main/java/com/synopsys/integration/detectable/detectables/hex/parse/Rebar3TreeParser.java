@@ -28,6 +28,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
@@ -37,6 +38,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
 import com.synopsys.integration.detectable.detectables.hex.model.RebarParseResult;
+import com.synopsys.integration.util.NameVersion;
 
 public class Rebar3TreeParser {
     private final Logger logger = LoggerFactory.getLogger(Rebar3TreeParser.class);
@@ -87,13 +89,12 @@ public class Rebar3TreeParser {
         }
 
         if (project == null) {
-            final ExternalId projectExternalId = externalIdFactory.createPathExternalId(Forge.HEX, sourcePath);
-            project = new Dependency("", "", projectExternalId);
+            CodeLocation codeLocation = new CodeLocation(graph);
+            return new RebarParseResult(codeLocation);
+        } else {
+            CodeLocation codeLocation = new CodeLocation(graph, project.externalId);
+            return new RebarParseResult(new NameVersion(project.name, project.version), codeLocation);
         }
-
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.HEX, project.name, project.version);
-        final CodeLocation codeLocation = new CodeLocation(graph, externalId);
-        return new RebarParseResult(project.name, project.version, codeLocation);
     }
 
     public Dependency createDependencyFromLine(final String line) {

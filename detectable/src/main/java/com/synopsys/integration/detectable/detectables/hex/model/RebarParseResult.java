@@ -22,25 +22,27 @@
  */
 package com.synopsys.integration.detectable.detectables.hex.model;
 
+import java.util.Optional;
+
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.util.NameVersion;
 
 public class RebarParseResult {
-    private final String projectName;
-    private final String projectVersion;
+    private final Optional<NameVersion> projectNameVersion;
     private final CodeLocation codeLocation;
 
-    public RebarParseResult(final String projectName, final String projectVersion, final CodeLocation codeLocation) {
-        this.projectName = projectName;
-        this.projectVersion = projectVersion;
+    public RebarParseResult(NameVersion projectNameVersion, final CodeLocation codeLocation) {
+        this.projectNameVersion = Optional.of(projectNameVersion);
         this.codeLocation = codeLocation;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public RebarParseResult(final CodeLocation codeLocation) {
+        this.projectNameVersion = Optional.empty();
+        this.codeLocation = codeLocation;
     }
 
-    public String getProjectVersion() {
-        return projectVersion;
+    public Optional<NameVersion> getProjectNameVersion() {
+        return projectNameVersion;
     }
 
     public CodeLocation getCodeLocation() {

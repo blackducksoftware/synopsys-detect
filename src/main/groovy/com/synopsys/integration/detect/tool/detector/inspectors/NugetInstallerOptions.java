@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * synopsys-detect
  *
  * Copyright (c) 2019 Synopsys, Inc.
  *
@@ -20,47 +20,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.type;
+package com.synopsys.integration.detect.tool.detector.inspectors;
 
-public enum ExecutableType {
-    BASH,
-    BITBAKE,
-    CONDA,
-    CPAN,
-    CPANM,
-    DOCKER,
-    DOTNET,
-    GO,
-    GO_DEP("dep"),
-    GRADLE,
-    GRADLEW,
-    MVN,
-    MVNW,
-    NPM,
-    NUGET,
-    PEAR,
-    PERL,
-    PIP,
-    PIP3,
-    PIPENV,
-    PYTHON,
-    PYTHON3,
-    REBAR3,
-    YARN,
-    JAVA,
-    BAZEL;
+public class NugetInstallerOptions {
+    private final String[] packagesRepoUrl;
+    private final String nugetInspectorName;
+    private final String nugetInspectorVersion;
 
-    private String executableName;
-
-    private ExecutableType() {
-        this.executableName = this.name().toLowerCase();
+    public NugetInstallerOptions(final String[] packagesRepoUrl, final String nugetInspectorName, final String nugetInspectorVersion) {
+        this.packagesRepoUrl = packagesRepoUrl;
+        this.nugetInspectorName = nugetInspectorName;
+        this.nugetInspectorVersion = nugetInspectorVersion;
     }
 
-    private ExecutableType(final String executableName) {
-        this.executableName = executableName;
+    public String[] getPackagesRepoUrl() {
+        return packagesRepoUrl;
     }
 
-    public String getExecutable() {
-        return executableName;
+    public String getNugetInspectorName() {
+        return nugetInspectorName;
+    }
+
+    public String getNugetInspectorVersion() {
+        return nugetInspectorVersion;
     }
 }

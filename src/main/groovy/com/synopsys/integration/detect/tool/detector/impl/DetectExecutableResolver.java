@@ -23,6 +23,8 @@
 package com.synopsys.integration.detect.tool.detector.impl;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -62,6 +64,7 @@ public class DetectExecutableResolver
     private final SimpleExecutableResolver simpleExecutableResolver;
     private final GithubGoDepResolver githubGoDepResolver;
     private final DetectConfiguration detectConfiguration;
+    private final Map<String, File> cachedExecutables = new HashMap<>();
 
     public DetectExecutableResolver(final SimpleExecutableResolver simpleExecutableResolver, final GithubGoDepResolver githubGoDepResolver, final DetectConfiguration detectConfiguration) {
         this.simpleExecutableResolver = simpleExecutableResolver;
@@ -69,91 +72,93 @@ public class DetectExecutableResolver
         this.detectConfiguration = detectConfiguration;
     }
 
-    //TODO: should cache the resolved executable.
-    private File resolveExecutable(final Supplier<File> resolveExecutable, final String executableOverride) {
-        if (StringUtils.isBlank(executableOverride)) {
-            return resolveExecutable.get();
-        } else {
+    private File resolveExecutable(String cacheKey, final Supplier<File> resolveExecutable, final String executableOverride) {
+        if (StringUtils.isNotBlank(executableOverride)) {
             return new File(executableOverride);
         }
+        boolean hasCacheKey = StringUtils.isNotBlank(cacheKey);
+        if (hasCacheKey && cachedExecutables.containsKey(cacheKey)) {
+            return cachedExecutables.get(cacheKey);
+        }
+        File resolved = resolveExecutable.get();
+        if (hasCacheKey) {
+            cachedExecutables.put(cacheKey, resolved);
+        }
+        return resolved;
     }
 
-    private File resolveExecutable(final Function<DetectableEnvironment, File> resolveExecutable, final DetectableEnvironment environment, final String executableOverride) {
-        if (StringUtils.isBlank(executableOverride)) {
-            return resolveExecutable.apply(environment);
-        } else {
-            return new File(executableOverride);
-        }
+    private File resolveExecutableLocally(final Function<DetectableEnvironment, File> resolveExecutable, final DetectableEnvironment environment, final String executableOverride) {
+        return resolveExecutable(null, () -> resolveExecutable.apply(environment), executableOverride);
     }
 
     @Override
     public File resolveBash() {
-        return resolveExecutable(simpleExecutableResolver::resolveBash, detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH, PropertyAuthority.None));
+        return resolveExecutable("bash", simpleExecutableResolver::resolveBash, detectConfiguration.getProperty(DetectProperty.DETECT_BASH_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolveBazel() {
-        return resolveExecutable(simpleExecutableResolver::resolveBazel, detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_PATH, PropertyAuthority.None));
+        return resolveExecutable("bazel", simpleExecutableResolver::resolveBazel, detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolveConda() {
-        return resolveExecutable(simpleExecutableResolver::resolveConda, detectConfiguration.getProperty(DetectProperty.DETECT_CONDA_PATH, PropertyAuthority.None));
+        return resolveExecutable("conda", simpleExecutableResolver::resolveConda, detectConfiguration.getProperty(DetectProperty.DETECT_CONDA_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolveCpan() {
-        return resolveExecutable(simpleExecutableResolver::resolveCpan, detectConfiguration.getProperty(DetectProperty.DETECT_CPAN_PATH, PropertyAuthority.None));
+        return resolveExecutable("cpan", simpleExecutableResolver::resolveCpan, detectConfiguration.getProperty(DetectProperty.DETECT_CPAN_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolveCpanm() {
-        return resolveExecutable(simpleExecutableResolver::resolveCpanm, detectConfiguration.getProperty(DetectProperty.DETECT_CPANM_PATH, PropertyAuthority.None));
+        return resolveExecutable("cpanm", simpleExecutableResolver::resolveCpanm, detectConfiguration.getProperty(DetectProperty.DETECT_CPANM_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolveGradle(final DetectableEnvironment environment) {
-        return resolveExecutable(simpleExecutableResolver::resolveGradle, environment, detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_PATH, PropertyAuthority.None));
+        return resolveExecutableLocally(simpleExecutableResolver::resolveGradle, environment, detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolveMaven(final DetectableEnvironment environment) {
-        return resolveExecutable(simpleExecutableResolver::resolveMaven, environment, detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_PATH, PropertyAuthority.None));
+        return resolveExecutableLocally(simpleExecutableResolver::resolveMaven, environment, detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolveNpm(final DetectableEnvironment environment) {
-        return resolveExecutable(simpleExecutableResolver::resolveNpm, environment, detectConfiguration.getProperty(DetectProperty.DETECT_NPM_PATH, PropertyAuthority.None));
+        return resolveExecutableLocally(simpleExecutableResolver::resolveNpm, environment, detectConfiguration.getProperty(DetectProperty.DETECT_NPM_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolvePear() {
-        return resolveExecutable(simpleExecutableResolver::resolvePear, detectConfiguration.getProperty(DetectProperty.DETECT_PEAR_PATH, PropertyAuthority.None));
+        return resolveExecutable("pear", simpleExecutableResolver::resolvePear, detectConfiguration.getProperty(DetectProperty.DETECT_PEAR_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolvePip() {
-        return resolveExecutable(simpleExecutableResolver::resolvePip, null);
+        return resolveExecutable("pip", simpleExecutableResolver::resolvePip, null);
     }
 
     @Override
     public File resolvePipenv() {
-        return resolveExecutable(simpleExecutableResolver::resolvePipenv, detectConfiguration.getProperty(DetectProperty.DETECT_PIPENV_PATH, PropertyAuthority.None));
+        return resolveExecutable("pipenv", simpleExecutableResolver::resolvePipenv, detectConfiguration.getProperty(DetectProperty.DETECT_PIPENV_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolvePython() {
-        return resolveExecutable(simpleExecutableResolver::resolvePython, detectConfiguration.getProperty(DetectProperty.DETECT_PYTHON_PATH, PropertyAuthority.None));
+        return resolveExecutable("python", simpleExecutableResolver::resolvePython, detectConfiguration.getProperty(DetectProperty.DETECT_PYTHON_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolveRebar3() {
-        return resolveExecutable(simpleExecutableResolver::resolveRebar3, detectConfiguration.getProperty(DetectProperty.DETECT_HEX_REBAR3_PATH, PropertyAuthority.None));
+        return resolveExecutable("rebar3", simpleExecutableResolver::resolveRebar3, detectConfiguration.getProperty(DetectProperty.DETECT_HEX_REBAR3_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolveYarn() {
-        return resolveExecutable(simpleExecutableResolver::resolveYarn, detectConfiguration.getProperty(DetectProperty.DETECT_YARN_PATH, PropertyAuthority.None));
+        return resolveExecutable("yarn", simpleExecutableResolver::resolveYarn, detectConfiguration.getProperty(DetectProperty.DETECT_YARN_PATH, PropertyAuthority.None));
     }
 
     @Override
@@ -168,16 +173,16 @@ public class DetectExecutableResolver
 
     @Override
     public File resolveJava() {
-        return resolveExecutable(simpleExecutableResolver::resolveJava, detectConfiguration.getProperty(DetectProperty.DETECT_JAVA_PATH, PropertyAuthority.None));
+        return resolveExecutable("java", simpleExecutableResolver::resolveJava, detectConfiguration.getProperty(DetectProperty.DETECT_JAVA_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolveDocker() {
-        return resolveExecutable(simpleExecutableResolver::resolveDocker, detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_PATH, PropertyAuthority.None));
+        return resolveExecutable("docker", simpleExecutableResolver::resolveDocker, detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_PATH, PropertyAuthority.None));
     }
 
     @Override
     public File resolveDotNet() {
-        return resolveExecutable(simpleExecutableResolver::resolveDotNet, detectConfiguration.getProperty(DetectProperty.DETECT_DOTNET_PATH, PropertyAuthority.None));
+        return resolveExecutable("dotnet", simpleExecutableResolver::resolveDotNet, detectConfiguration.getProperty(DetectProperty.DETECT_DOTNET_PATH, PropertyAuthority.None));
     }
 }

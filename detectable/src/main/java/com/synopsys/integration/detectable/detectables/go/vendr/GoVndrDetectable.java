@@ -65,7 +65,7 @@ public class GoVndrDetectable extends Detectable {
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         //addRelevantDiagnosticFile(vndrConfig);
-        return goVndrExtractor.extract(environment.getDirectory(), vndrConfig);
+        return goVndrExtractor.extract(vndrConfig);
     }
 
 }

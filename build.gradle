@@ -90,7 +90,7 @@ dependencies {
     implementation project(":detectable")
     implementation project(":detector")
 
-    implementation 'com.synopsys.integration:polaris-common:0.9.1'
+    implementation 'com.synopsys.integration:polaris-common:0.11.0'
     implementation 'org.yaml:snakeyaml:1.24'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'

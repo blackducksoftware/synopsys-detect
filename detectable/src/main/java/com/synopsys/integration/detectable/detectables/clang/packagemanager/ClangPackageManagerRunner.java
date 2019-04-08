@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetails;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.ClangPackageManagerResolver;
 
 public class ClangPackageManagerRunner {
@@ -61,40 +60,36 @@ public class ClangPackageManagerRunner {
         return false;
     }
 
-    public PackageDetailsResult getAllPackages(ClangPackageManager currentPackageManager, File workingDirectory, final ExecutableRunner executableRunner, final Set<DependencyFileDetails> dependencyFiles) {
+    public PackageDetailsResult getAllPackages(ClangPackageManager currentPackageManager, File workingDirectory, final ExecutableRunner executableRunner, final Set<File> dependencyFiles) {
         Set<PackageDetails> packageDetails = new HashSet<>();
-        Set<File> unmanagedDependencies = new HashSet<>();
-        for (DependencyFileDetails dependencyFile : dependencyFiles) {
+        Set<File> failedDependencyFiles = new HashSet<>();
+        for (File dependencyFile : dependencyFiles) {
             PackageDetailsResult packageDetailsResult = getPackages(currentPackageManager, workingDirectory, executableRunner, dependencyFile);
             packageDetails.addAll(packageDetailsResult.getFoundPackages());
-            unmanagedDependencies.addAll(packageDetailsResult.getUnmanagedDependencies());
+            failedDependencyFiles.addAll(packageDetailsResult.getFailedDependencyFiles());
         }
 
-        return new PackageDetailsResult(packageDetails, unmanagedDependencies);
+        return new PackageDetailsResult(packageDetails, failedDependencyFiles);
     }
 
-    public PackageDetailsResult getPackages(ClangPackageManager currentPackageManager, File workingDirectory, final ExecutableRunner executableRunner, final DependencyFileDetails dependencyFile) {
+    public PackageDetailsResult getPackages(ClangPackageManager currentPackageManager, File workingDirectory, final ExecutableRunner executableRunner, final File dependencyFile) {
         ClangPackageManagerInfo packageManagerInfo = currentPackageManager.getPackageManagerInfo();
         final Set<PackageDetails> dependencyDetails = new HashSet<>();
-        final Set<File> unManagedDependencyFiles = new HashSet<>();
+        final Set<File> failedDependencyFiles = new HashSet<>();
         try {
             final List<String> fileSpecificGetOwnerArgs = new ArrayList<>(packageManagerInfo.getPkgMgrGetOwnerCmdArgs());
-            fileSpecificGetOwnerArgs.add(dependencyFile.getFile().getAbsolutePath());
+            fileSpecificGetOwnerArgs.add(dependencyFile.getAbsolutePath());
             final ExecutableOutput queryPackageOutput = executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetOwnerArgs);
 
             ClangPackageManagerResolver resolver = currentPackageManager.getPackageResolver();
             List<PackageDetails> packageDetails = resolver.resolvePackages(currentPackageManager.getPackageManagerInfo(), executableRunner, workingDirectory, queryPackageOutput.getStandardOutput());
             dependencyDetails.addAll(packageDetails);
         } catch (final ExecutableRunnerException e) {
+            logger.debug(String.format("Error with dependency file %s when running %s", dependencyFile.getAbsolutePath(), packageManagerInfo.getPkgMgrCmdString()));
             logger.error(String.format("Error executing %s: %s", packageManagerInfo.getPkgMgrCmdString(), e.getMessage()));
-            if (!dependencyFile.isInBuildDir()) {
-                logger.debug(String.format("%s is not managed by %s", dependencyFile.getFile().getAbsolutePath(), packageManagerInfo.getPkgMgrCmdString()));
-                unManagedDependencyFiles.add(dependencyFile.getFile());
-            } else {
-                logger.debug(String.format("%s is not managed by %s, but it's in the source.dir", dependencyFile.getFile().getAbsolutePath(), packageManagerInfo.getPkgMgrCmdString()));
-            }
+
         }
-        return new PackageDetailsResult(dependencyDetails, unManagedDependencyFiles);
+        return new PackageDetailsResult(dependencyDetails, failedDependencyFiles);
     }
 
 }

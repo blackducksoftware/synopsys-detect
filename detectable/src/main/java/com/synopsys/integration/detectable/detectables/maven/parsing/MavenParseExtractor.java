@@ -20,44 +20,48 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.go.vendr;
+package com.synopsys.integration.detectable.detectables.maven.parsing;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.xml.parsers.SAXParser;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.go.vendr.parse.VndrParser;
+import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomDependenciesHandler;
 
-public class GoVndrExtractor {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+public class MavenParseExtractor {
     private final ExternalIdFactory externalIdFactory;
+    private final SAXParser saxParser;
 
-    public GoVndrExtractor(final ExternalIdFactory externalIdFactory) {
+    public MavenParseExtractor(final ExternalIdFactory externalIdFactory, final SAXParser saxParser) {
         this.externalIdFactory = externalIdFactory;
+        this.saxParser = saxParser;
     }
 
-    public Extraction extract(final File vndrConfig) {
-        try {
-            final VndrParser vndrParser = new VndrParser(externalIdFactory);
-            final List<String> venderConfContents = Files.readAllLines(vndrConfig.toPath(), StandardCharsets.UTF_8);
-            logger.debug(venderConfContents.stream().collect(Collectors.joining("\n")));
-            final DependencyGraph dependencyGraph = vndrParser.parseVendorConf(venderConfContents);
+    public Extraction extract(File pomXmlFile) {
+        try (final InputStream pomXmlInputStream = new FileInputStream(pomXmlFile)) {
+            //we have to create a new handler or the state of all handlers would be shared.
+            //we could create a handler factory or some other indirection so it could be injected but for now we make a new one.
+            PomDependenciesHandler pomDependenciesHandler = new PomDependenciesHandler(externalIdFactory);
+            saxParser.parse(pomXmlInputStream, pomDependenciesHandler);
+            final List<Dependency> dependencies = pomDependenciesHandler.getDependencies();
+
+            MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+            dependencyGraph.addChildrenToRoot(dependencies);
+
             final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
             return new Extraction.Builder().success(codeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
-
 }

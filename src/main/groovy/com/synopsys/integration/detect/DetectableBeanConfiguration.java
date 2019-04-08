@@ -23,25 +23,36 @@
 package com.synopsys.integration.detect;
 
 import java.io.File;
+import java.util.Optional;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
+import org.xml.sax.SAXException;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
+import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
+import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.AirgapNugetInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryNugetInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.InstallerNugetInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.LocalPipInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.NugetInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.NugetInstallerOptions;
+import com.synopsys.integration.detect.tool.detector.inspectors.OnlineNugetInspectorInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.file.AirGapManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -54,7 +65,6 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspe
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRuleJsonProcessor;
-import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionSimpleRules;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelQueryXmlOutputParser;
 import com.synopsys.integration.detectable.detectables.bazel.parse.XPathParser;
@@ -107,6 +117,7 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseDetectable;
+import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseExtractor;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.parse.BuildGradleParser;
 import com.synopsys.integration.detectable.detectables.hex.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.hex.RebarExtractor;
@@ -116,8 +127,7 @@ import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocati
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
-import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomXmlParser;
-import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomXmlParserInstantiationException;
+import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
@@ -149,6 +159,7 @@ import com.synopsys.integration.detectable.detectables.pip.parser.PipenvGraphPar
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockExtractor;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
+import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseExtractor;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectable;
@@ -382,7 +393,15 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public NugetInspectorResolver nugetInspectorResolver() {
-        return new ArtifactoryNugetInspectorResolver(directoryManager, detectExecutableResolver, executableRunner, airGapManager, artifactResolver, detectInfo, fileFinder, detectableOptionFactory.createNugetInspectorOptions());
+        NugetInstallerOptions installerOptions = detectableOptionFactory.createNugetInstallerOptions();
+        NugetInspectorInstaller installer;
+        Optional<File> nugetAirGapPath = airGapManager.getNugetInspectorAirGapFile();
+        if (nugetAirGapPath.isPresent()) {
+            installer = new AirgapNugetInspectorInstaller(airGapManager);
+        } else {
+            installer = new OnlineNugetInspectorInstaller(directoryManager, artifactResolver, installerOptions.getNugetInspectorVersion());
+        }
+        return new InstallerNugetInspectorResolver(detectExecutableResolver, executableRunner, detectInfo, fileFinder, installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), installer);
     }
 
     @Bean
@@ -552,18 +571,33 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
+    public GemspecParseExtractor gemspecExtractor() {
+        return new GemspecParseExtractor(gemspecParser());
+    }
+
+    @Bean
     public PackageJsonExtractor packageJsonExtractor() {
         return new PackageJsonExtractor(gson, externalIdFactory);
     }
 
     @Bean
-    public PomXmlParser pomXmlParser() throws PomXmlParserInstantiationException {
-        return new PomXmlParser(externalIdFactory);
+    public SAXParser saxParser() throws ParserConfigurationException, SAXException {
+        return SAXParserFactory.newInstance().newSAXParser();
+    }
+
+    @Bean
+    public MavenParseExtractor mavenParseExtractor() throws ParserConfigurationException, SAXException {
+        return new MavenParseExtractor(externalIdFactory, saxParser());
     }
 
     @Bean
     public BuildGradleParser buildGradleParser() {
         return new BuildGradleParser(externalIdFactory);
+    }
+
+    @Bean
+    public GradleParseExtractor gradleParseExtractor() {
+        return new GradleParseExtractor(buildGradleParser());
     }
 
     //Detectables
@@ -651,13 +685,13 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GradleParseDetectable gradleParseDetectable(final DetectableEnvironment environment) {
-        return new GradleParseDetectable(environment, fileFinder, buildGradleParser());
+        return new GradleParseDetectable(environment, fileFinder, gradleParseExtractor());
     }
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GemspecParseDetectable gemspecParseDetectable(final DetectableEnvironment environment) {
-        return new GemspecParseDetectable(environment, fileFinder, gemspecParser(), detectableOptionFactory.createGemspecParseDetectableOptions());
+        return new GemspecParseDetectable(environment, fileFinder, gemspecExtractor(), detectableOptionFactory.createGemspecParseDetectableOptions());
     }
 
     @Bean
@@ -674,8 +708,8 @@ public class DetectableBeanConfiguration {
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public MavenParseDetectable mavenParseDetectable(final DetectableEnvironment environment) throws PomXmlParserInstantiationException {
-        return new MavenParseDetectable(environment, fileFinder, pomXmlParser());
+    public MavenParseDetectable mavenParseDetectable(final DetectableEnvironment environment) throws ParserConfigurationException, SAXException {
+        return new MavenParseDetectable(environment, fileFinder, mavenParseExtractor());
     }
 
     @Bean

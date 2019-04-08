@@ -69,8 +69,7 @@ public class CondaCliExtractor {
             final String infoJsonText = condaInfoOutput.getStandardOutput();
 
             final DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText);
-            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.ANACONDA, directory.toString());
-            final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, externalId);
+            final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
 
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {

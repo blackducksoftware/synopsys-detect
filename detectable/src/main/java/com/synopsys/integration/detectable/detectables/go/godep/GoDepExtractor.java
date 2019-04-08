@@ -64,8 +64,7 @@ public class GoDepExtractor {
 
     public Extraction extract(final File directory, final InputStream goLockInputStream) {
         final DependencyGraph graph = goLockParser.parseDepLock(goLockInputStream);
-        final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString()); // TODO: don't use directory as external id
-        final CodeLocation codeLocation = new CodeLocation(graph, externalId);
+        final CodeLocation codeLocation = new CodeLocation(graph);
         return new Extraction.Builder().success(codeLocation).build();
     }
 

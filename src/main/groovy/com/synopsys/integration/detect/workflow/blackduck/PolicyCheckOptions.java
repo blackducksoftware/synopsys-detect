@@ -1,5 +1,5 @@
 /**
- * detectable
+ * synopsys-detect
  *
  * Copyright (c) 2019 Synopsys, Inc.
  *
@@ -20,13 +20,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.maven.parsing.parse;
+package com.synopsys.integration.detect.workflow.blackduck;
 
-import com.synopsys.integration.exception.IntegrationException;
+import java.util.List;
 
-public class PomXmlParserInstantiationException extends IntegrationException {
-    public PomXmlParserInstantiationException(final Exception e) {
-        super("The PomXmlParser could not be instantiated: " + e.getMessage(), e);
+import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
+
+public class PolicyCheckOptions {
+    private List<PolicySeverityType> severitiesToFailPolicyCheck;
+
+    public PolicyCheckOptions(final List<PolicySeverityType> severitiesToFailPolicyCheck) {
+        this.severitiesToFailPolicyCheck = severitiesToFailPolicyCheck;
     }
 
+    public List<PolicySeverityType> getSeveritiesToFailPolicyCheck() {
+        return severitiesToFailPolicyCheck;
+    }
+
+    public boolean shouldPerformPolicyCheck() {
+        return severitiesToFailPolicyCheck.size() > 0;
+    }
 }

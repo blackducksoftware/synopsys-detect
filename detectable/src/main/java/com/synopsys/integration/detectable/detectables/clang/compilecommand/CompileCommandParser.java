@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringTokenizer;
 import org.apache.commons.text.matcher.StringMatcherFactory;
 import org.slf4j.Logger;
@@ -45,26 +46,19 @@ public class CompileCommandParser {
     private static final String ESCAPE_SEQUENCE_FOR_SPACE_CHAR = "%20";
     private static final String ESCAPE_SEQUENCE_FOR_TAB_CHAR = "%09";
 
-    public String parseActualCommand(CompileCommand compileCommand) {
-        final String[] parts = compileCommand.command.trim().split("\\s+");
-        return parts[0];
-    }
+    public List<String> parseCommand(CompileCommand compileCommand, final Map<String, String> optionOverrides) {
 
-    public List<String> parseArguments(CompileCommand compileCommand, final Map<String, String> optionOverrides) { //TODO: Shouldn't this method also take into account "command.arguments"?
-        //TODO: make arguments
-/*
-if (StringUtils.isNotBlank(rawCompileCommand.command)) {
-            return rawCompileCommand.command;
-        } else {
-            return String.join(" ", rawCompileCommand.arguments);
+        String commandText = compileCommand.command;
+        if (StringUtils.isBlank(commandText)) {
+            commandText = String.join(" ", compileCommand.arguments);
         }
- */
-        logger.trace(String.format("origCompileCommand         : %s", compileCommand.command));
-        String quotesRemovedCompileCommand = escapeQuotedWhitespace(compileCommand.command.trim());
+
+        logger.trace(String.format("origCompileCommand         : %s", commandText));
+        String quotesRemovedCompileCommand = escapeQuotedWhitespace(commandText);
         logger.trace(String.format("quotesRemovedCompileCommand: %s", quotesRemovedCompileCommand));
         StringTokenizer tokenizer = new StringTokenizer(quotesRemovedCompileCommand);
         tokenizer.setQuoteMatcher(StringMatcherFactory.INSTANCE.quoteMatcher());
-        final List<String> argList = new ArrayList<>();
+        final List<String> commandList = new ArrayList<>();
         String lastPart = "";
         int partIndex = 0;
         while (tokenizer.hasNext()) {
@@ -77,15 +71,17 @@ if (StringUtils.isNotBlank(rawCompileCommand.command)) {
                     }
                 }
                 if (optionValueOverride != null) {
-                    argList.add(optionValueOverride);
+                    commandList.add(optionValueOverride);
                 } else {
-                    argList.add(part);
+                    commandList.add(part);
                 }
+            } else {
+                commandList.add(part);
             }
             lastPart = part;
             partIndex++;
         }
-        return argList;
+        return commandList;
     }
 
     private String restoreWhitespace(String givenString) {
