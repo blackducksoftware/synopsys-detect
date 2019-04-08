@@ -52,51 +52,52 @@ public class OnlineNugetInspectorInstaller implements NugetInspectorInstaller {
     }
 
     @Override
-    public File installExeInspector() throws DetectableException {
+    public File installDotnetInspector() throws DetectableException {
         try {
             logger.info("Will attempt to resolve the dotnet inspector version.");
             Optional<String> source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.NUGET_INSPECTOR_REPO, ArtifactoryConstants.NUGET_INSPECTOR_PROPERTY,
                 overrideVersion,
                 ArtifactoryConstants.NUGET_INSPECTOR_VERSION_OVERRIDE);
             return installFromSource(source);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }
     }
 
     @Override
-    public File installDotnetInspector() throws DetectableException {
+    public File installExeInspector() throws DetectableException {
         try {
             logger.info("Will attempt to resolve the classic inspector version.");
             Optional<String> source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_REPO, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_PROPERTY,
                 overrideVersion,
                 ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_VERSION_OVERRIDE);
             return installFromSource(source);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }
     }
 
     private File installFromSource(Optional<String> source) throws IntegrationException, IOException, DetectUserFriendlyException {
-            final File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
-            if (source.isPresent()) {
-                logger.debug("Resolved the nuget inspector url: " + source.get());
-                final String nupkgName = artifactResolver.parseFileName(source.get());
-                logger.debug("Parsed artifact name: " + nupkgName);
-                final File nupkgFile = new File(nugetDirectory, nupkgName);
-                final String inspectorFolderName = nupkgName.replace(".nupkg", "");
-                File inspectorFolder = new File(nugetDirectory, inspectorFolderName);
-                if (!inspectorFolder.exists()) {
-                    logger.info("Downloading nuget inspector.");
-                    artifactResolver.downloadArtifact(nupkgFile, source.get());
-                    logger.info("Extracting nuget inspector.");
-                    DetectZipUtil.unzip(nupkgFile, inspectorFolder, Charset.defaultCharset());
-                    return inspectorFolder;
-                } else {
-                    throw new DetectableException("Unable to find inspector folder even after zip extraction attempt.");
-                }
+        final File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
+        if (source.isPresent()) {
+            logger.debug("Resolved the nuget inspector url: " + source.get());
+            final String nupkgName = artifactResolver.parseFileName(source.get());
+            logger.debug("Parsed artifact name: " + nupkgName);
+            final File nupkgFile = new File(nugetDirectory, nupkgName);
+            final String inspectorFolderName = nupkgName.replace(".nupkg", "");
+            File inspectorFolder = new File(nugetDirectory, inspectorFolderName);
+            if (!inspectorFolder.exists()) {
+                logger.info("Downloading nuget inspector.");
+                artifactResolver.downloadArtifact(nupkgFile, source.get());
+                logger.info("Extracting nuget inspector.");
+                DetectZipUtil.unzip(nupkgFile, inspectorFolder, Charset.defaultCharset());
+                return inspectorFolder;
             } else {
-                throw new DetectableException("Unable to find nuget inspector location in Artifactory.");
+                logger.debug("Inspector is already downloaded, folder exists.");
+                return inspectorFolder;
             }
+        } else {
+            throw new DetectableException("Unable to find nuget inspector location in Artifactory.");
+        }
     }
 }
