@@ -56,7 +56,7 @@ public class ExtractionReporter {
         writer.writeLine(ReportConstants.SEPERATOR);
         writer.writeLine("Finished extraction: " + detectorEvaluation.getExtraction().getResult().toString());
         writer.writeLine("Code locations found: " + detectorEvaluation.getExtraction().getCodeLocations().size());
-        if (detectorEvaluation.getExtraction().getResult() == Extraction.ExtractionResultType.EXCEPTION) { //TODO add back in trace when in debug.
+        if (detectorEvaluation.getExtraction().getResult() == Extraction.ExtractionResultType.EXCEPTION) {
             writer.writeLine("Exception: " + ExceptionUtil.oneSentenceDescription(detectorEvaluation.getExtraction().getError()));
         } else if (detectorEvaluation.getExtraction().getResult() == Extraction.ExtractionResultType.FAILURE) {
             writer.writeLine(detectorEvaluation.getExtraction().getDescription());

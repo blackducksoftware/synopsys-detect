@@ -71,7 +71,8 @@ public class DetectorTool {
         this.codeLocationConverter = codeLocationConverter;
     }
 
-    public DetectorToolResult performDetectors(final File directory, DetectorRuleSet detectorRuleSet, final DetectorFinderOptions detectorFinderOptions, DetectorEvaluationOptions evaluationOptions, final String projectBomTool) throws DetectUserFriendlyException {
+    public DetectorToolResult performDetectors(final File directory, DetectorRuleSet detectorRuleSet, final DetectorFinderOptions detectorFinderOptions, DetectorEvaluationOptions evaluationOptions, final String projectBomTool)
+        throws DetectUserFriendlyException {
         logger.info("Initializing detector system.");
 
         final DetectorFinder detectorFinder = new DetectorFinder();
@@ -103,10 +104,10 @@ public class DetectorTool {
         detectorEvaluator.searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
 
         Set<DetectorType> applicable = detectorEvaluations.stream()
-                                                         .filter(DetectorEvaluation::isApplicable)
-                                                         .map(DetectorEvaluation::getDetectorRule)
-                                                         .map(DetectorRule::getDetectorType)
-                                                         .collect(Collectors.toSet());
+                                           .filter(DetectorEvaluation::isApplicable)
+                                           .map(DetectorEvaluation::getDetectorRule)
+                                           .map(DetectorRule::getDetectorType)
+                                           .collect(Collectors.toSet());
 
         eventSystem.publishEvent(Event.ApplicableCompleted, applicable);
         eventSystem.publishEvent(Event.SearchCompleted, rootEvaluation);
@@ -128,7 +129,7 @@ public class DetectorTool {
 
         final Map<DetectorType, StatusType> statusMap = extractStatus(detectorEvaluations);
         statusMap.forEach((detectorType, statusType) -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(detectorType, statusType)));
-        if (statusMap.containsValue(StatusType.FAILURE)){
+        if (statusMap.containsValue(StatusType.FAILURE)) {
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "One or more detectors were not succesfull."));
         }
 
@@ -181,7 +182,7 @@ public class DetectorTool {
                 } else {
                     statusType = StatusType.FAILURE;
                 }
-                if (statusType == StatusType.FAILURE || !statusMap.containsKey(detectorType)){
+                if (statusType == StatusType.FAILURE || !statusMap.containsKey(detectorType)) {
                     statusMap.put(detectorType, statusType);
                 }
             }
