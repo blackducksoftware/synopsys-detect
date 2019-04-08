@@ -212,8 +212,9 @@ public enum DetectProperty {
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS("detect.blackduck.signature.scanner.paths", "Signature Scanner Target Paths", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
-    @HelpDescription("If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode.")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE("detect.blackduck.signature.scanner.snippet.mode", "Snippet Scanning", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    @HelpDescription("Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the Black Duck Signature Scanner documentation.")
+    @AcceptableValues(value = { "SNIPPET_MATCHING", "SNIPPET_MATCHING_ONLY", "FULL_SNIPPET_MATCHING", "FULL_SNIPPET_MATCHING_ONLY", "NONE" }, strict = true)
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING("detect.blackduck.signature.scanner.snippet.matching", "Snippet Matching", "5.5.0", PropertyType.STRING, PropertyAuthority.None, "NONE"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck.")
@@ -958,7 +959,13 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_LOGGING, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The logging level of Detect")
     @AcceptableValues(value = { "ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
-    LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION("logging.level.com.blackducksoftware.integration", "Logging Level", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "INFO");
+    LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION("logging.level.com.blackducksoftware.integration", "Logging Level", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "INFO"),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is now deprecated. Please use --detect.blackduck.signature.scanner.snippet.matching in the future. NOTE the new property is one of a particular set of values. You will need to consult the documentation for the Signature Scanner in Black Duck for details.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
+    @HelpDescription("If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode.")
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE("detect.blackduck.signature.scanner.snippet.mode", "Snippet Scanning", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false");
 
     /**********************************************************************************************
      * DEPRECATED END

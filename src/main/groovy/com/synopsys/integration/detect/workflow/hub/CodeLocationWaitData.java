@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detect.workflow.hub;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
@@ -30,70 +32,46 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 
 public class CodeLocationWaitData {
-    private NotificationTaskRange bdioUploadRange;
-    private Set<String> bdioUploadCodeLocationNames;
-    private boolean hasBdioResults;
+    private NotificationTaskRange notificationRange;
+    private Set<String> codeLocationNames = new HashSet<>();
+    private int expectedNotificationCount = 0;
 
-    private NotificationTaskRange signatureScanRange;
-    private Set<String> signatureScanCodeLocationNames;
-    private boolean hasScanResults;
-
-    private NotificationTaskRange binaryScanRange;
-    private Set<String> binaryScanCodeLocationNames;
-    private boolean hasBinaryResults;
-
-    public void setFromBdioCodeLocationCreationData(CodeLocationCreationData<UploadBatchOutput> bdioCodeLocationCreationData) {
-        bdioUploadRange = bdioCodeLocationCreationData.getNotificationTaskRange();
-        bdioUploadCodeLocationNames = bdioCodeLocationCreationData.getOutput().getSuccessfulCodeLocationNames();
-        hasBdioResults = true;
+    public void addWaitForCreationData(CodeLocationCreationData codeLocationCreationData) {
+        expectedNotificationCount += codeLocationCreationData.getOutput().getExpectedNotificationCount();
+        codeLocationNames.addAll(codeLocationCreationData.getOutput().getSuccessfulCodeLocationNames());
+        if (null == notificationRange) {
+            notificationRange = codeLocationCreationData.getNotificationTaskRange();
+        } else {
+            NotificationTaskRange rangeToAdd = codeLocationCreationData.getNotificationTaskRange();
+            long earliestTaskTime = Math.min(notificationRange.getTaskStartTime(), rangeToAdd.getTaskStartTime());
+            Date earliestStartDate = earliestDate(notificationRange.getStartDate(), rangeToAdd.getStartDate());
+            Date latestEndDate = latestDate(notificationRange.getEndDate(), rangeToAdd.getEndDate());
+            this.notificationRange = new NotificationTaskRange(earliestTaskTime, earliestStartDate, latestEndDate);
+        }
     }
 
-    public void setFromSignatureScannerCodeLocationCreationData(CodeLocationCreationData<ScanBatchOutput> scanCodeLocationCreationData) {
-        signatureScanRange = scanCodeLocationCreationData.getNotificationTaskRange();
-        signatureScanCodeLocationNames = scanCodeLocationCreationData.getOutput().getSuccessfulCodeLocationNames();
-        hasScanResults = true;
+    private Date earliestDate(Date d1, Date d2) {
+        if (d1.before(d2))
+            return d1;
+        return d2;
     }
 
-    public void setFromBinaryScan(NotificationTaskRange notificationTaskRange, Set<String> codeLocationNames) {
-        binaryScanRange = notificationTaskRange;
-        binaryScanCodeLocationNames = codeLocationNames;
-        hasBinaryResults = true;
+    private Date latestDate(Date d1, Date d2) {
+        if (d1.after(d2))
+            return d1;
+        return d2;
     }
 
-    public NotificationTaskRange getBdioUploadRange() {
-        return bdioUploadRange;
+    public NotificationTaskRange getNotificationRange() {
+        return notificationRange;
     }
 
-    public Set<String> getBdioUploadCodeLocationNames() {
-        return bdioUploadCodeLocationNames;
+    public Set<String> getCodeLocationNames() {
+        return codeLocationNames;
     }
 
-    public boolean hasBdioResults() {
-        return hasBdioResults;
-    }
-
-    public NotificationTaskRange getSignatureScanRange() {
-        return signatureScanRange;
-    }
-
-    public Set<String> getSignatureScanCodeLocationNames() {
-        return signatureScanCodeLocationNames;
-    }
-
-    public boolean hasScanResults() {
-        return hasScanResults;
-    }
-
-    public NotificationTaskRange getBinaryScanRange() {
-        return binaryScanRange;
-    }
-
-    public Set<String> getBinaryScanCodeLocationNames() {
-        return binaryScanCodeLocationNames;
-    }
-
-    public boolean hasBinaryScanResults() {
-        return hasBinaryResults;
+    public int getExpectedNotificationCount() {
+        return expectedNotificationCount;
     }
 
 }
