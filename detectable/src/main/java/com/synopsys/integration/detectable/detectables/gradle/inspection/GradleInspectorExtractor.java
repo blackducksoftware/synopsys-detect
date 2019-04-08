@@ -87,7 +87,7 @@ public class GradleInspectorExtractor {
                         .map(gradleReportParser::parseReport)
                         .filter(Optional::isPresent)
                         .map(Optional::get)
-                        .map(gradleReportTransformer::trasnform)
+                        .map(gradleReportTransformer::transform)
                         .forEach(codeLocations::add);
 
                     if (rootProjectMetadataFile != null) {
