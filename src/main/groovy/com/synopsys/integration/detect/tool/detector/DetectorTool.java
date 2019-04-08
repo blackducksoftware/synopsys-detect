@@ -87,7 +87,7 @@ public class DetectorTool {
         if (!possibleRootEvaluation.isPresent()) {
             logger.error("The source directory could not be searched for detectors - detector tool failed.");
             logger.error("Please ensure the provided source path is a directory and detect has access.");
-            eventSystem.publishEvent(Event.StatusSummary, new Status("DETECTOR", StatusType.FAILURE));
+            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION, "Detector tool failed to run on the configured source path."));
             return new DetectorToolResult();
         }
 
