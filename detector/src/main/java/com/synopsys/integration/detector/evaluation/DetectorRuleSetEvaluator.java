@@ -48,11 +48,7 @@ public class DetectorRuleSetEvaluator {
             return new MaxDepthExceededDetectorResult(environment.getDepth(), maxDepth);
         }
 
-        final Set<DetectorRule> applied = new HashSet<>();
-        applied.addAll(environment.getAppliedToParent());
-        applied.addAll(environment.getAppliedSoFar());
-
-        final Set<DetectorRule> yieldTo = applied.stream()
+        final Set<DetectorRule> yieldTo = environment.getAppliedSoFar().stream()
                                               .filter(it -> detectorRuleSet.getYieldsTo(detectorRule).contains(it))
                                               .collect(Collectors.toSet());
 

@@ -54,6 +54,7 @@ public class GradleReportTransformer {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         for (final GradleConfiguration configuration : gradleReport.configurations) {
+            logger.info(String.format("Adding configuration to the graph: %s", configuration.name));
             addConfigurationToGraph(graph, configuration);
         }
 
