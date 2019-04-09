@@ -37,6 +37,7 @@ public class DetectorFinderTest {
         initialDirectoryPath.toFile().delete();
     }
 
+    @Test
     @DisabledOnOs(WINDOWS) //TODO: See if we can fix on windows.
     public void testSymLinksNotFollowed() throws IOException, DetectorFinderDirectoryListException {
         Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
