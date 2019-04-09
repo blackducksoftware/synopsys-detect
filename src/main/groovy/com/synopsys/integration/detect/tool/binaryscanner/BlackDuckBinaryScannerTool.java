@@ -37,6 +37,7 @@ import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -51,6 +52,7 @@ import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckBinaryScannerTool {
     private final Logger logger = LoggerFactory.getLogger(BlackDuckBinaryScannerTool.class);
+    private static final String STATUS_KEY = "BINARY_SCAN";
 
     private final CodeLocationNameManager codeLocationNameManager;
     private DetectConfiguration detectConfiguration;
@@ -70,25 +72,22 @@ public class BlackDuckBinaryScannerTool {
             logger.info("No binary scan file path provided; binary scan will not run");
             return false;
         }
-        final File binaryScanFile = new File(binaryScanFilePath);
-        if (binaryScanFile.isFile() && binaryScanFile.canRead()) {
-            logger.info("Valid binary scan file path provided; binary scan will run");
-            return true;
-        }
-        logger.warn("A binary scan file path was provided, but it does not point to a readable file, so binary scan will not run");
-        return false;
+        return true;
     }
 
     public BinaryScanToolResult performBinaryScanActions(final NameVersion projectNameVersion) throws DetectUserFriendlyException {
-        if (StringUtils.isNotBlank(getBinaryScanFilePath())) {
+        final String binaryScanFilePath = getBinaryScanFilePath();
+        final File binaryScanFile = new File(binaryScanFilePath);
+        if (binaryScanFile.isFile() && binaryScanFile.canRead()) {
             final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.None);
             final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.None);
-            final File binaryScanFile = new File(getBinaryScanFilePath());
             final NotificationTaskRange taskRange = calculateTaskRange();
             final Set<String> codeLocationNames = uploadBinaryScanFile(blackDuckServicesFactory.createBinaryScannerService(), binaryScanFile, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);
             return new BinaryScanToolResult(taskRange, codeLocationNames, true);
         } else {
-            logger.debug("No binary scan path was provided, so binary scan will not occur.");
+            logger.debug("The binary scan file path does not point to a readable file.");
+            eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.FAILURE));
+            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY));
             return new BinaryScanToolResult(null, null, false);
         }
     }
@@ -107,13 +106,13 @@ public class BlackDuckBinaryScannerTool {
             logger.info("Preparing to upload binary scan file: " + codeLocationName);
             binaryService.scanBinary(binaryScanFile, projectName, projectVersionName, codeLocationName);
             logger.info("Successfully uploaded binary scan file: " + codeLocationName);
-            eventSystem.publishEvent(Event.StatusSummary, new Status("BINARY_SCAN", StatusType.SUCCESS));
+            eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.SUCCESS));
             Set<String> names = new HashSet<String>();
             names.add(codeLocationName);
             return  names;
         } catch (IOException | IntegrationException e) {
             logger.error("Failed to upload binary scan file: " + e.getMessage());
-            eventSystem.publishEvent(Event.StatusSummary, new Status("BINARY_SCAN", StatusType.FAILURE));
+            eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.FAILURE));
             throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         }
     }

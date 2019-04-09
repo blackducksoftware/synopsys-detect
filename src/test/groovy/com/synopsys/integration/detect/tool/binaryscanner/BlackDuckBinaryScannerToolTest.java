@@ -12,36 +12,55 @@ import org.mockito.Mockito;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckBinaryScannerToolTest {
 
+
     @Test
-    public void testShouldRunFalseNonExistent() {
+    public void testShouldRunFalsePropertyNotSet() {
+        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
+        Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None)).thenReturn("");
+        final EventSystem eventSystem = Mockito.mock(EventSystem.class);
+
+        final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(eventSystem,
+            null, detectConfiguration, null);
+        boolean shouldRunResponse = tool.shouldRun();
+
+        assertFalse(shouldRunResponse);
+    }
+
+    @Test
+    public void testShouldRunTrueFileNonExistent() {
         final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
         Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None)).thenReturn("thisisnotafile");
+        final EventSystem eventSystem = Mockito.mock(EventSystem.class);
         
-        final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null,
+        final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(eventSystem,
             null, detectConfiguration, null);
         boolean shouldRunResponse = tool.shouldRun();
 
-        assertFalse(shouldRunResponse);
+        assertTrue(shouldRunResponse);
     }
 
 
     @Test
-    public void testShouldRunFalseDirectory() {
+    public void testShouldRunTruePropertySetToDirectory() {
         final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
         Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None)).thenReturn(".");
+        final EventSystem eventSystem = Mockito.mock(EventSystem.class);
 
-        final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null,
+        final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(eventSystem,
             null, detectConfiguration, null);
         boolean shouldRunResponse = tool.shouldRun();
 
-        assertFalse(shouldRunResponse);
+        assertTrue(shouldRunResponse);
     }
 
     @Test
-    public void testShouldRunTrue() throws IOException {
+    public void testShouldRunTrueEverythingCorrect() throws IOException {
         final File binaryScanFile = Files.createTempFile("test", "binaryScanFile").toFile();
         binaryScanFile.deleteOnExit();
         assertTrue(binaryScanFile.canRead());
@@ -49,11 +68,28 @@ public class BlackDuckBinaryScannerToolTest {
 
         final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
         Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None)).thenReturn(binaryScanFile.getAbsolutePath());
+        final EventSystem eventSystem = Mockito.mock(EventSystem.class);
 
-        final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null,
+        final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(eventSystem,
             null, detectConfiguration, null);
         boolean shouldRunResponse = tool.shouldRun();
 
         assertTrue(shouldRunResponse);
+    }
+
+    @Test
+    public void testShouldFailOnDirectory() throws DetectUserFriendlyException {
+        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
+        Mockito.when(detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None)).thenReturn(".");
+
+        final EventSystem eventSystem = Mockito.mock(EventSystem.class);
+
+        final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(eventSystem,
+            null, detectConfiguration, null);
+        final NameVersion projectNameVersion = new NameVersion("testName", "testVersion");
+
+        final BinaryScanToolResult result = tool.performBinaryScanActions(projectNameVersion);
+
+        assertFalse(result.isSuccessful());
     }
 }
