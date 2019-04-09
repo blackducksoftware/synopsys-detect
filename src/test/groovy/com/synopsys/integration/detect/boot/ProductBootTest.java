@@ -26,7 +26,6 @@ import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 
 public class ProductBootTest {
-
     @Test(expected = DetectUserFriendlyException.class)
     public void bothProductsSkippedThrows() throws DetectUserFriendlyException {
         testBoot(BlackDuckDecision.skip(), PolarisDecision.skip());
