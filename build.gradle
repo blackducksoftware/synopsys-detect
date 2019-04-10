@@ -11,6 +11,8 @@ import com.synopsys.integration.log.PrintStreamIntLogger
 buildscript {
     ext {
         springBootVersion = '2.0.3.RELEASE'
+        blackduckCommonVersion = '42.4.1'
+        polarisCommonVersion = '0.11.0'
     }
     repositories {
         jcenter()
@@ -21,8 +23,8 @@ buildscript {
     dependencies {
         classpath 'com.blackducksoftware.integration:common-gradle-plugin:0.0.+'
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-        classpath 'com.blackducksoftware.integration:blackduck-common:42.4.0'
-        classpath 'com.synopsys.integration:polaris-common:0.11.0'
+        classpath "com.blackducksoftware.integration:blackduck-common:${blackduckCommonVersion}"
+        classpath "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
     }
 }
 
@@ -43,7 +45,7 @@ allprojects {
     apply plugin: 'io.spring.dependency-management'
 
     dependencies {
-        implementation 'com.blackducksoftware.integration:blackduck-common:42.4.0'
+        implementation "com.blackducksoftware.integration:blackduck-common:${blackduckCommonVersion}"
         implementation 'com.paypal.digraph:digraph-parser:1.0'
     }
 }
@@ -90,7 +92,7 @@ dependencies {
     implementation project(":detectable")
     implementation project(":detector")
 
-    implementation 'com.synopsys.integration:polaris-common:0.11.0'
+    implementation "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
     implementation 'org.yaml:snakeyaml:1.24'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
