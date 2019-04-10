@@ -174,6 +174,11 @@ public class Application implements ApplicationRunner {
             logger.error(String.format("Exiting with code %s - %s", finalExitCode.getExitCode(), finalExitCode.toString()));
         }
 
-        System.exit(finalExitCode.getExitCode());
+        if (System.getenv().containsKey("DETECT_DO_NOT_EXIT") && System.getenv().get("DETECT_DO_NOT_EXIT").equals("TRUE")) {
+            logger.info(String.format("Would normally exit(%s) but it is overriden.", finalExitCode.getExitCode()));
+        } else {
+            System.exit(finalExitCode.getExitCode());
+        }
     }
+
 }

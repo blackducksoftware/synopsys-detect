@@ -62,20 +62,8 @@ public class BlackduckPostActions {
             if (policyCheckOptions.shouldPerformPolicyCheck() || blackduckReportOptions.shouldGenerateAnyReport()) {
                 logger.info("Detect must wait for bom tool calculations to finish.");
                 CodeLocationCreationService codeLocationCreationService = blackDuckServicesFactory.createCodeLocationCreationService();
-                List<CodeLocationWaitResult> results = new ArrayList<>();
-                if (codeLocationWaitData.hasBdioResults()) {
-                    CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getBdioUploadRange(), codeLocationWaitData.getBdioUploadCodeLocationNames(), timeoutInSeconds);
-                    results.add(result);
-                }
-                if (codeLocationWaitData.hasScanResults()) {
-                    CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getSignatureScanRange(), codeLocationWaitData.getSignatureScanCodeLocationNames(), timeoutInSeconds);
-                    results.add(result);
-                }
-                if (codeLocationWaitData.hasBinaryScanResults()) {
-                    CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getBinaryScanRange(), codeLocationWaitData.getBinaryScanCodeLocationNames(), timeoutInSeconds);
-                    results.add(result);
-                }
-                for (CodeLocationWaitResult result : results) {
+                if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
+                    CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getNotificationRange(), codeLocationWaitData.getCodeLocationNames(), codeLocationWaitData.getExpectedNotificationCount(), timeoutInSeconds);
                     if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
                         throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
                     }

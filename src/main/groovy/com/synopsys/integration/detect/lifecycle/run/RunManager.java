@@ -244,7 +244,7 @@ public class RunManager {
                     final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
                     final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, blackDuckServicesFactory.createBdioUploadService(), eventSystem);
                     final CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
-                    codeLocationWaitData.setFromBdioCodeLocationCreationData(uploadBatchOutputCodeLocationCreationData);
+                    codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
                 }
             } else {
                 logger.debug("Did not create any BDIO files.");
@@ -259,7 +259,7 @@ public class RunManager {
                 final BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
                 final SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar());
                 if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
-                    codeLocationWaitData.setFromSignatureScannerCodeLocationCreationData(signatureScannerToolResult.getCreationData().get());
+                    codeLocationWaitData.addWaitForCreationData(signatureScannerToolResult.getCreationData().get());
                 }
                 logger.info("Signature scanner actions finished.");
             } else {
@@ -275,7 +275,7 @@ public class RunManager {
                     if (blackDuckBinaryScanner.shouldRun()) {
                         final BinaryScanToolResult result = blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
                         if (result.isSuccessful()) {
-                            codeLocationWaitData.setFromBinaryScan(result.getNotificationTaskRange(), result.getCodeLocationNames());
+                            codeLocationWaitData.addWaitForCreationData(result.getCodeLocationCreationData());
                         }
                     }
                 }

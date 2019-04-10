@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +69,7 @@ public abstract class BlackDuckSignatureScanner {
     private final ScanBatchRunner scanJobManager;
 
     public BlackDuckSignatureScanner(final DirectoryManager directoryManager, final FileFinder fileFinder, final CodeLocationNameManager codeLocationNameManager,
-        final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanBatchRunner scanJobManager) {
+                                     final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanBatchRunner scanJobManager) {
         this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
@@ -105,8 +106,8 @@ public abstract class BlackDuckSignatureScanner {
         boolean anyExitCodeIs64 = false;
         for (final SignatureScanPath target : signatureScanPaths) {
             Optional<ScanCommandOutput> targetOutput = scanCommandOutputList.stream()
-                                                           .filter(output -> output.getScanTarget().equals(target.targetPath))
-                                                           .findFirst();
+                    .filter(output -> output.getScanTarget().equals(target.targetPath))
+                    .findFirst();
 
             StatusType scanStatus;
             if (!targetOutput.isPresent()) {
@@ -190,7 +191,7 @@ public abstract class BlackDuckSignatureScanner {
             final ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(fileFinder, target);
 
             final String maxDepthHitMsg = String.format("Maximum depth %d hit while traversing source tree to generate signature scanner exclusion patterns. To search deeper, adjust the value of property %s",
-                maxDepth, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH.getPropertyName());
+                    maxDepth, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH.getPropertyName());
 
             final Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepthHitMsg, maxDepth, signatureScannerExclusionNamePatterns);
             if (null != providedExclusionPatterns) {
@@ -216,19 +217,13 @@ public abstract class BlackDuckSignatureScanner {
         scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());
         scanJobBuilder.cleanupOutput(signatureScannerOptions.getCleanupOutput());
 
-        if (signatureScannerOptions.getSnippetMatching()) {
-            scanJobBuilder.snippetMatching(SnippetMatching.SNIPPET_MATCHING);
+        Optional<SnippetMatching> optionalSnippetMatching = signatureScannerOptions.getSnippetMatchingEnum();
+        boolean uploadSource = BooleanUtils.toBoolean(signatureScannerOptions.getUploadSource());
+        if (optionalSnippetMatching.isPresent()) {
+            scanJobBuilder.uploadSource(optionalSnippetMatching.get(), uploadSource);
         }
 
-        // TODO: Have requested (INTCMN-365) the ability to enable "upload source" via scanJobBuilder; for now: add to additionalArguments
         String additionalArguments = signatureScannerOptions.getAdditionalArguments();
-        if (signatureScannerOptions.getUploadSource()) {
-            if (StringUtils.isBlank(additionalArguments)) {
-                additionalArguments = SIGNATURE_SCAN_UPLOAD_SOURCE_OPTION;
-            } else {
-                additionalArguments = String.format("%s %s", SIGNATURE_SCAN_UPLOAD_SOURCE_OPTION, additionalArguments);
-            }
-        }
         scanJobBuilder.additionalScanArguments(additionalArguments);
 
         final String projectName = projectNameVersion.getName();

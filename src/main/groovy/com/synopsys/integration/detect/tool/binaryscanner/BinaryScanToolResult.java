@@ -22,30 +22,51 @@
  */
 package com.synopsys.integration.detect.tool.binaryscanner;
 
+import java.util.Collections;
 import java.util.Set;
 
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 
 public class BinaryScanToolResult {
-    private final NotificationTaskRange notificationTaskRange;
-    private final Set<String> codeLocationNames;
-    private final boolean successful;
+    private final CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData;
 
-    public BinaryScanToolResult(final NotificationTaskRange notificationTaskRange, final Set<String> codeLocationNames, final boolean successful) {
-        this.notificationTaskRange = notificationTaskRange;
-        this.codeLocationNames = codeLocationNames;
-        this.successful = successful;
+    public static BinaryScanToolResult SUCCESS(CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData) {
+        return new BinaryScanToolResult(codeLocationCreationData);
+    }
+
+    public static BinaryScanToolResult FAILURE() {
+        return new BinaryScanToolResult(null);
+    }
+
+    private BinaryScanToolResult(CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData) {
+        this.codeLocationCreationData = codeLocationCreationData;
     }
 
     public boolean isSuccessful() {
-        return successful;
+        if (null == codeLocationCreationData) {
+            return false;
+        }
+        return codeLocationCreationData.getOutput().getSuccessfulCodeLocationNames().size() > 0;
     }
 
     public NotificationTaskRange getNotificationTaskRange() {
-        return notificationTaskRange;
+        if (null == codeLocationCreationData) {
+            return null;
+        }
+        return codeLocationCreationData.getNotificationTaskRange();
     }
 
     public Set<String> getCodeLocationNames() {
-        return codeLocationNames;
+        if (null == codeLocationCreationData) {
+            return Collections.emptySet();
+        }
+        return codeLocationCreationData.getOutput().getSuccessfulCodeLocationNames();
     }
+
+    public CodeLocationCreationData<BinaryScanBatchOutput> getCodeLocationCreationData() {
+        return codeLocationCreationData;
+    }
+
 }
