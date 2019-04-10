@@ -85,7 +85,7 @@ public class BlackDuckBinaryScannerTool {
             final Set<String> codeLocationNames = uploadBinaryScanFile(blackDuckServicesFactory.createBinaryScannerService(), binaryScanFile, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);
             return new BinaryScanToolResult(taskRange, codeLocationNames, true);
         } else {
-            logger.debug("The binary scan file path does not point to a readable file.");
+            logger.error("The binary scan file path does not point to a readable file.");
             eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.FAILURE));
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY));
             return new BinaryScanToolResult(null, null, false);
