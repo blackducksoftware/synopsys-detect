@@ -46,17 +46,20 @@ public class GradleReportTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
 
-    public GradleReportTransformer(final ExternalIdFactory externalIdFactory) {this.externalIdFactory = externalIdFactory;}
+    public GradleReportTransformer(final ExternalIdFactory externalIdFactory) {
+        this.externalIdFactory = externalIdFactory;
+    }
 
-    public CodeLocation trasnform(final GradleReport gradleReport) {
+    public CodeLocation transform(final GradleReport gradleReport) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         for (final GradleConfiguration configuration : gradleReport.configurations) {
+            logger.info(String.format("Adding configuration to the graph: %s", configuration.name));
             addConfigurationToGraph(graph, configuration);
         }
 
         final ExternalId projectId = externalIdFactory.createMavenExternalId(gradleReport.projectGroup, gradleReport.projectName, gradleReport.projectVersionName);
-        if (StringUtils.isNotBlank(gradleReport.projectSourcePath)){
+        if (StringUtils.isNotBlank(gradleReport.projectSourcePath)) {
             return new CodeLocation(graph, projectId, new File(gradleReport.projectSourcePath));
         } else {
             return new CodeLocation(graph, projectId);

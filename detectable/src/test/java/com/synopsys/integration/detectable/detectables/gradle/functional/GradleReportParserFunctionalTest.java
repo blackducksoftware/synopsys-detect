@@ -40,7 +40,7 @@ public class GradleReportParserFunctionalTest {
         final Optional<GradleReport> gradleReport = gradleReportParser.parseReport(FunctionalTestFiles.asFile("/gradle/dependencyGraph.txt"));
         Assert.assertTrue(gradleReport.isPresent());
         final GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory());
-        final CodeLocation codeLocation = transformer.trasnform(gradleReport.get());
+        final CodeLocation codeLocation = transformer.transform(gradleReport.get());
         Assert.assertNotNull(codeLocation);
 
         Assert.assertEquals("hub-detect", gradleReport.get().projectName);
@@ -92,7 +92,7 @@ public class GradleReportParserFunctionalTest {
         final GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory());
 
         return gradleReportParser.parseReport(file)
-                   .map(gradleReportTransformer::trasnform);
+                   .map(gradleReportTransformer::transform);
     }
 
     @Test

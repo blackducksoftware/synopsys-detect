@@ -154,16 +154,6 @@ public class SimpleExecutableResolver
     @Override
     public File resolveBazel() {
         final File bazel = findCachedSystem("bazel");
-        //TODO: replicate bazel version call?
-        /*
-        try {
-            ExecutableOutput bazelQueryDepsRecursiveOutput = executableRunner.executeQuietly(environment.getDirectory(), resolvedBazel, BAZEL_VERSION_SUBCOMMAND);
-            int returnCode = bazelQueryDepsRecursiveOutput.getReturnCode();
-            logger.trace(String.format("Bazel version returned %d; output: %s", returnCode, bazelQueryDepsRecursiveOutput.getStandardOutput()));
-        } catch (ExecutableRunnerException e) {
-            logger.debug(String.format("Bazel version threw exception: %s", e.getMessage()));
-            resolvedBazel = null;
-        }*/
         return bazel;
     }
 

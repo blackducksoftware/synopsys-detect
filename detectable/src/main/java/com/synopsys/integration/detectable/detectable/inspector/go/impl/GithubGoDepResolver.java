@@ -37,7 +37,7 @@ import com.synopsys.integration.detectable.detectable.inspector.go.GoDepResolver
 import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 
 public class GithubGoDepResolver implements GoDepResolver, GoResolver {
-    private final Logger logger = LoggerFactory.getLogger(GithubGoDepResolver.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ExecutableRunner executableRunner;
     private final SimpleLocalExecutableFinder simpleLocalExecutableFinder;
