@@ -155,6 +155,11 @@ public class ShutdownManager {
             }
         }
 
+        if (directory.listFiles().length == 0) {
+            logger.info("Cleaning up directory: " + directory.getAbsolutePath());
+            FileUtils.forceDelete(directory);
+        }
+
         if (null != exception) {
             throw exception;
         }
