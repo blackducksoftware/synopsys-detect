@@ -48,13 +48,18 @@ public class CompileCommandParser {
 
     public List<String> parseCommand(CompileCommand compileCommand, final Map<String, String> optionOverrides) {
 
-        String commandText = compileCommand.command;
-        if (StringUtils.isBlank(commandText)) {
-            commandText = String.join(" ", compileCommand.arguments);
+        String commandString = compileCommand.command;
+        if (StringUtils.isBlank(commandString)) {
+            commandString = String.join(" ", compileCommand.arguments);
         }
+        final List<String> commandList = parseCommandString(commandString, optionOverrides);
+        return commandList;
+    }
 
-        logger.trace(String.format("origCompileCommand         : %s", commandText));
-        String quotesRemovedCompileCommand = escapeQuotedWhitespace(commandText);
+    // This method will be used in future CMake support (in addition to CLang)
+    public List<String> parseCommandString(final String commandString, final Map<String, String> optionOverrides) {
+        logger.trace(String.format("origCompileCommand         : %s", commandString));
+        String quotesRemovedCompileCommand = escapeQuotedWhitespace(commandString);
         logger.trace(String.format("quotesRemovedCompileCommand: %s", quotesRemovedCompileCommand));
         StringTokenizer tokenizer = new StringTokenizer(quotesRemovedCompileCommand);
         tokenizer.setQuoteMatcher(StringMatcherFactory.INSTANCE.quoteMatcher());
