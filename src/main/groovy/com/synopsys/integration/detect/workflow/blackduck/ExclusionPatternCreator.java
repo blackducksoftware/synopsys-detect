@@ -53,6 +53,7 @@ public class ExclusionPatternCreator {
         final Set<String> scanExclusionPatterns = new HashSet<>();
         try {
             final String scanTargetPath = scanTarget.getCanonicalPath();
+            // TODO should we only collect directories since the scanner can only exclude directories?
             final List<File> matchingFiles = fileFinder.findFiles(scanTarget, Arrays.asList(signatureScannerExclusionNamePatterns), maxDepth); //TODO: re-add the depth hit message creator?
             for (final File matchingFile : matchingFiles) {
                 final String matchingFilePath = matchingFile.getCanonicalPath();
