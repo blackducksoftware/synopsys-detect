@@ -47,7 +47,7 @@ public class BazelDetectable extends Detectable {
     private File bazelExe;
 
     public BazelDetectable(final DetectableEnvironment environment, final BazelExtractor bazelExtractor,
-        BazelResolver bazelResolver, final BazelDetectableOptions bazelDetectableOptions) {
+        final BazelResolver bazelResolver, final BazelDetectableOptions bazelDetectableOptions) {
         super(environment, "bazel", "bazel");
         this.bazelExtractor = bazelExtractor;
         this.bazelResolver = bazelResolver;
