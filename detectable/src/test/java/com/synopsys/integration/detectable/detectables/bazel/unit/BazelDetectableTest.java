@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
@@ -22,9 +23,9 @@ public class BazelDetectableTest {
 
         Mockito.when(bazelDetectableOptions.getTargetName()).thenReturn("target");
 
-        final BazelDetectable d = new BazelDetectable( environment,  bazelExtractor,
-         bazelResolver,  bazelDetectableOptions);
+        final BazelDetectable detectable = new BazelDetectable(environment, bazelExtractor,
+            bazelResolver, bazelDetectableOptions);
 
-        assertTrue(d.applicable().getPassed());
+        assertTrue(detectable.applicable().getPassed());
     }
 }

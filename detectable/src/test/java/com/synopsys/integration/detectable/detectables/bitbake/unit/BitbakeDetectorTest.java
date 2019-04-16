@@ -1,6 +1,5 @@
 package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -32,9 +31,9 @@ public class BitbakeDetectorTest {
         final String[] pkgNames = { "" };
         Mockito.when(bitbakeDetectableOptions.getPackageNames()).thenReturn(pkgNames);
 
-        final BitbakeDetectable d = new BitbakeDetectable( detectableEnvironment,  fileFinder, bitbakeDetectableOptions,  bitbakeExtractor,
-         bashResolver);
+        final BitbakeDetectable detectable = new BitbakeDetectable(detectableEnvironment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor,
+            bashResolver);
 
-        assertTrue(d.applicable().getPassed());
+        assertTrue(detectable.applicable().getPassed());
     }
 }
