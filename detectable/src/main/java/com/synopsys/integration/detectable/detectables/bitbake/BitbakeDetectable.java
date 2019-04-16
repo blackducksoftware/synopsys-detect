@@ -58,14 +58,14 @@ public class BitbakeDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         foundBuildEnvScript = fileFinder.findFile(environment.getDirectory(), bitbakeDetectableOptions.getBuildEnvName());
-        if (foundBuildEnvScript != null) {
+        if (foundBuildEnvScript == null) {
             return new FileNotFoundDetectableResult(bitbakeDetectableOptions.getBuildEnvName());
         }
 
         if (bitbakeDetectableOptions.getPackageNames() == null || bitbakeDetectableOptions.getPackageNames().length == 0) {
             return new PropertyInsufficientDetectableResult();
         }
-
+        
         return new PassedDetectableResult();
     }
 
