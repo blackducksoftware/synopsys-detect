@@ -15,23 +15,26 @@ import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
 
 public class BitbakeDetectorTest {
+    private static final String BUILD_ENV_NAME = "testBuildEnv";
 
     @Test
     public void testApplicable() {
-        final DetectableEnvironment detectableEnvironment = Mockito.mock(DetectableEnvironment.class);
+        final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
         final BitbakeDetectableOptions bitbakeDetectableOptions = Mockito.mock(BitbakeDetectableOptions.class);
         final BitbakeExtractor bitbakeExtractor = null;
         final BashResolver bashResolver = null;
 
-        Mockito.when(fileFinder.findFile(Mockito.any(File.class), Mockito.anyString())).thenReturn(new File("."));
-        Mockito.when(detectableEnvironment.getDirectory()).thenReturn(new File("."));
-        Mockito.when(bitbakeDetectableOptions.getBuildEnvName()).thenReturn("");
+        Mockito.when(bitbakeDetectableOptions.getBuildEnvName()).thenReturn(BUILD_ENV_NAME);
 
-        final String[] pkgNames = { "" };
+        final File dir = new File(".");
+        Mockito.when(environment.getDirectory()).thenReturn(dir);
+        Mockito.when(fileFinder.findFile(dir, BUILD_ENV_NAME)).thenReturn(new File(BUILD_ENV_NAME));
+
+        final String[] pkgNames = { "testPkgName" };
         Mockito.when(bitbakeDetectableOptions.getPackageNames()).thenReturn(pkgNames);
 
-        final BitbakeDetectable detectable = new BitbakeDetectable(detectableEnvironment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor,
+        final BitbakeDetectable detectable = new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor,
             bashResolver);
 
         assertTrue(detectable.applicable().getPassed());
