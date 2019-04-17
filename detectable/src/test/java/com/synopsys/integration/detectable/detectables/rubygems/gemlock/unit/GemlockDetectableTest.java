@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.rubygems.gemspec.unit;
+package com.synopsys.integration.detectable.detectables.rubygems.gemlock.unit;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
