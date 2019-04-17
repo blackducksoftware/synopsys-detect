@@ -34,7 +34,7 @@ public class DockerDetectableTest {
         final DockerDetectable detectable = new DockerDetectable(environment, dockerInspectorResolver, javaResolver, bashResolver, dockerResolver,
          dockerExtractor, dockerDetectableOptions);
 
-        DetectableResult result = detectable.applicable();
+        final DetectableResult result = detectable.applicable();
 
         assertTrue(result.getPassed() || result instanceof WrongOperatingSystemResult);
     }

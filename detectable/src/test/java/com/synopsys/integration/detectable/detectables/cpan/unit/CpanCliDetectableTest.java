@@ -15,6 +15,7 @@ import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliExtractor;
 
 public class CpanCliDetectableTest {
+    public static final String MAKEFILE = "Makefile.PL";
 
     @Test
     public void testApplicable() {
@@ -22,8 +23,9 @@ public class CpanCliDetectableTest {
         final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
 
-        Mockito.when(environment.getDirectory()).thenReturn(new File("."));
-        Mockito.when(fileFinder.findFile(Mockito.any(File.class), Mockito.anyString())).thenReturn(new File("."));
+        final File dir = new File(".");
+        Mockito.when(environment.getDirectory()).thenReturn(dir);
+        Mockito.when(fileFinder.findFile(dir, MAKEFILE)).thenReturn(new File(MAKEFILE));
 
         final CpanResolver cpanResolver = null;
         final CpanmResolver cpanmResolver = null;

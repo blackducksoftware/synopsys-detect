@@ -16,6 +16,7 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleI
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 
 public class GradleInspectorDetectableTest {
+    public static final String BUILD_GRADLE_FILENAME = "build.gradle";
 
     @Test
     public void testApplicable() {
@@ -28,8 +29,9 @@ public class GradleInspectorDetectableTest {
         final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
 
-        Mockito.when(environment.getDirectory()).thenReturn(new File("."));
-        Mockito.when(fileFinder.findFile(Mockito.any(File.class), Mockito.anyString())).thenReturn(new File("."));
+        final File dir = new File(".");
+        Mockito.when(environment.getDirectory()).thenReturn(dir);
+        Mockito.when(fileFinder.findFile(dir, BUILD_GRADLE_FILENAME)).thenReturn(new File(BUILD_GRADLE_FILENAME));
 
         final GradleInspectorDetectable detectable = new GradleInspectorDetectable(environment, fileFinder, gradleResolver, gradleInspectorResolver, gradleInspectorExtractor, gradleInspectorOptions);
 

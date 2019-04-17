@@ -15,6 +15,8 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLo
 
 public class NpmPackageLockDetectableTest {
 
+    public static final String PACKAGE_LOCK_JSON = "package-lock.json";
+
     @Test
     public void testApplicable() {
 
@@ -23,8 +25,9 @@ public class NpmPackageLockDetectableTest {
         final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
 
-        Mockito.when(environment.getDirectory()).thenReturn(new File("."));
-        Mockito.when(fileFinder.findFile(Mockito.any(File.class), Mockito.anyString())).thenReturn(new File("."));
+        final File dir = new File(".");
+        Mockito.when(environment.getDirectory()).thenReturn(dir);
+        Mockito.when(fileFinder.findFile(dir, PACKAGE_LOCK_JSON)).thenReturn(new File(PACKAGE_LOCK_JSON));
         
         final NpmLockfileOptions npmLockfileOptions = Mockito.mock(NpmLockfileOptions.class);
         Mockito.when(npmLockfileOptions.shouldIncludeDeveloperDependencies()).thenReturn(Boolean.TRUE);

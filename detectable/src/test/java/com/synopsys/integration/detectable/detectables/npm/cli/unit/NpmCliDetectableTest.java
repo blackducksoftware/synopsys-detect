@@ -1,5 +1,7 @@
 package com.synopsys.integration.detectable.detectables.npm.cli.unit;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 
 public class NpmCliDetectableTest {
+    public static final String PACKAGE_JSON_FILENAME = "package.json";
 
     @Test
     public void testApplicable() {
@@ -22,9 +25,12 @@ public class NpmCliDetectableTest {
         final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
 
-        Mockito.when(environment.getDirectory()).thenReturn(new File("."));
-        Mockito.when(fileFinder.findFile(Mockito.any(File.class), Mockito.anyString())).thenReturn(new File("."));
+        final File dir = new File(".");
+        Mockito.when(environment.getDirectory()).thenReturn(dir);
+        Mockito.when(fileFinder.findFile(dir, PACKAGE_JSON_FILENAME)).thenReturn(new File(PACKAGE_JSON_FILENAME));
 
         final NpmCliDetectable detectable = new NpmCliDetectable(environment, fileFinder, npmResolver, npmCliExtractor);
+
+        assertTrue(detectable.applicable().getPassed());
     }
 }

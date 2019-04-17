@@ -14,6 +14,7 @@ import com.synopsys.integration.detectable.detectables.hex.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.hex.RebarExtractor;
 
 public class RebarDetectableTest {
+    public static final String REBAR_CONFIG = "rebar.config";
 
     @Test
     public void testApplicable() {
@@ -24,8 +25,9 @@ public class RebarDetectableTest {
         final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
 
-        Mockito.when(environment.getDirectory()).thenReturn(new File("."));
-        Mockito.when(fileFinder.findFile(Mockito.any(File.class), Mockito.anyString())).thenReturn(new File("."));
+        final File dir = new File(".");
+        Mockito.when(environment.getDirectory()).thenReturn(dir);
+        Mockito.when(fileFinder.findFile(dir, REBAR_CONFIG)).thenReturn(new File(REBAR_CONFIG));
 
         final RebarDetectable detectable = new RebarDetectable(environment, fileFinder, rebar3Resolver, rebarExtractor);
 

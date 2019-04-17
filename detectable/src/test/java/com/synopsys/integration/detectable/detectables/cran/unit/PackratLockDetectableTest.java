@@ -13,6 +13,7 @@ import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectabl
 import com.synopsys.integration.detectable.detectables.cran.PackratLockExtractor;
 
 public class PackratLockDetectableTest {
+    public static final String PACKRATLOCK_FILE_NAME = "packrat.lock";
 
     @Test
     public void testApplicable() {
@@ -20,8 +21,9 @@ public class PackratLockDetectableTest {
         final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
 
-        Mockito.when(environment.getDirectory()).thenReturn(new File("."));
-        Mockito.when(fileFinder.findFile(Mockito.any(File.class), Mockito.anyString())).thenReturn(new File("."));
+        final File dir = new File(".");
+        Mockito.when(environment.getDirectory()).thenReturn(dir);
+        Mockito.when(fileFinder.findFile(dir, PACKRATLOCK_FILE_NAME)).thenReturn(new File(PACKRATLOCK_FILE_NAME));
 
         final PackratLockExtractor packratLockExtractor = null;
 
