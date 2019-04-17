@@ -12,17 +12,19 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.nuget.NugetInspectorExtractor;
-import com.synopsys.integration.detectable.detectables.nuget.NugetProjectDetectable;
+import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
 
-public class NugetProjectDetectableTest {
-    private static final String FILENAME_PATTERN = "*.rproj";
+public class NugetSolutionDetectableTest {
+    private static final String FILENAME_PATTERN = "*.sln";
+
+    // "*.sln"
 
     @Test
     public void testApplicable() {
 
-        final NugetInspectorOptions nugetInspectorOptions = null;
-        final NugetInspectorResolver nugetInspectorResolver = null;
+        final NugetInspectorResolver nugetInspectorManager = null;
         final NugetInspectorExtractor nugetInspectorExtractor = null;
+        final NugetInspectorOptions nugetInspectorOptions = null;
 
         final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
@@ -31,7 +33,7 @@ public class NugetProjectDetectableTest {
         Mockito.when(environment.getDirectory()).thenReturn(dir);
         Mockito.when(fileFinder.findFile(dir, FILENAME_PATTERN)).thenReturn(new File("."));
 
-        final NugetProjectDetectable detectable = new NugetProjectDetectable(environment, fileFinder, nugetInspectorOptions, nugetInspectorResolver, nugetInspectorExtractor);
+        final NugetSolutionDetectable detectable = new NugetSolutionDetectable(environment, fileFinder, nugetInspectorManager, nugetInspectorExtractor, nugetInspectorOptions);
 
         assertTrue(detectable.applicable().getPassed());
     }
