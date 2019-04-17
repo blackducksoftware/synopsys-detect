@@ -17,8 +17,6 @@ import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetect
 public class NugetSolutionDetectableTest {
     private static final String FILENAME_PATTERN = "*.sln";
 
-    // "*.sln"
-
     @Test
     public void testApplicable() {
 
@@ -31,7 +29,7 @@ public class NugetSolutionDetectableTest {
 
         final File dir = new File(".");
         Mockito.when(environment.getDirectory()).thenReturn(dir);
-        Mockito.when(fileFinder.findFile(dir, FILENAME_PATTERN)).thenReturn(new File("."));
+        Mockito.when(fileFinder.findFile(dir, FILENAME_PATTERN)).thenReturn(new File("test.sln"));
 
         final NugetSolutionDetectable detectable = new NugetSolutionDetectable(environment, fileFinder, nugetInspectorManager, nugetInspectorExtractor, nugetInspectorOptions);
 
