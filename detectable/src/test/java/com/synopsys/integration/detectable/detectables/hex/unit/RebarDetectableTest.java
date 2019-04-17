@@ -14,7 +14,7 @@ import com.synopsys.integration.detectable.detectables.hex.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.hex.RebarExtractor;
 
 public class RebarDetectableTest {
-    public static final String REBAR_CONFIG = "rebar.config";
+    private static final String REBAR_CONFIG = "rebar.config";
 
     @Test
     public void testApplicable() {

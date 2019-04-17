@@ -15,7 +15,7 @@ import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJs
 
 public class NpmPackageJsonParseDetectableTest {
 
-    public static final String PACKAGE_JSON_FILENAME = "package.json";
+    private static final String PACKAGE_JSON_FILENAME = "package.json";
 
     @Test
     public void testApplicable() {

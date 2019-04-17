@@ -16,7 +16,7 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleI
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 
 public class GradleInspectorDetectableTest {
-    public static final String BUILD_GRADLE_FILENAME = "build.gradle";
+    private static final String BUILD_GRADLE_FILENAME = "build.gradle";
 
     @Test
     public void testApplicable() {

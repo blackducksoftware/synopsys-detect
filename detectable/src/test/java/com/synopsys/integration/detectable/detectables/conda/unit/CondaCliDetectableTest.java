@@ -14,7 +14,7 @@ import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliExtractor;
 
 public class CondaCliDetectableTest {
-    public static final String ENVIRONEMNT_YML = "environment.yml";
+    private static final String ENVIRONEMNT_YML = "environment.yml";
 
     @Test
     public void testApplicable() {

@@ -14,6 +14,7 @@ import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtract
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 
 public class MavenPomDetectableTest {
+    private static final String POM_FILENAME = "pom.xml";
 
     @Test
     public void testApplicable() {
@@ -24,9 +25,9 @@ public class MavenPomDetectableTest {
         final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
 
-        Mockito.when(environment.getDirectory()).thenReturn(new File("."));
-        Mockito.when(fileFinder.findFile(Mockito.any(File.class), Mockito.anyString())).thenReturn(new File("."));
-
+        final File dir = new File(".");
+        Mockito.when(environment.getDirectory()).thenReturn(dir);
+        Mockito.when(fileFinder.findFile(dir, POM_FILENAME)).thenReturn(new File(POM_FILENAME));
 
         final MavenPomDetectable detectable = new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor);
 

@@ -13,7 +13,7 @@ import com.synopsys.integration.detectable.detectables.gradle.parsing.GradlePars
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseExtractor;
 
 public class GradleParseDetectableTest {
-    public static final String BUILD_GRADLE_FILENAME = "build.gradle";
+    private static final String BUILD_GRADLE_FILENAME = "build.gradle";
 
     @Test
     public void testApplicable() {

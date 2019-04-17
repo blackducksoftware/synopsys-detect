@@ -13,7 +13,7 @@ import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrExtractor;
 
 public class GoVndrDetectableTest {
-    public static final String VNDR_CONF_FILENAME = "vendor.conf";
+    private static final String VNDR_CONF_FILENAME = "vendor.conf";
 
     @Test
     public void testApplicable() {

@@ -13,7 +13,7 @@ import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectabl
 import com.synopsys.integration.detectable.detectables.cran.PackratLockExtractor;
 
 public class PackratLockDetectableTest {
-    public static final String PACKRATLOCK_FILE_NAME = "packrat.lock";
+    private static final String PACKRATLOCK_FILE_NAME = "packrat.lock";
 
     @Test
     public void testApplicable() {

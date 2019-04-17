@@ -14,7 +14,7 @@ import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 
 public class NpmCliDetectableTest {
-    public static final String PACKAGE_JSON_FILENAME = "package.json";
+    private static final String PACKAGE_JSON_FILENAME = "package.json";
 
     @Test
     public void testApplicable() {

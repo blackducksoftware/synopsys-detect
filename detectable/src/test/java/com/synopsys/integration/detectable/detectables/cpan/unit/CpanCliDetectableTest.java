@@ -15,7 +15,7 @@ import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliExtractor;
 
 public class CpanCliDetectableTest {
-    public static final String MAKEFILE = "Makefile.PL";
+    private static final String MAKEFILE = "Makefile.PL";
 
     @Test
     public void testApplicable() {

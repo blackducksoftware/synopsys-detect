@@ -15,8 +15,8 @@ import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorExtract
 
 public class GoVendorDetectableTest {
 
-    public static final String VENDOR_DIRNAME = "vendor";
-    public static final String VENDOR_JSON_FILENAME = "vendor.json";
+    private static final String VENDOR_DIRNAME = "vendor";
+    private static final String VENDOR_JSON_FILENAME = "vendor.json";
 
     @Test
     public void testApplicableVendor() {

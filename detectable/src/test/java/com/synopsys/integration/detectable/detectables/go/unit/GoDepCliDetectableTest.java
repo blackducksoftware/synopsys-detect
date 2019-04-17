@@ -17,7 +17,7 @@ import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectab
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
 
 public class GoDepCliDetectableTest {
-    public static final String GOFILE_FILENAME_PATTERN = "*.go";
+    private static final String GOFILE_FILENAME_PATTERN = "*.go";
 
     @Test
     public void testApplicable() {

@@ -15,7 +15,7 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLo
 
 public class NpmPackageLockDetectableTest {
 
-    public static final String PACKAGE_LOCK_JSON = "package-lock.json";
+    private static final String PACKAGE_LOCK_JSON = "package-lock.json";
 
     @Test
     public void testApplicable() {
