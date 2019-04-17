@@ -14,6 +14,7 @@ import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliExtractor;
 
 public class CondaCliDetectableTest {
+    public static final String ENVIRONEMNT_YML = "environment.yml";
 
     @Test
     public void testApplicable() {
@@ -21,8 +22,9 @@ public class CondaCliDetectableTest {
         final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
 
-        Mockito.when(environment.getDirectory()).thenReturn(new File("."));
-        Mockito.when(fileFinder.findFile(Mockito.any(File.class), Mockito.anyString())).thenReturn(new File("."));
+        final File dir = new File(".");
+        Mockito.when(environment.getDirectory()).thenReturn(dir);
+        Mockito.when(fileFinder.findFile(dir, ENVIRONEMNT_YML)).thenReturn(new File(ENVIRONEMNT_YML));
 
         final CondaResolver condaResolver = null;
         final CondaCliExtractor condaExtractor = null;

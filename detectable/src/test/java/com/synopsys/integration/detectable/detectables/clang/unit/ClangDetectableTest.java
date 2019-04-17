@@ -19,6 +19,7 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Clan
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerRunner;
 
 public class ClangDetectableTest {
+    private static final String JSON_COMPILATION_DATABASE_FILENAME = "compile_commands.json";
 
     @Test
     public void testApplicable() {
@@ -31,8 +32,9 @@ public class ClangDetectableTest {
         final ClangDetectableOptions options = Mockito.mock(ClangDetectableOptions.class);
         final ClangPackageManagerRunner packageManagerRunner = null;
 
-        Mockito.when(fileFinder.findFile(Mockito.any(File.class), Mockito.anyString())).thenReturn(new File("."));
-        Mockito.when(environment.getDirectory()).thenReturn(new File("."));
+        final File dir = new File(".");
+        Mockito.when(environment.getDirectory()).thenReturn(dir);
+        Mockito.when(fileFinder.findFile(dir, JSON_COMPILATION_DATABASE_FILENAME)).thenReturn(new File(JSON_COMPILATION_DATABASE_FILENAME));
 
         final ClangDetectable detectable = new ClangDetectable(environment, executableRunner, fileFinder, availablePackageManagers, clangExtractor,
             options, packageManagerRunner);
