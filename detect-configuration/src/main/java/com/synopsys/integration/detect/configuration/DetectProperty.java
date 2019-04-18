@@ -160,7 +160,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
     @HelpDescription("The reference implementation of the yocto project. These characters will be stripped from the discovered target architecture.")
-    DETECT_BITBAKE_REFERENCE_IMPL("detect.bitbake.reference.impl", "Reference implementation", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "_poky_linux"),
+    DETECT_BITBAKE_REFERENCE_IMPL("detect.bitbake.reference.impl", "Reference implementation", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "-poky-linux"),
 
     @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
     @HelpDescription("A comma separated list of package names to extract dependencies from")
