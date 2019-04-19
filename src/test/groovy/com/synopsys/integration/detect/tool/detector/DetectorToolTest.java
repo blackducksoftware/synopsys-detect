@@ -22,7 +22,7 @@ import com.synopsys.integration.detect.workflow.event.EventType;
 public class DetectorToolTest {
 
     @Test
-    public void testFailWhenNoRootEvaluation() throws DetectUserFriendlyException {
+    public void testFailWhenMisConfigured() throws DetectUserFriendlyException {
 
         final ExtractionEnvironmentProvider extractionEnvironmentProvider = Mockito.mock(ExtractionEnvironmentProvider.class);
         final DetectorFinder detectorFinder = Mockito.mock(DetectorFinder.class);
