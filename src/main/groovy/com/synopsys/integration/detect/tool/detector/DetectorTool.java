@@ -61,11 +61,13 @@ import com.synopsys.integration.util.NameVersion;
 
 public class DetectorTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final DetectorFinder detectorFinder;
     private final ExtractionEnvironmentProvider extractionEnvironmentProvider;
     private final EventSystem eventSystem;
     private final CodeLocationConverter codeLocationConverter;
 
-    public DetectorTool(final ExtractionEnvironmentProvider extractionEnvironmentProvider, final EventSystem eventSystem, final CodeLocationConverter codeLocationConverter) {
+    public DetectorTool(final DetectorFinder detectorFinder, final ExtractionEnvironmentProvider extractionEnvironmentProvider, final EventSystem eventSystem, final CodeLocationConverter codeLocationConverter) {
+	this.detectorFinder = detectorFinder;
         this.extractionEnvironmentProvider = extractionEnvironmentProvider;
         this.eventSystem = eventSystem;
         this.codeLocationConverter = codeLocationConverter;
@@ -74,8 +76,6 @@ public class DetectorTool {
     public DetectorToolResult performDetectors(final File directory, DetectorRuleSet detectorRuleSet, final DetectorFinderOptions detectorFinderOptions, DetectorEvaluationOptions evaluationOptions, final String projectBomTool)
         throws DetectUserFriendlyException {
         logger.info("Initializing detector system.");
-
-        final DetectorFinder detectorFinder = new DetectorFinder();
         final Optional<DetectorEvaluationTree> possibleRootEvaluation;
         try {
             logger.info("Starting detector file system traversal.");

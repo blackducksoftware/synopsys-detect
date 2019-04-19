@@ -86,6 +86,7 @@ import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
+import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -180,7 +181,7 @@ public class RunManager {
                 final DetectorFinderOptions finderOptions = detectConfigurationFactory.createSearchOptions();
                 DetectorEvaluationOptions detectorEvaluationOptions = detectConfigurationFactory.createDetectorEvaluationOptions();
 
-                final DetectorTool detectorTool = new DetectorTool(extractionEnvironmentProvider, eventSystem, codeLocationConverter);
+                final DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter);
                 final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool);
 
                 runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
