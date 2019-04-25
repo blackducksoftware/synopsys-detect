@@ -50,7 +50,6 @@ public class ProjectNameVersionDecider {
     }
 
     public NameVersion decideProjectNameVersion(String preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
-
         Optional<String> decidedProjectName = Optional.empty();
         Optional<String> decidedProjectVersion = Optional.empty();
 

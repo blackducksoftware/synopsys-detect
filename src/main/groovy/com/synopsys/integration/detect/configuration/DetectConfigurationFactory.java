@@ -33,11 +33,10 @@ import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFilter;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
+import com.synopsys.integration.detect.workflow.blackduck.BlackduckPostOptions;
 import com.synopsys.integration.detect.workflow.file.AirGapOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
-import com.synopsys.integration.detect.workflow.blackduck.BlackduckReportOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
-import com.synopsys.integration.detect.workflow.blackduck.PolicyCheckOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
@@ -166,18 +165,16 @@ public class DetectConfigurationFactory {
             snippetMatching, snippetMatchingMode, uploadSource, codeLocationPrefix, codeLocationSuffix, additionalArguments, maxDepth);
     }
 
-    public BlackduckReportOptions createReportOptions() {
+    public BlackduckPostOptions createBlackduckPostOptions() {
+        final boolean waitForResults = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_WAIT_FOR_RESULTS, PropertyAuthority.None);
         final boolean runRiskReport = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF, PropertyAuthority.None);
         final boolean runNoticesReport = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT, PropertyAuthority.None);
         final String riskReportPdfPath = detectConfiguration.getProperty(DetectProperty.DETECT_RISK_REPORT_PDF_PATH, PropertyAuthority.None);
         final String noticesReportPath = detectConfiguration.getProperty(DetectProperty.DETECT_NOTICES_REPORT_PATH, PropertyAuthority.None);
-        return new BlackduckReportOptions(runRiskReport, runNoticesReport, riskReportPdfPath, noticesReportPath);
-    }
-
-    public PolicyCheckOptions createPolicyCheckOptions() {
         final String policySeverities = detectConfiguration.getPropertyValueAsString(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None);
         final List<PolicySeverityType> severitiesToFailPolicyCheck = EnumUtils.parseCommaDelimitted(policySeverities.toUpperCase(), PolicySeverityType.class);
-        return new PolicyCheckOptions(severitiesToFailPolicyCheck);
+
+        return new BlackduckPostOptions(waitForResults, runRiskReport, runNoticesReport, riskReportPdfPath, noticesReportPath, severitiesToFailPolicyCheck);
     }
 
     public long getTimeoutInSeconds() {

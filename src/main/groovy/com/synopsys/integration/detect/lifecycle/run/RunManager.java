@@ -24,6 +24,8 @@ package com.synopsys.integration.detect.lifecycle.run;
 
 import java.util.Optional;
 
+import com.synopsys.integration.detect.workflow.DetectPostActions;
+import com.synopsys.integration.detect.workflow.blackduck.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,14 +73,6 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameMan
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detect.workflow.blackduck.BlackduckPostActions;
-import com.synopsys.integration.detect.workflow.blackduck.BlackduckReportOptions;
-import com.synopsys.integration.detect.workflow.blackduck.CodeLocationWaitData;
-import com.synopsys.integration.detect.workflow.blackduck.DetectBdioUploadService;
-import com.synopsys.integration.detect.workflow.blackduck.DetectCodeLocationUnmapService;
-import com.synopsys.integration.detect.workflow.blackduck.DetectProjectService;
-import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
-import com.synopsys.integration.detect.workflow.blackduck.PolicyCheckOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
@@ -119,206 +113,206 @@ public class RunManager {
         final RunOptions runOptions = detectConfigurationFactory.createRunOptions();
 
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
+        final DetectPostActions detectPostActions = new DetectPostActions();
 
         if (productRunData.shouldUsePolarisProduct()) {
-            logger.info(ReportConstants.RUN_SEPARATOR);
-            if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
-                logger.info("Will include the Polaris tool.");
-                PolarisServerConfig polarisServerConfig = productRunData.getPolarisRunData().getPolarisServerConfig();
-                final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, executableRunner, connectionManager, detectConfiguration, polarisServerConfig);
-                polarisTool.runPolaris(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
-                logger.info("Polaris actions finished.");
-            } else {
-                logger.info("Polaris CLI tool will not be run.");
-            }
+            runPolarisProduct(productRunData, detectConfiguration, directoryManager, eventSystem, connectionManager, executableRunner, detectToolFilter);
         } else {
             logger.info("Polaris tools will NOT be run.");
         }
 
+        final NameVersion projectNameVersion = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, runResult, runOptions, detectToolFilter);
+
         if (productRunData.shouldUseBlackDuckProduct()) {
-            logger.info(ReportConstants.RUN_SEPARATOR);
-            logger.info("Black Duck tools will run.");
-
-            final BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
-
-            blackDuckRunData.getPhoneHomeManager().ifPresent(PhoneHomeManager::startPhoneHome);
-
-            final ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
-            final DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
-            final CodeLocationConverter codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
-
-            logger.info(ReportConstants.RUN_SEPARATOR);
-            if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
-                logger.info("Will include the docker tool.");
-                final DetectableTool detectableTool = new DetectableTool(detectableFactory::createDockerDetectable, extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER, eventSystem);
-                final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
-                runResult.addDetectableToolResult(detectableToolResult);
-                logger.info("Docker actions finished.");
-            } else {
-                logger.info("Docker tool will not be run.");
-            }
-
-            logger.info(ReportConstants.RUN_SEPARATOR);
-            if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
-                logger.info("Will include the bazel tool.");
-                final DetectableTool detectableTool = new DetectableTool(detectableFactory::createBazelDetectable, extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL, eventSystem);
-                final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
-                runResult.addDetectableToolResult(detectableToolResult);
-                logger.info("Bazel actions finished.");
-            } else {
-                logger.info("Bazel tool will not be run.");
-            }
-
-            logger.info(ReportConstants.RUN_SEPARATOR);
-            if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
-                logger.info("Will include the detector tool.");
-                final String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DETECTOR, PropertyAuthority.None);
-                final boolean buildless = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BUILDLESS, PropertyAuthority.None);
-
-                final DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
-                final DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectableFactory, buildless);
-
-                final DetectorFinderOptions finderOptions = detectConfigurationFactory.createSearchOptions();
-                DetectorEvaluationOptions detectorEvaluationOptions = detectConfigurationFactory.createDetectorEvaluationOptions();
-
-                final DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter);
-                final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool);
-
-                runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
-                runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);
-                runResult.addApplicableDetectors(detectorToolResult.applicableDetectorTypes);
-
-                if (detectorToolResult.failedDetectorTypes.size() > 0) {
-                    eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
-                }
-                logger.info("Detector actions finished.");
-            } else {
-                logger.info("Detector tool will not be run.");
-            }
-
-            logger.info(ReportConstants.RUN_SEPARATOR);
-            logger.info("Completed code location tools.");
-
-            logger.info("Determining project info.");
-
-            final ProjectNameVersionOptions projectNameVersionOptions = detectConfigurationFactory.createProjectNameVersionOptions(directoryManager.getSourceDirectory().getName());
-            final ProjectNameVersionDecider projectNameVersionDecider = new ProjectNameVersionDecider(projectNameVersionOptions);
-            final NameVersion projectNameVersion = projectNameVersionDecider.decideProjectNameVersion(runOptions.getPreferredTools(), runResult.getDetectToolProjectInfo());
-
-            logger.info("Project name: " + projectNameVersion.getName());
-            logger.info("Project version: " + projectNameVersion.getVersion());
-
-            Optional<ProjectVersionWrapper> projectVersionWrapper = Optional.empty();
-
-            if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
-                final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
-                logger.info("Getting or creating project.");
-                final DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
-                final ProjectMappingService detectProjectMappingService = blackDuckServicesFactory.createProjectMappingService();
-                final DetectProjectService detectProjectService = new DetectProjectService(blackDuckServicesFactory, options, detectProjectMappingService);
-                final String[] groupsToAddToProject = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PROJECT_USER_GROUPS, PropertyAuthority.None);
-                projectVersionWrapper = Optional.of(detectProjectService.createOrUpdateBlackDuckProject(projectNameVersion, options.getApplicationId(), groupsToAddToProject));
-
-                if (projectVersionWrapper.isPresent() && runOptions.shouldUnmapCodeLocations()) {
-                    logger.info("Unmapping code locations.");
-                    final DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createCodeLocationService());
-                    detectCodeLocationUnmapService.unmapCodeLocations(projectVersionWrapper.get().getProjectVersionView());
-                } else {
-                    logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");
-                }
-            } else {
-                logger.debug("Detect is not online, and will not create the project.");
-            }
-
-            logger.info("Completed project and version actions.");
-
-            logger.info("Processing Detect Code Locations.");
-            final CodeLocationWaitData codeLocationWaitData = new CodeLocationWaitData();
-            final BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new IntegrationEscapeUtil(), codeLocationNameManager, detectConfiguration, bdioCodeLocationCreator, directoryManager, eventSystem);
-            final BdioResult bdioResult = bdioManager.createBdioFiles(runOptions.getAggregateName(), projectNameVersion, runResult.getDetectCodeLocations());
-
-            if (bdioResult.getUploadTargets().size() > 0) {
-                logger.info("Created " + bdioResult.getUploadTargets().size() + " BDIO files.");
-                bdioResult.getUploadTargets().forEach(it -> eventSystem.publishEvent(Event.OutputFileOfInterest, it.getUploadFile()));
-                if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
-                    logger.info("Uploading BDIO files.");
-                    final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
-                    final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, blackDuckServicesFactory.createBdioUploadService(), eventSystem);
-                    final CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
-                    codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
-                }
-            } else {
-                logger.debug("Did not create any BDIO files.");
-            }
-
-            logger.info("Completed Detect Code Location processing.");
-
-            logger.info(ReportConstants.RUN_SEPARATOR);
-            if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
-                logger.info("Will include the signature scanner tool.");
-                final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
-                final BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
-                final SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar());
-                if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
-                    codeLocationWaitData.addWaitForCreationData(signatureScannerToolResult.getCreationData().get());
-                }
-                logger.info("Signature scanner actions finished.");
-            } else {
-                logger.info("Signature scan tool will not be run.");
-            }
-
-            logger.info(ReportConstants.RUN_SEPARATOR);
-            if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
-                logger.info("Will include the binary scanner tool.");
-                if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
-                    final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
-                    final BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, detectConfiguration, blackDuckServicesFactory);
-                    if (blackDuckBinaryScanner.shouldRun()) {
-                        final BinaryScanToolResult result = blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
-                        if (result.isSuccessful()) {
-                            codeLocationWaitData.addWaitForCreationData(result.getCodeLocationCreationData());
-                        }
-                    }
-                }
-                logger.info("Binary scanner actions finished.");
-            } else {
-                logger.info("Binary scan tool will not be run.");
-            }
-
-            logger.info(ReportConstants.RUN_SEPARATOR);
-            if (projectVersionWrapper.isPresent() && blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
-                final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
-
-                logger.info("Will perform Black Duck post actions.");
-                final BlackduckReportOptions blackduckReportOptions = detectConfigurationFactory.createReportOptions();
-                final PolicyCheckOptions policyCheckOptions = detectConfigurationFactory.createPolicyCheckOptions();
-                final long timeoutInSeconds = detectConfigurationFactory.getTimeoutInSeconds();
-
-                final BlackduckPostActions blackduckPostActions = new BlackduckPostActions(blackDuckServicesFactory, eventSystem);
-                blackduckPostActions.perform(blackduckReportOptions, policyCheckOptions, codeLocationWaitData, projectVersionWrapper.get(), timeoutInSeconds);
-
-                final boolean hasAtLeastOneBdio = !bdioResult.getUploadTargets().isEmpty();
-                final boolean shouldHaveScanned = detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN);
-
-                if (hasAtLeastOneBdio || shouldHaveScanned) {
-                    final Optional<String> componentsLink = projectVersionWrapper.get().getProjectVersionView().getFirstLink(ProjectVersionView.COMPONENTS_LINK);
-                    if (componentsLink.isPresent()) {
-                        logger.info(String.format("To see your results, follow the URL: %s", componentsLink.get()));
-                    }
-                }
-
-                logger.info("Black Duck actions have finished.");
-            } else {
-                logger.debug("Will not perform post actions: Detect is not online.");
-            }
+            runBlackduckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter, projectNameVersion, detectPostActions);
         } else {
             logger.info("Black Duck tools will NOT be run.");
         }
+
+        detectPostActions.runPostActions();
 
         logger.info("All tools have finished.");
         logger.info(ReportConstants.RUN_SEPARATOR);
 
         return runResult;
+    }
+
+    private NameVersion runUniversalProjectTools(DetectConfiguration detectConfiguration, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem, RunResult runResult, RunOptions runOptions, DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
+        final ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
+        final DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
+        final CodeLocationConverter codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
+
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
+            logger.info("Will include the docker tool.");
+            final DetectableTool detectableTool = new DetectableTool(detectableFactory::createDockerDetectable, extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER, eventSystem);
+            final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
+            runResult.addDetectableToolResult(detectableToolResult);
+            logger.info("Docker actions finished.");
+        } else {
+            logger.info("Docker tool will not be run.");
+        }
+
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
+            logger.info("Will include the bazel tool.");
+            final DetectableTool detectableTool = new DetectableTool(detectableFactory::createBazelDetectable, extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL, eventSystem);
+            final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
+            runResult.addDetectableToolResult(detectableToolResult);
+            logger.info("Bazel actions finished.");
+        } else {
+            logger.info("Bazel tool will not be run.");
+        }
+
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
+            logger.info("Will include the detector tool.");
+            final String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DETECTOR, PropertyAuthority.None);
+            final boolean buildless = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BUILDLESS, PropertyAuthority.None);
+
+            final DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
+            final DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectableFactory, buildless);
+
+            final DetectorFinderOptions finderOptions = detectConfigurationFactory.createSearchOptions();
+            DetectorEvaluationOptions detectorEvaluationOptions = detectConfigurationFactory.createDetectorEvaluationOptions();
+
+            final DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter);
+            final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool);
+
+            runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
+            runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);
+            runResult.addApplicableDetectors(detectorToolResult.applicableDetectorTypes);
+
+            if (detectorToolResult.failedDetectorTypes.size() > 0) {
+                eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
+            }
+            logger.info("Detector actions finished.");
+        } else {
+            logger.info("Detector tool will not be run.");
+        }
+
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        logger.info("Completed code location tools.");
+
+        logger.info("Determining project info.");
+
+        final ProjectNameVersionOptions projectNameVersionOptions = detectConfigurationFactory.createProjectNameVersionOptions(directoryManager.getSourceDirectory().getName());
+        final ProjectNameVersionDecider projectNameVersionDecider = new ProjectNameVersionDecider(projectNameVersionOptions);
+        final NameVersion projectNameVersion = projectNameVersionDecider.decideProjectNameVersion(runOptions.getPreferredTools(), runResult.getDetectToolProjectInfo());
+
+        logger.info("Project name: " + projectNameVersion.getName());
+        logger.info("Project version: " + projectNameVersion.getVersion());
+        return projectNameVersion;
+    }
+
+    private void runPolarisProduct(ProductRunData productRunData, DetectConfiguration detectConfiguration, DirectoryManager directoryManager, EventSystem eventSystem, ConnectionManager connectionManager, ExecutableRunner executableRunner, DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
+            logger.info("Will include the Polaris tool.");
+            PolarisServerConfig polarisServerConfig = productRunData.getPolarisRunData().getPolarisServerConfig();
+            final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, executableRunner, connectionManager, detectConfiguration, polarisServerConfig);
+            polarisTool.runPolaris(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
+            logger.info("Polaris actions finished.");
+        } else {
+            logger.info("Polaris CLI tool will not be run.");
+        }
+    }
+
+    private void runBlackduckProduct(ProductRunData productRunData, DetectConfiguration detectConfiguration, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem, CodeLocationNameManager codeLocationNameManager, BdioCodeLocationCreator bdioCodeLocationCreator, DetectInfo detectInfo, RunResult runResult, RunOptions runOptions, DetectToolFilter detectToolFilter, NameVersion projectNameVersion, DetectPostActions detectPostActions) throws IntegrationException, DetectUserFriendlyException {
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        logger.info("Black Duck tools will run.");
+
+        final BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
+
+        blackDuckRunData.getPhoneHomeManager().ifPresent(PhoneHomeManager::startPhoneHome);
+
+        ProjectVersionWrapper projectVersionWrapper = null;
+
+        BlackDuckServicesFactory blackDuckServicesFactory = null;
+        if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
+            blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
+            logger.info("Getting or creating project.");
+            final DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
+            final ProjectMappingService detectProjectMappingService = blackDuckServicesFactory.createProjectMappingService();
+            final DetectProjectService detectProjectService = new DetectProjectService(blackDuckServicesFactory, options, detectProjectMappingService);
+            final String[] groupsToAddToProject = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PROJECT_USER_GROUPS, PropertyAuthority.None);
+            projectVersionWrapper = detectProjectService.createOrUpdateBlackDuckProject(projectNameVersion, options.getApplicationId(), groupsToAddToProject);
+
+            if (null != projectVersionWrapper && runOptions.shouldUnmapCodeLocations()) {
+                logger.info("Unmapping code locations.");
+                final DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createCodeLocationService());
+                detectCodeLocationUnmapService.unmapCodeLocations(projectVersionWrapper.getProjectVersionView());
+            } else {
+                logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");
+            }
+        } else {
+            logger.debug("Detect is not online, and will not create the project.");
+        }
+
+        logger.info("Completed project and version actions.");
+
+        logger.info("Processing Detect Code Locations.");
+        final CodeLocationWaitData codeLocationWaitData = new CodeLocationWaitData();
+        final BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new IntegrationEscapeUtil(), codeLocationNameManager, detectConfiguration, bdioCodeLocationCreator, directoryManager, eventSystem);
+        final BdioResult bdioResult = bdioManager.createBdioFiles(runOptions.getAggregateName(), projectNameVersion, runResult.getDetectCodeLocations());
+
+        if (bdioResult.getUploadTargets().size() > 0) {
+            logger.info("Created " + bdioResult.getUploadTargets().size() + " BDIO files.");
+            bdioResult.getUploadTargets().forEach(it -> eventSystem.publishEvent(Event.OutputFileOfInterest, it.getUploadFile()));
+            if (null != blackDuckServicesFactory) {
+                logger.info("Uploading BDIO files.");
+                final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, blackDuckServicesFactory.createBdioUploadService(), eventSystem);
+                final CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
+                codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
+            }
+        } else {
+            logger.debug("Did not create any BDIO files.");
+        }
+
+        logger.info("Completed Detect Code Location processing.");
+
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
+            logger.info("Will include the signature scanner tool.");
+            final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
+            final BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
+            final SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar());
+            if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
+                codeLocationWaitData.addWaitForCreationData(signatureScannerToolResult.getCreationData().get());
+            }
+            logger.info("Signature scanner actions finished.");
+        } else {
+            logger.info("Signature scan tool will not be run.");
+        }
+
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
+            logger.info("Will include the binary scanner tool.");
+            if (null != blackDuckServicesFactory) {
+                final BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, detectConfiguration, blackDuckServicesFactory);
+                if (blackDuckBinaryScanner.shouldRun()) {
+                    final BinaryScanToolResult result = blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
+                    if (result.isSuccessful()) {
+                        codeLocationWaitData.addWaitForCreationData(result.getCodeLocationCreationData());
+                    }
+                }
+            }
+            logger.info("Binary scanner actions finished.");
+        } else {
+            logger.info("Binary scan tool will not be run.");
+        }
+
+        if (null != blackDuckServicesFactory) {
+            final BlackduckPostActions blackduckPostActions = new BlackduckPostActions(blackDuckServicesFactory, eventSystem);
+            detectPostActions.setBlackduckPostActions(blackduckPostActions);
+            detectPostActions.setBlackduckPostOptions(detectConfigurationFactory.createBlackduckPostOptions());
+            detectPostActions.setBlackDuckRunData(blackDuckRunData);
+            detectPostActions.setCodeLocationWaitData(codeLocationWaitData);
+            detectPostActions.setProjectVersionWrapper(projectVersionWrapper);
+            detectPostActions.setHasAtLeastOneBdio(!bdioResult.getUploadTargets().isEmpty());
+            detectPostActions.setShouldHaveScanned(detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN));
+            detectPostActions.setTimeoutInSeconds(detectConfigurationFactory.getTimeoutInSeconds());
+        }
     }
 
 }
