@@ -52,14 +52,14 @@ public class BlackduckPostActions {
         this.eventSystem = eventSystem;
     }
 
-    public void perform(BlackduckReportOptions blackduckReportOptions, PolicyCheckOptions policyCheckOptions, CodeLocationWaitData codeLocationWaitData, ProjectVersionWrapper projectVersionWrapper, long timeoutInSeconds)
+    public void perform(BlackduckPostOptions blackduckPostOptions, CodeLocationWaitData codeLocationWaitData, ProjectVersionWrapper projectVersionWrapper, long timeoutInSeconds)
         throws DetectUserFriendlyException {
         try {
             final long timeoutInMillisec = 1000L * timeoutInSeconds;
             ProjectView projectView = projectVersionWrapper.getProjectView();
             ProjectVersionView projectVersionView = projectVersionWrapper.getProjectVersionView();
 
-            if (policyCheckOptions.shouldPerformPolicyCheck() || blackduckReportOptions.shouldGenerateAnyReport()) {
+            if (blackduckPostOptions.shouldWaitForResults()) {
                 logger.info("Detect must wait for bom tool calculations to finish.");
                 CodeLocationCreationService codeLocationCreationService = blackDuckServicesFactory.createCodeLocationCreationService();
                 if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
@@ -70,24 +70,24 @@ public class BlackduckPostActions {
                 }
             }
 
-            if (policyCheckOptions.shouldPerformPolicyCheck()) {
+            if (blackduckPostOptions.shouldPerformPolicyCheck()) {
                 logger.info("Detect will check policy for violations.");
                 PolicyChecker policyChecker = new PolicyChecker(eventSystem);
-                policyChecker.checkPolicy(policyCheckOptions.getSeveritiesToFailPolicyCheck(), blackDuckServicesFactory.createProjectBomService(), projectVersionView);
+                policyChecker.checkPolicy(blackduckPostOptions.getSeveritiesToFailPolicyCheck(), blackDuckServicesFactory.createProjectBomService(), projectVersionView);
             }
 
-            if (blackduckReportOptions.shouldGenerateAnyReport()) {
+            if (blackduckPostOptions.shouldGenerateAnyReport()) {
                 ReportService reportService = blackDuckServicesFactory.createReportService(timeoutInMillisec);
-                if (blackduckReportOptions.shouldGenerateRiskReport()) {
+                if (blackduckPostOptions.shouldGenerateRiskReport()) {
                     logger.info("Creating risk report pdf");
-                    File reportDirectory = new File(blackduckReportOptions.getRiskReportPdfPath());
+                    File reportDirectory = new File(blackduckPostOptions.getRiskReportPdfPath());
                     File createdPdf = reportService.createReportPdfFile(reportDirectory, projectView, projectVersionView);
                     logger.info(String.format("Created risk report pdf: %s", createdPdf.getCanonicalPath()));
                 }
 
-                if (blackduckReportOptions.shouldGenerateNoticesReport()) {
+                if (blackduckPostOptions.shouldGenerateNoticesReport()) {
                     logger.info("Creating notices report");
-                    File noticesDirectory = new File(blackduckReportOptions.getNoticesReportPath());
+                    File noticesDirectory = new File(blackduckPostOptions.getNoticesReportPath());
                     final File noticesFile = reportService.createNoticesReportFile(noticesDirectory, projectView, projectVersionView);
                     logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
                 }

@@ -676,6 +676,9 @@ public enum DetectProperty {
     @AcceptableValues(value = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
     LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION("logging.level.com.synopsys.integration", "Logging Level", "5.3.0", PropertyType.STRING, PropertyAuthority.None, "INFO"),
 
+    @HelpGroup(primary = GROUP_GENERAL, additional =  { SEARCH_GROUP_GLOBAL })
+    @HelpDescription("If set to true, Detect will wait for Synopsys products until results are available or the blackduck.timeout is exceeded.")
+    DETECT_WAIT_FOR_RESULTS("detect.wait.for.results", "Wait For Results", "5.5.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
     /**********************************************************************************************
      * DEPRECATED START
      *********************************************************************************************/
