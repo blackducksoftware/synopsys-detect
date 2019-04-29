@@ -48,18 +48,18 @@ public class GoLockParser {
     public DependencyGraph parseDepLock(final InputStream depLockInputStream) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
         final GoLock goLock = new Toml().read(depLockInputStream).to(GoLock.class);
-
-        for (final Project project : goLock.projects) {
-            if (project != null) {
-                final String projectName = project.name;
-                final String projectVersion = Optional.ofNullable(StringUtils.stripToNull(project.version)).orElse(project.revision);
-                project.packages.stream()
-                    .map(packageName -> createDependencyName(projectName, packageName))
-                    .map(dependencyName -> createGoDependency(dependencyName, projectVersion))
-                    .forEach(graph::addChildToRoot);
+        if (goLock.projects != null) {
+            for (final Project project : goLock.projects) {
+                if (project != null) {
+                    final String projectName = project.name;
+                    final String projectVersion = Optional.ofNullable(StringUtils.stripToNull(project.version)).orElse(project.revision);
+                    project.packages.stream()
+                        .map(packageName -> createDependencyName(projectName, packageName))
+                        .map(dependencyName -> createGoDependency(dependencyName, projectVersion))
+                        .forEach(graph::addChildToRoot);
+                }
             }
         }
-
         return graph;
     }
 

@@ -11,10 +11,12 @@
  */
 package com.synopsys.integration.detectable.detectables.go.functional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.InputStream;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -28,8 +30,16 @@ public class GoLockParserTest {
         final GoLockParser gopkgLockParser = new GoLockParser(new ExternalIdFactory());
         final InputStream gopkgLockInputStream = FunctionalTestFiles.asInputStream("/go/Gopkg.lock");
         final DependencyGraph dependencyGraph = gopkgLockParser.parseDepLock(gopkgLockInputStream);
-        Assert.assertNotNull(dependencyGraph);
+        assertNotNull(dependencyGraph);
 
         GraphCompare.assertEqualsResource("/go/Go_GopkgExpected_graph.json", dependencyGraph);
+    }
+
+    @Test
+    public void testNoProjects() {
+        final GoLockParser parser = new GoLockParser(null);
+        final InputStream gopkgLockInputStream = FunctionalTestFiles.asInputStream("/go/Gopkg_noprojects.lock");
+        final DependencyGraph graph = parser.parseDepLock(gopkgLockInputStream);
+        assertEquals(0, graph.getRootDependencies().size());
     }
 }
