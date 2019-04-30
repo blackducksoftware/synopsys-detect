@@ -1,5 +1,6 @@
 package com.synopsys.integration.detector.finder;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assume;
 import static org.junit.Assert.assertEquals;
@@ -22,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
-import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
 public class DetectorFinderTest {
@@ -35,12 +35,16 @@ public class DetectorFinderTest {
 
     @AfterAll
     public static void cleanup() {
-        initialDirectoryPath.toFile().delete();
+        try {
+            FileUtils.deleteDirectory(initialDirectoryPath.toFile());
+        } catch (IOException e) {
+            // ignore
+        }
     }
 
     @Test
     @DisabledOnOs(WINDOWS) //TODO: See if we can fix on windows.
-    public void testSimple() throws IOException, DetectorFinderDirectoryListException {
+    public void testSimple() throws DetectorFinderDirectoryListException {
         Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         final File initialDirectory = initialDirectoryPath.toFile();
