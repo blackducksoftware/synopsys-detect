@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -58,15 +59,23 @@ public class DetectorFinderTest {
         subSubDir2.mkdir();
 
         final DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0));
-        final Predicate<File> fileFilter = f -> { return true; };
+        final Predicate<File> fileFilter = f -> true;
         final int maximumDepth = 10;
         final DetectorFinderOptions options = new DetectorFinderOptions(fileFilter, maximumDepth);
 
         final DetectorFinder finder = new DetectorFinder();
         final Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options);
 
-        // make sure the symlink was omitted from results
-        final Set<DetectorEvaluationTree> subDirResults = tree.get().getChildren().iterator().next().getChildren();
+        // make sure both dirs were found
+        final Set<DetectorEvaluationTree> testDirs = tree.get().getChildren();
+        DetectorEvaluationTree simpleTestDir = null;
+        for (DetectorEvaluationTree testDir : testDirs) {
+            if (testDir.getDirectory().getName().equals("testSimple")) {
+                simpleTestDir = testDir;
+                break;
+            }
+        }
+        final Set<DetectorEvaluationTree> subDirResults = simpleTestDir.getChildren();
         assertEquals(2, subDirResults.size());
         String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
         assertTrue(subDirContentsName.startsWith("subSubDir"));
@@ -97,7 +106,17 @@ public class DetectorFinderTest {
         final Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options);
 
         // make sure the symlink was omitted from results
-        final Set<DetectorEvaluationTree> subDirResults = tree.get().getChildren().iterator().next().getChildren();
+//        final Set<DetectorEvaluationTree> subDirResults = tree.get().getChildren().iterator().next().getChildren();
+        final Set<DetectorEvaluationTree> testDirs = tree.get().getChildren();
+        DetectorEvaluationTree symLinkTestDir = null;
+        for (DetectorEvaluationTree testDir : testDirs) {
+            if (testDir.getDirectory().getName().equals("testSymLinksNotFollowed")) {
+                symLinkTestDir = testDir;
+                break;
+            }
+        }
+        final Set<DetectorEvaluationTree> subDirResults = symLinkTestDir.getChildren();
+
         assertEquals(1, subDirResults.size());
         String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
         assertEquals("regularDir", subDirContentsName);

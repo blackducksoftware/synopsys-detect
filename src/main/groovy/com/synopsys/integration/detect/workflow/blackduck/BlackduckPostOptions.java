@@ -22,18 +22,30 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck;
 
-public class BlackduckReportOptions {
+import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
+
+import java.util.List;
+
+public class BlackduckPostOptions {
+    private boolean waitForResults;
 
     private boolean generateRiskReport;
     private boolean generateNoticesReport;
     private String riskReportPdfPath;
     private String noticesReportPath;
+    private List<PolicySeverityType> severitiesToFailPolicyCheck;
 
-    public BlackduckReportOptions(final boolean generateRiskReport, final boolean generateNoticesReport, final String riskReportPdfPath, final String noticesReportPath) {
+    public BlackduckPostOptions(boolean waitForResults, boolean generateRiskReport, boolean generateNoticesReport, String riskReportPdfPath, String noticesReportPath, List<PolicySeverityType> severitiesToFailPolicyCheck) {
+        this.waitForResults = waitForResults;
         this.generateRiskReport = generateRiskReport;
         this.generateNoticesReport = generateNoticesReport;
         this.riskReportPdfPath = riskReportPdfPath;
         this.noticesReportPath = noticesReportPath;
+        this.severitiesToFailPolicyCheck = severitiesToFailPolicyCheck;
+    }
+
+    public boolean shouldWaitForResults() {
+        return waitForResults || shouldGenerateAnyReport() || shouldPerformPolicyCheck();
     }
 
     public boolean shouldGenerateRiskReport() {
@@ -48,6 +60,10 @@ public class BlackduckReportOptions {
         return shouldGenerateNoticesReport() || shouldGenerateRiskReport();
     }
 
+    public boolean shouldPerformPolicyCheck() {
+        return severitiesToFailPolicyCheck.size() > 0;
+    }
+
     public String getRiskReportPdfPath() {
         return riskReportPdfPath;
     }
@@ -55,4 +71,9 @@ public class BlackduckReportOptions {
     public String getNoticesReportPath() {
         return noticesReportPath;
     }
+
+    public List<PolicySeverityType> getSeveritiesToFailPolicyCheck() {
+        return severitiesToFailPolicyCheck;
+    }
+
 }

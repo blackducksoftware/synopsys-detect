@@ -41,8 +41,8 @@ public class DetectorEvaluatorTest {
 
         Mockito.when(detectorEvaluationTree.getDepthFromRoot()).thenReturn(0);
         Mockito.when(evaluationOptions.isForceNested()).thenReturn(true);
-        final Predicate<DetectorRule> x = it -> true;
-        Mockito.when(evaluationOptions.getDetectorFilter()).thenReturn(x);
+        final Predicate<DetectorRule> rulePredicate = it -> true;
+        Mockito.when(evaluationOptions.getDetectorFilter()).thenReturn(rulePredicate);
         Mockito.when(detectorEvaluation.isSearchable()).thenReturn(true);
 
         final Detectable detectable = Mockito.mock(Detectable.class);
