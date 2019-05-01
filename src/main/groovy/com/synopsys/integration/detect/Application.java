@@ -64,6 +64,7 @@ public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
 
     private ConfigurableEnvironment environment;
+    public static boolean SHOULD_EXIT = true;
 
     @Autowired
     public Application(ConfigurableEnvironment environment) {
@@ -174,7 +175,7 @@ public class Application implements ApplicationRunner {
             logger.error(String.format("Exiting with code %s - %s", finalExitCode.getExitCode(), finalExitCode.toString()));
         }
 
-        if (System.getenv().containsKey("DETECT_DO_NOT_EXIT") && System.getenv().get("DETECT_DO_NOT_EXIT").equals("TRUE")) {
+        if (!SHOULD_EXIT) {
             logger.info(String.format("Would normally exit(%s) but it is overriden.", finalExitCode.getExitCode()));
         } else {
             System.exit(finalExitCode.getExitCode());

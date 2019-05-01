@@ -72,6 +72,7 @@ public class CompleteRiskReportTest {
                 "--detect.risk.report.pdf=true",
                 "--detect.risk.report.pdf.path=" + tempReportDirectory.toString()
         };
+        Application.SHOULD_EXIT = false;
         Application.main(detectArgs);
 
         pdfFiles = getPdfFiles(tempReportDirectory);
