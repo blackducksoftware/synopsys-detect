@@ -5,35 +5,40 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBui
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectService;
-import com.synopsys.integration.blackduck.service.ReportService;
 import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.Application;
 import com.synopsys.integration.log.BufferedIntLogger;
 import com.synopsys.integration.log.IntLogger;
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("integration")
-public class CompleteRiskReportTest {
+public class SignatureScanTest {
+    private static final long ONE_MILLION_BYTES = 1_000_000;
+
+    private static IntLogger logger;
+    private static BlackDuckServicesFactory blackDuckServicesFactory;
     private static boolean previousDoNotExit;
 
     @BeforeAll
     public static void setup() {
+        logger = new BufferedIntLogger();
+        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
+        blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
+        blackDuckServicesFactory = blackDuckServerConfigBuilder.build().createBlackDuckServicesFactory(logger);
+
         previousDoNotExit = Application.SHOULD_EXIT;
         Application.SHOULD_EXIT = false;
     }
@@ -44,20 +49,13 @@ public class CompleteRiskReportTest {
     }
 
     @Test
-    public void testRiskReportIsPopulated() throws Exception {
-        IntLogger logger = new BufferedIntLogger();
-        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
-        blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
-        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfigBuilder.build().createBlackDuckServicesFactory(logger);
-
+    @ExtendWith(TempDirectory.class)
+    public void testOfflineScanWithSnippetMatching(@TempDirectory.TempDir Path tempOutputDirectory) throws Exception {
         BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService();
         ProjectService projectService = blackDuckServicesFactory.createProjectService();
-        ReportService reportService = blackDuckServicesFactory.createReportService(120 * 1000);
-        Path tempReportDirectoryPath = Files.createTempDirectory("junit_report");
-        File tempReportDirectory = tempReportDirectoryPath.toFile();
 
         String projectName = "synopsys-detect-junit";
-        String projectVersionName = "risk-report";
+        String projectVersionName = "offline-scan";
         Optional<ProjectVersionWrapper> optionalProjectVersionWrapper = projectService.getProjectVersion(projectName, projectVersionName);
         if (optionalProjectVersionWrapper.isPresent()) {
             blackDuckService.delete(optionalProjectVersionWrapper.get().getProjectView());
@@ -68,37 +66,48 @@ public class CompleteRiskReportTest {
         optionalProjectVersionWrapper = projectService.getProjectVersion(projectName, projectVersionName);
         assertTrue(optionalProjectVersionWrapper.isPresent());
 
-        List<File> pdfFiles = getPdfFiles(tempReportDirectory);
-        assertEquals(0, pdfFiles.size());
-
-        reportService.createReportPdfFile(tempReportDirectory, optionalProjectVersionWrapper.get().getProjectView(), optionalProjectVersionWrapper.get().getProjectVersionView());
-        pdfFiles = getPdfFiles(tempReportDirectory);
-        assertEquals(1, pdfFiles.size());
-
-        long initialFileLength = pdfFiles.get(0).length();
-        assertTrue(initialFileLength > 0);
-        FileUtils.deleteQuietly(pdfFiles.get(0));
-
-        pdfFiles = getPdfFiles(tempReportDirectory);
-        assertEquals(0, pdfFiles.size());
-        String[] detectArgs = new String[]{
+        String[] detectArgs = new String[] {
+                "--detect.output.path=" + tempOutputDirectory.toString(),
                 "--detect.project.name=" + projectName,
                 "--detect.project.version.name=" + projectVersionName,
-                "--detect.risk.report.pdf=true",
-                "--detect.risk.report.pdf.path=" + tempReportDirectory.toString()
+                "--detect.blackduck.signature.scanner.snippet.matching=SNIPPET_MATCHING",
+                "--detect.blackduck.signature.scanner.dry.run=true"
         };
         Application.main(detectArgs);
 
-        pdfFiles = getPdfFiles(tempReportDirectory);
-        assertEquals(1, pdfFiles.size());
-        long postLength = pdfFiles.get(0).length();
-        assertTrue(postLength > initialFileLength);
-    }
+        Path runsPath = tempOutputDirectory.resolve("runs");
+        assertTrue(runsPath.toFile().exists());
+        assertTrue(runsPath.toFile().isDirectory());
 
-    private List<File> getPdfFiles(File directory) {
-        return Arrays.stream(directory.listFiles())
-                .filter(file -> file.getName().endsWith(".pdf"))
-                .collect(Collectors.toList());
+        File[] runDirectories = runsPath.toFile().listFiles();
+        assertEquals(1, runDirectories.length);
+
+        File runDirectory = runDirectories[0];
+        assertTrue(runDirectory.exists());
+        assertTrue(runDirectory.isDirectory());
+
+        File scanDirectory = new File(runDirectory, "scan");
+        assertTrue(scanDirectory.exists());
+        assertTrue(scanDirectory.isDirectory());
+
+        File blackDuckScanOutput = new File(scanDirectory, "BlackDuckScanOutput");
+        assertTrue(blackDuckScanOutput.exists());
+        assertTrue(blackDuckScanOutput.isDirectory());
+
+        File[] outputDirectories = blackDuckScanOutput.listFiles();
+        assertEquals(1, outputDirectories.length);
+
+        File outputDirectory = outputDirectories[0];
+        assertTrue(outputDirectory.exists());
+        assertTrue(outputDirectory.isDirectory());
+
+        File dataDirectory = new File(outputDirectory, "data");
+        assertTrue(dataDirectory.exists());
+        assertTrue(dataDirectory.isDirectory());
+
+        File[] dataFiles = dataDirectory.listFiles();
+        assertEquals(1, dataFiles.length);
+        assertTrue(dataFiles[0].length() > ONE_MILLION_BYTES);
     }
 
 }
