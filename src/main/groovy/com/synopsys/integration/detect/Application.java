@@ -56,12 +56,10 @@ import com.synopsys.integration.detect.workflow.report.ReportManager;
 import com.synopsys.integration.detect.workflow.status.DetectStatusManager;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
-//@SpringBootApplication
-//@Configuration
-//@Import({ OldBeanConfiguration.class })
-//@EnableAspectJAutoProxy
 public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
+
+    public static boolean SHOULD_EXIT = true;
 
     private ConfigurableEnvironment environment;
 
@@ -77,7 +75,7 @@ public class Application implements ApplicationRunner {
     }
 
     @Override
-    public void run(final ApplicationArguments applicationArguments) throws Exception {
+    public void run(final ApplicationArguments applicationArguments) {
         final long startTime = System.currentTimeMillis();
 
         //Events, Status and Exit Codes are required even if boot fails.
@@ -174,10 +172,10 @@ public class Application implements ApplicationRunner {
             logger.error(String.format("Exiting with code %s - %s", finalExitCode.getExitCode(), finalExitCode.toString()));
         }
 
-        if (System.getenv().containsKey("DETECT_DO_NOT_EXIT") && System.getenv().get("DETECT_DO_NOT_EXIT").equals("TRUE")) {
-            logger.info(String.format("Would normally exit(%s) but it is overriden.", finalExitCode.getExitCode()));
-        } else {
+        if (SHOULD_EXIT) {
             System.exit(finalExitCode.getExitCode());
+        } else {
+            logger.info(String.format("Would normally exit(%s) but it is overridden.", finalExitCode.getExitCode()));
         }
     }
 
