@@ -63,6 +63,6 @@ public class ProductBootFactory {
     }
 
     public BlackDuckServerConfig createBlackDuckServerConfig() throws DetectUserFriendlyException {
-        return detectOptionManager.createBlackduckServerConfig();
+        return detectOptionManager.createBlackDuckServerConfig();
     }
 }
