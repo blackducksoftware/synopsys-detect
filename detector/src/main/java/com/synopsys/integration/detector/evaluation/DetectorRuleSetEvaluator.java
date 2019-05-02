@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detector.evaluation;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
