@@ -87,7 +87,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
                     ConnectionResult connectionAttempt = null;
                     try {
                         detectOptionManager.applyInteractiveOptions(getInteractiveOptions());
-                        BlackDuckServerConfig blackDuckServerConfig = detectOptionManager.createBlackduckServerConfig();
+                        BlackDuckServerConfig blackDuckServerConfig = detectOptionManager.createBlackDuckServerConfig();
                         connectionAttempt = blackDuckServerConfig.attemptConnection(new SilentIntLogger());
                     } catch (final Exception e) {
                         println("Failed to test connection.");

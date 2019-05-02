@@ -121,7 +121,7 @@ public class RunManager {
         final NameVersion projectNameVersion = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, runResult, runOptions, detectToolFilter);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
-            runBlackduckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter, projectNameVersion, detectPostActions);
+            runBlackDuckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter, projectNameVersion, detectPostActions);
         } else {
             logger.info("Black Duck tools will NOT be run.");
         }
@@ -215,7 +215,7 @@ public class RunManager {
         }
     }
 
-    private void runBlackduckProduct(ProductRunData productRunData, DetectConfiguration detectConfiguration, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem, CodeLocationNameManager codeLocationNameManager, BdioCodeLocationCreator bdioCodeLocationCreator, DetectInfo detectInfo, RunResult runResult, RunOptions runOptions, DetectToolFilter detectToolFilter, NameVersion projectNameVersion, DetectPostActions detectPostActions) throws IntegrationException, DetectUserFriendlyException {
+    private void runBlackDuckProduct(ProductRunData productRunData, DetectConfiguration detectConfiguration, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem, CodeLocationNameManager codeLocationNameManager, BdioCodeLocationCreator bdioCodeLocationCreator, DetectInfo detectInfo, RunResult runResult, RunOptions runOptions, DetectToolFilter detectToolFilter, NameVersion projectNameVersion, DetectPostActions detectPostActions) throws IntegrationException, DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         logger.info("Black Duck tools will run.");
 

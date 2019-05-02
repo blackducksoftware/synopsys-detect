@@ -104,11 +104,11 @@ public class DetectOptionManager {
         checkForRemovedProperties();
     }
 
-    public BlackDuckServerConfig createBlackduckServerConfig() throws DetectUserFriendlyException {
-        return createBlackduckServerConfig(new SilentIntLogger());
+    public BlackDuckServerConfig createBlackDuckServerConfig() throws DetectUserFriendlyException {
+        return createBlackDuckServerConfig(new SilentIntLogger());
     }
 
-    public BlackDuckServerConfig createBlackduckServerConfig(IntLogger logger) throws DetectUserFriendlyException {
+    public BlackDuckServerConfig createBlackDuckServerConfig(IntLogger logger) throws DetectUserFriendlyException {
         final BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = new BlackDuckServerConfigBuilder().setLogger(logger);
 
         Set<String> allBlackDuckKeys = new HashSet<>(blackDuckServerConfigBuilder.getPropertyKeys());

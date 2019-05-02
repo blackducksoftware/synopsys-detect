@@ -48,10 +48,10 @@ public class DetectPostActions {
     private boolean shouldHaveScanned;
 
     public void runPostActions() throws DetectUserFriendlyException {
-        runPostBlackduckActions();
+        runPostBlackDuckActions();
     }
 
-    private void runPostBlackduckActions() throws DetectUserFriendlyException {
+    private void runPostBlackDuckActions() throws DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (null == projectVersionWrapper || null == blackDuckRunData || null == blackDuckPostActions || null == blackDuckPostOptions || null == codeLocationWaitData || 0 >= timeoutInSeconds) {
             logger.debug("Will not perform Black Duck post actions: Detect is not online.");
