@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -58,7 +60,6 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public abstract class BlackDuckSignatureScanner {
-    public static final String SIGNATURE_SCAN_UPLOAD_SOURCE_OPTION = "--upload-source";
     private final Logger logger = LoggerFactory.getLogger(BlackDuckSignatureScanner.class);
 
     private final DirectoryManager directoryManager;
@@ -78,15 +79,15 @@ public abstract class BlackDuckSignatureScanner {
         this.scanJobManager = scanJobManager;
     }
 
-    protected abstract ScanBatch createScanBatch(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile);
+    protected abstract ScanBatch createScanBatch(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile, String detectorProvidedJavaOptions);
 
-    public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws InterruptedException, IntegrationException, DetectUserFriendlyException, IOException {
-        return scanPaths(projectNameVersion, installDirectory, dockerTarFile);
+    public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile, final String detectorProvidedJavaOptions) throws IntegrationException, IOException {
+        return scanPaths(projectNameVersion, installDirectory, dockerTarFile, detectorProvidedJavaOptions);
     }
 
-    private ScanBatchOutput scanPaths(final NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, InterruptedException, IOException {
+    private ScanBatchOutput scanPaths(final NameVersion projectNameVersion, File installDirectory, File dockerTarFile, final String detectorProvidedJavaOptions) throws IntegrationException, IOException {
         List<SignatureScanPath> signatureScanPaths = determinePathsAndExclusions(projectNameVersion, signatureScannerOptions.getMaxDepth(), dockerTarFile);
-        final ScanBatch scanJob = createScanBatch(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
+        final ScanBatch scanJob = createScanBatch(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile, detectorProvidedJavaOptions);
 
         List<ScanCommandOutput> scanCommandOutputs = new ArrayList<>();
         final ScanBatchOutput scanJobOutput = scanJobManager.executeScans(scanJob);
@@ -208,9 +209,10 @@ public abstract class BlackDuckSignatureScanner {
         }
     }
 
-    protected ScanBatchBuilder createDefaultScanBatchBuilder(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
+    protected ScanBatchBuilder createDefaultScanBatchBuilder(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, File dockerTarFile, String detectorProvidedJavaOptions) {
         final ScanBatchBuilder scanJobBuilder = new ScanBatchBuilder();
         scanJobBuilder.scanMemoryInMegabytes(signatureScannerOptions.getScanMemory());
+        scanJobBuilder.scanCliOpts(detectorProvidedJavaOptions);
         scanJobBuilder.installDirectory(installDirectory);
         scanJobBuilder.outputDirectory(directoryManager.getScanOutputDirectory());
 

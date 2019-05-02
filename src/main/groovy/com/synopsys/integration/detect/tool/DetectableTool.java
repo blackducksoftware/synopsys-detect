@@ -130,9 +130,10 @@ public class DetectableTool {
         }
 
         final Optional<File> dockerTar = extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA);
+        final Optional<String> additionalScanJavaOptions = extraction.getMetaData(DockerExtractor.DOCKER_SCAN_JAVA_OPTION_META_DATA);
 
         logger.info("Tool finished.");
 
-        return new DetectableToolResult(detectToolProjectInfo, detectCodeLocations, dockerTar);
+        return new DetectableToolResult(detectToolProjectInfo, detectCodeLocations, dockerTar, additionalScanJavaOptions);
     }
 }

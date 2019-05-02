@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -56,9 +57,11 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 public class DockerExtractor {
     public static final ExtractionMetadata<File> DOCKER_TAR_META_DATA = new ExtractionMetadata<>("dockerTar", File.class);
     public static final ExtractionMetadata<String> DOCKER_IMAGE_NAME_META_DATA = new ExtractionMetadata<>("dockerImage", String.class);
+    public static final ExtractionMetadata<String> DOCKER_SCAN_JAVA_OPTION_META_DATA = new ExtractionMetadata<>("dockerScanJavaOptions", String.class);
 
     public static final String TAR_FILENAME_PATTERN = "*.tar.gz";
     public static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
+    public static final String SCAN_CLI_JAVA_OPTION_HASHWHITELIST = "-Dblackduck.scan.cli.hashwhitelist=*";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -139,8 +142,12 @@ public class DockerExtractor {
 
         final File producedTarFile = fileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
         File scanFile = null;
+        Optional<String> scanJavaOptions = Optional.empty();
         if (null != producedTarFile && producedTarFile.isFile()) {
             scanFile = producedTarFile;
+            // This produces much better results in Black Duck when scanning a container filesystem.
+            // (Not appropriate when scanning an image .tar.)
+            scanJavaOptions = Optional.of(SCAN_CLI_JAVA_OPTION_HASHWHITELIST);
         } else {
             logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", TAR_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
             if (StringUtils.isNotBlank(dockerTarFilePath)) {
@@ -154,6 +161,7 @@ public class DockerExtractor {
 
         final Extraction.Builder extractionBuilder = findCodeLocations(outputDirectory, directory);
         extractionBuilder.metaData(DOCKER_TAR_META_DATA, scanFile).metaData(DOCKER_IMAGE_NAME_META_DATA, imagePiece);
+        scanJavaOptions.ifPresent(javaOptions -> extractionBuilder.metaData(DOCKER_SCAN_JAVA_OPTION_META_DATA, javaOptions));
         return extractionBuilder.build();
     }
 

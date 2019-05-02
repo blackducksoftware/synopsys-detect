@@ -36,23 +36,25 @@ public class DetectableToolResult {
     private Optional<File> dockerTar = Optional.empty();
     private final Optional<DetectToolProjectInfo> detectToolProjectInfo;
     private final List<DetectCodeLocation> detectCodeLocations;
+    private final Optional<String> additionalSignatureScanJavaOptions;
 
-    public DetectableToolResult(final Optional<DetectToolProjectInfo> detectToolProjectInfo, final List<DetectCodeLocation> detectCodeLocations, Optional<File> dockerTar) {
+    public DetectableToolResult(final Optional<DetectToolProjectInfo> detectToolProjectInfo, final List<DetectCodeLocation> detectCodeLocations, Optional<File> dockerTar, Optional<String> additionalSignatureScanJavaOptions) {
         this.detectToolProjectInfo = detectToolProjectInfo;
         this.detectCodeLocations = detectCodeLocations;
         this.dockerTar = dockerTar;
+        this.additionalSignatureScanJavaOptions = additionalSignatureScanJavaOptions;
     }
 
     public static DetectableToolResult skip() {
-        return new DetectableToolResult(Optional.empty(), Collections.emptyList(), Optional.empty());
-    }
-
-    public static DetectableToolResult complete(List<DetectCodeLocation> codeLocations, DetectToolProjectInfo projectInfo, File dockerTar) {
-        return new DetectableToolResult(Optional.of(projectInfo), codeLocations, Optional.of(dockerTar));
+        return new DetectableToolResult(Optional.empty(), Collections.emptyList(), Optional.empty(), Optional.empty());
     }
 
     public Optional<File> getDockerTar() {
         return dockerTar;
+    }
+
+    public Optional<String> getAdditionalSignatureScanJavaOptions() {
+        return additionalSignatureScanJavaOptions;
     }
 
     public Optional<DetectToolProjectInfo> getDetectToolProjectInfo() {

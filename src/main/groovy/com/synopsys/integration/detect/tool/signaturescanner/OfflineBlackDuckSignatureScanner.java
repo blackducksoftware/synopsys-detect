@@ -41,8 +41,8 @@ public class OfflineBlackDuckSignatureScanner extends BlackDuckSignatureScanner 
     }
 
     @Override
-    protected ScanBatch createScanBatch(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, final File dockerTarFile) {
-        final ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
+    protected ScanBatch createScanBatch(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, final File dockerTarFile, final String detectorProvidedJavaOptions) {
+        final ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile, detectorProvidedJavaOptions);
         scanJobBuilder.fromBlackDuckServerConfig(null);//temporarily need to do this. fix when black duck common updates;
         return scanJobBuilder.build();
     }

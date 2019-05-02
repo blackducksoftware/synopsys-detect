@@ -60,7 +60,7 @@ public class BlackDuckSignatureScannerTool {
         this.detectContext = detectContext;
     }
 
-    public SignatureScannerToolResult runScanTool(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, Optional<File> dockerTar) throws DetectUserFriendlyException {
+    public SignatureScannerToolResult runScanTool(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, Optional<File> dockerTar, final Optional<String> detectorProvidedJavaOptions) throws DetectUserFriendlyException {
         DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
         DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         ConnectionManager connectionManager = detectContext.getBean(ConnectionManager.class);
@@ -118,12 +118,12 @@ public class BlackDuckSignatureScannerTool {
                 logger.debug("Signature scan is online.");
                 CodeLocationCreationService codeLocationCreationService = blackDuckRunData.getBlackDuckServicesFactory().get().createCodeLocationCreationService();
                 OnlineBlackDuckSignatureScanner blackDuckSignatureScanner = detectContext.getBean(OnlineBlackDuckSignatureScanner.class, signatureScannerOptions, scanBatchRunner, codeLocationCreationService, blackDuckServerConfig.get());
-                CodeLocationCreationData<ScanBatchOutput> codeLocationCreationData = blackDuckSignatureScanner.performOnlineScan(projectNameVersion, installDirectory, dockerTar.orElse(null));
+                CodeLocationCreationData<ScanBatchOutput> codeLocationCreationData = blackDuckSignatureScanner.performOnlineScan(projectNameVersion, installDirectory, dockerTar.orElse(null), detectorProvidedJavaOptions.orElse(null));
                 return SignatureScannerToolResult.createOnlineResult(codeLocationCreationData);
             } else {
                 logger.debug("Signature scan is offline.");
                 OfflineBlackDuckSignatureScanner blackDuckSignatureScanner = detectContext.getBean(OfflineBlackDuckSignatureScanner.class, signatureScannerOptions, scanBatchRunner);
-                ScanBatchOutput scanBatchOutput = blackDuckSignatureScanner.performScanActions(projectNameVersion, installDirectory, dockerTar.orElse(null));
+                ScanBatchOutput scanBatchOutput = blackDuckSignatureScanner.performScanActions(projectNameVersion, installDirectory, dockerTar.orElse(null), detectorProvidedJavaOptions.orElse(null));
                 return SignatureScannerToolResult.createOfflineResult(scanBatchOutput);
             }
         } catch (IOException | InterruptedException | IntegrationException e) {

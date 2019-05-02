@@ -42,6 +42,7 @@ public class RunResult {
     private final List<DetectToolProjectInfo> detectToolProjectInfo = new ArrayList<>();
     private final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
     private final Set<DetectorType> applicableDetectors = new HashSet<>();
+    private Optional<String> additionalSignatureScanJavaOptions = Optional.empty();
 
     public void addToolNameVersionIfPresent(DetectTool detectTool, Optional<NameVersion> toolNameVersion) {
         if (toolNameVersion.isPresent()) {
@@ -57,6 +58,7 @@ public class RunResult {
     public void addDetectableToolResult(DetectableToolResult detectableToolResult) {
         detectableToolResult.getDetectToolProjectInfo().ifPresent(detectToolProjectInfo1 -> addToolNameVersionIfPresent(detectToolProjectInfo1.getDetectTool(), Optional.of(detectToolProjectInfo1.getSuggestedNameVersion())));
         detectableToolResult.getDockerTar().ifPresent(dockerTar -> addDockerFile(Optional.of(dockerTar)));
+        detectableToolResult.getAdditionalSignatureScanJavaOptions().ifPresent(javaOptions -> addAdditionalSignatureScanJavaOptions(Optional.of(javaOptions)));
         detectCodeLocations.addAll(detectableToolResult.getDetectCodeLocations());
     }
 
@@ -66,6 +68,14 @@ public class RunResult {
 
     public Optional<File> getDockerTar() {
         return dockerTar;
+    }
+
+    public void addAdditionalSignatureScanJavaOptions(Optional<String> additionalSignatureScanJavaOptions) {
+        this.additionalSignatureScanJavaOptions = additionalSignatureScanJavaOptions;
+    }
+
+    public Optional<String> getAdditionalSignatureScanJavaOptions() {
+        return additionalSignatureScanJavaOptions;
     }
 
     public List<DetectToolProjectInfo> getDetectToolProjectInfo() {

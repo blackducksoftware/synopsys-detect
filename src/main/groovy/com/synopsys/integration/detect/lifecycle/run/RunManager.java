@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detect.lifecycle.run;
 
-import java.util.Optional;
-
 import com.synopsys.integration.detect.workflow.DetectPostActions;
 import com.synopsys.integration.detect.workflow.blackduck.*;
 import org.slf4j.Logger;
@@ -31,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
@@ -276,7 +273,7 @@ public class RunManager {
             logger.info("Will include the signature scanner tool.");
             final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
             final BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
-            final SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar());
+            final SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar(), runResult.getAdditionalSignatureScanJavaOptions());
             if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
                 codeLocationWaitData.addWaitForCreationData(signatureScannerToolResult.getCreationData().get());
             }
