@@ -30,17 +30,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("integration")
 public class CompleteRiskReportTest {
-    private static boolean previousDoNotExit;
+    private static boolean previousShouldExit;
 
     @BeforeAll
     public static void setup() {
-        previousDoNotExit = Application.SHOULD_EXIT;
+        previousShouldExit = Application.SHOULD_EXIT;
         Application.SHOULD_EXIT = false;
     }
 
     @AfterAll
     public static void cleanup() {
-        Application.SHOULD_EXIT = previousDoNotExit;
+        Application.SHOULD_EXIT = previousShouldExit;
     }
 
     @Test

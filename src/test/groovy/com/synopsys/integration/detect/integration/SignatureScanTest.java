@@ -8,6 +8,7 @@ import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.Application;
+import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.BufferedIntLogger;
 import com.synopsys.integration.log.IntLogger;
 import org.junit.jupiter.api.AfterAll;
@@ -30,7 +31,9 @@ public class SignatureScanTest {
 
     private static IntLogger logger;
     private static BlackDuckServicesFactory blackDuckServicesFactory;
-    private static boolean previousDoNotExit;
+    private static BlackDuckService blackDuckService;
+    private static ProjectService projectService;
+    private static boolean previousShouldExit;
 
     @BeforeAll
     public static void setup() {
@@ -38,24 +41,38 @@ public class SignatureScanTest {
         BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
         blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
         blackDuckServicesFactory = blackDuckServerConfigBuilder.build().createBlackDuckServicesFactory(logger);
+        blackDuckService = blackDuckServicesFactory.createBlackDuckService();
+        projectService = blackDuckServicesFactory.createProjectService();
 
-        previousDoNotExit = Application.SHOULD_EXIT;
+        previousShouldExit = Application.SHOULD_EXIT;
         Application.SHOULD_EXIT = false;
     }
 
     @AfterAll
     public static void cleanup() {
-        Application.SHOULD_EXIT = previousDoNotExit;
+        Application.SHOULD_EXIT = previousShouldExit;
     }
 
     @Test
     @ExtendWith(TempDirectory.class)
     public void testOfflineScanWithSnippetMatching(@TempDirectory.TempDir Path tempOutputDirectory) throws Exception {
-        BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService();
-        ProjectService projectService = blackDuckServicesFactory.createProjectService();
-
         String projectName = "synopsys-detect-junit";
         String projectVersionName = "offline-scan";
+        assertProjectVersionReady(projectName, projectVersionName);
+
+        String[] detectArgs = new String[]{
+                "--detect.output.path=" + tempOutputDirectory.toString(),
+                "--detect.project.name=" + projectName,
+                "--detect.project.version.name=" + projectVersionName,
+                "--detect.blackduck.signature.scanner.snippet.matching=SNIPPET_MATCHING",
+                "--detect.blackduck.signature.scanner.dry.run=true"
+        };
+        Application.main(detectArgs);
+
+        assertDirectoryStructureForOfflineScan(tempOutputDirectory);
+    }
+
+    private void assertProjectVersionReady(String projectName, String projectVersionName) throws IntegrationException {
         Optional<ProjectVersionWrapper> optionalProjectVersionWrapper = projectService.getProjectVersion(projectName, projectVersionName);
         if (optionalProjectVersionWrapper.isPresent()) {
             blackDuckService.delete(optionalProjectVersionWrapper.get().getProjectView());
@@ -65,16 +82,9 @@ public class SignatureScanTest {
         projectService.syncProjectAndVersion(projectSyncModel);
         optionalProjectVersionWrapper = projectService.getProjectVersion(projectName, projectVersionName);
         assertTrue(optionalProjectVersionWrapper.isPresent());
+    }
 
-        String[] detectArgs = new String[] {
-                "--detect.output.path=" + tempOutputDirectory.toString(),
-                "--detect.project.name=" + projectName,
-                "--detect.project.version.name=" + projectVersionName,
-                "--detect.blackduck.signature.scanner.snippet.matching=SNIPPET_MATCHING",
-                "--detect.blackduck.signature.scanner.dry.run=true"
-        };
-        Application.main(detectArgs);
-
+    private void assertDirectoryStructureForOfflineScan(@TempDirectory.TempDir Path tempOutputDirectory) {
         Path runsPath = tempOutputDirectory.resolve("runs");
         assertTrue(runsPath.toFile().exists());
         assertTrue(runsPath.toFile().isDirectory());
