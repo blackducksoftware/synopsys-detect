@@ -55,16 +55,16 @@ public class OnlineBlackDuckSignatureScanner extends BlackDuckSignatureScanner {
         this.blackDuckServerConfig = blackDuckServerConfig;
     }
 
-    public CodeLocationCreationData<ScanBatchOutput> performOnlineScan(NameVersion projectNameVersion, File installDirectory, File dockerTarFile, final String detectorProvidedJavaOptions) throws InterruptedException, IntegrationException, DetectUserFriendlyException, IOException {
+    public CodeLocationCreationData<ScanBatchOutput> performOnlineScan(NameVersion projectNameVersion, File installDirectory, File dockerTarFile, final String detectableProvidedJavaOptions) throws InterruptedException, IntegrationException, DetectUserFriendlyException, IOException {
         NotificationTaskRange notificationTaskRange = codeLocationCreationService.calculateCodeLocationRange();
-        ScanBatchOutput scanBatchOutput = performScanActions(projectNameVersion, installDirectory, dockerTarFile, detectorProvidedJavaOptions);
+        ScanBatchOutput scanBatchOutput = performScanActions(projectNameVersion, installDirectory, dockerTarFile, detectableProvidedJavaOptions);
         CodeLocationCreationData<ScanBatchOutput> creationData = new CodeLocationCreationData<>(notificationTaskRange, scanBatchOutput);
         return creationData;
     }
 
     @Override
-    protected ScanBatch createScanBatch(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile, final String detectorProvidedJavaOptions) {
-        final ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile, detectorProvidedJavaOptions);
+    protected ScanBatch createScanBatch(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile, final String detectableProvidedJavaOptions) {
+        final ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile, detectableProvidedJavaOptions);
         scanJobBuilder.fromBlackDuckServerConfig(blackDuckServerConfig);
         return scanJobBuilder.build();
     }

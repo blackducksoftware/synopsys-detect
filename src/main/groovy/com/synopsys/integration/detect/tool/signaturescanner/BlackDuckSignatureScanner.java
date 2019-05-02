@@ -79,15 +79,15 @@ public abstract class BlackDuckSignatureScanner {
         this.scanJobManager = scanJobManager;
     }
 
-    protected abstract ScanBatch createScanBatch(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile, String detectorProvidedJavaOptions);
+    protected abstract ScanBatch createScanBatch(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile, String detectableProvidedJavaOptions);
 
-    public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile, final String detectorProvidedJavaOptions) throws IntegrationException, IOException {
-        return scanPaths(projectNameVersion, installDirectory, dockerTarFile, detectorProvidedJavaOptions);
+    public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile, final String detectableProvidedJavaOptions) throws IntegrationException, IOException {
+        return scanPaths(projectNameVersion, installDirectory, dockerTarFile, detectableProvidedJavaOptions);
     }
 
-    private ScanBatchOutput scanPaths(final NameVersion projectNameVersion, File installDirectory, File dockerTarFile, final String detectorProvidedJavaOptions) throws IntegrationException, IOException {
+    private ScanBatchOutput scanPaths(final NameVersion projectNameVersion, File installDirectory, File dockerTarFile, final String detectableProvidedJavaOptions) throws IntegrationException, IOException {
         List<SignatureScanPath> signatureScanPaths = determinePathsAndExclusions(projectNameVersion, signatureScannerOptions.getMaxDepth(), dockerTarFile);
-        final ScanBatch scanJob = createScanBatch(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile, detectorProvidedJavaOptions);
+        final ScanBatch scanJob = createScanBatch(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile, detectableProvidedJavaOptions);
 
         List<ScanCommandOutput> scanCommandOutputs = new ArrayList<>();
         final ScanBatchOutput scanJobOutput = scanJobManager.executeScans(scanJob);
@@ -209,10 +209,10 @@ public abstract class BlackDuckSignatureScanner {
         }
     }
 
-    protected ScanBatchBuilder createDefaultScanBatchBuilder(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, File dockerTarFile, String detectorProvidedJavaOptions) {
+    protected ScanBatchBuilder createDefaultScanBatchBuilder(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, File dockerTarFile, String detectableProvidedJavaOptions) {
         final ScanBatchBuilder scanJobBuilder = new ScanBatchBuilder();
         scanJobBuilder.scanMemoryInMegabytes(signatureScannerOptions.getScanMemory());
-        scanJobBuilder.scanCliOpts(detectorProvidedJavaOptions);
+        scanJobBuilder.scanCliOpts(detectableProvidedJavaOptions);
         scanJobBuilder.installDirectory(installDirectory);
         scanJobBuilder.outputDirectory(directoryManager.getScanOutputDirectory());
 
