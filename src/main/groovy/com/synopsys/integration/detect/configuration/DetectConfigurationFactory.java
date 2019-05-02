@@ -33,7 +33,7 @@ import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFilter;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
-import com.synopsys.integration.detect.workflow.blackduck.BlackduckPostOptions;
+import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.file.AirGapOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
@@ -165,7 +165,7 @@ public class DetectConfigurationFactory {
             snippetMatching, snippetMatchingMode, uploadSource, codeLocationPrefix, codeLocationSuffix, additionalArguments, maxDepth);
     }
 
-    public BlackduckPostOptions createBlackduckPostOptions() {
+    public BlackDuckPostOptions createBlackDuckPostOptions() {
         final boolean waitForResults = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_WAIT_FOR_RESULTS, PropertyAuthority.None);
         final boolean runRiskReport = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF, PropertyAuthority.None);
         final boolean runNoticesReport = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT, PropertyAuthority.None);
@@ -174,7 +174,7 @@ public class DetectConfigurationFactory {
         final String policySeverities = detectConfiguration.getPropertyValueAsString(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None);
         final List<PolicySeverityType> severitiesToFailPolicyCheck = EnumUtils.parseCommaDelimitted(policySeverities.toUpperCase(), PolicySeverityType.class);
 
-        return new BlackduckPostOptions(waitForResults, runRiskReport, runNoticesReport, riskReportPdfPath, noticesReportPath, severitiesToFailPolicyCheck);
+        return new BlackDuckPostOptions(waitForResults, runRiskReport, runNoticesReport, riskReportPdfPath, noticesReportPath, severitiesToFailPolicyCheck);
     }
 
     public long getTimeoutInSeconds() {

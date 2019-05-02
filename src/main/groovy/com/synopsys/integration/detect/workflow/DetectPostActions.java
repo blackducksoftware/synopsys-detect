@@ -26,8 +26,8 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.synopsys.integration.detect.workflow.blackduck.BlackduckPostActions;
-import com.synopsys.integration.detect.workflow.blackduck.BlackduckPostOptions;
+import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostActions;
+import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.CodeLocationWaitData;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import org.slf4j.Logger;
@@ -40,8 +40,8 @@ public class DetectPostActions {
 
     private ProjectVersionWrapper projectVersionWrapper;
     private BlackDuckRunData blackDuckRunData;
-    private BlackduckPostActions blackduckPostActions;
-    private BlackduckPostOptions blackduckPostOptions;
+    private BlackDuckPostActions blackDuckPostActions;
+    private BlackDuckPostOptions blackDuckPostOptions;
     private CodeLocationWaitData codeLocationWaitData;
     private long timeoutInSeconds;
     private boolean hasAtLeastOneBdio;
@@ -53,14 +53,14 @@ public class DetectPostActions {
 
     private void runPostBlackduckActions() throws DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (null == projectVersionWrapper || null == blackDuckRunData || null == blackduckPostActions || null == blackduckPostOptions || null == codeLocationWaitData || 0 >= timeoutInSeconds) {
+        if (null == projectVersionWrapper || null == blackDuckRunData || null == blackDuckPostActions || null == blackDuckPostOptions || null == codeLocationWaitData || 0 >= timeoutInSeconds) {
             logger.debug("Will not perform Black Duck post actions: Detect is not online.");
             return;
         }
 
         if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
             logger.info("Will perform Black Duck post actions.");
-            blackduckPostActions.perform(blackduckPostOptions, codeLocationWaitData, projectVersionWrapper, timeoutInSeconds);
+            blackDuckPostActions.perform(blackDuckPostOptions, codeLocationWaitData, projectVersionWrapper, timeoutInSeconds);
 
             if (hasAtLeastOneBdio || shouldHaveScanned) {
                 final Optional<String> componentsLink = projectVersionWrapper.getProjectVersionView().getFirstLink(ProjectVersionView.COMPONENTS_LINK);
@@ -88,20 +88,20 @@ public class DetectPostActions {
         this.blackDuckRunData = blackDuckRunData;
     }
 
-    public BlackduckPostActions getBlackduckPostActions() {
-        return blackduckPostActions;
+    public BlackDuckPostActions getBlackDuckPostActions() {
+        return blackDuckPostActions;
     }
 
-    public void setBlackduckPostActions(BlackduckPostActions blackduckPostActions) {
-        this.blackduckPostActions = blackduckPostActions;
+    public void setBlackDuckPostActions(BlackDuckPostActions blackDuckPostActions) {
+        this.blackDuckPostActions = blackDuckPostActions;
     }
 
-    public BlackduckPostOptions getBlackduckPostOptions() {
-        return blackduckPostOptions;
+    public BlackDuckPostOptions getBlackDuckPostOptions() {
+        return blackDuckPostOptions;
     }
 
-    public void setBlackduckPostOptions(BlackduckPostOptions blackduckPostOptions) {
-        this.blackduckPostOptions = blackduckPostOptions;
+    public void setBlackDuckPostOptions(BlackDuckPostOptions blackDuckPostOptions) {
+        this.blackDuckPostOptions = blackDuckPostOptions;
     }
 
     public CodeLocationWaitData getCodeLocationWaitData() {

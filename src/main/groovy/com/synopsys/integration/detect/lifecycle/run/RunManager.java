@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detect.lifecycle.run;
 
-import java.util.Optional;
-
 import com.synopsys.integration.detect.workflow.DetectPostActions;
 import com.synopsys.integration.detect.workflow.blackduck.*;
 import org.slf4j.Logger;
@@ -31,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
@@ -303,9 +300,9 @@ public class RunManager {
         }
 
         if (null != blackDuckServicesFactory) {
-            final BlackduckPostActions blackduckPostActions = new BlackduckPostActions(blackDuckServicesFactory, eventSystem);
-            detectPostActions.setBlackduckPostActions(blackduckPostActions);
-            detectPostActions.setBlackduckPostOptions(detectConfigurationFactory.createBlackduckPostOptions());
+            final BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory, eventSystem);
+            detectPostActions.setBlackDuckPostActions(blackDuckPostActions);
+            detectPostActions.setBlackDuckPostOptions(detectConfigurationFactory.createBlackDuckPostOptions());
             detectPostActions.setBlackDuckRunData(blackDuckRunData);
             detectPostActions.setCodeLocationWaitData(codeLocationWaitData);
             detectPostActions.setProjectVersionWrapper(projectVersionWrapper);

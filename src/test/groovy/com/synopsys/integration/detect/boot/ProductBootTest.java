@@ -44,7 +44,7 @@ public class ProductBootTest {
     }
 
     @Test()
-    public void blackduckFailureWithIgnoreReturnsFalse() throws DetectUserFriendlyException {
+    public void blackDuckFailureWithIgnoreReturnsFalse() throws DetectUserFriendlyException {
         HashMap<DetectProperty, Boolean> properties = new HashMap<>();
         properties.put(DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES, true);
 

@@ -112,8 +112,8 @@ public class DetectOptionManager {
         final BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = new BlackDuckServerConfigBuilder().setLogger(logger);
 
         Set<String> allBlackDuckKeys = new HashSet<>(blackDuckServerConfigBuilder.getPropertyKeys());
-        Map<String, String> blackduckBlackDuckProperties = detectConfiguration.getProperties(allBlackDuckKeys);
-        final Map<String, String> blackduckBlackDuckPropertiesNoProxy = blackduckBlackDuckProperties.entrySet().stream()
+        Map<String, String> blackDuckProperties = detectConfiguration.getProperties(allBlackDuckKeys);
+        final Map<String, String> blackDuckPropertiesNoProxy = blackDuckProperties.entrySet().stream()
                                                                             .filter(it -> !it.getKey().toLowerCase().contains("proxy"))
                                                                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
@@ -126,9 +126,9 @@ public class DetectOptionManager {
         }
 
         if (ignoreProxy) {
-            blackDuckServerConfigBuilder.setProperties(blackduckBlackDuckPropertiesNoProxy.entrySet());
+            blackDuckServerConfigBuilder.setProperties(blackDuckPropertiesNoProxy.entrySet());
         } else {
-            blackDuckServerConfigBuilder.setProperties(blackduckBlackDuckProperties.entrySet());
+            blackDuckServerConfigBuilder.setProperties(blackDuckProperties.entrySet());
         }
 
         try {

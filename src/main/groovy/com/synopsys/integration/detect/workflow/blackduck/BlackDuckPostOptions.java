@@ -26,7 +26,7 @@ import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 
 import java.util.List;
 
-public class BlackduckPostOptions {
+public class BlackDuckPostOptions {
     private boolean waitForResults;
 
     private boolean generateRiskReport;
@@ -35,7 +35,7 @@ public class BlackduckPostOptions {
     private String noticesReportPath;
     private List<PolicySeverityType> severitiesToFailPolicyCheck;
 
-    public BlackduckPostOptions(boolean waitForResults, boolean generateRiskReport, boolean generateNoticesReport, String riskReportPdfPath, String noticesReportPath, List<PolicySeverityType> severitiesToFailPolicyCheck) {
+    public BlackDuckPostOptions(boolean waitForResults, boolean generateRiskReport, boolean generateNoticesReport, String riskReportPdfPath, String noticesReportPath, List<PolicySeverityType> severitiesToFailPolicyCheck) {
         this.waitForResults = waitForResults;
         this.generateRiskReport = generateRiskReport;
         this.generateNoticesReport = generateNoticesReport;
