@@ -80,6 +80,10 @@ public class Executable {
         return StringUtils.join(createProcessBuilderArguments(), ' ');
     }
 
+    public List<String> getCommand() {
+        return command;
+    }
+
     private List<String> createProcessBuilderArguments() {
         // ProcessBuilder can only be called with a List<java.lang.String> so do any needed conversion
         final List<String> processBuilderArguments = new ArrayList<>();
