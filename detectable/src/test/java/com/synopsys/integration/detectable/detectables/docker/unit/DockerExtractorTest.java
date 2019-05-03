@@ -2,6 +2,7 @@ package com.synopsys.integration.detectable.detectables.docker.unit;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.List;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -43,6 +45,7 @@ public class DockerExtractorTest {
     }
 
     @Test
+    @DisabledOnOs(WINDOWS)
     public void testExtractContainerFileSystem() throws IOException, ExecutableRunnerException {
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
         final DockerProperties dockerProperties = Mockito.mock(DockerProperties.class);
@@ -81,6 +84,7 @@ public class DockerExtractorTest {
     }
 
     @Test
+    @DisabledOnOs(WINDOWS)
     public void testExtractDockerTar() throws IOException, ExecutableRunnerException {
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
         final DockerProperties dockerProperties = Mockito.mock(DockerProperties.class);
