@@ -22,14 +22,21 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Pack
 public class ClangPackageDetailsTransformerTest {
 
     @Test
-    public void testUbuntu() {
+    public void testDpkg() {
+        doTest(Forge.UBUNTU);
+    }
 
+    @Test
+    public void testRpm() {
+        doTest(Forge.CENTOS);
+    }
+
+    private void doTest(final Forge forge) {
         final ExternalIdFactory externalIdFactory = Mockito.mock(ExternalIdFactory.class);
         final ClangPackageDetailsTransformer transformer = new ClangPackageDetailsTransformer(externalIdFactory);
 
         final Forge codeLocationForge = null;
         final List<Forge> dependencyForges = new ArrayList<>();
-        final Forge forge = Forge.UBUNTU;
         dependencyForges.add(forge);
 
         final File rootDir = null;
@@ -54,7 +61,9 @@ public class ClangPackageDetailsTransformerTest {
         final Dependency generatedDependency = codeLocation.getDependencyGraph().getRootDependencies().iterator().next();
         assertEquals(packageName, generatedDependency.name);
         assertEquals(packageVersion, generatedDependency.version);
+        assertEquals(forge, generatedDependency.externalId.forge);
         final String expectedExternalId = String.format("%s/%s/%s", packageName, packageVersion, packageArch);
         assertEquals(expectedExternalId, generatedDependency.externalId.createExternalId());
     }
+
 }
