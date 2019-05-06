@@ -29,6 +29,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
@@ -36,24 +37,35 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Pack
 
 public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final String NO_VALUE = "(none)";
+    private final Gson gson;
+
+    public RpmPackageManagerResolver(final Gson gson) {
+        this.gson = gson;
+    }
 
     @Override
     public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException {
         List<PackageDetails> packageDetailsList = new ArrayList<>();
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
+            logger.trace(String.format("packageLine: %s", packageLine));
             if (!valid(packageLine)) {
                 logger.debug(String.format("Skipping line: %s", packageLine));
                 continue;
             }
-            final int lastDotIndex = packageLine.lastIndexOf('.');
-            final String arch = packageLine.substring(lastDotIndex + 1);
-            final int lastDashIndex = packageLine.lastIndexOf('-');
-            final String nameVersion = packageLine.substring(0, lastDashIndex);
-            final int secondToLastDashIndex = nameVersion.lastIndexOf('-');
-            final String versionRelease = packageLine.substring(secondToLastDashIndex + 1, lastDotIndex);
-            final String artifact = packageLine.substring(0, secondToLastDashIndex);
-            final PackageDetails dependencyDetails = new PackageDetails(artifact, versionRelease, arch);
+            final RpmPackage rpmPackage = gson.fromJson(packageLine, RpmPackage.class);
+            final String packageName = rpmPackage.getName();
+            String packageVersion = rpmPackage.getVersion();
+            final String epoch = rpmPackage.getEpoch();
+            if (!NO_VALUE.equals(epoch)) {
+                packageVersion = String.format("%s:%s", epoch, packageVersion);
+            }
+            String arch = "";
+            if (!NO_VALUE.equals(rpmPackage.getArch())) {
+                arch = rpmPackage.getArch();
+            }
+            final PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion, arch);
             packageDetailsList.add(dependencyDetails);
         }
         return packageDetailsList;
@@ -63,6 +75,9 @@ public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
         if (packageLine.contains(" is not owned by ")) {
             return false;
         }
-        return packageLine.matches(".+-.+-.+\\..*");
+        if (packageLine.contains("epoch:") && packageLine.contains("name:") && packageLine.contains("version:") && packageLine.contains("arch:")) {
+            return true;
+        }
+        return false;
     }
 }
