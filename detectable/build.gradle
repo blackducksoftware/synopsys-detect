@@ -1,21 +1,3 @@
-plugins {
-    id 'java'
-}
-
-version '5.2.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
-project.ext.junitShowStandardStreams = 'true'
-
-repositories {
-    jcenter()
-    mavenCentral()
-}
-
-test {
-    useJUnitPlatform()
-}
-
 dependencies {
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.5'
     implementation 'org.freemarker:freemarker:2.3.26-incubating'

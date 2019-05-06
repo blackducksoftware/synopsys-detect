@@ -1,18 +1,6 @@
 package com.synopsys.integration.detect.integration;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
-import com.synopsys.integration.blackduck.service.BlackDuckService;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.ProjectService;
-import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.Application;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.BufferedIntLogger;
-import com.synopsys.integration.log.IntLogger;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,38 +8,13 @@ import org.junitpioneer.jupiter.TempDirectory;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("integration")
-public class SignatureScanTest {
+public class SignatureScanTest extends BlackDuckIntegrationTest {
     private static final long ONE_MILLION_BYTES = 1_000_000;
-
-    private static IntLogger logger;
-    private static BlackDuckServicesFactory blackDuckServicesFactory;
-    private static BlackDuckService blackDuckService;
-    private static ProjectService projectService;
-    private static boolean previousShouldExit;
-
-    @BeforeAll
-    public static void setup() {
-        logger = new BufferedIntLogger();
-        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
-        blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
-        blackDuckServicesFactory = blackDuckServerConfigBuilder.build().createBlackDuckServicesFactory(logger);
-        blackDuckService = blackDuckServicesFactory.createBlackDuckService();
-        projectService = blackDuckServicesFactory.createProjectService();
-
-        previousShouldExit = Application.SHOULD_EXIT;
-        Application.SHOULD_EXIT = false;
-    }
-
-    @AfterAll
-    public static void cleanup() {
-        Application.SHOULD_EXIT = previousShouldExit;
-    }
 
     @Test
     @ExtendWith(TempDirectory.class)
@@ -70,18 +33,6 @@ public class SignatureScanTest {
         Application.main(detectArgs);
 
         assertDirectoryStructureForOfflineScan(tempOutputDirectory);
-    }
-
-    private void assertProjectVersionReady(String projectName, String projectVersionName) throws IntegrationException {
-        Optional<ProjectVersionWrapper> optionalProjectVersionWrapper = projectService.getProjectVersion(projectName, projectVersionName);
-        if (optionalProjectVersionWrapper.isPresent()) {
-            blackDuckService.delete(optionalProjectVersionWrapper.get().getProjectView());
-        }
-
-        ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectName, projectVersionName);
-        projectService.syncProjectAndVersion(projectSyncModel);
-        optionalProjectVersionWrapper = projectService.getProjectVersion(projectName, projectVersionName);
-        assertTrue(optionalProjectVersionWrapper.isPresent());
     }
 
     private void assertDirectoryStructureForOfflineScan(@TempDirectory.TempDir Path tempOutputDirectory) {

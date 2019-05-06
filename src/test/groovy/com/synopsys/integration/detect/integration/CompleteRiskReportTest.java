@@ -29,49 +29,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("integration")
-public class CompleteRiskReportTest {
-    private static boolean previousShouldExit;
-
-    @BeforeAll
-    public static void setup() {
-        previousShouldExit = Application.SHOULD_EXIT;
-        Application.SHOULD_EXIT = false;
-    }
-
-    @AfterAll
-    public static void cleanup() {
-        Application.SHOULD_EXIT = previousShouldExit;
-    }
-
+public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
     @Test
     public void testRiskReportIsPopulated() throws Exception {
-        IntLogger logger = new BufferedIntLogger();
-        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
-        blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
-        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfigBuilder.build().createBlackDuckServicesFactory(logger);
-
-        BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService();
-        ProjectService projectService = blackDuckServicesFactory.createProjectService();
-        ReportService reportService = blackDuckServicesFactory.createReportService(120 * 1000);
         Path tempReportDirectoryPath = Files.createTempDirectory("junit_report");
         File tempReportDirectory = tempReportDirectoryPath.toFile();
 
         String projectName = "synopsys-detect-junit";
         String projectVersionName = "risk-report";
-        Optional<ProjectVersionWrapper> optionalProjectVersionWrapper = projectService.getProjectVersion(projectName, projectVersionName);
-        if (optionalProjectVersionWrapper.isPresent()) {
-            blackDuckService.delete(optionalProjectVersionWrapper.get().getProjectView());
-        }
-
-        ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectName, projectVersionName);
-        projectService.syncProjectAndVersion(projectSyncModel);
-        optionalProjectVersionWrapper = projectService.getProjectVersion(projectName, projectVersionName);
-        assertTrue(optionalProjectVersionWrapper.isPresent());
+        ProjectVersionWrapper projectVersionWrapper = assertProjectVersionReady(projectName, projectVersionName);
 
         List<File> pdfFiles = getPdfFiles(tempReportDirectory);
         assertEquals(0, pdfFiles.size());
 
-        reportService.createReportPdfFile(tempReportDirectory, optionalProjectVersionWrapper.get().getProjectView(), optionalProjectVersionWrapper.get().getProjectVersionView());
+        reportService.createReportPdfFile(tempReportDirectory, projectVersionWrapper.getProjectView(), projectVersionWrapper.getProjectVersionView());
         pdfFiles = getPdfFiles(tempReportDirectory);
         assertEquals(1, pdfFiles.size());
 
