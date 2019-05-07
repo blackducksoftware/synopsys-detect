@@ -54,7 +54,7 @@ public class ClangPackageManagerInfoFactory {
         rpm.setForge(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT);
         rpm.setPresenceCheckArguments("--version");
         rpm.setPresenceCheckExpectedText("RPM version");
-        rpm.setGetOwnerArguments("-qf");
+        rpm.setGetOwnerArguments("-qf", "--queryformat=\\{ epoch: \\\"%{E}\\\", name: \\\"%{N}\\\", version: \\\"%{V}-%{R}\\\", arch: \\\"%{ARCH}\\\" \\}");
         return rpm.build();
     }
 
