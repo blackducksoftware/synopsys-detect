@@ -17,6 +17,8 @@ bash <(curl -s -L https://detect.synopsys.com/detect.sh)
 *Available from GitHub for Windows by running:*  
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 
+For scripts, please see [Detect Scripts](https://github.com/synopsys-sig/synopsys-detect-scripts)
+
 For AirGap, please use our [Artifactory](https://repo.blackducksoftware.com/artifactory/webapp/#/artifacts/browse/tree/General/bds-integrations-release/com/synopsys/integration/synopsys-detect).
 
 ## Documentation
