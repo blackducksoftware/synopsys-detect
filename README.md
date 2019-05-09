@@ -23,6 +23,6 @@ For AirGap, please use our [Artifactory](https://repo.blackducksoftware.com/arti
 
 ## Documentation
 
-[Quick Start Guide](https://github.com/blackducksoftware/synopsys-detect/wiki/Quick-Start-Guide)
+[For Developers and Advanced Topics](https://github.com/blackducksoftware/synopsys-detect/wiki)
 
 All other documentation is located on our public [Confluence](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect)
