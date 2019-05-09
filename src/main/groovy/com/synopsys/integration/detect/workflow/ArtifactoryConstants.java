@@ -39,7 +39,7 @@ public class ArtifactoryConstants {
     public static String CLASSIC_NUGET_INSPECTOR_VERSION_OVERRIDE = "/IntegrationNugetInspector." + ArtifactoryConstants.VERSION_PLACEHOLDER + ".nupkg";
 
     public static String DOCKER_INSPECTOR_REPO = "bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector";
-    public static String DOCKER_INSPECTOR_PROPERTY = "DOCKER_INSPECTOR_LATEST_7";
+    public static String DOCKER_INSPECTOR_PROPERTY = "DOCKER_INSPECTOR_LATEST_8";
     public static String DOCKER_INSPECTOR_VERSION_OVERRIDE = "/" + ArtifactoryConstants.VERSION_PLACEHOLDER + "/blackduck-docker-inspector-" + ArtifactoryConstants.VERSION_PLACEHOLDER + ".jar";
 
 }
