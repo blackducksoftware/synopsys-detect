@@ -23,20 +23,23 @@
 package com.synopsys.integration.detect.tool.detector.impl;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Predicate;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
-import com.synopsys.integration.util.ExcludedIncludedFilter;
-
 public class DetectDetectorFileFilter implements Predicate<File> {
-    private List<String> excludedDirectories;
-    private WildcardFileFilter fileFilter;
+    private final Path sourcePath;
+    private final List<String> excludedDirectories;
+    private final List<String> excludedDirectoryPaths;
+    private final WildcardFileFilter fileFilter;
 
-    public DetectDetectorFileFilter(List<String> excludedDirectories, List<String> excludedDirectoryNamePatterns){
+    public DetectDetectorFileFilter(final Path sourcePath, final List<String> excludedDirectories, final List<String> excludedDirectoryPaths, final List<String> excludedDirectoryNamePatterns) {
+        this.sourcePath = sourcePath;
         this.excludedDirectories = excludedDirectories;
+        this.excludedDirectoryPaths = excludedDirectoryPaths;
         fileFilter = new WildcardFileFilter(excludedDirectoryNamePatterns);
     }
 
@@ -45,9 +48,17 @@ public class DetectDetectorFileFilter implements Predicate<File> {
         return !isExcluded(file);
     }
 
-    public boolean isExcluded(final File file){
+    public boolean isExcluded(final File file) {
         for (final String excludedDirectory : excludedDirectories) {
             if (FilenameUtils.wildcardMatchOnSystem(file.getName(), excludedDirectory)) {
+                return true;
+            }
+        }
+
+        for (final String excludedDirectory : excludedDirectoryPaths) {
+            final Path excludedDirectoryPath = new File(excludedDirectory).toPath();
+            final Path relativeDirectoryPath = sourcePath.relativize(file.toPath());
+            if (relativeDirectoryPath.endsWith(excludedDirectoryPath)) {
                 return true;
             }
         }

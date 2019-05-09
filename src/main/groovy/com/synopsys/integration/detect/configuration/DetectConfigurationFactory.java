@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.configuration;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -34,14 +35,15 @@ import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureS
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
+import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.file.AirGapOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
-import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.util.EnumUtils;
 
+// TODO: Create private method for accessing properties that assumes a PropertyAuthority of NONE.
 public class DetectConfigurationFactory {
     private final DetectConfiguration detectConfiguration;
 
@@ -91,14 +93,15 @@ public class DetectConfigurationFactory {
         return new AirGapOptions(dockerOverride, gradleOverride, nugetOverride);
     }
 
-    public DetectorFinderOptions createSearchOptions() {
+    public DetectorFinderOptions createSearchOptions(final Path sourcePath) {
         //Normal settings
         final int maxDepth = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_DETECTOR_SEARCH_DEPTH, PropertyAuthority.None);
 
         //File Filter
         final List<String> excludedDirectories = Arrays.asList(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION, PropertyAuthority.None));
         final List<String> excludedDirectoryPatterns = Arrays.asList(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS, PropertyAuthority.None));
-        DetectDetectorFileFilter fileFilter = new DetectDetectorFileFilter(excludedDirectories, excludedDirectoryPatterns);
+        final List<String> excludedDirectoryPaths = Arrays.asList(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS, PropertyAuthority.None));
+        final DetectDetectorFileFilter fileFilter = new DetectDetectorFileFilter(sourcePath, excludedDirectories, excludedDirectoryPaths, excludedDirectoryPatterns);
 
         return new DetectorFinderOptions(fileFilter, maxDepth);
     }

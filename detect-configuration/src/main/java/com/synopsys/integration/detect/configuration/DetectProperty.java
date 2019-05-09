@@ -286,6 +286,10 @@ public enum DetectProperty {
     DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS("detect.detector.search.exclusion.patterns", " Detector Directory Patterns Exclusions", "3.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
+    @HelpDescription("A comma-separated list of directory paths to exclude from detector search. (e.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)")
+    DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS("detect.detector.search.exclusion.paths", " Detector Directory Path Exclusions", "5.5.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.")
     @HelpDetailed("If true, these directories will be excluded from the detector search: " + DetectorSearchExcludedDirectories.DIRECTORY_NAMES)
     DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS("detect.detector.search.exclusion.defaults", "Detector Exclude Default Directories", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
@@ -676,7 +680,7 @@ public enum DetectProperty {
     @AcceptableValues(value = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
     LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION("logging.level.com.synopsys.integration", "Logging Level", "5.3.0", PropertyType.STRING, PropertyAuthority.None, "INFO"),
 
-    @HelpGroup(primary = GROUP_GENERAL, additional =  { SEARCH_GROUP_GLOBAL })
+    @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If set to true, Detect will wait for Synopsys products until results are available or the blackduck.timeout is exceeded.")
     DETECT_WAIT_FOR_RESULTS("detect.wait.for.results", "Wait For Results", "5.5.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
     /**********************************************************************************************

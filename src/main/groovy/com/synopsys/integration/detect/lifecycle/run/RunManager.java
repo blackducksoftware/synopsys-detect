@@ -22,8 +22,8 @@
  */
 package com.synopsys.integration.detect.lifecycle.run;
 
-import com.synopsys.integration.detect.workflow.DetectPostActions;
-import com.synopsys.integration.detect.workflow.blackduck.*;
+import java.nio.file.Path;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,8 +63,15 @@ import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureS
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
+import com.synopsys.integration.detect.workflow.DetectPostActions;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
+import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostActions;
+import com.synopsys.integration.detect.workflow.blackduck.CodeLocationWaitData;
+import com.synopsys.integration.detect.workflow.blackduck.DetectBdioUploadService;
+import com.synopsys.integration.detect.workflow.blackduck.DetectCodeLocationUnmapService;
+import com.synopsys.integration.detect.workflow.blackduck.DetectProjectService;
+import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -76,8 +83,8 @@ import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOption
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
-import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
+import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -121,7 +128,8 @@ public class RunManager {
         final NameVersion projectNameVersion = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, runResult, runOptions, detectToolFilter);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
-            runBlackDuckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter, projectNameVersion, detectPostActions);
+            runBlackDuckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
+                projectNameVersion, detectPostActions);
         } else {
             logger.info("Black Duck tools will NOT be run.");
         }
@@ -134,7 +142,9 @@ public class RunManager {
         return runResult;
     }
 
-    private NameVersion runUniversalProjectTools(DetectConfiguration detectConfiguration, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem, RunResult runResult, RunOptions runOptions, DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
+    private NameVersion runUniversalProjectTools(
+        final DetectConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager, final EventSystem eventSystem, final RunResult runResult,
+        final RunOptions runOptions, final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         final ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         final DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
         final CodeLocationConverter codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
@@ -170,8 +180,9 @@ public class RunManager {
             final DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
             final DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectableFactory, buildless);
 
-            final DetectorFinderOptions finderOptions = detectConfigurationFactory.createSearchOptions();
-            DetectorEvaluationOptions detectorEvaluationOptions = detectConfigurationFactory.createDetectorEvaluationOptions();
+            final Path sourcePath = directoryManager.getSourceDirectory().toPath();
+            final DetectorFinderOptions finderOptions = detectConfigurationFactory.createSearchOptions(sourcePath);
+            final DetectorEvaluationOptions detectorEvaluationOptions = detectConfigurationFactory.createDetectorEvaluationOptions();
 
             final DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter);
             final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool);
@@ -202,11 +213,13 @@ public class RunManager {
         return projectNameVersion;
     }
 
-    private void runPolarisProduct(ProductRunData productRunData, DetectConfiguration detectConfiguration, DirectoryManager directoryManager, EventSystem eventSystem, ConnectionManager connectionManager, ExecutableRunner executableRunner, DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
+    private void runPolarisProduct(
+        final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final EventSystem eventSystem, final ConnectionManager connectionManager, final ExecutableRunner executableRunner,
+        final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
             logger.info("Will include the Polaris tool.");
-            PolarisServerConfig polarisServerConfig = productRunData.getPolarisRunData().getPolarisServerConfig();
+            final PolarisServerConfig polarisServerConfig = productRunData.getPolarisRunData().getPolarisServerConfig();
             final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, executableRunner, connectionManager, detectConfiguration, polarisServerConfig);
             polarisTool.runPolaris(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
             logger.info("Polaris actions finished.");
@@ -215,7 +228,9 @@ public class RunManager {
         }
     }
 
-    private void runBlackDuckProduct(ProductRunData productRunData, DetectConfiguration detectConfiguration, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem, CodeLocationNameManager codeLocationNameManager, BdioCodeLocationCreator bdioCodeLocationCreator, DetectInfo detectInfo, RunResult runResult, RunOptions runOptions, DetectToolFilter detectToolFilter, NameVersion projectNameVersion, DetectPostActions detectPostActions) throws IntegrationException, DetectUserFriendlyException {
+    private void runBlackDuckProduct(final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager, final EventSystem eventSystem,
+        final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions, final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion,
+        final DetectPostActions detectPostActions) throws IntegrationException, DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         logger.info("Black Duck tools will run.");
 
