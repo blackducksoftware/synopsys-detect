@@ -22,6 +22,11 @@
  */
 package com.synopsys.integration.detect.workflow;
 
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -29,11 +34,11 @@ import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostActions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.CodeLocationWaitData;
+import com.synopsys.integration.detect.workflow.event.Event;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
+import com.synopsys.integration.detect.workflow.status.BlackDuckBomDetectResult;
+import com.synopsys.integration.detect.workflow.status.DetectResult;
 
 public class DetectPostActions {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -46,6 +51,12 @@ public class DetectPostActions {
     private long timeoutInSeconds;
     private boolean hasAtLeastOneBdio;
     private boolean shouldHaveScanned;
+
+    private final EventSystem eventSystem;
+
+    public DetectPostActions(final EventSystem eventSystem) {
+        this.eventSystem = eventSystem;
+    }
 
     public void runPostActions() throws DetectUserFriendlyException {
         runPostBlackDuckActions();
@@ -65,7 +76,8 @@ public class DetectPostActions {
             if (hasAtLeastOneBdio || shouldHaveScanned) {
                 final Optional<String> componentsLink = projectVersionWrapper.getProjectVersionView().getFirstLink(ProjectVersionView.COMPONENTS_LINK);
                 if (componentsLink.isPresent()) {
-                    logger.info(String.format("To see your results, follow the URL: %s", componentsLink.get()));
+                    final DetectResult detectResult = new BlackDuckBomDetectResult(componentsLink.get());
+                    eventSystem.publishEvent(Event.ResultProduced, detectResult);
                 }
             }
             logger.info("Black Duck actions have finished.");
@@ -76,7 +88,7 @@ public class DetectPostActions {
         return projectVersionWrapper;
     }
 
-    public void setProjectVersionWrapper(ProjectVersionWrapper projectVersionWrapper) {
+    public void setProjectVersionWrapper(final ProjectVersionWrapper projectVersionWrapper) {
         this.projectVersionWrapper = projectVersionWrapper;
     }
 
@@ -84,7 +96,7 @@ public class DetectPostActions {
         return blackDuckRunData;
     }
 
-    public void setBlackDuckRunData(BlackDuckRunData blackDuckRunData) {
+    public void setBlackDuckRunData(final BlackDuckRunData blackDuckRunData) {
         this.blackDuckRunData = blackDuckRunData;
     }
 
@@ -92,7 +104,7 @@ public class DetectPostActions {
         return blackDuckPostActions;
     }
 
-    public void setBlackDuckPostActions(BlackDuckPostActions blackDuckPostActions) {
+    public void setBlackDuckPostActions(final BlackDuckPostActions blackDuckPostActions) {
         this.blackDuckPostActions = blackDuckPostActions;
     }
 
@@ -100,7 +112,7 @@ public class DetectPostActions {
         return blackDuckPostOptions;
     }
 
-    public void setBlackDuckPostOptions(BlackDuckPostOptions blackDuckPostOptions) {
+    public void setBlackDuckPostOptions(final BlackDuckPostOptions blackDuckPostOptions) {
         this.blackDuckPostOptions = blackDuckPostOptions;
     }
 
@@ -108,7 +120,7 @@ public class DetectPostActions {
         return codeLocationWaitData;
     }
 
-    public void setCodeLocationWaitData(CodeLocationWaitData codeLocationWaitData) {
+    public void setCodeLocationWaitData(final CodeLocationWaitData codeLocationWaitData) {
         this.codeLocationWaitData = codeLocationWaitData;
     }
 
@@ -116,7 +128,7 @@ public class DetectPostActions {
         return timeoutInSeconds;
     }
 
-    public void setTimeoutInSeconds(long timeoutInSeconds) {
+    public void setTimeoutInSeconds(final long timeoutInSeconds) {
         this.timeoutInSeconds = timeoutInSeconds;
     }
 
@@ -124,7 +136,7 @@ public class DetectPostActions {
         return hasAtLeastOneBdio;
     }
 
-    public void setHasAtLeastOneBdio(boolean hasAtLeastOneBdio) {
+    public void setHasAtLeastOneBdio(final boolean hasAtLeastOneBdio) {
         this.hasAtLeastOneBdio = hasAtLeastOneBdio;
     }
 
@@ -132,7 +144,7 @@ public class DetectPostActions {
         return shouldHaveScanned;
     }
 
-    public void setShouldHaveScanned(boolean shouldHaveScanned) {
+    public void setShouldHaveScanned(final boolean shouldHaveScanned) {
         this.shouldHaveScanned = shouldHaveScanned;
     }
 

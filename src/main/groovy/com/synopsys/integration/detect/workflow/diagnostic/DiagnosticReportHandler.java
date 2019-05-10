@@ -26,7 +26,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +46,6 @@ import com.synopsys.integration.detect.workflow.report.SearchSummaryReporter;
 import com.synopsys.integration.detect.workflow.report.writer.FileReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class DiagnosticReportHandler {
@@ -57,8 +54,8 @@ public class DiagnosticReportHandler {
     private final Map<ReportTypes, FileReportWriter> reportWriters = new HashMap<>();
 
     public enum ReportTypes {
-        SEARCH("search_report", "Search Result Report", "A breakdown of detector searching by directory."),
-        SEARCH_DETAILED("search_detailed_report", "Search Result Report", "A breakdown of detector searching by directory."),
+        SEARCH("search_report", "Search DetectResult Report", "A breakdown of detector searching by directory."),
+        SEARCH_DETAILED("search_detailed_report", "Search DetectResult Report", "A breakdown of detector searching by directory."),
         DETECTOR("detector_report", "Detector Report", "A breakdown of detector's that were applicableChildren and their preparation and extraction results."),
         DETECTOR_PROFILE("detector_profile_report", "Detector Profile Report", "A breakdown of timing and profiling for all detectors."),
         CODE_LOCATIONS("code_location_report", "Code Location Report", "A breakdown of code locations created, their dependencies and status results."),
@@ -91,7 +88,7 @@ public class DiagnosticReportHandler {
     private final File reportDirectory;
     private final String runId;
 
-    public DiagnosticReportHandler(final File reportDirectory, final String runId, EventSystem eventSystem) {
+    public DiagnosticReportHandler(final File reportDirectory, final String runId, final EventSystem eventSystem) {
         this.reportDirectory = reportDirectory;
         this.runId = runId;
         createReports();
@@ -110,8 +107,8 @@ public class DiagnosticReportHandler {
     public void completedBomToolEvaluations(final DetectorToolResult detectorToolResult) {
         this.detectorToolResult = detectorToolResult;
 
-        DetectorEvaluationTree rootEvaluation;
-        if (detectorToolResult.rootDetectorEvaluationTree.isPresent()){
+        final DetectorEvaluationTree rootEvaluation;
+        if (detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
             rootEvaluation = detectorToolResult.rootDetectorEvaluationTree.get();
         } else {
             logger.warn("Detectors completed, but no evaluation was found, unable to write detector reports.");
@@ -154,7 +151,7 @@ public class DiagnosticReportHandler {
         }
     }
 
-    private void detectorsProfiled(DetectorTimings detectorTimings) {
+    private void detectorsProfiled(final DetectorTimings detectorTimings) {
         try {
             final ReportWriter profileWriter = getReportWriter(ReportTypes.DETECTOR_PROFILE);
             final ProfilingReporter reporter = new ProfilingReporter();
@@ -164,7 +161,7 @@ public class DiagnosticReportHandler {
         }
     }
 
-    public void configurationsReport(DetectInfo detectInfo, List<DetectOption> detectOptions) {
+    public void configurationsReport(final DetectInfo detectInfo, final List<DetectOption> detectOptions) {
         try {
             final ReportWriter profileWriter = getReportWriter(ReportTypes.CONFIGURATION);
             final ConfigurationReporter reporter = new ConfigurationReporter();

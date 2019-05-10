@@ -117,7 +117,7 @@ public class RunManager {
         final RunOptions runOptions = detectConfigurationFactory.createRunOptions();
 
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
-        final DetectPostActions detectPostActions = new DetectPostActions();
+        final DetectPostActions detectPostActions = new DetectPostActions(eventSystem);
 
         if (productRunData.shouldUsePolarisProduct()) {
             runPolarisProduct(productRunData, detectConfiguration, directoryManager, eventSystem, connectionManager, executableRunner, detectToolFilter);
@@ -142,9 +142,8 @@ public class RunManager {
         return runResult;
     }
 
-    private NameVersion runUniversalProjectTools(
-        final DetectConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager, final EventSystem eventSystem, final RunResult runResult,
-        final RunOptions runOptions, final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
+    private NameVersion runUniversalProjectTools(final DetectConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager, final EventSystem eventSystem,
+        final RunResult runResult, final RunOptions runOptions, final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         final ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         final DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
         final CodeLocationConverter codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
@@ -214,7 +213,8 @@ public class RunManager {
     }
 
     private void runPolarisProduct(
-        final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final EventSystem eventSystem, final ConnectionManager connectionManager, final ExecutableRunner executableRunner,
+        final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final EventSystem eventSystem, final ConnectionManager connectionManager,
+        final ExecutableRunner executableRunner,
         final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
@@ -228,8 +228,10 @@ public class RunManager {
         }
     }
 
-    private void runBlackDuckProduct(final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager, final EventSystem eventSystem,
-        final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions, final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion,
+    private void runBlackDuckProduct(final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager,
+        final EventSystem eventSystem,
+        final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions,
+        final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion,
         final DetectPostActions detectPostActions) throws IntegrationException, DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         logger.info("Black Duck tools will run.");

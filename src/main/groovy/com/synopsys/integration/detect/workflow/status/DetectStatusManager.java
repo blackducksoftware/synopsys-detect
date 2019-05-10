@@ -31,18 +31,24 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.log.IntLogger;
 
 public class DetectStatusManager {
-    private List<Status> statusSummaries = new ArrayList<>();
+    private final List<Status> statusSummaries = new ArrayList<>();
+    private final List<DetectResult> detectResults = new ArrayList<>();
 
-    public DetectStatusManager(EventSystem eventSystem) {
-        eventSystem.registerListener(Event.StatusSummary, event -> addStatusSummary(event));
+    public DetectStatusManager(final EventSystem eventSystem) {
+        eventSystem.registerListener(Event.StatusSummary, this::addStatusSummary);
+        eventSystem.registerListener(Event.ResultProduced, this::addDetectResult);
     }
 
-    public void addStatusSummary(Status status) {
+    public void addStatusSummary(final Status status) {
         statusSummaries.add(status);
     }
 
+    public void addDetectResult(final DetectResult detectResult) {
+        detectResults.add(detectResult);
+    }
+
     public void logDetectResults(final IntLogger logger, final ExitCodeType exitCodeType) {
-        new DetectStatusLogger().logDetectResults(logger, statusSummaries, exitCodeType);
+        new DetectStatusLogger().logDetectStatus(logger, statusSummaries, detectResults, exitCodeType);
     }
 
     public boolean hasAnyFailure() {

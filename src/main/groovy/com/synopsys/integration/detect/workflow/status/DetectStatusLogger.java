@@ -22,29 +22,25 @@
  */
 package com.synopsys.integration.detect.workflow.status;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.log.IntLogger;
 
 public class DetectStatusLogger {
-    public void logDetectResults(final IntLogger logger, List<Status> statusSummaries, final ExitCodeType exitCodeType) {
+    public void logDetectStatus(final IntLogger logger, final List<Status> statusSummaries, final List<DetectResult> detectResults, final ExitCodeType exitCodeType) {
         // sort by type, and within type, sort by description
-        Collections.sort(statusSummaries, new Comparator<Status>() {
-            @Override
-            public int compare(final Status left, final Status right) {
-                if (left.getClass() == right.getClass()) {
-                    return left.getDescriptionKey().compareTo(right.getDescriptionKey());
-                } else {
-                    return left.getClass().getName().compareTo(right.getClass().getName());
-                }
+        statusSummaries.sort((left, right) -> {
+            if (left.getClass() == right.getClass()) {
+                return left.getDescriptionKey().compareTo(right.getDescriptionKey());
+            } else {
+                return left.getClass().getName().compareTo(right.getClass().getName());
             }
         });
         logger.info("");
         logger.info("");
-        logger.info("======== Detect Results ========");
+        logger.info("======== Detect Status ========");
+        logger.info("");
         Class<? extends Status> previousSummaryClass = null;
 
         for (final Status status : statusSummaries) {
@@ -57,7 +53,19 @@ public class DetectStatusLogger {
         }
 
         logger.info(String.format("Overall Status: %s", exitCodeType.toString()));
-        logger.info("================================");
+
+        logger.info("");
+        logger.info("======== Detect Result ========");
+        logger.info("");
+        if (detectResults.isEmpty()) {
+            logger.info("No results to report.");
+        } else {
+            for (final DetectResult detectResult : detectResults) {
+                logger.info(detectResult.getResultMessage());
+            }
+        }
+        logger.info("");
+        logger.info("===============================");
         logger.info("");
     }
 }
