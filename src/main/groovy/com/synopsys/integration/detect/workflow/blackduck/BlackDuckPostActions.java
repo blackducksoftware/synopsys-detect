@@ -27,9 +27,6 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
@@ -38,6 +35,9 @@ import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededExce
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ReportService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class BlackDuckPostActions {
@@ -45,23 +45,24 @@ public class BlackDuckPostActions {
     private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final EventSystem eventSystem;
 
-    public BlackDuckPostActions(final BlackDuckServicesFactory blackDuckServicesFactory, EventSystem eventSystem) {
+    public BlackDuckPostActions(final BlackDuckServicesFactory blackDuckServicesFactory, final EventSystem eventSystem) {
         this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.eventSystem = eventSystem;
     }
 
-    public void perform(BlackDuckPostOptions blackDuckPostOptions, CodeLocationWaitData codeLocationWaitData, ProjectVersionWrapper projectVersionWrapper, long timeoutInSeconds)
-        throws DetectUserFriendlyException {
+    public void perform(final BlackDuckPostOptions blackDuckPostOptions, final CodeLocationWaitData codeLocationWaitData, final ProjectVersionWrapper projectVersionWrapper, final long timeoutInSeconds) throws DetectUserFriendlyException {
         try {
             final long timeoutInMillisec = 1000L * timeoutInSeconds;
-            ProjectView projectView = projectVersionWrapper.getProjectView();
-            ProjectVersionView projectVersionView = projectVersionWrapper.getProjectVersionView();
+            final ProjectView projectView = projectVersionWrapper.getProjectView();
+            final ProjectVersionView projectVersionView = projectVersionWrapper.getProjectVersionView();
 
             if (blackDuckPostOptions.shouldWaitForResults()) {
                 logger.info("Detect must wait for bom tool calculations to finish.");
-                CodeLocationCreationService codeLocationCreationService = blackDuckServicesFactory.createCodeLocationCreationService();
+                final CodeLocationCreationService codeLocationCreationService = blackDuckServicesFactory.createCodeLocationCreationService();
                 if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
-                    CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(codeLocationWaitData.getNotificationRange(), codeLocationWaitData.getCodeLocationNames(), codeLocationWaitData.getExpectedNotificationCount(), timeoutInSeconds);
+                    final CodeLocationWaitResult result = codeLocationCreationService
+                                                              .waitForCodeLocations(codeLocationWaitData.getNotificationRange(), codeLocationWaitData.getCodeLocationNames(), codeLocationWaitData.getExpectedNotificationCount(),
+                                                                  timeoutInSeconds);
                     if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
                         throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
                     }
@@ -70,22 +71,27 @@ public class BlackDuckPostActions {
 
             if (blackDuckPostOptions.shouldPerformPolicyCheck()) {
                 logger.info("Detect will check policy for violations.");
-                PolicyChecker policyChecker = new PolicyChecker(eventSystem);
+                final PolicyChecker policyChecker = new PolicyChecker(eventSystem);
                 policyChecker.checkPolicy(blackDuckPostOptions.getSeveritiesToFailPolicyCheck(), blackDuckServicesFactory.createProjectBomService(), projectVersionView);
             }
 
             if (blackDuckPostOptions.shouldGenerateAnyReport()) {
-                ReportService reportService = blackDuckServicesFactory.createReportService(timeoutInMillisec);
+                final ReportService reportService = blackDuckServicesFactory.createReportService(timeoutInMillisec);
                 if (blackDuckPostOptions.shouldGenerateRiskReport()) {
                     logger.info("Creating risk report pdf");
-                    File reportDirectory = new File(blackDuckPostOptions.getRiskReportPdfPath());
-                    File createdPdf = reportService.createReportPdfFile(reportDirectory, projectView, projectVersionView);
+                    final File reportDirectory = new File(blackDuckPostOptions.getRiskReportPdfPath());
+
+                    if (!reportDirectory.exists() && !reportDirectory.mkdirs()) {
+                        logger.warn(String.format("Failed to create risk report pdf directory: %s", blackDuckPostOptions.getRiskReportPdfPath()));
+                    }
+
+                    final File createdPdf = reportService.createReportPdfFile(reportDirectory, projectView, projectVersionView);
                     logger.info(String.format("Created risk report pdf: %s", createdPdf.getCanonicalPath()));
                 }
 
                 if (blackDuckPostOptions.shouldGenerateNoticesReport()) {
                     logger.info("Creating notices report");
-                    File noticesDirectory = new File(blackDuckPostOptions.getNoticesReportPath());
+                    final File noticesDirectory = new File(blackDuckPostOptions.getNoticesReportPath());
                     final File noticesFile = reportService.createNoticesReportFile(noticesDirectory, projectView, projectVersionView);
                     logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
                 }
