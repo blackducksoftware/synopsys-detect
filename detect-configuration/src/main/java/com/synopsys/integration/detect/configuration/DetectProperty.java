@@ -659,7 +659,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The tools Detect should allow in a comma-separated list. Included and not excluded tools will be allowed to run if all criteria of the tool is met. Exclusion rules always win.")
-    @AcceptableValues(value = { "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
+    @AcceptableValues(value = { "BAZEL", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
     DETECT_TOOLS("detect.tools", "Detect Tools Included", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
