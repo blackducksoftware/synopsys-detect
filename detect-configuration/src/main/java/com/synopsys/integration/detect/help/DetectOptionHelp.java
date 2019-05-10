@@ -32,7 +32,7 @@ public class DetectOptionHelp {
     public String description = "";
     public String detailedHelp = "";
 
-    public List<String> groups = new ArrayList<>();
+    public List<String> additionalGroups = new ArrayList<>();
     public String primaryGroup = "";
 
     public boolean isDeprecated = false;

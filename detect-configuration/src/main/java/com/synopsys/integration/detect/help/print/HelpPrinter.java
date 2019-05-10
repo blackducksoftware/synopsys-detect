@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.help.DetectArgumentState;
 import com.synopsys.integration.detect.help.DetectOption;
+import com.synopsys.integration.detect.help.DetectOptionHelp;
 
 public class HelpPrinter {
 
@@ -45,11 +46,11 @@ public class HelpPrinter {
         final HelpTextWriter writer = new HelpTextWriter();
 
         final List<DetectOption> currentOptions = allOptions.stream()
-                .filter(it -> !it.getDetectOptionHelp().isDeprecated)
-                .collect(Collectors.toList());
+                                                      .filter(it -> !it.getDetectOptionHelp().isDeprecated)
+                                                      .collect(Collectors.toList());
         final List<DetectOption> deprecatedOptions = allOptions.stream()
-                .filter(it -> it.getDetectOptionHelp().isDeprecated)
-                .collect(Collectors.toList());
+                                                         .filter(it -> it.getDetectOptionHelp().isDeprecated)
+                                                         .collect(Collectors.toList());
         final List<String> allPrintGroups = getPrintGroups(currentOptions);
 
         if (state.isVerboseHelp()) {
@@ -77,8 +78,8 @@ public class HelpPrinter {
 
     private void printDetailedHelp(final HelpTextWriter writer, final List<DetectOption> options, final String optionName) {
         final DetectOption option = options.stream()
-                .filter(it -> it.getDetectProperty().getPropertyKey().equals(optionName))
-                .findFirst().orElse(null);
+                                        .filter(it -> it.getDetectProperty().getPropertyKey().equals(optionName))
+                                        .findFirst().orElse(null);
 
         if (option == null) {
             writer.println("Could not find option named: " + optionName);
@@ -95,18 +96,25 @@ public class HelpPrinter {
         final String notes = "Showing help only for: " + filterGroup;
 
         final List<DetectOption> filteredOptions = options.stream()
-                .filter(it -> it.getDetectOptionHelp().groups.stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
-                .collect(Collectors.toList());
+                                                       .filter(detectOption -> optionMatchesFilterGroup(detectOption.getDetectOptionHelp(), filterGroup))
+                                                       .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
+    }
+
+    private boolean optionMatchesFilterGroup(final DetectOptionHelp detectOptionHelp, final String filterGroup) {
+        final boolean primaryMatches = detectOptionHelp.primaryGroup.equalsIgnoreCase(filterGroup);
+        final boolean additionalMatches = detectOptionHelp.additionalGroups.stream()
+                                              .anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup));
+        return primaryMatches || additionalMatches;
     }
 
     private void printHelpFilteredBySearchTerm(final HelpTextWriter writer, final List<DetectOption> options, final String searchTerm) {
         final String notes = "Showing help only for fields that contain: " + searchTerm;
 
         final List<DetectOption> filteredOptions = options.stream()
-                .filter(it -> it.getDetectProperty().getPropertyKey().contains(searchTerm))
-                .collect(Collectors.toList());
+                                                       .filter(it -> it.getDetectProperty().getPropertyKey().contains(searchTerm))
+                                                       .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
     }
@@ -117,16 +125,16 @@ public class HelpPrinter {
 
     private boolean isProperty(final List<DetectOption> allOptions, final String filterTerm) {
         return allOptions.stream()
-                .map(it -> it.getDetectProperty().getPropertyKey())
-                .anyMatch(it -> it.equals(filterTerm));
+                   .map(it -> it.getDetectProperty().getPropertyKey())
+                   .anyMatch(it -> it.equals(filterTerm));
     }
 
     private List<String> getPrintGroups(final List<DetectOption> options) {
         return options.stream()
-                .flatMap(it -> it.getDetectOptionHelp().groups.stream())
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
+                   .flatMap(it -> it.getDetectOptionHelp().additionalGroups.stream())
+                   .distinct()
+                   .sorted()
+                   .collect(Collectors.toList());
     }
 
     private String getPrintGroupText(final List<String> printGroups) {
@@ -137,13 +145,13 @@ public class HelpPrinter {
         detectOption.printDetailedOption(writer);
     }
 
-    public void printOptions(HelpTextWriter writer, List<DetectOption> options, String notes) {
+    public void printOptions(final HelpTextWriter writer, final List<DetectOption> options, final String notes) {
         writer.printColumns("Property Name", "Default", "Description");
         writer.printSeperator();
 
-        List<DetectOption> sorted = options.stream()
-                                        .sorted(SORT_BY_GROUP_THEN_KEY)
-                                        .collect(Collectors.toList());
+        final List<DetectOption> sorted = options.stream()
+                                              .sorted(SORT_BY_GROUP_THEN_KEY)
+                                              .collect(Collectors.toList());
 
         if (notes != null) {
             writer.println(notes);
@@ -165,7 +173,7 @@ public class HelpPrinter {
         }
     }
 
-    public void printStandardFooter(HelpTextWriter writer, String groupText) {
+    public void printStandardFooter(final HelpTextWriter writer, final String groupText) {
         writer.println();
         writer.println("Usage : ");
         writer.println("\t--<property name>=<value>");

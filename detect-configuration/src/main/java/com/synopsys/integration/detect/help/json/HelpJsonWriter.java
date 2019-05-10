@@ -30,10 +30,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.help.DetectOption;
 import com.synopsys.integration.detect.help.DetectOptionHelp;
-import com.google.gson.Gson;
 import com.synopsys.integration.detect.help.html.HelpHtmlWriter;
 
 import freemarker.template.Configuration;
@@ -44,21 +44,21 @@ public class HelpJsonWriter {
     private final Configuration configuration;
     private final Gson gson;
 
-    public HelpJsonWriter(final Configuration configuration, Gson gson) {
+    public HelpJsonWriter(final Configuration configuration, final Gson gson) {
         this.configuration = configuration;
         this.gson = gson;
     }
 
-    public void writeGsonDocument(final String filename, List<DetectOption> detectOptions) {
+    public void writeGsonDocument(final String filename, final List<DetectOption> detectOptions) {
         final HelpJsonData data = new HelpJsonData();
 
-        for (DetectOption option : detectOptions) {
-            HelpJsonOption helpJsonOption = convertOption(option);
+        for (final DetectOption option : detectOptions) {
+            final HelpJsonOption helpJsonOption = convertOption(option);
             data.options.add(helpJsonOption);
         }
 
         try {
-            try (Writer writer = new FileWriter(filename)) {
+            try (final Writer writer = new FileWriter(filename)) {
                 gson.toJson(data, writer);
             }
 
@@ -68,19 +68,19 @@ public class HelpJsonWriter {
         }
     }
 
-    public HelpJsonOption convertOption(DetectOption detectOption) {
-        HelpJsonOption helpJsonOption = new HelpJsonOption();
+    public HelpJsonOption convertOption(final DetectOption detectOption) {
+        final HelpJsonOption helpJsonOption = new HelpJsonOption();
 
-        DetectProperty property = detectOption.getDetectProperty();
+        final DetectProperty property = detectOption.getDetectProperty();
         helpJsonOption.propertyName = property.getPropertyName();
         helpJsonOption.propertyKey = property.getPropertyKey();
         helpJsonOption.propertyType = property.getPropertyType().getDisplayName();
         helpJsonOption.addedInVersion = property.getAddedInVersion();
         helpJsonOption.defaultValue = property.getDefaultValue();
 
-        DetectOptionHelp optionHelp = detectOption.getDetectOptionHelp();
+        final DetectOptionHelp optionHelp = detectOption.getDetectOptionHelp();
         helpJsonOption.group = optionHelp.primaryGroup;
-        helpJsonOption.additionalGroups = optionHelp.groups;
+        helpJsonOption.additionalGroups = optionHelp.additionalGroups;
         helpJsonOption.description = optionHelp.description;
         helpJsonOption.detailedDescription = optionHelp.detailedHelp;
         helpJsonOption.deprecated = optionHelp.isDeprecated;

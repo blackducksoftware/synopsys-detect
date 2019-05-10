@@ -108,20 +108,20 @@ public class DetectOptionManager {
         return createBlackDuckServerConfig(new SilentIntLogger());
     }
 
-    public BlackDuckServerConfig createBlackDuckServerConfig(IntLogger logger) throws DetectUserFriendlyException {
+    public BlackDuckServerConfig createBlackDuckServerConfig(final IntLogger logger) throws DetectUserFriendlyException {
         final BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = new BlackDuckServerConfigBuilder().setLogger(logger);
 
-        Set<String> allBlackDuckKeys = new HashSet<>(blackDuckServerConfigBuilder.getPropertyKeys());
-        Map<String, String> blackDuckProperties = detectConfiguration.getProperties(allBlackDuckKeys);
+        final Set<String> allBlackDuckKeys = new HashSet<>(blackDuckServerConfigBuilder.getPropertyKeys());
+        final Map<String, String> blackDuckProperties = detectConfiguration.getProperties(allBlackDuckKeys);
         final Map<String, String> blackDuckPropertiesNoProxy = blackDuckProperties.entrySet().stream()
-                                                                            .filter(it -> !it.getKey().toLowerCase().contains("proxy"))
-                                                                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                                                                   .filter(it -> !it.getKey().toLowerCase().contains("proxy"))
+                                                                   .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         final List<Pattern> ignoredProxyHostPatterns = ProxyUtil.getIgnoredProxyHostPatterns(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS, PropertyAuthority.None));
         boolean ignoreProxy = false;
         try {
             ignoreProxy = ProxyUtil.shouldIgnoreHost(new URL(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None)).getHost(), ignoredProxyHostPatterns);
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             logger.error("Unable to decide if proxy should be used for the given host, will use proxy.");
         }
 
@@ -132,9 +132,9 @@ public class DetectOptionManager {
         }
 
         try {
-            BlackDuckServerConfig blackDuckServerConfig = blackDuckServerConfigBuilder.build();
+            final BlackDuckServerConfig blackDuckServerConfig = blackDuckServerConfigBuilder.build();
             return blackDuckServerConfig;
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             throw new DetectUserFriendlyException("Failed to configure Black Duck server connection: " + e.getMessage(), e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
@@ -242,7 +242,7 @@ public class DetectOptionManager {
 
             final DetectOptionHelp help = processFieldHelp(field);
 
-            DetectOption detectOption;
+            final DetectOption detectOption;
             if (isCommaSeparatedList) {
                 detectOption = new DetectListOption(detectProperty, strictValidation, caseSensitiveValidation, validValues, help, resolvedValue);
             } else {
@@ -250,7 +250,7 @@ public class DetectOptionManager {
             }
 
             return detectOption;
-        } catch (IllegalArgumentException | NoSuchFieldException e) {
+        } catch (final IllegalArgumentException | NoSuchFieldException e) {
             logger.error(String.format("Could not resolve field %s: %s", detectProperty.name(), e.getMessage()));
         }
         return null;
@@ -266,10 +266,10 @@ public class DetectOptionManager {
         help.primaryGroup = groupAnnotation.primary();
         final String[] additionalGroups = groupAnnotation.additional();
         if (additionalGroups.length > 0) {
-            help.groups.addAll(Arrays.stream(additionalGroups).collect(Collectors.toList()));
+            help.additionalGroups.addAll(Arrays.stream(additionalGroups).collect(Collectors.toList()));
         } else {
             if (StringUtils.isNotBlank(help.primaryGroup)) {
-                help.groups.add(help.primaryGroup);
+                help.additionalGroups.add(help.primaryGroup);
             }
         }
 
