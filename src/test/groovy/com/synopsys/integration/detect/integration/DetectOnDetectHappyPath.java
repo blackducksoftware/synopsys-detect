@@ -26,6 +26,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("integration")
 public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
+    /**
+     synopsys-detect/detectable/com.synopsys.integration/detectable/5.5.0-SNAPSHOT gradle/bom
+     synopsys-detect/detector/com.synopsys.integration/detector/5.5.0-SNAPSHOT gradle/bom
+     synopsys-detect/detect-configuration/com.synopsys.integration/detect-configuration/5.5.0-SNAPSHOT gradle/bom
+     synopsys-detect/com.synopsys.integration/synopsys-detect/5.5.0-SNAPSHOT gradle/bom
+     */
     public static final String SIGNATURE_SCAN_CODE_LOCATION = "synopsys-detect/synopsys-detect-junit/happy-path scan";
     public static final String DETECTABLE_CODE_LOCATION = "synopsys-detect/detectable/com.synopsys.integration/detectable/%s gradle/bom";
     public static final String SYNOPSYS_DETECT_CODE_LOCATION = "synopsys-detect/com.synopsys.integration/synopsys-detect/%s gradle/bom";
@@ -87,6 +93,9 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
 
         codeLocationsToDelete = blackDuckService.getAllResponses(projectVersionWrapper.getProjectVersionView(), ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
         Set<String> createdCodeLocationNames = codeLocationsToDelete.stream().map(CodeLocationView::getName).collect(Collectors.toSet());
+        createdCodeLocationNames.stream().forEach(System.out::println);
+        codeLocationNamesToCheck.stream().forEach(System.out::println);
+
         assertEquals(codeLocationNamesToCheck.size(), createdCodeLocationNames.size());
         for (String name : codeLocationNamesToCheck) {
             assertTrue(createdCodeLocationNames.contains(name));
