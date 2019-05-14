@@ -52,13 +52,11 @@ public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
 
         pdfFiles = getPdfFiles(tempReportDirectory);
         assertEquals(0, pdfFiles.size());
-        String[] detectArgs = new String[]{
-                "--detect.project.name=" + projectName,
-                "--detect.project.version.name=" + projectVersionName,
-                "--detect.risk.report.pdf=true",
-                "--detect.risk.report.pdf.path=" + tempReportDirectory.toString()
-        };
-        Application.main(detectArgs);
+
+        List<String> detectArgs = getInitialArgs(projectName, projectVersionName);
+        detectArgs.add("--detect.risk.report.pdf=true");
+        detectArgs.add("--detect.risk.report.pdf.path=" + tempReportDirectory.toString());
+        Application.main(detectArgs.toArray(new String[detectArgs.size()]));
 
         pdfFiles = getPdfFiles(tempReportDirectory);
         assertEquals(1, pdfFiles.size());

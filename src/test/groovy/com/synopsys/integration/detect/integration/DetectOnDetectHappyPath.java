@@ -81,13 +81,9 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
         ProjectVersionWrapper projectVersionWrapper = assertProjectVersionReady(projectName, projectVersionName);
         projectToDelete = projectVersionWrapper.getProjectView();
 
-        String[] detectArgs = new String[]{
-                "--detect.project.name=" + projectName,
-                "--detect.project.version.name=" + projectVersionName,
-                "--detect.tools.excluded=POLARIS",
-                "--detect.wait.for.results=true"
-        };
-        Application.main(detectArgs);
+        List<String> detectArgs = getInitialArgs(projectName, projectVersionName);
+        detectArgs.add("--detect.wait.for.results=true");
+        Application.main(detectArgs.toArray(new String[detectArgs.size()]));
 
         codeLocationsToDelete = blackDuckService.getAllResponses(projectVersionWrapper.getProjectVersionView(), ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
         Set<String> createdCodeLocationNames = codeLocationsToDelete.stream().map(CodeLocationView::getName).collect(Collectors.toSet());
