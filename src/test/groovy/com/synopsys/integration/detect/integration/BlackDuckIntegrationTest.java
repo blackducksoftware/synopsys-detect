@@ -12,7 +12,9 @@ import com.synopsys.integration.detect.Application;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.BufferedIntLogger;
 import com.synopsys.integration.log.IntLogger;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.util.List;
@@ -22,6 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BlackDuckIntegrationTest {
+    public static final String TEST_BLACKDUCK_URL_KEY = "TEST_BLACKDUCK_URL";
+    public static final String TEST_BLACKDUCK_USERNAME_KEY = "TEST_BLACKDUCK_USERNAME";
+    public static final String TEST_BLACKDUCK_PASSWORD_KEY = "TEST_BLACKDUCK_PASSWORD";
+
     protected static IntLogger logger;
     protected static BlackDuckServicesFactory blackDuckServicesFactory;
     protected static BlackDuckService blackDuckService;
@@ -34,8 +40,17 @@ public class BlackDuckIntegrationTest {
     @BeforeAll
     public static void setup() throws Exception {
         logger = new BufferedIntLogger();
+
+        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_URL_KEY)));
+        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_USERNAME_KEY)));
+        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_PASSWORD_KEY)));
+
         BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
         blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
+        blackDuckServerConfigBuilder.setUrl(System.getenv().get(TEST_BLACKDUCK_URL_KEY));
+        blackDuckServerConfigBuilder.setUsername(System.getenv().get(TEST_BLACKDUCK_USERNAME_KEY));
+        blackDuckServerConfigBuilder.setPassword(System.getenv().get(TEST_BLACKDUCK_PASSWORD_KEY));
+
         blackDuckServicesFactory = blackDuckServerConfigBuilder.build().createBlackDuckServicesFactory(logger);
         blackDuckService = blackDuckServicesFactory.createBlackDuckService();
         projectService = blackDuckServicesFactory.createProjectService();

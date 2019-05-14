@@ -12,9 +12,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.text.html.Option;
-import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -23,7 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.nio.file.Files.*;
+import static java.nio.file.Files.lines;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -87,6 +84,7 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
         String[] detectArgs = new String[]{
                 "--detect.project.name=" + projectName,
                 "--detect.project.version.name=" + projectVersionName,
+                "--detect.tools.excluded=POLARIS",
                 "--detect.wait.for.results=true"
         };
         Application.main(detectArgs);
