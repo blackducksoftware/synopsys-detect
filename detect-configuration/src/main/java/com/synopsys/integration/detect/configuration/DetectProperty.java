@@ -115,7 +115,7 @@ public enum DetectProperty {
     BLACKDUCK_PROXY_USERNAME("blackduck.proxy.username", "Proxy Username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
-    @HelpDescription("Time to wait for network connections to complete (in seconds).")
+    @HelpDescription("The time to wait for network connections to complete (in seconds).")
     BLACKDUCK_TIMEOUT("blackduck.timeout", "Black Duck Timeout", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "120"),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
@@ -131,8 +131,8 @@ public enum DetectProperty {
     BLACKDUCK_USERNAME("blackduck.username", "Black Duck Username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Path to the bash executable.")
-    @HelpDetailed("If set, Detect will use the given bash executable instead of searching for one.")
+    @HelpDescription("Path to the Bash executable.")
+    @HelpDetailed("If set, Detect will use the given Bash executable instead of searching for one.")
     DETECT_BASH_PATH("detect.bash.path", "Bash Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = SEARCH_GROUP_GLOBAL)
@@ -140,16 +140,17 @@ public enum DetectProperty {
     DETECT_BAZEL_PATH("detect.bazel.path", "Bazel Executable", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = GROUP_SOURCE_SCAN)
-    @HelpDescription("The bazel target (e.g. //foo:foolib) to collect dependencies for. For Detect to run bazel this property must be set.")
+    @HelpDescription("The Bazel target (for example, //foo:foolib) for which dependencies are collected. For Detect to run Bazel, this property must be set.")
     DETECT_BAZEL_TARGET("detect.bazel.target", "Bazel Target", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = GROUP_SOURCE_SCAN)
-    @HelpDescription("The path to a file containing a list of BazelExternalIdExtractionXPathRule objects in json (to override the default behavior).")
+    @HelpDescription("The path to a file containing a list of BazelExternalIdExtractionXPathRule objects in json for overriding the default behavior).")
+    @HelpDetailed("This property is normally not set, but could potentially be used to customize the Bazel detector.")
     DETECT_BAZEL_ADVANCED_RULES_PATH("detect.bazel.advanced.rules.path", "Bazel Advanced Rules File", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path to the output directory for all bdio files.")
-    @HelpDetailed("If not set, the bdio files will be in a 'bdio' subdirectory of the output directory.")
+    @HelpDescription("The path to the output directory for all BDIO files.")
+    @HelpDetailed("If not set, the BDIO files are placed in a 'BDIO' subdirectory of the output directory.")
     DETECT_BDIO_OUTPUT_PATH("detect.bdio.output.path", "BDIO Output Directory", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_PATH })
@@ -161,11 +162,11 @@ public enum DetectProperty {
     DETECT_BITBAKE_BUILD_ENV_NAME("detect.bitbake.build.env.name", "BitBake Init Script Name", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "oe-init-build-env"),
 
     @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
-    @HelpDescription("The reference implementation of the yocto project. These characters will be stripped from the discovered target architecture.")
+    @HelpDescription("The reference implementation of the Yocto project. These characters are stripped from the discovered target architecture.")
     DETECT_BITBAKE_REFERENCE_IMPL("detect.bitbake.reference.impl", "Reference implementation", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "-poky-linux"),
 
     @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
-    @HelpDescription("A comma separated list of package names to extract dependencies from.")
+    @HelpDescription("A comma-separated list of package names from which dependencies are extracted.")
     DETECT_BITBAKE_PACKAGE_NAMES("detect.bitbake.package.names", "BitBake Package Names", "4.4.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
@@ -173,11 +174,11 @@ public enum DetectProperty {
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS("detect.blackduck.signature.scanner.arguments", "Signature Scanner Arguments", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("If set to true, the signature scanner results will not be uploaded to Black Duck and the scanner results will be written to disk.")
+    @HelpDescription("If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN("detect.blackduck.signature.scanner.dry.run", "Signature Scanner Dry Run", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma-separated list of directory name patterns Detect will search for and add to the Signature Scanner --exclude flag values.")
+    @HelpDescription("A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.")
     @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.blackduck.signature.scanner.exclusion.name.patterns", "Directory Name Exclusion Patterns", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "node_modules"),
 
@@ -715,7 +716,7 @@ public enum DetectProperty {
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.timeout in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
-    @HelpDescription("Time to wait for rest connections to complete in seconds.")
+    @HelpDescription("The time to wait for rest connections to complete in seconds.")
     BLACKDUCK_HUB_TIMEOUT("blackduck.hub.timeout", "", "3.0.0", PropertyType.INTEGER, PropertyAuthority.None, "120"),
 
     @Deprecated
@@ -781,7 +782,7 @@ public enum DetectProperty {
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.trust.cert in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
-    @HelpDescription("If true, automatically trust the certificate for the current run of Detect only.")
+    @HelpDescription("If true, automatically trusts the certificate for the current run of Detect only.")
     BLACKDUCK_HUB_TRUST_CERT("blackduck.hub.trust.cert", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @Deprecated
