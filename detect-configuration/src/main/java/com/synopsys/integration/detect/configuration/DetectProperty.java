@@ -131,7 +131,8 @@ public enum DetectProperty {
     BLACKDUCK_USERNAME("blackduck.username", "Black Duck Username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Path to the bash executable")
+    @HelpDescription("Path to the bash executable.")
+    @HelpDetailed("If set, Detect will use the given bash executable instead of searching for one.")
     DETECT_BASH_PATH("detect.bash.path", "Bash Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = SEARCH_GROUP_GLOBAL)
@@ -147,7 +148,8 @@ public enum DetectProperty {
     DETECT_BAZEL_ADVANCED_RULES_PATH("detect.bazel.advanced.rules.path", "Bazel Advanced Rules File", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The output directory for all bdio files. If not set, the bdio files will be in a 'bdio' subdirectory of the output path.")
+    @HelpDescription("The path to the output directory for all bdio files.")
+    @HelpDetailed("If not set, the bdio files will be in a 'bdio' subdirectory of the output directory.")
     DETECT_BDIO_OUTPUT_PATH("detect.bdio.output.path", "BDIO Output Directory", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_PATH })
@@ -269,7 +271,8 @@ public enum DetectProperty {
     DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT("detect.default.project.version.timeformat", "Default Project Version Name Timestamp Format", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "yyyy-MM-dd\\'T\\'HH:mm:ss.SSS"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
-    @HelpDescription("Depth from source paths to search for files to determine if a detector applies.")
+    @HelpDescription("Depth of subdirectories within the source directory to which Detect will search for files that indicate whether a detector applies.")
+    @HelpDetailed("A value of 0 (the default) tells Detect not to search any subdirectories, a value of 1 tells Detect to search first-level subdirectories, etc.")
     DETECT_DETECTOR_SEARCH_DEPTH("detect.detector.search.depth", "Detector Search Depth", "3.2.0", PropertyType.INTEGER, PropertyAuthority.None, "0"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
@@ -279,14 +282,17 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("A comma-separated list of directory names to exclude from detector search.")
+    @HelpDetailed("While searching the source directory to determine which detectors to run, subdirectories whose name appear in this list will not be searched.")
     DETECT_DETECTOR_SEARCH_EXCLUSION("detect.detector.search.exclusion", "Detector Directory Exclusions", "3.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("A comma-separated list of directory name patterns to exclude from detector search.")
+    @HelpDetailed("While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched.")
     DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS("detect.detector.search.exclusion.patterns", " Detector Directory Patterns Exclusions", "3.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("A comma-separated list of directory paths to exclude from detector search. (e.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)")
+    @HelpDetailed("This property performs the same basic function as detect.detector.search.exclusion, but lets you be more specific.")
     DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS("detect.detector.search.exclusion.paths", " Detector Directory Path Exclusions", "5.5.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
@@ -344,7 +350,7 @@ public enum DetectProperty {
     DETECT_GO_DEP_PATH("detect.go.dep.path", "Godep Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GO, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
-    @HelpDescription("If set to true, we will attempt to run 'init' and 'ensure' which can modify your development environment.")
+    @HelpDescription("If set to true, Detect will attempt to run 'init' and 'ensure' which can modify your development environment.")
     DETECT_GO_RUN_DEP_INIT("detect.go.run.dep.init", "Godep Run init/ensure", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
@@ -388,7 +394,8 @@ public enum DetectProperty {
     DETECT_INCLUDED_DETECTOR_TYPES("detect.included.detector.types", "Detector Types Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Path to the java executable")
+    @HelpDescription("Path to the java executable.")
+    @HelpDetailed("If set, Detect will use the given java executable instead of searching for one.")
     DETECT_JAVA_PATH("detect.java.path", "Java Executable", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
@@ -465,7 +472,8 @@ public enum DetectProperty {
     DETECT_NUGET_PACKAGES_REPO_URL("detect.nuget.packages.repo.url", "Nuget Packages Repository URL", "3.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "https://api.nuget.org/v3/index.json"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Output path")
+    @HelpDescription("The path to the output directory.")
+    @HelpDetailed("If set, Detect will use the given directory to store files that it downloads and creates, instead of using the default location (~/blackduck).")
     DETECT_OUTPUT_PATH("detect.output.path", "Detect Output Path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_PACKAGIST, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
@@ -549,7 +557,8 @@ public enum DetectProperty {
     DETECT_PROJECT_USER_GROUPS("detect.project.user.groups", "Project User Groups", "5.4.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The detector to choose when multiple detector types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.")
+    @HelpDescription("The detector that will be used to determine the project name and version when multiple detector types. This property should be used with the detect.project.tool.")
+    @HelpDetailed("If Detect finds that multiple detectors apply, this property can be used to select the detector that will provide the project name and version. When using this property, you should also set detect.project.tool=DETECTOR")
     DETECT_PROJECT_DETECTOR("detect.project.detector", "Project Name/Version Detector", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_GLOBAL })
@@ -566,7 +575,8 @@ public enum DetectProperty {
     DETECT_PROJECT_TIER("detect.project.tier", "Project Tier", "3.1.0", PropertyType.INTEGER, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The tool priority for project name and version. The first tool in this list that provides a project name and version will be used.")
+    @HelpDescription("The tool priority for project name and version. The project name and version will be determined by the first tool in this list that provides them.")
+    @HelpDetailed("This allows you to control which tool provides the project name and version when more than one tool are capable of providing it.")
     @AcceptableValues(value = { "DETECTOR", "DOCKER", "BAZEL" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
     DETECT_PROJECT_TOOL("detect.project.tool", "Detector Tool Priority", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "DOCKER,DETECTOR,BAZEL"),
 
@@ -614,7 +624,7 @@ public enum DetectProperty {
     DETECT_REQUIRED_DETECTOR_TYPES("detect.required.detector.types", "Required Detect Types", "4.3.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("If set to false we will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.")
+    @HelpDescription("If set to false Detect will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.")
     DETECT_RESOLVE_TILDE_IN_PATHS("detect.resolve.tilde.in.paths", "Resolve Tilde in Paths", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_REPORT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_REPORT_SETTING })
@@ -646,11 +656,12 @@ public enum DetectProperty {
     DETECT_SBT_REPORT_DEPTH("detect.sbt.report.search.depth", "SBT Report Search Depth", "4.3.0", PropertyType.INTEGER, PropertyAuthority.None, "3"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The output directory for all scan files. If not set, the scan files will be in a 'scan' subdirectory of the output path.")
+    @HelpDescription("The output directory for all signature scanner output files. If not set, the signature scanner output files will be in a 'scan' subdirectory of the output directory.")
     DETECT_SCAN_OUTPUT_PATH("detect.scan.output.path", "Scan Output Path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_SOURCE_PATH })
-    @HelpDescription("Source path to inspect")
+    @HelpDescription("The path to the project directory to inspect.")
+    @HelpDetailed("Detect will search the given directory for hints that indicate which package manager(s) the project uses, and will attempt to run the corresponding detector(s).")
     DETECT_SOURCE_PATH("detect.source.path", "Source Path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_GLOBAL })
@@ -658,12 +669,14 @@ public enum DetectProperty {
     DETECT_TEST_CONNECTION("detect.test.connection", "Test Connection to Black Duck", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The tools Detect should allow in a comma-separated list. Included and not excluded tools will be allowed to run if all criteria of the tool is met. Exclusion rules always win.")
+    @HelpDescription("The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.")
+    @HelpDetailed("This property and detect.tools.excluded provide control over which tools Detect runs.")
     @AcceptableValues(value = { "BAZEL", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
     DETECT_TOOLS("detect.tools", "Detect Tools Included", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The tools Detect should not allow in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.")
+    @HelpDescription("The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.")
+    @HelpDetailed("This property and detect.tools provide control over which tools Detect runs.")
     @AcceptableValues(value = { "BAZEL", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
     DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "Detect Tools Excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
@@ -841,7 +854,8 @@ public enum DetectProperty {
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.detector.search.depth in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR })
-    @HelpDescription("Depth from source paths to search for files to determine if a bom tool applies.")
+    @HelpDescription("Depth of subdirectories within the source directory to search for files that indicate whether a detector applies.")
+    @HelpDetailed("A value of 0 (the default) tells Detect not to search any subdirectories, a value of 1 tells Detect to search first-level subdirectories, etc.")
     DETECT_BOM_TOOL_SEARCH_DEPTH("detect.bom.tool.search.depth", "", "3.2.0", PropertyType.INTEGER, PropertyAuthority.None, "0"),
 
     @Deprecated
