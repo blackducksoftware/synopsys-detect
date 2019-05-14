@@ -131,11 +131,11 @@ public enum DetectProperty {
     BLACKDUCK_USERNAME("blackduck.username", "Black Duck Username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Path of the bash executable")
+    @HelpDescription("Path to the bash executable")
     DETECT_BASH_PATH("detect.bash.path", "Bash Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = SEARCH_GROUP_GLOBAL)
-    @HelpDescription("The path of the Bazel executable")
+    @HelpDescription("The path to the Bazel executable")
     DETECT_BAZEL_PATH("detect.bazel.path", "Bazel Executable", "5.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = GROUP_SOURCE_SCAN)
@@ -151,7 +151,7 @@ public enum DetectProperty {
     DETECT_BDIO_OUTPUT_PATH("detect.bdio.output.path", "BDIO Output Directory", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_PATH })
-    @HelpDescription("The path of a binary file to scan.")
+    @HelpDescription("The path to a binary file to scan.")
     DETECT_BINARY_SCAN_FILE("detect.binary.scan.file.path", "Binary Scan Target", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
@@ -245,15 +245,15 @@ public enum DetectProperty {
     DETECT_CONDA_ENVIRONMENT_NAME("detect.conda.environment.name", "Anaconda Environment Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_CONDA, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path of the conda executable")
+    @HelpDescription("The path to the conda executable")
     DETECT_CONDA_PATH("detect.conda.path", "Conda Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_CPAN, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path of the cpan executable")
+    @HelpDescription("The path to the cpan executable")
     DETECT_CPAN_PATH("detect.cpan.path", "cpan Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_CPAN, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path of the cpanm executable")
+    @HelpDescription("The path to the cpanm executable")
     DETECT_CPANM_PATH("detect.cpanm.path", "cpanm Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL })
@@ -316,7 +316,7 @@ public enum DetectProperty {
     DETECT_DOCKER_INSPECTOR_VERSION("detect.docker.inspector.version", "Docker Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Path of the docker executable")
+    @HelpDescription("Path to the docker executable")
     DETECT_DOCKER_PATH("detect.docker.path", "Docker Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
@@ -328,7 +328,7 @@ public enum DetectProperty {
     DETECT_DOCKER_TAR("detect.docker.tar", "Docker Image Archive File", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path of the dotnet executable")
+    @HelpDescription("The path to the dotnet executable")
     DETECT_DOTNET_PATH("detect.dotnet.path", "dotnet Executable", "4.4.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
@@ -340,7 +340,7 @@ public enum DetectProperty {
     DETECT_FORCE_SUCCESS("detect.force.success", "Force Success", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_GO, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Path of the Godep executable")
+    @HelpDescription("Path to the Godep executable")
     DETECT_GO_DEP_PATH("detect.go.dep.path", "Godep Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GO, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
@@ -376,11 +376,11 @@ public enum DetectProperty {
     DETECT_GRADLE_INSPECTOR_VERSION("detect.gradle.inspector.version", "Gradle Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_GRADLE)
-    @HelpDescription("Path of the Gradle executable")
+    @HelpDescription("Path to the Gradle executable")
     DETECT_GRADLE_PATH("detect.gradle.path", "Gradle Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_HEX, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path of the rebar3 executable")
+    @HelpDescription("The path to the rebar3 executable")
     DETECT_HEX_REBAR3_PATH("detect.hex.rebar3.path", "Rebar3 Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
@@ -388,7 +388,7 @@ public enum DetectProperty {
     DETECT_INCLUDED_DETECTOR_TYPES("detect.included.detector.types", "Detector Types Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Path of the java executable")
+    @HelpDescription("Path to the java executable")
     DETECT_JAVA_PATH("detect.java.path", "Java Executable", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
@@ -404,7 +404,7 @@ public enum DetectProperty {
     DETECT_MAVEN_INCLUDED_MODULES("detect.maven.included.modules", "Maven Modules Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path of the Maven executable")
+    @HelpDescription("The path to the Maven executable")
     DETECT_MAVEN_PATH("detect.maven.path", "Maven Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
@@ -428,11 +428,11 @@ public enum DetectProperty {
     DETECT_NPM_INCLUDE_DEV_DEPENDENCIES("detect.npm.include.dev.dependencies", "Include NPM Development Dependencies", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_NPM, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path of the node executable that is used by Npm")
+    @HelpDescription("The path to the node executable that is used by Npm")
     DETECT_NPM_NODE_PATH("detect.npm.node.path", "Node Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NPM, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path of the Npm executable")
+    @HelpDescription("The path to the Npm executable")
     DETECT_NPM_PATH("detect.npm.path", "NPM Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { GROUP_SOURCE_SCAN })
@@ -477,11 +477,11 @@ public enum DetectProperty {
     DETECT_PEAR_ONLY_REQUIRED_DEPS("detect.pear.only.required.deps", "Include Only Required Pear Dependencies", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PEAR, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path of the pear executable")
+    @HelpDescription("The path to the pear executable")
     DETECT_PEAR_PATH("detect.pear.path", "Pear Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_CPAN, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path of the perl executable")
+    @HelpDescription("The path to the perl executable")
     DETECT_PERL_PATH("detect.perl.path", "Perl Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PIP, additional = { GROUP_SOURCE_SCAN })
@@ -495,11 +495,11 @@ public enum DetectProperty {
     DETECT_PIP_PROJECT_VERSION_NAME("detect.pip.project.version.name", "PIP Project Version Name", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PIP, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The path of the requirements.txt file")
+    @HelpDescription("The path to the requirements.txt file")
     DETECT_PIP_REQUIREMENTS_PATH("detect.pip.requirements.path", "PIP Requirements Path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PIP, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path of the Pipenv executable")
+    @HelpDescription("The path to the Pipenv executable")
     DETECT_PIPENV_PATH("detect.pipenv.path", "Pipenv Executable", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, SEARCH_GROUP_GLOBAL })
@@ -598,7 +598,7 @@ public enum DetectProperty {
     DETECT_PROJECT_VERSION_UPDATE("detect.project.version.update", "Update Project Version", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PYTHON, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path of the Python executable")
+    @HelpDescription("The path to the Python executable")
     DETECT_PYTHON_PATH("detect.python.path", "Python Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PYTHON, additional = { SEARCH_GROUP_GLOBAL })
@@ -667,7 +667,7 @@ public enum DetectProperty {
     @AcceptableValues(value = { "BAZEL", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
     DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "Detect Tools Excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
-    @HelpDescription("The path of the Yarn executable")
+    @HelpDescription("The path to the Yarn executable")
     @HelpGroup(primary = GROUP_YARN, additional = { SEARCH_GROUP_GLOBAL })
     DETECT_YARN_PATH("detect.yarn.path", "Yarn Executable", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
@@ -873,7 +873,7 @@ public enum DetectProperty {
     @Deprecated
     @DetectDeprecation(description = "In the future, Detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_NUGET)
-    @HelpDescription("The path of the Nuget executable. Nuget is used to download the classic inspectors nuget package.")
+    @HelpDescription("The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package.")
     DETECT_NUGET_PATH("detect.nuget.path", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
