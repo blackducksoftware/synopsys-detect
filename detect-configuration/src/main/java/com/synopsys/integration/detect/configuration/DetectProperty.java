@@ -417,7 +417,7 @@ public enum DetectProperty {
     DETECT_MAVEN_INCLUDED_MODULES("detect.maven.included.modules", "Maven Modules Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path to the Maven executable.")
+    @HelpDescription("The path to the Maven executable (mvn or mvnw).")
     @HelpDetailed("If set, Detect will use the given Maven executable instead of searching for one.")
     DETECT_MAVEN_PATH("detect.maven.path", "Maven Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
