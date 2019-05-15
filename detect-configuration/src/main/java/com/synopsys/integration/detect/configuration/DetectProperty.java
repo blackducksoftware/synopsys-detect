@@ -402,23 +402,28 @@ public enum DetectProperty {
     DETECT_JAVA_PATH("detect.java.path", "Java Executable", "5.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("Maven build command.")
+    @HelpDescription("Maven command line arguments to add to the mvn/mvnw command line.")
+    @HelpDetailed("By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument.")
     DETECT_MAVEN_BUILD_COMMAND("detect.maven.build.command", "Maven Build Command", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The names of the module to exclude.")
+    @HelpDescription("A comma-separated list of Maven modules (sub-projects) to exclude.")
+    @HelpDetailed("As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property.")
     DETECT_MAVEN_EXCLUDED_MODULES("detect.maven.excluded.modules", "Maven Modules Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The names of the module to include.")
+    @HelpDescription("A comma-separated list of Maven modules (sub-projects) to include.")
+    @HelpDetailed("As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.")
     DETECT_MAVEN_INCLUDED_MODULES("detect.maven.included.modules", "Maven Modules Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path to the Maven executable.")
+    @HelpDetailed("If set, Detect will use the given Maven executable instead of searching for one.")
     DETECT_MAVEN_PATH("detect.maven.path", "Maven Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The name of the dependency scope to include.")
+    @HelpDescription("The name of a Maven scope. Output will be limited to dependencies with this scope.")
+    @HelpDetailed("If set, Detect will include only dependencies of the given Maven scope.")
     DETECT_MAVEN_SCOPE("detect.maven.scope", "Dependency Scope Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_REPORT, additional = { SEARCH_GROUP_GLOBAL })
