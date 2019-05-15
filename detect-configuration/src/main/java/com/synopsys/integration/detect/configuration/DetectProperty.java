@@ -339,7 +339,8 @@ public enum DetectProperty {
     DETECT_DOTNET_PATH("detect.dotnet.path", "dotnet Executable", "4.4.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win.")
+    @HelpDescription("By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win.")
+    @HelpDetailed("If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them.")
     DETECT_EXCLUDED_DETECTOR_TYPES("detect.excluded.detector.types", "Detector Types Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
@@ -392,6 +393,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
+    @HelpDetailed("If you want to limit Detect to a subset of its detectors, use this property to specify that subset.")
     DETECT_INCLUDED_DETECTOR_TYPES("detect.included.detector.types", "Detector Types Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
@@ -621,7 +623,8 @@ public enum DetectProperty {
     DETECT_REPORT_TIMEOUT("detect.report.timeout", "Report Generation Timeout", "5.2.0", PropertyType.LONG, PropertyAuthority.None, "300"),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("If set, Detect will fail if it does not find the detector types supplied here.")
+    @HelpDescription("The set of required detectors.")
+    @HelpDetailed("If you want one or more detectors to be required (must be found to apply), use this property to specify the set of required detectors. If this property is set, and one (or more) of the given detectors is not found to apply, Detect will fail.")
     DETECT_REQUIRED_DETECTOR_TYPES("detect.required.detector.types", "Required Detect Types", "4.3.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
