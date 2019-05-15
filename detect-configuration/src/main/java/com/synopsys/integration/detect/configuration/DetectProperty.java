@@ -356,35 +356,43 @@ public enum DetectProperty {
     DETECT_GO_RUN_DEP_INIT("detect.go.run.dep.init", "Godep Run init/ensure", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("Gradle build command.")
+    @HelpDescription("Gradle command line arguments to add to the mvn/mvnw command line.")
+    @HelpDetailed("By default, Detect runs the gradle (or gradlew) command with one task: dependencies. You can use this property to insert one or more additional gradle command line arguments (options or tasks) before the dependencies argument.")
     DETECT_GRADLE_BUILD_COMMAND("detect.gradle.build.command", "Gradle Build Command", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The names of the dependency configurations to exclude.")
+    @HelpDescription("A comma-separated list of Gradle configurations to exclude.")
+    @HelpDetailed("As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property.")
     DETECT_GRADLE_EXCLUDED_CONFIGURATIONS("detect.gradle.excluded.configurations", "Gradle Exclude Configurations", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The names of the projects to exclude.")
+    @HelpDescription("A comma-separated list of Gradle sub-projects to exclude.")
+    @HelpDetailed("As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.")
     DETECT_GRADLE_EXCLUDED_PROJECTS("detect.gradle.excluded.projects", "Gradle Exclude Projects", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The names of the dependency configurations to include.")
+    @HelpDescription("A comma-separated list of Gradle configurations to include.")
+    @HelpDetailed("As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.")
     DETECT_GRADLE_INCLUDED_CONFIGURATIONS("detect.gradle.included.configurations", "Gradle Include Configurations", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The names of the projects to include.")
+    @HelpDescription("A comma-separated list of Maven sub-projects to include.")
+    @HelpDetailed("As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.")
     DETECT_GRADLE_INCLUDED_PROJECTS("detect.gradle.included.projects", "Gradle Include Projects", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path to the directory containing the air gap dependencies for the gradle inspector.")
+    @HelpDetailed("Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory.")
     DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH("detect.gradle.inspector.air.gap.path", "Gradle Inspector AirGap Path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The override version of the Gradle Inspector to use. By default, Detect will try to automatically determine the correct gradle version.")
+    @HelpDescription("The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.")
+    @HelpDetailed("The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector.")
     DETECT_GRADLE_INSPECTOR_VERSION("detect.gradle.inspector.version", "Gradle Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_GRADLE)
-    @HelpDescription("Path to the Gradle executable.")
+    @HelpDescription("The path to the Gradle executable (gradle or gradlew).")
+    @HelpDetailed("If set, Detect will use the given Gradle executable instead of searching for one.")
     DETECT_GRADLE_PATH("detect.gradle.path", "Gradle Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_HEX, additional = { SEARCH_GROUP_GLOBAL })
