@@ -69,13 +69,7 @@ public class DetectorNameVersionDecider {
                 decision = new TooManyPreferredDetectorTypesFoundDecision(preferredBomToolType);
             }
         } else {
-            final List<DetectorProjectInfo> lowestDepthProjectNames = projectNamesAtLowestDepth(projectNamePossibilities);
-            final List<DetectorProjectInfo> lowestDepthPossibilities = lowestDepthProjectNames.stream()
-                                                                           .filter(it -> it.getDetectorType() != DetectorType.GIT)
-                                                                           .collect(Collectors.toList());
-            final Optional<DetectorProjectInfo> gitDetectorProjectInfo = lowestDepthProjectNames.stream()
-                                                                             .filter(it -> it.getDetectorType() == DetectorType.GIT)
-                                                                             .findFirst();
+            final List<DetectorProjectInfo> lowestDepthPossibilities = projectNamesAtLowestDepth(projectNamePossibilities);
 
             final Map<DetectorType, Long> lowestDepthTypeCounts = lowestDepthPossibilities.stream()
                                                                       .collect(Collectors.groupingBy(DetectorProjectInfo::getDetectorType, Collectors.counting()));
@@ -91,15 +85,11 @@ public class DetectorNameVersionDecider {
 
                 if (chosen.isPresent()) {
                     decision = new UniqueDetectorDecision(chosen.get());
-                } else if (gitDetectorProjectInfo.isPresent()) {
-                    decision = new UniqueDetectorDecision(gitDetectorProjectInfo.get());
                 } else {
                     decision = new UniqueDetectorNotFoundDecision();
                 }
             } else if (singleInstanceLowestDepthBomTools.size() > 1) {
                 decision = decideProjectNameVersionArbitrarily(lowestDepthPossibilities, singleInstanceLowestDepthBomTools);
-            } else if (gitDetectorProjectInfo.isPresent()) {
-                decision = new UniqueDetectorDecision(gitDetectorProjectInfo.get());
             } else {
                 decision = new UniqueDetectorNotFoundDecision();
             }
@@ -109,14 +99,24 @@ public class DetectorNameVersionDecider {
     }
 
     private NameVersionDecision decideProjectNameVersionArbitrarily(final List<DetectorProjectInfo> possibilities, final List<DetectorType> bomToolOptions) {
+        final List<DetectorType> bomToolOptionsMinusGit = bomToolOptions.stream()
+                                                              .filter(detectorType -> detectorType != DetectorType.GIT)
+                                                              .collect(Collectors.toList());
         final List<DetectorProjectInfo> arbitraryOptions = possibilities.stream()
-                                                               .filter(it -> bomToolOptions.contains(it.getDetectorType()))
+                                                               .filter(it -> bomToolOptionsMinusGit.contains(it.getDetectorType()))
                                                                .collect(Collectors.toList());
 
         final Optional<DetectorProjectInfo> chosen = arbitraryOptions.stream().min(Comparator.comparing(o -> o.getNameVersion().getName()));
 
         if (chosen.isPresent()) {
             return new ArbitraryNameVersionDecision(chosen.get(), arbitraryOptions);
+        } else if (bomToolOptions.contains(DetectorType.GIT)) {
+            final Optional<DetectorProjectInfo> gitDetectorProjectInfo = possibilities.stream()
+                                                                             .filter(detectorProjectInfo -> detectorProjectInfo.getDetectorType().equals(DetectorType.GIT))
+                                                                             .findFirst();
+            return gitDetectorProjectInfo
+                       .<NameVersionDecision>map(UniqueDetectorDecision::new)
+                       .orElseGet(UniqueDetectorNotFoundDecision::new);
         } else {
             return new UniqueDetectorNotFoundDecision();
         }
