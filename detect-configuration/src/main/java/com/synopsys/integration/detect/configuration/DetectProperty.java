@@ -180,7 +180,11 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.")
-    @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns.\r\nThese patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters).")
+    @HelpDetailed("These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). " +
+                      "Detect will recursively search within the scan targets for files/directories that match these patterns and will create the corresponding exclusion patterns (paths relative to the scan target directory) for the signature scanner (Black Duck scan CLI). " +
+                      "Please note that the signature scanner will only exclude directories; matched filenames will be passed to the signature scanner but will have no effect. These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns " +
+                      "and passed as --exclude values. " +
+                      "Use this property when you want Detect to convert the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns to pass patterns directly to the signature scanner as-is.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.blackduck.signature.scanner.exclusion.name.patterns", "Directory Name Exclusion Patterns", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "node_modules"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_SCAN })
@@ -189,7 +193,9 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("A comma-separated list of values to be used with the Signature Scanner --exclude flag.")
-    @HelpDetailed("Each patterns is passed to the Black Duck scan CLI as a value for an --exclude option. An exclusion pattern must start and end with a forward slash (/) and may not contain double asterisks (**).")
+    @HelpDetailed("Each pattern provided is passed to the signature scanner (Black Duck scan CLI) as a value for an --exclude option. The signature scanner requires that these exclusion patterns start and end with a forward slash (/) and may not contain double asterisks (**). " +
+                      "These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. " +
+                      "Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS("detect.blackduck.signature.scanner.exclusion.patterns", "Exclusion Patterns", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
