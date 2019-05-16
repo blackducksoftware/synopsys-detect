@@ -40,9 +40,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
-import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.AirgapNugetInspectorInstaller;
@@ -101,6 +99,9 @@ import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.detectable.detectables.docker.DockerProperties;
+import com.synopsys.integration.detectable.detectables.git.GitDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitExtractor;
+import com.synopsys.integration.detectable.detectables.git.parse.GitFileParser;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
@@ -307,6 +308,16 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
+    public GitFileParser gitFileParser() {
+        return new GitFileParser();
+    }
+
+    @Bean
+    public GitExtractor gitExtractor() {
+        return new GitExtractor(gitFileParser());
+    }
+
+    @Bean
     public GoLockParser goLockParser() {
         return new GoLockParser(externalIdFactory);
     }
@@ -393,9 +404,9 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public NugetInspectorResolver nugetInspectorResolver() {
-        NugetInstallerOptions installerOptions = detectableOptionFactory.createNugetInstallerOptions();
-        NugetInspectorInstaller installer;
-        Optional<File> nugetAirGapPath = airGapManager.getNugetInspectorAirGapFile();
+        final NugetInstallerOptions installerOptions = detectableOptionFactory.createNugetInstallerOptions();
+        final NugetInspectorInstaller installer;
+        final Optional<File> nugetAirGapPath = airGapManager.getNugetInspectorAirGapFile();
         if (nugetAirGapPath.isPresent()) {
             installer = new AirgapNugetInspectorInstaller(airGapManager);
         } else {
@@ -650,6 +661,12 @@ public class DetectableBeanConfiguration {
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GemlockDetectable gemlockBomTool(final DetectableEnvironment environment) {
         return new GemlockDetectable(environment, fileFinder, gemlockExtractor());
+    }
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public GitDetectable gitBomTool(final DetectableEnvironment environment) {
+        return new GitDetectable(environment, fileFinder, gitExtractor());
     }
 
     @Bean

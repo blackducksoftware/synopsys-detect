@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.workflow.project.decisions.ArbitraryNameVersionDecision;
 import com.synopsys.integration.detect.workflow.project.decisions.NameVersionDecision;
 import com.synopsys.integration.detect.workflow.project.decisions.PreferredDetectorDecision;
@@ -40,6 +39,7 @@ import com.synopsys.integration.detect.workflow.project.decisions.PreferredDetec
 import com.synopsys.integration.detect.workflow.project.decisions.TooManyPreferredDetectorTypesFoundDecision;
 import com.synopsys.integration.detect.workflow.project.decisions.UniqueDetectorDecision;
 import com.synopsys.integration.detect.workflow.project.decisions.UniqueDetectorNotFoundDecision;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorNameVersionDecider {
@@ -69,14 +69,20 @@ public class DetectorNameVersionDecider {
                 decision = new TooManyPreferredDetectorTypesFoundDecision(preferredBomToolType);
             }
         } else {
-            final List<DetectorProjectInfo> lowestDepthPossibilities = projectNamesAtLowestDepth(projectNamePossibilities);
+            final List<DetectorProjectInfo> lowestDepthProjectNames = projectNamesAtLowestDepth(projectNamePossibilities);
+            final List<DetectorProjectInfo> lowestDepthPossibilities = lowestDepthProjectNames.stream()
+                                                                           .filter(it -> it.getDetectorType() != DetectorType.GIT)
+                                                                           .collect(Collectors.toList());
+            final Optional<DetectorProjectInfo> gitDetectorProjectInfo = lowestDepthProjectNames.stream()
+                                                                             .filter(it -> it.getDetectorType() == DetectorType.GIT)
+                                                                             .findFirst();
 
             final Map<DetectorType, Long> lowestDepthTypeCounts = lowestDepthPossibilities.stream()
-                                                                      .collect(Collectors.groupingBy(it -> it.getDetectorType(), Collectors.counting()));
+                                                                      .collect(Collectors.groupingBy(DetectorProjectInfo::getDetectorType, Collectors.counting()));
 
             final List<DetectorType> singleInstanceLowestDepthBomTools = lowestDepthTypeCounts.entrySet().stream()
                                                                              .filter(it -> it.getValue() == 1)
-                                                                             .map(it -> it.getKey())
+                                                                             .map(Map.Entry::getKey)
                                                                              .collect(Collectors.toList());
 
             if (singleInstanceLowestDepthBomTools.size() == 1) {
@@ -85,11 +91,15 @@ public class DetectorNameVersionDecider {
 
                 if (chosen.isPresent()) {
                     decision = new UniqueDetectorDecision(chosen.get());
+                } else if (gitDetectorProjectInfo.isPresent()) {
+                    decision = new UniqueDetectorDecision(gitDetectorProjectInfo.get());
                 } else {
                     decision = new UniqueDetectorNotFoundDecision();
                 }
             } else if (singleInstanceLowestDepthBomTools.size() > 1) {
                 decision = decideProjectNameVersionArbitrarily(lowestDepthPossibilities, singleInstanceLowestDepthBomTools);
+            } else if (gitDetectorProjectInfo.isPresent()) {
+                decision = new UniqueDetectorDecision(gitDetectorProjectInfo.get());
             } else {
                 decision = new UniqueDetectorNotFoundDecision();
             }
@@ -103,9 +113,7 @@ public class DetectorNameVersionDecider {
                                                                .filter(it -> bomToolOptions.contains(it.getDetectorType()))
                                                                .collect(Collectors.toList());
 
-        final Optional<DetectorProjectInfo> chosen = arbitraryOptions.stream()
-                                                         .sorted((o1, o2) -> o1.getNameVersion().getName().compareTo(o2.getNameVersion().getName()))
-                                                         .findFirst();
+        final Optional<DetectorProjectInfo> chosen = arbitraryOptions.stream().min(Comparator.comparing(o -> o.getNameVersion().getName()));
 
         if (chosen.isPresent()) {
             return new ArbitraryNameVersionDecision(chosen.get(), arbitraryOptions);
