@@ -102,6 +102,7 @@ import com.synopsys.integration.detectable.detectables.docker.DockerProperties;
 import com.synopsys.integration.detectable.detectables.git.GitDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitExtractor;
 import com.synopsys.integration.detectable.detectables.git.parse.GitFileParser;
+import com.synopsys.integration.detectable.detectables.git.parse.GitFileTransformer;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
@@ -313,8 +314,13 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
+    public GitFileTransformer gitFileTransformer() {
+        return new GitFileTransformer();
+    }
+
+    @Bean
     public GitExtractor gitExtractor() {
-        return new GitExtractor(gitFileParser());
+        return new GitExtractor(gitFileParser(), gitFileTransformer());
     }
 
     @Bean

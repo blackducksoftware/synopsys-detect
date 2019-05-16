@@ -4,22 +4,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectables.git.model.GitConfigElement;
 import com.synopsys.integration.detectable.detectables.git.parse.GitFileParser;
+import com.synopsys.integration.detectable.detectables.git.parse.GitFileTransformer;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.util.NameVersion;
 
 public class GitExtractor {
     private final GitFileParser gitFileParser;
+    private final GitFileTransformer gitFileTransformer;
 
-    public GitExtractor(final GitFileParser gitFileParser) {
+    public GitExtractor(final GitFileParser gitFileParser, final GitFileTransformer gitFileTransformer) {
         this.gitFileParser = gitFileParser;
+        this.gitFileTransformer = gitFileTransformer;
     }
 
     public final Extraction extract(final File gitConfigFile, final File gitHeadFile) {
@@ -29,41 +29,12 @@ public class GitExtractor {
             final String gitHead = gitFileParser.parseGitHead(headFileInputStream);
             final List<GitConfigElement> gitConfigElements = gitFileParser.parseGitConfig(gitConfigInputStream);
 
-            final Optional<GitConfigElement> currentBranch = gitConfigElements.stream()
-                                                                 .filter(gitConfigElement -> gitConfigElement.getElementType().equals("branch"))
-                                                                 .filter(gitConfigElement -> gitConfigElement.containsKey("merge"))
-                                                                 .filter(gitConfigElement -> gitConfigElement.getProperty("merge").equalsIgnoreCase(gitHead))
-                                                                 .filter(gitConfigElement -> gitConfigElement.containsKey("remote"))
-                                                                 .findFirst();
-
-            final Optional<String> currentBranchRemoteName = currentBranch
-                                                                 .map(gitConfigElement -> gitConfigElement.getProperty("remote"));
-
-            if (!currentBranchRemoteName.isPresent()) {
-                throw new IntegrationException(String.format("Failed to find a remote name for head %s", gitHead));
-            }
-
-            final Optional<String> remoteUrlOptional = gitConfigElements.stream()
-                                                           .filter(gitConfigElement -> gitConfigElement.getElementType().equals("remote"))
-                                                           .filter(gitConfigElement -> gitConfigElement.getName().isPresent())
-                                                           .filter(gitConfigElement -> gitConfigElement.getName().get().equals(currentBranchRemoteName.get()))
-                                                           .filter(gitConfigElement -> gitConfigElement.containsKey("url"))
-                                                           .map(gitConfigElement -> gitConfigElement.getProperty("url"))
-                                                           .findAny();
-
-            if (!remoteUrlOptional.isPresent()) {
-                throw new IntegrationException("Failed to find a remote url.");
-            }
-
-            final URL remoteURL = new URL(remoteUrlOptional.get());
-            final String path = remoteURL.getPath();
-            final String projectName = StringUtils.removeEnd(StringUtils.removeStart(path, "/"), ".git");
-            final String projectVersionName = currentBranch.get().getName().orElse(null);
+            final NameVersion projectNameVersion = gitFileTransformer.transform(gitConfigElements, gitHead);
 
             extraction = new Extraction.Builder()
                              .success()
-                             .projectName(projectName)
-                             .projectVersion(projectVersionName)
+                             .projectName(projectNameVersion.getName())
+                             .projectVersion(projectNameVersion.getVersion())
                              .build();
         } catch (final IOException | IntegrationException e) {
             extraction = new Extraction.Builder().exception(e).failure("Failed to parse git config.").build();
