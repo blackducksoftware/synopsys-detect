@@ -110,7 +110,8 @@ public class AggregateBdioCreator {
         }
         final ExternalId original = codeLocation.getExternalId();
         final String codeLocationSourcePath = codeLocation.getSourcePath().toString(); //TODO: what happens when docker is present or no source path or no external id!
-        final String relativePath = FileNameUtils.relativize(sourcePath.getAbsolutePath(), codeLocationSourcePath);
+        final File codeLocationSourceDir = new File(codeLocationSourcePath);
+        final String relativePath = FileNameUtils.relativize(sourcePath.getAbsolutePath(), codeLocationSourceDir.getAbsolutePath());
 
         final String bomToolType = codeLocation.getCreatorName().get().toLowerCase();
         final List<String> externalIdPieces = new ArrayList<>();
