@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 public class FileNameUtils {
     private static final Logger logger = LoggerFactory.getLogger(FileNameUtils.class);
 
+    // Warning: This method relativizes from the *parent* of from, not from itself. No idea why.
+    // It also swallows all exceptions.
     public static String relativize(final String from, final String to) {
         String relative = to;
         try {
