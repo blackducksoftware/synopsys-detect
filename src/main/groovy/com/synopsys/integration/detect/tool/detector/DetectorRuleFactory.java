@@ -94,6 +94,8 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.CLANG, "Clang", detectableFactory::createClangDetectable).defaultNested().build();
 
+        ruleSet.addDetector(DetectorType.GIT, "Git", detectableFactory::createGitDetectable).defaultNested().build();
+
         return ruleSet.build();
     }
 
@@ -134,6 +136,8 @@ public class DetectorRuleFactory {
         ruleSet.yield(gemspec).to(gemlock);
 
         ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", detectableFactory::createSbtResolutionCacheDetectable).defaultNotNested().build();
+
+        ruleSet.addDetector(DetectorType.GIT, "Git", detectableFactory::createGitDetectable).defaultNested().build();
 
         return ruleSet.build();
     }

@@ -32,6 +32,7 @@ public enum DetectorType {
     CONDA,
     CPAN,
     CRAN,
+    GIT,
     GO_DEP,
     GO_VNDR,
     GO_VENDOR,

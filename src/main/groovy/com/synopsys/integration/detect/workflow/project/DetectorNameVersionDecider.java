@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.workflow.project.decisions.ArbitraryNameVersionDecision;
 import com.synopsys.integration.detect.workflow.project.decisions.NameVersionDecision;
 import com.synopsys.integration.detect.workflow.project.decisions.PreferredDetectorDecision;
@@ -40,6 +39,7 @@ import com.synopsys.integration.detect.workflow.project.decisions.PreferredDetec
 import com.synopsys.integration.detect.workflow.project.decisions.TooManyPreferredDetectorTypesFoundDecision;
 import com.synopsys.integration.detect.workflow.project.decisions.UniqueDetectorDecision;
 import com.synopsys.integration.detect.workflow.project.decisions.UniqueDetectorNotFoundDecision;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorNameVersionDecider {
@@ -72,11 +72,11 @@ public class DetectorNameVersionDecider {
             final List<DetectorProjectInfo> lowestDepthPossibilities = projectNamesAtLowestDepth(projectNamePossibilities);
 
             final Map<DetectorType, Long> lowestDepthTypeCounts = lowestDepthPossibilities.stream()
-                                                                      .collect(Collectors.groupingBy(it -> it.getDetectorType(), Collectors.counting()));
+                                                                      .collect(Collectors.groupingBy(DetectorProjectInfo::getDetectorType, Collectors.counting()));
 
             final List<DetectorType> singleInstanceLowestDepthBomTools = lowestDepthTypeCounts.entrySet().stream()
                                                                              .filter(it -> it.getValue() == 1)
-                                                                             .map(it -> it.getKey())
+                                                                             .map(Map.Entry::getKey)
                                                                              .collect(Collectors.toList());
 
             if (singleInstanceLowestDepthBomTools.size() == 1) {
@@ -99,16 +99,24 @@ public class DetectorNameVersionDecider {
     }
 
     private NameVersionDecision decideProjectNameVersionArbitrarily(final List<DetectorProjectInfo> possibilities, final List<DetectorType> bomToolOptions) {
+        final List<DetectorType> bomToolOptionsMinusGit = bomToolOptions.stream()
+                                                              .filter(detectorType -> detectorType != DetectorType.GIT)
+                                                              .collect(Collectors.toList());
         final List<DetectorProjectInfo> arbitraryOptions = possibilities.stream()
-                                                               .filter(it -> bomToolOptions.contains(it.getDetectorType()))
+                                                               .filter(it -> bomToolOptionsMinusGit.contains(it.getDetectorType()))
                                                                .collect(Collectors.toList());
 
-        final Optional<DetectorProjectInfo> chosen = arbitraryOptions.stream()
-                                                         .sorted((o1, o2) -> o1.getNameVersion().getName().compareTo(o2.getNameVersion().getName()))
-                                                         .findFirst();
+        final Optional<DetectorProjectInfo> chosen = arbitraryOptions.stream().min(Comparator.comparing(o -> o.getNameVersion().getName()));
 
         if (chosen.isPresent()) {
             return new ArbitraryNameVersionDecision(chosen.get(), arbitraryOptions);
+        } else if (bomToolOptions.contains(DetectorType.GIT)) {
+            final Optional<DetectorProjectInfo> gitDetectorProjectInfo = possibilities.stream()
+                                                                             .filter(detectorProjectInfo -> detectorProjectInfo.getDetectorType().equals(DetectorType.GIT))
+                                                                             .findFirst();
+            return gitDetectorProjectInfo
+                       .<NameVersionDecision>map(UniqueDetectorDecision::new)
+                       .orElseGet(UniqueDetectorNotFoundDecision::new);
         } else {
             return new UniqueDetectorNotFoundDecision();
         }
