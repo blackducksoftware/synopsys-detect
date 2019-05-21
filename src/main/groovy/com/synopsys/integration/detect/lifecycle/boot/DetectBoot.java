@@ -164,7 +164,7 @@ public class DetectBoot {
         ProductBoot productBoot = new ProductBoot();
         ProductRunData productRunData = productBoot.boot(productDecision, detectConfiguration, new BlackDuckConnectivityChecker(), new PolarisConnectivityChecker(), productBootFactory);
         if (productRunData == null){
-            logger.info("No products to run, detect is complete.");
+            logger.info("No products to run, Detect is complete.");
             return DetectBootResult.exit(detectConfiguration);
         }
 
