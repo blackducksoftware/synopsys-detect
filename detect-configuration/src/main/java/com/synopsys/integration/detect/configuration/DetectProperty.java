@@ -355,6 +355,10 @@ public enum DetectProperty {
     @HelpDescription("If true, Detect will always exit with code 0.")
     DETECT_FORCE_SUCCESS("detect.force.success", "Force Success", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
+    @HelpDescription("Path of the git executable")
+    DETECT_GIT_PATH("detect.git.path", "Git Executable", "5.5.0", PropertyType.STRING, PropertyAuthority.None),
+
     @HelpGroup(primary = GROUP_GO, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Path to the Godep executable.")
     DETECT_GO_DEP_PATH("detect.go.dep.path", "Godep Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),

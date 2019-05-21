@@ -94,7 +94,9 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.CLANG, "Clang", detectableFactory::createClangDetectable).defaultNested().build();
 
-        ruleSet.addDetector(DetectorType.GIT, "Git", detectableFactory::createGitDetectable).defaultNested().build();
+        final DetectorRule gitParse = ruleSet.addDetector(DetectorType.GIT, "Git Parse", detectableFactory::createGitParseDetectable).defaultNested().build();
+        final DetectorRule gitCli = ruleSet.addDetector(DetectorType.GIT, "Git Cli", detectableFactory::createGitCliDetectable).defaultNested().build();
+        ruleSet.yield(gitParse).to(gitCli);
 
         return ruleSet.build();
     }
@@ -137,7 +139,9 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", detectableFactory::createSbtResolutionCacheDetectable).defaultNotNested().build();
 
-        ruleSet.addDetector(DetectorType.GIT, "Git", detectableFactory::createGitDetectable).defaultNested().build();
+        final DetectorRule gitParse = ruleSet.addDetector(DetectorType.GIT, "Git Parse", detectableFactory::createGitParseDetectable).defaultNested().build();
+        final DetectorRule gitCli = ruleSet.addDetector(DetectorType.GIT, "Git Cli", detectableFactory::createGitCliDetectable).defaultNested().build();
+        ruleSet.yield(gitParse).to(gitCli);
 
         return ruleSet.build();
     }

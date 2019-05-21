@@ -34,6 +34,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.CpanRe
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DotNetResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
@@ -48,7 +49,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.YarnRe
 //this will cache the find result.
 public class SimpleExecutableResolver
     implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, JavaResolver,
-                   DotNetResolver, DockerResolver {
+                   DotNetResolver, DockerResolver, GitResolver {
 
     private final CachedExecutableResolverOptions executableResolverOptions;
     private final SimpleLocalExecutableFinder localExecutableFinder;
@@ -170,5 +171,10 @@ public class SimpleExecutableResolver
     @Override
     public File resolveDocker() {
         return findCachedSystem("docker");
+    }
+
+    @Override
+    public File resolveGit() {
+        return findCachedSystem("git");
     }
 }
