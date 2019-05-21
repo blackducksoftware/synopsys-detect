@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.git;
+package com.synopsys.integration.detectable.detectables.git.cli;
 
 import java.io.File;
 
@@ -28,26 +28,27 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-public class GitDetectable extends Detectable {
+public class GitCliDetectable extends Detectable {
     private static final String GIT_DIRECTORY_NAME = ".git";
-    private static final String GIT_CONFIG_FILENAME = "config";
-    private static final String GIT_HEAD_FILENAME = "HEAD";
 
     private final FileFinder fileFinder;
-    private final GitExtractor gitExtractor;
+    private final GitCliExtractor gitCliExtractor;
+    private final GitResolver gitResolver;
 
-    private File gitConfigFile;
-    private File gitHeadFile;
+    private File gitExecutable;
 
-    public GitDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GitExtractor gitExtractor) {
-        super(environment, "Git", "GIT");
+    public GitCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GitCliExtractor gitCliExtractor, final GitResolver gitResolver) {
+        super(environment, "Git Cli", "GIT");
         this.fileFinder = fileFinder;
-        this.gitExtractor = gitExtractor;
+        this.gitCliExtractor = gitCliExtractor;
+        this.gitResolver = gitResolver;
     }
 
     @Override
@@ -57,26 +58,23 @@ public class GitDetectable extends Detectable {
             return new FileNotFoundDetectableResult(GIT_DIRECTORY_NAME);
         }
 
-        gitConfigFile = fileFinder.findFile(gitDirectory, GIT_CONFIG_FILENAME);
-        gitHeadFile = fileFinder.findFile(gitDirectory, GIT_HEAD_FILENAME);
+        return new PassedDetectableResult();
+    }
 
-        if (gitConfigFile == null) {
-            return new FileNotFoundDetectableResult(GIT_CONFIG_FILENAME);
-        } else if (gitHeadFile == null) {
-            return new FileNotFoundDetectableResult(GIT_HEAD_FILENAME);
+    @Override
+    public DetectableResult extractable() {
+        gitExecutable = gitResolver.resolveGit();
+
+        if (gitExecutable == null) {
+            return new ExecutableNotFoundDetectableResult("git");
         }
 
         return new PassedDetectableResult();
     }
 
     @Override
-    public DetectableResult extractable() {
-        return new PassedDetectableResult();
-    }
-
-    @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return gitExtractor.extract(gitConfigFile, gitHeadFile);
+        return gitCliExtractor.extract(gitExecutable, environment.getDirectory());
     }
 
 }

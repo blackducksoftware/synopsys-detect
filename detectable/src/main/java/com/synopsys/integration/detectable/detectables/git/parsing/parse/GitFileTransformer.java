@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.git.parse;
+package com.synopsys.integration.detectable.detectables.git.parsing.parse;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -7,12 +7,12 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.detectable.detectables.git.model.GitConfigElement;
+import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigElement;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class GitFileTransformer {
-    public NameVersion transform(final List<GitConfigElement> gitConfigElements, final String gitHead) throws IntegrationException, MalformedURLException {
+    public NameVersion transformGitConfigElements(final List<GitConfigElement> gitConfigElements, final String gitHead) throws IntegrationException, MalformedURLException {
         final Optional<GitConfigElement> currentBranch = gitConfigElements.stream()
                                                              .filter(gitConfigElement -> gitConfigElement.getElementType().equals("branch"))
                                                              .filter(gitConfigElement -> gitConfigElement.containsKey("merge"))

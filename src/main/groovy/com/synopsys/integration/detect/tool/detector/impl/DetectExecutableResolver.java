@@ -43,6 +43,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.CpanRe
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DotNetResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
@@ -59,7 +60,7 @@ import com.synopsys.integration.detectable.detectable.inspector.go.impl.GithubGo
 
 public class DetectExecutableResolver
     implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
-                   DockerResolver, GoDepResolver, GoResolver, DotNetResolver {
+                   DockerResolver, GoDepResolver, GoResolver, DotNetResolver, GitResolver {
 
     private final SimpleExecutableResolver simpleExecutableResolver;
     private final GithubGoDepResolver githubGoDepResolver;
@@ -72,15 +73,15 @@ public class DetectExecutableResolver
         this.detectConfiguration = detectConfiguration;
     }
 
-    private File resolveExecutable(String cacheKey, final Supplier<File> resolveExecutable, final String executableOverride) {
+    private File resolveExecutable(final String cacheKey, final Supplier<File> resolveExecutable, final String executableOverride) {
         if (StringUtils.isNotBlank(executableOverride)) {
             return new File(executableOverride);
         }
-        boolean hasCacheKey = StringUtils.isNotBlank(cacheKey);
+        final boolean hasCacheKey = StringUtils.isNotBlank(cacheKey);
         if (hasCacheKey && cachedExecutables.containsKey(cacheKey)) {
             return cachedExecutables.get(cacheKey);
         }
-        File resolved = resolveExecutable.get();
+        final File resolved = resolveExecutable.get();
         if (hasCacheKey) {
             cachedExecutables.put(cacheKey, resolved);
         }
@@ -184,5 +185,10 @@ public class DetectExecutableResolver
     @Override
     public File resolveDotNet() {
         return resolveExecutable("dotnet", simpleExecutableResolver::resolveDotNet, detectConfiguration.getProperty(DetectProperty.DETECT_DOTNET_PATH, PropertyAuthority.None));
+    }
+
+    @Override
+    public File resolveGit() {
+        return resolveExecutable("git", simpleExecutableResolver::resolveGit, detectConfiguration.getProperty(DetectProperty.DETECT_GIT_PATH, PropertyAuthority.None));
     }
 }

@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.git.model;
+package com.synopsys.integration.detectable.detectables.git.parsing.model;
 
 import java.util.Map;
 import java.util.Optional;

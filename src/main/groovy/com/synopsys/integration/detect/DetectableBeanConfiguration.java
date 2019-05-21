@@ -99,10 +99,12 @@ import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.detectable.detectables.docker.DockerProperties;
-import com.synopsys.integration.detectable.detectables.git.GitDetectable;
-import com.synopsys.integration.detectable.detectables.git.GitExtractor;
-import com.synopsys.integration.detectable.detectables.git.parse.GitFileParser;
-import com.synopsys.integration.detectable.detectables.git.parse.GitFileTransformer;
+import com.synopsys.integration.detectable.detectables.git.cli.GitCliDetectable;
+import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
+import com.synopsys.integration.detectable.detectables.git.parsing.GitParseDetectable;
+import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
+import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
+import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileTransformer;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
@@ -319,8 +321,13 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
-    public GitExtractor gitExtractor() {
-        return new GitExtractor(gitFileParser(), gitFileTransformer());
+    public GitParseExtractor gitParseExtractor() {
+        return new GitParseExtractor(gitFileParser(), gitFileTransformer());
+    }
+
+    @Bean
+    public GitCliExtractor gitCliExtractor() {
+        return new GitCliExtractor(executableRunner);
     }
 
     @Bean
@@ -671,8 +678,14 @@ public class DetectableBeanConfiguration {
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public GitDetectable gitBomTool(final DetectableEnvironment environment) {
-        return new GitDetectable(environment, fileFinder, gitExtractor());
+    public GitParseDetectable gitParseBomTool(final DetectableEnvironment environment) {
+        return new GitParseDetectable(environment, fileFinder, gitParseExtractor());
+    }
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public GitCliDetectable gitCliBomTool(final DetectableEnvironment environment) {
+        return new GitCliDetectable(environment, fileFinder, gitCliExtractor(), detectExecutableResolver);
     }
 
     @Bean

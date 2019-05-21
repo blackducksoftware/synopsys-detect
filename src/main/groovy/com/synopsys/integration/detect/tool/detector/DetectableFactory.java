@@ -35,7 +35,8 @@ import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
-import com.synopsys.integration.detectable.detectables.git.GitDetectable;
+import com.synopsys.integration.detectable.detectables.git.cli.GitCliDetectable;
+import com.synopsys.integration.detectable.detectables.git.parsing.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
@@ -102,8 +103,12 @@ public class DetectableFactory implements BeanFactoryAware {
         return beanFactory.getBean(GemlockDetectable.class, environment);
     }
 
-    public GitDetectable createGitDetectable(final DetectableEnvironment environment) {
-        return beanFactory.getBean(GitDetectable.class, environment);
+    public GitParseDetectable createGitParseDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(GitParseDetectable.class, environment);
+    }
+
+    public GitCliDetectable createGitCliDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(GitCliDetectable.class, environment);
     }
 
     public GemspecParseDetectable createGemspecParseDetectable(final DetectableEnvironment environment) {

@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.git.parse;
+package com.synopsys.integration.detectable.detectables.git.parsing.parse;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.git.model.GitConfigElement;
+import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigElement;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -39,7 +39,7 @@ class GitFileTransformerTest {
         gitConfigElements.add(badBranch);
 
         final GitFileTransformer gitFileTransformer = new GitFileTransformer();
-        final NameVersion nameVersion = gitFileTransformer.transform(gitConfigElements, gitHead);
+        final NameVersion nameVersion = gitFileTransformer.transformGitConfigElements(gitConfigElements, gitHead);
 
         Assertions.assertEquals("blackducksoftware/blackduck-artifactory", nameVersion.getName());
         Assertions.assertEquals("master", nameVersion.getVersion());
