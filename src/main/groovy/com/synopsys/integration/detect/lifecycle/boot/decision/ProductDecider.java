@@ -57,7 +57,7 @@ public class ProductDecider {
 
     public PolarisDecision determinePolaris(final DetectConfiguration detectConfiguration, final File userHome, final DetectToolFilter detectToolFilter) {
         if (!detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
-            logger.info("Polaris will NOT run because it is excluded");
+            logger.info("Polaris will NOT run because it is excluded.");
             return PolarisDecision.skip();
         }
         final PolarisServerConfigBuilder polarisServerConfigBuilder = createPolarisServerConfigBuilder(detectConfiguration, userHome);

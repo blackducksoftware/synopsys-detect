@@ -8,6 +8,7 @@ import org.junitpioneer.jupiter.TempDirectory;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,14 +24,11 @@ public class SignatureScanTest extends BlackDuckIntegrationTest {
         String projectVersionName = "offline-scan";
         assertProjectVersionReady(projectName, projectVersionName);
 
-        String[] detectArgs = new String[]{
-                "--detect.output.path=" + tempOutputDirectory.toString(),
-                "--detect.project.name=" + projectName,
-                "--detect.project.version.name=" + projectVersionName,
-                "--detect.blackduck.signature.scanner.snippet.matching=SNIPPET_MATCHING",
-                "--detect.blackduck.signature.scanner.dry.run=true"
-        };
-        Application.main(detectArgs);
+        List<String> detectArgs = getInitialArgs(projectName, projectVersionName);
+        detectArgs.add("--detect.output.path=" + tempOutputDirectory.toString());
+        detectArgs.add("--detect.blackduck.signature.scanner.snippet.matching=SNIPPET_MATCHING");
+        detectArgs.add("--detect.blackduck.signature.scanner.dry.run=true");
+        Application.main(detectArgs.toArray(new String[detectArgs.size()]));
 
         assertDirectoryStructureForOfflineScan(tempOutputDirectory);
     }
