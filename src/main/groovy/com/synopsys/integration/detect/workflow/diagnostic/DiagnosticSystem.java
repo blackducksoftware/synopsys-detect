@@ -64,7 +64,7 @@ public class DiagnosticSystem {
         System.out.println();
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("Diagnostic mode on.");
-        System.out.println("A zip file will be created with logs and relevant detect output files.");
+        System.out.println("A zip file will be created with logs and relevant Detect output files.");
         System.out.println("It is generally not recommended to leave diagnostic mode on as you must manually clean up the zip.");
         if (!isExtendedMode) {
             System.out.println("Additional relevant files such as lock files can be collected automatically in extended diagnostics (-de) but will not be in this run.");
