@@ -244,7 +244,7 @@ public enum DetectProperty {
     DETECT_CLEANUP("detect.cleanup", "Cleanup Output", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("The name of the project version to clone this project version from. Respects the Clone Categories as set on the Black Duck server.")
+    @HelpDescription("The name of the project version to clone this project version from. Respects the Clone Categories as set on the Black Duck server (project settings: Select the attributes you’d like to clone for any new versions of this project).")
     DETECT_CLONE_PROJECT_VERSION_NAME("detect.clone.project.version.name", "Clone Project Version Name", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
