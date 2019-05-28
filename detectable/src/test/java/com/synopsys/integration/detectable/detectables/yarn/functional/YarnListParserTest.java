@@ -19,7 +19,6 @@ import com.synopsys.integration.detectable.util.GraphCompare;
 
 @FunctionalTest
 public class YarnListParserTest {
-
     @Test
     void parseYarnListTest() {
         final List<String> designedYarnLock = new ArrayList<>();

@@ -83,7 +83,7 @@ public class NpmCliParser {
 
         populateChildren(graph, null, npmJson.getAsJsonObject(JSON_DEPENDENCIES), true);
 
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, projectName, projectVersion);
+        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, projectName, projectVersion);
 
         final CodeLocation codeLocation = new CodeLocation(graph, externalId);
 
@@ -110,7 +110,7 @@ public class NpmCliParser {
             final JsonObject children = element.getAsJsonObject(JSON_DEPENDENCIES);
 
             if (name != null && version != null) {
-                final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, name, version);
+                final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
                 final Dependency child = new Dependency(name, version, externalId);
 
                 populateChildren(graph, child, children, false);

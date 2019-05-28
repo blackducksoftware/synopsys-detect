@@ -95,7 +95,7 @@ public class NpmDependencyConverter {
     }
 
     private NpmDependency createNpmDependency(final String name, final String version, final Boolean isDev) {
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, name, version);
+        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
         final Dependency graphDependency = new Dependency(name, version, externalId);
         boolean dev = false;
         if (isDev != null && isDev == true) {

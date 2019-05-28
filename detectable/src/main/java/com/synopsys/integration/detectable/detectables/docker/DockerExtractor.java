@@ -175,7 +175,7 @@ public class DockerExtractor {
                 final String projectVersionName = simpleBdioDocument.project.version;
 
                 // TODO ejk - update this when project external id is not req'd anymore
-                final Forge dockerForge = new Forge(BdioId.BDIO_ID_SEPARATOR, BdioId.BDIO_ID_SEPARATOR, simpleBdioDocument.project.bdioExternalIdentifier.forge);
+                final Forge dockerForge = new Forge(BdioId.BDIO_ID_SEPARATOR, simpleBdioDocument.project.bdioExternalIdentifier.forge);
                 final String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId;
                 final ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath);
 

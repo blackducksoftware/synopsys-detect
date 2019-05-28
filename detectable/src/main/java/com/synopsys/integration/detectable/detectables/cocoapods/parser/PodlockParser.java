@@ -93,7 +93,7 @@ public class PodlockParser {
                     if (null != podSource.getGit() && podSource.getGit().contains("github")) {
                         forgeOverrideMap.put(dependencyId.get(), Forge.COCOAPODS);
                     } else if (null != podSource.getPath() && podSource.getPath().contains("node_modules")) {
-                        forgeOverrideMap.put(dependencyId.get(), Forge.NPM);
+                        forgeOverrideMap.put(dependencyId.get(), Forge.NPMJS);
                     }
                 }
             }

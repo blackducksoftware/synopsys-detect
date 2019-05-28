@@ -40,6 +40,7 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.util.NameVersion;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -95,6 +96,10 @@ public class BlackDuckBinaryScannerTool {
             BinaryScan binaryScan = new BinaryScan(binaryScanFile, projectName, projectVersionName, codeLocationName);
             BinaryScanBatch binaryScanBatch = new BinaryScanBatch(binaryScan);
             CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData = binaryScanUploadService.uploadBinaryScan(binaryScanBatch);
+
+            BinaryScanBatchOutput binaryScanBatchOutput = codeLocationCreationData.getOutput();
+            binaryScanBatchOutput.throwExceptionForError(new Slf4jIntLogger(logger));
+
             logger.info("Successfully uploaded binary scan file: " + codeLocationName);
             eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.SUCCESS));
             return codeLocationCreationData;

@@ -41,14 +41,14 @@ public class NpmDevExclusionTest {
         packageJsonText = FunctionalTestFiles.asString("/npm/dev-exclusion-test/package.json");
         packageLockText = FunctionalTestFiles.asString("/npm/dev-exclusion-test/package-lock.json");
 
-        childDev = externalIdFactory.createNameVersionExternalId(Forge.NPM, "child-dev", "3.0.0");
-        parentDev = externalIdFactory.createNameVersionExternalId(Forge.NPM, "parent-dev", "2.0.0");
+        childDev = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "child-dev", "3.0.0");
+        parentDev = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "parent-dev", "2.0.0");
     }
 
     @Test
     public void testDevDependencyNotExists() {
         final NpmParseResult result = npmLockfileParser.parse("source", Optional.of(packageJsonText), packageLockText, false);
-        GraphAssert graphAssert = new GraphAssert(Forge.NPM, result.codeLocation.getDependencyGraph());
+        GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, result.codeLocation.getDependencyGraph());
         graphAssert.hasNoDependency(childDev);
         graphAssert.hasNoDependency(parentDev);
         graphAssert.hasRootSize(0);
@@ -57,7 +57,7 @@ public class NpmDevExclusionTest {
     @Test
     public void testDevDependencyExists() {
         final NpmParseResult result = npmLockfileParser.parse("source", Optional.of(packageJsonText), packageLockText, true);
-        GraphAssert graphAssert = new GraphAssert(Forge.NPM, result.codeLocation.getDependencyGraph());
+        GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, result.codeLocation.getDependencyGraph());
         graphAssert.hasDependency(childDev);
         graphAssert.hasDependency(parentDev);
         graphAssert.hasRootSize(1);

@@ -61,7 +61,7 @@ public class YarnTransformer {
             Optional<String> resolvedVersion = yarnLock.versionForFuzzyId(yarnListNode.getFuzzyId());
             String version = resolvedVersion.orElse(yarnListNode.getFuzzyPackageVersion());
 
-            final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, name, version);
+            final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
             Dependency dependency = new Dependency(name, version, externalId);
 
 

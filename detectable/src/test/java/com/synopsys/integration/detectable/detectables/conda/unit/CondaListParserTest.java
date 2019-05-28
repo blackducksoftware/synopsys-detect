@@ -43,6 +43,6 @@ public class CondaListParserTest {
 
         assertEquals("sampleName", dependency.name);
         assertEquals("sampleVersion-py36_0-linux", dependency.version);
-        assertEquals("sampleName=sampleVersion-py36_0-linux", dependency.externalId.createExternalId());
+        assertEquals("sampleName/sampleVersion-py36_0-linux", dependency.externalId.createExternalId());
     }
 }
