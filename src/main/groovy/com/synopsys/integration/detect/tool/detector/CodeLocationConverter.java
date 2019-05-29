@@ -66,7 +66,7 @@ public class CodeLocationConverter {
             ExternalId externalId;
             if (!codeLocation.getExternalId().isPresent()){
                 logger.warn("The detector was unable to determine an external id for this code location, so an external id will be created using the file path.");
-                Forge detectForge = new Forge("/", "/", "Detect");
+                Forge detectForge = new Forge("/", "Detect");
                 final String relativePath = FileNameUtils.relativize(detectSourcePath.getAbsolutePath(), sourcePath.getAbsolutePath());
                 externalId = externalIdFactory.createPathExternalId(detectForge, relativePath);
                 logger.warn("The external id that was created is: " + externalId.getExternalIdPieces().toString());

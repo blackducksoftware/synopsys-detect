@@ -67,7 +67,7 @@ public class BazelCodeLocationBuilder {
     }
 
     public List<CodeLocation> build() {
-        final Forge forge = new Forge("/", "/", "DETECT");
+        final Forge forge = new Forge("/", "DETECT");
         final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
         final List<CodeLocation> codeLocations = new ArrayList<>(1);
         codeLocations.add(codeLocation);

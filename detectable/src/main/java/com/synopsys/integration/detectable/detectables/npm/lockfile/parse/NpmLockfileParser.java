@@ -97,7 +97,7 @@ public class NpmLockfileParser {
             logger.info("Lock file did not have a 'dependencies' section.");
         }
         logger.info("Finished processing.");
-        final ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPM, packageLock.name, packageLock.version);
+        final ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, packageLock.name, packageLock.version);
         final CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectId);
         return new NpmParseResult(packageLock.name, packageLock.version, codeLocation);
     }

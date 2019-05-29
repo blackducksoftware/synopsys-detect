@@ -49,8 +49,8 @@ public class YarnListParserTest {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         DependencyGraph dependencyGraph = createDependencyGraph(designedYarnLock, testLines);
 
-        final GraphAssert graphAssert = new GraphAssert(Forge.NPM, dependencyGraph);
-        graphAssert.hasRootDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "abab", "1.0.4"));
+        final GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, dependencyGraph);
+        graphAssert.hasRootDependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "abab", "1.0.4"));
 
         final int rootDependencyCount = dependencyGraph.getRootDependencyExternalIds().size();
         assertEquals(1, rootDependencyCount);
@@ -70,8 +70,8 @@ public class YarnListParserTest {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         DependencyGraph dependencyGraph = createDependencyGraph(designedYarnLock, testLines);
 
-        final GraphAssert graphAssert = new GraphAssert(Forge.NPM, dependencyGraph);
-        graphAssert.hasRootDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "abab", "1.0.4"));
+        final GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, dependencyGraph);
+        graphAssert.hasRootDependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "abab", "1.0.4"));
 
         final int rootDependencySize = dependencyGraph.getRootDependencyExternalIds().size();
         assertEquals(1, rootDependencySize);
@@ -94,9 +94,9 @@ public class YarnListParserTest {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         DependencyGraph dependencyGraph = createDependencyGraph(designedYarnLock, testLines);
 
-        final GraphAssert graphAssert = new GraphAssert(Forge.NPM, dependencyGraph);
-        graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "esprima", "3.1.3"));
-        graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "extsprintf", "1.3.0"));
+        final GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, dependencyGraph);
+        graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "esprima", "3.1.3"));
+        graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "extsprintf", "1.3.0"));
     }
 
     @Test
@@ -116,9 +116,9 @@ public class YarnListParserTest {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         DependencyGraph dependencyGraph = createDependencyGraph(designedYarnLock, testLines);
 
-        final GraphAssert graphAssert = new GraphAssert(Forge.NPM, dependencyGraph);
-        final ExternalId rootDependency = graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "yargs-parse", "4.2.1"));
-        graphAssert.hasParentChildRelationship(rootDependency, externalIdFactory.createNameVersionExternalId(Forge.NPM, "camelcase", "5.5.2"));
+        final GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, dependencyGraph);
+        final ExternalId rootDependency = graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "yargs-parse", "4.2.1"));
+        graphAssert.hasParentChildRelationship(rootDependency, externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "camelcase", "5.5.2"));
     }
 
     @Test
@@ -142,10 +142,10 @@ public class YarnListParserTest {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         DependencyGraph dependencyGraph = createDependencyGraph(designedYarnLock, testLines);
 
-        final GraphAssert graphAssert = new GraphAssert(Forge.NPM, dependencyGraph);
-        final ExternalId rootDependency = graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPM, "yargs-parse", "4.2.1"));
-        final ExternalId childDependency = graphAssert.hasParentChildRelationship(rootDependency, externalIdFactory.createNameVersionExternalId(Forge.NPM, "camelcase", "5.5.2"));
-        graphAssert.hasParentChildRelationship(childDependency, externalIdFactory.createNameVersionExternalId(Forge.NPM, "ms", "0.7.2"));
+        final GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, dependencyGraph);
+        final ExternalId rootDependency = graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "yargs-parse", "4.2.1"));
+        final ExternalId childDependency = graphAssert.hasParentChildRelationship(rootDependency, externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "camelcase", "5.5.2"));
+        graphAssert.hasParentChildRelationship(childDependency, externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "ms", "0.7.2"));
     }
 
     private DependencyGraph createDependencyGraph(List<String> yarnLockText, List<String> yarnListText){
