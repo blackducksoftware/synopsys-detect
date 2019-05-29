@@ -1,0 +1,206 @@
+{
+  "rootExternalDataIds": [
+    "http:maven/com_google_guava/guava/18_0",
+    "http:maven/commons_logging/commons_logging/1_1_3",
+    "http:maven/murex/shared/v3_1_42",
+    "http:maven/commons_lang/commons_lang/2_6",
+    "http:maven/murex_common/common_client/v3_1_42",
+    "http:maven/none/Additional_Components/none"
+  ],
+  "externalDataIdRelationships": {
+    "http:maven/murex_middleware/middleware_client/v3_1_42": [
+      "http:maven/murex/session_load_balancing_api/v3_1_42",
+      "http:maven/murex/session_load_balancing_zk/v3_1_42",
+      "http:maven/murex/agent_api/v3_1_42",
+      "http:maven/murex_serialization/mos_runtime/1_1_5",
+      "http:maven/murex/service_deployment_api/v3_1_42",
+      "http:maven/com_fasterxml_jackson_core/jackson_databind/2_6_0",
+      "http:maven/murex/registry_zk/v3_1_42",
+      "http:maven/com_fasterxml_jackson_core/jackson_core/2_6_0",
+      "http:maven/murex_common/common_tx/v3_1_42",
+      "http:maven/murex_monitoring/jmx_mbeans/v3_1_42",
+      "http:maven/murex/registry_api/v3_1_42",
+      "http:maven/org_apache_geronimo_specs/geronimo_jta_1_1_spec/1_1_1",
+      "http:maven/murex/service_pooling_api/v3_1_42"
+    ],
+    "http:maven/murex/session_load_balancing_api/v3_1_42": [
+      "http:maven/io_opentracing/opentracing_api/0_31_0",
+      "http:maven/io_jsonwebtoken/jjwt/0_7_0",
+      "http:maven/murex/logging_api/v3_1_42"
+    ],
+    "http:maven/com_fasterxml_jackson_core/jackson_databind/2_6_0": [
+      "http:maven/com_fasterxml_jackson_core/jackson_annotations/2_6_0"
+    ],
+    "http:maven/murex/registry_zk/v3_1_42": [
+      "http:maven/org_slf4j/slf4j_api/1_6_3",
+      "http:maven/org_apache_zookeeper/zookeeper/3_4_6m2"
+    ],
+    "http:maven/murex/session_load_balancing_zk/v3_1_42": [
+      "http:maven/murex/descriptor_api/v3_1_42",
+      "http:maven/org_apache_curator/curator_framework/2_4_1",
+      "http:maven/log4j/log4j/1_2_17",
+      "http:maven/org_apache_curator/curator_recipes/2_4_1",
+      "http:maven/org_apache_curator/curator_client/2_4_1"
+    ],
+    "http:maven/murex/shared/v3_1_42": [
+      "http:maven/murex_middleware/middleware_client/v3_1_42",
+      "http:maven/commons_pool/commons_pool/1_6",
+      "http:maven/org_apache_commons/commons_math/2_1"
+    ],
+    "http:maven/murex_common/common_client/v3_1_42": [
+      "http:maven/murex_fileserver/fileserver_client/v3_1_42",
+      "http:maven/murex_boot/boot_client/v3_1_42",
+      "http:maven/murex_common/common_utils/2_2_4"
+    ],
+    "http:maven/none/Additional_Components/none": [
+      "http:maven/com_google_guava/guava/18_0",
+      "http:maven/org_apache_zookeeper/zookeeper/3_4_6m2"
+    ]
+  },
+  "dependencySummaries": {
+    "http:maven/murex_fileserver/fileserver_client/v3_1_42": {
+      "name": "fileserver-client",
+      "version": "v3.1.42"
+    },
+    "http:maven/murex_serialization/mos_runtime/1_1_5": {
+      "name": "mos-runtime",
+      "version": "1.1.5"
+    },
+    "http:maven/commons_pool/commons_pool/1_6": {
+      "name": "commons-pool",
+      "version": "1.6"
+    },
+    "http:maven/murex/descriptor_api/v3_1_42": {
+      "name": "descriptor-api",
+      "version": "v3.1.42"
+    },
+    "http:maven/org_apache_curator/curator_recipes/2_4_1": {
+      "name": "curator-recipes",
+      "version": "2.4.1"
+    },
+    "http:maven/none/Additional_Components/none": {
+      "name": "Additional_Components",
+      "version": "none"
+    },
+    "http:maven/murex_common/common_utils/2_2_4": {
+      "name": "common-utils",
+      "version": "2.2.4"
+    },
+    "http:maven/murex_middleware/middleware_client/v3_1_42": {
+      "name": "middleware-client",
+      "version": "v3.1.42"
+    },
+    "http:maven/com_fasterxml_jackson_core/jackson_core/2_6_0": {
+      "name": "jackson-core",
+      "version": "2.6.0"
+    },
+    "http:maven/murex_monitoring/jmx_mbeans/v3_1_42": {
+      "name": "jmx-mbeans",
+      "version": "v3.1.42"
+    },
+    "http:maven/murex/registry_api/v3_1_42": {
+      "name": "registry-api",
+      "version": "v3.1.42"
+    },
+    "http:maven/io_jsonwebtoken/jjwt/0_7_0": {
+      "name": "jjwt",
+      "version": "0.7.0"
+    },
+    "http:maven/commons_logging/commons_logging/1_1_3": {
+      "name": "commons-logging",
+      "version": "1.1.3"
+    },
+    "http:maven/murex_boot/boot_client/v3_1_42": {
+      "name": "boot-client",
+      "version": "v3.1.42"
+    },
+    "http:maven/com_fasterxml_jackson_core/jackson_annotations/2_6_0": {
+      "name": "jackson-annotations",
+      "version": "2.6.0"
+    },
+    "http:maven/murex/session_load_balancing_api/v3_1_42": {
+      "name": "session-load-balancing-api",
+      "version": "v3.1.42"
+    },
+    "http:maven/com_google_guava/guava/18_0": {
+      "name": "guava",
+      "version": "18.0"
+    },
+    "http:maven/murex/session_load_balancing_zk/v3_1_42": {
+      "name": "session-load-balancing-zk",
+      "version": "v3.1.42"
+    },
+    "http:maven/murex/agent_api/v3_1_42": {
+      "name": "agent-api",
+      "version": "v3.1.42"
+    },
+    "http:maven/log4j/log4j/1_2_17": {
+      "name": "log4j",
+      "version": "1.2.17"
+    },
+    "http:maven/murex/logging_api/v3_1_42": {
+      "name": "logging-api",
+      "version": "v3.1.42"
+    },
+    "http:maven/commons_lang/commons_lang/2_6": {
+      "name": "commons-lang",
+      "version": "2.6"
+    },
+    "http:maven/org_apache_curator/curator_client/2_4_1": {
+      "name": "curator-client",
+      "version": "2.4.1"
+    },
+    "http:maven/murex/service_deployment_api/v3_1_42": {
+      "name": "service-deployment-api",
+      "version": "v3.1.42"
+    },
+    "http:maven/com_fasterxml_jackson_core/jackson_databind/2_6_0": {
+      "name": "jackson-databind",
+      "version": "2.6.0"
+    },
+    "http:maven/murex/registry_zk/v3_1_42": {
+      "name": "registry-zk",
+      "version": "v3.1.42"
+    },
+    "http:maven/murex_common/common_tx/v3_1_42": {
+      "name": "common-tx",
+      "version": "v3.1.42"
+    },
+    "http:maven/io_opentracing/opentracing_api/0_31_0": {
+      "name": "opentracing-api",
+      "version": "0.31.0"
+    },
+    "http:maven/org_apache_geronimo_specs/geronimo_jta_1_1_spec/1_1_1": {
+      "name": "geronimo-jta_1.1_spec",
+      "version": "1.1.1"
+    },
+    "http:maven/org_apache_curator/curator_framework/2_4_1": {
+      "name": "curator-framework",
+      "version": "2.4.1"
+    },
+    "http:maven/org_slf4j/slf4j_api/1_6_3": {
+      "name": "slf4j-api",
+      "version": "1.6.3"
+    },
+    "http:maven/murex/shared/v3_1_42": {
+      "name": "shared",
+      "version": "v3.1.42"
+    },
+    "http:maven/org_apache_zookeeper/zookeeper/3_4_6m2": {
+      "name": "zookeeper",
+      "version": "3.4.6m2"
+    },
+    "http:maven/murex/service_pooling_api/v3_1_42": {
+      "name": "service-pooling-api",
+      "version": "v3.1.42"
+    },
+    "http:maven/murex_common/common_client/v3_1_42": {
+      "name": "common-client",
+      "version": "v3.1.42"
+    },
+    "http:maven/org_apache_commons/commons_math/2_1": {
+      "name": "commons-math",
+      "version": "2.1"
+    }
+  }
+}
