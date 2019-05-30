@@ -57,7 +57,8 @@ public class DockerExtractor {
     public static final ExtractionMetadata<File> DOCKER_TAR_META_DATA = new ExtractionMetadata<>("dockerTar", File.class);
     public static final ExtractionMetadata<String> DOCKER_IMAGE_NAME_META_DATA = new ExtractionMetadata<>("dockerImage", String.class);
 
-    public static final String TAR_FILENAME_PATTERN = "*.tar.gz";
+    public static final String CONTAINER_FILESYSTEM_FILENAME_PATTERN = "*_containerfilesystem.tar.gz";
+    public static final String SQUASHED_IMAGE_FILENAME_PATTERN = "*_squashedimage.tar.gz";
     public static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -137,12 +138,17 @@ public class DockerExtractor {
         final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, javaExe.getAbsolutePath(), dockerArguments);
         executableRunner.execute(dockerExecutable);
 
-        final File producedTarFile = fileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
         File scanFile = null;
-        if (null != producedTarFile && producedTarFile.isFile()) {
-            scanFile = producedTarFile;
+        final File producedSquashedImageFile = fileFinder.findFile(outputDirectory, SQUASHED_IMAGE_FILENAME_PATTERN);
+        final File producedContainerFileSystemFile = fileFinder.findFile(outputDirectory, CONTAINER_FILESYSTEM_FILENAME_PATTERN);
+        if (null != producedSquashedImageFile && producedSquashedImageFile.isFile()) {
+            logger.debug(String.format("Will signature scan: %s", producedSquashedImageFile.getAbsolutePath()));
+            scanFile = producedSquashedImageFile;
+        } else if (null != producedContainerFileSystemFile && producedContainerFileSystemFile.isFile()) {
+            logger.debug(String.format("Will signature scan: %s", producedContainerFileSystemFile.getAbsolutePath()));
+            scanFile = producedContainerFileSystemFile;
         } else {
-            logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", TAR_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
+            logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", CONTAINER_FILESYSTEM_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
             if (StringUtils.isNotBlank(dockerTarFilePath)) {
                 final File dockerTarFile = new File(dockerTarFilePath);
                 if (dockerTarFile.isFile()) {

@@ -44,8 +44,8 @@ public class DockerProperties {
         dockerProperties.setProperty("phone.home", "false");
         dockerProperties.setProperty("caller.name", "Detect");
 
-        // Request both of the following; DI pre-8.1.0 will only recognize containerfilesystem.
-        // DI 8.1.0 and newer will allow only one, and will pick squashedimage
+        // Request both of the following; DI pre-8.1.0 will only recognize/return containerfilesystem.
+        // DI 8.1.0 and newer will provide both; Detect will prefer squashedimage
         dockerProperties.setProperty("output.include.containerfilesystem", "true");
         dockerProperties.setProperty("output.include.squashedimage", "true");
 
