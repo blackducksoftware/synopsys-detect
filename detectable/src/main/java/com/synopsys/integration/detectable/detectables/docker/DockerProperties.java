@@ -41,9 +41,13 @@ public class DockerProperties {
         dockerProperties.setProperty("logging.level.com.synopsys", dockerDetectableOptions.getDockerInspectorLoggingLevel());
         dockerProperties.setProperty("upload.bdio", "false");
         dockerProperties.setProperty("output.path", outputDirectory.getAbsolutePath());
-        dockerProperties.setProperty("output.include.containerfilesystem", "true");
         dockerProperties.setProperty("phone.home", "false");
         dockerProperties.setProperty("caller.name", "Detect");
+
+        // Request both of the following; DI pre-8.1.0 will only recognize containerfilesystem.
+        // DI 8.1.0 and newer will allow only one, and will pick squashedimage
+        dockerProperties.setProperty("output.include.containerfilesystem", "true");
+        dockerProperties.setProperty("output.include.squashedimage", "true");
 
         final Map<String, String> additionalDockerProperties = dockerDetectableOptions.getAdditionalDockerProperties();
         dockerProperties.putAll(additionalDockerProperties);
