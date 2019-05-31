@@ -51,6 +51,8 @@ public class MavenCodeLocationPackager {
     public static final String ORPHAN_LIST_PARENT_NODE_GROUP = "none";
     public static final String ORPHAN_LIST_PARENT_NODE_VERSION = "none";
 
+    private static final String END_OF_TREE_PATTERN_STRING = "^-*< .* >-*$";
+    private final Pattern endOfTreePattern = Pattern.compile(END_OF_TREE_PATTERN_STRING);
     private final ExternalIdFactory externalIdFactory;
     private List<MavenParseResult> codeLocations = new ArrayList<>();
     private MavenParseResult currentMavenProject = null;
@@ -114,7 +116,7 @@ public class MavenCodeLocationPackager {
                 continue;
             }
 
-            final boolean finished = line.contains("--------");
+            final boolean finished = line.contains("--------") || endOfTreePattern.matcher(line).matches();
             if (finished) {
                 currentMavenProject = null;
                 dependencyParentStack.clear();

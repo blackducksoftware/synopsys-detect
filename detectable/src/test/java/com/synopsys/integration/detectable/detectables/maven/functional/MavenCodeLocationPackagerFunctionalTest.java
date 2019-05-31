@@ -76,6 +76,12 @@ public class MavenCodeLocationPackagerFunctionalTest {
         createNewCodeLocationTest(mavenOutputText, "/maven/compileScopeUnderTestScopeCompileScope.json", 3, "", "", 2, "compile");
     }
 
+    @Test
+    public void extractCodeLocationsTestComplexTree() {
+        final String mavenOutputText = FunctionalTestFiles.asString("/maven/mavenComplexOutput.txt");
+        createNewCodeLocationTest(mavenOutputText, "/maven/mavenComplexOutputResult.json", 85, "", "", 84, "compile");
+    }
+
     private void createNewCodeLocationTest(final String mavenOutputText, final String expectedResourcePath) {
         createNewCodeLocationTest(mavenOutputText, expectedResourcePath, 1, "", "");
     }
