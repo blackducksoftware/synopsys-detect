@@ -63,8 +63,20 @@ public class GitCliExtractor {
     private String getRepoName(final File gitExecutable, final File directory) throws ExecutableRunnerException, IntegrationException, MalformedURLException {
         final String remote = runGitSingleLinesResponse(gitExecutable, directory, "remote");
         final String remoteUrlString = runGitSingleLinesResponse(gitExecutable, directory, "remote", "get-url", "--push", remote);
-        final URL remoteURL = new URL(remoteUrlString);
-        final String remoteUrlPath = remoteURL.getPath().trim();
+
+        final String remoteUrlPath;
+        if (remoteUrlString.contains("@")) {
+            // Parses urls such as: git@github.com:blackducksoftware/synopsys-detect.git
+            final String[] tokens = remoteUrlString.split(":");
+            if (tokens.length != 2) {
+                throw new IntegrationException(String.format("Failed to extract project name from: %s", remoteUrlString));
+            }
+            remoteUrlPath = tokens[1].trim();
+        } else {
+            // Parses urls such as: https://github.com/blackducksoftware/synopsys-detect
+            final URL remoteURL = new URL(remoteUrlString);
+            remoteUrlPath = remoteURL.getPath().trim();
+        }
 
         return StringUtils.removeEnd(StringUtils.removeStart(remoteUrlPath, "/"), ".git");
     }
