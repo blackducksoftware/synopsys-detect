@@ -28,14 +28,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigElement;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileTransformer;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.log.IntLogger;
+import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.util.NameVersion;
 
 public class GitParseExtractor {
+    private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
+
     private final GitFileParser gitFileParser;
     private final GitFileTransformer gitFileTransformer;
 
@@ -57,7 +63,10 @@ public class GitParseExtractor {
                        .projectVersion(projectNameVersion.getVersion())
                        .build();
         } catch (final IOException | IntegrationException e) {
-            return new Extraction.Builder().exception(e).failure("Failed to parse git config.").build();
+            logger.debug("Failed to extract project info from the git config.", e);
+            return new Extraction.Builder()
+                       .success()
+                       .build();
         }
     }
 }

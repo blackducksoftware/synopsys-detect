@@ -28,14 +28,19 @@ import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.log.IntLogger;
+import com.synopsys.integration.log.Slf4jIntLogger;
 
 public class GitCliExtractor {
+    private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
+
     private final ExecutableRunner executableRunner;
 
     public GitCliExtractor(final ExecutableRunner executableRunner) {
@@ -53,9 +58,9 @@ public class GitCliExtractor {
                        .projectVersion(branch)
                        .build();
         } catch (final ExecutableRunnerException | IntegrationException | MalformedURLException e) {
+            logger.debug("Failed to extract project info from the git executable.", e);
             return new Extraction.Builder()
-                       .exception(e)
-                       .failure("Failed to extract project info from the git executable.")
+                       .success()
                        .build();
         }
     }
