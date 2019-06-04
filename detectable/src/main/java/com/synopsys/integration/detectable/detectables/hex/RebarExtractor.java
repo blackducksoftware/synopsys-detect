@@ -60,8 +60,8 @@ public class RebarExtractor {
 
             codeLocations.add(parseResult.getCodeLocation());
 
-            Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
-            parseResult.getProjectNameVersion().ifPresent(projectNameVersion -> builder.projectName(projectNameVersion.getName()).projectVersion(projectNameVersion.getName()));
+            final Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
+            parseResult.getProjectNameVersion().ifPresent(projectNameVersion -> builder.projectName(projectNameVersion.getName()).projectVersion(projectNameVersion.getVersion()));
             return builder.build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
