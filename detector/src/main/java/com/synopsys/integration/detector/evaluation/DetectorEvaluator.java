@@ -39,7 +39,6 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
-import com.synopsys.integration.detector.result.DetectableDetectorResult;
 import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
@@ -81,7 +80,7 @@ public class DetectorEvaluator {
                 final Detectable detectable = detectorRule.createDetectable(detectableEnvironment);
                 detectorEvaluation.setDetectable(detectable);
 
-                final DetectorResult applicableResult = new DetectableDetectorResult(detectable.applicable());
+                final DetectorResult applicableResult = new DetectorResult(detectable.applicable().getPassed(), detectable.applicable().toDescription());
                 detectorEvaluation.setApplicable(applicableResult);
 
                 if (detectorEvaluation.isApplicable()) {
@@ -97,8 +96,9 @@ public class DetectorEvaluator {
             getDetectorEvaluatorListener().ifPresent(it -> it.applicableEnded(detectorEvaluation));
         }
 
-        if (appliedSoFar.size() > 0){
-            logger.info("Found (" + appliedSoFar.size() + ") applicable detectors in: " + detectorEvaluationTree.getDirectory().toString()); //TODO: Perfect log level also matters here. To little and we may appear stuck, but we may also be flooding the logs.
+        if (appliedSoFar.size() > 0) {
+            logger.info("Found (" + appliedSoFar.size() + ") applicable detectors in: " + detectorEvaluationTree.getDirectory()
+                                                                                              .toString()); //TODO: Perfect log level also matters here. To little and we may appear stuck, but we may also be flooding the logs.
         }
 
         final Set<DetectorRule> nextAppliedInParent = new HashSet<>();
@@ -125,7 +125,7 @@ public class DetectorEvaluator {
                 } catch (final DetectableException e) {
                     detectableExtractableResult = new ExceptionDetectableResult(e);
                 }
-                final DetectorResult extractableResult = new DetectableDetectorResult(detectableExtractableResult);
+                final DetectorResult extractableResult = new DetectorResult(detectableExtractableResult.getPassed(), detectableExtractableResult.toDescription());
                 detectorEvaluation.setExtractable(extractableResult);
                 if (detectorEvaluation.isExtractable()) {
                     logger.trace("Extractable passed. Done evaluating for now.");
@@ -157,7 +157,7 @@ public class DetectorEvaluator {
                 try {
                     final Extraction extraction = detectable.extract(extractionEnvironment);
                     detectorEvaluation.setExtraction(extraction);
-                }catch (Exception e){
+                } catch (Exception e) {
                     detectorEvaluation.setExtraction(new Extraction.Builder().exception(e).build());
                 }
 

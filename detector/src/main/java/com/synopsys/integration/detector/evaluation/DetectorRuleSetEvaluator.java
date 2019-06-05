@@ -52,7 +52,7 @@ public class DetectorRuleSetEvaluator {
                                               .collect(Collectors.toSet());
 
         if (yieldTo.size() > 0) {
-            return new YieldedDetectorResult(yieldTo);
+            return new YieldedDetectorResult(yieldTo.stream().map(DetectorRule::getName).collect(Collectors.toSet()));
         }
 
         final boolean nestable = detectorRule.isNestable();

@@ -17,7 +17,6 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
-import com.synopsys.integration.detector.result.DetectableDetectorResult;
 import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
@@ -25,7 +24,7 @@ public class DetectorEvaluatorTest {
 
     @Test
     public void testSearchAndApplicableEvaluation() {
-        final DetectorEvaluationOptions evaluationOptions = Mockito.mock( DetectorEvaluationOptions.class);
+        final DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         final DetectorEvaluator evaluator = new DetectorEvaluator(evaluationOptions);
         final DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
         Mockito.when(detectorEvaluationTree.getDirectory()).thenReturn(new File("."));
@@ -62,10 +61,9 @@ public class DetectorEvaluatorTest {
         Mockito.verify(detectorEvaluatorListener).applicableEnded(detectorEvaluation);
     }
 
-
     @Test
     public void testExtractableEvaluation() throws DetectableException {
-        final DetectorEvaluationOptions evaluationOptions = Mockito.mock( DetectorEvaluationOptions.class);
+        final DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         final DetectorEvaluator evaluator = new DetectorEvaluator(evaluationOptions);
         final DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
         Mockito.when(detectorEvaluationTree.getDirectory()).thenReturn(new File("."));
