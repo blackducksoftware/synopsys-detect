@@ -37,17 +37,17 @@ class DetectorNameVersionDecider {
         }
     }
 
-    private fun decideProjectNameVersionArbitrarily(arbitraryPossibilities: List<DetectorProjectInfo>): NameVersionDecision {
-        val notGit = arbitraryPossibilities.filter { it.detectorType != DetectorType.GIT }
+    private fun decideProjectNameVersionArbitrarily(allPossibilities: List<DetectorProjectInfo>): NameVersionDecision {
+        val notGitPossibilities = allPossibilities.filter { it.detectorType != DetectorType.GIT }
 
-        val actualOptions = when {
-            notGit.isEmpty() -> arbitraryPossibilities
-            else -> notGit
+        val chosenPossibilities = when {
+            notGitPossibilities.isEmpty() -> allPossibilities
+            else -> notGitPossibilities
         }
 
-        val chosen = actualOptions.minBy { it.nameVersion.name }
+        val chosen = chosenPossibilities.minBy { it.nameVersion.name }
         chosen?.let {
-            val otherOptions = actualOptions.filter { it.detectorType != chosen.detectorType }
+            val otherOptions = chosenPossibilities.filter { it.detectorType != chosen.detectorType }
             return ArbitraryNameVersionDecision(Optional.of(chosen.nameVersion), chosen, otherOptions.toList())
         }
 
