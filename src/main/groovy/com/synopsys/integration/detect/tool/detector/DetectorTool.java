@@ -38,14 +38,13 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.kotlin.project.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.project.DetectorEvaluationNameVersionDecider;
-import com.synopsys.integration.detect.workflow.project.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
-import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
@@ -67,7 +66,7 @@ public class DetectorTool {
     private final CodeLocationConverter codeLocationConverter;
 
     public DetectorTool(final DetectorFinder detectorFinder, final ExtractionEnvironmentProvider extractionEnvironmentProvider, final EventSystem eventSystem, final CodeLocationConverter codeLocationConverter) {
-	this.detectorFinder = detectorFinder;
+        this.detectorFinder = detectorFinder;
         this.extractionEnvironmentProvider = extractionEnvironmentProvider;
         this.eventSystem = eventSystem;
         this.codeLocationConverter = codeLocationConverter;

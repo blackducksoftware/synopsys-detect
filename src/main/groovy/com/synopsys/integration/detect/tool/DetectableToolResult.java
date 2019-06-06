@@ -30,7 +30,6 @@ import java.util.Optional;
 
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
-import com.synopsys.integration.detect.workflow.project.DetectorProjectInfo;
 
 public class DetectableToolResult {
     private Optional<File> dockerTar = Optional.empty();
