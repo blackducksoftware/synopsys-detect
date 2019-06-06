@@ -91,6 +91,7 @@ dependencies {
     implementation project(":detect-configuration")
     implementation project(":detectable")
     implementation project(":detector")
+    implementation project(":detect-kt")
 
     implementation "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
     implementation 'org.yaml:snakeyaml:1.24'
