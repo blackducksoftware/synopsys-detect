@@ -12,6 +12,7 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation project(":detector")
+    implementation project(":detectable")
     implementation "com.blackducksoftware.integration:integration-common:17.1.0"
 }
 
