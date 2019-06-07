@@ -38,12 +38,12 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.kotlin.project.DetectorEvaluationNameVersionDecider;
 import com.synopsys.integration.detect.kotlin.project.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.project.DetectorEvaluationNameVersionDecider;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
@@ -175,7 +175,7 @@ public class DetectorTool {
                     } else if (detectorEvaluation.wasExtractionException()) {
                         statusType = StatusType.FAILURE;
                     } else {
-                        logger.warn("An issue occured in the detector system, an unknown evaluation status was created. Please don't do this again.");
+                        logger.warn("An issue occurred in the detector system, an unknown evaluation status was created. Please don't do this again.");
                         statusType = StatusType.FAILURE;
                     }
                 } else {
