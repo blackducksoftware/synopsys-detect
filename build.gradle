@@ -97,7 +97,6 @@ dependencies {
     implementation project(":detect-configuration")
     implementation project(":detectable")
     implementation project(":detector")
-    implementation project(":detect-kt")
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "com.synopsys.integration:polaris-common:${polarisCommonVersion}"

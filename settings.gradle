@@ -3,6 +3,3 @@ rootProject.name = 'synopsys-detect'
 include "detect-configuration"
 include 'detectable'
 include 'detector'
-include 'detector-data'
-include 'detect-kt'
-
