@@ -627,7 +627,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("An override for the Project Version phase.")
-    @AcceptableValues(value = { "PLANNING", "DEVELOPMENT", "RELEASED", "DEPRECATED", "ARCHIVED" }, caseSensitive = false, strict = false)
+    @AcceptableValues(value = { "ARCHIVED", "DEPRECATED", "DEVELOPMENT", "PLANNING", "PRERELEASE", "RELEASED" }, caseSensitive = false, strict = false)
     DETECT_PROJECT_VERSION_PHASE("detect.project.version.phase", "Version Phase", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "Development"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })

@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DetectOnDetectPolaris {
     @Test
     @Ignore
-    //ekerwin - ignoring this until we can test the output
+    //ekerwin - dignoring this until we can test the output
     public void testPolarisInDetect() throws Exception {
         List<String> detectArgs = new ArrayList<>();
         detectArgs.add("--detect.tools.excluded=BAZEL,DETECTOR,DOCKER,SIGNATURE_SCAN,BINARY_SCAN");
