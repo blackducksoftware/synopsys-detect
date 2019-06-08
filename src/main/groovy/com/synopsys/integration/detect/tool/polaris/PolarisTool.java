@@ -22,16 +22,6 @@
  */
 package com.synopsys.integration.detect.tool.polaris;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
@@ -47,11 +37,13 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.polaris.common.PolarisDownloadUtility;
+import com.synopsys.integration.polaris.common.cli.PolarisDownloadUtility;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 import com.synopsys.integration.polaris.common.rest.AccessTokenPolarisHttpClient;
-import com.synopsys.integration.rest.client.IntHttpClient;
-import com.synopsys.integration.util.CleanupZipExpander;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.util.*;
 
 public class PolarisTool {
     private final DirectoryManager directoryManager;
@@ -80,15 +72,16 @@ public class PolarisTool {
         File toolsDirectory = directoryManager.getPermanentDirectory();
 
         PolarisDownloadUtility polarisDownloadUtility = PolarisDownloadUtility.fromPolaris(logger, polarisHttpClient, toolsDirectory);
-        Optional<String> swipCliPath = polarisDownloadUtility.retrievePolarisCliExecutablePath();
+        Optional<String> polarisCliPath = polarisDownloadUtility.retrievePolarisCliExecutablePath();
 
-        if (swipCliPath.isPresent()) {
+        //TODO this should be revised to use PolarisCliExecutable and PolarisCliRunner
+        if (polarisCliPath.isPresent()) {
             Map<String, String> environmentVariables = new HashMap<>();
             environmentVariables.put("COVERITY_UNSUPPORTED", "1");
-            environmentVariables.put("SWIP_USER_INPUT_TIMEOUT_MINUTES", "1");
+            environmentVariables.put("POLARIS_USER_INPUT_TIMEOUT_MINUTES", "1");
             polarisServerConfig.populateEnvironmentVariables(environmentVariables::put);
 
-            logger.info("Found polaris cli: " + swipCliPath.get());
+            logger.info("Found polaris cli: " + polarisCliPath.get());
             List<String> arguments = new ArrayList<>();
             arguments.add("analyze");
             arguments.add("-w");
@@ -98,7 +91,7 @@ public class PolarisTool {
                 arguments.addAll(Arrays.asList(additionalArgs.split(" ")));
             }
 
-            Executable swipExecutable = new Executable(projectDirectory, environmentVariables, swipCliPath.get(), arguments);
+            Executable swipExecutable = new Executable(projectDirectory, environmentVariables, polarisCliPath.get(), arguments);
             try {
                 ExecutableOutput output = executableRunner.execute(swipExecutable);
                 if (output.getReturnCode() == 0) {
