@@ -12,10 +12,10 @@ buildscript {
     ext {
         springBootVersion = '2.0.3.RELEASE'
         blackDuckCommonVersion = '43.0.0'
-        polarisCommonVersion = '0.11.0'
+        polarisCommonVersion = '0.13.0'
     }
     repositories {
-        jcenter()
+        mavenLocal()
         mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
     }
@@ -53,6 +53,8 @@ allprojects {
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         implementation "com.blackducksoftware.integration:blackduck-common:${blackDuckCommonVersion}"
         implementation 'com.paypal.digraph:digraph-parser:1.0'
+    	implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.9'
+    	implementation 'com.fasterxml.jackson.core:jackson-core:2.9.9'
     }
 }
 
@@ -109,10 +111,7 @@ dependencies {
     implementation 'org.freemarker:freemarker:2.3.26-incubating'
     implementation 'org.springframework.boot:spring-boot-starter'
 
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.5'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
-
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

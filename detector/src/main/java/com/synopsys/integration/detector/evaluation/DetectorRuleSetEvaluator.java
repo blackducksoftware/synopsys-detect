@@ -25,6 +25,7 @@ package com.synopsys.integration.detector.evaluation;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.result.ExcludedDetectorResult;
 import com.synopsys.integration.detector.result.ForcedNestedPassedDetectorResult;
@@ -62,7 +63,7 @@ public class DetectorRuleSetEvaluator {
             if (environment.getAppliedToParent().stream().anyMatch(parentApplied -> parentApplied.equals(detectorRule))) {
                 return new NotSelfNestableDetectorResult();
             }
-        } else if (!nestable && environment.getAppliedToParent().size() > 0) {
+        } else if (environment.getAppliedToParent().stream().anyMatch(it -> it.getDetectorType() != DetectorType.GIT)) {
             return new NotNestableDetectorResult();
         }
 

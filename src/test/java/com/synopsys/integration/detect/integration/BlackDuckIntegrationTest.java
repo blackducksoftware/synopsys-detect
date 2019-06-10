@@ -51,6 +51,7 @@ public class BlackDuckIntegrationTest {
         blackDuckServerConfigBuilder.setUrl(System.getenv().get(TEST_BLACKDUCK_URL_KEY));
         blackDuckServerConfigBuilder.setUsername(System.getenv().get(TEST_BLACKDUCK_USERNAME_KEY));
         blackDuckServerConfigBuilder.setPassword(System.getenv().get(TEST_BLACKDUCK_PASSWORD_KEY));
+        blackDuckServerConfigBuilder.setTimeoutInSeconds(5*60);
 
         blackDuckServicesFactory = blackDuckServerConfigBuilder.build().createBlackDuckServicesFactory(logger);
         blackDuckService = blackDuckServicesFactory.createBlackDuckService();
