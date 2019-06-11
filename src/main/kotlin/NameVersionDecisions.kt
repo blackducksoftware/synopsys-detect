@@ -38,16 +38,16 @@ class ArbitraryNameVersionDecision(chosenNameVersion: Optional<NameVersion>, pri
         logger.info("Multiple unique detector types were found.")
         logger.info("The following project names were found: ")
         for (projectNamePossibility in otherDetectors) {
-            logger.info(projectNamePossibility.detectorType.toString() + ": " + projectNamePossibility.nameVersion.name)
+            logger.info("${projectNamePossibility.detectorType}:${projectNamePossibility.nameVersion.name}")
         }
-        logger.info("Chose to use " + chosenDetector.detectorType + " at depth " + chosenDetector.depth + " for project name and version.")
+        logger.info("Chose to use ${chosenDetector.detectorType} at depth ${chosenDetector.depth}  for project name and version.")
         logger.info("To specify a different detector type you can specify the project type override.")
     }
 }
 
 class PreferredDetectorDecision(private val chosenDetectorProjectInfo: DetectorProjectInfo) : NameVersionDecision(Optional.of(chosenDetectorProjectInfo.nameVersion)) {
     override fun printDescription(logger: Logger) {
-        logger.info("Using preferred bom tool project info from " + chosenDetectorProjectInfo.detectorType + " found at depth " + Integer.toString(chosenDetectorProjectInfo.depth) + " as project info.")
+        logger.info("Using preferred bom tool project info from ${chosenDetectorProjectInfo.detectorType} found at depth ${chosenDetectorProjectInfo.depth} as project info.")
     }
 }
 
@@ -65,7 +65,7 @@ class TooManyPreferredDetectorTypesFoundDecision(private val detectorType: Detec
 
 class UniqueDetectorDecision(private val chosenDetectorProjectInfo: DetectorProjectInfo) : NameVersionDecision(Optional.of(chosenDetectorProjectInfo.nameVersion)) {
     override fun printDescription(logger: Logger) {
-        logger.info("Exactly one unique detector was found. Using " + chosenDetectorProjectInfo.detectorType.toString() + " found at depth " + Integer.toString(chosenDetectorProjectInfo.depth) + " as project info.")
+        logger.info("Exactly one unique detector was found. Using ${chosenDetectorProjectInfo.detectorType} found at depth ${chosenDetectorProjectInfo.depth} as project info.")
     }
 }
 
