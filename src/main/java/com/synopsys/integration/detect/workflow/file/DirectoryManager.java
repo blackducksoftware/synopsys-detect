@@ -105,7 +105,7 @@ public class DirectoryManager {
                 logger.warn("You appear to be running in 'systemprofile' which can happen when detect is invoked by a system account or as a service.");
                 logger.warn("If detect has full access to the output directory, no further action is necessary.");
                 logger.warn("However, this folder typically has restricted access and may cause exceptions in detect.");
-                logger.warn("To ensure continued operation, supply an output directory using " + DetectProperty.DETECT_OUTPUT_PATH.getPropertyName() + " in the future.");
+                logger.warn("To ensure continued operation, supply an output directory using " + DetectProperty.DETECT_OUTPUT_PATH.getPropertyKey() + " in the future.");
             }
         } else {
             outputDirectory = new File(directoryOptions.getOutputPathOverride());
@@ -116,7 +116,7 @@ public class DirectoryManager {
             .forEach(it -> outputDirectories.put(it, new File(outputDirectory, it.getDirectoryName())));
 
         File possibleRunDirectory = new File(getOutputDirectory(OutputDirectory.Runs), detectRun.getRunId());
-        if (possibleRunDirectory.exists()){
+        if (possibleRunDirectory.exists()) {
             logger.warn("A run directory already exists with this detect run id. Will attempt to use a UUID for the run folder in addition.");
             possibleRunDirectory = new File(getOutputDirectory(OutputDirectory.Runs), detectRun.getRunId() + "-" + java.util.UUID.randomUUID());
         }

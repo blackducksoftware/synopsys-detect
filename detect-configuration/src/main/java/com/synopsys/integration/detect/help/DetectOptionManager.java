@@ -22,9 +22,11 @@
  */
 package com.synopsys.integration.detect.help;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,6 +40,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.Yaml;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
@@ -51,6 +54,7 @@ import com.synopsys.integration.detect.interactive.InteractiveOption;
 import com.synopsys.integration.detect.util.ProxyUtil;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.SilentIntLogger;
+import com.synopsys.integration.util.ResourceUtil;
 
 public class DetectOptionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class);
@@ -79,10 +83,11 @@ public class DetectOptionManager {
     private void init() {
         final Map<DetectProperty, DetectOption> detectOptionsMap = new HashMap<>();
 
+        final Map<String, DetectOptionMetaData> metaDataMap = loadMetaDataFromYaml();
         final Map<DetectProperty, Object> propertyMap = detectConfiguration.getCurrentProperties();
         if (null != propertyMap && !propertyMap.isEmpty()) {
             for (final DetectProperty detectProperty : propertyMap.keySet()) {
-                final DetectOption option = processField(detectProperty, detectConfiguration.getPropertyValueAsString(detectProperty, PropertyAuthority.None));
+                final DetectOption option = processField(detectProperty, detectConfiguration.getPropertyValueAsString(detectProperty, PropertyAuthority.None), metaDataMap);
                 if (option != null) {
                     if (!detectOptionsMap.containsKey(detectProperty)) {
                         detectOptionsMap.put(detectProperty, option);
@@ -92,11 +97,11 @@ public class DetectOptionManager {
         }
 
         detectOptions = detectOptionsMap.values().stream()
-                            .sorted((o1, o2) -> o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup))
+                            .sorted((o1, o2) -> o1.getDetectOptionMetaData().primaryGroup.compareTo(o2.getDetectOptionMetaData().primaryGroup))
                             .collect(Collectors.toList());
 
         detectGroups = detectOptions.stream()
-                           .map(it -> it.getDetectOptionHelp().primaryGroup)
+                           .map(it -> it.getDetectOptionMetaData().primaryGroup)
                            .distinct()
                            .sorted()
                            .collect(Collectors.toList());
@@ -163,7 +168,7 @@ public class DetectOptionManager {
                 } else {
                     if (propertyWasSet) {
                         option.setFinalValue(fieldValue, DetectOption.FinalValueType.SUPPLIED);
-                        if (option.getDetectOptionHelp().isDeprecated) {
+                        if (option.getDetectOptionDeprecation().isDeprecated) {
                             option.requestDeprecation();
                         }
                     } else {
@@ -173,9 +178,9 @@ public class DetectOptionManager {
             }
 
             if (option.isRequestedDeprecation()) {
-                final String removeVersion = option.getDetectOptionHelp().deprecationRemoveInVersion.getDisplayValue();
-                final String failVersion = option.getDetectOptionHelp().deprecationFailInVersion.getDisplayValue();
-                option.addWarning(option.getDetectOptionHelp().deprecation + " It will cause failure in " + failVersion + " and be removed in " + removeVersion + ".");
+                final String removeVersion = option.getDetectOptionDeprecation().deprecationRemoveInVersion.getDisplayValue();
+                final String failVersion = option.getDetectOptionDeprecation().deprecationFailInVersion.getDisplayValue();
+                option.addWarning(option.getDetectOptionDeprecation().deprecation + " It will cause failure in " + failVersion + " and be removed in " + removeVersion + ".");
             }
         }
     }
@@ -208,7 +213,7 @@ public class DetectOptionManager {
                    .collect(Collectors.toList());
     }
 
-    private DetectOption processField(final DetectProperty detectProperty, final String currentValue) {
+    private DetectOption processField(final DetectProperty detectProperty, final String currentValue, Map<String, DetectOptionMetaData> metaDataMap) {
         try {
             final Field field = DetectProperty.class.getField(detectProperty.name());
 
@@ -240,13 +245,17 @@ public class DetectOptionManager {
                 resolvedValue = currentValue;
             }
 
-            final DetectOptionHelp help = processFieldHelp(field);
+            final DetectOptionDeprecation deprecation = processFieldDeprecation(field);
+            final DetectOptionMetaData metaData = metaDataMap.get(detectProperty.getPropertyKey());
+            if (metaData == null) {
+                throw new RuntimeException("Missing field meta data.");
+            }
 
             final DetectOption detectOption;
             if (isCommaSeparatedList) {
-                detectOption = new DetectListOption(detectProperty, strictValidation, caseSensitiveValidation, validValues, help, resolvedValue);
+                detectOption = new DetectListOption(detectProperty, strictValidation, caseSensitiveValidation, validValues, metaData, deprecation, resolvedValue);
             } else {
-                detectOption = new DetectSingleOption(detectProperty, strictValidation, caseSensitiveValidation, validValues, help, resolvedValue);
+                detectOption = new DetectSingleOption(detectProperty, strictValidation, caseSensitiveValidation, validValues, metaData, deprecation, resolvedValue);
             }
 
             return detectOption;
@@ -256,27 +265,41 @@ public class DetectOptionManager {
         return null;
     }
 
-    private DetectOptionHelp processFieldHelp(final Field field) {
-        final DetectOptionHelp help = new DetectOptionHelp();
+    private Map<String, DetectOptionMetaData> loadMetaDataFromYaml() {
+        Map<String, DetectOptionMetaData> metaData = new HashMap<>();
+        try {
+            String metaDataText = ResourceUtil.getResourceAsString(this.getClass(), "/detect-properties.yaml", StandardCharsets.UTF_8.toString());
+            Yaml yaml = new Yaml();
+            Map<String, Object> obj = yaml.load(metaDataText);
+            for (String propertyKey : obj.keySet()) {
+                Map<String, Object> propertyMetaData = (Map<String, Object>) obj.get(propertyKey);
+                DetectOptionMetaData optionMetaData = new DetectOptionMetaData();
+                optionMetaData.fromVersion = (String) propertyMetaData.get("fromVersion");
+                optionMetaData.help = (String) propertyMetaData.get("help");
+                optionMetaData.helpDetailed = (String) propertyMetaData.get("helpDetailed");
+                optionMetaData.name = (String) propertyMetaData.get("name");
+                optionMetaData.primaryGroup = (String) propertyMetaData.get("primaryGroup");
+                if (optionMetaData.primaryGroup == null) {
+                    throw new RuntimeException("Missing primary group!");
+                }
+                optionMetaData.additionalGroups = (List<String>) propertyMetaData.get("additionalGroups");
 
-        final HelpDescription descriptionAnnotation = field.getAnnotation(HelpDescription.class);
-        help.description = descriptionAnnotation.value();
+                if (optionMetaData.additionalGroups.size() == 0) {
+                    if (StringUtils.isNotBlank(optionMetaData.primaryGroup)) {
+                        optionMetaData.additionalGroups.add(optionMetaData.primaryGroup);
+                    }
+                }
 
-        final HelpGroup groupAnnotation = field.getAnnotation(HelpGroup.class);
-        help.primaryGroup = groupAnnotation.primary();
-        final String[] additionalGroups = groupAnnotation.additional();
-        if (additionalGroups.length > 0) {
-            help.additionalGroups.addAll(Arrays.stream(additionalGroups).collect(Collectors.toList()));
-        } else {
-            if (StringUtils.isNotBlank(help.primaryGroup)) {
-                help.additionalGroups.add(help.primaryGroup);
+                metaData.put(propertyKey, optionMetaData);
             }
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
         }
+        return metaData;
+    }
 
-        final HelpDetailed issuesAnnotation = field.getAnnotation(HelpDetailed.class);
-        if (issuesAnnotation != null) {
-            help.detailedHelp = issuesAnnotation.value();
-        }
+    private DetectOptionDeprecation processFieldDeprecation(final Field field) {
+        final DetectOptionDeprecation help = new DetectOptionDeprecation();
 
         final DetectDeprecation deprecationAnnotation = field.getAnnotation(DetectDeprecation.class);
         if (deprecationAnnotation != null) {
@@ -292,8 +315,8 @@ public class DetectOptionManager {
     private void checkForRemovedProperties() {
         final int detectMajorVersion = detectInfo.getDetectMajorVersion();
         for (final DetectOption detectOption : detectOptions) {
-            if (detectOption.getDetectOptionHelp().isDeprecated) {
-                if (detectMajorVersion >= detectOption.getDetectOptionHelp().deprecationRemoveInVersion.getIntValue()) {
+            if (detectOption.getDetectOptionDeprecation().isDeprecated) {
+                if (detectMajorVersion >= detectOption.getDetectOptionDeprecation().deprecationRemoveInVersion.getIntValue()) {
                     throw new RuntimeException("A property should have been removed in this Detect Major Version: " + detectOption.getDetectProperty().getPropertyKey());
                 }
             }
@@ -305,7 +328,7 @@ public class DetectOptionManager {
         boolean atLeastOneDeprecatedFailure = false;
         for (final DetectOption detectOption : detectOptions) {
             if (detectOption.hasWarnings() && detectOption.isRequestedDeprecation()) {
-                if (detectMajorVersion >= detectOption.getDetectOptionHelp().deprecationFailInVersion.getIntValue()) {
+                if (detectMajorVersion >= detectOption.getDetectOptionDeprecation().deprecationFailInVersion.getIntValue()) {
                     atLeastOneDeprecatedFailure = true;
                     logger.error(detectOption.getDetectProperty().getPropertyKey() + " is deprecated and should not be used.");
                 }

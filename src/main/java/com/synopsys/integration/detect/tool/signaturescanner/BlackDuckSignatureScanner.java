@@ -69,7 +69,7 @@ public abstract class BlackDuckSignatureScanner {
     private final ScanBatchRunner scanJobManager;
 
     public BlackDuckSignatureScanner(final DirectoryManager directoryManager, final FileFinder fileFinder, final CodeLocationNameManager codeLocationNameManager,
-                                     final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanBatchRunner scanJobManager) {
+        final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanBatchRunner scanJobManager) {
         this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
@@ -106,8 +106,8 @@ public abstract class BlackDuckSignatureScanner {
         boolean anyExitCodeIs64 = false;
         for (final SignatureScanPath target : signatureScanPaths) {
             Optional<ScanCommandOutput> targetOutput = scanCommandOutputList.stream()
-                    .filter(output -> output.getScanTarget().equals(target.targetPath))
-                    .findFirst();
+                                                           .filter(output -> output.getScanTarget().equals(target.targetPath))
+                                                           .findFirst();
 
             StatusType scanStatus;
             if (!targetOutput.isPresent()) {
@@ -191,7 +191,7 @@ public abstract class BlackDuckSignatureScanner {
             final ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(fileFinder, target);
 
             final String maxDepthHitMsg = String.format("Maximum depth %d hit while traversing source tree to generate signature scanner exclusion patterns. To search deeper, adjust the value of property %s",
-                    maxDepth, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH.getPropertyName());
+                maxDepth, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH.getPropertyKey());
 
             final Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepthHitMsg, maxDepth, signatureScannerExclusionNamePatterns);
             if (null != providedExclusionPatterns) {

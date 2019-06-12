@@ -1,0 +1,1831 @@
+# Detect Properties Meta Data YAML file.
+# The following data is used to generate Detect help.
+# The build will fail if this file is not kept up to date with the current detect properties.
+# Please treat this file with care.
+detect.bazel.target:
+  name: Bazel Target
+  fromVersion: 5.2.0
+  primaryGroup: bazel
+  additionalGroups:
+  - source scan
+  help: The Bazel target (for example, //foo:foolib) for which dependencies are collected.
+    For Detect to run Bazel, this property must be set.
+  helpDetailed: ''
+detect.bazel.path:
+  name: Bazel Executable
+  fromVersion: 5.2.0
+  primaryGroup: bazel
+  additionalGroups:
+  - global
+  help: The path to the Bazel executable.
+  helpDetailed: ''
+detect.bazel.advanced.rules.path:
+  name: Bazel Advanced Rules File
+  fromVersion: 5.2.0
+  primaryGroup: bazel
+  additionalGroups:
+  - source scan
+  help: The path to a file containing a list of BazelExternalIdExtractionXPathRule
+    objects in json for overriding the default behavior).
+  helpDetailed: This property is normally not set, but could potentially be used
+    to customize the Bazel detector.
+detect.bitbake.build.env.name:
+  name: BitBake Init Script Name
+  fromVersion: 4.4.0
+  primaryGroup: bitbake
+  additionalGroups:
+  - source scan
+  help: The name of the build environment init script.
+  helpDetailed: ''
+detect.bitbake.reference.impl:
+  name: Reference implementation
+  fromVersion: 4.4.0
+  primaryGroup: bitbake
+  additionalGroups:
+  - source scan
+  help: The reference implementation of the Yocto project. These characters are stripped
+    from the discovered target architecture.
+  helpDetailed: ''
+detect.bitbake.package.names:
+  name: BitBake Package Names
+  fromVersion: 4.4.0
+  primaryGroup: bitbake
+  additionalGroups:
+  - source scan
+  help: A comma-separated list of package names from which dependencies are extracted.
+  helpDetailed: ''
+detect.disable.without.blackduck:
+  name: Check For Valid Black Duck Connection
+  fromVersion: 4.2.0
+  primaryGroup: blackduck server
+  additionalGroups:
+  - blackduck
+  - default
+  help: If true, during initialization Detect will check for Black Duck connectivity
+    and exit with status code 0 if it cannot connect.
+  helpDetailed: ''
+blackduck.password:
+  name: Black Duck Password
+  fromVersion: 4.2.0
+  primaryGroup: blackduck server
+  additionalGroups:
+  - blackduck
+  - default
+  help: Black Duck password.
+  helpDetailed: ''
+blackduck.offline.mode:
+  name: Offline Mode
+  fromVersion: 4.2.0
+  primaryGroup: blackduck server
+  additionalGroups:
+  - blackduck
+  - offline
+  - default
+  help: This can disable any Black Duck communication - if true, Detect will not upload
+    BDIO files, it will not check policies, and it will not download and install the
+    signature scanner.
+  helpDetailed: ''
+detect.report.timeout:
+  name: Report Generation Timeout
+  fromVersion: 5.2.0
+  primaryGroup: blackduck server
+  additionalGroups:
+  - global
+  help: The amount of time in seconds Detect will wait for scans to finish and to
+    generate reports (i.e. risk and policy check). When changing this value, keep
+    in mind the checking of policies might have to wait for scans to process which
+    can take some time.
+  helpDetailed: ''
+blackduck.api.token:
+  name: Black Duck API Token
+  fromVersion: 4.2.0
+  primaryGroup: blackduck server
+  additionalGroups:
+  - blackduck
+  - default
+  help: The API token used to authenticate with the Black Duck Server.
+  helpDetailed: ''
+blackduck.url:
+  name: Black Duck URL
+  fromVersion: 4.2.0
+  primaryGroup: blackduck server
+  additionalGroups:
+  - blackduck
+  - default
+  help: URL of the Black Duck server.
+  helpDetailed: ''
+blackduck.timeout:
+  name: Black Duck Timeout
+  fromVersion: 4.2.0
+  primaryGroup: blackduck server
+  additionalGroups:
+  - blackduck
+  - default
+  help: The time to wait for network connections to complete (in seconds).
+  helpDetailed: ''
+blackduck.username:
+  name: Black Duck Username
+  fromVersion: 4.2.0
+  primaryGroup: blackduck server
+  additionalGroups:
+  - blackduck
+  - default
+  help: Black Duck username.
+  helpDetailed: ''
+detect.test.connection:
+  name: Test Connection to Black Duck
+  fromVersion: 3.0.0
+  primaryGroup: blackduck server
+  additionalGroups:
+  - global
+  help: Test the connection to Black Duck with the current configuration.
+  helpDetailed: ''
+blackduck.trust.cert:
+  name: Trust All SSL Certificates
+  fromVersion: 4.2.0
+  primaryGroup: blackduck server
+  additionalGroups:
+  - blackduck
+  - default
+  help: If true, automatically trust the certificate for the current run of Detect
+    only.
+  helpDetailed: ''
+detect.cleanup:
+  name: Cleanup Output
+  fromVersion: 3.2.0
+  primaryGroup: cleanup
+  additionalGroups:
+  - global
+  help: If true, the files created by Detect will be cleaned up.
+  helpDetailed: ''
+detect.conda.path:
+  name: Conda Executable
+  fromVersion: 3.0.0
+  primaryGroup: conda
+  additionalGroups:
+  - global
+  help: The path to the conda executable.
+  helpDetailed: ''
+detect.conda.environment.name:
+  name: Anaconda Environment Name
+  fromVersion: 3.0.0
+  primaryGroup: conda
+  additionalGroups:
+  - source scan
+  help: The name of the anaconda environment used by your project.
+  helpDetailed: ''
+detect.perl.path:
+  name: Perl Executable
+  fromVersion: 3.0.0
+  primaryGroup: cpan
+  additionalGroups:
+  - global
+  help: The path to the perl executable.
+  helpDetailed: ''
+detect.cpan.path:
+  name: cpan Executable
+  fromVersion: 3.0.0
+  primaryGroup: cpan
+  additionalGroups:
+  - global
+  help: The path to the cpan executable.
+  helpDetailed: ''
+detect.cpanm.path:
+  name: cpanm Executable
+  fromVersion: 3.0.0
+  primaryGroup: cpan
+  additionalGroups:
+  - global
+  help: The path to the cpanm executable.
+  helpDetailed: ''
+detect.included.detector.types:
+  name: Detector Types Included
+  fromVersion: 3.0.0
+  primaryGroup: detector
+  additionalGroups:
+  - global
+  help: By default, all tools will be included. If you want to include only specific
+    tools, specify the ones to include here. Exclusion rules always win.
+  helpDetailed: If you want to limit Detect to a subset of its detectors, use this
+    property to specify that subset.
+detect.required.detector.types:
+  name: Required Detect Types
+  fromVersion: 4.3.0
+  primaryGroup: detector
+  additionalGroups:
+  - global
+  help: The set of required detectors.
+  helpDetailed: If you want one or more detectors to be required (must be found to
+    apply), use this property to specify the set of required detectors. If this property
+    is set, and one (or more) of the given detectors is not found to apply, Detect
+    will fail.
+detect.excluded.detector.types:
+  name: Detector Types Excluded
+  fromVersion: 3.0.0
+  primaryGroup: detector
+  additionalGroups:
+  - global
+  help: By default, all detectors will be included. If you want to exclude specific
+    detectors, specify the ones to exclude here. If you want to exclude all detectors,
+    specify "ALL". Exclusion rules always win.
+  helpDetailed: If Detect runs one or more detector on your project that you would
+    like to exclude, you can use this property to prevent Detect from running them.
+detect.excluded.bom.tool.types:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: detector
+  additionalGroups:
+  - source scan
+  help: By default, all tools will be included. If you want to exclude specific detectors,
+    specify the ones to exclude here. If you want to exclude all tools, specify "ALL".
+    Exclusion rules always win.
+  helpDetailed: ''
+detect.included.bom.tool.types:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: detector
+  additionalGroups:
+  - detector
+  help: By default, all tools will be included. If you want to include only specific
+    tools, specify the ones to include here. Exclusion rules always win.
+  helpDetailed: ''
+detect.required.bom.tool.types:
+  name: ''
+  fromVersion: 4.3.0
+  primaryGroup: detector
+  additionalGroups:
+  - detector
+  help: If set, Detect will fail if it does not find the bom tool types supplied here.
+  helpDetailed: ''
+detect.docker.inspector.air.gap.path:
+  name: Docker Inspector AirGap Path
+  fromVersion: 3.0.0
+  primaryGroup: docker
+  additionalGroups:
+  - global
+  help: The path to the directory containing the Docker Inspector jar and images.
+  helpDetailed: ''
+detect.docker.path.required:
+  name: Run Without Docker in Path
+  fromVersion: 4.0.0
+  primaryGroup: docker
+  additionalGroups:
+  - global
+  help: If set to true, Detect will attempt to run the Docker Inspector only if it
+    finds a docker client executable.
+  helpDetailed: ''
+detect.docker.tar:
+  name: Docker Image Archive File
+  fromVersion: 3.0.0
+  primaryGroup: docker
+  additionalGroups:
+  - source path
+  help: A saved Docker image - must be a .tar file. For Detect to run Docker Inspector,
+    either this property or detect.docker.tar must be set. Docker Inspector finds
+    packages installed by the Linux package manager in Linux-based images.
+  helpDetailed: ''
+detect.docker.image:
+  name: Docker Image Name
+  fromVersion: 3.0.0
+  primaryGroup: docker
+  additionalGroups:
+  - source path
+  help: The Docker image name to inspect. For Detect to run Docker Inspector, either
+    this property or detect.docker.tar must be set. Docker Inspector finds packages
+    installed by the Linux package manager in Linux-based images.
+  helpDetailed: ''
+detect.docker.inspector.version:
+  name: Docker Inspector Version
+  fromVersion: 3.0.0
+  primaryGroup: docker
+  additionalGroups:
+  - global
+  help: Version of the Docker Inspector to use. By default Detect will attempt to
+    automatically determine the version to use.
+  helpDetailed: ''
+detect.docker.inspector.path:
+  name: Docker Inspector .jar File Path
+  fromVersion: 3.0.0
+  primaryGroup: docker
+  additionalGroups:
+  - global
+  help: This is used to override using the hosted Docker Inspector .jar file by binary
+    repository url. You can use a local Docker Inspector .jar file at this path.
+  helpDetailed: ''
+detect.docker.path:
+  name: Docker Executable
+  fromVersion: 3.0.0
+  primaryGroup: docker
+  additionalGroups:
+  - global
+  help: Path to the docker executable.
+  helpDetailed: ''
+detect.force.success:
+  name: Force Success
+  fromVersion: 3.0.0
+  primaryGroup: general
+  additionalGroups:
+  - global
+  help: If true, Detect will always exit with code 0.
+  helpDetailed: ''
+detect.wait.for.results:
+  name: Wait For Results
+  fromVersion: 5.5.0
+  primaryGroup: general
+  additionalGroups:
+  - global
+  help: If set to true, Detect will wait for Synopsys products until results are available
+    or the blackduck.timeout is exceeded.
+  helpDetailed: ''
+detect.ignore.connection.failures:
+  name: Detect Ignore Connection Failures
+  fromVersion: 5.3.0
+  primaryGroup: general
+  additionalGroups:
+  - blackduck server
+  - polaris
+  help: If true, Detect will ignore any products that it cannot connect to.
+  helpDetailed: If true, when Detect attempts to boot a product it will also check
+    if it can communicate with it - if it cannot, it will not run the product.
+detect.detector.buildless:
+  name: Buildless Mode
+  fromVersion: 5.4.0
+  primaryGroup: general
+  additionalGroups:
+  - global
+  help: If set to true, only Detector's capable of running without a build will be
+    run.
+  helpDetailed: ''
+detect.go.dep.path:
+  name: Godep Executable
+  fromVersion: 3.0.0
+  primaryGroup: go
+  additionalGroups:
+  - global
+  help: Path to the Godep executable.
+  helpDetailed: ''
+detect.go.run.dep.init:
+  name: Godep Run init/ensure
+  fromVersion: 3.0.0
+  primaryGroup: go
+  additionalGroups:
+  - global
+  - source scan
+  help: If set to true, Detect will attempt to run 'init' and 'ensure' which can modify
+    your development environment.
+  helpDetailed: ''
+detect.gradle.excluded.configurations:
+  name: Gradle Exclude Configurations
+  fromVersion: 3.0.0
+  primaryGroup: gradle
+  additionalGroups:
+  - source scan
+  help: A comma-separated list of Gradle configurations to exclude.
+  helpDetailed: As Detect examines the Gradle project for dependencies, Detect will
+    skip any Gradle configurations specified via this property.
+detect.gradle.excluded.projects:
+  name: Gradle Exclude Projects
+  fromVersion: 3.0.0
+  primaryGroup: gradle
+  additionalGroups:
+  - source scan
+  help: A comma-separated list of Gradle sub-projects to exclude.
+  helpDetailed: As Detect examines the Gradle project for dependencies, Detect will
+    skip any Gradle sub-projects specified via this property.
+detect.gradle.included.projects:
+  name: Gradle Include Projects
+  fromVersion: 3.0.0
+  primaryGroup: gradle
+  additionalGroups:
+  - source scan
+  help: A comma-separated list of Maven sub-projects to include.
+  helpDetailed: As Detect examines the Gradle project for dependencies, if this property
+    is set, Detect will include only those sub-projects specified via this property
+    that are not excluded. Leaving this unset implies 'include all'. Exclusion rules
+    always win.
+detect.gradle.included.configurations:
+  name: Gradle Include Configurations
+  fromVersion: 3.0.0
+  primaryGroup: gradle
+  additionalGroups:
+  - source scan
+  help: A comma-separated list of Gradle configurations to include.
+  helpDetailed: As Detect examines the Gradle project for dependencies, if this property
+    is set, Detect will include only those Gradle configurations specified via this
+    property that are not excluded. Leaving this unset implies 'include all'. Exclusion
+    rules always win.
+detect.gradle.inspector.version:
+  name: Gradle Inspector Version
+  fromVersion: 3.0.0
+  primaryGroup: gradle
+  additionalGroups:
+  - global
+  help: The version of the Gradle Inspector that Detect should use. By default, Detect
+    will try to automatically determine the correct Gradle Inspector version.
+  helpDetailed: The Detect Gradle detector uses a separate program, the Gradle Inspector,
+    to discover dependencies from Gradle projects. Detect automatically downloads
+    the Gradle Inspector as needed. Use the property to use a specific version of
+    the Gradle Inspector.
+detect.gradle.inspector.repository.url:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: gradle
+  additionalGroups:
+  - gradle
+  help: The respository gradle should use to look for the gradle inspector dependencies.
+  helpDetailed: ''
+detect.gradle.build.command:
+  name: Gradle Build Command
+  fromVersion: 3.0.0
+  primaryGroup: gradle
+  additionalGroups:
+  - source scan
+  help: Gradle command line arguments to add to the mvn/mvnw command line.
+  helpDetailed: 'By default, Detect runs the gradle (or gradlew) command with one
+    task: dependencies. You can use this property to insert one or more additional
+    gradle command line arguments (options or tasks) before the dependencies argument.'
+detect.gradle.path:
+  name: Gradle Executable
+  fromVersion: 3.0.0
+  primaryGroup: gradle
+  additionalGroups:
+  - gradle
+  help: The path to the Gradle executable (gradle or gradlew).
+  helpDetailed: If set, Detect will use the given Gradle executable instead of searching
+    for one.
+detect.gradle.inspector.air.gap.path:
+  name: Gradle Inspector AirGap Path
+  fromVersion: 3.0.0
+  primaryGroup: gradle
+  additionalGroups:
+  - global
+  help: The path to the directory containing the air gap dependencies for the gradle
+    inspector.
+  helpDetailed: Use this property when running Detect on a Gradle project in 'air
+    gap' mode (offline). Download and unzip the Detect air gap zip file, and point
+    this property to the packaged-inspectors/gradle directory.
+detect.hex.rebar3.path:
+  name: Rebar3 Executable
+  fromVersion: 3.0.0
+  primaryGroup: hex
+  additionalGroups:
+  - global
+  help: The path to the rebar3 executable.
+  helpDetailed: ''
+blackduck.hub.proxy.ignored.hosts:
+  name: ''
+  fromVersion: 3.2.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  - proxy
+  help: A comma-separated list of host patterns that should not use the proxy.
+  helpDetailed: ''
+blackduck.hub.proxy.host:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  - proxy
+  help: Proxy host.
+  helpDetailed: ''
+blackduck.hub.username:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  help: Hub username.
+  helpDetailed: ''
+blackduck.hub.trust.cert:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  help: If true, automatically trusts the certificate for the current run of Detect
+    only.
+  helpDetailed: ''
+blackduck.hub.password:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  help: Hub password.
+  helpDetailed: ''
+blackduck.hub.proxy.username:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  - proxy
+  help: Proxy username.
+  helpDetailed: ''
+blackduck.hub.proxy.password:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  - proxy
+  help: Proxy password.
+  helpDetailed: ''
+blackduck.hub.api.token:
+  name: ''
+  fromVersion: 3.1.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  help: Hub API Token.
+  helpDetailed: ''
+blackduck.hub.timeout:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  help: The time to wait for rest connections to complete in seconds.
+  helpDetailed: ''
+blackduck.hub.proxy.port:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  - proxy
+  help: Proxy port.
+  helpDetailed: ''
+blackduck.hub.proxy.ntlm.workstation:
+  name: ''
+  fromVersion: 3.1.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  - proxy
+  help: NTLM Proxy workstation.
+  helpDetailed: ''
+blackduck.hub.proxy.ntlm.domain:
+  name: ''
+  fromVersion: 3.1.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  - proxy
+  help: NTLM Proxy domain.
+  helpDetailed: ''
+blackduck.hub.offline.mode:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  - offline
+  help: This disables any Hub communication. If true, Detect does not upload BDIO
+    files, does not check policies, and does not download and install the signature
+    scanner.
+  helpDetailed: ''
+blackduck.hub.url:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  help: URL of the Hub server.
+  helpDetailed: ''
+detect.suppress.results.output:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: logging
+  additionalGroups:
+  - logging
+  help: If true, the default behavior of printing the Detect Results will be suppressed.
+  helpDetailed: ''
+logging.level.com.synopsys.integration:
+  name: Logging Level
+  fromVersion: 5.3.0
+  primaryGroup: logging
+  additionalGroups:
+  - global
+  help: The logging level of Detect.
+  helpDetailed: ''
+logging.level.com.blackducksoftware.integration:
+  name: Logging Level
+  fromVersion: 3.0.0
+  primaryGroup: logging
+  additionalGroups:
+  - global
+  help: The logging level of Detect.
+  helpDetailed: ''
+detect.suppress.configuration.output:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: logging
+  additionalGroups:
+  - logging
+  help: If true, the default behavior of printing your configuration properties at
+    startup will be suppressed.
+  helpDetailed: ''
+detect.maven.included.modules:
+  name: Maven Modules Included
+  fromVersion: 3.0.0
+  primaryGroup: maven
+  additionalGroups:
+  - source scan
+  help: A comma-separated list of Maven modules (sub-projects) to include.
+  helpDetailed: As Detect parses the mvn dependency:tree output for dependencies,
+    if this property is set, Detect will include only those Maven modules specified
+    via this property that are not excluded. Leaving this unset implies 'include all'.
+    Exclusion rules always win.
+detect.maven.path:
+  name: Maven Executable
+  fromVersion: 3.0.0
+  primaryGroup: maven
+  additionalGroups:
+  - global
+  help: The path to the Maven executable (mvn or mvnw).
+  helpDetailed: If set, Detect will use the given Maven executable instead of searching
+    for one.
+detect.maven.excluded.modules:
+  name: Maven Modules Excluded
+  fromVersion: 3.0.0
+  primaryGroup: maven
+  additionalGroups:
+  - source scan
+  help: A comma-separated list of Maven modules (sub-projects) to exclude.
+  helpDetailed: As Detect parses the mvn dependency:tree output for dependencies,
+    Detect will skip any Maven modules specified via this property.
+detect.maven.build.command:
+  name: Maven Build Command
+  fromVersion: 3.0.0
+  primaryGroup: maven
+  additionalGroups:
+  - source scan
+  help: Maven command line arguments to add to the mvn/mvnw command line.
+  helpDetailed: 'By default, Detect runs the mvn (or mvnw) command with one argument:
+    dependency:tree. You can use this property to insert one or more additional mvn
+    command line arguments (goals, etc.) before the dependency:tree argument.'
+detect.maven.scope:
+  name: Dependency Scope Included
+  fromVersion: 3.0.0
+  primaryGroup: maven
+  additionalGroups:
+  - source scan
+  help: The name of a Maven scope. Output will be limited to dependencies with this
+    scope.
+  helpDetailed: If set, Detect will include only dependencies of the given Maven
+    scope.
+detect.npm.path:
+  name: NPM Executable
+  fromVersion: 3.0.0
+  primaryGroup: npm
+  additionalGroups:
+  - global
+  help: The path to the Npm executable.
+  helpDetailed: ''
+detect.npm.include.dev.dependencies:
+  name: Include NPM Development Dependencies
+  fromVersion: 3.0.0
+  primaryGroup: npm
+  additionalGroups:
+  - global
+  - source scan
+  help: Set this value to false if you would like to exclude your dev dependencies
+    when ran.
+  helpDetailed: ''
+detect.npm.node.path:
+  name: Node Executable
+  fromVersion: 3.0.0
+  primaryGroup: npm
+  additionalGroups:
+  - global
+  help: The path to the node executable that is used by Npm.
+  helpDetailed: ''
+detect.npm.arguments:
+  name: NPM Arguments
+  fromVersion: 4.3.0
+  primaryGroup: npm
+  additionalGroups:
+  - source scan
+  help: A space-separated list of additional arguments to use when running Detect
+    against an NPM project.
+  helpDetailed: ''
+detect.nuget.packages.repo.url:
+  name: Nuget Packages Repository URL
+  fromVersion: 3.0.0
+  primaryGroup: nuget
+  additionalGroups:
+  - global
+  help: The source for nuget packages
+  helpDetailed: Set this to "https://www.nuget.org/api/v2/" if your are still using
+    a nuget client expecting the v2 api.
+detect.nuget.excluded.modules:
+  name: Nuget Projects Excluded
+  fromVersion: 3.0.0
+  primaryGroup: nuget
+  additionalGroups:
+  - source scan
+  help: The names of the projects in a solution to exclude.
+  helpDetailed: ''
+detect.dotnet.path:
+  name: dotnet Executable
+  fromVersion: 4.4.0
+  primaryGroup: nuget
+  additionalGroups:
+  - global
+  help: The path to the dotnet executable.
+  helpDetailed: ''
+detect.nuget.inspector.version:
+  name: Nuget Inspector Version
+  fromVersion: 3.0.0
+  primaryGroup: nuget
+  additionalGroups:
+  - global
+  help: Version of the Nuget Inspector. By default Detect will communicate with Artifactory.
+  helpDetailed: ''
+detect.nuget.path:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: nuget
+  additionalGroups:
+  - nuget
+  help: The path to the Nuget executable. Nuget is used to download the classic inspectors
+    nuget package.
+  helpDetailed: ''
+detect.nuget.config.path:
+  name: Nuget Config File
+  fromVersion: 4.0.0
+  primaryGroup: nuget
+  additionalGroups:
+  - source scan
+  help: The path to the Nuget.Config file to supply to the nuget exe.
+  helpDetailed: ''
+detect.nuget.ignore.failure:
+  name: Ignore Nuget Failures
+  fromVersion: 3.0.0
+  primaryGroup: nuget
+  additionalGroups:
+  - global
+  help: If true errors will be logged and then ignored.
+  helpDetailed: ''
+detect.nuget.inspector.name:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: nuget
+  additionalGroups:
+  - nuget
+  help: Name of the Nuget Inspector package and the Nuget Inspector exe. (Do not include
+    '.exe'.)
+  helpDetailed: The nuget inspector (previously) could be hosted on a custom nuget
+    feed. In this case, Detect needed to know the name of the package to pull and
+    the name of the exe file (which has to match). In the future, Detect will only
+    retreive it from Artifactory or from Air Gap so a custom name is no longer supported.
+detect.nuget.included.modules:
+  name: Nuget Modules Included
+  fromVersion: 3.0.0
+  primaryGroup: nuget
+  additionalGroups:
+  - source scan
+  help: The names of the projects in a solution to include (overrides exclude).
+  helpDetailed: ''
+detect.nuget.inspector.air.gap.path:
+  name: Nuget Inspector AirGap Path
+  fromVersion: 3.0.0
+  primaryGroup: nuget
+  additionalGroups:
+  - global
+  help: The path to the directory containing the nuget inspector nupkg.
+  helpDetailed: ''
+detect.packagist.include.dev.dependencies:
+  name: Include Packagist Development Dependencies
+  fromVersion: 3.0.0
+  primaryGroup: packagist
+  additionalGroups:
+  - global
+  - source scan
+  help: Set this value to false if you would like to exclude your dev requires dependencies
+    when ran.
+  helpDetailed: ''
+detect.detector.search.continue:
+  name: Detector Search Continue
+  fromVersion: 3.2.0
+  primaryGroup: paths
+  additionalGroups:
+  - detector
+  - global
+  - source scan
+  help: If true, the bom tool search will continue to look for nested bom tools of
+    the same type to the maximum search depth, see the detailed help for more information.
+  helpDetailed: "If true, Detect will find Maven projects that are in subdirectories\
+    \ of a Maven project and Gradle projects that are in subdirectories of Gradle\
+    \ projects, etc.\r\nIf false, Detect will only find bom tools in subdirectories\
+    \ of a project if they are of a different type such as an Npm project in a subdirectory\
+    \ of a Gradle project."
+detect.git.path:
+  name: Git Executable
+  fromVersion: 5.5.0
+  primaryGroup: paths
+  additionalGroups:
+  - global
+  help: Path of the git executable
+  helpDetailed: ''
+detect.detector.search.exclusion.paths:
+  name: ' Detector Directory Path Exclusions'
+  fromVersion: 5.5.0
+  primaryGroup: paths
+  additionalGroups:
+  - detector
+  - global
+  - source scan
+  help: A comma-separated list of directory paths to exclude from detector search.
+    (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory
+    structure is 'foo/bar/'.)
+  helpDetailed: This property performs the same basic function as detect.detector.search.exclusion,
+    but lets you be more specific.
+detect.detector.search.exclusion:
+  name: Detector Directory Exclusions
+  fromVersion: 3.2.0
+  primaryGroup: paths
+  additionalGroups:
+  - detector
+  - global
+  - source scan
+  help: A comma-separated list of directory names to exclude from detector search.
+  helpDetailed: While searching the source directory to determine which detectors
+    to run, subdirectories whose name appear in this list will not be searched.
+detect.source.path:
+  name: Source Path
+  fromVersion: 3.0.0
+  primaryGroup: paths
+  additionalGroups:
+  - source path
+  help: The path to the project directory to inspect.
+  helpDetailed: Detect will search the given directory for hints that indicate which
+    package manager(s) the project uses, and will attempt to run the corresponding
+    detector(s).
+detect.detector.search.exclusion.patterns:
+  name: ' Detector Directory Patterns Exclusions'
+  fromVersion: 3.2.0
+  primaryGroup: paths
+  additionalGroups:
+  - detector
+  - global
+  - source scan
+  help: A comma-separated list of directory name patterns to exclude from detector
+    search.
+  helpDetailed: "While searching the source directory to determine which detectors\
+    \ to run, subdirectories whose name match a pattern in this list will not be searched.\n\
+    \rThese patterns are file system glob patterns ('?' is a wildcard for a single\
+    \ character, '*' is a wildcard for zero or more characters)."
+detect.search.depth:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: paths
+  additionalGroups:
+  - paths
+  help: Depth from source paths to search for sbt report files.
+  helpDetailed: ''
+detect.detector.search.exclusion.defaults:
+  name: Detector Exclude Default Directories
+  fromVersion: 3.2.0
+  primaryGroup: paths
+  additionalGroups:
+  - detector
+  - global
+  - source scan
+  help: If true, the bom tool search will exclude the default directory names. See
+    the detailed help for more information.
+  helpDetailed: 'If true, these directories will be excluded from the detector search:
+    bin, build, .git, .gradle, node_modules, out, packages, target.'
+detect.resolve.tilde.in.paths:
+  name: Resolve Tilde in Paths
+  fromVersion: 3.0.0
+  primaryGroup: paths
+  additionalGroups:
+  - global
+  help: If set to false Detect will not automatically resolve the '~/' prefix in a
+    mac or linux path to the user's home directory.
+  helpDetailed: ''
+detect.bdio.output.path:
+  name: BDIO Output Directory
+  fromVersion: 3.0.0
+  primaryGroup: paths
+  additionalGroups:
+  - global
+  help: The path to the output directory for all BDIO files.
+  helpDetailed: If not set, the BDIO files are placed in a 'BDIO' subdirectory of
+    the output directory.
+detect.tools.excluded:
+  name: Detect Tools Excluded
+  fromVersion: 5.0.0
+  primaryGroup: paths
+  additionalGroups:
+  - global
+  help: The tools Detect should not allow, in a comma-separated list. Excluded tools
+    will not be run even if all criteria for the tool is met. Exclusion rules always
+    win.
+  helpDetailed: This property and detect.tools provide control over which tools Detect
+    runs.
+detect.bom.tool.search.continue:
+  name: ''
+  fromVersion: 3.2.0
+  primaryGroup: paths
+  additionalGroups:
+  - detector
+  help: If true, the bom tool search will continue to look for nested bom tools of
+    the same type to the maximum search depth, see the detailed help for more information.
+  helpDetailed: "If true, Detect will find Maven projects that are in subdirectories\
+    \ of a Maven project and Gradle projects that are in subdirectories of Gradle\
+    \ projects, etc.\r\nIf false, Detect will only find bom tools in subdirectories\
+    \ of a project if they are of a different type such as an Npm project in a subdirectory\
+    \ of a Gradle project."
+detect.bom.tool.search.exclusion.defaults:
+  name: ''
+  fromVersion: 3.2.0
+  primaryGroup: paths
+  additionalGroups:
+  - detector
+  help: If true, the bom tool search will exclude the default directory names. See
+    the detailed help for more information.
+  helpDetailed: 'If true, these directories will be excluded from the bom tool search:
+    bin, build, .git, .gradle, node_modules, out, packages, target'
+detect.detector.search.depth:
+  name: Detector Search Depth
+  fromVersion: 3.2.0
+  primaryGroup: paths
+  additionalGroups:
+  - detector
+  - global
+  - source scan
+  help: Depth of subdirectories within the source directory to which Detect will search
+    for files that indicate whether a detector applies.
+  helpDetailed: A value of 0 (the default) tells Detect not to search any subdirectories,
+    a value of 1 tells Detect to search first-level subdirectories, etc.
+detect.tools:
+  name: Detect Tools Included
+  fromVersion: 5.0.0
+  primaryGroup: paths
+  additionalGroups:
+  - global
+  help: The tools Detect should allow in a comma-separated list. Tools in this list
+    (as long as they are not also in the excluded list) will be allowed to run if
+    all criteria of the tool are met. Exclusion rules always win.
+  helpDetailed: This property and detect.tools.excluded provide control over which
+    tools Detect runs.
+detect.java.path:
+  name: Java Executable
+  fromVersion: 5.0.0
+  primaryGroup: paths
+  additionalGroups:
+  - global
+  help: Path to the java executable.
+  helpDetailed: If set, Detect will use the given java executable instead of searching
+    for one.
+detect.scan.output.path:
+  name: Scan Output Path
+  fromVersion: 3.0.0
+  primaryGroup: paths
+  additionalGroups:
+  - global
+  help: The output directory for all signature scanner output files. If not set, the
+    signature scanner output files will be in a 'scan' subdirectory of the output
+    directory.
+  helpDetailed: ''
+detect.project.bom.tool:
+  name: ''
+  fromVersion: 4.0.0
+  primaryGroup: paths
+  additionalGroups:
+  - detector
+  help: The detector to choose when multiple detector types are found and one needs
+    to be chosen for project name and version. This property should be used with the
+    detect.project.tool.
+  helpDetailed: ''
+detect.bash.path:
+  name: Bash Executable
+  fromVersion: 3.0.0
+  primaryGroup: paths
+  additionalGroups:
+  - global
+  help: Path to the Bash executable.
+  helpDetailed: If set, Detect will use the given Bash executable instead of searching
+    for one.
+detect.bom.tool.search.depth:
+  name: ''
+  fromVersion: 3.2.0
+  primaryGroup: paths
+  additionalGroups:
+  - detector
+  help: Depth of subdirectories within the source directory to search for files that
+    indicate whether a detector applies.
+  helpDetailed: A value of 0 (the default) tells Detect not to search any subdirectories,
+    a value of 1 tells Detect to search first-level subdirectories, etc.
+detect.project.tool:
+  name: Detector Tool Priority
+  fromVersion: 5.0.0
+  primaryGroup: paths
+  additionalGroups:
+  - global
+  help: The tool priority for project name and version. The project name and version
+    will be determined by the first tool in this list that provides them.
+  helpDetailed: This allows you to control which tool provides the project name and
+    version when more than one tool are capable of providing it.
+detect.bom.tool.search.exclusion:
+  name: ''
+  fromVersion: 3.2.0
+  primaryGroup: paths
+  additionalGroups:
+  - detector
+  help: A comma-separated list of directory names to exclude from the bom tool search.
+  helpDetailed: ''
+detect.output.path:
+  name: Detect Output Path
+  fromVersion: 3.0.0
+  primaryGroup: paths
+  additionalGroups:
+  - global
+  help: The path to the output directory.
+  helpDetailed: If set, Detect will use the given directory to store files that it
+    downloads and creates, instead of using the default location (~/blackduck).
+detect.project.detector:
+  name: Project Name/Version Detector
+  fromVersion: 4.0.0
+  primaryGroup: paths
+  additionalGroups:
+  - global
+  help: The detector that will be used to determine the project name and version when
+    multiple detector types. This property should be used with the detect.project.tool.
+  helpDetailed: If Detect finds that multiple detectors apply, this property can
+    be used to select the detector that will provide the project name and version.
+    When using this property, you should also set detect.project.tool=DETECTOR
+detect.pear.path:
+  name: Pear Executable
+  fromVersion: 3.0.0
+  primaryGroup: pear
+  additionalGroups:
+  - global
+  help: The path to the pear executable.
+  helpDetailed: ''
+detect.pear.only.required.deps:
+  name: Include Only Required Pear Dependencies
+  fromVersion: 3.0.0
+  primaryGroup: pear
+  additionalGroups:
+  - global
+  - source scan
+  help: Set to true if you would like to include only required packages.
+  helpDetailed: ''
+detect.pip.project.version.name:
+  name: PIP Project Version Name
+  fromVersion: 4.1.0
+  primaryGroup: pip
+  additionalGroups:
+  - source scan
+  help: The version of your PIP project, to be used if your project's version name
+    cannot be correctly inferred from its setup.py file.
+  helpDetailed: ''
+detect.pip.requirements.path:
+  name: PIP Requirements Path
+  fromVersion: 3.0.0
+  primaryGroup: pip
+  additionalGroups:
+  - source scan
+  help: The path to the requirements.txt file.
+  helpDetailed: ''
+detect.pip.project.name:
+  name: PIP Project Name
+  fromVersion: 3.0.0
+  primaryGroup: pip
+  additionalGroups:
+  - source scan
+  help: The name of your PIP project, to be used if your project's name cannot be
+    correctly inferred from its setup.py file.
+  helpDetailed: ''
+detect.pipenv.path:
+  name: Pipenv Executable
+  fromVersion: 4.1.0
+  primaryGroup: pip
+  additionalGroups:
+  - global
+  help: The path to the Pipenv executable.
+  helpDetailed: ''
+polaris.access.token:
+  name: Polaris Access Token
+  fromVersion: 5.3.0
+  primaryGroup: polaris
+  additionalGroups:
+  - default
+  - global
+  help: The access token for your polaris instance.
+  helpDetailed: ''
+polaris.url:
+  name: Polaris Url
+  fromVersion: 4.1.0
+  primaryGroup: polaris
+  additionalGroups:
+  - default
+  - global
+  help: The url of your polaris instance.
+  helpDetailed: ''
+detect.polaris.enabled:
+  name: ''
+  fromVersion: 4.4.0
+  primaryGroup: polaris
+  additionalGroups:
+  - polaris
+  help: Set to false to disable the Synopsys Polaris Tool.
+  helpDetailed: ''
+polaris.arguments:
+  name: Polaris Arguments
+  fromVersion: 5.3.0
+  primaryGroup: polaris
+  additionalGroups:
+  - default
+  - source scan
+  help: Additional arguments to pass to polaris.
+  helpDetailed: ''
+detect.project.codelocation.unmap:
+  name: Unmap All Other Scans for Project
+  fromVersion: 4.0.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: If set to true, unmaps all other scans mapped to the project version produced
+    by the current run of Detect.
+  helpDetailed: ''
+detect.project.clone.categories:
+  name: Clone Project Categories
+  fromVersion: 4.2.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: An override for the Project Clone Categories that are used when cloning a
+    version. If the project already exists, make sure to use --detect.project.version.update
+    to make sure these are set.
+  helpDetailed: ''
+detect.project.user.groups:
+  name: Project User Groups
+  fromVersion: 5.4.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: A comma-separated list of names of user groups to add to the project.
+  helpDetailed: ''
+detect.project.version.notes:
+  name: Version Notes
+  fromVersion: 3.1.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: If project version notes are specified, your project version will be created
+    with these notes.
+  helpDetailed: ''
+detect.clone.project.version.name:
+  name: Clone Project Version Name
+  fromVersion: 4.2.0
+  primaryGroup: project
+  additionalGroups:
+  - global
+  - project setting
+  help: 'The name of the project version to clone this project version from. Respects
+    the Clone Categories as set on the Black Duck server (project settings: Select
+    the attributes you’d like to clone for any new versions of this project).'
+  helpDetailed: ''
+detect.project.version.name:
+  name: Version Name
+  fromVersion: 3.0.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: An override for the version to use for the Black Duck project. If not supplied,
+    Detect will attempt to use the tools to figure out a reasonable version name.
+    If that fails, the current date will be used.
+  helpDetailed: ''
+detect.bom.aggregate.name:
+  name: Aggregate BDIO File Name
+  fromVersion: 3.0.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: If set, this will aggregate all the BOMs to create a single BDIO file with
+    the name provided.
+  helpDetailed: ''
+detect.project.level.adjustments:
+  name: Allow Project Level Adjustments
+  fromVersion: 3.0.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  - global
+  help: An override for the Project level matches.
+  helpDetailed: ''
+detect.default.project.version.text:
+  name: Default Project Version Name Text
+  fromVersion: 3.0.0
+  primaryGroup: project
+  additionalGroups:
+  - global
+  help: The text to use as the default project version.
+  helpDetailed: ''
+detect.code.location.name:
+  name: Scan Name
+  fromVersion: 4.0.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: An override for the name Detect will use for the scan file it creates. If
+    supplied and multiple scans are found, Detect will append an index to each scan
+    name.
+  helpDetailed: ''
+detect.policy.check.fail.on.severities:
+  name: Fail on Policy Violation Severities
+  fromVersion: 3.0.0
+  primaryGroup: project
+  additionalGroups:
+  - global
+  - project setting
+  - policy
+  help: A comma-separated list of policy violation severities that will fail Detect.
+    If this is not set, Detect will not fail due to policy violations. A value of
+    ALL is equivalent to all of the other possible values except UNSPECIFIED.
+  helpDetailed: ''
+detect.project.version.phase:
+  name: Version Phase
+  fromVersion: 3.0.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: An override for the Project Version phase.
+  helpDetailed: ''
+detect.project.name:
+  name: Project Name
+  fromVersion: 3.0.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: An override for the name to use for the Black Duck project. If not supplied,
+    Detect will attempt to use the tools to figure out a reasonable project name.
+    If that fails, the final part of the directory path where the inspection is taking
+    place will be used.
+  helpDetailed: ''
+detect.project.codelocation.prefix:
+  name: Scan Name Prefix
+  fromVersion: 3.0.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  - global
+  help: A prefix to the name of the scans created by Detect. Useful for running against
+    the same projects on multiple machines.
+  helpDetailed: ''
+detect.default.project.version.scheme:
+  name: Default Project Version Name Scheme
+  fromVersion: 3.0.0
+  primaryGroup: project
+  additionalGroups:
+  - global
+  help: The scheme to use when the package managers can not determine a version, either
+    'text' or 'timestamp'.
+  helpDetailed: ''
+detect.project.version.update:
+  name: Update Project Version
+  fromVersion: 4.0.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: If set to true, will update the Project Version with the configured properties.
+    See detailed help for more information.
+  helpDetailed: "When set to true, the following properties will be updated on the\
+    \ Project. Project tier (detect.project.tier) and Project Level Adjustments (detect.project.level.adjustments).\r\
+    \n The following properties will also be updated on the Version. Version notes\
+    \ (detect.project.version.notes), phase (detect.project.version.phase), distribution\
+    \ (detect.project.version.distribution)."
+detect.project.description:
+  name: Project Description
+  fromVersion: 4.0.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: If project description is specified, your project version will be created
+    with this description.
+  helpDetailed: ''
+detect.project.version.nickname:
+  name: Version Nickname
+  fromVersion: 5.2.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: If a project version nickname is specified, your project version will be created
+    with this nickname.
+  helpDetailed: ''
+detect.project.tier:
+  name: Project Tier
+  fromVersion: 3.1.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: If a Black Duck project tier is specified, your project will be created with
+    this tier.
+  helpDetailed: ''
+detect.default.project.version.timeformat:
+  name: Default Project Version Name Timestamp Format
+  fromVersion: 3.0.0
+  primaryGroup: project
+  additionalGroups:
+  - global
+  help: The timestamp format to use as the default project version.
+  helpDetailed: ''
+detect.project.version.distribution:
+  name: Version Distribution
+  fromVersion: 3.0.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: An override for the Project Version distribution
+  helpDetailed: ''
+detect.project.codelocation.suffix:
+  name: Scan Name Suffix
+  fromVersion: 3.0.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  - global
+  help: A suffix to the name of the scans created by Detect.
+  helpDetailed: ''
+detect.project.application.id:
+  name: Application ID
+  fromVersion: 5.2.0
+  primaryGroup: project
+  additionalGroups:
+  - project setting
+  help: Sets the 'Application ID' project setting.
+  helpDetailed: ''
+detect.api.timeout:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: project info
+  additionalGroups:
+  - project
+  help: Timeout for response from Black Duck regarding your project (i.e. risk reports
+    and policy check). When changing this value, keep in mind the checking of policies
+    might have to wait for a new scan to process which can take some time.
+  helpDetailed: ''
+blackduck.proxy.port:
+  name: Proxy Port
+  fromVersion: 4.2.0
+  primaryGroup: proxy
+  additionalGroups:
+  - blackduck
+  - default
+  help: Proxy port.
+  helpDetailed: ''
+blackduck.proxy.ignored.hosts:
+  name: Bypass Proxy Hosts
+  fromVersion: 4.2.0
+  primaryGroup: proxy
+  additionalGroups:
+  - blackduck
+  - default
+  help: A comma separated list of host patterns that should not use the proxy.
+  helpDetailed: 'These patterns must adhere to Java regular expressions: https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html'
+blackduck.proxy.username:
+  name: Proxy Username
+  fromVersion: 4.2.0
+  primaryGroup: proxy
+  additionalGroups:
+  - blackduck
+  - default
+  help: Proxy username.
+  helpDetailed: ''
+blackduck.proxy.password:
+  name: Proxy Password
+  fromVersion: 4.2.0
+  primaryGroup: proxy
+  additionalGroups:
+  - blackduck
+  - default
+  help: Proxy password.
+  helpDetailed: ''
+blackduck.proxy.ntlm.domain:
+  name: NTLM Proxy Domain
+  fromVersion: 4.2.0
+  primaryGroup: proxy
+  additionalGroups:
+  - blackduck
+  - default
+  help: NTLM Proxy domain.
+  helpDetailed: ''
+blackduck.proxy.ntlm.workstation:
+  name: NTLM Proxy Workstation
+  fromVersion: 4.2.0
+  primaryGroup: proxy
+  additionalGroups:
+  - blackduck
+  - default
+  help: NTLM Proxy workstation.
+  helpDetailed: ''
+blackduck.proxy.host:
+  name: Proxy Host
+  fromVersion: 4.2.0
+  primaryGroup: proxy
+  additionalGroups:
+  - blackduck
+  - default
+  help: Hostname for proxy server.
+  helpDetailed: ''
+detect.python.python3:
+  name: Use Python3
+  fromVersion: 3.0.0
+  primaryGroup: python
+  additionalGroups:
+  - global
+  help: If true will use Python 3 if available on class path.
+  helpDetailed: ''
+detect.python.path:
+  name: Python Executable
+  fromVersion: 3.0.0
+  primaryGroup: python
+  additionalGroups:
+  - global
+  help: The path to the Python executable.
+  helpDetailed: ''
+detect.risk.report.pdf:
+  name: Generate Risk Report (PDF)
+  fromVersion: 3.0.0
+  primaryGroup: report
+  additionalGroups:
+  - global
+  - report setting
+  help: When set to true, a Black Duck risk report in PDF form will be created.
+  helpDetailed: ''
+detect.sbt.excluded.configurations:
+  name: SBT Configurations Excluded
+  fromVersion: 3.0.0
+  primaryGroup: report
+  additionalGroups:
+  - source scan
+  help: The names of the sbt configurations to exclude.
+  helpDetailed: ''
+detect.notices.report:
+  name: Generate Notices Report
+  fromVersion: 3.0.0
+  primaryGroup: report
+  additionalGroups:
+  - global
+  help: When set to true, a Black Duck notices report in text form will be created
+    in your source directory.
+  helpDetailed: ''
+detect.risk.report.pdf.path:
+  name: Risk Report Output Path
+  fromVersion: 3.0.0
+  primaryGroup: report
+  additionalGroups:
+  - global
+  help: The output directory for risk report in PDF. Default is the source directory.
+  helpDetailed: ''
+detect.notices.report.path:
+  name: Notices Report Path
+  fromVersion: 3.0.0
+  primaryGroup: report
+  additionalGroups:
+  - global
+  - report setting
+  help: The output directory for notices report. Default is the source directory.
+  helpDetailed: ''
+detect.ruby.include.dev.dependencies:
+  name: Ruby Runtime Dependencies
+  fromVersion: 5.4.0
+  primaryGroup: ruby
+  additionalGroups:
+  - global
+  - source scan
+  help: If set to true, development dependencies will be included when parsing *.gemspec
+    files.
+  helpDetailed: ''
+detect.ruby.include.runtime.dependencies:
+  name: Ruby Runtime Dependencies
+  fromVersion: 5.4.0
+  primaryGroup: ruby
+  additionalGroups:
+  - global
+  - source scan
+  help: If set to false, runtime dependencies will not be included when parsing *.gemspec
+    files.
+  helpDetailed: ''
+detect.sbt.included.configurations:
+  name: SBT Configurations Included
+  fromVersion: 3.0.0
+  primaryGroup: sbt
+  additionalGroups:
+  - source scan
+  help: The names of the sbt configurations to include.
+  helpDetailed: ''
+detect.sbt.report.search.depth:
+  name: SBT Report Search Depth
+  fromVersion: 4.3.0
+  primaryGroup: sbt
+  additionalGroups:
+  - source scan
+  help: Depth the sbt detector will use to search for report files.
+  helpDetailed: ''
+detect.blackduck.signature.scanner.local.path:
+  name: Signature Scanner Local Path
+  fromVersion: 4.2.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - global
+  help: To use a local signature scanner, specify the path where the signature scanner
+    was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the
+    'bin, icon, jre, and lib' directories of the expanded scan.cli.
+  helpDetailed: ''
+detect.hub.signature.scanner.parallel.processors:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - hub
+  help: The number of scans to run in parallel, defaults to 1, but if you specify
+    -1, the number of processors on the machine will be used.
+  helpDetailed: ''
+detect.hub.signature.scanner.arguments:
+  name: ''
+  fromVersion: 4.0.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - hub
+  help: Additional arguments to use when running the Hub signature scanner.
+  helpDetailed: ''
+detect.blackduck.signature.scanner.parallel.processors:
+  name: Signature Scanner Parallel Processors
+  fromVersion: 4.2.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - global
+  help: The number of scans to run in parallel, defaults to 1, but if you specify
+    -1, the number of processors on the machine will be used.
+  helpDetailed: ''
+detect.hub.signature.scanner.offline.local.path:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - offline
+  - hub
+  help: To use a local signature scanner and force offline, specify the path where
+    the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z'
+    and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.
+  helpDetailed: ''
+detect.blackduck.signature.scanner.arguments:
+  name: Signature Scanner Arguments
+  fromVersion: 4.2.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - global
+  help: Additional arguments to use when running the Black Duck signature scanner.
+  helpDetailed: ''
+detect.hub.signature.scanner.local.path:
+  name: ''
+  fromVersion: 4.2.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - offline
+  - hub
+  help: To use a local signature scanner, specify the path where the signature scanner
+    was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the
+    'bin, icon, jre, and lib' directories of the expanded scan.cli.
+  helpDetailed: ''
+detect.hub.signature.scanner.exclusion.name.patterns:
+  name: ''
+  fromVersion: 4.0.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - hub
+  help: A comma-separated list of directory name patterns Detect will search for and
+    add to the Signature Scanner --exclude flag values.
+  helpDetailed: "Detect will recursively search within the scan targets for files/directories\
+    \ that match these file name patterns and will create the corresponding exclusion\
+    \ patterns for the signature scanner.\r\nThese patterns will be added to the patterns\
+    \ provided by detect.blackduck.signature.scanner.exclusion.patterns."
+detect.blackduck.signature.scanner.disabled:
+  name: ''
+  fromVersion: 4.2.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - blackduck
+  help: Set to true to disable the Black Duck Signature Scanner.
+  helpDetailed: ''
+detect.blackduck.signature.scanner.offline.local.path:
+  name: Signature Scanner Local Path (Offline)
+  fromVersion: 4.2.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - global
+  help: To use a local signature scanner and force offline, specify the path where
+    the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z'
+    and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.
+  helpDetailed: ''
+detect.hub.signature.scanner.snippet.mode:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - hub
+  help: If set to true, the signature scanner will, if supported by your Hub version,
+    run in snippet scanning mode.
+  helpDetailed: ''
+detect.blackduck.signature.scanner.dry.run:
+  name: Signature Scanner Dry Run
+  fromVersion: 4.2.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - global
+  help: If set to true, the signature scanner results are not uploaded to Black Duck,
+    and the scanner results are written to disk.
+  helpDetailed: ''
+detect.blackduck.signature.scanner.paths:
+  name: Signature Scanner Target Paths
+  fromVersion: 4.2.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - global
+  help: These paths and only these paths will be scanned.
+  helpDetailed: ''
+detect.blackduck.signature.scanner.snippet.matching:
+  name: Snippet Matching
+  fromVersion: 5.5.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - global
+  - source scan
+  help: Use this value to enable the various snippet scanning modes. For a full explanation,
+    please refer to the Black Duck Signature Scanner documentation.
+  helpDetailed: ''
+detect.blackduck.signature.scanner.upload.source.mode:
+  name: Upload source mode
+  fromVersion: 5.4.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - global
+  - source scan
+  help: If set to true, the signature scanner will, if supported by your Black Duck
+    version, upload source code to Black Duck.
+  helpDetailed: ''
+detect.hub.signature.scanner.exclusion.patterns:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - hub
+  help: A comma-separated list of values to be used with the Signature Scanner --exclude
+    flag.
+  helpDetailed: ''
+detect.hub.signature.scanner.memory:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - hub
+  help: The memory for the scanner to use.
+  helpDetailed: ''
+detect.hub.signature.scanner.dry.run:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - hub
+  help: If set to true, the signature scanner results will not be uploaded to the
+    Hub and the scanner results will be written to disk.
+  helpDetailed: ''
+detect.hub.signature.scanner.paths:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - hub
+  help: These paths and only these paths will be scanned.
+  helpDetailed: ''
+detect.blackduck.signature.scanner.exclusion.name.patterns:
+  name: Directory Name Exclusion Patterns
+  fromVersion: 4.2.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - source scan
+  help: A comma-separated list of directory name patterns for which Detect searches
+    and adds to the signature scanner --exclude flag values.
+  helpDetailed: These patterns are file system glob patterns ('?' is a wildcard for
+    a single character, '*' is a wildcard for zero or more characters). Detect will
+    recursively search within the scan targets for files/directories that match these
+    patterns and will create the corresponding exclusion patterns (paths relative
+    to the scan target directory) for the signature scanner (Black Duck scan CLI).
+    Please note that the signature scanner will only exclude directories; matched
+    filenames will be passed to the signature scanner but will have no effect. These
+    patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns
+    and passed as --exclude values. Use this property when you want Detect to convert
+    the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns
+    to pass patterns directly to the signature scanner as-is.
+detect.blackduck.signature.scanner.exclusion.pattern.search.depth:
+  name: Exclusion Patterns Search Depth
+  fromVersion: 5.0.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - source scan
+  help: Enables you to adjust the depth to which Detect will search when creating
+    signature scanner exclusion patterns.
+  helpDetailed: ''
+detect.blackduck.signature.scanner.memory:
+  name: Signature Scanner Memory
+  fromVersion: 4.2.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - global
+  help: The memory for the scanner to use.
+  helpDetailed: ''
+detect.blackduck.signature.scanner.snippet.mode:
+  name: Snippet Scanning
+  fromVersion: 4.2.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - global
+  - source scan
+  help: If set to true, the signature scanner will, if supported by your Black Duck
+    version, run in snippet scanning mode.
+  helpDetailed: ''
+detect.binary.scan.file.path:
+  name: Binary Scan Target
+  fromVersion: 4.2.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - source path
+  help: The path to a binary file to scan.
+  helpDetailed: ''
+detect.hub.signature.scanner.host.url:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - hub
+  help: If this url is set, an attempt will be made to use it to download the signature
+    scanner. The server url provided must respect the Hub's urls for different operating
+    systems.
+  helpDetailed: ''
+detect.hub.signature.scanner.disabled:
+  name: ''
+  fromVersion: 3.0.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - hub
+  help: Set to true to disable the Hub Signature Scanner.
+  helpDetailed: ''
+detect.blackduck.signature.scanner.exclusion.patterns:
+  name: Exclusion Patterns
+  fromVersion: 4.2.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - source scan
+  help: A comma-separated list of values to be used with the Signature Scanner --exclude
+    flag.
+  helpDetailed: Each pattern provided is passed to the signature scanner (Black Duck
+    scan CLI) as a value for an --exclude option. The signature scanner requires that
+    these exclusion patterns start and end with a forward slash (/) and may not contain
+    double asterisks (**). These patterns will be added to the paths created from
+    detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude
+    values. Use this property to pass patterns directly to the signature scanner as-is.
+    Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect
+    to convert the given patterns to actual paths.
+detect.blackduck.signature.scanner.host.url:
+  name: Signature Scanner Host URL
+  fromVersion: 4.2.0
+  primaryGroup: signature scanner
+  additionalGroups:
+  - global
+  help: If this url is set, an attempt will be made to use it to download the signature
+    scanner. The server url provided must respect the Black Duck's urls for different
+    operating systems.
+  helpDetailed: ''
+detect.yarn.path:
+  name: Yarn Executable
+  fromVersion: 4.0.0
+  primaryGroup: yarn
+  additionalGroups:
+  - global
+  help: The path to the Yarn executable.
+  helpDetailed: ''
+detect.yarn.prod.only:
+  name: Include Yarn Production Dependencies Only
+  fromVersion: 4.0.0
+  primaryGroup: yarn
+  additionalGroups:
+  - global
+  - source scan
+  help: Set this to true to only scan production dependencies.
+  helpDetailed: ''
+detect.disable.without.hub:
+  name: ''
+  fromVersion: 4.0.0
+  primaryGroup: hub configuration
+  additionalGroups:
+  - hub
+  help: If true, during initialization Detect will check for Hub connectivity and exit with status code 0 if it cannot connect.
+  helpDetailed: ''

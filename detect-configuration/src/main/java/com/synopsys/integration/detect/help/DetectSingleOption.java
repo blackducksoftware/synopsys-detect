@@ -28,8 +28,9 @@ import java.util.stream.Collectors;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 
 public class DetectSingleOption extends DetectOption {
-    public DetectSingleOption(final DetectProperty detectProperty, final boolean strictValidation, final boolean caseSensitiveValidation, final List<String> validValues, final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
-        super(detectProperty, strictValidation, caseSensitiveValidation, validValues, detectOptionHelp, resolvedValue);
+    public DetectSingleOption(final DetectProperty detectProperty, final boolean strictValidation, final boolean caseSensitiveValidation, final List<String> validValues, final DetectOptionMetaData detectOptionMetaData,
+        final DetectOptionDeprecation detectOptionDeprecation, final String resolvedValue) {
+        super(detectProperty, strictValidation, caseSensitiveValidation, validValues, detectOptionMetaData, detectOptionDeprecation, resolvedValue);
     }
 
     @Override

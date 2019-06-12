@@ -27,17 +27,12 @@ import java.util.List;
 
 import com.synopsys.integration.detect.DetectMajorVersion;
 
-public class DetectOptionHelp {
-
-    public String description = "";
-    public String detailedHelp = "";
+public class DetectOptionMetaData {
+    public String name = "";
+    public String fromVersion = "";
+    public String help = "";
+    public String helpDetailed = "";
 
     public List<String> additionalGroups = new ArrayList<>();
     public String primaryGroup = "";
-
-    public boolean isDeprecated = false;
-    public String deprecation = "";
-    public DetectMajorVersion deprecationFailInVersion = DetectMajorVersion.ONE;
-    public DetectMajorVersion deprecationRemoveInVersion = DetectMajorVersion.ONE;
-
 }

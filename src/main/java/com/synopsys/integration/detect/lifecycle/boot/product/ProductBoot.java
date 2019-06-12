@@ -44,7 +44,8 @@ import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
 public class ProductBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public ProductRunData boot(final ProductDecision productDecision, final DetectConfiguration detectConfiguration, final BlackDuckConnectivityChecker blackDuckConnectivityChecker, final PolarisConnectivityChecker polarisConnectivityChecker,
+    public ProductRunData boot(final ProductDecision productDecision, final DetectConfiguration detectConfiguration, final BlackDuckConnectivityChecker blackDuckConnectivityChecker,
+        final PolarisConnectivityChecker polarisConnectivityChecker,
         final ProductBootFactory productBootFactory) throws DetectUserFriendlyException {
         if (!productDecision.willRunAny()) {
             throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
@@ -68,7 +69,7 @@ public class ProductBoot {
                 } else {
                     if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES, PropertyAuthority.None)) {
                         logger.info("Failed to connect to Black Duck: " + blackDuckConnectivityResult.getFailureReason());
-                        logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.", DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES.getPropertyName()));
+                        logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.", DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES.getPropertyKey()));
                     } else {
                         throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + blackDuckConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
                     }
@@ -91,7 +92,7 @@ public class ProductBoot {
         }
 
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
-            logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
+            logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyKey()));
             return null;
         }
 

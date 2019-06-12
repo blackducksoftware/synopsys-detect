@@ -33,7 +33,8 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.help.DetectOption;
-import com.synopsys.integration.detect.help.DetectOptionHelp;
+import com.synopsys.integration.detect.help.DetectOptionDeprecation;
+import com.synopsys.integration.detect.help.DetectOptionMetaData;
 import com.synopsys.integration.detect.help.html.HelpHtmlWriter;
 
 import freemarker.template.Configuration;
@@ -71,29 +72,33 @@ public class HelpJsonWriter {
     public HelpJsonOption convertOption(final DetectOption detectOption) {
         final HelpJsonOption helpJsonOption = new HelpJsonOption();
 
-        final DetectProperty property = detectOption.getDetectProperty();
-        helpJsonOption.propertyName = property.getPropertyName();
-        helpJsonOption.propertyKey = property.getPropertyKey();
-        helpJsonOption.propertyType = property.getPropertyType().getDisplayName();
-        helpJsonOption.addedInVersion = property.getAddedInVersion();
-        helpJsonOption.defaultValue = property.getDefaultValue();
-
-        final DetectOptionHelp optionHelp = detectOption.getDetectOptionHelp();
-        helpJsonOption.group = optionHelp.primaryGroup;
-        helpJsonOption.additionalGroups = optionHelp.additionalGroups;
-        helpJsonOption.description = optionHelp.description;
-        helpJsonOption.detailedDescription = optionHelp.detailedHelp;
-        helpJsonOption.deprecated = optionHelp.isDeprecated;
-        if (optionHelp.isDeprecated) {
-            helpJsonOption.deprecatedDescription = optionHelp.deprecation;
-            helpJsonOption.deprecatedFailInVersion = optionHelp.deprecationFailInVersion.getDisplayValue();
-            helpJsonOption.deprecatedRemoveInVersion = optionHelp.deprecationRemoveInVersion.getDisplayValue();
-        }
         helpJsonOption.strictValues = detectOption.hasStrictValidation();
         helpJsonOption.caseSensitiveValues = detectOption.hasCaseSensitiveValidation();
         helpJsonOption.acceptableValues = detectOption.getValidValues();
         helpJsonOption.hasAcceptableValues = detectOption.getValidValues().size() > 0;
         helpJsonOption.isCommaSeparatedList = detectOption.isCommaSeperatedList();
+
+        final DetectProperty property = detectOption.getDetectProperty();
+        helpJsonOption.propertyKey = property.getPropertyKey();
+        helpJsonOption.propertyType = property.getPropertyType().getDisplayName();
+        helpJsonOption.defaultValue = property.getDefaultValue();
+
+        final DetectOptionMetaData optionHelp = detectOption.getDetectOptionMetaData();
+        helpJsonOption.propertyName = optionHelp.name;
+        helpJsonOption.addedInVersion = optionHelp.fromVersion;
+        helpJsonOption.group = optionHelp.primaryGroup;
+        helpJsonOption.additionalGroups = optionHelp.additionalGroups;
+        helpJsonOption.description = optionHelp.help;
+        helpJsonOption.detailedDescription = optionHelp.helpDetailed;
+
+        final DetectOptionDeprecation optionDeprecation = detectOption.getDetectOptionDeprecation();
+        helpJsonOption.deprecated = optionDeprecation.isDeprecated;
+        if (optionDeprecation.isDeprecated) {
+            helpJsonOption.deprecatedDescription = optionDeprecation.deprecation;
+            helpJsonOption.deprecatedFailInVersion = optionDeprecation.deprecationFailInVersion.getDisplayValue();
+            helpJsonOption.deprecatedRemoveInVersion = optionDeprecation.deprecationRemoveInVersion.getDisplayValue();
+        }
+
         return helpJsonOption;
     }
 }

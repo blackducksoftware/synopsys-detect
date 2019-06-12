@@ -1,3 +1,8 @@
+import org.apache.commons.io.FileUtils
+import org.apache.commons.text.StringEscapeUtils
+
+import java.util.stream.Collectors
+
 final def versionFile = new File("${projectDir}/src/main/resources/version.txt")
 versionFile.delete()
 versionFile << version
@@ -6,4 +11,50 @@ dependencies {
     implementation 'org.freemarker:freemarker:2.3.26-incubating'
     implementation 'org.springframework:spring-core'
     implementation 'org.springframework:spring-context'
+    implementation 'org.yaml:snakeyaml:1.24'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'org.yaml', name: 'snakeyaml', version: '1.24'
+    }
+}
+
+def getEscaped(HashMap yaml, key) {
+    return StringEscapeUtils.escapeJava(yaml.get(key))
+}
+
+def generateMetaData(HashMap yaml, key) {
+    if (yaml.containsKey(key)) {
+        def propYaml = yaml.get(key) as HashMap
+        def help = getEscaped(propYaml, "help")
+        def line = "    // [YAML HELP] $help"
+        return line
+    } else {
+        throw new Exception("FAILED to generate meta data. Property '$key' does not exist in the YAML. Add it before building!")
+    }
+}
+
+build {
+    doFirst {
+        println "Starting generation of meta data for properties"
+        def yaml = new org.yaml.snakeyaml.Yaml().load(new File("$projectDir/src/main/resources/detect-properties.yaml").newInputStream()) as HashMap
+        def propertyFile = new File("$projectDir/src/main/java/com/synopsys/integration/detect/configuration/DetectProperty.java")
+
+        def out = []
+        propertyFile.eachLine { line ->
+            if (!line.contains("// [YAML HELP]")) {
+                if (line.contains("PropertyType.")) {
+                    def key = line.split("\"")[1]
+                    out.add(generateMetaData(yaml, key))
+                }
+                out.add(line)
+            }
+        }
+        FileUtils.writeLines(propertyFile, out)
+        println "Finished generating meta data for properties."
+    }
 }

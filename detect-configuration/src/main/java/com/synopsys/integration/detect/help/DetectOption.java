@@ -37,7 +37,8 @@ public abstract class DetectOption {
     private final List<String> validValues;
     private final boolean strictValidation;
     private final boolean caseSensitiveValidation;
-    private final DetectOptionHelp detectOptionHelp;
+    private final DetectOptionMetaData detectOptionMetaData;
+    private final DetectOptionDeprecation detectOptionDeprecation;
     private final String resolvedValue;
 
     private final List<String> warnings = new ArrayList<>();
@@ -48,12 +49,14 @@ public abstract class DetectOption {
     private String postInitValue = null;
     private boolean requestedDeprecation = false;
 
-    public DetectOption(final DetectProperty detectProperty, final boolean strictValidation, final boolean caseSensitiveValidation, final List<String> validValues, final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
+    public DetectOption(final DetectProperty detectProperty, final boolean strictValidation, final boolean caseSensitiveValidation, final List<String> validValues,
+        final DetectOptionMetaData detectOptionMetaData, final DetectOptionDeprecation detectOptionDeprecation, final String resolvedValue) {
         this.detectProperty = detectProperty;
         this.strictValidation = strictValidation;
         this.caseSensitiveValidation = caseSensitiveValidation;
         this.validValues = validValues;
-        this.detectOptionHelp = detectOptionHelp;
+        this.detectOptionMetaData = detectOptionMetaData;
+        this.detectOptionDeprecation = detectOptionDeprecation;
         this.resolvedValue = resolvedValue;
     }
 
@@ -93,8 +96,8 @@ public abstract class DetectOption {
         this.finalValueType = finalValueType;
     }
 
-    public DetectOptionHelp getDetectOptionHelp() {
-        return detectOptionHelp;
+    public DetectOptionMetaData getDetectOptionMetaData() {
+        return detectOptionMetaData;
     }
 
     public boolean hasStrictValidation() {
@@ -149,12 +152,12 @@ public abstract class DetectOption {
     }
 
     private String getDeprecationText() {
-        return "Will cause failures in version " + getDetectOptionHelp().deprecationFailInVersion.getDisplayValue() + ". Will be removed in version " + getDetectOptionHelp().deprecationRemoveInVersion.getDisplayValue() + ". ";
+        return "Will cause failures in version " + getDetectOptionDeprecation().deprecationFailInVersion.getDisplayValue() + ". Will be removed in version " + getDetectOptionDeprecation().deprecationRemoveInVersion.getDisplayValue() + ". ";
     }
 
     public void printOption(final HelpTextWriter writer) {
-        String description = getDetectOptionHelp().description;
-        if (getDetectOptionHelp().isDeprecated) {
+        String description = getDetectOptionMetaData().help;
+        if (getDetectOptionDeprecation().isDeprecated) {
             description = getDeprecationText() + description;
         }
         if (getValidValues().size() > 0) {
@@ -175,35 +178,35 @@ public abstract class DetectOption {
         writer.println("");
         writer.println("Detailed information for " + detectProperty.getPropertyKey());
         writer.println("");
-        if (getDetectOptionHelp().isDeprecated) {
+        if (getDetectOptionDeprecation().isDeprecated) {
             writer.println("Deprecated: " + getDeprecationText());
-            writer.println("Deprecation description: " + getDetectOptionHelp().deprecation);
+            writer.println("Deprecation help: " + getDetectOptionDeprecation().deprecation);
             writer.println("");
         }
-        writer.println("Property description: " + getDetectOptionHelp().description);
+        writer.println("Property help: " + getDetectOptionMetaData().help);
         writer.println("Property default value: " + detectProperty.getDefaultValue());
         if (getValidValues().size() > 0) {
             writer.println("Property acceptable values: " + getValidValues().stream().collect(Collectors.joining(", ")));
         }
         writer.println("");
 
-        final DetectOptionHelp help = getDetectOptionHelp();
-        if (StringUtils.isNotBlank(help.detailedHelp)) {
+        final DetectOptionMetaData help = getDetectOptionMetaData();
+        if (StringUtils.isNotBlank(help.helpDetailed)) {
             writer.println("Detailed help:");
-            writer.println(help.detailedHelp);
+            writer.println(help.helpDetailed);
             writer.println();
         }
     }
 
     public HelpHtmlOption createHtmlOption() {
-        final String description = getDetectOptionHelp().description;
+        final String description = getDetectOptionMetaData().help;
         String acceptableValues = "";
         if (getValidValues().size() > 0) {
             acceptableValues = getValidValues().stream().collect(Collectors.joining(", "));
         }
         String deprecationNotice = "";
-        if (getDetectOptionHelp().isDeprecated) {
-            deprecationNotice = getDeprecationText() + getDetectOptionHelp().deprecation;
+        if (getDetectOptionDeprecation().isDeprecated) {
+            deprecationNotice = getDeprecationText() + getDetectOptionDeprecation().deprecation;
         }
         String propertyKey = "";
         String defaultValue = "";
@@ -214,8 +217,12 @@ public abstract class DetectOption {
             defaultValue = detectProperty.getDefaultValue();
         }
 
-        final HelpHtmlOption htmlOption = new HelpHtmlOption(propertyKey, defaultValue, description, acceptableValues, getDetectOptionHelp().detailedHelp, deprecationNotice);
+        final HelpHtmlOption htmlOption = new HelpHtmlOption(propertyKey, defaultValue, description, acceptableValues, getDetectOptionMetaData().helpDetailed, deprecationNotice);
         return htmlOption;
+    }
+
+    public DetectOptionDeprecation getDetectOptionDeprecation() {
+        return detectOptionDeprecation;
     }
 
     public enum FinalValueType {

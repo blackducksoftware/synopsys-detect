@@ -27,18 +27,18 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.help.DetectArgumentState;
 import com.synopsys.integration.detect.help.DetectOption;
-import com.synopsys.integration.detect.help.DetectOptionHelp;
+import com.synopsys.integration.detect.help.DetectOptionMetaData;
 
 public class HelpPrinter {
+    static String PRINT_GROUP_DEFAULT = "default";
 
     private static final Comparator<DetectOption> SORT_BY_GROUP_THEN_KEY = (o1, o2) -> {
-        if (o1.getDetectOptionHelp().primaryGroup.equals(o2.getDetectOptionHelp().primaryGroup)) {
+        if (o1.getDetectOptionMetaData().primaryGroup.equals(o2.getDetectOptionMetaData().primaryGroup)) {
             return o1.getDetectProperty().getPropertyKey().compareTo(o2.getDetectProperty().getPropertyKey());
         } else {
-            return o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup);
+            return o1.getDetectOptionMetaData().primaryGroup.compareTo(o2.getDetectOptionMetaData().primaryGroup);
         }
     };
 
@@ -46,10 +46,10 @@ public class HelpPrinter {
         final HelpTextWriter writer = new HelpTextWriter();
 
         final List<DetectOption> currentOptions = allOptions.stream()
-                                                      .filter(it -> !it.getDetectOptionHelp().isDeprecated)
+                                                      .filter(it -> !it.getDetectOptionDeprecation().isDeprecated)
                                                       .collect(Collectors.toList());
         final List<DetectOption> deprecatedOptions = allOptions.stream()
-                                                         .filter(it -> it.getDetectOptionHelp().isDeprecated)
+                                                         .filter(it -> it.getDetectOptionDeprecation().isDeprecated)
                                                          .collect(Collectors.toList());
         final List<String> allPrintGroups = getPrintGroups(currentOptions);
 
@@ -89,22 +89,22 @@ public class HelpPrinter {
     }
 
     private void printDefaultHelp(final HelpTextWriter writer, final List<DetectOption> options) {
-        printHelpFilteredByPrintGroup(writer, options, DetectProperty.PropertyConstants.PRINT_GROUP_DEFAULT);
+        printHelpFilteredByPrintGroup(writer, options, PRINT_GROUP_DEFAULT);
     }
 
     private void printHelpFilteredByPrintGroup(final HelpTextWriter writer, final List<DetectOption> options, final String filterGroup) {
         final String notes = "Showing help only for: " + filterGroup;
 
         final List<DetectOption> filteredOptions = options.stream()
-                                                       .filter(detectOption -> optionMatchesFilterGroup(detectOption.getDetectOptionHelp(), filterGroup))
+                                                       .filter(detectOption -> optionMatchesFilterGroup(detectOption.getDetectOptionMetaData(), filterGroup))
                                                        .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
     }
 
-    private boolean optionMatchesFilterGroup(final DetectOptionHelp detectOptionHelp, final String filterGroup) {
-        final boolean primaryMatches = detectOptionHelp.primaryGroup.equalsIgnoreCase(filterGroup);
-        final boolean additionalMatches = detectOptionHelp.additionalGroups.stream()
+    private boolean optionMatchesFilterGroup(final DetectOptionMetaData detectOptionMetaData, final String filterGroup) {
+        final boolean primaryMatches = detectOptionMetaData.primaryGroup.equalsIgnoreCase(filterGroup);
+        final boolean additionalMatches = detectOptionMetaData.additionalGroups.stream()
                                               .anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup));
         return primaryMatches || additionalMatches;
     }
@@ -131,7 +131,7 @@ public class HelpPrinter {
 
     private List<String> getPrintGroups(final List<DetectOption> options) {
         return options.stream()
-                   .flatMap(it -> it.getDetectOptionHelp().additionalGroups.stream())
+                   .flatMap(it -> it.getDetectOptionMetaData().additionalGroups.stream())
                    .distinct()
                    .sorted()
                    .collect(Collectors.toList());
@@ -160,7 +160,7 @@ public class HelpPrinter {
 
         String group = null;
         for (final DetectOption detectOption : sorted) {
-            final String currentGroup = detectOption.getDetectOptionHelp().primaryGroup;
+            final String currentGroup = detectOption.getDetectOptionMetaData().primaryGroup;
             if (group == null) {
                 group = currentGroup;
                 writer.println("[" + group + "]");

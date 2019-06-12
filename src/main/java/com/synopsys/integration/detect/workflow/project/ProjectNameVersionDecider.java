@@ -112,11 +112,11 @@ public class ProjectNameVersionDecider {
             toolOrder = Arrays.asList(tools).stream().map(it -> DetectTool.valueOf(it)).collect(Collectors.toList());
         }
         if (toolOrder == null) {
-            throw new DetectUserFriendlyException("Could not determine project tool order. Please specify a tool order using " + DetectProperty.DETECT_PROJECT_TOOL.getPropertyName(), ExitCodeType.FAILURE_CONFIGURATION);
+            throw new DetectUserFriendlyException("Could not determine project tool order. Please specify a tool order using " + DetectProperty.DETECT_PROJECT_TOOL.getPropertyKey(), ExitCodeType.FAILURE_CONFIGURATION);
         }
 
         if (toolOrder == null) {
-            throw new DetectUserFriendlyException("Could not determine project tool order. Please specify a tool order using " + DetectProperty.DETECT_PROJECT_TOOL.getPropertyName(), ExitCodeType.FAILURE_CONFIGURATION);
+            throw new DetectUserFriendlyException("Could not determine project tool order. Please specify a tool order using " + DetectProperty.DETECT_PROJECT_TOOL.getPropertyKey(), ExitCodeType.FAILURE_CONFIGURATION);
         }
 
         for (DetectTool tool : toolOrder) {

@@ -37,7 +37,7 @@ public class HelpHtmlDataBuilder {
     private final Map<String, HelpHtmlGroup> groupsByName = new HashMap<>();
 
     public HelpHtmlDataBuilder addDetectOption(final DetectOption option) {
-        final String groupName = StringUtils.capitalize(option.getDetectOptionHelp().primaryGroup);
+        final String groupName = StringUtils.capitalize(option.getDetectOptionMetaData().primaryGroup);
         if (!groupsByName.containsKey(groupName)) {
             final HelpHtmlGroup group = new HelpHtmlGroup();
             group.groupName = groupName;
