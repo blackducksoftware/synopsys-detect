@@ -32,7 +32,7 @@ import com.synopsys.integration.detector.evaluation.SearchEnvironment;
 import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
-public class  DetectorEvaluation {
+public class DetectorEvaluation {
     public static final String NO_MESSAGE = "Unknown";
 
     private final DetectorRule detectorRule;
@@ -124,7 +124,7 @@ public class  DetectorEvaluation {
         String description = null;
 
         if (detectorResult != null) {
-            description = detectorResult.toDescription();
+            description = detectorResult.getDescription();
         }
 
         return Optional.ofNullable(description);
