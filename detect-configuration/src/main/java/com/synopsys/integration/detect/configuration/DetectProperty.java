@@ -131,9 +131,9 @@ public enum DetectProperty {
     // [YAML HELP] These paths and only these paths will be scanned.
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS("detect.blackduck.signature.scanner.paths", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
-    @AcceptableValues(value = { "SNIPPET_MATCHING", "SNIPPET_MATCHING_ONLY", "FULL_SNIPPET_MATCHING", "FULL_SNIPPET_MATCHING_ONLY", "NONE" }, strict = true)
     // [YAML HELP] Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the Black Duck Signature Scanner documentation.
-        DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING("detect.blackduck.signature.scanner.snippet.matching", PropertyType.STRING, PropertyAuthority.None, "NONE"),
+    @AcceptableValues(value = { "SNIPPET_MATCHING", "SNIPPET_MATCHING_ONLY", "FULL_SNIPPET_MATCHING", "FULL_SNIPPET_MATCHING_ONLY", "NONE" }, strict = true)
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING("detect.blackduck.signature.scanner.snippet.matching", PropertyType.STRING, PropertyAuthority.None, "NONE"),
 
     // [YAML HELP] If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck.
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE("detect.blackduck.signature.scanner.upload.source.mode", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
@@ -339,12 +339,12 @@ public enum DetectProperty {
     @DetectDeprecation(description = "This property is being removed. Please use --detect.project.name in the future.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
 
     // [YAML HELP] The name of your PIP project, to be used if your project's name cannot be correctly inferred from its setup.py file.
-        DETECT_PIP_PROJECT_NAME("detect.pip.project.name", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PIP_PROJECT_NAME("detect.pip.project.name", PropertyType.STRING, PropertyAuthority.None),
 
     @DetectDeprecation(description = "This property is being removed. Please use --detect.project.version.name in the future.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
 
     // [YAML HELP] The version of your PIP project, to be used if your project's version name cannot be correctly inferred from its setup.py file.
-        DETECT_PIP_PROJECT_VERSION_NAME("detect.pip.project.version.name", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PIP_PROJECT_VERSION_NAME("detect.pip.project.version.name", PropertyType.STRING, PropertyAuthority.None),
 
     // [YAML HELP] The path to the requirements.txt file.
     DETECT_PIP_REQUIREMENTS_PATH("detect.pip.requirements.path", PropertyType.STRING, PropertyAuthority.None),
@@ -361,16 +361,16 @@ public enum DetectProperty {
     // [YAML HELP] Additional arguments to pass to polaris.
     POLARIS_ARGUMENTS("polaris.arguments", PropertyType.STRING, PropertyAuthority.None),
 
-    @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL", "UNSPECIFIED" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
     // [YAML HELP] A comma-separated list of policy violation severities that will fail Detect. If this is not set, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except UNSPECIFIED.
-        DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES("detect.policy.check.fail.on.severities", PropertyType.STRING, PropertyAuthority.None),
+    @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL", "UNSPECIFIED" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
+    DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES("detect.policy.check.fail.on.severities", PropertyType.STRING, PropertyAuthority.None),
 
     // [YAML HELP] Sets the 'Application ID' project setting.
     DETECT_PROJECT_APPLICATION_ID("detect.project.application.id", PropertyType.STRING, PropertyAuthority.None, null),
 
-    @AcceptableValues(value = { "COMPONENT_DATA", "VULN_DATA" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
     // [YAML HELP] An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set.
-        DETECT_PROJECT_CLONE_CATEGORIES("detect.project.clone.categories", PropertyType.STRING_ARRAY, PropertyAuthority.None, "COMPONENT_DATA,VULN_DATA"),
+    @AcceptableValues(value = { "COMPONENT_DATA", "VULN_DATA" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
+    DETECT_PROJECT_CLONE_CATEGORIES("detect.project.clone.categories", PropertyType.STRING_ARRAY, PropertyAuthority.None, "COMPONENT_DATA,VULN_DATA"),
 
     // [YAML HELP] A prefix to the name of the scans created by Detect. Useful for running against the same projects on multiple machines.
     DETECT_PROJECT_CODELOCATION_PREFIX("detect.project.codelocation.prefix", PropertyType.STRING, PropertyAuthority.None, ""),
@@ -396,17 +396,17 @@ public enum DetectProperty {
     // [YAML HELP] An override for the name to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.
     DETECT_PROJECT_NAME("detect.project.name", PropertyType.STRING, PropertyAuthority.None),
 
-    @AcceptableValues(value = { "1", "5" }, caseSensitive = false, strict = false)
     // [YAML HELP] If a Black Duck project tier is specified, your project will be created with this tier.
-        DETECT_PROJECT_TIER("detect.project.tier", PropertyType.INTEGER, PropertyAuthority.None),
+    @AcceptableValues(value = { "1", "5" }, caseSensitive = false, strict = false)
+    DETECT_PROJECT_TIER("detect.project.tier", PropertyType.INTEGER, PropertyAuthority.None),
 
-    @AcceptableValues(value = { "DETECTOR", "DOCKER", "BAZEL" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
     // [YAML HELP] The tool priority for project name and version. The project name and version will be determined by the first tool in this list that provides them.
-        DETECT_PROJECT_TOOL("detect.project.tool", PropertyType.STRING, PropertyAuthority.None, "DOCKER,DETECTOR,BAZEL"),
+    @AcceptableValues(value = { "DETECTOR", "DOCKER", "BAZEL" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
+    DETECT_PROJECT_TOOL("detect.project.tool", PropertyType.STRING, PropertyAuthority.None, "DOCKER,DETECTOR,BAZEL"),
 
-    @AcceptableValues(value = { "EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE" }, caseSensitive = false, strict = false)
     // [YAML HELP] An override for the Project Version distribution
-        DETECT_PROJECT_VERSION_DISTRIBUTION("detect.project.version.distribution", PropertyType.STRING, PropertyAuthority.None, "External"),
+    @AcceptableValues(value = { "EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE" }, caseSensitive = false, strict = false)
+    DETECT_PROJECT_VERSION_DISTRIBUTION("detect.project.version.distribution", PropertyType.STRING, PropertyAuthority.None, "External"),
 
     // [YAML HELP] An override for the version to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.
     DETECT_PROJECT_VERSION_NAME("detect.project.version.name", PropertyType.STRING, PropertyAuthority.None),
@@ -417,9 +417,9 @@ public enum DetectProperty {
     // [YAML HELP] If project version notes are specified, your project version will be created with these notes.
     DETECT_PROJECT_VERSION_NOTES("detect.project.version.notes", PropertyType.STRING, PropertyAuthority.None),
 
-    @AcceptableValues(value = { "ARCHIVED", "DEPRECATED", "DEVELOPMENT", "PLANNING", "PRERELEASE", "RELEASED" }, caseSensitive = false, strict = false)
     // [YAML HELP] An override for the Project Version phase.
-        DETECT_PROJECT_VERSION_PHASE("detect.project.version.phase", PropertyType.STRING, PropertyAuthority.None, "Development"),
+    @AcceptableValues(value = { "ARCHIVED", "DEPRECATED", "DEVELOPMENT", "PLANNING", "PRERELEASE", "RELEASED" }, caseSensitive = false, strict = false)
+    DETECT_PROJECT_VERSION_PHASE("detect.project.version.phase", PropertyType.STRING, PropertyAuthority.None, "Development"),
 
     // [YAML HELP] If set to true, will update the Project Version with the configured properties. See detailed help for more information.
     DETECT_PROJECT_VERSION_UPDATE("detect.project.version.update", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
@@ -469,13 +469,13 @@ public enum DetectProperty {
     // [YAML HELP] Test the connection to Black Duck with the current configuration.
     DETECT_TEST_CONNECTION("detect.test.connection", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
-    @AcceptableValues(value = { "BAZEL", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
     // [YAML HELP] The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.
-        DETECT_TOOLS("detect.tools", PropertyType.STRING, PropertyAuthority.None),
-
     @AcceptableValues(value = { "BAZEL", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
+    DETECT_TOOLS("detect.tools", PropertyType.STRING, PropertyAuthority.None),
+
     // [YAML HELP] The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.
-        DETECT_TOOLS_EXCLUDED("detect.tools.excluded", PropertyType.STRING, PropertyAuthority.None),
+    @AcceptableValues(value = { "BAZEL", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
+    DETECT_TOOLS_EXCLUDED("detect.tools.excluded", PropertyType.STRING, PropertyAuthority.None),
 
     // [YAML HELP] The path to the Yarn executable.
     DETECT_YARN_PATH("detect.yarn.path", PropertyType.STRING, PropertyAuthority.None),
@@ -483,9 +483,9 @@ public enum DetectProperty {
     // [YAML HELP] Set this to true to only scan production dependencies.
     DETECT_YARN_PROD_ONLY("detect.yarn.prod.only", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
-    @AcceptableValues(value = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
     // [YAML HELP] The logging level of Detect.
-        LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION("logging.level.com.synopsys.integration", PropertyType.STRING, PropertyAuthority.None, "INFO"),
+    @AcceptableValues(value = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
+    LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION("logging.level.com.synopsys.integration", PropertyType.STRING, PropertyAuthority.None, "INFO"),
 
     // [YAML HELP] If set to true, Detect will wait for Synopsys products until results are available or the blackduck.timeout is exceeded.
     DETECT_WAIT_FOR_RESULTS("detect.wait.for.results", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
@@ -494,241 +494,241 @@ public enum DetectProperty {
      * DEPRECATED START
      *********************************************************************************************/
 
+    // [YAML HELP] Timeout for response from Black Duck regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.
     @Deprecated
     @DetectDeprecation(description = "This property is now deprecated. Please use --detect.report.timeout in the future. NOTE the new property is in SECONDS not MILLISECONDS.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] Timeout for response from Black Duck regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.
-        DETECT_API_TIMEOUT("detect.api.timeout", PropertyType.LONG, PropertyAuthority.None, "300000"),
+    DETECT_API_TIMEOUT("detect.api.timeout", PropertyType.LONG, PropertyAuthority.None, "300000"),
 
+    // [YAML HELP] URL of the Hub server.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.url in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] URL of the Hub server.
-        BLACKDUCK_HUB_URL("blackduck.hub.url", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_URL("blackduck.hub.url", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] The time to wait for rest connections to complete in seconds.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.timeout in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] The time to wait for rest connections to complete in seconds.
-        BLACKDUCK_HUB_TIMEOUT("blackduck.hub.timeout", PropertyType.INTEGER, PropertyAuthority.None, "120"),
+    BLACKDUCK_HUB_TIMEOUT("blackduck.hub.timeout", PropertyType.INTEGER, PropertyAuthority.None, "120"),
 
+    // [YAML HELP] Hub username.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.username in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] Hub username.
-        BLACKDUCK_HUB_USERNAME("blackduck.hub.username", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_USERNAME("blackduck.hub.username", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] Hub password.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.password in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] Hub password.
-        BLACKDUCK_HUB_PASSWORD("blackduck.hub.password", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PASSWORD("blackduck.hub.password", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] Hub API Token.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.api.token in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] Hub API Token.
-        BLACKDUCK_HUB_API_TOKEN("blackduck.hub.api.token", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_API_TOKEN("blackduck.hub.api.token", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] Proxy host.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.host in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] Proxy host.
-        BLACKDUCK_HUB_PROXY_HOST("blackduck.hub.proxy.host", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PROXY_HOST("blackduck.hub.proxy.host", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] Proxy port.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.port in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] Proxy port.
-        BLACKDUCK_HUB_PROXY_PORT("blackduck.hub.proxy.port", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PROXY_PORT("blackduck.hub.proxy.port", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] Proxy username.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.username in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] Proxy username.
-        BLACKDUCK_HUB_PROXY_USERNAME("blackduck.hub.proxy.username", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PROXY_USERNAME("blackduck.hub.proxy.username", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] Proxy password.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.password in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] Proxy password.
-        BLACKDUCK_HUB_PROXY_PASSWORD("blackduck.hub.proxy.password", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PROXY_PASSWORD("blackduck.hub.proxy.password", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] NTLM Proxy domain.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.ntlm.domain in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] NTLM Proxy domain.
-        BLACKDUCK_HUB_PROXY_NTLM_DOMAIN("blackduck.hub.proxy.ntlm.domain", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PROXY_NTLM_DOMAIN("blackduck.hub.proxy.ntlm.domain", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] A comma-separated list of host patterns that should not use the proxy.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.ignored.hosts in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] A comma-separated list of host patterns that should not use the proxy.
-        BLACKDUCK_HUB_PROXY_IGNORED_HOSTS("blackduck.hub.proxy.ignored.hosts", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PROXY_IGNORED_HOSTS("blackduck.hub.proxy.ignored.hosts", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] NTLM Proxy workstation.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.ntlm.workstation in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] NTLM Proxy workstation.
-        BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION("blackduck.hub.proxy.ntlm.workstation", PropertyType.STRING, PropertyAuthority.None),
+    BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION("blackduck.hub.proxy.ntlm.workstation", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] If true, automatically trusts the certificate for the current run of Detect only.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.trust.cert in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] If true, automatically trusts the certificate for the current run of Detect only.
-        BLACKDUCK_HUB_TRUST_CERT("blackduck.hub.trust.cert", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    BLACKDUCK_HUB_TRUST_CERT("blackduck.hub.trust.cert", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    // [YAML HELP] This disables any Hub communication. If true, Detect does not upload BDIO files, does not check policies, and does not download and install the signature scanner.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.offline.mode in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] This disables any Hub communication. If true, Detect does not upload BDIO files, does not check policies, and does not download and install the signature scanner.
-        BLACKDUCK_HUB_OFFLINE_MODE("blackduck.hub.offline.mode", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    BLACKDUCK_HUB_OFFLINE_MODE("blackduck.hub.offline.mode", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
-    @Deprecated
-    @DetectDeprecation(description = "This property is changing. Please use --detect.ignore.connection.failures in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     // [YAML HELP] If true, during initialization Detect will check for Hub connectivity and exit with status code 0 if it cannot connect.
-        DETECT_DISABLE_WITHOUT_HUB("detect.disable.without.hub", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
-
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.ignore.connection.failures in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect.
-        DETECT_DISABLE_WITHOUT_BLACKDUCK("detect.disable.without.blackduck", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_DISABLE_WITHOUT_HUB("detect.disable.without.hub", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    // [YAML HELP] If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect.
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.ignore.connection.failures in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    DETECT_DISABLE_WITHOUT_BLACKDUCK("detect.disable.without.blackduck", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+
+    // [YAML HELP] If true, the default behavior of printing your configuration properties at startup will be suppressed.
     @Deprecated
     @DetectDeprecation(description = "This property is being removed. Configuration can no longer be suppressed individually. Log level can be used.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] If true, the default behavior of printing your configuration properties at startup will be suppressed.
-        DETECT_SUPPRESS_CONFIGURATION_OUTPUT("detect.suppress.configuration.output", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_SUPPRESS_CONFIGURATION_OUTPUT("detect.suppress.configuration.output", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    // [YAML HELP] If true, the default behavior of printing the Detect Results will be suppressed.
     @Deprecated
     @DetectDeprecation(description = "This property is being removed. Results can no longer be suppressed individually. Log level can be used.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] If true, the default behavior of printing the Detect Results will be suppressed.
-        DETECT_SUPPRESS_RESULTS_OUTPUT("detect.suppress.results.output", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_SUPPRESS_RESULTS_OUTPUT("detect.suppress.results.output", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    // [YAML HELP] By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify \"ALL\". Exclusion rules always win.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.excluded.detector.types in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify \"ALL\". Exclusion rules always win.
-        DETECT_EXCLUDED_BOM_TOOL_TYPES("detect.excluded.bom.tool.types", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_EXCLUDED_BOM_TOOL_TYPES("detect.excluded.bom.tool.types", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] If true, the bom tool search will exclude the default directory names. See the detailed help for more information.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.detector.search.exclusion.defaults in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] If true, the bom tool search will exclude the default directory names. See the detailed help for more information.
-        DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS("detect.bom.tool.search.exclusion.defaults", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
+    DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS("detect.bom.tool.search.exclusion.defaults", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
+    // [YAML HELP] A comma-separated list of directory names to exclude from the bom tool search.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.detector.search.exclusion in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] A comma-separated list of directory names to exclude from the bom tool search.
-        DETECT_BOM_TOOL_SEARCH_EXCLUSION("detect.bom.tool.search.exclusion", PropertyType.STRING_ARRAY, PropertyAuthority.None),
+    DETECT_BOM_TOOL_SEARCH_EXCLUSION("detect.bom.tool.search.exclusion", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
+    // [YAML HELP] By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.included.detector.types in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.
-        DETECT_INCLUDED_BOM_TOOL_TYPES("detect.included.bom.tool.types", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_INCLUDED_BOM_TOOL_TYPES("detect.included.bom.tool.types", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] Depth from source paths to search for sbt report files.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.sbt.report.depth in the future.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
-    // [YAML HELP] Depth from source paths to search for sbt report files.
-        DETECT_SEARCH_DEPTH("detect.search.depth", PropertyType.INTEGER, PropertyAuthority.None, "3"),
+    DETECT_SEARCH_DEPTH("detect.search.depth", PropertyType.INTEGER, PropertyAuthority.None, "3"),
 
+    // [YAML HELP] The detector to choose when multiple detector types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.project.detector in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] The detector to choose when multiple detector types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.
-        DETECT_PROJECT_BOM_TOOL("detect.project.bom.tool", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_PROJECT_BOM_TOOL("detect.project.bom.tool", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] Depth of subdirectories within the source directory to search for files that indicate whether a detector applies.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.detector.search.depth in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] Depth of subdirectories within the source directory to search for files that indicate whether a detector applies.
-        DETECT_BOM_TOOL_SEARCH_DEPTH("detect.bom.tool.search.depth", PropertyType.INTEGER, PropertyAuthority.None, "0"),
+    DETECT_BOM_TOOL_SEARCH_DEPTH("detect.bom.tool.search.depth", PropertyType.INTEGER, PropertyAuthority.None, "0"),
 
+    // [YAML HELP] If set, Detect will fail if it does not find the bom tool types supplied here.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.required.detector.types in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] If set, Detect will fail if it does not find the bom tool types supplied here.
-        DETECT_REQUIRED_BOM_TOOL_TYPES("detect.required.bom.tool.types", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_REQUIRED_BOM_TOOL_TYPES("detect.required.bom.tool.types", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.detector.search.continue in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.
-        DETECT_BOM_TOOL_SEARCH_CONTINUE("detect.bom.tool.search.continue", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_BOM_TOOL_SEARCH_CONTINUE("detect.bom.tool.search.continue", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    // [YAML HELP] The respository gradle should use to look for the gradle inspector dependencies.
     @Deprecated
     @DetectDeprecation(description = "In the future, the gradle inspector will no longer be downloaded from a custom repository, please use Detect Air Gap instead.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] The respository gradle should use to look for the gradle inspector dependencies.
-        DETECT_GRADLE_INSPECTOR_REPOSITORY_URL("detect.gradle.inspector.repository.url", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_GRADLE_INSPECTOR_REPOSITORY_URL("detect.gradle.inspector.repository.url", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] Name of the Nuget Inspector package and the Nuget Inspector exe. (Do not include '.exe'.)
     @Deprecated
     @DetectDeprecation(description = "In the future, Detect will not look for a custom named inspector.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] Name of the Nuget Inspector package and the Nuget Inspector exe. (Do not include '.exe'.)
-        DETECT_NUGET_INSPECTOR_NAME("detect.nuget.inspector.name", PropertyType.STRING, PropertyAuthority.None, "IntegrationNugetInspector"),
+    DETECT_NUGET_INSPECTOR_NAME("detect.nuget.inspector.name", PropertyType.STRING, PropertyAuthority.None, "IntegrationNugetInspector"),
 
+    // [YAML HELP] The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package.
     @Deprecated
     @DetectDeprecation(description = "In the future, Detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package.
-        DETECT_NUGET_PATH("detect.nuget.path", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_NUGET_PATH("detect.nuget.path", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.dry.run in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.
-        DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN("detect.hub.signature.scanner.dry.run", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN("detect.hub.signature.scanner.dry.run", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    // [YAML HELP] If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.snippet.mode in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.
-        DETECT_HUB_SIGNATURE_SCANNER_SNIPPET_MODE("detect.hub.signature.scanner.snippet.mode", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_HUB_SIGNATURE_SCANNER_SNIPPET_MODE("detect.hub.signature.scanner.snippet.mode", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    // [YAML HELP] A comma-separated list of values to be used with the Signature Scanner --exclude flag.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.patterns in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] A comma-separated list of values to be used with the Signature Scanner --exclude flag.
-        DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS("detect.hub.signature.scanner.exclusion.patterns", PropertyType.STRING_ARRAY, PropertyAuthority.None),
+    DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS("detect.hub.signature.scanner.exclusion.patterns", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
+    // [YAML HELP] These paths and only these paths will be scanned.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.paths in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] These paths and only these paths will be scanned.
-        DETECT_HUB_SIGNATURE_SCANNER_PATHS("detect.hub.signature.scanner.paths", PropertyType.STRING_ARRAY, PropertyAuthority.None),
+    DETECT_HUB_SIGNATURE_SCANNER_PATHS("detect.hub.signature.scanner.paths", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
+    // [YAML HELP] A comma-separated list of directory name patterns Detect will search for and add to the Signature Scanner --exclude flag values.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.name.patterns in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] A comma-separated list of directory name patterns Detect will search for and add to the Signature Scanner --exclude flag values.
-        DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.hub.signature.scanner.exclusion.name.patterns", PropertyType.STRING_ARRAY, PropertyAuthority.None, "node_modules"),
+    DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.hub.signature.scanner.exclusion.name.patterns", PropertyType.STRING_ARRAY, PropertyAuthority.None, "node_modules"),
 
+    // [YAML HELP] The memory for the scanner to use.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.memory in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] The memory for the scanner to use.
-        DETECT_HUB_SIGNATURE_SCANNER_MEMORY("detect.hub.signature.scanner.memory", PropertyType.INTEGER, PropertyAuthority.None, "4096"),
+    DETECT_HUB_SIGNATURE_SCANNER_MEMORY("detect.hub.signature.scanner.memory", PropertyType.INTEGER, PropertyAuthority.None, "4096"),
 
-    @Deprecated
-    @DetectDeprecation(description = "This property is changing. Please use --detect.tools in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     // [YAML HELP] Set to true to disable the Hub Signature Scanner.
-        DETECT_HUB_SIGNATURE_SCANNER_DISABLED("detect.hub.signature.scanner.disabled", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
-
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.tools in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] Set to true to disable the Black Duck Signature Scanner.
-        DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED("detect.blackduck.signature.scanner.disabled", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_HUB_SIGNATURE_SCANNER_DISABLED("detect.hub.signature.scanner.disabled", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    // [YAML HELP] Set to true to disable the Black Duck Signature Scanner.
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.tools in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED("detect.blackduck.signature.scanner.disabled", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+
+    // [YAML HELP] To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.offline.local.path in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.
-        DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH("detect.hub.signature.scanner.offline.local.path", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH("detect.hub.signature.scanner.offline.local.path", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.local.path in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.
-        DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH("detect.hub.signature.scanner.local.path", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH("detect.hub.signature.scanner.local.path", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.host.url in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.
-        DETECT_HUB_SIGNATURE_SCANNER_HOST_URL("detect.hub.signature.scanner.host.url", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_HUB_SIGNATURE_SCANNER_HOST_URL("detect.hub.signature.scanner.host.url", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.parallel.processors in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.
-        DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS("detect.hub.signature.scanner.parallel.processors", PropertyType.INTEGER, PropertyAuthority.None, "1"),
+    DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS("detect.hub.signature.scanner.parallel.processors", PropertyType.INTEGER, PropertyAuthority.None, "1"),
 
+    // [YAML HELP] Additional arguments to use when running the Hub signature scanner.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.arguments in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] Additional arguments to use when running the Hub signature scanner.
-        DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS("detect.hub.signature.scanner.arguments", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS("detect.hub.signature.scanner.arguments", PropertyType.STRING, PropertyAuthority.None),
 
+    // [YAML HELP] Set to false to disable the Synopsys Polaris Tool.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.tools and POLARIS in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] Set to false to disable the Synopsys Polaris Tool.
-        DETECT_SWIP_ENABLED("detect.polaris.enabled", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_SWIP_ENABLED("detect.polaris.enabled", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
+    // [YAML HELP] The logging level of Detect.
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --logging.level.com.synopsys.integration in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @AcceptableValues(value = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
-    // [YAML HELP] The logging level of Detect.
-        LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION("logging.level.com.blackducksoftware.integration", PropertyType.STRING, PropertyAuthority.None, "INFO"),
+    LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION("logging.level.com.blackducksoftware.integration", PropertyType.STRING, PropertyAuthority.None, "INFO"),
 
+    // [YAML HELP] If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode.
     @Deprecated
     @DetectDeprecation(description = "This property is now deprecated. Please use --detect.blackduck.signature.scanner.snippet.matching in the future. NOTE the new property is one of a particular set of values. You will need to consult the documentation for the Signature Scanner in Black Duck for details.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    // [YAML HELP] If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode.
-        DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE("detect.blackduck.signature.scanner.snippet.mode", PropertyType.BOOLEAN, PropertyAuthority.None, "false");
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE("detect.blackduck.signature.scanner.snippet.mode", PropertyType.BOOLEAN, PropertyAuthority.None, "false");
 
     /**********************************************************************************************
      * DEPRECATED END
