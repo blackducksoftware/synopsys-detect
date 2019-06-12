@@ -1,12 +1,13 @@
-package com.synopsys.integration.detect.kotlin.project
+package com.synopsys.integration.detect.kotlin.nameversion
 
 import com.synopsys.integration.detector.base.DetectorType
 import com.synopsys.integration.util.NameVersion
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
 class DetectorNameVersionDecider {
-    private val logger = LoggerFactory.getLogger(DetectorNameVersionDecider::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(DetectorNameVersionDecider::class.java)
 
     fun decideProjectNameVersion(projectNamePossibilities: List<DetectorProjectInfo>, preferredBomToolType: DetectorType?): Optional<NameVersion> {
         val nameVersionDecision = decideProjectNameVersionFromDetector(projectNamePossibilities, preferredBomToolType)

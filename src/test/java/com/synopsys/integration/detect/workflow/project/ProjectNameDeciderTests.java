@@ -7,11 +7,11 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.synopsys.integration.detect.kotlin.project.DetectorNameVersionDecider;
+import com.synopsys.integration.detect.kotlin.nameversion.DetectorNameVersionDecider;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.util.NameVersion;
-import com.synopsys.integration.detect.kotlin.project.DetectorProjectInfo;
+import com.synopsys.integration.detect.kotlin.nameversion.DetectorProjectInfo;
 
 public class ProjectNameDeciderTests {
 

@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.kotlin.project
+package com.synopsys.integration.detect.kotlin.nameversion
 
 import com.synopsys.integration.detector.base.DetectorEvaluation
 import com.synopsys.integration.detector.base.DetectorType
