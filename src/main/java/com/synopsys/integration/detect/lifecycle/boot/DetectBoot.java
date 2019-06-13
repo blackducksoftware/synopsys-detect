@@ -49,6 +49,7 @@ import com.synopsys.integration.detect.help.DetectArgumentState;
 import com.synopsys.integration.detect.help.DetectArgumentStateParser;
 import com.synopsys.integration.detect.help.DetectOption;
 import com.synopsys.integration.detect.help.DetectOptionManager;
+import com.synopsys.integration.detect.help.DetectOptionMetaDataProvider;
 import com.synopsys.integration.detect.help.html.HelpHtmlWriter;
 import com.synopsys.integration.detect.help.json.HelpJsonWriter;
 import com.synopsys.integration.detect.help.print.DetectInfoPrinter;
@@ -103,7 +104,7 @@ public class DetectBoot {
         DetectPropertySource propertySource = new DetectPropertySource(springPropertySource);
         DetectPropertyMap propertyMap = new DetectPropertyMap();
         DetectConfiguration detectConfiguration = new DetectConfiguration(propertySource, propertyMap);
-        DetectOptionManager detectOptionManager = new DetectOptionManager(detectConfiguration, detectInfo);
+        DetectOptionManager detectOptionManager = new DetectOptionManager(detectConfiguration, detectInfo, new DetectOptionMetaDataProvider());
 
         final List<DetectOption> options = detectOptionManager.getDetectOptions();
 

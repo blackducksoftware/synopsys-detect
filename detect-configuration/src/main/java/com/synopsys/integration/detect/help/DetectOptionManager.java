@@ -61,13 +61,15 @@ public class DetectOptionManager {
 
     private final DetectConfiguration detectConfiguration;
     private final DetectInfo detectInfo;
+    private final DetectOptionMetaDataProvider detectOptionMetaDataProvider;
 
     private List<DetectOption> detectOptions;
     private List<String> detectGroups;
 
-    public DetectOptionManager(final DetectConfiguration detectConfiguration, final DetectInfo detectInfo) {
+    public DetectOptionManager(final DetectConfiguration detectConfiguration, final DetectInfo detectInfo, DetectOptionMetaDataProvider detectOptionMetaDataProvider) {
         this.detectConfiguration = detectConfiguration;
         this.detectInfo = detectInfo;
+        this.detectOptionMetaDataProvider = detectOptionMetaDataProvider;
 
         init();
     }
@@ -83,7 +85,7 @@ public class DetectOptionManager {
     private void init() {
         final Map<DetectProperty, DetectOption> detectOptionsMap = new HashMap<>();
 
-        final Map<String, DetectOptionMetaData> metaDataMap = loadMetaDataFromYaml();
+        final Map<String, DetectOptionMetaData> metaDataMap = detectOptionMetaDataProvider.loadMetaDataFromYaml();
         final Map<DetectProperty, Object> propertyMap = detectConfiguration.getCurrentProperties();
         if (null != propertyMap && !propertyMap.isEmpty()) {
             for (final DetectProperty detectProperty : propertyMap.keySet()) {
@@ -263,39 +265,6 @@ public class DetectOptionManager {
             logger.error(String.format("Could not resolve field %s: %s", detectProperty.name(), e.getMessage()));
         }
         return null;
-    }
-
-    private Map<String, DetectOptionMetaData> loadMetaDataFromYaml() {
-        Map<String, DetectOptionMetaData> metaData = new HashMap<>();
-        try {
-            String metaDataText = ResourceUtil.getResourceAsString(this.getClass(), "/detect-properties.yaml", StandardCharsets.UTF_8.toString());
-            Yaml yaml = new Yaml();
-            Map<String, Object> obj = yaml.load(metaDataText);
-            for (String propertyKey : obj.keySet()) {
-                Map<String, Object> propertyMetaData = (Map<String, Object>) obj.get(propertyKey);
-                DetectOptionMetaData optionMetaData = new DetectOptionMetaData();
-                optionMetaData.fromVersion = (String) propertyMetaData.get("fromVersion");
-                optionMetaData.help = (String) propertyMetaData.get("help");
-                optionMetaData.helpDetailed = (String) propertyMetaData.get("helpDetailed");
-                optionMetaData.name = (String) propertyMetaData.get("name");
-                optionMetaData.primaryGroup = (String) propertyMetaData.get("primaryGroup");
-                if (optionMetaData.primaryGroup == null) {
-                    throw new RuntimeException("Missing primary group!");
-                }
-                optionMetaData.additionalGroups = (List<String>) propertyMetaData.get("additionalGroups");
-
-                if (optionMetaData.additionalGroups.size() == 0) {
-                    if (StringUtils.isNotBlank(optionMetaData.primaryGroup)) {
-                        optionMetaData.additionalGroups.add(optionMetaData.primaryGroup);
-                    }
-                }
-
-                metaData.put(propertyKey, optionMetaData);
-            }
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
-        return metaData;
     }
 
     private DetectOptionDeprecation processFieldDeprecation(final Field field) {
