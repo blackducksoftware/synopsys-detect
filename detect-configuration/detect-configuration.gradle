@@ -1,9 +1,0 @@
-final def versionFile = new File("${projectDir}/src/main/resources/version.txt")
-versionFile.delete()
-versionFile << version
-
-dependencies {
-    implementation 'org.freemarker:freemarker:2.3.26-incubating'
-    implementation 'org.springframework:spring-core'
-    implementation 'org.springframework:spring-context'
-}
