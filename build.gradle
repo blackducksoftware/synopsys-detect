@@ -46,6 +46,8 @@ allprojects {
     dependencies {
         implementation "com.blackducksoftware.integration:blackduck-common:${blackDuckCommonVersion}"
         implementation 'com.paypal.digraph:digraph-parser:1.0'
+    	implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.9'
+    	implementation 'com.fasterxml.jackson.core:jackson-core:2.9.9'
     }
 }
 
@@ -101,10 +103,7 @@ dependencies {
     implementation 'org.freemarker:freemarker:2.3.26-incubating'
     implementation 'org.springframework.boot:spring-boot-starter'
 
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.5'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
-
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
