@@ -42,18 +42,20 @@ import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.OfflineBlackDuckSignatureScanner;
 import com.synopsys.integration.detect.tool.signaturescanner.OnlineBlackDuckSignatureScanner;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRun;
+import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.file.AirGapManager;
-import com.synopsys.integration.detect.workflow.file.AirGapOptions;
+import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
+import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
@@ -110,6 +112,11 @@ public class RunBeanConfiguration {
     }
 
     @Bean
+    public AirGapPathFinder airGapPathFinder() {
+        return new AirGapPathFinder();
+    }
+
+    @Bean
     public DetectConfigurationFactory detectConfigurationFactory() {
         return new DetectConfigurationFactory(detectConfiguration);
     }
@@ -131,9 +138,9 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public AirGapManager airGapManager() {
+    public AirGapInspectorPaths airGapManager() {
         final AirGapOptions airGapOptions = detectConfigurationFactory().createAirGapOptions();
-        return new AirGapManager(airGapOptions);
+        return new AirGapInspectorPaths(airGapPathFinder(), airGapOptions);
     }
 
     @Bean
@@ -178,12 +185,13 @@ public class RunBeanConfiguration {
 
     @Bean
     public DetectExecutableResolver detectExecutableResolver() {
-        return new DetectExecutableResolver(simpleExecutableResolver(), githubGoDepResolver(), detectConfiguration);
+        return new DetectExecutableResolver(simpleExecutableResolver(), detectConfiguration);
     }
 
     @Bean
     public DockerInspectorResolver dockerInspectorResolver() {
-        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fileFinder(), artifactResolver(), detectableOptionFactory().createDockerDetectableOptions());
+        DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver());
+        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fileFinder(), dockerInspectorInstaller, detectableOptionFactory().createDockerDetectableOptions());
     }
 
     @Lazy

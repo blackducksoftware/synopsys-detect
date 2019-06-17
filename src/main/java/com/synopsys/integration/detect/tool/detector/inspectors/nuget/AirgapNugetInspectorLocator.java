@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector.inspectors;
+package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
 import java.util.Optional;
@@ -28,30 +28,25 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
-import com.synopsys.integration.detect.workflow.file.AirGapManager;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
+import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 
-public class AirgapNugetInspectorInstaller implements NugetInspectorInstaller {
-    private final Logger logger = LoggerFactory.getLogger(AirgapNugetInspectorInstaller.class);
-    private AirGapManager airGapManager;
+public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
+    private final Logger logger = LoggerFactory.getLogger(AirgapNugetInspectorLocator.class);
+    private AirGapInspectorPaths airGapInspectorPaths;
 
-    public AirgapNugetInspectorInstaller(final AirGapManager airGapManager) {
-        this.airGapManager = airGapManager;
+    public AirgapNugetInspectorLocator(final AirGapInspectorPaths airGapInspectorPaths) {
+        this.airGapInspectorPaths = airGapInspectorPaths;
     }
 
     @Override
-    public File installExeInspector() {
-        Optional<File> nugetAirGapPath = airGapManager.getNugetInspectorAirGapFile();
+    public File locateExeInspector() {
+        Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
         return new File(nugetAirGapPath.get(), "nuget_dotnet");
     }
 
     @Override
-    public File installDotnetInspector() {
-        Optional<File> nugetAirGapPath = airGapManager.getNugetInspectorAirGapFile();
+    public File locateDotnetInspector() {
+        Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
         return new File(nugetAirGapPath.get(), "nuget_classic");
 
     }

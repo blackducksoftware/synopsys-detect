@@ -20,13 +20,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector.inspectors;
+package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
-import java.io.File;
+public class NugetLocatorOptions {
+    private final String[] packagesRepoUrl;
+    private final String nugetInspectorName;
+    private final String nugetInspectorVersion;
 
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+    public NugetLocatorOptions(final String[] packagesRepoUrl, final String nugetInspectorName, final String nugetInspectorVersion) {
+        this.packagesRepoUrl = packagesRepoUrl;
+        this.nugetInspectorName = nugetInspectorName;
+        this.nugetInspectorVersion = nugetInspectorVersion;
+    }
 
-public interface NugetInspectorInstaller {
-    File installDotnetInspector() throws DetectableException;
-    File installExeInspector() throws DetectableException;
+    public String[] getPackagesRepoUrl() {
+        return packagesRepoUrl;
+    }
+
+    public String getNugetInspectorName() {
+        return nugetInspectorName;
+    }
+
+    public String getNugetInspectorVersion() {
+        return nugetInspectorVersion;
+    }
 }

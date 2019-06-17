@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector.inspectors;
+package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,13 +37,12 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspector;
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.impl.DotNetCoreNugetInspector;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.impl.ExeNugetInspector;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class InstallerNugetInspectorResolver implements NugetInspectorResolver {
+public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DetectExecutableResolver executableResolver;
@@ -55,17 +54,17 @@ public class InstallerNugetInspectorResolver implements NugetInspectorResolver {
 
     private boolean hasResolvedInspector;
     private NugetInspector resolvedNugetInspector;
-    private NugetInspectorInstaller nugetInspectorInstaller;
+    private NugetInspectorLocator nugetInspectorLocator;
 
-    public InstallerNugetInspectorResolver(final DetectExecutableResolver executableResolver, final ExecutableRunner executableRunner, final DetectInfo detectInfo,
-        final FileFinder fileFinder, String nugetInspectorName, String[] packagesRepoUrl, NugetInspectorInstaller nugetInspectorInstaller) {
+    public LocatorNugetInspectorResolver(final DetectExecutableResolver executableResolver, final ExecutableRunner executableRunner, final DetectInfo detectInfo,
+        final FileFinder fileFinder, String nugetInspectorName, String[] packagesRepoUrl, NugetInspectorLocator nugetInspectorLocator) {
         this.executableResolver = executableResolver;
         this.executableRunner = executableRunner;
         this.detectInfo = detectInfo;
         this.fileFinder = fileFinder;
         this.nugetInspectorName = nugetInspectorName;
         this.packagesRepoUrl = packagesRepoUrl;
-        this.nugetInspectorInstaller = nugetInspectorInstaller;
+        this.nugetInspectorLocator = nugetInspectorLocator;
     }
 
     @Override
@@ -98,11 +97,11 @@ public class InstallerNugetInspectorResolver implements NugetInspectorResolver {
             }
         }
 
-        if (useDotnet){
-            final File dotnetFolder = nugetInspectorInstaller.installDotnetInspector();
+        if (useDotnet) {
+            final File dotnetFolder = nugetInspectorLocator.locateDotnetInspector();
             return findDotnetCoreInspector(dotnetFolder, dotnetExecutable);
         } else {
-            final File classicFolder = nugetInspectorInstaller.installExeInspector();
+            final File classicFolder = nugetInspectorLocator.locateExeInspector();
             return findExeInspector(classicFolder);
         }
     }

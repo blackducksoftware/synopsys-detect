@@ -20,44 +20,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.file;
+package com.synopsys.integration.detect.workflow.airgap;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AirGapManager {
+public class AirGapInspectorPaths {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    public static final String NUGET = "nuget";
-    public static final String GRADLE = "gradle";
-    public static final String DOCKER = "docker";
 
     private final String dockerInspectorAirGapPath;
     private final String nugetInspectorAirGapPath;
     private final String gradleInspectorAirGapPath;
 
-    public AirGapManager(final AirGapOptions airGapOptions) {
-        File detectJar = null;
-        try {
-            detectJar = new File(guessDetectJarLocation()).getCanonicalFile();
-        } catch (final IOException e) {
-            logger.debug("Unable to guess detect jar location.");
-        }
-        dockerInspectorAirGapPath = getInspectorAirGapPath(detectJar, airGapOptions.getDockerInspectorPathOverride(), DOCKER);
-        gradleInspectorAirGapPath = getInspectorAirGapPath(detectJar, airGapOptions.getGradleInspectorPathOverride(), GRADLE);
-        nugetInspectorAirGapPath = getInspectorAirGapPath(detectJar, airGapOptions.getNugetInspectorPathOverride(), NUGET);
+    public AirGapInspectorPaths(AirGapPathFinder pathFinder, final AirGapOptions airGapOptions) {
+        File detectJar = pathFinder.findDetectJar();
+        dockerInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getDockerInspectorPathOverride(), AirGapPathFinder.DOCKER);
+        gradleInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getGradleInspectorPathOverride(), AirGapPathFinder.GRADLE);
+        nugetInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getNugetInspectorPathOverride(), AirGapPathFinder.NUGET);
     }
 
-    private String getInspectorAirGapPath(final File detectJar, final String inspectorLocationProperty, final String inspectorName) {
+    private String determineInspectorAirGapPath(final File detectJar, AirGapPathFinder airGapPathFinder, final String inspectorLocationProperty, final String inspectorName) {
         if (StringUtils.isBlank(inspectorLocationProperty) && detectJar != null) {
             try {
-                final File inspectorsDirectory = new File(detectJar.getParentFile(), "packaged-inspectors");
-                final File inspectorAirGapDirectory = new File(inspectorsDirectory, inspectorName);
-                return inspectorAirGapDirectory.getCanonicalPath();
+                return airGapPathFinder.createRelativePackagedInspectorsFile(detectJar.getParentFile(), inspectorName).getCanonicalPath();
             } catch (final Exception e) {
                 logger.debug(String.format("Exception encountered when guessing air gap path for %s, returning the detect property instead", inspectorName));
                 logger.debug(e.getMessage());
@@ -66,26 +55,16 @@ public class AirGapManager {
         return inspectorLocationProperty;
     }
 
-    private String guessDetectJarLocation() {
-        final String containsDetectJarRegex = ".*synopsys-detect-[^\\\\/]+\\.jar.*";
-        final String javaClasspath = System.getProperty("java.class.path");
-        if (javaClasspath != null && javaClasspath.matches(containsDetectJarRegex)) {
-            for (final String classpathChunk : javaClasspath.split(System.getProperty("path.separator"))) {
-                if (classpathChunk != null && classpathChunk.matches(containsDetectJarRegex)) {
-                    logger.debug(String.format("Guessed Detect jar location as %s", classpathChunk));
-                    return classpathChunk;
-                }
-            }
-        }
-        return "";
-    }
-
     public String getDockerInspectorAirGapPath() {
         return dockerInspectorAirGapPath;
     }
 
     private String getNugetInspectorAirGapPath() {
         return nugetInspectorAirGapPath;
+    }
+
+    private String getGradleInspectorAirGapPath() {
+        return gradleInspectorAirGapPath;
     }
 
     public Optional<File> getNugetInspectorAirGapFile() {
@@ -97,9 +76,7 @@ public class AirGapManager {
     }
 
     public Optional<File> getGradleInspectorAirGapFile() {
-        final Optional<File> gradleInspectorAirGapDirectoryPath = getFileFromPath(gradleInspectorAirGapPath);
-        gradleInspectorAirGapDirectoryPath.ifPresent(airGapDirectory -> logger.trace(String.format("gradleInspectorAirGapDirectory: %s", airGapDirectory)));
-        return gradleInspectorAirGapDirectoryPath;
+        return getFileFromPath(getGradleInspectorAirGapPath());
     }
 
     private Optional<File> getFileFromPath(final String path) {

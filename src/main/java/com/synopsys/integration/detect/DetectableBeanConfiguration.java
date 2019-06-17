@@ -43,22 +43,26 @@ import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.AirgapNugetInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.AirgapNugetInspectorLocator;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.InstallerNugetInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.LocatorNugetInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.LocalPipInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.NugetInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.NugetInstallerOptions;
-import com.synopsys.integration.detect.tool.detector.inspectors.OnlineNugetInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorLocator;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.OnlineNugetInspectorLocator;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
-import com.synopsys.integration.detect.workflow.file.AirGapManager;
+import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
+import com.synopsys.integration.detectable.detectable.inspector.go.impl.GithubGoDepResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
@@ -204,13 +208,15 @@ public class DetectableBeanConfiguration {
     @Autowired
     public ConnectionManager connectionManager;
     @Autowired
-    public AirGapManager airGapManager;
+    public AirGapInspectorPaths airGapInspectorPaths;
     @Autowired
     public DirectoryManager directoryManager;
     @Autowired
     public DetectInfo detectInfo;
     @Autowired
     public ArtifactResolver artifactResolver;
+    @Autowired
+    public GithubGoDepResolver githubGoDepResolver;
 
     //DetectableFactory
     //This is the ONLY class that should be taken from the Configuration manually.
@@ -292,7 +298,8 @@ public class DetectableBeanConfiguration {
     }
 
     public DockerInspectorResolver dockerInspectorResolver() {
-        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager, fileFinder, artifactResolver, detectableOptionFactory.createDockerDetectableOptions());
+        DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver);
+        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapInspectorPaths, fileFinder, dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
     }
 
     @Bean
@@ -372,7 +379,8 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public GradleInspectorResolver gradleInspectorResolver() {
-        return new ArtifactoryGradleInspectorResolver(artifactResolver, configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapManager, directoryManager);
+        GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
+        return new ArtifactoryGradleInspectorResolver(gradleInspectorInstaller, configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapInspectorPaths, directoryManager);
     }
 
     @Bean
@@ -417,15 +425,16 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public NugetInspectorResolver nugetInspectorResolver() {
-        final NugetInstallerOptions installerOptions = detectableOptionFactory.createNugetInstallerOptions();
-        final NugetInspectorInstaller installer;
-        final Optional<File> nugetAirGapPath = airGapManager.getNugetInspectorAirGapFile();
+        final NugetLocatorOptions installerOptions = detectableOptionFactory.createNugetInstallerOptions();
+        final NugetInspectorLocator locator;
+        final Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
         if (nugetAirGapPath.isPresent()) {
-            installer = new AirgapNugetInspectorInstaller(airGapManager);
+            locator = new AirgapNugetInspectorLocator(airGapInspectorPaths);
         } else {
-            installer = new OnlineNugetInspectorInstaller(directoryManager, artifactResolver, installerOptions.getNugetInspectorVersion());
+            NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactResolver);
+            locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion());
         }
-        return new InstallerNugetInspectorResolver(detectExecutableResolver, executableRunner, detectInfo, fileFinder, installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), installer);
+        return new LocatorNugetInspectorResolver(detectExecutableResolver, executableRunner, detectInfo, fileFinder, installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator);
     }
 
     @Bean
@@ -691,7 +700,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GoDepCliDetectable goCliBomTool(final DetectableEnvironment environment) {
-        return new GoDepCliDetectable(environment, fileFinder, detectExecutableResolver, detectExecutableResolver, goDepExtractor(), detectableOptionFactory.createGoDepCliDetectableOptions());
+        return new GoDepCliDetectable(environment, fileFinder, githubGoDepResolver, githubGoDepResolver, goDepExtractor(), detectableOptionFactory.createGoDepCliDetectableOptions());
     }
 
     @Bean

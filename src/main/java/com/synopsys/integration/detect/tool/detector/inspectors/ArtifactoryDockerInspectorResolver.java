@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
-import com.synopsys.integration.detect.workflow.file.AirGapManager;
+import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -54,19 +54,19 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
     private final static String DOCKER_SHARED_DIRECTORY_NAME = "docker";
 
     private final DirectoryManager directoryManager;
-    private final AirGapManager airGapManager;
+    private final AirGapInspectorPaths airGapInspectorPaths;
     private final FileFinder fileFinder;
-    private final ArtifactResolver artifactResolver;
+    private final DockerInspectorInstaller dockerInspectorInstaller;
     private final DockerDetectableOptions dockerDetectableOptions;
 
     private DockerInspectorInfo resolvedInfo;
 
-    public ArtifactoryDockerInspectorResolver(final DirectoryManager directoryManager, final AirGapManager airGapManager, final FileFinder fileFinder, final ArtifactResolver artifactResolver,
+    public ArtifactoryDockerInspectorResolver(final DirectoryManager directoryManager, final AirGapInspectorPaths airGapInspectorPaths, final FileFinder fileFinder, final DockerInspectorInstaller dockerInspectorInstaller,
         final DockerDetectableOptions dockerDetectableOptions) {
         this.directoryManager = directoryManager;
-        this.airGapManager = airGapManager;
+        this.airGapInspectorPaths = airGapInspectorPaths;
         this.fileFinder = fileFinder;
-        this.artifactResolver = artifactResolver;
+        this.dockerInspectorInstaller = dockerInspectorInstaller;
         this.dockerDetectableOptions = dockerDetectableOptions;
     }
 
@@ -83,7 +83,7 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
     }
 
     private DockerInspectorInfo install() throws IntegrationException, IOException, DetectUserFriendlyException {
-        final Optional<File> airGapDockerFolder = airGapManager.getDockerInspectorAirGapFile();
+        final Optional<File> airGapDockerFolder = airGapInspectorPaths.getDockerInspectorAirGapFile();
         final String providedJarPath = dockerDetectableOptions.getDockerInspectorPath();
 
         if (StringUtils.isNotBlank(providedJarPath)) {
@@ -95,7 +95,9 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
             return airGapInspector.orElse(null);
         } else {
             logger.info("Docker tool will attempt to download or find docker inspector.");
-            return findOrDownloadJar();
+            final File dockerDirectory = directoryManager.getPermanentDirectory(DOCKER_SHARED_DIRECTORY_NAME);
+            final String dockerVersion = dockerDetectableOptions.getDockerInspectorVersion();
+            return new DockerInspectorInfo(dockerInspectorInstaller.installJar(dockerDirectory, Optional.of(dockerVersion)));
         }
     }
 
@@ -106,7 +108,7 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
     private List<File> getAirGapInspectorImageTarfiles() {
         final List<File> airGapInspectorImageTarfiles;
         airGapInspectorImageTarfiles = new ArrayList<>();
-        final String dockerInspectorAirGapPath = airGapManager.getDockerInspectorAirGapPath();
+        final String dockerInspectorAirGapPath = airGapInspectorPaths.getDockerInspectorAirGapPath();
         for (final String inspectorName : inspectorNames) {
             final File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + inspectorName + ".tar");
             airGapInspectorImageTarfiles.add(osImage);
@@ -129,7 +131,7 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
     }
 
     private Optional<File> getAirGapJar() {
-        final Optional<File> airGapDirPath = airGapManager.getDockerInspectorAirGapFile();
+        final Optional<File> airGapDirPath = airGapInspectorPaths.getDockerInspectorAirGapFile();
         if (!airGapDirPath.isPresent()) {
             return Optional.empty();
         }
@@ -151,20 +153,4 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
         }
     }
 
-    private DockerInspectorInfo findOrDownloadJar() throws IntegrationException, IOException, DetectUserFriendlyException {
-        logger.info("Determining the location of the Docker inspector.");
-        final String dockerVersion = dockerDetectableOptions.getDockerInspectorVersion();
-        final Optional<String> location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.DOCKER_INSPECTOR_REPO, ArtifactoryConstants.DOCKER_INSPECTOR_PROPERTY, dockerVersion,
-            ArtifactoryConstants.DOCKER_INSPECTOR_VERSION_OVERRIDE);
-        if (location.isPresent()) {
-            logger.info("Finding or downloading the docker inspector.");
-            final File dockerDirectory = directoryManager.getPermanentDirectory(DOCKER_SHARED_DIRECTORY_NAME);
-            logger.debug(String.format("Downloading docker inspector from '%s' to '%s'.", location.get(), dockerDirectory.getAbsolutePath()));
-            final File jarFile = artifactResolver.downloadOrFindArtifact(dockerDirectory, location.get());
-            logger.info("Found online docker inspector: " + jarFile.getAbsolutePath());
-            return new DockerInspectorInfo(jarFile);
-        } else {
-            throw new DetectableException("Unable to find Docker version from artifactory.");
-        }
-    }
 }

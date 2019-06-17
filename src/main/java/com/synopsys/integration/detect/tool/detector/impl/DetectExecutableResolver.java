@@ -60,16 +60,14 @@ import com.synopsys.integration.detectable.detectable.inspector.go.impl.GithubGo
 
 public class DetectExecutableResolver
     implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
-                   DockerResolver, GoDepResolver, GoResolver, DotNetResolver, GitResolver {
+                   DockerResolver, DotNetResolver, GitResolver {
 
     private final SimpleExecutableResolver simpleExecutableResolver;
-    private final GithubGoDepResolver githubGoDepResolver;
     private final DetectConfiguration detectConfiguration;
     private final Map<String, File> cachedExecutables = new HashMap<>();
 
-    public DetectExecutableResolver(final SimpleExecutableResolver simpleExecutableResolver, final GithubGoDepResolver githubGoDepResolver, final DetectConfiguration detectConfiguration) {
+    public DetectExecutableResolver(final SimpleExecutableResolver simpleExecutableResolver, final DetectConfiguration detectConfiguration) {
         this.simpleExecutableResolver = simpleExecutableResolver;
-        this.githubGoDepResolver = githubGoDepResolver;
         this.detectConfiguration = detectConfiguration;
     }
 
@@ -160,16 +158,6 @@ public class DetectExecutableResolver
     @Override
     public File resolveYarn() {
         return resolveExecutable("yarn", simpleExecutableResolver::resolveYarn, detectConfiguration.getProperty(DetectProperty.DETECT_YARN_PATH, PropertyAuthority.None));
-    }
-
-    @Override
-    public File resolveGoDep(final File location) throws DetectableException {
-        return githubGoDepResolver.resolveGoDep(location);
-    }
-
-    @Override
-    public File resolveGo() {
-        return githubGoDepResolver.resolveGo();
     }
 
     @Override
