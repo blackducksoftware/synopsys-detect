@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot;
 
+import java.io.File;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -36,6 +37,7 @@ import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectableBeanConfiguration;
 import com.synopsys.integration.detect.RunBeanConfiguration;
+import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationManager;
@@ -66,9 +68,19 @@ import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.property.SpringPropertySource;
+import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
 import com.synopsys.integration.detect.util.TildeInPathResolver;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
+import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRun;
+import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
+import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
+import com.synopsys.integration.detect.workflow.airgap.DockerAirGapCreator;
+import com.synopsys.integration.detect.workflow.airgap.GradleAirGapCreator;
+import com.synopsys.integration.detect.workflow.airgap.NugetAirGapCreator;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticManager;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.diagnostic.RelevantFileTracker;
@@ -78,6 +90,13 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.profiling.DetectorProfiler;
 import com.synopsys.integration.detect.workflow.report.DetectConfigurationReporter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
+import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleLocalExecutableFinder;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
+import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 import com.synopsys.integration.exception.IntegrationException;
 
 import freemarker.template.Configuration;
@@ -153,6 +172,11 @@ public class DetectBoot {
 
         logger.info("Main boot completed. Deciding what Detect should do.");
 
+        if (detectArgumentState.isGenerateAirGapZip()) {
+            createAirGapZip(detectConfiguration, gson, eventSystem, directoryManager);
+            return DetectBootResult.exit(detectConfiguration);
+        }
+
         final RunOptions runOptions = factory.createRunOptions();
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
         ProductDecider productDecider = new ProductDecider();
@@ -163,7 +187,7 @@ public class DetectBoot {
         ProductBootFactory productBootFactory = new ProductBootFactory(detectConfiguration, detectInfo, eventSystem, detectOptionManager);
         ProductBoot productBoot = new ProductBoot();
         ProductRunData productRunData = productBoot.boot(productDecision, detectConfiguration, new BlackDuckConnectivityChecker(), new PolarisConnectivityChecker(), productBootFactory);
-        if (productRunData == null){
+        if (productRunData == null) {
             logger.info("No products to run, Detect is complete.");
             return DetectBootResult.exit(detectConfiguration);
         }
@@ -263,5 +287,25 @@ public class DetectBoot {
         }
     }
 
+    private void createAirGapZip(DetectConfiguration detectConfiguration, Gson gson, EventSystem eventSystem, DirectoryManager directoryManager) throws DetectUserFriendlyException {
+        ConnectionManager connectionManager = new ConnectionManager(detectConfiguration);
+        ArtifactResolver artifactResolver = new ArtifactResolver(connectionManager, gson);
 
+        //TODO: This is awful, why is making this so convoluted.
+        SimpleFileFinder fileFinder = new SimpleFileFinder();
+        SimpleExecutableFinder simpleExecutableFinder = SimpleExecutableFinder.forCurrentOperatingSystem(fileFinder);
+        SimpleLocalExecutableFinder localExecutableFinder = new SimpleLocalExecutableFinder(simpleExecutableFinder);
+        SimpleSystemExecutableFinder simpleSystemExecutableFinder = new SimpleSystemExecutableFinder(simpleExecutableFinder);
+        SimpleExecutableResolver executableResolver = new SimpleExecutableResolver(new CachedExecutableResolverOptions(false), localExecutableFinder, simpleSystemExecutableFinder);
+        DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(executableResolver, detectConfiguration);
+        GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
+        SimpleExecutableRunner simpleExecutableRunner = new SimpleExecutableRunner();
+        GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(artifactResolver, detectExecutableResolver, gradleInspectorInstaller, simpleExecutableRunner);
+
+        NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactResolver));
+        DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
+
+        AirGapCreator airGapCreator = new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
+        airGapCreator.createAirGapZip();
+    }
 }
