@@ -10,7 +10,7 @@ import com.synopsys.integration.log.PrintStreamIntLogger
 
 buildscript {
     ext {
-        springBootVersion = '2.0.3.RELEASE'
+        springBootVersion = '2.1.5.RELEASE'
         blackDuckCommonVersion = '43.0.0'
         polarisCommonVersion = '0.13.2'
     }
@@ -50,6 +50,7 @@ allprojects {
 
     dependencies {
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        implementation "org.jetbrains.kotlin:kotlin-reflect"
         implementation "com.blackducksoftware.integration:blackduck-common:${blackDuckCommonVersion}"
         implementation 'com.paypal.digraph:digraph-parser:1.0'
     	implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.9'
@@ -100,6 +101,7 @@ dependencies {
     implementation project(":detector")
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-reflect"
     implementation "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
     implementation 'org.yaml:snakeyaml:1.24'
 
