@@ -29,7 +29,10 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
@@ -39,6 +42,8 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
 
 public class PipenvGraphParser {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     public static final String TOP_LEVEL_SEPARATOR = "==";
     public static final String DEPENDENCY_INDENTATION = "  ";
     public static final String DEPENDENCY_NAME_PREFIX = "- ";
@@ -52,7 +57,7 @@ public class PipenvGraphParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public PipParseResult parse(final String projectName, final String projectVersionName, final List<String> pipFreezeOutput, final List<String> pipenvGraphOutput, final String sourcePath) {
+    public PipParseResult parse(final String projectName, final String projectVersionName, final List<String> pipFreezeOutput, final List<String> pipenvGraphOutput) {
         final MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         final Stack<Dependency> dependencyStack = new Stack<>();
 
@@ -81,9 +86,16 @@ public class PipenvGraphParser {
             }
 
             if (dependencyStack.size() > 0) {
-                dependencyGraph.addChildWithParent(dependency, dependencyStack.peek());
+                Dependency peeked = dependencyStack.peek();
+                if (matchesProject(peeked, projectName, projectVersionName)) {
+                    dependencyGraph.addChildToRoot(dependency);
+                } else {
+                    dependencyGraph.addChildWithParent(dependency, peeked);
+                }
             } else {
-                dependencyGraph.addChildrenToRoot(dependency);
+                if (!matchesProject(dependency, projectName, projectVersionName)) {
+                    dependencyGraph.addChildrenToRoot(dependency);
+                }
             }
 
             lastLevel = currentLevel;
@@ -97,6 +109,10 @@ public class PipenvGraphParser {
         } else {
             return null;
         }
+    }
+
+    private boolean matchesProject(Dependency dependency, String projectName, String projectVersion) {
+        return dependency.name != null && dependency.version != null && dependency.name.equals(projectName) && dependency.version.equals(projectVersion);
     }
 
     public int getLevel(final String line) {
