@@ -22,7 +22,7 @@ import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 public class PipEnvGraphBareTest {
 
     @Test
-    void init() {
+    void testPackageTreatedAsProject() {
         ExternalIdFactory factory = new ExternalIdFactory();
         PipenvGraphParser parser = new PipenvGraphParser(factory);
         List<String> pipFreeze = FunctionalTestFiles.asListOfStrings("/pip/pipenv_pip_freeze.txt");
@@ -35,7 +35,7 @@ public class PipEnvGraphBareTest {
         PipParseResult parseResult = parser.parse(projectName, projectVersion, pipFreeze, pipGraph);
 
         Assert.assertFalse(parseResult.getCodeLocation().getDependencyGraph().hasDependency(factory.createNameVersionExternalId(Forge.PYPI, projectName, projectVersion)));
-        Assert.assertEquals(5, parseResult.getCodeLocation().getDependencyGraph().getRootDependencies()); //Should have found 5, not 3 (it should treat project as dependency).
+        Assert.assertEquals(5, parseResult.getCodeLocation().getDependencyGraph().getRootDependencies().size()); //Should have found 5, not 3 (it should treat project as dependency).
 
     }
 }
