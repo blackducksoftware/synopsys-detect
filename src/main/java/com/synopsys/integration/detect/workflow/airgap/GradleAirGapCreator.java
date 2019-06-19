@@ -23,8 +23,12 @@
 package com.synopsys.integration.detect.workflow.airgap;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -42,6 +46,11 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 
+import ch.qos.logback.core.util.FileUtil;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+
 public class GradleAirGapCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -49,13 +58,15 @@ public class GradleAirGapCreator {
     private final GradleResolver gradleResolver;
     private final GradleInspectorInstaller gradleInspectorInstaller;
     private final ExecutableRunner executableRunner;
+    private final Configuration configuration;
 
     public GradleAirGapCreator(final ArtifactResolver artifactResolver, final GradleResolver gradleResolver, final GradleInspectorInstaller gradleInspectorInstaller,
-        final ExecutableRunner executableRunner) {
+        final ExecutableRunner executableRunner, final Configuration configuration) {
         this.artifactResolver = artifactResolver;
         this.gradleResolver = gradleResolver;
         this.gradleInspectorInstaller = gradleInspectorInstaller;
         this.executableRunner = executableRunner;
+        this.configuration = configuration;
     }
 
     public void installGradleDependencies(File gradleTemp, File gradleTarget) throws DetectUserFriendlyException {
@@ -81,39 +92,22 @@ public class GradleAirGapCreator {
         File settingsGradle = new File(gradleTemp, "settings.gradle");
         logger.info("Using temporary gradle build file: " + buildGradle);
         logger.info("Using temporary gradle settings file: " + settingsGradle);
-
-        String gradleCommand = "";
-        gradleCommand += "repositories {\n"
-                             + "    maven {\n"
-                             + "        url 'https://repo.blackducksoftware.com:443/artifactory/bds-integration-public-cache'\n"
-                             + "    }\n"
-                             + "}\n\n";
-
-        gradleCommand += "configurations {\n"
-                             + "    airGap\n"
-                             + "}\n"
-                             + "\n\n";
-
-        gradleCommand += "dependencies {\n"
-                             + "    airGap 'com.blackducksoftware.integration:integration-gradle-inspector:" + gradleVersion + "'\n"
-                             + "}\n\n";
-
-        try {
-            gradleCommand += "task installDependencies(type: Copy) {\n"
-                                 + "    from configurations.airGap\n"
-                                 + "    include '*.jar'\n"
-                                 + "    into \"" + StringEscapeUtils.escapeJava(gradleOutput.getCanonicalPath()) + "\"\n"
-                                 + "}";
-        } catch (IOException e) {
-            throw new DetectUserFriendlyException("An error occurred getting the gradle output path while creating the Air Gap zip.", e, ExitCodeType.FAILURE_CONFIGURATION);
-        }
+        FileUtil.createMissingParentDirectories(buildGradle);
+        FileUtil.createMissingParentDirectories(settingsGradle);
 
         logger.info("Writing to temporary gradle build file.");
         try {
-            FileUtils.writeStringToFile(buildGradle, gradleCommand, StandardCharsets.UTF_8);
+            final Map<String, String> gradleScriptData = new HashMap<>();
+            gradleScriptData.put("gradleOutput", StringEscapeUtils.escapeJava(gradleOutput.getCanonicalPath()));
+            gradleScriptData.put("gradleVersion", gradleVersion);
+
+            final Template gradleScriptTemplate = configuration.getTemplate("create-gradle-airgap-script.ftl");
+            try (final Writer fileWriter = new FileWriter(buildGradle)) {
+                gradleScriptTemplate.process(gradleScriptData, fileWriter);
+            }
             FileUtils.writeStringToFile(settingsGradle, "", StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new DetectUserFriendlyException("An error occurred creating the temporary build.gradle while creating the Air Gap zip.", ExitCodeType.FAILURE_CONFIGURATION);
+        } catch (IOException | TemplateException e) {
+            throw new DetectUserFriendlyException("An error occurred creating the temporary build.gradle while creating the Air Gap zip.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }
 
         logger.info("Invoking gradle install on temporary directory.");

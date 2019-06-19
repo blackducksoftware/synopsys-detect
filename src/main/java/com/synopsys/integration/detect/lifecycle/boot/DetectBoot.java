@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot;
 
-import java.io.File;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -173,7 +172,7 @@ public class DetectBoot {
         logger.info("Main boot completed. Deciding what Detect should do.");
 
         if (detectArgumentState.isGenerateAirGapZip()) {
-            createAirGapZip(detectConfiguration, gson, eventSystem, directoryManager);
+            createAirGapZip(detectConfiguration, gson, eventSystem, configuration);
             return DetectBootResult.exit(detectConfiguration);
         }
 
@@ -287,7 +286,7 @@ public class DetectBoot {
         }
     }
 
-    private void createAirGapZip(DetectConfiguration detectConfiguration, Gson gson, EventSystem eventSystem, DirectoryManager directoryManager) throws DetectUserFriendlyException {
+    private void createAirGapZip(DetectConfiguration detectConfiguration, Gson gson, EventSystem eventSystem, Configuration configuration) throws DetectUserFriendlyException {
         ConnectionManager connectionManager = new ConnectionManager(detectConfiguration);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionManager, gson);
 
@@ -300,7 +299,7 @@ public class DetectBoot {
         DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(executableResolver, detectConfiguration);
         GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
         SimpleExecutableRunner simpleExecutableRunner = new SimpleExecutableRunner();
-        GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(artifactResolver, detectExecutableResolver, gradleInspectorInstaller, simpleExecutableRunner);
+        GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(artifactResolver, detectExecutableResolver, gradleInspectorInstaller, simpleExecutableRunner, configuration);
 
         NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactResolver));
         DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
