@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -66,7 +67,7 @@ public class NpmCliDetectable extends Detectable {
     }
 
     @Override
-    public DetectableResult extractable() {
+    public DetectableResult extractable() throws DetectableException {
         final File nodeModules = fileFinder.findFile(environment.getDirectory(), NODE_MODULES);
         if (nodeModules == null) {
             return new NpmRunInstallDetectableResult(environment.getDirectory().getAbsolutePath());

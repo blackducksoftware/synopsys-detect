@@ -47,7 +47,7 @@ public class SingleDetectableApplication {
     }
 
     //In this example, we use the Detectable to determine if we can extract and if all necessary pieces are present.
-    public Extraction DetectableExample() {
+    public Extraction DetectableExample() throws DetectableException {
         //Factory
         final UtilityFactory utilityFactory = new UtilityFactory();
         final ExtractorFactory extractorFactory = new ExtractorFactory(utilityFactory);

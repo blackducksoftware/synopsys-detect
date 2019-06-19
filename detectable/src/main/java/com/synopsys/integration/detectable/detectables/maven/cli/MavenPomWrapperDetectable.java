@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -63,7 +64,7 @@ public class MavenPomWrapperDetectable extends Detectable {
     }
 
     @Override
-    public DetectableResult extractable() {
+    public DetectableResult extractable() throws DetectableException {
         mavenExe = mavenResolver.resolveMaven(environment);
 
         if (mavenExe == null) {
