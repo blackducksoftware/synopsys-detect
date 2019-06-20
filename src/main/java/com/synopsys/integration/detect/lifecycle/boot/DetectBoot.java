@@ -72,6 +72,8 @@ import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorI
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
 import com.synopsys.integration.detect.util.TildeInPathResolver;
+import com.synopsys.integration.detect.util.filter.DetectFilter;
+import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRun;
@@ -172,7 +174,8 @@ public class DetectBoot {
         logger.info("Main boot completed. Deciding what Detect should do.");
 
         if (detectArgumentState.isGenerateAirGapZip()) {
-            createAirGapZip(detectConfiguration, gson, eventSystem, configuration);
+            DetectOverrideableFilter inspectorFilter = new DetectOverrideableFilter("", detectArgumentState.getParsedValue());
+            createAirGapZip(inspectorFilter, detectConfiguration, gson, eventSystem, configuration);
             return DetectBootResult.exit(detectConfiguration);
         }
 
@@ -286,7 +289,7 @@ public class DetectBoot {
         }
     }
 
-    private void createAirGapZip(DetectConfiguration detectConfiguration, Gson gson, EventSystem eventSystem, Configuration configuration) throws DetectUserFriendlyException {
+    private void createAirGapZip(DetectFilter inspectorFilter, DetectConfiguration detectConfiguration, Gson gson, EventSystem eventSystem, Configuration configuration) throws DetectUserFriendlyException {
         ConnectionManager connectionManager = new ConnectionManager(detectConfiguration);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionManager, gson);
 
@@ -305,6 +308,6 @@ public class DetectBoot {
         DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
 
         AirGapCreator airGapCreator = new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
-        airGapCreator.createAirGapZip();
+        airGapCreator.createAirGapZip(inspectorFilter);
     }
 }
