@@ -41,13 +41,12 @@ public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
     @Override
     public File locateExeInspector() {
         Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
-        return new File(nugetAirGapPath.get(), "nuget_dotnet");
+        return new File(nugetAirGapPath.get(), "nuget_classic");
     }
 
     @Override
     public File locateDotnetInspector() {
         Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
-        return new File(nugetAirGapPath.get(), "nuget_classic");
-
+        return new File(nugetAirGapPath.get(), "nuget_dotnet");
     }
 }

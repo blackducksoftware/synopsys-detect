@@ -60,7 +60,7 @@ public class AggregateBdioCreator {
     private final DetectBdioWriter detectBdioWriter;
 
     public AggregateBdioCreator(final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil,
-            final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, DetectBdioWriter detectBdioWriter) {
+        final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, DetectBdioWriter detectBdioWriter) {
         this.simpleBdioFactory = simpleBdioFactory;
         this.integrationEscapeUtil = integrationEscapeUtil;
         this.codeLocationNameManager = codeLocationNameManager;
@@ -113,7 +113,13 @@ public class AggregateBdioCreator {
         final File codeLocationSourceDir = new File(codeLocationSourcePath);
         final String relativePath = FileNameUtils.relativize(sourcePath.getAbsolutePath(), codeLocationSourceDir.getAbsolutePath());
 
-        final String bomToolType = codeLocation.getCreatorName().get().toLowerCase();
+        String bomToolType;
+        if (codeLocation.getDockerImageName().isPresent()) {
+            bomToolType = "docker"; // TODO: Should docker image name be considered here?
+        } else {
+            bomToolType = codeLocation.getCreatorName().orElse("unknown").toLowerCase();
+        }
+
         final List<String> externalIdPieces = new ArrayList<>();
         externalIdPieces.addAll(Arrays.asList(original.getExternalIdPieces()));
         externalIdPieces.add(relativePath);
