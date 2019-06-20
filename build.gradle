@@ -37,12 +37,20 @@ version = '5.6.0-SNAPSHOT'
 
 apply plugin: 'com.blackducksoftware.integration.solution'
 apply plugin: 'org.springframework.boot'
-apply from: 'airgap.gradle'
 apply from: 'artifactory-properties.gradle'
 
 def createArtifactName() {
     return "${buildDir}/libs/${project.name}-${version}.jar"
 }
+
+def createAirGapArtifactName() {
+    return "${project.name}-${version}-air-gap.zip"
+}
+
+def createAirGapArtifactLocation() {
+    return "${buildDir}/libs/${createAirGapArtifactName()}"
+}
+
 
 allprojects {
     apply plugin: 'org.jetbrains.kotlin.jvm'
@@ -53,8 +61,8 @@ allprojects {
         implementation "org.jetbrains.kotlin:kotlin-reflect"
         implementation "com.blackducksoftware.integration:blackduck-common:${blackDuckCommonVersion}"
         implementation 'com.paypal.digraph:digraph-parser:1.0'
-    	implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.9'
-    	implementation 'com.fasterxml.jackson.core:jackson-core:2.9.9'
+        implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.9'
+        implementation 'com.fasterxml.jackson.core:jackson-core:2.9.9'
     }
 }
 
@@ -100,6 +108,7 @@ dependencies {
     implementation project(":detectable")
     implementation project(":detector")
 
+    implementation "org.zeroturnaround:zt-zip:1.13"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
     implementation "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
@@ -182,5 +191,26 @@ task verifyBlackDuckDetect() {
 
     task verifyDetect() {
         dependsOn verifyBlackDuckDetect
+    }
+}
+
+task createAirGapZip(type: JavaExec) {
+    dependsOn build
+
+    classpath = files(createArtifactName())
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'com.synopsys.integration.detect.Application'
+    args = ['--detect.gradle.path=gradlew', '-z']
+}
+
+task publishAirGapZip() {
+    dependsOn createAirGapZip
+
+    doLast {
+        def airGapZipName = createAirGapArtifactName()
+        def airGapZipLocation = createAirGapArtifactLocation()
+        exec {
+            commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${project.ext.artifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
+        }
     }
 }
