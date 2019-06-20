@@ -1,6 +1,6 @@
 ﻿Synopsys Privacy Policy
 
-Synopsys is committed to protecting the online privacy of our customers and users of our products and services. The privacy practices described in this privacy policy apply to users of our products and services, including use of the Black Duck JIRA plug-in (the “Product”).
+Synopsys is committed to protecting the online privacy of our customers and users of our products and services. The privacy practices described in this privacy policy apply to users of our products and services, including use of Synopsys Detect (the “Product”).
 
 We strive to treat your personal information as safely and securely as reasonably possible. Please read the following privacy policy to better understand how your personal information may be collected and used as you use our Products and Services. As described below, your information may be collected by Synopsys, Inc. (“Synopsys”), disclosed to third parties, and used by third parties and Synopsys. This privacy policy describes the information we collect about you, how that information is used by our Products and Services, and what may happen to that information. 
 
