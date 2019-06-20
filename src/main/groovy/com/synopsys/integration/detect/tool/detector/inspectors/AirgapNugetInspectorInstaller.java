@@ -46,13 +46,13 @@ public class AirgapNugetInspectorInstaller implements NugetInspectorInstaller {
     @Override
     public File installExeInspector() {
         Optional<File> nugetAirGapPath = airGapManager.getNugetInspectorAirGapFile();
-        return new File(nugetAirGapPath.get(), "nuget_dotnet");
+        return new File(nugetAirGapPath.get(), "nuget_classic");
     }
 
     @Override
     public File installDotnetInspector() {
         Optional<File> nugetAirGapPath = airGapManager.getNugetInspectorAirGapFile();
-        return new File(nugetAirGapPath.get(), "nuget_classic");
+        return new File(nugetAirGapPath.get(), "nuget_dotnet");
 
     }
 }
