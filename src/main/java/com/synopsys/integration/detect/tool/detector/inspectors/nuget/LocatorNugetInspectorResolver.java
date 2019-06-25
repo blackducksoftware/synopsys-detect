@@ -113,7 +113,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         final File toolsFolder = new File(nupkgFolder, "tools");
         final Optional<File> foundExe = fileFinder.findFiles(toolsFolder, dotnetInspectorName, 3).stream().findFirst();
         if (foundExe.isPresent() && foundExe.get().exists()) {
-            final String inspectorExe = foundExe.get().toString();
+            final String inspectorExe = foundExe.get().getAbsolutePath();
             logger.info("Found nuget inspector: " + inspectorExe);
             return new DotNetCoreNugetInspector(dotnetExecutable, inspectorExe, executableRunner);
         } else {
