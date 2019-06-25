@@ -22,12 +22,20 @@
  */
 package com.synopsys.integration.detect.workflow.bdio;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 
 public class BdioResult {
     private final List<UploadTarget> uploadTargets;
+
+    public BdioResult(final Optional<UploadTarget> uploadTarget) {
+        this.uploadTargets = new ArrayList<>();
+        uploadTarget.ifPresent(uploadTargets::add);
+    }
 
     public BdioResult(final List<UploadTarget> uploadTargets) {
         this.uploadTargets = uploadTargets;

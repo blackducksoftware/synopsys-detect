@@ -68,23 +68,26 @@ public class AggregateBdioCreator {
         this.detectBdioWriter = detectBdioWriter;
     }
 
-    public Optional<UploadTarget> createAggregateBdioFile(File sourcePath, File bdioDirectory, final List<DetectCodeLocation> codeLocations, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public Optional<UploadTarget> createAggregateBdioFile(String aggregateName, boolean uploadEmptyAggregate, File sourcePath, File bdioDirectory, final List<DetectCodeLocation> codeLocations, NameVersion projectNameVersion)
+        throws DetectUserFriendlyException {
         final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations);
-        if (aggregateDependencyGraph.getRootDependencies().size() == 0) {
-            logger.info("The aggregate contained no dependencies, will not create bdio file.");
-            return Optional.empty();
-        }
 
         final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
         final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
         final SimpleBdioDocument aggregateBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectNameVersion.getName(), projectNameVersion.getVersion(), projectExternalId, aggregateDependencyGraph);
 
-        final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME, PropertyAuthority.None)));
+        final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(aggregateName));
         final File aggregateBdioFile = new File(bdioDirectory, filename);
 
         detectBdioWriter.writeBdioFile(aggregateBdioFile, aggregateBdioDocument);
 
-        return Optional.of(UploadTarget.createDefault(codeLocationName, aggregateBdioFile));
+        boolean aggregateHasDependencies = aggregateDependencyGraph.getRootDependencies().size() > 0;
+        if (aggregateHasDependencies || uploadEmptyAggregate) {
+            return Optional.of(UploadTarget.createDefault(codeLocationName, aggregateBdioFile));
+        } else {
+            logger.warn("The aggregate contained no dependencies, will not upload aggregate at this time.");
+            return Optional.empty();
+        }
     }
 
     private DependencyGraph createAggregateDependencyGraph(File sourcePath, final List<DetectCodeLocation> codeLocations) {
