@@ -129,7 +129,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         logger.debug("Searching in: " + toolsFolder.getAbsolutePath());
         final Optional<File> foundExe = fileFinder.findFiles(toolsFolder, exeName, 3).stream().findFirst();
         if (foundExe.isPresent() && foundExe.get().exists()) {
-            final String inspectorExe = foundExe.get().toString();
+            final String inspectorExe = foundExe.get().getAbsolutePath();
             logger.info("Found nuget inspector: " + inspectorExe);
             return new ExeNugetInspector(executableRunner, inspectorExe);
         } else {
