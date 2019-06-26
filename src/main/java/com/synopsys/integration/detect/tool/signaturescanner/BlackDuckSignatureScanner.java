@@ -30,10 +30,10 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
@@ -57,8 +57,7 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
-public abstract class BlackDuckSignatureScanner {
-    public static final String SIGNATURE_SCAN_UPLOAD_SOURCE_OPTION = "--upload-source";
+public class BlackDuckSignatureScanner {
     private final Logger logger = LoggerFactory.getLogger(BlackDuckSignatureScanner.class);
 
     private final DirectoryManager directoryManager;
@@ -68,25 +67,26 @@ public abstract class BlackDuckSignatureScanner {
     private final EventSystem eventSystem;
     private final ScanBatchRunner scanJobManager;
 
+    //When OFFLINE, this should be NULL. No other changes required for offline (in this class).
+    private final BlackDuckServerConfig blackDuckServerConfig;
+
     public BlackDuckSignatureScanner(final DirectoryManager directoryManager, final FileFinder fileFinder, final CodeLocationNameManager codeLocationNameManager,
-                                     final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanBatchRunner scanJobManager) {
+        final BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, final ScanBatchRunner scanJobManager, final BlackDuckServerConfig blackDuckServerConfig) {
         this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
         this.signatureScannerOptions = signatureScannerOptions;
         this.eventSystem = eventSystem;
         this.scanJobManager = scanJobManager;
+        this.blackDuckServerConfig = blackDuckServerConfig;
     }
 
-    protected abstract ScanBatch createScanBatch(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile);
-
-    public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws InterruptedException, IntegrationException, DetectUserFriendlyException, IOException {
-        return scanPaths(projectNameVersion, installDirectory, dockerTarFile);
-    }
-
-    private ScanBatchOutput scanPaths(final NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, InterruptedException, IOException {
+    public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, IOException {
         List<SignatureScanPath> signatureScanPaths = determinePathsAndExclusions(projectNameVersion, signatureScannerOptions.getMaxDepth(), dockerTarFile);
-        final ScanBatch scanJob = createScanBatch(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
+
+        final ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
+        scanJobBuilder.fromBlackDuckServerConfig(blackDuckServerConfig);//when offline, we must still call this with 'null' as a workaround for library issues, so offline scanner must be created with this set to null.
+        final ScanBatch scanJob = scanJobBuilder.build();
 
         List<ScanCommandOutput> scanCommandOutputs = new ArrayList<>();
         final ScanBatchOutput scanJobOutput = scanJobManager.executeScans(scanJob);
@@ -101,13 +101,14 @@ public abstract class BlackDuckSignatureScanner {
         return scanJobOutput;
     }
 
+    //TODO: Possibly promote this to the Tool. Ideally it would return some object describing these results and the Tool translates that into detect nonsense -jp.
     private void reportResults(List<SignatureScanPath> signatureScanPaths, List<ScanCommandOutput> scanCommandOutputList) {
         boolean anyFailed = false;
         boolean anyExitCodeIs64 = false;
         for (final SignatureScanPath target : signatureScanPaths) {
             Optional<ScanCommandOutput> targetOutput = scanCommandOutputList.stream()
-                    .filter(output -> output.getScanTarget().equals(target.targetPath))
-                    .findFirst();
+                                                           .filter(output -> output.getScanTarget().equals(target.targetPath))
+                                                           .findFirst();
 
             StatusType scanStatus;
             if (!targetOutput.isPresent()) {
@@ -191,7 +192,7 @@ public abstract class BlackDuckSignatureScanner {
             final ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(fileFinder, target);
 
             final String maxDepthHitMsg = String.format("Maximum depth %d hit while traversing source tree to generate signature scanner exclusion patterns. To search deeper, adjust the value of property %s",
-                    maxDepth, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH.getPropertyName());
+                maxDepth, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH.getPropertyName());
 
             final Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepthHitMsg, maxDepth, signatureScannerExclusionNamePatterns);
             if (null != providedExclusionPatterns) {

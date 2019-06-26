@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.tool.signaturescanner;
 
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
+
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,6 +33,10 @@ public class BlackDuckSignatureScannerOptions {
     private final String[] signatureScannerPaths;
     private final String[] exclusionPatterns;
     private final String[] exclusionNamePatterns;
+
+    private final String offlineLocalScannerInstallPath;
+    private final String onlineLocalScannerInstallPath;
+    private final String userProvidedScannerInstallUrl;
 
     private final Integer scanMemory;
     private final Integer parallelProcessors;
@@ -45,11 +50,17 @@ public class BlackDuckSignatureScannerOptions {
     private final String additionalArguments;
     private final Integer maxDepth;
 
-    public BlackDuckSignatureScannerOptions(final String[] signatureScannerPaths, final String[] exclusionPatterns, final String[] exclusionNamePatterns, final Integer scanMemory, final Integer parallelProcessors,
-        final Boolean cleanupOutput, final Boolean dryRun, final Boolean snippetMatchingFlag, final String snippetMatching, final Boolean uploadSource, final String codeLocationPrefix, final String codeLocationSuffix, final String additionalArguments, final Integer maxDepth) {
+    public BlackDuckSignatureScannerOptions(final String[] signatureScannerPaths, final String[] exclusionPatterns, final String[] exclusionNamePatterns, final String offlineLocalScannerInstallPath,
+        final String onlineLocalScannerInstallPath, final String userProvidedScannerInstallUrl, final Integer scanMemory,
+        final Integer parallelProcessors,
+        final Boolean cleanupOutput, final Boolean dryRun, final Boolean snippetMatchingFlag, final String snippetMatching, final Boolean uploadSource, final String codeLocationPrefix, final String codeLocationSuffix,
+        final String additionalArguments, final Integer maxDepth) {
         this.signatureScannerPaths = signatureScannerPaths;
         this.exclusionPatterns = exclusionPatterns;
         this.exclusionNamePatterns = exclusionNamePatterns;
+        this.offlineLocalScannerInstallPath = offlineLocalScannerInstallPath;
+        this.onlineLocalScannerInstallPath = onlineLocalScannerInstallPath;
+        this.userProvidedScannerInstallUrl = userProvidedScannerInstallUrl;
         this.scanMemory = scanMemory;
         this.parallelProcessors = parallelProcessors;
         this.cleanupOutput = cleanupOutput;
@@ -138,4 +149,15 @@ public class BlackDuckSignatureScannerOptions {
         return maxDepth;
     }
 
+    public String getOfflineLocalScannerInstallPath() {
+        return offlineLocalScannerInstallPath;
+    }
+
+    public String getOnlineLocalScannerInstallPath() {
+        return onlineLocalScannerInstallPath;
+    }
+
+    public String getUserProvidedScannerInstallUrl() {
+        return userProvidedScannerInstallUrl;
+    }
 }
