@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.lifecycle.run;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
@@ -65,11 +67,11 @@ import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureS
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
-import com.synopsys.integration.detect.workflow.DetectPostActions;
 import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostActions;
+import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.CodeLocationWaitData;
 import com.synopsys.integration.detect.workflow.blackduck.DetectBdioUploadService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCodeLocationUnmapService;
@@ -84,6 +86,8 @@ import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
+import com.synopsys.integration.detect.workflow.status.BlackDuckBomDetectResult;
+import com.synopsys.integration.detect.workflow.status.DetectResult;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
@@ -120,7 +124,6 @@ public class RunManager {
         final RunOptions runOptions = detectConfigurationFactory.createRunOptions();
 
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
-        final DetectPostActions detectPostActions = new DetectPostActions(eventSystem);
 
         if (productRunData.shouldUsePolarisProduct()) {
             runPolarisProduct(productRunData, detectConfiguration, directoryManager, eventSystem, connectionManager, executableRunner, detectToolFilter);
@@ -133,12 +136,10 @@ public class RunManager {
         if (productRunData.shouldUseBlackDuckProduct()) {
             AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName(), universalToolsResult);
             runBlackDuckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
-                universalToolsResult.getNameVersion(), detectPostActions, aggregateOptions);
+                universalToolsResult.getNameVersion(), aggregateOptions);
         } else {
             logger.info("Black Duck tools will NOT be run.");
         }
-
-        detectPostActions.runPostActions();
 
         logger.info("All tools have finished.");
         logger.info(ReportConstants.RUN_SEPARATOR);
@@ -257,8 +258,7 @@ public class RunManager {
     private void runBlackDuckProduct(final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager,
         final EventSystem eventSystem,
         final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions,
-        final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion,
-        final DetectPostActions detectPostActions, AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException {
+        final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion, AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         logger.info("Black Duck tools will run.");
 
@@ -342,16 +342,23 @@ public class RunManager {
             logger.info("Binary scan tool will not be run.");
         }
 
+        logger.info(ReportConstants.RUN_SEPARATOR);
         if (null != blackDuckServicesFactory) {
-            final BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory, eventSystem);
-            detectPostActions.setBlackDuckPostActions(blackDuckPostActions);
-            detectPostActions.setBlackDuckPostOptions(detectConfigurationFactory.createBlackDuckPostOptions());
-            detectPostActions.setBlackDuckRunData(blackDuckRunData);
-            detectPostActions.setCodeLocationWaitData(codeLocationWaitData);
-            detectPostActions.setProjectVersionWrapper(projectVersionWrapper);
-            detectPostActions.setHasAtLeastOneBdio(!bdioResult.getUploadTargets().isEmpty());
-            detectPostActions.setShouldHaveScanned(detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN));
-            detectPostActions.setTimeoutInSeconds(detectConfigurationFactory.getTimeoutInSeconds());
+            logger.info("Will perform Black Duck post actions.");
+            BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
+            BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory, eventSystem);
+            blackDuckPostActions.perform(blackDuckPostOptions, codeLocationWaitData, projectVersionWrapper, detectConfigurationFactory.getTimeoutInSeconds());
+
+            if (bdioResult.getUploadTargets().size() > 0 || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
+                final Optional<String> componentsLink = projectVersionWrapper.getProjectVersionView().getFirstLink(ProjectVersionView.COMPONENTS_LINK);
+                if (componentsLink.isPresent()) {
+                    final DetectResult detectResult = new BlackDuckBomDetectResult(componentsLink.get());
+                    eventSystem.publishEvent(Event.ResultProduced, detectResult);
+                }
+            }
+            logger.info("Black Duck actions have finished.");
+        } else {
+            logger.debug("Will not perform Black Duck post actions: Detect is not online.");
         }
     }
 
