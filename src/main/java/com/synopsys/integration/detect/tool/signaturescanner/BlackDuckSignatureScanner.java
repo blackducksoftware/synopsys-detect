@@ -216,7 +216,7 @@ public class BlackDuckSignatureScanner {
         scanJobBuilder.outputDirectory(directoryManager.getScanOutputDirectory());
 
         scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());
-        scanJobBuilder.cleanupOutput(signatureScannerOptions.getCleanupOutput());
+        scanJobBuilder.cleanupOutput(false);
 
         Optional<SnippetMatching> optionalSnippetMatching = signatureScannerOptions.getSnippetMatchingEnum();
         boolean uploadSource = BooleanUtils.toBoolean(signatureScannerOptions.getUploadSource());

@@ -40,7 +40,6 @@ public class BlackDuckSignatureScannerOptions {
 
     private final Integer scanMemory;
     private final Integer parallelProcessors;
-    private final Boolean cleanupOutput;
     private final Boolean dryRun;
     private final Boolean snippetMatchingFlag;
     private final String snippetMatching;
@@ -53,7 +52,7 @@ public class BlackDuckSignatureScannerOptions {
     public BlackDuckSignatureScannerOptions(final String[] signatureScannerPaths, final String[] exclusionPatterns, final String[] exclusionNamePatterns, final String offlineLocalScannerInstallPath,
         final String onlineLocalScannerInstallPath, final String userProvidedScannerInstallUrl, final Integer scanMemory,
         final Integer parallelProcessors,
-        final Boolean cleanupOutput, final Boolean dryRun, final Boolean snippetMatchingFlag, final String snippetMatching, final Boolean uploadSource, final String codeLocationPrefix, final String codeLocationSuffix,
+        final Boolean dryRun, final Boolean snippetMatchingFlag, final String snippetMatching, final Boolean uploadSource, final String codeLocationPrefix, final String codeLocationSuffix,
         final String additionalArguments, final Integer maxDepth) {
         this.signatureScannerPaths = signatureScannerPaths;
         this.exclusionPatterns = exclusionPatterns;
@@ -63,7 +62,6 @@ public class BlackDuckSignatureScannerOptions {
         this.userProvidedScannerInstallUrl = userProvidedScannerInstallUrl;
         this.scanMemory = scanMemory;
         this.parallelProcessors = parallelProcessors;
-        this.cleanupOutput = cleanupOutput;
         this.dryRun = dryRun;
         this.snippetMatchingFlag = snippetMatchingFlag;
         this.snippetMatching = snippetMatching;
@@ -100,10 +98,6 @@ public class BlackDuckSignatureScannerOptions {
 
     public Integer getParallelProcessors() {
         return parallelProcessors;
-    }
-
-    public Boolean getCleanupOutput() {
-        return cleanupOutput;
     }
 
     public Boolean getDryRun() {
