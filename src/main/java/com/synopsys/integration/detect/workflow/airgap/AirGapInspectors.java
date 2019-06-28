@@ -20,13 +20,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector.inspectors;
+package com.synopsys.integration.detect.workflow.airgap;
 
-import java.io.File;
-
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-
-public interface NugetInspectorInstaller {
-    File installDotnetInspector() throws DetectableException;
-    File installExeInspector() throws DetectableException;
+public enum AirGapInspectors {
+    DOCKER,
+    GRADLE,
+    NUGET
 }

@@ -41,14 +41,12 @@ public class DetectorRuleBuilder {
         this.detectableCreatable = detectableCreatable;
     }
 
-    public DetectorRuleBuilder defaultNotNested() {
-        maxDepth(Integer.MAX_VALUE);
-        return nestable(false);
+    public DetectorRuleBuilder defaults() {
+        return noMaxDepth().nestable();
     }
 
-    public DetectorRuleBuilder defaultNested() {
-        maxDepth(Integer.MAX_VALUE);
-        return nestable(true);
+    public DetectorRuleBuilder noMaxDepth() {
+        return maxDepth(Integer.MAX_VALUE);
     }
 
     public DetectorRuleBuilder maxDepth(final int maxDepth) {
@@ -56,14 +54,22 @@ public class DetectorRuleBuilder {
         return this;
     }
 
-    public DetectorRuleBuilder nestable(final boolean nestable) {
+    public DetectorRuleBuilder isNestable(boolean nestable) {
         this.nestable = nestable;
         return this;
     }
 
+    public DetectorRuleBuilder nestable() {
+        return isNestable(true);
+    }
+
+    public DetectorRuleBuilder notNestable() {
+        return isNestable(false);
+    }
+
     public DetectorRule build() {
         DetectorRule rule = new DetectorRule(detectableCreatable, maxDepth, nestable, detectorType, name);
-        if (detectorRuleSetBuilder != null){
+        if (detectorRuleSetBuilder != null) {
             detectorRuleSetBuilder.add(rule);
         }
         return rule;

@@ -40,6 +40,8 @@ public class DetectArgumentStateParser {
         final boolean isDiagnosticProvided = parser.isArgumentPresent("-d", "--diagnostic");
         final boolean isDiagnosticExtendedProvided = parser.isArgumentPresent("-de", "--diagnosticExtended");
 
+        final boolean isGenerateAirGapZip = parser.isArgumentPresent("-z", "--zip");
+
         boolean isDiagnostic = false;
         boolean isDiagnosticExtended = false;
 
@@ -53,9 +55,11 @@ public class DetectArgumentStateParser {
         String parsedValue = null;
         if (isHelp) {
             parsedValue = parser.findValueForCommand("-h", "--help");
+        } else if (isGenerateAirGapZip) {
+            parsedValue = parser.findValueForCommand("-z", "--zip");
         }
 
-        return new DetectArgumentState(isHelp, isHelpHtmlDocument, isHelpJsonDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue, isDiagnostic, isDiagnosticExtended);
+        return new DetectArgumentState(isHelp, isHelpHtmlDocument, isHelpJsonDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue, isDiagnostic, isDiagnosticExtended, isGenerateAirGapZip);
     }
 
 }

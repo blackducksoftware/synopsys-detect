@@ -71,10 +71,12 @@ public class NugetInspectorExtractor {
             final List<File> dependencyNodeFiles = fileFinder.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN);
 
             final List<NugetParseResult> parseResults = new ArrayList<>();
-            for (final File dependencyNodeFile : dependencyNodeFiles) {
-                final String text = FileUtils.readFileToString(dependencyNodeFile, StandardCharsets.UTF_8);
-                final NugetParseResult result = nugetInspectorParser.createCodeLocation(text);
-                parseResults.add(result);
+            if (dependencyNodeFiles != null) {
+                for (final File dependencyNodeFile : dependencyNodeFiles) {
+                    final String text = FileUtils.readFileToString(dependencyNodeFile, StandardCharsets.UTF_8);
+                    final NugetParseResult result = nugetInspectorParser.createCodeLocation(text);
+                    parseResults.add(result);
+                }
             }
 
             final List<CodeLocation> codeLocations = parseResults.stream()

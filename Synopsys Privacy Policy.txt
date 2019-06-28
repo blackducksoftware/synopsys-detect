@@ -1,0 +1,44 @@
+﻿Synopsys Privacy Policy
+
+Synopsys is committed to protecting the online privacy of our customers and users of our products and services. The privacy practices described in this privacy policy apply to users of our products and services, including use of Synopsys Detect (the “Product”).
+
+We strive to treat your personal information as safely and securely as reasonably possible. Please read the following privacy policy to better understand how your personal information may be collected and used as you use our Products and Services. As described below, your information may be collected by Synopsys, Inc. (“Synopsys”), disclosed to third parties, and used by third parties and Synopsys. This privacy policy describes the information we collect about you, how that information is used by our Products and Services, and what may happen to that information. 
+
+We occasionally employ other companies and individuals to perform functions on our behalf. Examples include fulfilling orders, sending postal mail and e-mail, removing repetitive information from our internal customer lists, analyzing data, and providing marketing assistance. These third party service providers have access to personal information needed to perform their functions, but may not use it for other purposes. We do not sell, rent, share, or otherwise disclose personally identifiable information from customers for commercial purposes.
+
+
+Collection of Personally Identifiable Information
+
+REGISTRATION
+
+In order to use our Products and Services, you first may be required to complete a registration form and/or create a user name and password. During registration you are required to give contact information (such as name and email address). We may use this information to contact you about our Products and Services. This information may also be shared with Synopsys subsidiaries and business partners.
+
+
+Collection of Non-Personally Identifiable Information
+
+LOG FILES
+
+Our Products and Services gather certain information automatically and store it in log files. This information includes internet protocol (IP) addresses, browser type, internet service provider (ISP), referring/exit pages, operating system, and date/time stamp.
+
+We use this information to analyze and administer the use of our Products and Services. This information is used to manage and improve the usability, performance and effectiveness of our Products and Services.
+
+LEGAL DISCLAIMER
+
+We reserve the right to disclose your personally identifiable information as required by law and when we believe that disclosure is necessary to protect our rights and/or to comply with a judicial proceeding, court order, or legal process served on Synopsys. Also, we reserve the right to fully use and disclose any information collected from your use of our Products and Services that is not in a personally identifiable form.
+
+CHOICE AND OPT-OUT
+
+If you do not want us to gather your personally identifiable information in connection with your use of our Products and Services, you may opt-out by submitting your request to us at privacy@synopsys.com. Please note that other data recipients have their own data privacy policies, which may differ from ours and you would have to contact them separately with respect to opt-out requests. You also should understand that having a business relationship with us is voluntary, but it may be impossible to work with you without processing some personal data about you such as your contact information.
+
+Security
+
+Transmissions over the Internet are never 100% secure or error-free. However, security of your personal information is important to us. We follow generally accepted industry standards to protect the personal information submitted to us, both during transmission and once we receive it.
+It is your responsibility to safeguard any password and User ID you use to access our Products and Services and to notify us at privacy@synopsys.com if you ever suspect that this password or User ID has been compromised. You are solely responsible for any unauthorized use of our Products and Services conducted via your password and User ID.
+
+Changes in this Privacy Policy
+
+We reserve the right to modify this privacy statement at any time. When you use our Products and Services, you are accepting the current version of this privacy policy as posted by us at that time.
+
+Contact Us 
+
+If you have any questions or suggestions regarding our privacy policy, please contact us at  privacy@synopsys.com.

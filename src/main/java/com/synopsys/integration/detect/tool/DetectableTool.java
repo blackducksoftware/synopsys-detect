@@ -94,15 +94,15 @@ public class DetectableTool {
         try {
             extractable = detectable.extractable();
         } catch (final DetectableException e) {
-            logger.error("An exception occured checking extractable: " + e.getMessage());
-            return DetectableToolResult.skip();
+            logger.error("An exception occurred checking extractable: " + e.getMessage());
+            return DetectableToolResult.failed(e);
         }
 
         if (!extractable.getPassed()) {
             logger.info("Was not extractable.");
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.FAILURE));
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
-            return DetectableToolResult.skip();
+            return DetectableToolResult.failed(Optional.empty());
         }
 
         logger.info("Extractable passed.");
@@ -114,7 +114,7 @@ public class DetectableTool {
             logger.info("Extraction was not success.");
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.FAILURE));
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
-            return DetectableToolResult.skip();
+            return DetectableToolResult.failed(Optional.empty());
         } else {
             logger.info("Extraction success.");
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.SUCCESS));
@@ -133,6 +133,6 @@ public class DetectableTool {
 
         logger.info("Tool finished.");
 
-        return new DetectableToolResult(detectToolProjectInfo, detectCodeLocations, dockerTar);
+        return DetectableToolResult.success(detectCodeLocations, detectToolProjectInfo, dockerTar);
     }
 }

@@ -71,7 +71,7 @@ public class PipEnvTreeParserTest {
         String invalidText = "i am not a valid file" + "\n";
         invalidText += "the status should be null";
 
-        final PipParseResult root = parser.parse("name", "version", pipFreezeOutput, Arrays.asList(invalidText.split("\r?\n")), "");
+        final PipParseResult root = parser.parse("name", "version", pipFreezeOutput, Arrays.asList(invalidText.split("\r?\n")));
         assertNull(root);
     }
 }

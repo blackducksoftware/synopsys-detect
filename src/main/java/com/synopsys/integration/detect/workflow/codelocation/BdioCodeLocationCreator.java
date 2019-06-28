@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.workflow.codelocation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,6 +38,8 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -60,14 +63,22 @@ public class BdioCodeLocationCreator {
         this.eventSystem = eventSystem;
     }
 
-    public BdioCodeLocationResult createFromDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations, final NameVersion projectNameVersion) {
+    public BdioCodeLocationResult createFromDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
         final Set<DetectorType> failedBomToolGroups = new HashSet<>();
 
         final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.None);
         final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.None);
 
         final List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
-        final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, directoryManager.getSourceDirectory().getAbsolutePath(), projectNameVersion, prefix, suffix);
+        final String canonicalDetectSourcePath;
+        try {
+            canonicalDetectSourcePath = directoryManager.getSourceDirectory().getCanonicalPath();
+        } catch (IOException e) {
+            final String msg = String.format("Unable to get canonical path for %s", directoryManager.getSourceDirectory().getAbsolutePath());
+            throw new DetectUserFriendlyException(msg, e, ExitCodeType.FAILURE_UNKNOWN_ERROR);
+        }
+        final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, canonicalDetectSourcePath, projectNameVersion, prefix, suffix);
+
         final Map<String, List<DetectCodeLocation>> codeLocationsByName = seperateCodeLocationsByName(codeLocationsAndNames);
 
         final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName);

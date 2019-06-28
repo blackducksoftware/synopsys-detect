@@ -20,29 +20,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.bdio;
+package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.io.File;
 
-import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
-public class BdioResult {
-    private final List<UploadTarget> uploadTargets;
+public interface NugetInspectorLocator {
+    File locateDotnetInspector() throws DetectableException;
 
-    public BdioResult(final Optional<UploadTarget> uploadTarget) {
-        this.uploadTargets = new ArrayList<>();
-        uploadTarget.ifPresent(uploadTargets::add);
-    }
-
-    public BdioResult(final List<UploadTarget> uploadTargets) {
-        this.uploadTargets = uploadTargets;
-    }
-
-    public List<UploadTarget> getUploadTargets() {
-        return uploadTargets;
-    }
-
+    File locateExeInspector() throws DetectableException;
 }

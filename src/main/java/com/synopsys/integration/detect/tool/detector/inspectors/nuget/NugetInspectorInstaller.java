@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector.inspectors;
+package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,58 +34,49 @@ import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.util.DetectZipUtil;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
-import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class OnlineNugetInspectorInstaller implements NugetInspectorInstaller {
-    private final Logger logger = LoggerFactory.getLogger(OnlineNugetInspectorInstaller.class);
-
-    private final DirectoryManager directoryManager;
+public class NugetInspectorInstaller {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ArtifactResolver artifactResolver;
-    private final String overrideVersion;
 
-    public OnlineNugetInspectorInstaller(final DirectoryManager directoryManager, final ArtifactResolver artifactResolver, final String overrideVersion) {
-        this.directoryManager = directoryManager;
+    public NugetInspectorInstaller(final ArtifactResolver artifactResolver) {
         this.artifactResolver = artifactResolver;
-        this.overrideVersion = overrideVersion;
     }
 
-    @Override
-    public File installDotnetInspector() throws DetectableException {
+    public File installDotNet(File destination, Optional<String> overrideVersion) throws DetectableException {
         try {
             logger.info("Will attempt to resolve the dotnet inspector version.");
             Optional<String> source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.NUGET_INSPECTOR_REPO, ArtifactoryConstants.NUGET_INSPECTOR_PROPERTY,
-                overrideVersion,
+                overrideVersion.orElse(""),
                 ArtifactoryConstants.NUGET_INSPECTOR_VERSION_OVERRIDE);
-            return installFromSource(source);
+            return installFromSource(destination, source);
         } catch (Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }
     }
 
-    @Override
-    public File installExeInspector() throws DetectableException {
+    public File installExeInspector(File destination, Optional<String> overrideVersion) throws DetectableException {
         try {
             logger.info("Will attempt to resolve the classic inspector version.");
             Optional<String> source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_REPO, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_PROPERTY,
-                overrideVersion,
+                overrideVersion.orElse(""),
                 ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_VERSION_OVERRIDE);
-            return installFromSource(source);
+            return installFromSource(destination, source);
         } catch (Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }
     }
 
-    private File installFromSource(Optional<String> source) throws IntegrationException, IOException, DetectUserFriendlyException {
-        final File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
+    private File installFromSource(File dest, Optional<String> source) throws IntegrationException, IOException, DetectUserFriendlyException {
         if (source.isPresent()) {
             logger.debug("Resolved the nuget inspector url: " + source.get());
             final String nupkgName = artifactResolver.parseFileName(source.get());
             logger.debug("Parsed artifact name: " + nupkgName);
-            final File nupkgFile = new File(nugetDirectory, nupkgName);
+            final File nupkgFile = new File(dest, nupkgName);
             final String inspectorFolderName = nupkgName.replace(".nupkg", "");
-            File inspectorFolder = new File(nugetDirectory, inspectorFolderName);
+            File inspectorFolder = new File(dest, inspectorFolderName);
             if (!inspectorFolder.exists()) {
                 logger.info("Downloading nuget inspector.");
                 artifactResolver.downloadArtifact(nupkgFile, source.get());

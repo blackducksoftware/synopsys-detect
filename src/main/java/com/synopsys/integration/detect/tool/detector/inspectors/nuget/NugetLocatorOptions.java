@@ -20,14 +20,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector.inspectors;
+package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
-public class NugetInstallerOptions {
+public class NugetLocatorOptions {
     private final String[] packagesRepoUrl;
     private final String nugetInspectorName;
     private final String nugetInspectorVersion;
 
-    public NugetInstallerOptions(final String[] packagesRepoUrl, final String nugetInspectorName, final String nugetInspectorVersion) {
+    public NugetLocatorOptions(final String[] packagesRepoUrl, final String nugetInspectorName, final String nugetInspectorVersion) {
         this.packagesRepoUrl = packagesRepoUrl;
         this.nugetInspectorName = nugetInspectorName;
         this.nugetInspectorVersion = nugetInspectorVersion;

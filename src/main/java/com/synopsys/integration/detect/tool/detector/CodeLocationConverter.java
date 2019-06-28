@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.tool.detector;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -69,7 +70,7 @@ public class CodeLocationConverter {
                 Forge detectForge = new Forge("/", "Detect");
                 final String relativePath = FileNameUtils.relativize(detectSourcePath.getAbsolutePath(), sourcePath.getAbsolutePath());
                 externalId = externalIdFactory.createPathExternalId(detectForge, relativePath);
-                logger.warn("The external id that was created is: " + externalId.getExternalIdPieces().toString());
+                logger.warn("The external id that was created is: " + Arrays.asList(externalId.getExternalIdPieces()).toString());
             } else {
                 externalId = codeLocation.getExternalId().get();
             }

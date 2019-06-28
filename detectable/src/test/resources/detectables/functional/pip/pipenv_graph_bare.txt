@@ -1,0 +1,10 @@
+pip==19.1.1
+pipenv-virtualenv-test==1.0.0
+  - click [required: ==7.0, installed: 7.0]
+  - requests [required: ==2.20.0, installed: 2.20.0]
+    - certifi [required: >=2017.4.17, installed: 2019.3.9]
+    - chardet [required: >=3.0.2,<3.1.0, installed: 3.0.4]
+    - idna [required: >=2.5,<2.8, installed: 2.7]
+    - urllib3 [required: >=1.21.1,<1.25, installed: 1.24.3]
+setuptools==41.0.1
+wheel==0.33.4

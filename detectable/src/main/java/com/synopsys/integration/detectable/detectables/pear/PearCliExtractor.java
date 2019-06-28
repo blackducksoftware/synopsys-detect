@@ -70,10 +70,10 @@ public class PearCliExtractor {
         this.pearListParser = pearListParser;
     }
 
-    public Extraction extract(final File pearExe, final File packageXmlFile, final File extractionDirectory, final boolean onlyGatherRequired) {
+    public Extraction extract(final File pearExe, final File packageXmlFile, final File workingDirectory, final boolean onlyGatherRequired) {
         try {
-            final ExecutableOutput pearListOutput = executableRunner.execute(extractionDirectory, pearExe, "list");
-            final ExecutableOutput packageDependenciesOutput = executableRunner.execute(extractionDirectory, pearExe, "package-dependencies", PACKAGE_XML_FILENAME);
+            final ExecutableOutput pearListOutput = executableRunner.execute(workingDirectory, pearExe, "list");
+            final ExecutableOutput packageDependenciesOutput = executableRunner.execute(workingDirectory, pearExe, "package-dependencies", PACKAGE_XML_FILENAME);
             assertValidExecutableOutput(pearListOutput, packageDependenciesOutput);
 
             final Map<String, String> dependencyNameVersionMap = pearListParser.parse(pearListOutput.getStandardOutputAsList());
@@ -98,19 +98,13 @@ public class PearCliExtractor {
     }
 
     private void assertValidExecutableOutput(final ExecutableOutput pearListing, final ExecutableOutput pearDependencies) throws IntegrationException {
-        if (StringUtils.isNotBlank(pearDependencies.getErrorOutput()) || StringUtils.isNotBlank(pearListing.getErrorOutput())) {
-            logger.error("There was an error during execution.");
-            if (StringUtils.isNotBlank(pearListing.getErrorOutput())) {
-                logger.error("Pear list error: ");
-                logger.error(pearListing.getErrorOutput());
-            }
-            if (StringUtils.isNotBlank(pearDependencies.getErrorOutput())) {
-                logger.error("Pear package-dependencies error: ");
-                logger.error(pearDependencies.getErrorOutput());
-            }
+        if (pearDependencies.getReturnCode() != 0 || StringUtils.isNotBlank(pearDependencies.getErrorOutput())) {
+            throw new IntegrationException("Pear dependencies exit code must be 0 and have no error output.");
+        } else if (pearListing.getReturnCode() != 0 || StringUtils.isNotBlank(pearListing.getErrorOutput())) {
+            throw new IntegrationException("Pear listing exit code must be 0 and have no error output.");
+        }
 
-            throw new IntegrationException("There was an error during execution of the pear CLI");
-        } else if (!(pearDependencies.getStandardOutputAsList().size() > 0) || !(pearListing.getStandardOutputAsList().size() > 0)) {
+        if (StringUtils.isBlank(pearDependencies.getStandardOutput()) && StringUtils.isBlank(pearListing.getStandardOutput())) {
             throw new IntegrationException("No information retrieved from running pear commands");
         }
     }

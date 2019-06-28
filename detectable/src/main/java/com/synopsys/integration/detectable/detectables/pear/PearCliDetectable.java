@@ -79,7 +79,7 @@ public class PearCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return pearCliExtractor.extract(pearExe, packageDotXml, extractionEnvironment.getOutputDirectory(), pearCliDetectableOptions.onlyGatherRequired());
+        return pearCliExtractor.extract(pearExe, packageDotXml, environment.getDirectory(), pearCliDetectableOptions.onlyGatherRequired());
     }
 
 }
