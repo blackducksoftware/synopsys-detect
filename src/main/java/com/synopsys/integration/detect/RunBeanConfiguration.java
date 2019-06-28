@@ -51,7 +51,6 @@ import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
-import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
@@ -79,8 +78,6 @@ public class RunBeanConfiguration {
     public DetectConfiguration detectConfiguration;
     @Autowired
     public DirectoryManager directoryManager;
-    @Autowired
-    public DiagnosticManager diagnosticManager;
     @Autowired
     public EventSystem eventSystem;
     @Autowired

@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -82,7 +83,6 @@ import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
 import com.synopsys.integration.detect.workflow.airgap.DockerAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.GradleAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.NugetAirGapCreator;
-import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticManager;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.diagnostic.RelevantFileTracker;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -111,7 +111,7 @@ public class DetectBoot {
         this.detectBootFactory = detectBootFactory;
     }
 
-    public DetectBootResult boot(DetectRun detectRun, final String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) throws DetectUserFriendlyException, IntegrationException {
+    public DetectBootResult boot(DetectRun detectRun, final String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) {
         Gson gson = detectBootFactory.createGson();
         ObjectMapper objectMapper = detectBootFactory.createObjectMapper();
         DocumentBuilder xml = detectBootFactory.createXmlDocumentBuilder();
@@ -131,17 +131,17 @@ public class DetectBoot {
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             printAppropriateHelp(options, detectArgumentState);
-            return DetectBootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty());
         }
 
         if (detectArgumentState.isHelpHtmlDocument()) {
             printHelpHtmlDocument(options, detectInfo, configuration);
-            return DetectBootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty());
         }
 
         if (detectArgumentState.isHelpJsonDocument()) {
             printHelpJsonDocument(options, detectInfo, configuration, gson);
-            return DetectBootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty());
         }
 
         printDetectInfo(detectInfo);
@@ -150,7 +150,11 @@ public class DetectBoot {
             startInteractiveMode(detectOptionManager, detectConfiguration, gson, objectMapper);
         }
 
-        processDetectConfiguration(detectInfo, detectRun, detectConfiguration, options);
+        try {
+            processDetectConfiguration(detectInfo, detectRun, detectConfiguration, options);
+        } catch (DetectUserFriendlyException e) {
+            return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.empty(), Optional.empty());
+        }
 
         detectOptionManager.postConfigurationProcessedInit();
 
@@ -162,36 +166,55 @@ public class DetectBoot {
 
         DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
         DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
-        DiagnosticManager diagnosticManager = createDiagnostics(detectOptionManager.getDetectOptions(), detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
+        Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectOptionManager.getDetectOptions(), detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
-        checkForInvalidOptions(detectOptionManager);
+        try {
+            checkForInvalidOptions(detectOptionManager);
+        } catch (DetectUserFriendlyException e) {
+            return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.of(directoryManager), diagnosticSystem);
+        }
 
         if (detectOptionManager.checkForAnyFailureProperties()) {
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION));
-            return DetectBootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(detectConfiguration, Optional.of(directoryManager), diagnosticSystem);
         }
 
         logger.info("Main boot completed. Deciding what Detect should do.");
 
         if (detectArgumentState.isGenerateAirGapZip()) {
             DetectOverrideableFilter inspectorFilter = new DetectOverrideableFilter("", detectArgumentState.getParsedValue());
-            createAirGapZip(inspectorFilter, detectConfiguration, gson, eventSystem, configuration);
-            return DetectBootResult.exit(detectConfiguration);
+            try {
+                createAirGapZip(inspectorFilter, detectConfiguration, gson, eventSystem, configuration);
+            } catch (DetectUserFriendlyException e) {
+                return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.of(directoryManager), diagnosticSystem);
+            }
+            return DetectBootResult.exit(detectConfiguration, Optional.of(directoryManager), diagnosticSystem);
         }
 
         final RunOptions runOptions = factory.createRunOptions();
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
         ProductDecider productDecider = new ProductDecider();
-        ProductDecision productDecision = productDecider.decide(detectConfiguration, directoryManager.getUserHome(), detectToolFilter);
+        ProductDecision productDecision;
+        try {
+            productDecision = productDecider.decide(detectConfiguration, directoryManager.getUserHome(), detectToolFilter);
+        } catch (DetectUserFriendlyException e) {
+            return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.of(directoryManager), diagnosticSystem);
+        }
 
         logger.info("Decided what products will be run. Starting product boot.");
 
         ProductBootFactory productBootFactory = new ProductBootFactory(detectConfiguration, detectInfo, eventSystem, detectOptionManager);
         ProductBoot productBoot = new ProductBoot();
-        ProductRunData productRunData = productBoot.boot(productDecision, detectConfiguration, new BlackDuckConnectivityChecker(), new PolarisConnectivityChecker(), productBootFactory);
+        ProductRunData productRunData;
+        try {
+            productRunData = productBoot.boot(productDecision, detectConfiguration, new BlackDuckConnectivityChecker(), new PolarisConnectivityChecker(), productBootFactory);
+        } catch (DetectUserFriendlyException e) {
+            return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.of(directoryManager), diagnosticSystem);
+        }
+
         if (productRunData == null) {
             logger.info("No products to run, Detect is complete.");
-            return DetectBootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(detectConfiguration, Optional.of(directoryManager), diagnosticSystem);
         }
 
         //TODO: Only need this if in diagnostic or online (for phone home):
@@ -209,7 +232,6 @@ public class DetectBoot {
         detectContext.registerBean(detectConfiguration);
         detectContext.registerBean(detectInfo);
         detectContext.registerBean(directoryManager);
-        detectContext.registerBean(diagnosticManager);
 
         detectContext.registerBean(gson);
         detectContext.registerBean(objectMapper);
@@ -220,7 +242,7 @@ public class DetectBoot {
         detectContext.registerConfiguration(DetectableBeanConfiguration.class);
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
-        return DetectBootResult.run(detectConfiguration, productRunData);
+        return DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem);
     }
 
     private void printAppropriateHelp(List<DetectOption> detectOptions, DetectArgumentState detectArgumentState) {
@@ -277,15 +299,14 @@ public class DetectBoot {
         }
     }
 
-    private DiagnosticManager createDiagnostics(List<DetectOption> detectOptions, DetectRun detectRun, DetectInfo detectInfo, DetectArgumentState detectArgumentState, EventSystem eventSystem, DirectoryManager directoryManager) {
-
+    private Optional<DiagnosticSystem> createDiagnostics(List<DetectOption> detectOptions, DetectRun detectRun, DetectInfo detectInfo, DetectArgumentState detectArgumentState, EventSystem eventSystem, DirectoryManager directoryManager) {
         if (detectArgumentState.isDiagnostic() || detectArgumentState.isDiagnosticExtended()) {
             boolean extendedMode = detectArgumentState.isDiagnosticExtended();
             RelevantFileTracker relevantFileTracker = new RelevantFileTracker(detectArgumentState.isDiagnostic(), detectArgumentState.isDiagnosticExtended(), directoryManager);
             DiagnosticSystem diagnosticSystem = new DiagnosticSystem(extendedMode, detectOptions, detectRun, detectInfo, relevantFileTracker, directoryManager, eventSystem);
-            return DiagnosticManager.createWithDiagnostics(diagnosticSystem);
+            return Optional.of(diagnosticSystem);
         } else {
-            return DiagnosticManager.createWithoutDiagnostics();
+            return Optional.empty();
         }
     }
 

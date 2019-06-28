@@ -36,6 +36,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.kotlin.nameversion.DetectorEvaluationNameVersionDecider;
@@ -72,7 +74,8 @@ public class DetectorTool {
         this.codeLocationConverter = codeLocationConverter;
     }
 
-    public DetectorToolResult performDetectors(final File directory, DetectorRuleSet detectorRuleSet, final DetectorFinderOptions detectorFinderOptions, DetectorEvaluationOptions evaluationOptions, final String projectBomTool)
+    public DetectorToolResult performDetectors(final File directory, DetectorRuleSet detectorRuleSet, final DetectorFinderOptions detectorFinderOptions, DetectorEvaluationOptions evaluationOptions, final String projectBomTool,
+        final String requiredDetectors)
         throws DetectUserFriendlyException {
         logger.info("Initializing detector system.");
         final Optional<DetectorEvaluationTree> possibleRootEvaluation;
@@ -153,6 +156,15 @@ public class DetectorTool {
         final Optional<NameVersion> bomToolNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorEvaluations, projectBomTool);
         detectorToolResult.bomToolProjectNameVersion = bomToolNameVersion;
         logger.info("Finished evaluating detectors for project info.");
+
+        //Check required detector types
+        RequiredDetectorChecker requiredDetectorChecker = new RequiredDetectorChecker();
+        RequiredDetectorChecker.RequiredDetectorResult requiredDetectorResult = requiredDetectorChecker.checkForMissingDetectors(requiredDetectors, applicable);
+        if (requiredDetectorResult.wereDetectorsMissing()) {
+            String missingDetectors = requiredDetectorResult.getMissingDetectors().stream().map(it -> it.toString()).collect(Collectors.joining(","));
+            logger.error("One or more required detector types were not found: " + missingDetectors);
+            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR_REQUIRED));
+        }
 
         //Completed.
         logger.info("Finished running detectors.");

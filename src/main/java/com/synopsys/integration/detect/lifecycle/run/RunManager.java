@@ -195,6 +195,7 @@ public class RunManager {
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
             logger.info("Will include the detector tool.");
             final String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DETECTOR, PropertyAuthority.None);
+            final String requiredDetectors = detectConfiguration.getProperty(DetectProperty.DETECT_REQUIRED_DETECTOR_TYPES, PropertyAuthority.None);
             final boolean buildless = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BUILDLESS, PropertyAuthority.None);
 
             final DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
@@ -205,11 +206,10 @@ public class RunManager {
             final DetectorEvaluationOptions detectorEvaluationOptions = detectConfigurationFactory.createDetectorEvaluationOptions();
 
             final DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter);
-            final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool);
+            final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool, requiredDetectors);
 
             runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
             runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);
-            runResult.addApplicableDetectors(detectorToolResult.applicableDetectorTypes);
 
             if (detectorToolResult.failedDetectorTypes.size() > 0) {
                 eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));

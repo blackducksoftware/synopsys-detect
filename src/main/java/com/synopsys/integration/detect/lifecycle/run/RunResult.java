@@ -41,7 +41,6 @@ public class RunResult {
     private Optional<File> dockerTar = Optional.empty();
     private final List<DetectToolProjectInfo> detectToolProjectInfo = new ArrayList<>();
     private final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
-    private final Set<DetectorType> applicableDetectors = new HashSet<>();
 
     public void addToolNameVersionIfPresent(DetectTool detectTool, Optional<NameVersion> toolNameVersion) {
         if (toolNameVersion.isPresent()) {
@@ -74,13 +73,5 @@ public class RunResult {
 
     public List<DetectCodeLocation> getDetectCodeLocations() {
         return detectCodeLocations;
-    }
-
-    public void addApplicableDetectors(Set<DetectorType> detectorTypes) {
-        applicableDetectors.addAll(detectorTypes);
-    }
-
-    public Set<DetectorType> getApplicableDetectors() {
-        return applicableDetectors;
     }
 }

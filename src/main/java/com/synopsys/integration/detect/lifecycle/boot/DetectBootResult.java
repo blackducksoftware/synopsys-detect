@@ -22,31 +22,76 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot;
 
+import java.util.Optional;
+
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
+import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
+import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 
 public class DetectBootResult {
-    public BootType bootType;
-    public DetectConfiguration detectConfiguration; //Application needs this to make sure exit code behaves.
-    public ProductRunData productRunData;
+    private final BootType bootType;
+
+    //No matter what type of boot occurs, the following should be provided to the best effort of the Boot.
+    //Shutdown and cleanup will do best effort with the following dependencies.
+    private final DetectConfiguration detectConfiguration;
+    private final DirectoryManager directoryManager;
+    private final ProductRunData productRunData;
+    private final DiagnosticSystem diagnosticSystem;
+
+    //And in the case of an exception, this should be populated so the proper exit code can be thrown.
+    private final Exception exception;
+
+    public DetectBootResult(final BootType bootType, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final DiagnosticSystem diagnosticSystem,
+        final ProductRunData productRunData, final Exception exception) {
+        this.bootType = bootType;
+        this.detectConfiguration = detectConfiguration;
+        this.directoryManager = directoryManager;
+        this.diagnosticSystem = diagnosticSystem;
+        this.productRunData = productRunData;
+        this.exception = exception;
+    }
+
+    public Optional<DetectConfiguration> getDetectConfiguration() {
+        return Optional.ofNullable(detectConfiguration);
+    }
+
+    public Optional<DirectoryManager> getDirectoryManager() {
+        return Optional.ofNullable(directoryManager);
+    }
+
+    public Optional<DiagnosticSystem> getDiagnosticSystem() {
+        return Optional.ofNullable(diagnosticSystem);
+    }
+
+    public Optional<ProductRunData> getProductRunData() {
+        return Optional.ofNullable(productRunData);
+    }
+
+    public BootType getBootType() {
+        return bootType;
+    }
+
+    public Optional<Exception> getException() {
+        return Optional.ofNullable(exception);
+    }
 
     public enum BootType {
         EXIT,
-        RUN
+        RUN,
+        EXCEPTION
     }
 
-    public static DetectBootResult run(DetectConfiguration detectConfiguration, ProductRunData productRunData) {
-        DetectBootResult result = new DetectBootResult();
-        result.bootType = BootType.RUN;
-        result.detectConfiguration = detectConfiguration;
-        result.productRunData = productRunData;
-        return result;
+    public static DetectBootResult run(DetectConfiguration detectConfiguration, ProductRunData productRunData, DirectoryManager directoryManager, Optional<DiagnosticSystem> diagnosticSystem) {
+        return new DetectBootResult(BootType.RUN, detectConfiguration, directoryManager, diagnosticSystem.orElse(null), productRunData, null);
     }
 
-    public static DetectBootResult exit(DetectConfiguration detectConfiguration) {
-        DetectBootResult result = new DetectBootResult();
-        result.bootType = BootType.EXIT;
-        result.detectConfiguration = detectConfiguration;
-        return result;
+    public static DetectBootResult exit(DetectConfiguration detectConfiguration, Optional<DirectoryManager> directoryManager, Optional<DiagnosticSystem> diagnosticSystem) {
+        return new DetectBootResult(BootType.EXIT, detectConfiguration, directoryManager.orElse(null), diagnosticSystem.orElse(null), null, null);
     }
+
+    public static DetectBootResult exception(Exception exception, Optional<DetectConfiguration> detectConfiguration, Optional<DirectoryManager> directoryManager, Optional<DiagnosticSystem> diagnosticSystem) {
+        return new DetectBootResult(BootType.EXCEPTION, detectConfiguration.orElse(null), directoryManager.orElse(null), diagnosticSystem.orElse(null), null, exception);
+    }
+
 }
