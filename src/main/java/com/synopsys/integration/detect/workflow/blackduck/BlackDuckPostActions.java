@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.io.File;
 
+import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,8 +61,12 @@ public class BlackDuckPostActions {
                 logger.info("Detect must wait for bom tool calculations to finish.");
                 final CodeLocationCreationService codeLocationCreationService = blackDuckServicesFactory.createCodeLocationCreationService();
                 if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
+                    //TODO fix this when NotificationTaskRange doesn't include task start time
+                    //ekerwin - The start time of the task is the earliest time a code location was created.
+                    // In order to wait the full timeout, we have to not use that start time and instead use now().
+                    NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitData.getNotificationRange().getStartDate(), codeLocationWaitData.getNotificationRange().getEndDate());
                     final CodeLocationWaitResult result = codeLocationCreationService
-                                                              .waitForCodeLocations(codeLocationWaitData.getNotificationRange(), codeLocationWaitData.getCodeLocationNames(), codeLocationWaitData.getExpectedNotificationCount(),
+                                                              .waitForCodeLocations(notificationTaskRange, codeLocationWaitData.getCodeLocationNames(), codeLocationWaitData.getExpectedNotificationCount(),
                                                                   timeoutInSeconds);
                     if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
                         throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
