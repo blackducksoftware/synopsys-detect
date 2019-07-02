@@ -50,14 +50,19 @@ public class Extraction {
         this.projectName = builder.projectName;
         this.metaData = builder.metaData;
 
-        if (result == null){
+        if (result == null) {
             throw new IllegalArgumentException("An extraction requires a result type.");
         }
     }
 
     public <T> Optional<T> getMetaData(final ExtractionMetadata<T> extractionMetadata) {
         if (metaData.containsKey(extractionMetadata)) {
-            return Optional.ofNullable((T) metaData.get(extractionMetadata));
+            Class<T> clazz = extractionMetadata.getMetadataClass();
+            Object value = metaData.get(extractionMetadata);
+            if (value != null && clazz.isAssignableFrom(value.getClass())) {
+                return Optional.of(clazz.cast(value));
+            }
+            return Optional.empty();
         } else {
             return Optional.empty();
         }

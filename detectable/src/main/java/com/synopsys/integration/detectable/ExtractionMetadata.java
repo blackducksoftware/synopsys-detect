@@ -24,9 +24,11 @@ package com.synopsys.integration.detectable;
 
 public class ExtractionMetadata<T> {
     final private String key;
+    private final Class<T> metadataClass;
 
     public ExtractionMetadata(final String key, final Class<T> metadataClass) {
         this.key = key;
+        this.metadataClass = metadataClass;
     }
 
     public String getKey() {
@@ -36,5 +38,9 @@ public class ExtractionMetadata<T> {
     @Override
     public int hashCode() {
         return key.hashCode();
+    }
+
+    public Class<T> getMetadataClass() {
+        return metadataClass;
     }
 }
