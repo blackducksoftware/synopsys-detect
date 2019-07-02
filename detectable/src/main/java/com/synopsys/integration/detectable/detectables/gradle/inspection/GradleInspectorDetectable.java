@@ -38,6 +38,7 @@ import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorR
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
@@ -45,6 +46,7 @@ public class GradleInspectorDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
+    public static final String KOTLIN_BUILD_GRADLE_FILENAME = "build.gradle.kts";
 
     private final FileFinder fileFinder;
     private final GradleResolver gradleResolver;
@@ -68,11 +70,16 @@ public class GradleInspectorDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         final File buildGradle = fileFinder.findFile(environment.getDirectory(), BUILD_GRADLE_FILENAME);
-        if (buildGradle == null) {
-            return new FileNotFoundDetectableResult(BUILD_GRADLE_FILENAME);
+        if (buildGradle != null) {
+            return new PassedDetectableResult();
         }
 
-        return new PassedDetectableResult();
+        final File kotlinBuildGradle = fileFinder.findFile(environment.getDirectory(), KOTLIN_BUILD_GRADLE_FILENAME);
+        if (kotlinBuildGradle != null) {
+            return new PassedDetectableResult();
+        }
+
+        return new FilesNotFoundDetectableResult(BUILD_GRADLE_FILENAME, KOTLIN_BUILD_GRADLE_FILENAME);
     }
 
     @Override
