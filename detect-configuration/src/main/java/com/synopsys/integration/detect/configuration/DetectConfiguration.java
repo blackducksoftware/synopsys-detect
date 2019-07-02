@@ -140,7 +140,7 @@ public class DetectConfiguration {
     }
 
     public Map<String, String> getPhoneHomeProperties() {
-        return getKeys(detectPropertySource.getPhoneHomePropertyKeys());
+        return getKeysWithoutPrefix(detectPropertySource.getPhoneHomePropertyKeys(), DetectPropertySource.PHONE_HOME_PROPERTY_PREFIX);
     }
 
     public Map<String, String> getProperties(Set<String> keys) {
