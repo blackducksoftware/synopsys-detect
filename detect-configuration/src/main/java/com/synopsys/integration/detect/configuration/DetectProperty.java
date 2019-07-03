@@ -91,7 +91,7 @@ public enum DetectProperty {
     BLACKDUCK_PROXY_HOST("blackduck.proxy.host", "Proxy Host", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
-    @HelpDescription("A comma separated list of host patterns that should not use the proxy.")
+    @HelpDescription("A comma separated list of regular expression host patterns that should not use the proxy.")
     @HelpDetailed("These patterns must adhere to Java regular expressions: https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html")
     BLACKDUCK_PROXY_IGNORED_HOSTS("blackduck.proxy.ignored.hosts", "Bypass Proxy Hosts", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
