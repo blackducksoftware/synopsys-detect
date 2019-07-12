@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.tool.signaturescanner;
 
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 
+import org.antlr.v4.runtime.misc.Nullable;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -41,8 +42,10 @@ public class BlackDuckSignatureScannerOptions {
     private final Integer scanMemory;
     private final Integer parallelProcessors;
     private final Boolean dryRun;
-    private final Boolean snippetMatchingFlag;
-    private final String snippetMatching;
+
+    @Nullable //Just to note that if you do not want snippet matching, this should be null.
+    private final SnippetMatching snippetMatching;
+
     private final Boolean uploadSource;
     private final String codeLocationPrefix;
     private final String codeLocationSuffix;
@@ -52,7 +55,7 @@ public class BlackDuckSignatureScannerOptions {
     public BlackDuckSignatureScannerOptions(final String[] signatureScannerPaths, final String[] exclusionPatterns, final String[] exclusionNamePatterns, final String offlineLocalScannerInstallPath,
         final String onlineLocalScannerInstallPath, final String userProvidedScannerInstallUrl, final Integer scanMemory,
         final Integer parallelProcessors,
-        final Boolean dryRun, final Boolean snippetMatchingFlag, final String snippetMatching, final Boolean uploadSource, final String codeLocationPrefix, final String codeLocationSuffix,
+        final Boolean dryRun, final SnippetMatching snippetMatching, final Boolean uploadSource, final String codeLocationPrefix, final String codeLocationSuffix,
         final String additionalArguments, final Integer maxDepth) {
         this.signatureScannerPaths = signatureScannerPaths;
         this.exclusionPatterns = exclusionPatterns;
@@ -63,7 +66,6 @@ public class BlackDuckSignatureScannerOptions {
         this.scanMemory = scanMemory;
         this.parallelProcessors = parallelProcessors;
         this.dryRun = dryRun;
-        this.snippetMatchingFlag = snippetMatchingFlag;
         this.snippetMatching = snippetMatching;
         this.uploadSource = uploadSource;
         this.codeLocationPrefix = codeLocationPrefix;
@@ -88,14 +90,6 @@ public class BlackDuckSignatureScannerOptions {
         return scanMemory;
     }
 
-    /**
-     * @deprecated Please use the correctly spelled getParallelProcessors().
-     */
-    @Deprecated
-    public Integer getParrallelProcessors() {
-        return parallelProcessors;
-    }
-
     public Integer getParallelProcessors() {
         return parallelProcessors;
     }
@@ -104,23 +98,8 @@ public class BlackDuckSignatureScannerOptions {
         return dryRun;
     }
 
-    /**
-     * @deprecated This will be replaced by the enum based property in a future release.
-     */
-    @Deprecated
-    public Boolean getSnippetMatching() {
-        return snippetMatchingFlag;
-    }
-
-    public Optional<SnippetMatching> getSnippetMatchingEnum() {
-        String fixedSnippetMatching = StringUtils.trimToEmpty(snippetMatching).toUpperCase();
-        if ((StringUtils.isBlank(fixedSnippetMatching) || "NONE".equals(fixedSnippetMatching)) && snippetMatchingFlag) {
-            return Optional.of(SnippetMatching.SNIPPET_MATCHING);
-        } else if (!EnumUtils.isValidEnum(SnippetMatching.class, fixedSnippetMatching)) {
-            return Optional.empty();
-        } else {
-            return Optional.of(EnumUtils.getEnum(SnippetMatching.class, fixedSnippetMatching));
-        }
+    public SnippetMatching getSnippetMatching() {
+        return snippetMatching;
     }
 
     public Boolean getUploadSource() {
