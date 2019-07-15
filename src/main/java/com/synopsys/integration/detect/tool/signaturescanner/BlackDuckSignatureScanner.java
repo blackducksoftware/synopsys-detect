@@ -30,6 +30,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -218,11 +220,7 @@ public class BlackDuckSignatureScanner {
         scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());
         scanJobBuilder.cleanupOutput(false);
 
-        Optional<SnippetMatching> optionalSnippetMatching = signatureScannerOptions.getSnippetMatchingEnum();
-        boolean uploadSource = BooleanUtils.toBoolean(signatureScannerOptions.getUploadSource());
-        if (optionalSnippetMatching.isPresent()) {
-            scanJobBuilder.uploadSource(optionalSnippetMatching.get(), uploadSource);
-        }
+        scanJobBuilder.uploadSource(signatureScannerOptions.getSnippetMatching(), signatureScannerOptions.getUploadSource());
 
         String additionalArguments = signatureScannerOptions.getAdditionalArguments();
         scanJobBuilder.additionalScanArguments(additionalArguments);
