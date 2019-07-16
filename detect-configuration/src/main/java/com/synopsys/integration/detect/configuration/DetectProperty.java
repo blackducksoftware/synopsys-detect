@@ -602,6 +602,14 @@ public enum DetectProperty {
     DETECT_PROJECT_NAME("detect.project.name", "Project Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
+    @HelpDescription("When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version.")
+    DETECT_PARENT_PROJECT_NAME("detect.parent.project.name", "Parent Project Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
+    @HelpDescription("When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version.")
+    DETECT_PARENT_PROJECT_VERSION_NAME("detect.parent.project.version.name", "Parent Project Version Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("If a Black Duck project tier is specified, your project will be created with this tier.")
     @AcceptableValues(value = { "1", "2", "3", "4", "5" }, caseSensitive = false, strict = false)
     DETECT_PROJECT_TIER("detect.project.tier", "Project Tier", "3.1.0", PropertyType.INTEGER, PropertyAuthority.None),

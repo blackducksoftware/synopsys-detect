@@ -35,10 +35,13 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionPhaseType;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.api.generated.view.TagView;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.blackduck.service.ComponentService;
+import com.synopsys.integration.blackduck.service.ProjectBomService;
 import com.synopsys.integration.blackduck.service.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.ProjectUsersService;
@@ -68,12 +71,39 @@ public class DetectProjectService {
         final ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectService);
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
         final ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
+
+        final ProjectBomService projectBomService = blackDuckServicesFactory.createProjectBomService();
+        mapToParentProjectVersion(projectService, projectBomService, detectProjectServiceOptions.getParentProjectName(), detectProjectServiceOptions.getParentProjectVersion(), projectVersionWrapper);
+
         setApplicationId(projectVersionWrapper.getProjectView(), detectProjectServiceOptions.getApplicationId());
         final ProjectUsersService projectUsersService = blackDuckServicesFactory.createProjectUsersService();
         final TagService tagService = blackDuckServicesFactory.createTagService();
         addUserGroupsToProject(projectUsersService, projectVersionWrapper, detectProjectServiceOptions.getGroups());
         addTagsToProject(tagService, projectVersionWrapper, detectProjectServiceOptions.getTags());
         return projectVersionWrapper;
+    }
+
+    private void mapToParentProjectVersion(ProjectService projectService, ProjectBomService projectBomService, String parentProjectName, String parentVersionName, ProjectVersionWrapper projectVersionWrapper)
+        throws DetectUserFriendlyException {
+        if (StringUtils.isNotBlank(parentProjectName) || StringUtils.isNotBlank(parentVersionName)) {
+            logger.info("Will attempt to add this project to a parent.");
+            if (StringUtils.isBlank(parentProjectName) || StringUtils.isBlank(parentVersionName)) {
+                throw new DetectUserFriendlyException("Both the parent project name and the parent project version name must be specified if either is specified.", ExitCodeType.FAILURE_CONFIGURATION);
+            }
+            try {
+                Optional<ProjectVersionWrapper> parentWrapper = projectService.getProjectVersion(parentProjectName, parentVersionName);
+                if (parentWrapper.isPresent()) {
+                    String componentLink = parentWrapper.get().getProjectVersionView().getFirstLink(ProjectVersionView.COMPONENTS_LINK).orElse(null);
+                    String projectLink = projectVersionWrapper.getProjectVersionView().getHref().get();
+                    projectBomService.addComponentToProjectVersion("application/json", componentLink, projectLink);
+                } else {
+                    throw new DetectUserFriendlyException("Unable to find parent project or parent project version on the server.", ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+                }
+            } catch (IntegrationException e) {
+                throw new DetectUserFriendlyException("Unable to add project to parent.", e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+            }
+        }
+
     }
 
     private void addUserGroupsToProject(final ProjectUsersService projectUsersService, final ProjectVersionWrapper projectVersionWrapper, final String[] groupsToAddToProject) throws IntegrationException {
