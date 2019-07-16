@@ -63,17 +63,16 @@ public class DetectProjectService {
         this.projectMappingService = projectMappingService;
     }
 
-    public ProjectVersionWrapper createOrUpdateBlackDuckProject(final NameVersion projectNameVersion, final String applicationId,
-        final String[] groupsToAddToProject, final String[] tags) throws IntegrationException, DetectUserFriendlyException {
+    public ProjectVersionWrapper createOrUpdateBlackDuckProject(final NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException {
         final ProjectService projectService = blackDuckServicesFactory.createProjectService();
         final ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectService);
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
         final ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
-        setApplicationId(projectVersionWrapper.getProjectView(), applicationId);
+        setApplicationId(projectVersionWrapper.getProjectView(), detectProjectServiceOptions.getApplicationId());
         final ProjectUsersService projectUsersService = blackDuckServicesFactory.createProjectUsersService();
         final TagService tagService = blackDuckServicesFactory.createTagService();
-        addUserGroupsToProject(projectUsersService, projectVersionWrapper, groupsToAddToProject);
-        addTagsToProject(tagService, projectVersionWrapper, tags);
+        addUserGroupsToProject(projectUsersService, projectVersionWrapper, detectProjectServiceOptions.getGroups());
+        addTagsToProject(tagService, projectVersionWrapper, detectProjectServiceOptions.getTags());
         return projectVersionWrapper;
     }
 

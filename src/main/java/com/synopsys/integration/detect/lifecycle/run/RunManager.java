@@ -275,9 +275,7 @@ public class RunManager {
             final DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
             final ProjectMappingService detectProjectMappingService = blackDuckServicesFactory.createProjectMappingService();
             final DetectProjectService detectProjectService = new DetectProjectService(blackDuckServicesFactory, options, detectProjectMappingService);
-            final String[] groupsToAddToProject = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PROJECT_USER_GROUPS, PropertyAuthority.None);
-            final String[] tags = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PROJECT_TAGS, PropertyAuthority.None);
-            projectVersionWrapper = detectProjectService.createOrUpdateBlackDuckProject(projectNameVersion, options.getApplicationId(), groupsToAddToProject, tags);
+            projectVersionWrapper = detectProjectService.createOrUpdateBlackDuckProject(projectNameVersion);
 
             if (null != projectVersionWrapper && runOptions.shouldUnmapCodeLocations()) {
                 logger.info("Unmapping code locations.");

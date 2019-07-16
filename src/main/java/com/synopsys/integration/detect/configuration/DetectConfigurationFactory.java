@@ -148,8 +148,10 @@ public class DetectConfigurationFactory {
         final String cloneVersionName = detectConfiguration.getProperty(DetectProperty.DETECT_CLONE_PROJECT_VERSION_NAME, PropertyAuthority.None);
         final String projectVersionNickname = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_NICKNAME, PropertyAuthority.None);
         final String applicationId = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_APPLICATION_ID, PropertyAuthority.None);
+        final String[] groups = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PROJECT_USER_GROUPS, PropertyAuthority.None);
+        final String[] tags = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PROJECT_TAGS, PropertyAuthority.None);
         return new DetectProjectServiceOptions(projectVersionPhase, projectVersionDistribution, projectTier, projectDescription, projectVersionNotes, cloneCategories, projectLevelAdjustments, forceProjectVersionUpdate, cloneVersionName,
-            projectVersionNickname, applicationId);
+            projectVersionNickname, applicationId, tags, groups);
     }
 
     public BlackDuckSignatureScannerOptions createBlackDuckSignatureScannerOptions() {
