@@ -584,6 +584,10 @@ public enum DetectProperty {
     @HelpDescription("A comma-separated list of names of user groups to add to the project.")
     DETECT_PROJECT_USER_GROUPS("detect.project.user.groups", "Project User Groups", "5.4.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, ""),
 
+    @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
+    @HelpDescription("A comma-separated list of tags to add to the project.")
+    DETECT_PROJECT_TAGS("detect.project.tags", "Project Tags", "5.6.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, ""),
+
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The detector that will be used to determine the project name and version when multiple detector types. This property should be used with the detect.project.tool.")
     @HelpDetailed("If Detect finds that multiple detectors apply, this property can be used to select the detector that will provide the project name and version. When using this property, you should also set detect.project.tool=DETECTOR")

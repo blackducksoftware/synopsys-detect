@@ -36,11 +36,13 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectClone
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
+import com.synopsys.integration.blackduck.api.generated.view.TagView;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.ProjectService;
 import com.synopsys.integration.blackduck.service.ProjectUsersService;
+import com.synopsys.integration.blackduck.service.TagService;
 import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -62,14 +64,16 @@ public class DetectProjectService {
     }
 
     public ProjectVersionWrapper createOrUpdateBlackDuckProject(final NameVersion projectNameVersion, final String applicationId,
-        final String[] groupsToAddToProject) throws IntegrationException, DetectUserFriendlyException {
+        final String[] groupsToAddToProject, final String[] tags) throws IntegrationException, DetectUserFriendlyException {
         final ProjectService projectService = blackDuckServicesFactory.createProjectService();
         final ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectService);
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
         final ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
         setApplicationId(projectVersionWrapper.getProjectView(), applicationId);
         final ProjectUsersService projectUsersService = blackDuckServicesFactory.createProjectUsersService();
+        final TagService tagService = blackDuckServicesFactory.createTagService();
         addUserGroupsToProject(projectUsersService, projectVersionWrapper, groupsToAddToProject);
+        addTagsToProject(tagService, projectVersionWrapper, tags);
         return projectVersionWrapper;
     }
 
@@ -81,6 +85,27 @@ public class DetectProjectService {
             if (StringUtils.isNotBlank(userGroupName)) {
                 logger.debug(String.format("Adding user group %s to project %s", userGroupName, projectVersionWrapper.getProjectView().getName()));
                 projectUsersService.addGroupToProject(projectVersionWrapper.getProjectView(), userGroupName);
+            }
+        }
+    }
+
+    private void addTagsToProject(final TagService tagService, final ProjectVersionWrapper projectVersionWrapper, final String[] tags) throws IntegrationException {
+        if (tags == null) {
+            return;
+        }
+        List<String> validTags = Arrays.stream(tags).filter(StringUtils::isNotBlank).collect(Collectors.toList());
+        if (validTags.size() > 0) {
+            List<TagView> currentTags = tagService.getAllTags(projectVersionWrapper.getProjectView());
+            for (final String tag : validTags) {
+                boolean currentTagExists = currentTags.stream().anyMatch(tagView -> tagView.getName().equalsIgnoreCase(tag));
+                if (!currentTagExists) {
+                    logger.debug(String.format("Adding tag %s to project %s", tag, projectVersionWrapper.getProjectView().getName()));
+                    TagView tagView = new TagView();
+                    tagView.setName(tag);
+                    tagService.createTag(projectVersionWrapper.getProjectView(), tagView);
+                } else {
+                    logger.debug(String.format("Skipping tag as it already exists %s", tag));
+                }
             }
         }
     }
