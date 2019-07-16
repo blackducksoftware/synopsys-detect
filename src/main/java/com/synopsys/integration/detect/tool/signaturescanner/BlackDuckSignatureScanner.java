@@ -83,7 +83,7 @@ public class BlackDuckSignatureScanner {
         this.blackDuckServerConfig = blackDuckServerConfig;
     }
 
-    public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, IOException {
+    public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, IOException, DetectUserFriendlyException {
         List<SignatureScanPath> signatureScanPaths = determinePathsAndExclusions(projectNameVersion, signatureScannerOptions.getMaxDepth(), dockerTarFile);
 
         final ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
@@ -211,7 +211,7 @@ public class BlackDuckSignatureScanner {
         }
     }
 
-    protected ScanBatchBuilder createDefaultScanBatchBuilder(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
+    protected ScanBatchBuilder createDefaultScanBatchBuilder(final NameVersion projectNameVersion, File installDirectory, final List<SignatureScanPath> signatureScanPaths, File dockerTarFile) throws DetectUserFriendlyException {
         final ScanBatchBuilder scanJobBuilder = new ScanBatchBuilder();
         scanJobBuilder.scanMemoryInMegabytes(signatureScannerOptions.getScanMemory());
         scanJobBuilder.installDirectory(installDirectory);
@@ -220,6 +220,10 @@ public class BlackDuckSignatureScanner {
         scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());
         scanJobBuilder.cleanupOutput(false);
 
+        if (signatureScannerOptions.getUploadSource() && signatureScannerOptions.getSnippetMatching() == null) {
+            throw new DetectUserFriendlyException("You must enable snippet matching using " + DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING.getPropertyKey() + " in order to use upload source.",
+                ExitCodeType.FAILURE_CONFIGURATION);
+        }
         scanJobBuilder.uploadSource(signatureScannerOptions.getSnippetMatching(), signatureScannerOptions.getUploadSource());
 
         String additionalArguments = signatureScannerOptions.getAdditionalArguments();

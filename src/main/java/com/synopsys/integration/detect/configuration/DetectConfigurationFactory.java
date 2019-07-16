@@ -152,7 +152,7 @@ public class DetectConfigurationFactory {
             projectVersionNickname, applicationId);
     }
 
-    public BlackDuckSignatureScannerOptions createBlackDuckSignatureScannerOptions() throws DetectUserFriendlyException {
+    public BlackDuckSignatureScannerOptions createBlackDuckSignatureScannerOptions() {
         final String[] signatureScannerPaths = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, PropertyAuthority.None);
         final String[] exclusionPatterns = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS, PropertyAuthority.None);
         final String[] exclusionNamePatterns = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS, PropertyAuthority.None);
@@ -178,16 +178,9 @@ public class DetectConfigurationFactory {
                 snippetMatchingEnum = Optional.of(SnippetMatching.SNIPPET_MATCHING);
             }
         }
-        SnippetMatching snippetMatching = snippetMatchingEnum.orElse(null);
-
-        if (uploadSource && snippetMatching == null) {
-            throw new DetectUserFriendlyException("You must enable snippet matching using " + DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING.getPropertyKey() + " in order to use upload source.",
-                ExitCodeType.FAILURE_CONFIGURATION);
-        }
-
         return new BlackDuckSignatureScannerOptions(signatureScannerPaths, exclusionPatterns, exclusionNamePatterns, offlineLocalScannerInstallPath, onlineLocalScannerInstallPath, userProvidedScannerInstallUrl, scanMemory,
             parallelProcessors, dryRun,
-            snippetMatching, uploadSource, codeLocationPrefix, codeLocationSuffix, additionalArguments, maxDepth);
+            snippetMatchingEnum.orElse(null), uploadSource, codeLocationPrefix, codeLocationSuffix, additionalArguments, maxDepth);
     }
 
     public BlackDuckPostOptions createBlackDuckPostOptions() {
