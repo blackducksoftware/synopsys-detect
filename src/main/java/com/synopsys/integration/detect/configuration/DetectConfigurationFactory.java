@@ -29,8 +29,6 @@ import java.util.Optional;
 
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFileFilter;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFilter;
@@ -152,8 +150,9 @@ public class DetectConfigurationFactory {
         final String[] tags = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PROJECT_TAGS, PropertyAuthority.None);
         final String parentProjectName = detectConfiguration.getProperty(DetectProperty.DETECT_PARENT_PROJECT_NAME, PropertyAuthority.None);
         final String parentProjectVersion = detectConfiguration.getProperty(DetectProperty.DETECT_PARENT_PROJECT_VERSION_NAME, PropertyAuthority.None);
+        final Boolean cloneLatestProjectVersion = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLONE_PROJECT_VERSION_LATEST, PropertyAuthority.None);
         return new DetectProjectServiceOptions(projectVersionPhase, projectVersionDistribution, projectTier, projectDescription, projectVersionNotes, cloneCategories, projectLevelAdjustments, forceProjectVersionUpdate, cloneVersionName,
-            projectVersionNickname, applicationId, tags, groups, parentProjectName, parentProjectVersion);
+            projectVersionNickname, applicationId, tags, groups, parentProjectName, parentProjectVersion, cloneLatestProjectVersion);
     }
 
     public BlackDuckSignatureScannerOptions createBlackDuckSignatureScannerOptions() {

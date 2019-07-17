@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.api.core.BlackDuckView;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionPhaseType;
@@ -40,7 +42,6 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.api.generated.view.TagView;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.ComponentService;
 import com.synopsys.integration.blackduck.service.ProjectBomService;
 import com.synopsys.integration.blackduck.service.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.ProjectService;
@@ -68,7 +69,7 @@ public class DetectProjectService {
 
     public ProjectVersionWrapper createOrUpdateBlackDuckProject(final NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException {
         final ProjectService projectService = blackDuckServicesFactory.createProjectService();
-        final ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectService);
+        final ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion);
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
         final ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
 
@@ -139,7 +140,7 @@ public class DetectProjectService {
         }
     }
 
-    public ProjectSyncModel createProjectSyncModel(final NameVersion projectNameVersion, final ProjectService projectService) throws DetectUserFriendlyException {
+    public ProjectSyncModel createProjectSyncModel(final NameVersion projectNameVersion) throws DetectUserFriendlyException {
         final ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectNameVersion.getName(), projectNameVersion.getVersion());
 
         // TODO: Handle a boolean property not being set in detect configuration - ie need to determine if this property actually exists in the ConfigurableEnvironment - just omit this one?
@@ -176,7 +177,7 @@ public class DetectProjectService {
             projectSyncModel.setNickname(nickname);
         }
 
-        final Optional<String> cloneUrl = findCloneUrl(projectNameVersion, projectService);
+        final Optional<String> cloneUrl = findCloneUrl(projectNameVersion.getName()); //TODO: Be passed the clone url.
         if (cloneUrl.isPresent()) {
             logger.info("Cloning project version from release url: " + cloneUrl.get());
             projectSyncModel.setCloneFromReleaseUrl(cloneUrl.get());
@@ -204,13 +205,19 @@ public class DetectProjectService {
         return categories;
     }
 
-    public Optional<String> findCloneUrl(final NameVersion projectNameVersion, final ProjectService projectService) throws DetectUserFriendlyException {
-        final String cloneProjectName = projectNameVersion.getName();
-        final String cloneProjectVersionName = detectProjectServiceOptions.getCloneVersionName();
-        if (StringUtils.isBlank(cloneProjectName) || StringUtils.isBlank(cloneProjectVersionName)) {
+    public Optional<String> findCloneUrl(String projectName) throws DetectUserFriendlyException {
+        if (detectProjectServiceOptions.getCloneLatestProjectVersion()) {
+            logger.info("Cloning the most recent project version.");
+            return findLatestProjectVersionCloneUrl(blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createProjectService(), projectName);
+        } else if (StringUtils.isNotBlank(detectProjectServiceOptions.getCloneVersionName())) {
+            return findNamedCloneUrl(projectName, detectProjectServiceOptions.getCloneVersionName(), blackDuckServicesFactory.createProjectService());
+        } else {
             logger.debug("No clone project or version name supplied. Will not clone.");
             return Optional.empty();
         }
+    }
+
+    public Optional<String> findNamedCloneUrl(final String cloneProjectName, String cloneProjectVersionName, final ProjectService projectService) throws DetectUserFriendlyException {
         try {
             final Optional<ProjectVersionWrapper> projectVersionWrapper = projectService.getProjectVersion(cloneProjectName, cloneProjectVersionName);
             if (projectVersionWrapper.isPresent()) {
@@ -221,6 +228,28 @@ public class DetectProjectService {
             }
         } catch (final IntegrationException e) {
             throw new DetectUserFriendlyException(String.format("Error finding project/version (%s/%s) to clone, or getting its release url.", cloneProjectName, cloneProjectVersionName), e, ExitCodeType.FAILURE_CONFIGURATION);
+        }
+    }
+
+    public Optional<String> findLatestProjectVersionCloneUrl(BlackDuckService blackDuckService, ProjectService projectService, String projectName) throws DetectUserFriendlyException {
+        try {
+            Optional<ProjectView> projectView = projectService.getProjectByName(projectName);
+            if (projectView.isPresent()) {
+                List<ProjectVersionView> projectVersionViews = blackDuckService.getAllResponses(projectView.get(), ProjectView.VERSIONS_LINK_RESPONSE);
+                if (projectVersionViews.size() == 0) {
+                    logger.warn("Could not find an existing project version to clone from. Ensure the project exists when using the latest clone flag.");
+                    return Optional.empty();
+                } else {
+                    return projectVersionViews.stream()
+                               .max(Comparator.comparing(ProjectVersionView::getCreatedAt))
+                               .flatMap(BlackDuckView::getHref);
+                }
+            } else {
+                logger.warn("Could not find existing project to clone from. Ensure the project exists when using the latest clone flag.");
+                return Optional.empty();
+            }
+        } catch (final IntegrationException e) {
+            throw new DetectUserFriendlyException(String.format("Error finding latest version to clone, or getting its release url."), e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
 

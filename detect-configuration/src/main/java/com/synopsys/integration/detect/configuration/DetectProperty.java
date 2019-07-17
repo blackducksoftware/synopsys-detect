@@ -244,8 +244,12 @@ public enum DetectProperty {
     DETECT_CLEANUP("detect.cleanup", "Cleanup Output", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("The name of the project version to clone this project version from. Respects the Clone Categories as set on the Black Duck server (project settings: Select the attributes you’d like to clone for any new versions of this project).")
+    @HelpDescription("The name of the project version to clone this project version from. Respects the given Clone Categories in detect.project.clone.categories or as set on the Black Duck server.")
     DETECT_CLONE_PROJECT_VERSION_NAME("detect.clone.project.version.name", "Clone Project Version Name", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING })
+    @HelpDescription("If set to true, detect will attempt to use the latest project version as the clone for this project. The project must exist and have at least one version.")
+    DETECT_CLONE_PROJECT_VERSION_LATEST("detect.clone.project.version.latest", "Clone Latest Project Version", "5.6.0", PropertyType.BOOLEAN, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("An override for the name Detect will use for the scan file it creates. If supplied and multiple scans are found, Detect will append an index to each scan name.")
