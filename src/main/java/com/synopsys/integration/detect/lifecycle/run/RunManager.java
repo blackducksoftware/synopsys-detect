@@ -88,6 +88,8 @@ import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOption
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.status.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectResult;
+import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
@@ -318,6 +320,8 @@ public class RunManager {
             final SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar());
             if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
                 codeLocationWaitData.addWaitForCreationData(signatureScannerToolResult.getCreationData().get());
+            } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
+                eventSystem.publishEvent(Event.StatusSummary, new Status("SIGNATURE_SCAN", StatusType.FAILURE));
             }
             logger.info("Signature scanner actions finished.");
         } else {
