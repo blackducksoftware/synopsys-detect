@@ -36,25 +36,18 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomDependenciesHandler;
+import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomDocumentParser;
 
 public class MavenParseExtractor {
-    private final ExternalIdFactory externalIdFactory;
-    private final SAXParser saxParser;
+    private final PomDocumentParser pomDocumentParser;
 
-    public MavenParseExtractor(final ExternalIdFactory externalIdFactory, final SAXParser saxParser) {
-        this.externalIdFactory = externalIdFactory;
-        this.saxParser = saxParser;
+    public MavenParseExtractor(final PomDocumentParser pomDocumentParser) {
+        this.pomDocumentParser = pomDocumentParser;
     }
 
     public Extraction extract(File pomXmlFile) {
-        try (final InputStream pomXmlInputStream = new FileInputStream(pomXmlFile)) {
-            //we have to create a new handler or the state of all handlers would be shared.
-            //we could create a handler factory or some other indirection so it could be injected but for now we make a new one.
-            PomDependenciesHandler pomDependenciesHandler = new PomDependenciesHandler(externalIdFactory);
-            saxParser.parse(pomXmlInputStream, pomDependenciesHandler);
-            final List<Dependency> dependencies = pomDependenciesHandler.getDependencies();
-
+        try {
+            List<Dependency> dependencies = pomDocumentParser.parse(pomXmlFile);
             MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
             dependencyGraph.addChildrenToRoot(dependencies);
 
