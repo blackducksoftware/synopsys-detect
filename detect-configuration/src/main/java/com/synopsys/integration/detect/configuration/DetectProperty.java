@@ -450,6 +450,10 @@ public enum DetectProperty {
     @HelpDetailed("If set, Detect will include only dependencies of the given Maven scope.")
     DETECT_MAVEN_SCOPE("detect.maven.scope", "Dependency Scope Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
+    @HelpGroup(primary = GROUP_MAVEN, additional = { SEARCH_GROUP_GLOBAL })
+    @HelpDescription("Whether or not detect will include the plugins section when parsing a pom.xml.")
+    DETECT_MAVEN_INCLUDE_PLUGINS("detect.maven.include.plugins", "Maven Executable", "5.6.0", PropertyType.BOOLEAN, PropertyAuthority.None),
+
     @HelpGroup(primary = GROUP_REPORT, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("When set to true, a Black Duck notices report in text form will be created in your source directory.")
     DETECT_NOTICES_REPORT("detect.notices.report", "Generate Notices Report", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),

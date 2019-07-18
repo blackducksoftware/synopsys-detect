@@ -53,7 +53,7 @@ public class PomDocumentParser {
         this.documentBuilder = documentBuilder;
     }
 
-    public List<Dependency> parse(File pomFile) throws IOException, SAXException {
+    public List<Dependency> parse(File pomFile, boolean includePlugins) throws IOException, SAXException {
         Document doc = documentBuilder.parse(pomFile);
 
         //Dependencies
@@ -63,8 +63,19 @@ public class PomDocumentParser {
                                                .map(this::dependencyFromElement)
                                                .collect(Collectors.toList());
 
-        return dependencyNodes;
+        //Plugins
+        List<Dependency> pluginsNodes = toElementStream(doc.getElementsByTagName("plugins"))
+                                            .map(element -> element.getElementsByTagName("plugin"))
+                                            .flatMap(this::toElementStream)
+                                            .map(this::dependencyFromElement)
+                                            .collect(Collectors.toList());
 
+        List<Dependency> allDependencies = new ArrayList<>();
+        allDependencies.addAll(dependencyNodes);
+        if (includePlugins) {
+            allDependencies.addAll(pluginsNodes);
+        }
+        return allDependencies;
     }
 
     Dependency dependencyFromElement(Element element) {

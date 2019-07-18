@@ -16,11 +16,21 @@ import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
 public class PomXmlParserTest {
     @Test
-    public void testParsingPomFile() throws Exception {
+    public void testParsingPomFileWithPlugins() throws Exception {
         final File pomInputStream = FunctionalTestFiles.asFile("/maven/hub-teamcity-pom.xml");
 
         PomDocumentParser pomDocumentParser = new PomDocumentParser(new ExternalIdFactory(), DocumentBuilderFactory.newInstance().newDocumentBuilder());
-        List<Dependency> dependencies = pomDocumentParser.parse(pomInputStream);
+        List<Dependency> dependencies = pomDocumentParser.parse(pomInputStream, true);
+
+        assertEquals(16, dependencies.size());
+    }
+
+    @Test
+    public void testParsingPomFileWithoutPlugins() throws Exception {
+        final File pomInputStream = FunctionalTestFiles.asFile("/maven/hub-teamcity-pom.xml");
+
+        PomDocumentParser pomDocumentParser = new PomDocumentParser(new ExternalIdFactory(), DocumentBuilderFactory.newInstance().newDocumentBuilder());
+        List<Dependency> dependencies = pomDocumentParser.parse(pomInputStream, false);
 
         assertEquals(9, dependencies.size());
     }

@@ -11,6 +11,7 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
+import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
 
 public class MavenParseDetectableTest {
     private static final String POM_XML_FILENAME = "pom.xml";
@@ -27,7 +28,7 @@ public class MavenParseDetectableTest {
         Mockito.when(environment.getDirectory()).thenReturn(dir);
         Mockito.when(fileFinder.findFile(dir, POM_XML_FILENAME)).thenReturn(new File(POM_XML_FILENAME));
 
-        final MavenParseDetectable detectable = new MavenParseDetectable(environment, fileFinder, mavenParseExtractor);
+        final MavenParseDetectable detectable = new MavenParseDetectable(environment, fileFinder, mavenParseExtractor, new MavenParseOptions(false));
 
         assertTrue(detectable.applicable().getPassed());
     }

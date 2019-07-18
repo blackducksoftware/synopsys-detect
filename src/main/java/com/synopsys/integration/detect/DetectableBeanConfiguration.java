@@ -755,7 +755,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public MavenParseDetectable mavenParseDetectable(final DetectableEnvironment environment) throws ParserConfigurationException, SAXException {
-        return new MavenParseDetectable(environment, fileFinder, mavenParseExtractor());
+        return new MavenParseDetectable(environment, fileFinder, mavenParseExtractor(), detectableOptionFactory.createMavenParseOptions());
     }
 
     @Bean
