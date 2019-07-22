@@ -45,9 +45,9 @@ public class MavenParseExtractor {
         this.pomDocumentParser = pomDocumentParser;
     }
 
-    public Extraction extract(File pomXmlFile) {
+    public Extraction extract(File pomXmlFile, boolean includePlugins) {
         try {
-            List<Dependency> dependencies = pomDocumentParser.parse(pomXmlFile);
+            List<Dependency> dependencies = pomDocumentParser.parse(pomXmlFile, includePlugins);
             MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
             dependencyGraph.addChildrenToRoot(dependencies);
 
