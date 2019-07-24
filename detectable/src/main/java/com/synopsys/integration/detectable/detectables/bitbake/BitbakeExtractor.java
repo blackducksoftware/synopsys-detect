@@ -71,12 +71,11 @@ public class BitbakeExtractor {
 
     public Extraction extract(final ExtractionEnvironment extractionEnvironment, final File buildEnvScript, final File sourcePath, final String[] packageNames, final File bash, final String referenceImplementation) {
         final File outputDirectory = extractionEnvironment.getOutputDirectory();
-        final File bitbakeBuildDirectory = new File(outputDirectory, "build");
 
         final List<CodeLocation> codeLocations = new ArrayList<>();
         for (final String packageName : packageNames) {
             try {
-                final File dependsFile = executeBitbakeForRecipeDependsFile(outputDirectory, bitbakeBuildDirectory, buildEnvScript, packageName, bash);
+                final File dependsFile = executeBitbakeForRecipeDependsFile(outputDirectory, buildEnvScript, packageName, bash);
                 final String targetArchitecture = executeBitbakeForTargetArchitecture(outputDirectory, buildEnvScript, packageName, bash).replace(referenceImplementation, "");
 
                 if (dependsFile == null) {
@@ -92,7 +91,7 @@ public class BitbakeExtractor {
                 final GraphParser graphParser = new GraphParser(recipeDependsInputStream);
                 final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser);
                 final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, targetArchitecture);
-                final CodeLocation codeLocation = new CodeLocation(dependencyGraph, sourcePath);
+                final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
                 codeLocations.add(codeLocation);
             } catch (final IOException | IntegrationException | ExecutableRunnerException e) {
@@ -116,14 +115,14 @@ public class BitbakeExtractor {
         return extraction;
     }
 
-    private File executeBitbakeForRecipeDependsFile(final File outputDirectory, final File bitbakeBuildDirectory, final File buildEnvScript, final String packageName, final File bash) throws ExecutableRunnerException, IOException {
+    private File executeBitbakeForRecipeDependsFile(final File outputDirectory, final File buildEnvScript, final String packageName, final File bash) throws ExecutableRunnerException, IOException {
         final String bitbakeCommand = "bitbake -g " + packageName;
         final ExecutableOutput executableOutput = runBitbake(outputDirectory, buildEnvScript, bitbakeCommand, bash);
         final int returnCode = executableOutput.getReturnCode();
         File recipeDependsFile = null;
 
         if (returnCode == 0) {
-            recipeDependsFile = fileFinder.findFile(bitbakeBuildDirectory, RECIPE_DEPENDS_FILE_NAME);
+            recipeDependsFile = fileFinder.findFiles(outputDirectory, RECIPE_DEPENDS_FILE_NAME, 1).stream().findFirst().orElse(null);
         } else {
             logger.error(String.format("Executing command '%s' returned a non-zero exit code %s", bitbakeCommand, returnCode));
         }

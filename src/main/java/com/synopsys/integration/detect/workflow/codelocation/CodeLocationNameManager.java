@@ -22,16 +22,12 @@
  */
 package com.synopsys.integration.detect.workflow.codelocation;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.util.NameVersion;
 
 public class CodeLocationNameManager {
@@ -63,9 +59,14 @@ public class CodeLocationNameManager {
                 codeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameSourcedBom(detectCodeLocation);
             }
         } else {
-            String sourcePath = detectCodeLocation.getSourcePath().toString();
+            String sourcePath;
+            try {
+                sourcePath = detectCodeLocation.getSourcePath().getCanonicalPath();
+            } catch (final IOException e) {
+                sourcePath = detectCodeLocation.getSourcePath().toString();
+            }
             if (detectCodeLocation.getDockerImageName().isPresent()) {
-                String dockerImage = detectCodeLocation.getDockerImageName().get();
+                final String dockerImage = detectCodeLocation.getDockerImageName().get();
                 codeLocationName = codeLocationNameGenerator.createDockerCodeLocationName(sourcePath, projectName, projectVersionName, dockerImage, prefix, suffix);
             } else {
                 codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, sourcePath, detectCodeLocation, prefix, suffix);
