@@ -36,8 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -120,7 +118,7 @@ public class BitbakeExtractor {
         return extraction;
     }
 
-    private File executeBitbakeForRecipeDependsFile(final File outputDirectory, final File bitbakeBuildDirectory, final File buildEnvScript, final String packageName, final File bash) throws ExecutableRunnerException {
+    private File executeBitbakeForRecipeDependsFile(final File outputDirectory, final File bitbakeBuildDirectory, final File buildEnvScript, final String packageName, final File bash) throws ExecutableRunnerException, IOException {
         final String bitbakeCommand = "bitbake -g " + packageName;
         final ExecutableOutput executableOutput = runBitbake(outputDirectory, buildEnvScript, bitbakeCommand, bash);
         final int returnCode = executableOutput.getReturnCode();
@@ -135,7 +133,7 @@ public class BitbakeExtractor {
         return recipeDependsFile;
     }
 
-    private String executeBitbakeForTargetArchitecture(final File outputDirectory, final File buildEnvScript, final String packageName, final File bash) throws ExecutableRunnerException {
+    private String executeBitbakeForTargetArchitecture(final File outputDirectory, final File buildEnvScript, final String packageName, final File bash) throws ExecutableRunnerException, IOException {
         final String bitbakeCommand = "bitbake -c listtasks " + packageName;
         final ExecutableOutput executableOutput = runBitbake(outputDirectory, buildEnvScript, bitbakeCommand, bash);
         final int returnCode = executableOutput.getReturnCode();
@@ -150,9 +148,9 @@ public class BitbakeExtractor {
         return targetArchitecture;
     }
 
-    private ExecutableOutput runBitbake(final File outputDirectory, final File buildEnvScript, final String bitbakeCommand, final File bash) throws ExecutableRunnerException {
+    private ExecutableOutput runBitbake(final File outputDirectory, final File buildEnvScript, final String bitbakeCommand, final File bash) throws ExecutableRunnerException, IOException {
         try {
-            return executableRunner.execute(outputDirectory, bash, "-c", ". " + buildEnvScript + "; " + bitbakeCommand);
+            return executableRunner.execute(outputDirectory, bash, "-c", "source " + buildEnvScript.getCanonicalPath() + "; " + bitbakeCommand);
         } catch (final ExecutableRunnerException e) {
             logger.error(String.format("Failed executing bitbake command."));
             logger.debug(e.getMessage(), e);
