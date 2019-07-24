@@ -103,19 +103,14 @@ public class ReportManager {
     }
 
     public void codeLocationsCompleted(final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        if (codeLocationNameMap.size() > 0 && detectorToolResult != null && detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
+        if (detectorToolResult != null && detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
             extractionSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get(), detectorToolResult.codeLocationMap, codeLocationNameMap);
-        } else {
-            logWriter.writeLine("There were no extractions to be summarized - no code locations were generated or no detectors were evaluated.");
         }
-
     }
 
     public void printDetectorIssues() {
         if (detectorToolResult != null && detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
             errorSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get());
-        } else {
-            logWriter.writeLine("There were no detector issues to be summarized - detectors did not run or no detectors were evaluated.");
         }
     }
 }
