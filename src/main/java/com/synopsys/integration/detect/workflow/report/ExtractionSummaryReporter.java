@@ -39,7 +39,8 @@ public class ExtractionSummaryReporter {
 
     public void writeSummary(ReportWriter writer, DetectorEvaluationTree rootEvaluation, final Map<CodeLocation, DetectCodeLocation> detectableMap, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         ReporterUtils.printHeader(writer, "Extraction results:");
-        rootEvaluation.asFlatList().forEach(it -> {
+        boolean printedAny = false;
+        for (DetectorEvaluationTree it : rootEvaluation.asFlatList()) {
             List<DetectorEvaluation> success = DetectorEvaluationUtils.filteredChildren(it, evaluation -> evaluation.wasExtractionSuccessful());
             List<DetectorEvaluation> exception = DetectorEvaluationUtils.filteredChildren(it, evaluation -> evaluation.wasExtractionException());
             List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredChildren(it, evaluation -> evaluation.wasExtractionFailure());
@@ -52,15 +53,19 @@ public class ExtractionSummaryReporter {
                 writeEvaluationsIfNotEmpty(writer, "\tSuccess: ", success);
                 writeEvaluationsIfNotEmpty(writer, "\tFailure: ", failed);
                 writeEvaluationsIfNotEmpty(writer, "\tException: ", exception);
+                printedAny = true;
             }
-        });
+        }
+        if (!printedAny) {
+            writer.writeLine("There were no extractions to be summarized - no code locations were generated or no detectors were evaluated.");
+        }
         ReporterUtils.printFooter(writer);
     }
 
     private List<String> findCodeLocationNames(DetectorEvaluationTree detectorEvaluationTree, final Map<CodeLocation, DetectCodeLocation> detectableMap, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         List<String> codeLocationNames = new ArrayList<>();
         detectorEvaluationTree.getOrderedEvaluations().forEach(evaluation -> {
-            if (evaluation.getExtraction() != null){
+            if (evaluation.getExtraction() != null) {
                 List<CodeLocation> codeLocations = evaluation.getExtraction().getCodeLocations();
                 List<DetectCodeLocation> detectCodeLocations = codeLocations.stream().map(it -> detectableMap.get(it)).collect(Collectors.toList());
                 codeLocationNames.addAll(detectCodeLocations.stream().map(it -> codeLocationNameMap.get(it)).collect(Collectors.toList()));

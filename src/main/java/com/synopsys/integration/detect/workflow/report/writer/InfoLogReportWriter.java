@@ -26,7 +26,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class InfoLogReportWriter extends LogReportWriter {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger;
+
+    public InfoLogReportWriter() {
+        this(LoggerFactory.getLogger(InfoLogReportWriter.class));
+    }
+
+    public InfoLogReportWriter(Logger logger) {
+        this.logger = logger;
+    }
 
     @Override
     public void writeLine(final String line) {

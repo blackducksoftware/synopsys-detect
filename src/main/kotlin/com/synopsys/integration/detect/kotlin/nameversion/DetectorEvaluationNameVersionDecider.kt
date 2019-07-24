@@ -12,7 +12,7 @@ class DetectorEvaluationNameVersionDecider(private val detectorNameVersionDecide
     fun decideSuggestion(detectorEvaluations: List<DetectorEvaluation>, projectDetector: String?): Optional<NameVersion> {
         val detectorProjectInfo = detectorEvaluations
                 .filter(DetectorEvaluation::wasExtractionSuccessful)
-                .filter { it.extraction.projectName.isNotBlank() }
+                .filter { it.extraction?.projectName?.isNotBlank() ?: false }
                 .map { toProjectInfo(it) }
 
         val detectorType = preferredDetectorTypeFromString(projectDetector)
