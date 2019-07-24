@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detect.workflow.report;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
@@ -48,20 +46,21 @@ public class ReportManager {
 
     private final ReportWriter logWriter = new InfoLogReportWriter();
     private final ReportWriter traceLogWriter = new TraceLogReportWriter();
-    private final ExtractionReporter extractionReporter;
+    private final ExtractionLogger extractionLogger;
 
     public static ReportManager createDefault(EventSystem eventSystem) {
-        return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new ErrorSummaryReporter(), new ExtractionReporter());
+        return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new ErrorSummaryReporter(), new ExtractionLogger());
     }
 
     public ReportManager(final EventSystem eventSystem,
-        final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter, ErrorSummaryReporter errorSummaryReporter, ExtractionReporter extractionReporter) {
+        final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter, ErrorSummaryReporter errorSummaryReporter,
+        ExtractionLogger extractionLogger) {
         this.eventSystem = eventSystem;
         this.preparationSummaryReporter = preparationSummaryReporter;
         this.extractionSummaryReporter = extractionSummaryReporter;
         this.searchSummaryReporter = searchSummaryReporter;
         this.errorSummaryReporter = errorSummaryReporter;
-        this.extractionReporter = extractionReporter;
+        this.extractionLogger = extractionLogger;
 
         eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event));
         eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event));
@@ -86,15 +85,15 @@ public class ReportManager {
     }
 
     public void exractionCount(final Integer count) {
-        extractionReporter.setExtractionCount(count);
+        extractionLogger.setExtractionCount(count);
     }
 
     public void exractionStarted(final DetectorEvaluation detectorEvaluation) {
-        extractionReporter.extractionStarted(logWriter, detectorEvaluation);
+        extractionLogger.extractionStarted(detectorEvaluation);
     }
 
     public void exractionEnded(final DetectorEvaluation detectorEvaluation) {
-        extractionReporter.extractionEnded(logWriter, detectorEvaluation);
+        extractionLogger.extractionEnded(detectorEvaluation);
     }
 
     private DetectorToolResult detectorToolResult;

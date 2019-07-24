@@ -25,42 +25,48 @@ package com.synopsys.integration.detect.workflow.report;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detect.tool.detector.impl.DetectExtractionEnvironment;
 import com.synopsys.integration.detect.workflow.report.util.ObjectPrinter;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
+import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 
-public class ExtractionReporter {
+public class ExtractionLogger {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private Integer extractionCount = 0;
 
     public void setExtractionCount(final Integer count) {
         extractionCount = count;
     }
 
-    public void extractionStarted(final ReportWriter writer, final DetectorEvaluation detectorEvaluation) {
+    public void extractionStarted(final DetectorEvaluation detectorEvaluation) {
         final DetectExtractionEnvironment detectExtractionEnvironment = (DetectExtractionEnvironment) detectorEvaluation.getExtractionEnvironment();
         final Integer i = detectExtractionEnvironment.getExtractionId().getId();
         final String progress = Integer.toString((int) Math.floor((i * 100.0f) / extractionCount));
-        writer.writeLine(String.format("Extracting %d of %d (%s%%)", i + 1, extractionCount, progress));
-        writer.writeLine(ReportConstants.SEPERATOR);
+        logger.info(String.format("Extracting %d of %d (%s%%)", i + 1, extractionCount, progress));
+        logger.info(ReportConstants.SEPERATOR);
 
-        writer.writeLine("Starting extraction: " + detectorEvaluation.getDetectorRule().getDetectorType() + " - " + detectorEvaluation.getDetectorRule().getName());
-        writer.writeLine("Identifier: " + detectExtractionEnvironment.getExtractionId().toUniqueString());
-        ObjectPrinter.printObjectPrivate(writer, detectorEvaluation.getDetectable());
-        writer.writeLine(ReportConstants.SEPERATOR);
+        logger.info("Starting extraction: " + detectorEvaluation.getDetectorRule().getDetectorType() + " - " + detectorEvaluation.getDetectorRule().getName());
+        logger.info("Identifier: " + detectExtractionEnvironment.getExtractionId().toUniqueString());
+        ObjectPrinter.printObjectPrivate(new InfoLogReportWriter(logger), detectorEvaluation.getDetectable());
+        logger.info(ReportConstants.SEPERATOR);
     }
 
-    public void extractionEnded(final ReportWriter writer, final DetectorEvaluation detectorEvaluation) {
-        writer.writeLine(ReportConstants.SEPERATOR);
-        writer.writeLine("Finished extraction: " + detectorEvaluation.getExtraction().getResult().toString());
-        writer.writeLine("Code locations found: " + detectorEvaluation.getExtraction().getCodeLocations().size());
+    public void extractionEnded(final DetectorEvaluation detectorEvaluation) {
+        logger.info(ReportConstants.SEPERATOR);
+        logger.info("Finished extraction: " + detectorEvaluation.getExtraction().getResult().toString());
+        logger.info("Code locations found: " + detectorEvaluation.getExtraction().getCodeLocations().size());
         if (detectorEvaluation.getExtraction().getResult() == Extraction.ExtractionResultType.EXCEPTION) {
-            writer.writeLine("Exception: " + ExceptionUtil.oneSentenceDescription(detectorEvaluation.getExtraction().getError()));
+            logger.info("Exception: " + ExceptionUtil.oneSentenceDescription(detectorEvaluation.getExtraction().getError()));
+            logger.debug("Details: ", detectorEvaluation.getExtraction().getError());
         } else if (detectorEvaluation.getExtraction().getResult() == Extraction.ExtractionResultType.FAILURE) {
-            writer.writeLine(detectorEvaluation.getExtraction().getDescription());
+            logger.info(detectorEvaluation.getExtraction().getDescription());
         }
-        writer.writeLine(ReportConstants.SEPERATOR);
+        logger.info(ReportConstants.SEPERATOR);
     }
 }
