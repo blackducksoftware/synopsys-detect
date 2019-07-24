@@ -65,7 +65,7 @@ public class BitbakeDetectable extends Detectable {
         if (bitbakeDetectableOptions.getPackageNames() == null || bitbakeDetectableOptions.getPackageNames().length == 0) {
             return new PropertyInsufficientDetectableResult();
         }
-        
+
         return new PassedDetectableResult();
     }
 
