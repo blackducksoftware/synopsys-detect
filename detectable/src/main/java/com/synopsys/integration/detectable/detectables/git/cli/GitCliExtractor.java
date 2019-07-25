@@ -66,8 +66,7 @@ public class GitCliExtractor {
     }
 
     private String getRepoName(final File gitExecutable, final File directory) throws ExecutableRunnerException, IntegrationException, MalformedURLException {
-        final String remote = runGitSingleLinesResponse(gitExecutable, directory, "remote");
-        final String remoteUrlString = runGitSingleLinesResponse(gitExecutable, directory, "remote", "get-url", "--push", remote);
+        final String remoteUrlString = runGitSingleLinesResponse(gitExecutable, directory, "config", "--get", "remote.origin.url");
 
         final String remoteUrlPath;
         if (remoteUrlString.contains("@")) {
