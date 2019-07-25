@@ -129,8 +129,7 @@ public class DockerExtractor {
         final List<String> dockerArguments = new ArrayList<>();
         dockerArguments.add("-jar");
         dockerArguments.add(dockerInspectorInfo.getDockerInspectorJar().getAbsolutePath());
-        dockerArguments.add("--spring.config.location");
-        dockerArguments.add("file:" + dockerPropertiesFile.getCanonicalPath());
+        dockerArguments.add("--spring.config.location=file:" + dockerPropertiesFile.getCanonicalPath());
         dockerArguments.add(imageArgument);
         if (dockerInspectorInfo.hasAirGapImageFiles()) {
             importTars(dockerInspectorInfo.getAirGapInspectorImageTarFiles(), outputDirectory, environmentVariables, bashExe);
