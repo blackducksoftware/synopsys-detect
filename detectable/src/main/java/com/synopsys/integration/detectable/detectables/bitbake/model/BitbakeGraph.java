@@ -27,34 +27,34 @@ import java.util.List;
 import java.util.Optional;
 
 public class BitbakeGraph {
-    private List<BitbakeNode> nodes = new ArrayList<>();
+    private final List<BitbakeNode> nodes = new ArrayList<>();
 
-    private BitbakeNode getOrCreate(String name){
-        Optional<BitbakeNode> existingNode = nodes.stream()
-            .filter(node -> node.getName().equals(name))
-            .findFirst();
+    private BitbakeNode getOrCreate(final String name) {
+        final Optional<BitbakeNode> existingNode = nodes.stream()
+                                                 .filter(node -> node.getName().equals(name))
+                                                 .findFirst();
 
-        if (existingNode.isPresent()){
+        if (existingNode.isPresent()) {
             return existingNode.get();
         }
 
-        BitbakeNode newNode = new BitbakeNode(name);
+        final BitbakeNode newNode = new BitbakeNode(name);
         nodes.add(newNode);
         return newNode;
     }
 
-    public void addNode(String name, Optional<String> version){
+    public void addNode(final String name, final Optional<String> version) {
         getOrCreate(name);
-        if (version.isPresent()){
+        if (version.isPresent()) {
             setVersion(name, version.get());
         }
     }
 
-    public void setVersion(String name, String version){
+    public void setVersion(final String name, final String version) {
         getOrCreate(name).setVersion(version);
     }
 
-    public void addChild(String parent, String child){
+    public void addChild(final String parent, final String child) {
         getOrCreate(parent).addChild(child);
     }
 

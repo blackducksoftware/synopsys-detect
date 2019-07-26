@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
-import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,20 +29,11 @@ import org.apache.commons.lang3.StringUtils;
 import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
-import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 
 public class GraphParserTransformer {
-    ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-
     public BitbakeGraph transform(final GraphParser graphParser) {
-        BitbakeGraph bitbakeGraph = new BitbakeGraph();
+        final BitbakeGraph bitbakeGraph = new BitbakeGraph();
 
         for (final GraphNode graphNode : graphParser.getNodes().values()) {
             final String name = getNameFromNode(graphNode);
@@ -52,8 +42,8 @@ public class GraphParserTransformer {
         }
 
         for (final GraphEdge graphEdge : graphParser.getEdges().values()) {
-            String parent = getNameFromNode(graphEdge.getNode1());
-            String child = getNameFromNode(graphEdge.getNode2());
+            final String parent = getNameFromNode(graphEdge.getNode1());
+            final String child = getNameFromNode(graphEdge.getNode2());
             bitbakeGraph.addChild(parent, child);
         }
 

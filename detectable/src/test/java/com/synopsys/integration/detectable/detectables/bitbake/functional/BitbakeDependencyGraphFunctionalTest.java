@@ -41,9 +41,9 @@ public class BitbakeDependencyGraphFunctionalTest {
         final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser);
         final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, "i586-poky-linux");
 
-        ArchitectureGraphAssert graphAssert = new ArchitectureGraphAssert(Forge.YOCTO, dependencyGraph);
-        ExternalId attr = graphAssert.hasDependency("attr", "2.4.47-r0", "i586-poky-linux");
-        ExternalId acl = graphAssert.hasDependency("acl", "2.2.52-r0", "i586-poky-linux");
+        final ArchitectureGraphAssert graphAssert = new ArchitectureGraphAssert(Forge.YOCTO, dependencyGraph);
+        final ExternalId attr = graphAssert.hasDependency("attr", "2.4.47-r0", "i586-poky-linux");
+        final ExternalId acl = graphAssert.hasDependency("acl", "2.2.52-r0", "i586-poky-linux");
         graphAssert.hasParentChildRelationship(acl, attr);
         graphAssert.hasRootSize(2);
     }
