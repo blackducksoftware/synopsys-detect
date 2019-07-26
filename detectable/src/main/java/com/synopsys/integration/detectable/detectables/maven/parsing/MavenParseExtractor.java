@@ -40,10 +40,12 @@ import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomDe
 
 public class MavenParseExtractor {
     private final ExternalIdFactory externalIdFactory;
+    private final boolean includePluginDependencies;
     private final SAXParser saxParser;
 
-    public MavenParseExtractor(final ExternalIdFactory externalIdFactory, final SAXParser saxParser) {
+    public MavenParseExtractor(final ExternalIdFactory externalIdFactory, final boolean includePluginDependencies, final SAXParser saxParser) {
         this.externalIdFactory = externalIdFactory;
+        this.includePluginDependencies = includePluginDependencies;
         this.saxParser = saxParser;
     }
 
@@ -51,7 +53,7 @@ public class MavenParseExtractor {
         try (final InputStream pomXmlInputStream = new FileInputStream(pomXmlFile)) {
             //we have to create a new handler or the state of all handlers would be shared.
             //we could create a handler factory or some other indirection so it could be injected but for now we make a new one.
-            PomDependenciesHandler pomDependenciesHandler = new PomDependenciesHandler(externalIdFactory);
+            PomDependenciesHandler pomDependenciesHandler = new PomDependenciesHandler(externalIdFactory, includePluginDependencies);
             saxParser.parse(pomXmlInputStream, pomDependenciesHandler);
             final List<Dependency> dependencies = pomDependenciesHandler.getDependencies();
 

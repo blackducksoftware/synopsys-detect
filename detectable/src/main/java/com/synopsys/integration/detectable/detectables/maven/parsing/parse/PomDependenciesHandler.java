@@ -22,8 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectables.maven.parsing.parse;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -34,9 +33,12 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class PomDependenciesHandler extends DefaultHandler {
-    private final ExternalIdFactory externalIdFactory;
+    private static final Set<String> ONLY_DEPENDENCIES = new HashSet<>(Arrays.asList("dependency"));
+    private static final Set<String> WITH_PLUGINS = new HashSet<>(Arrays.asList("dependency", "plugin"));
 
-    private boolean parsingDependencies;
+    private final ExternalIdFactory externalIdFactory;
+    private final boolean includePluginDependencies;
+
     private boolean parsingDependency;
     private boolean parsingGroup;
     private boolean parsingArtifact;
@@ -48,16 +50,15 @@ public class PomDependenciesHandler extends DefaultHandler {
 
     private final List<Dependency> dependencies = new ArrayList<>();
 
-    public PomDependenciesHandler(final ExternalIdFactory externalIdFactory) {
+    public PomDependenciesHandler(final ExternalIdFactory externalIdFactory, boolean includePluginDependencies) {
         this.externalIdFactory = externalIdFactory;
+        this.includePluginDependencies = includePluginDependencies;
     }
 
     @Override
     public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) throws SAXException {
         super.startElement(uri, localName, qName, attributes);
-        if ("dependencies".equals(qName)) {
-            parsingDependencies = true;
-        } else if (parsingDependencies && "dependency".equals(qName)) {
+        if (isDependencyQName(qName)) {
             parsingDependency = true;
         } else if (parsingDependency && "groupId".equals(qName)) {
             parsingGroup();
@@ -71,9 +72,7 @@ public class PomDependenciesHandler extends DefaultHandler {
     @Override
     public void endElement(final String uri, final String localName, final String qName) throws SAXException {
         super.endElement(uri, localName, qName);
-        if ("dependencies".equals(qName)) {
-            parsingDependencies = false;
-        } else if ("dependency".equals(qName)) {
+        if (isDependencyQName(qName)) {
             parsingDependency = false;
 
             final ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
@@ -99,6 +98,14 @@ public class PomDependenciesHandler extends DefaultHandler {
         return dependencies;
     }
 
+    private boolean isDependencyQName(String qName) {
+        if (includePluginDependencies) {
+            return WITH_PLUGINS.contains(qName);
+        } else {
+            return ONLY_DEPENDENCIES.contains(qName);
+        }
+    }
+
     private void parsingNothingImportant() {
         parsingGroup = false;
         parsingArtifact = false;
@@ -119,4 +126,5 @@ public class PomDependenciesHandler extends DefaultHandler {
         parsingNothingImportant();
         parsingVersion = true;
     }
+
 }
