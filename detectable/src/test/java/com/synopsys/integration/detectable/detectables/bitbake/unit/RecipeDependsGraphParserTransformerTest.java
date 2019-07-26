@@ -11,10 +11,10 @@ import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.RecipeDependsGraphParserTransformer;
 
 @UnitTest
-public class GraphParserTransformerTest {
+public class RecipeDependsGraphParserTransformerTest {
     @Test
     public void parsedVersionFromLabel() {
         final HashMap<String, GraphEdge> edges = new HashMap<>();
@@ -55,8 +55,8 @@ public class GraphParserTransformerTest {
     }
 
     private BitbakeGraph buildGraph(final HashMap<String, GraphNode> nodes, final HashMap<String, GraphEdge> edges) {
-        final GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
-        final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(mockParser(nodes, edges));
+        final RecipeDependsGraphParserTransformer recipeDependsGraphParserTransformer = new RecipeDependsGraphParserTransformer();
+        final BitbakeGraph bitbakeGraph = recipeDependsGraphParserTransformer.transform(mockParser(nodes, edges));
         return bitbakeGraph;
     }
 

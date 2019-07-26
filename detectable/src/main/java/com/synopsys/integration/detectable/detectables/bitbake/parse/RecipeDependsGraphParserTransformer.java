@@ -31,7 +31,7 @@ import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 
-public class GraphParserTransformer {
+public class RecipeDependsGraphParserTransformer {
     public BitbakeGraph transform(final GraphParser graphParser) {
         final BitbakeGraph bitbakeGraph = new BitbakeGraph();
 

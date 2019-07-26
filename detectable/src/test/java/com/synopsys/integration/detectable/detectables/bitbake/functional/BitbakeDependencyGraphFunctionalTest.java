@@ -13,7 +13,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.RecipeDependsGraphParserTransformer;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.ArchitectureGraphAssert;
 
@@ -21,12 +21,12 @@ import com.synopsys.integration.detectable.util.graph.ArchitectureGraphAssert;
 public class BitbakeDependencyGraphFunctionalTest {
     @Test
     public void found480RootInOutput() throws IOException {
-        final GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
+        final RecipeDependsGraphParserTransformer recipeDependsGraphParserTransformer = new RecipeDependsGraphParserTransformer();
         final InputStream inputStream = FunctionalTestFiles.asInputStream("/bitbake/Bitbake_RecipeDepends_Full.dot");
         final GraphParser graphParser = new GraphParser(inputStream);
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
 
-        final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser);
+        final BitbakeGraph bitbakeGraph = recipeDependsGraphParserTransformer.transform(graphParser);
         final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, "i586-poky-linux");
 
         assert dependencyGraph.getRootDependencies().size() == 480;
@@ -34,11 +34,11 @@ public class BitbakeDependencyGraphFunctionalTest {
 
     @Test
     public void foundAttrAndAcl() throws IOException {
-        final GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
+        final RecipeDependsGraphParserTransformer recipeDependsGraphParserTransformer = new RecipeDependsGraphParserTransformer();
         final InputStream inputStream = FunctionalTestFiles.asInputStream("/bitbake/Bitbake_RecipeDepends_Simple.dot");
         final GraphParser graphParser = new GraphParser(inputStream);
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser);
+        final BitbakeGraph bitbakeGraph = recipeDependsGraphParserTransformer.transform(graphParser);
         final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, "i586-poky-linux");
 
         final ArchitectureGraphAssert graphAssert = new ArchitectureGraphAssert(Forge.YOCTO, dependencyGraph);
