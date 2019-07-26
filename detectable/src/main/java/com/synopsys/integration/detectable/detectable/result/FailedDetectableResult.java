@@ -30,6 +30,6 @@ public class FailedDetectableResult extends DetectableResult {
 
     @Override
     public String toDescription() {
-        return "Passed.";
+        return "Failed.";
     }
 }
