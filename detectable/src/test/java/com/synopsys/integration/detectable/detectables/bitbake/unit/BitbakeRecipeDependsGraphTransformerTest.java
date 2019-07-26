@@ -10,11 +10,11 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipeDependsGraphTransformer;
 import com.synopsys.integration.detectable.util.graph.ArchitectureGraphAssert;
 
 @UnitTest
-public class BitbakeGraphTransformerTest {
+public class BitbakeRecipeDependsGraphTransformerTest {
     @Test
     public void parentHasChild() {
         final BitbakeGraph bitbakeGraph = new BitbakeGraph();
@@ -22,8 +22,8 @@ public class BitbakeGraphTransformerTest {
         bitbakeGraph.addNode("foobar", Optional.of("12"));
         bitbakeGraph.addChild("example", "foobar");
 
-        final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, "archy");
+        final BitbakeRecipeDependsGraphTransformer bitbakeRecipeDependsGraphTransformer = new BitbakeRecipeDependsGraphTransformer(new ExternalIdFactory());
+        final DependencyGraph dependencyGraph = bitbakeRecipeDependsGraphTransformer.transform(bitbakeGraph, "archy");
 
         final ArchitectureGraphAssert graphAssert = new ArchitectureGraphAssert(Forge.YOCTO, dependencyGraph);
 
@@ -39,8 +39,8 @@ public class BitbakeGraphTransformerTest {
         bitbakeGraph.addNode("foobar", Optional.empty());
         bitbakeGraph.addChild("example", "foobar");
 
-        final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, "archy");
+        final BitbakeRecipeDependsGraphTransformer bitbakeRecipeDependsGraphTransformer = new BitbakeRecipeDependsGraphTransformer(new ExternalIdFactory());
+        final DependencyGraph dependencyGraph = bitbakeRecipeDependsGraphTransformer.transform(bitbakeGraph, "archy");
 
         final ArchitectureGraphAssert graphAssert = new ArchitectureGraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.hasRootSize(1);
@@ -53,8 +53,8 @@ public class BitbakeGraphTransformerTest {
         final BitbakeGraph bitbakeGraph = new BitbakeGraph();
         bitbakeGraph.addNode("example", Optional.empty());
 
-        final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, "archy");
+        final BitbakeRecipeDependsGraphTransformer bitbakeRecipeDependsGraphTransformer = new BitbakeRecipeDependsGraphTransformer(new ExternalIdFactory());
+        final DependencyGraph dependencyGraph = bitbakeRecipeDependsGraphTransformer.transform(bitbakeGraph, "archy");
 
         final ArchitectureGraphAssert graphAssert = new ArchitectureGraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.noDependency("example", null, "archy");

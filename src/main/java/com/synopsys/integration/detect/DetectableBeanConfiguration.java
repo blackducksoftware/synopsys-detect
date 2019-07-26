@@ -43,13 +43,13 @@ import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.AirgapNugetInspectorLocator;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.LocatorNugetInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.LocalPipInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.AirgapNugetInspectorLocator;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.LocatorNugetInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorLocator;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
@@ -73,7 +73,7 @@ import com.synopsys.integration.detectable.detectables.bazel.parse.XPathParser;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeArchitectureParser;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipeDependsGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
@@ -298,7 +298,7 @@ public class DetectableBeanConfiguration {
     }
 
     public DockerInspectorResolver dockerInspectorResolver() {
-        DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver);
+        final DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver);
         return new ArtifactoryDockerInspectorResolver(directoryManager, airGapInspectorPaths, fileFinder, dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
     }
 
@@ -379,7 +379,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public GradleInspectorResolver gradleInspectorResolver() {
-        GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
+        final GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
         return new ArtifactoryGradleInspectorResolver(gradleInspectorInstaller, configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapInspectorPaths, directoryManager);
     }
 
@@ -431,7 +431,7 @@ public class DetectableBeanConfiguration {
         if (nugetAirGapPath.isPresent()) {
             locator = new AirgapNugetInspectorLocator(airGapInspectorPaths);
         } else {
-            NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactResolver);
+            final NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactResolver);
             locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion());
         }
         return new LocatorNugetInspectorResolver(detectExecutableResolver, executableRunner, detectInfo, fileFinder, installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator);
@@ -554,8 +554,8 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
-    public BitbakeGraphTransformer bitbakeGraphTransformer() {
-        return new BitbakeGraphTransformer(externalIdFactory);
+    public BitbakeRecipeDependsGraphTransformer bitbakeGraphTransformer() {
+        return new BitbakeRecipeDependsGraphTransformer(externalIdFactory);
     }
 
     @Bean

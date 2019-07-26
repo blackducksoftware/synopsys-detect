@@ -35,10 +35,10 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeNode;
 
-public class BitbakeGraphTransformer {
+public class BitbakeRecipeDependsGraphTransformer {
     private final ExternalIdFactory externalIdFactory;
 
-    public BitbakeGraphTransformer(final ExternalIdFactory externalIdFactory) {
+    public BitbakeRecipeDependsGraphTransformer(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
