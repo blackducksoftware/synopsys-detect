@@ -72,4 +72,5 @@ public class MavenParseDetectable extends Detectable {
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         return mavenParseExtractor.extract(pomXmlFile);
     }
+
 }

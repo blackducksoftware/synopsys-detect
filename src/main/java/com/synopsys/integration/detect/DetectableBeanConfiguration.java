@@ -136,6 +136,7 @@ import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetecta
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
+import com.synopsys.integration.detectable.detectables.maven.parsing.parse.PomDocumentParser;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
@@ -620,7 +621,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public MavenParseExtractor mavenParseExtractor() throws ParserConfigurationException, SAXException {
-        return new MavenParseExtractor(externalIdFactory, saxParser());
+        return new MavenParseExtractor(externalIdFactory, saxParser(), detectableOptionFactory.createMavenParseOptions());
     }
 
     @Bean
