@@ -45,7 +45,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeArchitectureParser;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipeDependsGraphTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -57,15 +57,15 @@ public class BitbakeExtractor {
     private final ExecutableRunner executableRunner;
     private final FileFinder fileFinder;
     private final GraphParserTransformer graphParserTransformer;
-    private final BitbakeRecipeDependsGraphTransformer bitbakeRecipeDependsGraphTransformer;
+    private final BitbakeGraphTransformer bitbakeGraphTransformer;
     private final BitbakeArchitectureParser bitbakeArchitectureParser;
 
-    public BitbakeExtractor(final ExecutableRunner executableRunner, final FileFinder fileFinder, final GraphParserTransformer graphParserTransformer, final BitbakeRecipeDependsGraphTransformer bitbakeRecipeDependsGraphTransformer,
+    public BitbakeExtractor(final ExecutableRunner executableRunner, final FileFinder fileFinder, final GraphParserTransformer graphParserTransformer, final BitbakeGraphTransformer bitbakeGraphTransformer,
         final BitbakeArchitectureParser bitbakeArchitectureParser) {
         this.executableRunner = executableRunner;
         this.fileFinder = fileFinder;
         this.graphParserTransformer = graphParserTransformer;
-        this.bitbakeRecipeDependsGraphTransformer = bitbakeRecipeDependsGraphTransformer;
+        this.bitbakeGraphTransformer = bitbakeGraphTransformer;
         this.bitbakeArchitectureParser = bitbakeArchitectureParser;
     }
 
@@ -90,7 +90,7 @@ public class BitbakeExtractor {
                 final InputStream recipeDependsInputStream = FileUtils.openInputStream(dependsFile);
                 final GraphParser graphParser = new GraphParser(recipeDependsInputStream);
                 final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser);
-                final DependencyGraph dependencyGraph = bitbakeRecipeDependsGraphTransformer.transform(bitbakeGraph, targetArchitecture);
+                final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, targetArchitecture);
                 final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
                 codeLocations.add(codeLocation);

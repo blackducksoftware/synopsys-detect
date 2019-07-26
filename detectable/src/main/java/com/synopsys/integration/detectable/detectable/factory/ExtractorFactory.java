@@ -26,7 +26,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeArchitectureParser;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipeDependsGraphTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 
 public class ExtractorFactory {
@@ -38,9 +38,9 @@ public class ExtractorFactory {
 
     public BitbakeExtractor bitbakeExtractor() {
         final GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
-        final BitbakeRecipeDependsGraphTransformer bitbakeRecipeDependsGraphTransformer = new BitbakeRecipeDependsGraphTransformer(new ExternalIdFactory());
+        final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
         final BitbakeArchitectureParser bitbakeArchitectureParser = new BitbakeArchitectureParser();
-        final BitbakeExtractor bitbakeExtractor = new BitbakeExtractor(new SimpleExecutableRunner(), this.utilityFactory.simpleFileFinder(), graphParserTransformer, bitbakeRecipeDependsGraphTransformer, bitbakeArchitectureParser);
+        final BitbakeExtractor bitbakeExtractor = new BitbakeExtractor(new SimpleExecutableRunner(), this.utilityFactory.simpleFileFinder(), graphParserTransformer, bitbakeGraphTransformer, bitbakeArchitectureParser);
         return bitbakeExtractor;
     }
 }

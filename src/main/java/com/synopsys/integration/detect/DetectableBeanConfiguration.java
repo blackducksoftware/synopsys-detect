@@ -73,7 +73,7 @@ import com.synopsys.integration.detectable.detectables.bazel.parse.XPathParser;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeArchitectureParser;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipeDependsGraphTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
@@ -554,8 +554,8 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
-    public BitbakeRecipeDependsGraphTransformer bitbakeGraphTransformer() {
-        return new BitbakeRecipeDependsGraphTransformer(externalIdFactory);
+    public BitbakeGraphTransformer bitbakeGraphTransformer() {
+        return new BitbakeGraphTransformer(externalIdFactory);
     }
 
     @Bean

@@ -12,7 +12,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipeDependsGraphTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.ArchitectureGraphAssert;
@@ -24,10 +24,10 @@ public class BitbakeDependencyGraphFunctionalTest {
         final GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
         final InputStream inputStream = FunctionalTestFiles.asInputStream("/bitbake/Bitbake_RecipeDepends_Full.dot");
         final GraphParser graphParser = new GraphParser(inputStream);
-        final BitbakeRecipeDependsGraphTransformer bitbakeRecipeDependsGraphTransformer = new BitbakeRecipeDependsGraphTransformer(new ExternalIdFactory());
+        final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
 
         final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser);
-        final DependencyGraph dependencyGraph = bitbakeRecipeDependsGraphTransformer.transform(bitbakeGraph, "i586-poky-linux");
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, "i586-poky-linux");
 
         assert dependencyGraph.getRootDependencies().size() == 480;
     }
@@ -37,9 +37,9 @@ public class BitbakeDependencyGraphFunctionalTest {
         final GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
         final InputStream inputStream = FunctionalTestFiles.asInputStream("/bitbake/Bitbake_RecipeDepends_Simple.dot");
         final GraphParser graphParser = new GraphParser(inputStream);
-        final BitbakeRecipeDependsGraphTransformer bitbakeRecipeDependsGraphTransformer = new BitbakeRecipeDependsGraphTransformer(new ExternalIdFactory());
+        final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
         final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser);
-        final DependencyGraph dependencyGraph = bitbakeRecipeDependsGraphTransformer.transform(bitbakeGraph, "i586-poky-linux");
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, "i586-poky-linux");
 
         final ArchitectureGraphAssert graphAssert = new ArchitectureGraphAssert(Forge.YOCTO, dependencyGraph);
         final ExternalId attr = graphAssert.hasDependency("attr", "2.4.47-r0", "i586-poky-linux");
