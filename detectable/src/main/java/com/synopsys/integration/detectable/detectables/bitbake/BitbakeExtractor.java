@@ -149,7 +149,7 @@ public class BitbakeExtractor {
         try {
             return executableRunner.execute(outputDirectory, bash, "-c", "source " + buildEnvScript.getCanonicalPath() + "; " + bitbakeCommand);
         } catch (final ExecutableRunnerException e) {
-            logger.error(String.format("Failed executing bitbake command."));
+            logger.error(String.format("Failed executing bitbake command. %s", bitbakeCommand));
             logger.debug(e.getMessage(), e);
             throw e;
         }
