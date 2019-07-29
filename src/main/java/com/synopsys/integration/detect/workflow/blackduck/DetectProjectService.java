@@ -88,11 +88,11 @@ public class DetectProjectService {
                                                                                                                                    .map(CustomFieldElement::getLabel)
                                                                                                                                    .collect(Collectors.joining())));
 
-            logger.info(String.format("Updating %s custom fields on the project version: %s", customFieldDocument.getProject().size(), customFieldDocument.getVersion().stream()
+            logger.info(String.format("Updating %s custom fields on the project version: %s", customFieldDocument.getVersion().size(), customFieldDocument.getVersion().stream()
                                                                                                                                            .map(CustomFieldElement::getLabel)
                                                                                                                                            .collect(Collectors.joining())));
-            
-            detectCustomFieldService.updateCustomFields(projectVersionWrapper, detectProjectServiceOptions.getCustomFields(), blackDuckServicesFactory.createBlackDuckService());
+
+            detectCustomFieldService.updateCustomFields(projectVersionWrapper, customFieldDocument, blackDuckServicesFactory.createBlackDuckService());
         } else {
             logger.info("No custom fields to set.");
         }
