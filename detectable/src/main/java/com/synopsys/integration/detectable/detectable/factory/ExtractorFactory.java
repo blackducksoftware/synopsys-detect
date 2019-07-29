@@ -27,7 +27,7 @@ import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExec
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeArchitectureParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.RecipeDependsGraphParserTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 
 public class ExtractorFactory {
     private final UtilityFactory utilityFactory;
@@ -37,10 +37,10 @@ public class ExtractorFactory {
     }
 
     public BitbakeExtractor bitbakeExtractor() {
-        final RecipeDependsGraphParserTransformer recipeDependsGraphParserTransformer = new RecipeDependsGraphParserTransformer();
+        final GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
         final BitbakeArchitectureParser bitbakeArchitectureParser = new BitbakeArchitectureParser();
-        final BitbakeExtractor bitbakeExtractor = new BitbakeExtractor(new SimpleExecutableRunner(), this.utilityFactory.simpleFileFinder(), recipeDependsGraphParserTransformer, bitbakeGraphTransformer, bitbakeArchitectureParser);
+        final BitbakeExtractor bitbakeExtractor = new BitbakeExtractor(new SimpleExecutableRunner(), this.utilityFactory.simpleFileFinder(), graphParserTransformer, bitbakeGraphTransformer, bitbakeArchitectureParser);
         return bitbakeExtractor;
     }
 }

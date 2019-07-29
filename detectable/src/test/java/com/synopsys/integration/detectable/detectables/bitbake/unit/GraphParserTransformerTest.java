@@ -10,32 +10,45 @@ import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.detectable.annotations.UnitTest;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.RecipeDependsGraphParserTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 
 @UnitTest
-public class RecipeDependsGraphParserTransformerTest {
+public class GraphParserTransformerTest {
     @Test
-    public void parsedVersionFromLabel() {
+    public void parsedVersionFromLabel_RecipeDepends() {
         final HashMap<String, GraphEdge> edges = new HashMap<>();
         final HashMap<String, GraphNode> nodes = new HashMap<>();
 
         addNode("name", "name\\n:version\\n/some/path/to.bb", nodes, edges);
-        final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges);
+        final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, BitbakeFileType.RECIPE_DEPENDS);
 
         Assert.assertEquals(1, bitbakeGraph.getNodes().size());
         Assert.assertEquals("version", bitbakeGraph.getNodes().get(0).getVersion().get());
     }
 
     @Test
-    public void parsedRelationship() {
+    public void parsedVersionFromLabel_PackageDepends() {
+        final HashMap<String, GraphEdge> edges = new HashMap<>();
+        final HashMap<String, GraphNode> nodes = new HashMap<>();
+
+        addNode("name", "name :version\\n/some/path/to.bb", nodes, edges);
+        final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, BitbakeFileType.PACKAGE_DEPENDS);
+
+        Assert.assertEquals(1, bitbakeGraph.getNodes().size());
+        Assert.assertEquals("version", bitbakeGraph.getNodes().get(0).getVersion().get());
+    }
+
+    @Test
+    public void parsedRelationship_RecipeDepends() {
         final HashMap<String, GraphEdge> edges = new HashMap<>();
         final HashMap<String, GraphNode> nodes = new HashMap<>();
 
         addNode("parent", "name\\n:parent.version\\n/some/path/to.bb", nodes, edges);
         addNode("child", "name\\n:child.version\\n/some/path/to.bb", nodes, edges);
         addEdge("edge1", "parent", "child", nodes, edges);
-        final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges);
+        final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, BitbakeFileType.RECIPE_DEPENDS);
 
         Assert.assertEquals(2, bitbakeGraph.getNodes().size());
         Assert.assertEquals(1, bitbakeGraph.getNodes().get(0).getChildren().size());
@@ -43,20 +56,47 @@ public class RecipeDependsGraphParserTransformerTest {
     }
 
     @Test
-    public void removedQuotesFromName() {
+    public void parsedRelationship_PackageDepends() {
+        final HashMap<String, GraphEdge> edges = new HashMap<>();
+        final HashMap<String, GraphNode> nodes = new HashMap<>();
+
+        addNode("parent", "name :parent.version\\n/some/path/to.bb", nodes, edges);
+        addNode("child", "name :child.version\\n/some/path/to.bb", nodes, edges);
+        addEdge("edge1", "parent", "child", nodes, edges);
+        final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, BitbakeFileType.PACKAGE_DEPENDS);
+
+        Assert.assertEquals(2, bitbakeGraph.getNodes().size());
+        Assert.assertEquals(1, bitbakeGraph.getNodes().get(0).getChildren().size());
+        Assert.assertTrue("Parent node children must contain child", bitbakeGraph.getNodes().get(0).getChildren().contains("child"));
+    }
+
+    @Test
+    public void removedQuotesFromName_RecipeDepends() {
         final HashMap<String, GraphEdge> edges = new HashMap<>();
         final HashMap<String, GraphNode> nodes = new HashMap<>();
 
         addNode("quotes\"removed", "example\\n:example\\n/example", nodes, edges);
-        final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges);
+        final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, BitbakeFileType.RECIPE_DEPENDS);
 
         Assert.assertEquals(1, bitbakeGraph.getNodes().size());
         Assert.assertEquals("quotesremoved", bitbakeGraph.getNodes().get(0).getName());
     }
 
-    private BitbakeGraph buildGraph(final HashMap<String, GraphNode> nodes, final HashMap<String, GraphEdge> edges) {
-        final RecipeDependsGraphParserTransformer recipeDependsGraphParserTransformer = new RecipeDependsGraphParserTransformer();
-        final BitbakeGraph bitbakeGraph = recipeDependsGraphParserTransformer.transform(mockParser(nodes, edges));
+    @Test
+    public void removedQuotesFromName_PackageDepends() {
+        final HashMap<String, GraphEdge> edges = new HashMap<>();
+        final HashMap<String, GraphNode> nodes = new HashMap<>();
+
+        addNode("quotes\"removed", "example :example\\n/example", nodes, edges);
+        final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, BitbakeFileType.PACKAGE_DEPENDS);
+
+        Assert.assertEquals(1, bitbakeGraph.getNodes().size());
+        Assert.assertEquals("quotesremoved", bitbakeGraph.getNodes().get(0).getName());
+    }
+
+    private BitbakeGraph buildGraph(final HashMap<String, GraphNode> nodes, final HashMap<String, GraphEdge> edges, final BitbakeFileType bitbakeFileType) {
+        final GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
+        final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(mockParser(nodes, edges), bitbakeFileType);
         return bitbakeGraph;
     }
 

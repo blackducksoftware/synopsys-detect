@@ -24,20 +24,22 @@ package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 
 import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 
-public class RecipeDependsGraphParserTransformer {
-    public BitbakeGraph transform(final GraphParser graphParser) {
+public class GraphParserTransformer {
+    public BitbakeGraph transform(final GraphParser graphParser, final BitbakeFileType bitbakeFileType) {
         final BitbakeGraph bitbakeGraph = new BitbakeGraph();
 
         for (final GraphNode graphNode : graphParser.getNodes().values()) {
             final String name = getNameFromNode(graphNode);
-            final Optional<String> version = getVersionFromNode(graphNode);
+            final Optional<String> version = getVersionFromNode(graphNode, bitbakeFileType);
             bitbakeGraph.addNode(name, version);
         }
 
@@ -54,9 +56,9 @@ public class RecipeDependsGraphParserTransformer {
         return graphNode.getId().replaceAll("\"", "");
     }
 
-    private Optional<String> getVersionFromNode(final GraphNode graphNode) {
+    private Optional<String> getVersionFromNode(final GraphNode graphNode, final BitbakeFileType bitbakeFileType) {
         final Optional<String> attribute = getLabelAttribute(graphNode);
-        return attribute.map(this::getVersionFromLabel);
+        return attribute.map((String label) -> getVersionFromLabel(label, bitbakeFileType));
     }
 
     private Optional<String> getLabelAttribute(final GraphNode graphNode) {
@@ -70,10 +72,15 @@ public class RecipeDependsGraphParserTransformer {
         return result;
     }
 
-    private String getVersionFromLabel(final String label) {
-        final String[] components = label.split("\\\\n:|\\\\n");
-        final String version = components[1];
-
-        return version;
+    private String getVersionFromLabel(final String label, final BitbakeFileType bitbakeFileType) {
+        if (bitbakeFileType.equals(BitbakeFileType.RECIPE_DEPENDS)) {
+            final String[] components = label.split("\\\\n:|\\\\n");
+            return components[1];
+        } else if (bitbakeFileType.equals(BitbakeFileType.PACKAGE_DEPENDS)) {
+            final String[] components = label.split(" :|\\\\n");
+            return components[1];
+        } else {
+            throw new NotImplementedException(String.format("The %s does not support parsing of the '%s' file type.", this.getClass().getName(), bitbakeFileType.getFileName()));
+        }
     }
 }
