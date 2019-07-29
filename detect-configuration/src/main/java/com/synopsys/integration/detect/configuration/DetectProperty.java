@@ -564,12 +564,12 @@ public enum DetectProperty {
     DETECT_PROJECT_APPLICATION_ID("detect.project.application.id", "Application ID", "5.2.0", PropertyType.STRING, PropertyAuthority.None, null),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("A  list of custom fields with a label and comma-separated value starting from index 0. For example detect.project.custom.fields.project[0].label='example' and detect.project.custom.fields.project[0].value='one,two'")
-    DETECT_PROJECT_CUSTOM_FIELDS("detect.custom.fields.project", "Custom Fields", "5.6.0", PropertyType.STRING, PropertyAuthority.None, ""),
+    @HelpDescription("A  list of custom fields with a label and comma-separated value starting from index 0. For example detect.custom.fields.project[0].label='example' and detect.custom.fields.project[0].value='one,two'")
+    DETECT_CUSTOM_FIELDS_PROJECT("detect.custom.fields.project", "Custom Fields", "5.6.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("A  list of custom fields with a label and comma-separated value starting from index 0. For example detect.project.custom.fields.version[0].label='example' and detect.project.custom.fields.version[0].value='one,two'")
-    DETECT_PROJECT_VERSION_CUSTOM_FIELDS("detect.custom.fields.version", "Custom Fields", "5.6.0", PropertyType.STRING, PropertyAuthority.None, ""),
+    @HelpDescription("A  list of custom fields with a label and comma-separated value starting from index 0. For example detect.custom.fields.version[0].label='example' and detect.custom.fields.version[0].value='one,two'")
+    DETECT_CUSTOM_FIELDS_VERSION("detect.custom.fields.version", "Custom Fields", "5.6.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription("An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set.")
