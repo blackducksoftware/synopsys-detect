@@ -34,8 +34,7 @@ public class BitbakeDetectorTest {
         final String[] pkgNames = { "testPkgName" };
         Mockito.when(bitbakeDetectableOptions.getPackageNames()).thenReturn(pkgNames);
 
-        final BitbakeDetectable detectable = new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor,
-            bashResolver);
+        final BitbakeDetectable detectable = new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor, bashResolver);
 
         assertTrue(detectable.applicable().getPassed());
     }

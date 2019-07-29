@@ -22,35 +22,17 @@
  */
 package com.synopsys.integration.detectable.detectables.bitbake.model;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+public enum BitbakeFileType {
+    RECIPE_DEPENDS("recipe-depends.dot"),
+    PACKAGE_DEPENDS("package-depends.dot");
 
-public class BitbakeNode {
-    private final String name;
-    private String version = null;
-    private final Set<String> children = new HashSet<>();
+    private final String fileName;
 
-    public BitbakeNode(final String name) {this.name = name;}
-
-    public void addChild(final String child) {
-        this.children.add(child);
+    BitbakeFileType(final String fileName) {
+        this.fileName = fileName;
     }
 
-    public void setVersion(final String version) {
-        this.version = version;
+    public String getFileName() {
+        return fileName;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public Optional<String> getVersion() {
-        return Optional.ofNullable(version);
-    }
-
-    public Set<String> getChildren() {
-        return children;
-    }
-
 }

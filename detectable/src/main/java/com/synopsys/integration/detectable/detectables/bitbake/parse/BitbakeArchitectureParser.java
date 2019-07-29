@@ -28,7 +28,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 public class BitbakeArchitectureParser {
-    public Optional<String> architectureFromOutput(String standardOutput) {
+    public Optional<String> architectureFromOutput(final String standardOutput) {
         return Arrays.stream(standardOutput.split(System.lineSeparator()))
                    .map(this::architectureFromLine)
                    .filter(Optional::isPresent)
@@ -37,7 +37,7 @@ public class BitbakeArchitectureParser {
     }
 
     public Optional<String> architectureFromLine(final String line) {
-        if (line.trim().startsWith("TARGET_SYS")){
+        if (line.trim().startsWith("TARGET_SYS")) {
             return Optional.of(StringUtils.substringBetween(line, "\"").trim());
         } else {
             return Optional.empty();

@@ -4,9 +4,7 @@ open class DetectorResult(val passed: Boolean, val description: String)
 
 open class FailedDetectorResult(description: String) : DetectorResult(false, description)
 
-open class PassedDetectorResult(description: String) : DetectorResult(true, description) {
-    constructor() : this("Passed.")
-}
+open class PassedDetectorResult(description: String = "Passed.") : DetectorResult(true, description)
 
 class ExcludedDetectorResult : FailedDetectorResult("Detector type was excluded.")
 

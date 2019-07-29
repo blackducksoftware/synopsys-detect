@@ -57,7 +57,8 @@ public class DetectorFinder {
         }
 
         if (null == directory || Files.isSymbolicLink(directory.toPath()) || !directory.isDirectory()) {
-            logger.trace("Skipping file as it is not a directory: " + directory.toString());
+            final String directoryString = Optional.ofNullable(directory).map(File::toString).orElse("null");
+            logger.trace("Skipping file as it is not a directory: " + directoryString);
             return Optional.empty();
         }
 
@@ -77,7 +78,7 @@ public class DetectorFinder {
         return Optional.of(new DetectorEvaluationTree(directory, depth, detectorRuleSet, evaluations, children));
     }
 
-    private List<File> findFilteredSubDirectories(final File directory, Predicate<File> filePredicate) throws DetectorFinderDirectoryListException {
+    private List<File> findFilteredSubDirectories(final File directory, final Predicate<File> filePredicate) throws DetectorFinderDirectoryListException {
         try (final Stream<Path> pathStream = Files.list(directory.toPath())) {
             return pathStream.map(Path::toFile)
                        .filter(File::isDirectory)

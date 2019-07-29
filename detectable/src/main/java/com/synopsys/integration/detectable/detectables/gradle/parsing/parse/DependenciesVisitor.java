@@ -98,11 +98,13 @@ public class DependenciesVisitor extends CodeVisitorSupport {
     private void addDependencyFromStatement(final Statement statement) {
         Expression expression = null;
         try {
-            Method getExpression = null;
+            final Method getExpression;
             if (statement instanceof ExpressionStatement) {
                 getExpression = ExpressionStatement.class.getMethod("getExpression");
             } else if (statement instanceof ReturnStatement) {
                 getExpression = ReturnStatement.class.getMethod("getExpression");
+            } else {
+                throw new NoSuchMethodException("Failed to find an expression.");
             }
             expression = (Expression) getExpression.invoke(statement);
         } catch (final NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {

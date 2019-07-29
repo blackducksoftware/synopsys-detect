@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.workflow.report;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,11 +35,11 @@ public class DetectConfigurationReporter {
 
     private List<DetectOption> sortOptions(final List<DetectOption> detectOptions) {
         return detectOptions.stream()
-                   .sorted((o1, o2) -> o1.getDetectProperty().getPropertyKey().compareTo(o2.getDetectProperty().getPropertyKey()))
+                   .sorted(Comparator.comparing(o -> o.getDetectProperty().getPropertyKey()))
                    .collect(Collectors.toList());
     }
 
-    public void print(ReportWriter writer, final List<DetectOption> detectOptions) throws IllegalArgumentException, SecurityException {
+    public void print(final ReportWriter writer, final List<DetectOption> detectOptions) throws IllegalArgumentException, SecurityException {
         writer.writeLine("");
         writer.writeLine("Current property values:");
         writer.writeLine("--property = value [notes]");
@@ -50,7 +51,7 @@ public class DetectConfigurationReporter {
             final String key = option.getDetectProperty().getPropertyKey();
             String fieldValue = option.getFinalValue();
             final DetectOption.FinalValueType fieldType = option.getFinalValueType();
-            if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(fieldValue) && "metaClass" != key) {
+            if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(fieldValue) && !"metaClass".equals(key)) {
                 final boolean containsPassword = key.toLowerCase().contains("password") || key.toLowerCase().contains("api.token") || key.toLowerCase().contains("access.token");
                 if (containsPassword) {
                     fieldValue = StringUtils.repeat("*", fieldValue.length());
@@ -92,7 +93,7 @@ public class DetectConfigurationReporter {
 
     }
 
-    public void printWarnings(ReportWriter writer, final List<DetectOption> detectOptions) {
+    public void printWarnings(final ReportWriter writer, final List<DetectOption> detectOptions) {
         final List<DetectOption> sortedOptions = sortOptions(detectOptions);
 
         final List<DetectOption> allWarnings = sortedOptions.stream().filter(it -> it.getWarnings().size() > 0).collect(Collectors.toList());

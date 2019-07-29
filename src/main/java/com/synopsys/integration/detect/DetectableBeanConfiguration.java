@@ -286,7 +286,7 @@ public class DetectableBeanConfiguration {
     }
 
     public DockerInspectorResolver dockerInspectorResolver() {
-        DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver);
+        final DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver);
         return new ArtifactoryDockerInspectorResolver(directoryManager, airGapInspectorPaths, fileFinder, dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
     }
 
@@ -367,7 +367,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public GradleInspectorResolver gradleInspectorResolver() {
-        GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
+        final GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
         return new ArtifactoryGradleInspectorResolver(gradleInspectorInstaller, configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapInspectorPaths, directoryManager);
     }
 
@@ -419,7 +419,7 @@ public class DetectableBeanConfiguration {
         if (nugetAirGapPath.isPresent()) {
             locator = new AirgapNugetInspectorLocator(airGapInspectorPaths);
         } else {
-            NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactResolver);
+            final NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactResolver);
             locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion());
         }
         return new LocatorNugetInspectorResolver(detectExecutableResolver, executableRunner, detectInfo, fileFinder, installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator);

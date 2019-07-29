@@ -22,35 +22,23 @@
  */
 package com.synopsys.integration.detectable.detectables.bitbake.model;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.io.File;
 
-public class BitbakeNode {
-    private final String name;
-    private String version = null;
-    private final Set<String> children = new HashSet<>();
+public class BitbakeResult {
+    private final BitbakeFileType bitbakeFileType;
+    private final File file;
 
-    public BitbakeNode(final String name) {this.name = name;}
-
-    public void addChild(final String child) {
-        this.children.add(child);
+    public BitbakeResult(final BitbakeFileType bitbakeFileType, final File file) {
+        this.bitbakeFileType = bitbakeFileType;
+        this.file = file;
     }
 
-    public void setVersion(final String version) {
-        this.version = version;
+    public BitbakeFileType getBitbakeFileType() {
+        return bitbakeFileType;
     }
 
-    public String getName() {
-        return name;
+    public File getFile() {
+        return file;
     }
-
-    public Optional<String> getVersion() {
-        return Optional.ofNullable(version);
-    }
-
-    public Set<String> getChildren() {
-        return children;
-    }
-
 }
+

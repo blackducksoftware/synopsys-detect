@@ -66,9 +66,9 @@ public class DockerExtractorTest {
         assertTrue(command.get(0).endsWith("/fake/test/java"));
         assertEquals("-jar", command.get(1));
         assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
-        assertEquals("--spring.config.location", command.get(3));
-        assertTrue(command.get(4).endsWith("/application.properties"));
-        assertEquals("--docker.image=ubuntu:latest", command.get(5));
+        assertTrue(command.get(3).startsWith("--spring.config.location="));
+        assertTrue(command.get(3).endsWith("/application.properties"));
+        assertEquals("--docker.image=ubuntu:latest", command.get(4));
     }
 
     @Test
@@ -92,9 +92,9 @@ public class DockerExtractorTest {
         assertTrue(command.get(0).endsWith("/fake/test/java"));
         assertEquals("-jar", command.get(1));
         assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
-        assertEquals("--spring.config.location", command.get(3));
-        assertTrue(command.get(4).endsWith("/application.properties"));
-        assertEquals("--docker.image=ubuntu:latest", command.get(5));
+        assertTrue(command.get(3).startsWith("--spring.config.location="));
+        assertTrue(command.get(3).endsWith("/application.properties"));
+        assertEquals("--docker.image=ubuntu:latest", command.get(4));
     }
 
     @Test
@@ -117,10 +117,10 @@ public class DockerExtractorTest {
         assertTrue(command.get(0).endsWith("/fake/test/java"));
         assertEquals("-jar", command.get(1));
         assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
-        assertEquals("--spring.config.location", command.get(3));
-        assertTrue(command.get(4).endsWith("/application.properties"));
-        assertTrue(command.get(5).startsWith("--docker.tar="));
-        assertTrue(command.get(5).endsWith("testDockerTarfile.tar"));
+        assertTrue(command.get(3).startsWith("--spring.config.location="));
+        assertTrue(command.get(3).endsWith("/application.properties"));
+        assertTrue(command.get(4).startsWith("--docker.tar="));
+        assertTrue(command.get(4).endsWith("testDockerTarfile.tar"));
     }
 
     @Test
@@ -144,10 +144,10 @@ public class DockerExtractorTest {
         assertTrue(command.get(0).endsWith("/fake/test/java"));
         assertEquals("-jar", command.get(1));
         assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
-        assertEquals("--spring.config.location", command.get(3));
-        assertTrue(command.get(4).endsWith("/application.properties"));
-        assertTrue(command.get(5).startsWith("--docker.tar="));
-        assertTrue(command.get(5).endsWith("testDockerTarfile.tar"));
+        assertTrue(command.get(3).startsWith("--spring.config.location="));
+        assertTrue(command.get(3).endsWith("/application.properties"));
+        assertTrue(command.get(4).startsWith("--docker.tar="));
+        assertTrue(command.get(4).endsWith("testDockerTarfile.tar"));
     }
 
 

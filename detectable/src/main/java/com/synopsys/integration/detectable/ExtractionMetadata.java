@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detectable;
 
+import java.util.Objects;
+
 public class ExtractionMetadata<T> {
     final private String key;
     private final Class<T> metadataClass;
@@ -36,8 +38,18 @@ public class ExtractionMetadata<T> {
     }
 
     @Override
+    public boolean equals(final Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        final ExtractionMetadata<?> that = (ExtractionMetadata<?>) o;
+        return key.equals(that.key);
+    }
+
+    @Override
     public int hashCode() {
-        return key.hashCode();
+        return Objects.hash(key);
     }
 
     public Class<T> getMetadataClass() {
