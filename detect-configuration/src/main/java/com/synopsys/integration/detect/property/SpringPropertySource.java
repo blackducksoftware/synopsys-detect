@@ -22,7 +22,9 @@
  */
 package com.synopsys.integration.detect.property;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -36,15 +38,15 @@ public class SpringPropertySource implements PropertySource {
         this.configurableEnvironment = configurableEnvironment;
     }
 
-    public boolean containsProperty(final String key){
+    public boolean containsProperty(final String key) {
         return configurableEnvironment.containsProperty(key);
     }
 
-    public String getProperty(final String key, final String defaultValue){
+    public String getProperty(final String key, final String defaultValue) {
         return configurableEnvironment.getProperty(key, defaultValue);
     }
 
-    public String getProperty(final String key){
+    public String getProperty(final String key) {
         return configurableEnvironment.getProperty(key);
     }
 
@@ -61,5 +63,13 @@ public class SpringPropertySource implements PropertySource {
             }
         }
         return keys;
+    }
+
+    public Map<String, String> getPropertyMap() {
+        Map<String, String> map = new HashMap<>();
+        for (String property : getPropertyKeys()) {
+            map.put(property, getProperty(property));
+        }
+        return map;
     }
 }

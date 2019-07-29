@@ -98,7 +98,6 @@ import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExec
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleLocalExecutableFinder;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
-import com.synopsys.integration.exception.IntegrationException;
 
 import freemarker.template.Configuration;
 
