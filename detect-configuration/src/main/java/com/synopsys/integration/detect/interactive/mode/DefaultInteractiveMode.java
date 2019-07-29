@@ -22,10 +22,10 @@
  */
 package com.synopsys.integration.detect.interactive.mode;
 
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.help.DetectOptionManager;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.ConnectionResult;
+import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.help.DetectOptionManager;
 import com.synopsys.integration.log.SilentIntLogger;
 
 public class DefaultInteractiveMode extends InteractiveMode {
@@ -87,7 +87,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
                     ConnectionResult connectionAttempt = null;
                     try {
                         detectOptionManager.applyInteractiveOptions(getInteractiveOptions());
-                        BlackDuckServerConfig blackDuckServerConfig = detectOptionManager.createBlackDuckServerConfig();
+                        final BlackDuckServerConfig blackDuckServerConfig = detectOptionManager.createBlackDuckServerConfig();
                         connectionAttempt = blackDuckServerConfig.attemptConnection(new SilentIntLogger());
                     } catch (final Exception e) {
                         println("Failed to test connection.");
@@ -100,7 +100,9 @@ public class DefaultInteractiveMode extends InteractiveMode {
                     } else {
                         connected = false;
                         println("Failed to connect.");
-                        println(connectionAttempt.getFailureMessage().orElse("Unknown reason."));
+                        if (connectionAttempt != null) {
+                            println(connectionAttempt.getFailureMessage().orElse("Unknown reason."));
+                        }
                         skipConnectionTest = !askYesOrNo("Would you like to retry entering Black Duck information?");
                     }
                 } else {

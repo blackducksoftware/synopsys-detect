@@ -37,19 +37,19 @@ import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class ExtractionSummaryReporter {
 
-    public void writeSummary(ReportWriter writer, DetectorEvaluationTree rootEvaluation, final Map<CodeLocation, DetectCodeLocation> detectableMap, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+    public void writeSummary(final ReportWriter writer, final DetectorEvaluationTree rootEvaluation, final Map<CodeLocation, DetectCodeLocation> detectableMap, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         ReporterUtils.printHeader(writer, "Extraction results:");
         boolean printedAny = false;
-        for (DetectorEvaluationTree it : rootEvaluation.asFlatList()) {
-            List<DetectorEvaluation> success = DetectorEvaluationUtils.filteredChildren(it, evaluation -> evaluation.wasExtractionSuccessful());
-            List<DetectorEvaluation> exception = DetectorEvaluationUtils.filteredChildren(it, evaluation -> evaluation.wasExtractionException());
-            List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredChildren(it, evaluation -> evaluation.wasExtractionFailure());
+        for (final DetectorEvaluationTree it : rootEvaluation.asFlatList()) {
+            final List<DetectorEvaluation> success = DetectorEvaluationUtils.filteredChildren(it, DetectorEvaluation::wasExtractionSuccessful);
+            final List<DetectorEvaluation> exception = DetectorEvaluationUtils.filteredChildren(it, DetectorEvaluation::wasExtractionException);
+            final List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredChildren(it, DetectorEvaluation::wasExtractionFailure);
 
-            if (success.size() > 0 || exception.size() > 0 || exception.size() > 0) {
+            if (success.size() > 0 || exception.size() > 0) {
                 writer.writeLine(it.getDirectory().toString());
-                List<String> codeLocationNames = findCodeLocationNames(it, detectableMap, codeLocationNameMap);
+                final List<String> codeLocationNames = findCodeLocationNames(it, detectableMap, codeLocationNameMap);
                 writer.writeLine("\tCode locations: " + codeLocationNames.size());
-                codeLocationNames.stream().forEach(name -> writer.writeLine("\t\t" + name));
+                codeLocationNames.forEach(name -> writer.writeLine("\t\t" + name));
                 writeEvaluationsIfNotEmpty(writer, "\tSuccess: ", success);
                 writeEvaluationsIfNotEmpty(writer, "\tFailure: ", failed);
                 writeEvaluationsIfNotEmpty(writer, "\tException: ", exception);
@@ -62,13 +62,13 @@ public class ExtractionSummaryReporter {
         ReporterUtils.printFooter(writer);
     }
 
-    private List<String> findCodeLocationNames(DetectorEvaluationTree detectorEvaluationTree, final Map<CodeLocation, DetectCodeLocation> detectableMap, final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        List<String> codeLocationNames = new ArrayList<>();
+    private List<String> findCodeLocationNames(final DetectorEvaluationTree detectorEvaluationTree, final Map<CodeLocation, DetectCodeLocation> detectableMap, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+        final List<String> codeLocationNames = new ArrayList<>();
         detectorEvaluationTree.getOrderedEvaluations().forEach(evaluation -> {
             if (evaluation.getExtraction() != null) {
-                List<CodeLocation> codeLocations = evaluation.getExtraction().getCodeLocations();
-                List<DetectCodeLocation> detectCodeLocations = codeLocations.stream().map(it -> detectableMap.get(it)).collect(Collectors.toList());
-                codeLocationNames.addAll(detectCodeLocations.stream().map(it -> codeLocationNameMap.get(it)).collect(Collectors.toList()));
+                final List<CodeLocation> codeLocations = evaluation.getExtraction().getCodeLocations();
+                final List<DetectCodeLocation> detectCodeLocations = codeLocations.stream().map(detectableMap::get).collect(Collectors.toList());
+                codeLocationNames.addAll(detectCodeLocations.stream().map(codeLocationNameMap::get).collect(Collectors.toList()));
             }
         });
         return codeLocationNames;

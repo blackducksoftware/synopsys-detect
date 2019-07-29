@@ -85,10 +85,10 @@ public class BitbakeExtractor {
                     throw new IntegrationException(String.format("Failed to find any bitbake results. Looked for: %s", filesSearchedFor));
                 }
 
-                final String targetArchitecture = executeBitbakeForTargetArchitecture(outputDirectory, buildEnvScript, packageName, bash).replace(referenceImplementation, "");
-                if (StringUtils.isBlank(targetArchitecture)) {
-                    throw new IntegrationException("Failed to find a target architecture");
-                }
+                final String targetArchitecture = executeBitbakeForTargetArchitecture(outputDirectory, buildEnvScript, packageName, bash)
+                                                      .map(architecture -> architecture.replace(referenceImplementation, ""))
+                                                      .map(StringUtils::stripToNull)
+                                                      .orElseThrow(() -> new IntegrationException("Failed to find a target architecture"));
 
                 final File fileToParse = bitbakeResult.get().getFile();
                 logger.trace(FileUtils.readFileToString(fileToParse, Charset.defaultCharset()));
@@ -145,7 +145,7 @@ public class BitbakeExtractor {
         return Optional.ofNullable(bitbakeResult);
     }
 
-    private String executeBitbakeForTargetArchitecture(final File outputDirectory, final File buildEnvScript, final String packageName, final File bash) throws ExecutableRunnerException, IOException {
+    private Optional<String> executeBitbakeForTargetArchitecture(final File outputDirectory, final File buildEnvScript, final String packageName, final File bash) throws ExecutableRunnerException, IOException {
         final String bitbakeCommand = "bitbake -c listtasks " + packageName;
         final ExecutableOutput executableOutput = runBitbake(outputDirectory, buildEnvScript, bitbakeCommand, bash);
         final int returnCode = executableOutput.getReturnCode();
@@ -157,7 +157,7 @@ public class BitbakeExtractor {
             logger.error(String.format("Executing command '%s' returned a non-zero exit code %s", bitbakeCommand, returnCode));
         }
 
-        return targetArchitecture;
+        return Optional.ofNullable(targetArchitecture);
     }
 
     private ExecutableOutput runBitbake(final File outputDirectory, final File buildEnvScript, final String bitbakeCommand, final File bash) throws ExecutableRunnerException, IOException {

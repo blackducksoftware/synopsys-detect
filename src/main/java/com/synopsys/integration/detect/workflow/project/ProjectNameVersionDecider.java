@@ -49,7 +49,7 @@ public class ProjectNameVersionDecider {
         this.projectVersionOptions = projectVersionOptions;
     }
 
-    public NameVersion decideProjectNameVersion(String preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
+    public NameVersion decideProjectNameVersion(final String preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
         Optional<String> decidedProjectName = Optional.empty();
         Optional<String> decidedProjectVersion = Optional.empty();
 
@@ -61,16 +61,16 @@ public class ProjectNameVersionDecider {
             decidedProjectVersion = Optional.of(projectVersionOptions.overrideProjectVersionName);
         }
 
-        Optional<DetectToolProjectInfo> chosenTool = decideToolProjectInfo(preferredDetectTools, detectToolProjectInfo);
+        final Optional<DetectToolProjectInfo> chosenTool = decideToolProjectInfo(preferredDetectTools, detectToolProjectInfo);
         if (chosenTool.isPresent()) {
             if (!decidedProjectName.isPresent()) {
-                String suggestedName = chosenTool.get().getSuggestedNameVersion().getName();
+                final String suggestedName = chosenTool.get().getSuggestedNameVersion().getName();
                 if (StringUtils.isNotBlank(suggestedName)) {
                     decidedProjectName = Optional.of(suggestedName);
                 }
             }
             if (!decidedProjectVersion.isPresent()) {
-                String suggestedVersion = chosenTool.get().getSuggestedNameVersion().getVersion();
+                final String suggestedVersion = chosenTool.get().getSuggestedNameVersion().getVersion();
                 if (StringUtils.isNotBlank(suggestedVersion)) {
                     decidedProjectVersion = Optional.of(suggestedVersion);
                 }
@@ -97,29 +97,25 @@ public class ProjectNameVersionDecider {
         return new NameVersion(decidedProjectName.get(), decidedProjectVersion.get());
     }
 
-    private Optional<DetectToolProjectInfo> findProjectInfoForTool(DetectTool tool, List<DetectToolProjectInfo> detectToolProjectInfo) {
+    private Optional<DetectToolProjectInfo> findProjectInfoForTool(final DetectTool tool, final List<DetectToolProjectInfo> detectToolProjectInfo) {
         return detectToolProjectInfo.stream()
                    .filter(it -> it.getDetectTool().equals(tool))
                    .findFirst();
     }
 
-    private Optional<DetectToolProjectInfo> decideToolProjectInfo(String preferredDetectTools, List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
+    private Optional<DetectToolProjectInfo> decideToolProjectInfo(final String preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
         Optional<DetectToolProjectInfo> chosenTool = Optional.empty();
 
         List<DetectTool> toolOrder = null;
         if (StringUtils.isNotBlank(preferredDetectTools)) {
-            String[] tools = preferredDetectTools.split(",");
-            toolOrder = Arrays.asList(tools).stream().map(it -> DetectTool.valueOf(it)).collect(Collectors.toList());
+            final String[] tools = preferredDetectTools.split(",");
+            toolOrder = Arrays.stream(tools).map(DetectTool::valueOf).collect(Collectors.toList());
         }
         if (toolOrder == null) {
             throw new DetectUserFriendlyException("Could not determine project tool order. Please specify a tool order using " + DetectProperty.DETECT_PROJECT_TOOL.getPropertyName(), ExitCodeType.FAILURE_CONFIGURATION);
         }
 
-        if (toolOrder == null) {
-            throw new DetectUserFriendlyException("Could not determine project tool order. Please specify a tool order using " + DetectProperty.DETECT_PROJECT_TOOL.getPropertyName(), ExitCodeType.FAILURE_CONFIGURATION);
-        }
-
-        for (DetectTool tool : toolOrder) {
+        for (final DetectTool tool : toolOrder) {
             chosenTool = findProjectInfoForTool(tool, detectToolProjectInfo);
 
             if (chosenTool.isPresent()) {

@@ -136,7 +136,7 @@ public class RunManager {
         final UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, runResult, runOptions, detectToolFilter);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
-            AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName(), universalToolsResult);
+            final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName(), universalToolsResult);
             runBlackDuckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
                 universalToolsResult.getNameVersion(), aggregateOptions);
         } else {
@@ -149,7 +149,7 @@ public class RunManager {
         return runResult;
     }
 
-    private AggregateOptions determineAggregationStrategy(String aggregateName, UniversalToolsResult universalToolsResult) {
+    private AggregateOptions determineAggregationStrategy(final String aggregateName, final UniversalToolsResult universalToolsResult) {
         if (StringUtils.isNotBlank(aggregateName)) {
             if (universalToolsResult.anyFailed()) {
                 return AggregateOptions.aggregateButSkipEmpty(aggregateName);
@@ -260,7 +260,7 @@ public class RunManager {
     private void runBlackDuckProduct(final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager,
         final EventSystem eventSystem,
         final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions,
-        final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion, AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException {
+        final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion, final AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         logger.info("Black Duck tools will run.");
 
@@ -348,12 +348,15 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (null != blackDuckServicesFactory) {
             logger.info("Will perform Black Duck post actions.");
-            BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
-            BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory, eventSystem);
+            final BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
+            final BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory, eventSystem);
             blackDuckPostActions.perform(blackDuckPostOptions, codeLocationWaitData, projectVersionWrapper, detectConfigurationFactory.getTimeoutInSeconds());
 
-            if (bdioResult.getUploadTargets().size() > 0 || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
-                final Optional<String> componentsLink = projectVersionWrapper.getProjectVersionView().getFirstLink(ProjectVersionView.COMPONENTS_LINK);
+            if ((bdioResult.getUploadTargets().size() > 0 || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
+                final Optional<String> componentsLink = Optional.ofNullable(projectVersionWrapper)
+                                                            .map(ProjectVersionWrapper::getProjectVersionView)
+                                                            .flatMap(projectVersionView -> projectVersionView.getFirstLink(ProjectVersionView.COMPONENTS_LINK));
+
                 if (componentsLink.isPresent()) {
                     final DetectResult detectResult = new BlackDuckBomDetectResult(componentsLink.get());
                     eventSystem.publishEvent(Event.ResultProduced, detectResult);
