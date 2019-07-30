@@ -84,15 +84,16 @@ public class DetectProjectService {
         setApplicationId(projectVersionWrapper.getProjectView(), detectProjectServiceOptions.getApplicationId());
         CustomFieldDocument customFieldDocument = detectProjectServiceOptions.getCustomFields();
         if (customFieldDocument != null && (customFieldDocument.getProject().size() > 0 || customFieldDocument.getVersion().size() > 0)) {
-            logger.info(String.format("Updating %s custom fields on the project: %s", customFieldDocument.getProject().size(), customFieldDocument.getProject().stream()
-                                                                                                                                   .map(CustomFieldElement::getLabel)
-                                                                                                                                   .collect(Collectors.joining())));
-
-            logger.info(String.format("Updating %s custom fields on the project version: %s", customFieldDocument.getVersion().size(), customFieldDocument.getVersion().stream()
-                                                                                                                                           .map(CustomFieldElement::getLabel)
-                                                                                                                                           .collect(Collectors.joining())));
+            logger.info("Will update the following custom fields and values.");
+            for (CustomFieldElement element : customFieldDocument.getProject()) {
+                logger.info(String.format("Project field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
+            }
+            for (CustomFieldElement element : customFieldDocument.getVersion()) {
+                logger.info(String.format("Version field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
+            }
 
             detectCustomFieldService.updateCustomFields(projectVersionWrapper, customFieldDocument, blackDuckServicesFactory.createBlackDuckService());
+            logger.info("Successfully updated custom fields.");
         } else {
             logger.info("No custom fields to set.");
         }

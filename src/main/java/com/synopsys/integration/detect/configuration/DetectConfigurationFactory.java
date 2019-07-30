@@ -45,6 +45,7 @@ import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.CustomFieldDocument;
+import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
@@ -160,15 +161,8 @@ public class DetectConfigurationFactory {
         final String parentProjectVersion = detectConfiguration.getProperty(DetectProperty.DETECT_PARENT_PROJECT_VERSION_NAME, PropertyAuthority.None);
         final Boolean cloneLatestProjectVersion = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLONE_PROJECT_VERSION_LATEST, PropertyAuthority.None);
 
-        CustomFieldDocument customFieldDocument;
-        try {
-            ConfigurationPropertySource source = new MapConfigurationPropertySource(detectConfiguration.getCurrentUnderlyingProperties());
-            Binder objectBinder = new Binder(source);
-            BindResult<CustomFieldDocument> fieldDocumentBinding = objectBinder.bind("detect.custom.fields", CustomFieldDocument.class);
-            customFieldDocument = fieldDocumentBinding.orElse(new CustomFieldDocument());
-        } catch (Exception e) {
-            throw new DetectUserFriendlyException("Unable to parse custom fields.", e, ExitCodeType.FAILURE_CONFIGURATION);
-        }
+        DetectCustomFieldParser parser = new DetectCustomFieldParser();
+        CustomFieldDocument customFieldDocument = parser.parseCustomFieldDocument(detectConfiguration.getCurrentUnderlyingProperties());
 
         return new DetectProjectServiceOptions(projectVersionPhase, projectVersionDistribution, projectTier, projectDescription, projectVersionNotes, cloneCategories, projectLevelAdjustments, forceProjectVersionUpdate, cloneVersionName,
             projectVersionNickname, applicationId, tags, groups, parentProjectName, parentProjectVersion, cloneLatestProjectVersion, customFieldDocument);

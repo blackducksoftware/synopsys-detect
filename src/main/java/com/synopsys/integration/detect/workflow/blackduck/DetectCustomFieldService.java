@@ -98,6 +98,5 @@ public class DetectCustomFieldService {
     public void updateCustomFields(ProjectVersionWrapper projectVersionWrapper, CustomFieldDocument customFieldDocument, BlackDuckService blackDuckService) throws DetectUserFriendlyException {
         List<CustomFieldOperation> customFieldOperations = determineOperations(customFieldDocument, projectVersionWrapper, blackDuckService);
         executeCustomFieldOperations(customFieldOperations, blackDuckService);
-        logger.info("Updated the following custom fields: " + customFieldOperations.stream().map(customFieldOperation -> customFieldOperation.customFieldElement.getLabel()).collect(Collectors.joining()));
     }
 }
