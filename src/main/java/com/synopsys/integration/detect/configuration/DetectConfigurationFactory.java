@@ -27,8 +27,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.boot.context.properties.bind.BindResult;
+import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.context.properties.source.ConfigurationPropertySource;
+import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
+
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFileFilter;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFilter;
@@ -37,6 +44,8 @@ import com.synopsys.integration.detect.util.DetectEnumUtil;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
+import com.synopsys.integration.detect.workflow.blackduck.CustomFieldDocument;
+import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
@@ -134,7 +143,7 @@ public class DetectConfigurationFactory {
         return new ProjectNameVersionOptions(sourceDirectoryName, overrideProjectName, overrideProjectVersionName, defaultProjectVersionText, defaultProjectVersionScheme, defaultProjectVersionFormat);
     }
 
-    public DetectProjectServiceOptions createDetectProjectServiceOptions() {
+    public DetectProjectServiceOptions createDetectProjectServiceOptions() throws DetectUserFriendlyException {
         final String projectVersionPhase = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_PHASE, PropertyAuthority.None);
         final String projectVersionDistribution = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_VERSION_DISTRIBUTION, PropertyAuthority.None);
         final Integer projectTier = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_PROJECT_TIER, PropertyAuthority.None);
@@ -151,8 +160,12 @@ public class DetectConfigurationFactory {
         final String parentProjectName = detectConfiguration.getProperty(DetectProperty.DETECT_PARENT_PROJECT_NAME, PropertyAuthority.None);
         final String parentProjectVersion = detectConfiguration.getProperty(DetectProperty.DETECT_PARENT_PROJECT_VERSION_NAME, PropertyAuthority.None);
         final Boolean cloneLatestProjectVersion = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLONE_PROJECT_VERSION_LATEST, PropertyAuthority.None);
+
+        DetectCustomFieldParser parser = new DetectCustomFieldParser();
+        CustomFieldDocument customFieldDocument = parser.parseCustomFieldDocument(detectConfiguration.getCurrentUnderlyingProperties());
+
         return new DetectProjectServiceOptions(projectVersionPhase, projectVersionDistribution, projectTier, projectDescription, projectVersionNotes, cloneCategories, projectLevelAdjustments, forceProjectVersionUpdate, cloneVersionName,
-            projectVersionNickname, applicationId, tags, groups, parentProjectName, parentProjectVersion, cloneLatestProjectVersion);
+            projectVersionNickname, applicationId, tags, groups, parentProjectName, parentProjectVersion, cloneLatestProjectVersion, customFieldDocument);
     }
 
     public BlackDuckSignatureScannerOptions createBlackDuckSignatureScannerOptions() {

@@ -54,17 +54,22 @@ import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
+import freemarker.template.utility.StringUtil;
+
 public class DetectProjectService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final DetectProjectServiceOptions detectProjectServiceOptions;
     private final ProjectMappingService projectMappingService;
+    private final DetectCustomFieldService detectCustomFieldService;
 
-    public DetectProjectService(final BlackDuckServicesFactory blackDuckServicesFactory, final DetectProjectServiceOptions detectProjectServiceOptions, final ProjectMappingService projectMappingService) {
+    public DetectProjectService(final BlackDuckServicesFactory blackDuckServicesFactory, final DetectProjectServiceOptions detectProjectServiceOptions, final ProjectMappingService projectMappingService,
+        final DetectCustomFieldService detectCustomFieldService) {
         this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.detectProjectServiceOptions = detectProjectServiceOptions;
         this.projectMappingService = projectMappingService;
+        this.detectCustomFieldService = detectCustomFieldService;
     }
 
     public ProjectVersionWrapper createOrUpdateBlackDuckProject(final NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException {
@@ -77,6 +82,22 @@ public class DetectProjectService {
         mapToParentProjectVersion(projectService, projectBomService, detectProjectServiceOptions.getParentProjectName(), detectProjectServiceOptions.getParentProjectVersion(), projectVersionWrapper);
 
         setApplicationId(projectVersionWrapper.getProjectView(), detectProjectServiceOptions.getApplicationId());
+        CustomFieldDocument customFieldDocument = detectProjectServiceOptions.getCustomFields();
+        if (customFieldDocument != null && (customFieldDocument.getProject().size() > 0 || customFieldDocument.getVersion().size() > 0)) {
+            logger.info("Will update the following custom fields and values.");
+            for (CustomFieldElement element : customFieldDocument.getProject()) {
+                logger.info(String.format("Project field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
+            }
+            for (CustomFieldElement element : customFieldDocument.getVersion()) {
+                logger.info(String.format("Version field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
+            }
+
+            detectCustomFieldService.updateCustomFields(projectVersionWrapper, customFieldDocument, blackDuckServicesFactory.createBlackDuckService());
+            logger.info("Successfully updated custom fields.");
+        } else {
+            logger.info("No custom fields to set.");
+        }
+
         final ProjectUsersService projectUsersService = blackDuckServicesFactory.createProjectUsersService();
         final TagService tagService = blackDuckServicesFactory.createTagService();
         addUserGroupsToProject(projectUsersService, projectVersionWrapper, detectProjectServiceOptions.getGroups());
@@ -267,3 +288,5 @@ public class DetectProjectService {
         }
     }
 }
+
+

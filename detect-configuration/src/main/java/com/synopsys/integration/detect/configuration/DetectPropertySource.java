@@ -23,7 +23,9 @@
 package com.synopsys.integration.detect.configuration;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -78,5 +80,9 @@ public class DetectPropertySource {
 
     public Set<String> getPhoneHomePropertyKeys() {
         return phoneHomePropertyKeys;
+    }
+
+    public Map<String, String> getCurrentProperties() {
+        return propertySource.getPropertyKeys().stream().collect(Collectors.toMap(it -> it, it -> propertySource.getProperty(it)));
     }
 }
