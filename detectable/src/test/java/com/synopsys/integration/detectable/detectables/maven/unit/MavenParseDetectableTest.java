@@ -11,6 +11,7 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
+import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
 
 public class MavenParseDetectableTest {
     private static final String POM_XML_FILENAME = "pom.xml";

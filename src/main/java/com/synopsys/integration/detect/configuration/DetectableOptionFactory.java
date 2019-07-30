@@ -41,6 +41,7 @@ import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectab
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
+import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectableOptions;
@@ -87,6 +88,11 @@ public class DetectableOptionFactory {
     public CondaCliDetectableOptions createCondaOptions() {
         final String environmentName = detectConfiguration.getProperty(DetectProperty.DETECT_CONDA_ENVIRONMENT_NAME, PropertyAuthority.None);
         return new CondaCliDetectableOptions(environmentName);
+    }
+
+    public MavenParseOptions createMavenParseOptions() {
+        final Boolean includePlugins = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_MAVEN_INCLUDE_PLUGINS, PropertyAuthority.None);
+        return new MavenParseOptions(includePlugins);
     }
 
     public DockerDetectableOptions createDockerDetectableOptions() {
