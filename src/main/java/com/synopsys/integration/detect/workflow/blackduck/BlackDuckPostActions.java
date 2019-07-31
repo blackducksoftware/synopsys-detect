@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.io.File;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,6 +93,10 @@ public class BlackDuckPostActions {
                 if (blackDuckPostOptions.shouldGenerateNoticesReport()) {
                     logger.info("Creating notices report");
                     final File noticesDirectory = new File(blackDuckPostOptions.getNoticesReportPath());
+                    if (!noticesDirectory.exists()) {
+                        final boolean success = noticesDirectory.mkdirs();
+                        logger.info(String.format("%s notices directory at %s", BooleanUtils.toString(success, "Successfully created", "Failed to create"), noticesDirectory.getAbsolutePath()));
+                    }
                     final File noticesFile = reportService.createNoticesReportFile(noticesDirectory, projectView, projectVersionView);
                     logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
                 }
