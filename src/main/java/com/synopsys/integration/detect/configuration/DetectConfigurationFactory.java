@@ -92,8 +92,9 @@ public class DetectConfigurationFactory {
         final String outputPath = detectConfiguration.getProperty(DetectProperty.DETECT_OUTPUT_PATH, PropertyAuthority.DirectoryManager);
         final String bdioPath = detectConfiguration.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH, PropertyAuthority.DirectoryManager);
         final String scanPath = detectConfiguration.getProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH, PropertyAuthority.DirectoryManager);
+        final String toolsOutputPath = detectConfiguration.getProperty(DetectProperty.DETECT_TOOLS_OUTPUT_PATH, PropertyAuthority.DirectoryManager);
 
-        return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath);
+        return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath);
     }
 
     public AirGapOptions createAirGapOptions() {

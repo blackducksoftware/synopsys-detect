@@ -27,12 +27,14 @@ public class DirectoryOptions {
     private String outputPath;
     private String bdioOutputPath;
     private String scanOutputPath;
+    private String toolsOutputPath;
 
-    public DirectoryOptions(final String sourcePath, final String outputPath, final String bdioOutputPath, final String scanOutputPath) {
+    public DirectoryOptions(final String sourcePath, final String outputPath, final String bdioOutputPath, final String scanOutputPath, final String toolsOutputPath) {
         this.sourcePath = sourcePath;
         this.outputPath = outputPath;
         this.bdioOutputPath = bdioOutputPath;
         this.scanOutputPath = scanOutputPath;
+        this.toolsOutputPath = toolsOutputPath;
     }
 
     public String getSourcePathOverride() {
@@ -49,5 +51,9 @@ public class DirectoryOptions {
 
     public String getScanOutputPathOverride() {
         return scanOutputPath;
+    }
+
+    public String getToolsOutputPath() {
+        return toolsOutputPath;
     }
 }

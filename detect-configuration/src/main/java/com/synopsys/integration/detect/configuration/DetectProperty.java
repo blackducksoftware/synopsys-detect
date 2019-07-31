@@ -516,6 +516,11 @@ public enum DetectProperty {
     @HelpDetailed("If set, Detect will use the given directory to store files that it downloads and creates, instead of using the default location (~/blackduck).")
     DETECT_OUTPUT_PATH("detect.output.path", "Detect Output Path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
+    @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
+    @HelpDescription("The path to the tools directory where detect should download and/or access things like the Signature Scanner that it shares over multiple runs.")
+    @HelpDetailed("If set, Detect will use the given directory instead of using the default location of output path plus tools.")
+    DETECT_TOOLS_OUTPUT_PATH("detect.tools.output.path", "Detect Tools Output Path", "5.6.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
+
     @HelpGroup(primary = GROUP_PACKAGIST, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("Set this value to false if you would like to exclude your dev requires dependencies when ran.")
     DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES("detect.packagist.include.dev.dependencies", "Include Packagist Development Dependencies", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
