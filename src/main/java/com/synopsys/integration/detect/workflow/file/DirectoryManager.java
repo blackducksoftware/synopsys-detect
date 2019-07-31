@@ -112,11 +112,18 @@ public class DirectoryManager {
         }
         logger.info("Output directory: " + outputDirectory.getAbsolutePath());
 
+        if (StringUtils.isNotBlank(directoryOptions.getToolsOutputPath())) {
+            File toolPath = new File(directoryOptions.getToolsOutputPath());
+            outputDirectories.put(OutputDirectory.Tools, toolPath);
+            logger.info("Tool directory: " + toolPath.getAbsolutePath());
+        }
+
         EnumSet.allOf(OutputDirectory.class).stream()
+            .filter(it -> !outputDirectories.containsKey(it))
             .forEach(it -> outputDirectories.put(it, new File(outputDirectory, it.getDirectoryName())));
 
         File possibleRunDirectory = new File(getOutputDirectory(OutputDirectory.Runs), detectRun.getRunId());
-        if (possibleRunDirectory.exists()){
+        if (possibleRunDirectory.exists()) {
             logger.warn("A run directory already exists with this detect run id. Will attempt to use a UUID for the run folder in addition.");
             possibleRunDirectory = new File(getOutputDirectory(OutputDirectory.Runs), detectRun.getRunId() + "-" + java.util.UUID.randomUUID());
         }

@@ -22,20 +22,6 @@
  */
 package com.synopsys.integration.detect;
 
-import java.io.File;
-import java.util.Optional;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
-import org.xml.sax.SAXException;
-
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -43,17 +29,8 @@ import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.LocalPipInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.AirgapNugetInspectorLocator;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.LocatorNugetInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorLocator;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.OnlineNugetInspectorLocator;
+import com.synopsys.integration.detect.tool.detector.inspectors.*;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.*;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -178,8 +155,19 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLineLevelP
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
-
 import freemarker.template.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.File;
+import java.util.Optional;
 
 //@Configuration is used here to allow 'EnableAspectJAutoProxy' because it could not be enabled it otherwise.
 //This configuration is NOT loaded when the application starts, but only manually when a DetectRun is needed.
@@ -620,7 +608,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public MavenParseExtractor mavenParseExtractor() throws ParserConfigurationException, SAXException {
-        return new MavenParseExtractor(externalIdFactory, saxParser());
+        return new MavenParseExtractor(externalIdFactory, saxParser(), detectableOptionFactory.createMavenParseOptions());
     }
 
     @Bean

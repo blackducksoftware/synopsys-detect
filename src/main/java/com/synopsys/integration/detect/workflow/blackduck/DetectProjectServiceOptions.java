@@ -39,10 +39,11 @@ public class DetectProjectServiceOptions {
     private final String parentProjectName;
     private final String parentProjectVersion;
     private final Boolean cloneLatestProjectVersion;
+    private final CustomFieldDocument customFields;
 
     public DetectProjectServiceOptions(final String projectVersionPhase, final String projectVersionDistribution, final Integer projectTier, final String projectDescription, final String projectVersionNotes,
         final String[] cloneCategories, final Boolean projectLevelAdjustments, final Boolean forceProjectVersionUpdate, final String cloneVersionName, final String projectVersionNickname, final String applicationId,
-        final String[] tags, final String[] groups, final String parentProjectName, final String parentProjectVersion, final Boolean cloneLatestProjectVersion) {
+        final String[] tags, final String[] groups, final String parentProjectName, final String parentProjectVersion, final Boolean cloneLatestProjectVersion, final CustomFieldDocument customFields) {
         this.projectVersionPhase = projectVersionPhase;
         this.projectVersionDistribution = projectVersionDistribution;
         this.projectTier = projectTier;
@@ -59,6 +60,7 @@ public class DetectProjectServiceOptions {
         this.parentProjectName = parentProjectName;
         this.parentProjectVersion = parentProjectVersion;
         this.cloneLatestProjectVersion = cloneLatestProjectVersion;
+        this.customFields = customFields;
     }
 
     public String getProjectVersionPhase() {
@@ -123,5 +125,9 @@ public class DetectProjectServiceOptions {
 
     public Boolean getCloneLatestProjectVersion() {
         return cloneLatestProjectVersion;
+    }
+
+    public CustomFieldDocument getCustomFields() {
+        return customFields;
     }
 }

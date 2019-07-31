@@ -49,7 +49,6 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
     @Override
     public File locateDotnetInspector() throws DetectableException {
         try {
-            logger.info("Will attempt to resolve the dotnet inspector version.");
             File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
             return nugetInspectorInstaller.installDotNet(nugetDirectory, Optional.of(overrideVersion));
         } catch (Exception e) {
@@ -61,7 +60,6 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
     public File locateExeInspector() throws DetectableException {
         try {
             File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
-            logger.info("Will attempt to resolve the classic inspector version.");
             return nugetInspectorInstaller.installExeInspector(nugetDirectory, Optional.of(overrideVersion));
         } catch (Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);

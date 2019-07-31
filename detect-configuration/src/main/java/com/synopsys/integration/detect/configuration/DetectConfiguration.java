@@ -55,6 +55,10 @@ public class DetectConfiguration {
         return actuallySetValues.contains(property);
     }
 
+    public Map<String, String> getCurrentUnderlyingProperties() {
+        return detectPropertySource.getCurrentProperties();
+    }
+
     // TODO: Remove override code in version 6.
     private void init() {
         Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
