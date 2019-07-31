@@ -210,7 +210,7 @@ task publishAirGapZip() {
         def airGapZipName = createAirGapArtifactName()
         def airGapZipLocation = createAirGapArtifactLocation()
         exec {
-            commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${project.ext.artifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
+            commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
         }
     }
 }
