@@ -62,6 +62,10 @@ public class DetectOverrideableFilter implements DetectFilter {
 
         return true;
     }
+    
+    public Set<String> getIncludedSet() {
+        return includedSet;
+    }
 
     private Set<String> createSetFromString(final String s) {
         final Set<String> set = new HashSet<>();

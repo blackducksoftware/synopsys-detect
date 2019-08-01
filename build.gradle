@@ -219,7 +219,7 @@ task publishAirGapZipWithoutDocker() {
     dependsOn createAirGapZipWithoutDocker
 
     doLast {
-        def airGapZipName = "${project.name}-${version}-air-gap-no-docker.zip"
+        def airGapZipName = "${project.name}-${version}-air-gap-gradle-nuget.zip"
         def airGapZipLocation = "${buildDir}/libs/${airGapZipName}"
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
