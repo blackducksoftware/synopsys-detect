@@ -43,15 +43,6 @@ def createArtifactName() {
     return "${buildDir}/libs/${project.name}-${version}.jar"
 }
 
-def createAirGapArtifactName() {
-    return "${project.name}-${version}-air-gap.zip"
-}
-
-def createAirGapArtifactLocation() {
-    return "${buildDir}/libs/${createAirGapArtifactName()}"
-}
-
-
 allprojects {
     apply plugin: 'org.jetbrains.kotlin.jvm'
     apply plugin: 'io.spring.dependency-management'
@@ -207,8 +198,29 @@ task publishAirGapZip() {
     dependsOn createAirGapZip
 
     doLast {
-        def airGapZipName = createAirGapArtifactName()
-        def airGapZipLocation = createAirGapArtifactLocation()
+        def airGapZipName = "${project.name}-${version}-air-gap.zip"
+        def airGapZipLocation = "${buildDir}/libs/${airGapZipName}"
+        exec {
+            commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
+        }
+    }
+}
+
+task createAirGapZipWithoutDocker(type: JavaExec) {
+    dependsOn build
+
+    classpath = files(createArtifactName())
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'com.synopsys.integration.detect.Application'
+    args = ['--detect.gradle.path=gradlew', '-z', 'GRADLE,NUGET']
+}
+
+task publishAirGapZipWithoutDocker() {
+    dependsOn createAirGapZipWithoutDocker
+
+    doLast {
+        def airGapZipName = "${project.name}-${version}-air-gap-no-docker.zip"
+        def airGapZipLocation = "${buildDir}/libs/${airGapZipName}"
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
         }
