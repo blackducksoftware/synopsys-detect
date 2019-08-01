@@ -84,7 +84,6 @@ public class PolarisTool {
             logger.info("Found polaris cli: " + polarisCliPath.get());
             List<String> arguments = new ArrayList<>();
             arguments.add("analyze");
-            arguments.add("-w");
 
             String additionalArgs = detectConfiguration.getProperty(DetectProperty.POLARIS_ARGUMENTS, PropertyAuthority.None);
             if (StringUtils.isNotBlank(additionalArgs)) {
