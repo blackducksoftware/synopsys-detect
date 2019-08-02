@@ -48,6 +48,16 @@ public class DockerInspectorInstaller {
         logger.info("Determining the location of the Docker inspector.");
         final Optional<String> location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.DOCKER_INSPECTOR_REPO, ArtifactoryConstants.DOCKER_INSPECTOR_PROPERTY, dockerVersion.orElse(""),
             ArtifactoryConstants.DOCKER_INSPECTOR_VERSION_OVERRIDE);
+        return download(location, dockerDirectory);
+    }
+
+    public File installAirGap(File dockerDirectory) throws IntegrationException, IOException, DetectUserFriendlyException {
+        logger.info("Determining the location of the Docker inspector.");
+        final Optional<String> location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.DOCKER_INSPECTOR_REPO, ArtifactoryConstants.DOCKER_INSPECTOR_AIR_GAP_PROPERTY, "", "");
+        return download(location, dockerDirectory);
+    }
+
+    private File download(Optional<String> location, File dockerDirectory) throws IntegrationException, IOException, DetectUserFriendlyException {
         if (location.isPresent()) {
             logger.info("Finding or downloading the docker inspector.");
             logger.debug(String.format("Downloading docker inspector from '%s' to '%s'.", location.get(), dockerDirectory.getAbsolutePath()));
@@ -58,4 +68,5 @@ public class DockerInspectorInstaller {
             throw new DetectableException("Unable to find Docker version from artifactory.");
         }
     }
+
 }

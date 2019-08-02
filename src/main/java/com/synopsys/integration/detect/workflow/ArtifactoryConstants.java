@@ -23,7 +23,7 @@
 package com.synopsys.integration.detect.workflow;
 
 public class ArtifactoryConstants {
-    public static String ARTIFACTORY_URL = "https://repo.blackducksoftware.com/artifactory/";
+    public static String ARTIFACTORY_URL = "https://sig-repo.synopsys.com/";
     public static String VERSION_PLACEHOLDER = "<VERSION>";
 
     public static String GRADLE_INSPECTOR_REPO = "bds-integrations-release/com/blackducksoftware/integration/integration-gradle-inspector";
@@ -40,6 +40,7 @@ public class ArtifactoryConstants {
 
     public static String DOCKER_INSPECTOR_REPO = "bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector";
     public static String DOCKER_INSPECTOR_PROPERTY = "DOCKER_INSPECTOR_LATEST_8";
+    public static String DOCKER_INSPECTOR_AIR_GAP_PROPERTY = "DOCKER_INSPECTOR_AIR_GAP_LATEST_8";
     public static String DOCKER_INSPECTOR_VERSION_OVERRIDE = "/" + ArtifactoryConstants.VERSION_PLACEHOLDER + "/blackduck-docker-inspector-" + ArtifactoryConstants.VERSION_PLACEHOLDER + ".jar";
 
 }
