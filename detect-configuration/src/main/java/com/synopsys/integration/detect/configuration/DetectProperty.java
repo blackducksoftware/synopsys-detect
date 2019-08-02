@@ -456,7 +456,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Whether or not detect will include the plugins section when parsing a pom.xml.")
-    DETECT_MAVEN_INCLUDE_PLUGINS("detect.maven.include.plugins", "Maven Executable", "5.6.0", PropertyType.BOOLEAN, PropertyAuthority.None),
+    DETECT_MAVEN_INCLUDE_PLUGINS("detect.maven.include.plugins", "Maven Include Plugins", "5.6.0", PropertyType.BOOLEAN, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_REPORT, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("When set to true, a Black Duck notices report in text form will be created in your source directory.")
