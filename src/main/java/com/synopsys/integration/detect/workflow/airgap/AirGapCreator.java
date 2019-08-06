@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeroturnaround.zip.ZipUtil;
@@ -50,6 +51,8 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.exception.IntegrationException;
 
+import freemarker.template.utility.StringUtil;
+
 public class AirGapCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -69,7 +72,7 @@ public class AirGapCreator {
         this.dockerAirGapCreator = dockerAirGapCreator;
     }
 
-    public void createAirGapZip(DetectFilter inspectorFilter) throws DetectUserFriendlyException {
+    public void createAirGapZip(DetectFilter inspectorFilter, String airGapSuffix) throws DetectUserFriendlyException {
         try {
             logger.info("");
             logger.info(ReportConstants.RUN_SEPARATOR);
@@ -91,7 +94,11 @@ public class AirGapCreator {
             logger.info("Creating zip at location: " + base);
 
             String basename = FilenameUtils.removeExtension(detectJar.getName());
-            File target = new File(base, basename + "-air-gap.zip");
+            String airGapName = basename + "-air-gap";
+            if (StringUtils.isNotBlank(airGapSuffix)) {
+                airGapName = airGapName + "-" + airGapSuffix.toLowerCase();
+            }
+            File target = new File(base, airGapName + ".zip");
             File installFolder = new File(base, basename);
 
             logger.info("Will build the zip in the following folder: " + installFolder.getCanonicalPath());

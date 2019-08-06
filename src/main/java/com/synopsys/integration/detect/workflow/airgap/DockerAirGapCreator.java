@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zeroturnaround.zip.ZipUtil;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
@@ -45,7 +46,9 @@ public class DockerAirGapCreator {
 
     public void installDockerDependencies(File dockerFolder) throws DetectUserFriendlyException {
         try {
-            dockerInspectorInstaller.installJar(dockerFolder, Optional.empty());
+            File dockerZip = dockerInspectorInstaller.installAirGap(dockerFolder);
+            ZipUtil.unpack(dockerZip, dockerFolder);
+            dockerZip.delete();
         } catch (IntegrationException | IOException e) {
             throw new DetectUserFriendlyException("An error occurred installing docker inspector.", e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }

@@ -22,8 +22,10 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -182,8 +184,9 @@ public class DetectBoot {
 
         if (detectArgumentState.isGenerateAirGapZip()) {
             DetectOverrideableFilter inspectorFilter = new DetectOverrideableFilter("", detectArgumentState.getParsedValue());
+            String airGapSuffix = String.join("-", inspectorFilter.getIncludedSet().stream().sorted().collect(Collectors.toList()));
             try {
-                createAirGapZip(inspectorFilter, detectConfiguration, gson, eventSystem, configuration);
+                createAirGapZip(inspectorFilter, detectConfiguration, gson, eventSystem, configuration, airGapSuffix);
             } catch (DetectUserFriendlyException e) {
                 return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.of(directoryManager), diagnosticSystem);
             }
@@ -309,7 +312,7 @@ public class DetectBoot {
         }
     }
 
-    private void createAirGapZip(DetectFilter inspectorFilter, DetectConfiguration detectConfiguration, Gson gson, EventSystem eventSystem, Configuration configuration) throws DetectUserFriendlyException {
+    private void createAirGapZip(DetectFilter inspectorFilter, DetectConfiguration detectConfiguration, Gson gson, EventSystem eventSystem, Configuration configuration, String airGapSuffix) throws DetectUserFriendlyException {
         ConnectionManager connectionManager = new ConnectionManager(detectConfiguration);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionManager, gson);
 
@@ -328,6 +331,6 @@ public class DetectBoot {
         DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
 
         AirGapCreator airGapCreator = new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
-        airGapCreator.createAirGapZip(inspectorFilter);
+        airGapCreator.createAirGapZip(inspectorFilter, airGapSuffix);
     }
 }
