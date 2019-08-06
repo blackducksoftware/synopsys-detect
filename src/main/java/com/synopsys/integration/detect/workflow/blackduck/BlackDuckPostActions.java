@@ -24,8 +24,6 @@ package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.io.File;
 
-import org.apache.commons.lang3.BooleanUtils;
-import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +34,7 @@ import com.synopsys.integration.blackduck.codelocation.CodeLocationWaitResult;
 import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ReportService;
+import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
@@ -65,7 +64,8 @@ public class BlackDuckPostActions {
                     //TODO fix this when NotificationTaskRange doesn't include task start time
                     //ekerwin - The start time of the task is the earliest time a code location was created.
                     // In order to wait the full timeout, we have to not use that start time and instead use now().
-                    NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitData.getNotificationRange().getStartDate(), codeLocationWaitData.getNotificationRange().getEndDate());
+                    final NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitData.getNotificationRange().getStartDate(),
+                        codeLocationWaitData.getNotificationRange().getEndDate());
                     final CodeLocationWaitResult result = codeLocationCreationService
                                                               .waitForCodeLocations(notificationTaskRange, codeLocationWaitData.getCodeLocationNames(), codeLocationWaitData.getExpectedNotificationCount(),
                                                                   timeoutInSeconds);
@@ -98,10 +98,11 @@ public class BlackDuckPostActions {
                 if (blackDuckPostOptions.shouldGenerateNoticesReport()) {
                     logger.info("Creating notices report");
                     final File noticesDirectory = new File(blackDuckPostOptions.getNoticesReportPath());
-                    if (!noticesDirectory.exists()) {
-                        final boolean success = noticesDirectory.mkdirs();
-                        logger.info(String.format("%s notices directory at %s", BooleanUtils.toString(success, "Successfully created", "Failed to create"), noticesDirectory.getAbsolutePath()));
+
+                    if (!noticesDirectory.exists() && !noticesDirectory.mkdirs()) {
+                        logger.warn(String.format("Failed to create notices directory at %s", blackDuckPostOptions.getNoticesReportPath()));
                     }
+
                     final File noticesFile = reportService.createNoticesReportFile(noticesDirectory, projectView, projectVersionView);
                     logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
                 }
