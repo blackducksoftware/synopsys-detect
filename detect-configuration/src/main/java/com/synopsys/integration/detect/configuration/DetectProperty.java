@@ -381,7 +381,7 @@ public enum DetectProperty {
     DETECT_GO_DEP_PATH("detect.go.dep.path", "Godep Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GO, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
-    @HelpDescription("If set to true, Detect will attempt to run 'init' and 'ensure' which can modify your development environment.")
+    @HelpDescription("If set to true, Detect will attempt to run 'dep init' and 'dep ensure' in your source directory which can modify files.")
     DETECT_GO_RUN_DEP_INIT("detect.go.run.dep.init", "Godep Run init/ensure", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
@@ -405,7 +405,7 @@ public enum DetectProperty {
     DETECT_GRADLE_INCLUDED_CONFIGURATIONS("detect.gradle.included.configurations", "Gradle Include Configurations", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma-separated list of Maven sub-projects to include.")
+    @HelpDescription("A comma-separated list of Gradle sub-projects to include.")
     @HelpDetailed("As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.")
     DETECT_GRADLE_INCLUDED_PROJECTS("detect.gradle.included.projects", "Gradle Include Projects", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
