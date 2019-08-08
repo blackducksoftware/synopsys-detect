@@ -119,4 +119,43 @@ public class DetectCustomFieldParserTest {
         CustomFieldElement element = document.getProject().get(0);
         Assert.assertEquals("", element.getLabel());
     }
+
+    @Test
+    public void parsedEmptyStringAsEmptyArray() throws DetectUserFriendlyException {
+        Map<String, String> props = new HashMap<>();
+        props.put("detect.custom.fields.project[0].name", "example");
+        props.put("detect.custom.fields.project[0].value", "");
+
+        DetectCustomFieldParser parser = new DetectCustomFieldParser();
+        CustomFieldDocument document = parser.parseCustomFieldDocument(props);
+
+        CustomFieldElement element = document.getProject().get(0);
+        Assert.assertEquals(0, element.getValue().size());
+    }
+
+    @Test
+    public void parsedEmptyQuotesAsEmptyArray() throws DetectUserFriendlyException {
+        Map<String, String> props = new HashMap<>();
+        props.put("detect.custom.fields.project[0].name", "example");
+        props.put("detect.custom.fields.project[0].value", "\"\"");
+
+        DetectCustomFieldParser parser = new DetectCustomFieldParser();
+        CustomFieldDocument document = parser.parseCustomFieldDocument(props);
+
+        CustomFieldElement element = document.getProject().get(0);
+        Assert.assertEquals(0, element.getValue().size());
+    }
+
+    @Test
+    public void parsedEmptySingleQuotesAsEmptyArray() throws DetectUserFriendlyException {
+        Map<String, String> props = new HashMap<>();
+        props.put("detect.custom.fields.project[0].name", "example");
+        props.put("detect.custom.fields.project[0].value", "''");
+
+        DetectCustomFieldParser parser = new DetectCustomFieldParser();
+        CustomFieldDocument document = parser.parseCustomFieldDocument(props);
+
+        CustomFieldElement element = document.getProject().get(0);
+        Assert.assertEquals(0, element.getValue().size());
+    }
 }
