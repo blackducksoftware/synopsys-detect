@@ -74,14 +74,15 @@ public class NugetInspectorInstaller {
             logger.debug("Resolved the nuget inspector url: " + source.get());
             final String nupkgName = artifactResolver.parseFileName(source.get());
             logger.debug("Parsed artifact name: " + nupkgName);
-            final File nupkgFile = new File(dest, nupkgName);
             final String inspectorFolderName = nupkgName.replace(".nupkg", "");
             File inspectorFolder = new File(dest, inspectorFolderName);
             if (!inspectorFolder.exists()) {
                 logger.info("Downloading nuget inspector.");
+                final File nupkgFile = new File(dest, nupkgName);
                 artifactResolver.downloadArtifact(nupkgFile, source.get());
                 logger.info("Extracting nuget inspector.");
                 DetectZipUtil.unzip(nupkgFile, inspectorFolder, Charset.defaultCharset());
+                nupkgFile.delete();
                 return inspectorFolder;
             } else {
                 logger.debug("Inspector is already downloaded, folder exists.");
