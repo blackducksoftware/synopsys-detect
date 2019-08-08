@@ -142,6 +142,40 @@ public class DetectorEvaluator {
         }
     }
 
+    public void discoverableEvaluation(final DetectorEvaluationTree detectorEvaluationTree) {
+        logger.trace("Project discovery started.");
+
+        logger.trace("Determining discoverable detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
+        for (final DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
+            if (detectorEvaluation.isSearchable() && detectorEvaluation.isApplicable()) {
+
+                getDetectorEvaluatorListener().ifPresent(it -> it.extractableStarted(detectorEvaluation));
+
+                logger.trace("Detector was searchable and applicable, will check extractable: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
+                final Detectable detectable = detectorEvaluation.getDetectable();
+                DetectableResult detectableExtractableResult;
+                try {
+                    detectableExtractableResult = detectable.extractable();
+                } catch (final DetectableException e) {
+                    detectableExtractableResult = new ExceptionDetectableResult(e);
+                }
+                final DetectorResult extractableResult = new DetectorResult(detectableExtractableResult.getPassed(), detectableExtractableResult.toDescription());
+                detectorEvaluation.setExtractable(extractableResult);
+                if (detectorEvaluation.isExtractable()) {
+                    logger.trace("Extractable passed. Done evaluating for now.");
+                } else {
+                    logger.trace("Extractable did not pass: " + detectorEvaluation.getExtractabilityMessage());
+                }
+
+                getDetectorEvaluatorListener().ifPresent(it -> it.extractableEnded(detectorEvaluation));
+            }
+        }
+
+        for (final DetectorEvaluationTree childDetectorEvaluationTree : detectorEvaluationTree.getChildren()) {
+            extractableEvaluation(childDetectorEvaluationTree);
+        }
+    }
+
     public void extractionEvaluation(final DetectorEvaluationTree detectorEvaluationTree, final Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider) {
         logger.trace("Extracting detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
         for (final DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {

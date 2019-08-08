@@ -43,6 +43,7 @@ public class DetectorEvaluation {
     private DetectorResult searchable;
     private DetectorResult applicable;
     private DetectorResult extractable;
+    private DetectorResult discoverable;
 
     private ExtractionEnvironment extractionEnvironment;
     private Extraction extraction;
@@ -102,6 +103,18 @@ public class DetectorEvaluation {
 
     public boolean isApplicable() {
         return isSearchable() && this.applicable != null && this.applicable.getPassed();
+    }
+
+    public void setDiscoverable(final DetectorResult applicable) {
+        this.discoverable = discoverable;
+    }
+
+    public boolean isDiscoverable() {
+        return isExtractable() && this.discoverable != null && this.discoverable.getPassed();
+    }
+
+    public String getsDiscoverabilityMessage() {
+        return getDetectorResultDescription(discoverable).orElse(NO_MESSAGE);
     }
 
     public String getApplicabilityMessage() {

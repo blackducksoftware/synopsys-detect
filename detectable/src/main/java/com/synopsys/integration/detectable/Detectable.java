@@ -49,6 +49,18 @@ public abstract class Detectable {
     /*
      * Perform the extraction and try not to throw an exception. Instead return an extraction built with an exception.
      */
+    public Discovery discover(ExtractionEnvironment extractionEnvironment) {
+        Extraction extraction = extract(extractionEnvironment);
+        if (extraction.isSuccess()) {
+            return new Discovery.Builder().success(extraction).build();
+        } else {
+            return new Discovery.Builder().failure("The extraction was not a success.").build();
+        }
+    }
+
+    /*
+     * Perform the extraction and try not to throw an exception. Instead return an extraction built with an exception.
+     */
     public abstract Extraction extract(ExtractionEnvironment extractionEnvironment);
 
     public String getName() {

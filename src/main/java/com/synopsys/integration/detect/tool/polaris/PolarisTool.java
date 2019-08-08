@@ -40,6 +40,7 @@ import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.polaris.common.cli.PolarisDownloadUtility;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 import com.synopsys.integration.polaris.common.rest.AccessTokenPolarisHttpClient;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
