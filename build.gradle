@@ -32,7 +32,7 @@ plugins {
 }
 
 group = 'com.synopsys.integration'
-version = '5.6.0-RC5'
+version = '5.6.0-RC6-SNAPSHOT'
 
 apply plugin: 'com.blackducksoftware.integration.solution'
 apply plugin: 'org.springframework.boot'
