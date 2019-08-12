@@ -51,6 +51,7 @@ import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detector.base.DetectableCreatable;
 import com.synopsys.integration.util.NameVersion;
@@ -74,7 +75,7 @@ public class DetectableTool {
         this.eventSystem = eventSystem;
     }
 
-    public DetectableToolResult execute(final File sourcePath) throws DetectUserFriendlyException { //TODO: Caller publishes result. 
+    public DetectableToolResult execute(final File sourcePath) throws DetectUserFriendlyException { //TODO: Caller publishes result.
         logger.trace("Starting a detectable tool.");
 
         final DetectableEnvironment detectableEnvironment = new DetectableEnvironment(sourcePath);
@@ -91,19 +92,20 @@ public class DetectableTool {
 
         logger.info("Applicable passed.");
 
-        final DetectableResult extractable;
+        DetectableResult extractable;
+        Exception extractableException = null; //TODO: Move into DetectableResult base class.
         try {
             extractable = detectable.extractable();
         } catch (final DetectableException e) {
-            logger.error("An exception occurred checking extractable: " + e.getMessage());
-            throw new DetectUserFriendlyException("An exception occurred checking extractable: " + e.getMessage(), e, ExitCodeType.FAILURE_UNKNOWN_ERROR);
+            extractable = new ExceptionDetectableResult(e);
+            extractableException = e;
         }
 
         if (!extractable.getPassed()) {
-            logger.info("Was not extractable.");
+            logger.error("Was not extractable: " + extractable.toDescription());
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.FAILURE));
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
-            return DetectableToolResult.failed(Optional.empty());
+            return DetectableToolResult.failed(Optional.ofNullable(extractableException));
         }
 
         logger.info("Extractable passed.");
@@ -112,7 +114,7 @@ public class DetectableTool {
         final Extraction extraction = detectable.extract(extractionEnvironment);
 
         if (!extraction.isSuccess()) {
-            logger.info("Extraction was not success.");
+            logger.error("Extraction was not success.");
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.FAILURE));
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
             return DetectableToolResult.failed(Optional.empty());
