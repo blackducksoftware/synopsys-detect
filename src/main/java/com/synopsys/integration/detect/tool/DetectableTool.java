@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectTool;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
@@ -73,7 +74,7 @@ public class DetectableTool {
         this.eventSystem = eventSystem;
     }
 
-    public DetectableToolResult execute(final File sourcePath) {
+    public DetectableToolResult execute(final File sourcePath) throws DetectUserFriendlyException { //TODO: Caller publishes result. 
         logger.trace("Starting a detectable tool.");
 
         final DetectableEnvironment detectableEnvironment = new DetectableEnvironment(sourcePath);
@@ -95,7 +96,7 @@ public class DetectableTool {
             extractable = detectable.extractable();
         } catch (final DetectableException e) {
             logger.error("An exception occurred checking extractable: " + e.getMessage());
-            return DetectableToolResult.failed(e);
+            throw new DetectUserFriendlyException("An exception occurred checking extractable: " + e.getMessage(), e, ExitCodeType.FAILURE_UNKNOWN_ERROR);
         }
 
         if (!extractable.getPassed()) {
