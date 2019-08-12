@@ -31,6 +31,6 @@ public class ExceptionDetectableResult extends FailedDetectableResult {
 
     @Override
     public String toDescription() {
-        return "Exception occured: " + exception.getMessage();
+        return "Exception occurred: " + exception.getMessage();
     }
 }
