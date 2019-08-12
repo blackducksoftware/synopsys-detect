@@ -83,7 +83,11 @@ public class DockerDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        javaExe = javaResolver.resolveJava();
+        try {
+            javaExe = javaResolver.resolveJava();
+        } catch (final Exception e) {
+            javaExe = null;
+        }
         if (javaExe == null) {
             return new ExecutableNotFoundDetectableResult("java");
         }
