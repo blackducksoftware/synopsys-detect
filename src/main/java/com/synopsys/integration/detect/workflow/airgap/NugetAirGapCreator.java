@@ -23,8 +23,11 @@
 package com.synopsys.integration.detect.workflow.airgap;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Function;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +35,8 @@ import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+
+import ch.qos.logback.core.util.FileUtil;
 
 public class NugetAirGapCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -44,16 +49,26 @@ public class NugetAirGapCreator {
 
     public void installNugetDependencies(File nugetFolder) throws DetectUserFriendlyException {
         logger.info("Installing nuget dotnet inspector.");
-        try {
-            nugetInspectorInstaller.installDotNet(new File(nugetFolder, "nuget_dotnet"), Optional.empty());
-        } catch (DetectableException e) {
-            throw new DetectUserFriendlyException("An error occurred installing nuget dotnet inspector.", e, ExitCodeType.FAILURE_GENERAL_ERROR);
-        }
+        installThenCopy(nugetFolder, "nuget_dotnet", true);
+
         logger.info("Installing nuget classic inspector.");
+        installThenCopy(nugetFolder, "nuget_classic", false);
+    }
+
+    private void installThenCopy(File nugetFolder, String folderName, boolean dotnet) throws DetectUserFriendlyException {
         try {
-            nugetInspectorInstaller.installExeInspector(new File(nugetFolder, "nuget_classic"), Optional.empty());
-        } catch (DetectableException e) {
-            throw new DetectUserFriendlyException("An error occurred installing nuget classic inspector.", e, ExitCodeType.FAILURE_GENERAL_ERROR);
+            File inspectorFolder = new File(nugetFolder, folderName);
+            File installTarget;
+            if (dotnet) {
+                installTarget = nugetInspectorInstaller.installDotNet(inspectorFolder, Optional.empty());
+            } else {
+                installTarget = nugetInspectorInstaller.installExeInspector(inspectorFolder, Optional.empty());
+            }
+            FileUtils.copyDirectory(installTarget, inspectorFolder);
+            FileUtils.deleteDirectory(installTarget);
+        } catch (DetectableException | IOException e) {
+            throw new DetectUserFriendlyException("An error occurred installing to the " + folderName + " inspector folder.", e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
+
     }
 }
