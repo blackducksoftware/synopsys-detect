@@ -300,24 +300,14 @@ public class DetectOptionManager {
         }
     }
 
-    public boolean checkForAnyFailureProperties() {
+    public List<DetectOption> findDeprecatedFailureProperties() {
         final int detectMajorVersion = detectInfo.getDetectMajorVersion();
-        boolean atLeastOneDeprecatedFailure = false;
-        for (final DetectOption detectOption : detectOptions) {
-            if (detectOption.hasWarnings() && detectOption.isRequestedDeprecation()) {
-                if (detectMajorVersion >= detectOption.getDetectOptionHelp().deprecationFailInVersion.getIntValue()) {
-                    atLeastOneDeprecatedFailure = true;
-                    logger.error(detectOption.getDetectProperty().getPropertyKey() + " is deprecated and should not be used.");
-                }
-            }
-        }
-        if (atLeastOneDeprecatedFailure) {
-            logger.error("Configuration is using deprecated properties. Please fix deprecation issues.");
-            logger.error("To ignore these messages and force detect to exit with success supply --" + DetectProperty.DETECT_FORCE_SUCCESS.getPropertyKey() + "=true");
-            logger.error("This will not force detect to run, but to pretend to have succeeded.");
-            return true;
-        }
-        return false;
+
+        return detectOptions.stream()
+                   .filter(DetectOption::hasWarnings)
+                   .filter(DetectOption::isRequestedDeprecation)
+                   .filter(detectOption -> detectMajorVersion >= detectOption.getDetectOptionHelp().deprecationFailInVersion.getIntValue())
+                   .collect(Collectors.toList());
     }
 
 }

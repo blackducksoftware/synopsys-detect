@@ -92,6 +92,7 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.profiling.DetectorProfiler;
 import com.synopsys.integration.detect.workflow.report.DetectConfigurationReporter;
+import com.synopsys.integration.detect.workflow.report.writer.ErrorLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
@@ -161,24 +162,17 @@ public class DetectBoot {
 
         logger.info("Configuration processed completely.");
 
-        printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT, PropertyAuthority.None), options);
+        Optional<DetectBootResult> configurationResult = printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT, PropertyAuthority.None), detectOptionManager, detectConfiguration,
+            eventSystem, options);
+        if (configurationResult.isPresent()) {
+            return configurationResult.get();
+        }
 
         logger.info("Initializing Detect.");
 
         DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
         DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
         Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectOptionManager.getDetectOptions(), detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
-
-        try {
-            checkForInvalidOptions(detectOptionManager);
-        } catch (DetectUserFriendlyException e) {
-            return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.of(directoryManager), diagnosticSystem);
-        }
-
-        if (detectOptionManager.checkForAnyFailureProperties()) {
-            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION));
-            return DetectBootResult.exit(detectConfiguration, Optional.of(directoryManager), diagnosticSystem);
-        }
 
         logger.info("Main boot completed. Deciding what Detect should do.");
 
@@ -267,13 +261,38 @@ public class DetectBoot {
         detectInfoPrinter.printInfo(System.out, detectInfo);
     }
 
-    private void printConfiguration(boolean fullConfiguration, List<DetectOption> detectOptions) {
+    private Optional<DetectBootResult> printConfiguration(boolean fullConfiguration, DetectOptionManager detectOptionManager, DetectConfiguration detectConfiguration, EventSystem eventSystem, List<DetectOption> detectOptions) {
+
+        //First print the entire configuration.
         DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
         InfoLogReportWriter infoLogReportWriter = new InfoLogReportWriter();
         if (!fullConfiguration) {
             detectConfigurationReporter.print(infoLogReportWriter, detectOptions);
         }
+
+        //Next check for options that are just plain bad, ie giving an detector type we don't know about.
+        try {
+            final List<DetectOption.OptionValidationResult> invalidDetectOptionResults = detectOptionManager.getAllInvalidOptionResults();
+            if (!invalidDetectOptionResults.isEmpty()) {
+                throw new DetectUserFriendlyException(invalidDetectOptionResults.get(0).getValidationMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
+            }
+        } catch (DetectUserFriendlyException e) {
+            return Optional.of(DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.empty(), Optional.empty()));
+        }
+
+        //Check for deprecated fields that are still being used but should cause a failure.
+        List<DetectOption> failureProperties = detectOptionManager.findDeprecatedFailureProperties();
+        if (failureProperties.size() > 0) {
+            ErrorLogReportWriter errorLogReportWriter = new ErrorLogReportWriter();
+            detectConfigurationReporter.printFailures(errorLogReportWriter, failureProperties);
+            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION));
+            return Optional.of(DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty()));
+        }
+
+        //Finally log all fields that are deprecated but still being used (that are not failure).
         detectConfigurationReporter.printWarnings(infoLogReportWriter, detectOptions);
+
+        return Optional.empty();
     }
 
     private void startInteractiveMode(DetectOptionManager detectOptionManager, DetectConfiguration detectConfiguration, Gson gson, ObjectMapper objectMapper) {
@@ -292,13 +311,6 @@ public class DetectBoot {
         TildeInPathResolver tildeInPathResolver = new TildeInPathResolver(DetectConfigurationManager.USER_HOME, detectInfo.getCurrentOs());
         DetectConfigurationManager detectConfigurationManager = new DetectConfigurationManager(tildeInPathResolver, detectConfiguration);
         detectConfigurationManager.process(detectOptions, detectRun.getRunId());
-    }
-
-    private void checkForInvalidOptions(DetectOptionManager detectOptionManager) throws DetectUserFriendlyException {
-        final List<DetectOption.OptionValidationResult> invalidDetectOptionResults = detectOptionManager.getAllInvalidOptionResults();
-        if (!invalidDetectOptionResults.isEmpty()) {
-            throw new DetectUserFriendlyException(invalidDetectOptionResults.get(0).getValidationMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
-        }
     }
 
     private Optional<DiagnosticSystem> createDiagnostics(List<DetectOption> detectOptions, DetectRun detectRun, DetectInfo detectInfo, DetectArgumentState detectArgumentState, EventSystem eventSystem, DirectoryManager directoryManager) {

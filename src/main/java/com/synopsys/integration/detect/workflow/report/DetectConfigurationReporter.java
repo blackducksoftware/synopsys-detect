@@ -28,7 +28,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.help.DetectOption;
+import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 
 public class DetectConfigurationReporter {
@@ -111,6 +113,32 @@ public class DetectConfigurationReporter {
                 }
             }
             writer.writeLine(StringUtils.repeat("*", 60));
+            writer.writeLine("");
+        }
+    }
+
+    public void printFailures(final ReportWriter writer, final List<DetectOption> detectOptions) {
+        final List<DetectOption> sortedOptions = sortOptions(detectOptions);
+
+        final List<DetectOption> allWarnings = sortedOptions.stream().filter(it -> it.getWarnings().size() > 0).collect(Collectors.toList());
+        if (allWarnings.size() > 0) {
+            writer.writeLine(ReportConstants.ERROR_SEPERATOR);
+            if (allWarnings.size() == 1) {
+                writer.writeLine("ERROR (" + allWarnings.size() + ")");
+            } else {
+                writer.writeLine("ERRORS (" + allWarnings.size() + ")");
+            }
+            for (final DetectOption option : allWarnings) {
+                for (final String warning : option.getWarnings()) {
+                    writer.writeLine(option.getDetectProperty().getPropertyKey() + ": " + warning);
+                }
+            }
+            writer.writeLine(ReportConstants.ERROR_SEPERATOR);
+            writer.writeLine("Configuration is using deprecated properties that must be updated for this major version.");
+            writer.writeLine("You MUST fix these deprecation issues for detect to proceed.");
+            writer.writeLine("To ignore these messages and force detect to exit with success supply --" + DetectProperty.DETECT_FORCE_SUCCESS.getPropertyKey() + "=true");
+            writer.writeLine("This will not force detect to run, but it will pretend to have succeeded.");
+            writer.writeLine(ReportConstants.ERROR_SEPERATOR);
             writer.writeLine("");
         }
     }
