@@ -173,7 +173,7 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Additional arguments to use when running the Black Duck signature scanner.")
     @HelpDetailed("For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). " +
-    "You tell the signature scanner read excluded directories from a file named excludes.txt in your home directory with: " +
+                      "You tell the signature scanner read excluded directories from a file named excludes.txt in your home directory with: " +
                       "--detect.blackduck.signature.scanner.arguments='--exclude-from ${HOME}/excludes.txt'")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS("detect.blackduck.signature.scanner.arguments", "Signature Scanner Arguments", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
@@ -190,7 +190,8 @@ public enum DetectProperty {
                       +
                       "and passed as --exclude values. " +
                       "For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude. " +
-                      "Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.name.patterns=blackduck-common, --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-common', --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-*'. " +
+                      "Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.name.patterns=blackduck-common, --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-common', --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-*'. "
+                      +
                       "Use this property when you want Detect to convert the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns to pass patterns directly to the signature scanner as-is.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.blackduck.signature.scanner.exclusion.name.patterns", "Directory Name Exclusion Patterns", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "node_modules"),
 
@@ -205,7 +206,8 @@ public enum DetectProperty {
             +
             "These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. " +
             "For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude from signature scanning. " +
-            "Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns=/blackduck-common/, --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-*/'. " +
+            "Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns=/blackduck-common/, --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-*/'. "
+            +
             "Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS("detect.blackduck.signature.scanner.exclusion.patterns", "Exclusion Patterns", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
@@ -311,9 +313,12 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("A comma-separated list of directory name patterns to exclude from detector search.")
-    @HelpDetailed("While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched.\n\rThese patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). " +
-                      "For example, suppose you're running in bash on Linux, you've set --detect.detector.search.depth=1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it: " +
-                      "--detect.detector.search.exclusion.patterns=blackduck-common, --detect.detector.search.exclusion.patterns='blackduck-common', --detect.detector.search.exclusion.patterns='blackduck-*'")
+    @HelpDetailed(
+        "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched.\n\rThese patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). "
+            +
+            "For example, suppose you're running in bash on Linux, you've set --detect.detector.search.depth=1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it: "
+            +
+            "--detect.detector.search.exclusion.patterns=blackduck-common, --detect.detector.search.exclusion.patterns='blackduck-common', --detect.detector.search.exclusion.patterns='blackduck-*'")
     DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS("detect.detector.search.exclusion.patterns", " Detector Directory Patterns Exclusions", "3.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
@@ -440,9 +445,10 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("Maven command line arguments to add to the mvn/mvnw command line.")
-    @HelpDetailed("By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. " +
-    "For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. " +
-    "You could do this with: --detect.maven.build.command='--settings ${HOME}/maven_dev_settings.xml --define reason=other'")
+    @HelpDetailed(
+        "By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. " +
+            "For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. " +
+            "You could do this with: --detect.maven.build.command='--settings ${HOME}/maven_dev_settings.xml --define reason=other'")
     DETECT_MAVEN_BUILD_COMMAND("detect.maven.build.command", "Maven Build Command", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
@@ -549,12 +555,10 @@ public enum DetectProperty {
     DETECT_PERL_PATH("detect.perl.path", "Perl Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PIP, additional = { GROUP_SOURCE_SCAN })
-    @DetectDeprecation(description = "This property is being removed. Please use --detect.project.name in the future.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
     @HelpDescription("The name of your PIP project, to be used if your project's name cannot be correctly inferred from its setup.py file.")
     DETECT_PIP_PROJECT_NAME("detect.pip.project.name", "PIP Project Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PIP, additional = { GROUP_SOURCE_SCAN })
-    @DetectDeprecation(description = "This property is being removed. Please use --detect.project.version.name in the future.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
     @HelpDescription("The version of your PIP project, to be used if your project's version name cannot be correctly inferred from its setup.py file.")
     DETECT_PIP_PROJECT_VERSION_NAME("detect.pip.project.version.name", "PIP Project Version Name", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
@@ -915,12 +919,6 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_DETECTOR, additional = { GROUP_DETECTOR })
     @HelpDescription("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
     DETECT_INCLUDED_BOM_TOOL_TYPES("detect.included.bom.tool.types", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
-
-    @Deprecated
-    @DetectDeprecation(description = "This property is changing. Please use --detect.sbt.report.depth in the future.", failInVersion = DetectMajorVersion.FIVE, removeInVersion = DetectMajorVersion.SIX)
-    @HelpGroup(primary = GROUP_PATHS)
-    @HelpDescription("Depth from source paths to search for sbt report files.")
-    DETECT_SEARCH_DEPTH("detect.search.depth", "", "3.0.0", PropertyType.INTEGER, PropertyAuthority.None, "3"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.project.detector in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
