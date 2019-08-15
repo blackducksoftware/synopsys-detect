@@ -20,14 +20,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.report.util;
+package com.synopsys.integration.detect.workflow.report.writer;
 
-import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ReportConstants {
-    public static String RUN_SEPARATOR = "----------------------------------";
-    public static String HEADING = "======================================================================================================";
-    public static String SEPERATOR = "------------------------------------------------------------------------------------------------------";
-    public static String ERROR_SEPERATOR = StringUtils.repeat("=", 60);
+public class ErrorLogReportWriter extends LogReportWriter {
+    private final Logger logger;
 
+    public ErrorLogReportWriter() {
+        this(LoggerFactory.getLogger(ErrorLogReportWriter.class));
+    }
+
+    public ErrorLogReportWriter(Logger logger) {
+        this.logger = logger;
+    }
+
+    @Override
+    public void writeLine(final String line) {
+        logger.error(line);
+    }
+
+    @Override
+    public void writeLine(final String line, final Exception e) {
+        logger.error(line, e);
+    }
 }

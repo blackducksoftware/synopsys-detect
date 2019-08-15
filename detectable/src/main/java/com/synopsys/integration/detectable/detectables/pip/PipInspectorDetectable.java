@@ -76,9 +76,6 @@ public class PipInspectorDetectable extends Detectable {
         final boolean hasSetups = setupFile != null;
         final boolean hasRequirements = StringUtils.isNotBlank(pipInspectorDetectableOptions.getRequirementsFilePath());
         if (hasSetups || hasRequirements) {
-            logger.warn("------------------------------------------------------------------------------------------------------");
-            logger.warn("The Pip inspector has been deprecated. Please use pipenv and the Pipenv Graph inspector in the future.");
-            logger.warn("------------------------------------------------------------------------------------------------------");
             return new PassedDetectableResult();
         } else {
             return new FileNotFoundDetectableResult(SETUPTOOLS_DEFAULT_FILE_NAME);
