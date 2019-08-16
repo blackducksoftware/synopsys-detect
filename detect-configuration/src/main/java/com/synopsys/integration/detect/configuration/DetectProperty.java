@@ -726,7 +726,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_RUBY, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("If set to true, development dependencies will be included when parsing *.gemspec files.")
-    DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES("detect.ruby.include.dev.dependencies", "Ruby Runtime Dependencies", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES("detect.ruby.include.dev.dependencies", "Ruby Development Dependencies", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The names of the sbt configurations to include.")
