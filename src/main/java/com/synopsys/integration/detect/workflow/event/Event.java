@@ -39,6 +39,7 @@ public class Event {
     public static EventType<DetectorEvaluationTree> SearchCompleted = new EventType(DetectorEvaluationTree.class);
     public static EventType<Set<DetectorType>> ApplicableCompleted = new EventType(Set.class);
     public static EventType<DetectorEvaluationTree> PreparationsCompleted = new EventType(DetectorEvaluationTree.class);
+    public static EventType<DetectorEvaluationTree> DiscoveriesCompleted = new EventType(DetectorEvaluationTree.class);
     public static EventType<DetectorEvaluationTree> ExtractionsCompleted = new EventType(DetectorEvaluationTree.class);
     public static EventType<DetectorToolResult> DetectorsComplete = new EventType(DetectorToolResult.class);
     public static EventType<DetectorTimings> DetectorsProfiled = new EventType(DetectorTimings.class);
@@ -49,6 +50,9 @@ public class Event {
     public static EventType<Integer> ExtractionCount = new EventType(Integer.class);
     public static EventType<DetectorEvaluation> ExtractionStarted = new EventType(DetectorEvaluation.class);
     public static EventType<DetectorEvaluation> ExtractionEnded = new EventType(DetectorEvaluation.class);
+    public static EventType<Integer> DiscoveryCount = new EventType(Integer.class);
+    public static EventType<DetectorEvaluation> DiscoveryStarted = new EventType(DetectorEvaluation.class);
+    public static EventType<DetectorEvaluation> DiscoveryEnded = new EventType(DetectorEvaluation.class);
     public static EventType<BdioCodeLocationResult> CodeLocationsCalculated = new EventType(BdioCodeLocationResult.class);
     public static EventType<ExitCodeRequest> ExitCode = new EventType(ExitCodeRequest.class);
     public static EventType<Status> StatusSummary = new EventType(Status.class);
