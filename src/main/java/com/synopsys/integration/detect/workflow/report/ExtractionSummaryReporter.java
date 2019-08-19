@@ -45,7 +45,7 @@ public class ExtractionSummaryReporter {
             final List<DetectorEvaluation> exception = DetectorEvaluationUtils.filteredChildren(it, DetectorEvaluation::wasExtractionException);
             final List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredChildren(it, DetectorEvaluation::wasExtractionFailure);
 
-            if (success.size() > 0 || exception.size() > 0) {
+            if (success.size() > 0 || exception.size() > 0 || failed.size() > 0) {
                 writer.writeLine(it.getDirectory().toString());
                 final List<String> codeLocationNames = findCodeLocationNames(it, detectableMap, codeLocationNameMap);
                 writer.writeLine("\tCode locations: " + codeLocationNames.size());
