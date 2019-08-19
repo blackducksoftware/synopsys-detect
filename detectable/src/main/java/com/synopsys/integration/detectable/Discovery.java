@@ -77,6 +77,10 @@ public class Discovery {
         return result;
     }
 
+    public Extraction getExtraction() {
+        return extraction;
+    }
+
     public static class Builder {
         private DiscoveryResultType result;
         private Exception error;
@@ -97,6 +101,15 @@ public class Discovery {
         }
 
         public Builder success() {
+            this.result = DiscoveryResultType.SUCCESS;
+            return this;
+        }
+
+        public Builder success(String projectName, String projectVersion) {
+            return success().projectName(projectName).projectVersion(projectVersion);
+        }
+
+        public Builder skipped() {
             this.result = DiscoveryResultType.SUCCESS;
             return this;
         }

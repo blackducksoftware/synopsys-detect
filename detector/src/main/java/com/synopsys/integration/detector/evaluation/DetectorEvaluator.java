@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.Discovery;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -80,7 +81,8 @@ public class DetectorEvaluator {
                 final Detectable detectable = detectorRule.createDetectable(detectableEnvironment);
                 detectorEvaluation.setDetectable(detectable);
 
-                final DetectorResult applicableResult = new DetectorResult(detectable.applicable().getPassed(), detectable.applicable().toDescription());
+                DetectableResult applicable = detectable.applicable();
+                final DetectorResult applicableResult = new DetectorResult(applicable.getPassed(), applicable.toDescription());
                 detectorEvaluation.setApplicable(applicableResult);
 
                 if (detectorEvaluation.isApplicable()) {
@@ -142,67 +144,85 @@ public class DetectorEvaluator {
         }
     }
 
-    public void discoverableEvaluation(final DetectorEvaluationTree detectorEvaluationTree) {
-        logger.trace("Project discovery started.");
-
-        logger.trace("Determining discoverable detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
+    public void setupDiscoveryAndExtractions(final DetectorEvaluationTree detectorEvaluationTree, final Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider) {
         for (final DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
-            if (detectorEvaluation.isSearchable() && detectorEvaluation.isApplicable()) {
-
-                getDetectorEvaluatorListener().ifPresent(it -> it.extractableStarted(detectorEvaluation));
-
-                logger.trace("Detector was searchable and applicable, will check extractable: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
-                final Detectable detectable = detectorEvaluation.getDetectable();
-                DetectableResult detectableExtractableResult;
-                try {
-                    detectableExtractableResult = detectable.extractable();
-                } catch (final DetectableException e) {
-                    detectableExtractableResult = new ExceptionDetectableResult(e);
-                }
-                final DetectorResult extractableResult = new DetectorResult(detectableExtractableResult.getPassed(), detectableExtractableResult.toDescription());
-                detectorEvaluation.setExtractable(extractableResult);
-                if (detectorEvaluation.isExtractable()) {
-                    logger.trace("Extractable passed. Done evaluating for now.");
-                } else {
-                    logger.trace("Extractable did not pass: " + detectorEvaluation.getExtractabilityMessage());
-                }
-
-                getDetectorEvaluatorListener().ifPresent(it -> it.extractableEnded(detectorEvaluation));
+            if (detectorEvaluation.isExtractable()) {
+                final ExtractionEnvironment extractionEnvironment = extractionEnvironmentProvider.apply(detectorEvaluation);
+                detectorEvaluation.setExtractionEnvironment(extractionEnvironment);
             }
         }
 
         for (final DetectorEvaluationTree childDetectorEvaluationTree : detectorEvaluationTree.getChildren()) {
-            extractableEvaluation(childDetectorEvaluationTree);
+            setupDiscoveryAndExtractions(childDetectorEvaluationTree, extractionEnvironmentProvider);
         }
     }
 
-    public void extractionEvaluation(final DetectorEvaluationTree detectorEvaluationTree, final Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider) {
+    public void discoveryEvaluation(final DetectorEvaluationTree detectorEvaluationTree, DiscoveryFilter discoveryFilter) {
+        logger.trace("Project discovery started.");
+
+        logger.trace("Determining discoverable detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
+        for (final DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
+            if (detectorEvaluation.isExtractable() && detectorEvaluation.getExtractionEnvironment() != null) {
+
+                logger.trace("Detector was searchable, applicable and extractable, will perform project discovery: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
+                final Detectable detectable = detectorEvaluation.getDetectable();
+
+                getDetectorEvaluatorListener().ifPresent(it -> it.discoveryStarted(detectorEvaluation));
+
+                if (discoveryFilter.shouldDiscover(detectorEvaluation)) {
+                    try {
+                        final Discovery discovery = detectable.discover(detectorEvaluation.getExtractionEnvironment());
+                        detectorEvaluation.setDiscovery(discovery);
+                    } catch (Exception e) {
+                        detectorEvaluation.setDiscovery(new Discovery.Builder().exception(e).build());
+                    }
+                } else {
+                    logger.info("Project discovery already found information, this detector will be skipped.");
+                    detectorEvaluation.setDiscovery(new Discovery.Builder().skipped().build());
+                }
+
+                getDetectorEvaluatorListener().ifPresent(it -> it.discoveryEnded(detectorEvaluation));
+
+            }
+        }
+
+        for (final DetectorEvaluationTree childDetectorEvaluationTree : detectorEvaluationTree.getChildren()) {
+            discoveryEvaluation(childDetectorEvaluationTree, discoveryFilter);
+        }
+    }
+
+    public void extractionEvaluation(final DetectorEvaluationTree detectorEvaluationTree) {
         logger.trace("Extracting detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
         for (final DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
-            if (detectorEvaluation.isSearchable() && detectorEvaluation.isApplicable() && detectorEvaluation.isExtractable()) {
+            if (detectorEvaluation.isExtractable() && detectorEvaluation.getExtractionEnvironment() != null) {
 
                 logger.trace("Detector was searchable, applicable and extractable, will perform extraction: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
                 final Detectable detectable = detectorEvaluation.getDetectable();
-                final ExtractionEnvironment extractionEnvironment = extractionEnvironmentProvider.apply(detectorEvaluation);
-                detectorEvaluation.setExtractionEnvironment(extractionEnvironment);
 
                 getDetectorEvaluatorListener().ifPresent(it -> it.extractionStarted(detectorEvaluation));
 
-                try {
-                    final Extraction extraction = detectable.extract(extractionEnvironment);
-                    detectorEvaluation.setExtraction(extraction);
-                } catch (Exception e) {
-                    detectorEvaluation.setExtraction(new Extraction.Builder().exception(e).build());
+                Discovery discovery = detectorEvaluation.getDiscovery();
+                if (discovery != null && discovery.getExtraction() != null) {
+                    logger.info("Extraction already completed during project discovery.");
+                    detectorEvaluation.setExtraction(discovery.getExtraction());
+                } else {
+                    try {
+                        final Extraction extraction = detectable.extract(detectorEvaluation.getExtractionEnvironment());
+                        detectorEvaluation.setExtraction(extraction);
+                    } catch (Exception e) {
+                        detectorEvaluation.setExtraction(new Extraction.Builder().exception(e).build());
+                    }
                 }
 
                 getDetectorEvaluatorListener().ifPresent(it -> it.extractionEnded(detectorEvaluation));
 
                 logger.trace("Extraction result: " + detectorEvaluation.wasExtractionSuccessful());
+
             }
         }
 
         for (final DetectorEvaluationTree childDetectorEvaluationTree : detectorEvaluationTree.getChildren()) {
-            extractionEvaluation(childDetectorEvaluationTree, extractionEnvironmentProvider);
+            extractionEvaluation(childDetectorEvaluationTree);
         }
     }
 

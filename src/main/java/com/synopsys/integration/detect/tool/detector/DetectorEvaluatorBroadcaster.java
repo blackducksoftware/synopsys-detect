@@ -55,6 +55,16 @@ public class DetectorEvaluatorBroadcaster implements DetectorEvaluatorListener {
     }
 
     @Override
+    public void discoveryStarted(final DetectorEvaluation detectorEvaluation) {
+        eventSystem.publishEvent(Event.DiscoveryStarted, detectorEvaluation);
+    }
+
+    @Override
+    public void discoveryEnded(final DetectorEvaluation detectorEvaluation) {
+        eventSystem.publishEvent(Event.DiscoveryEnded, detectorEvaluation);
+    }
+
+    @Override
     public void extractionStarted(final DetectorEvaluation detectorEvaluation) {
         eventSystem.publishEvent(Event.ExtractionStarted, detectorEvaluation);
     }

@@ -47,7 +47,7 @@ public abstract class Detectable {
     public abstract DetectableResult extractable() throws DetectableException;
 
     /*
-     * Perform the extraction and try not to throw an exception. Instead return an extraction built with an exception.
+     * Perform project information discovery and try not to throw an exception. Instead return a discovery built with an exception.
      */
     public Discovery discover(ExtractionEnvironment extractionEnvironment) {
         Extraction extraction = extract(extractionEnvironment);

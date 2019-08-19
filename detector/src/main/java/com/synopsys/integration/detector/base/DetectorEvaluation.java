@@ -26,6 +26,7 @@ import java.util.Optional;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.Discovery;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detector.evaluation.SearchEnvironment;
@@ -43,10 +44,10 @@ public class DetectorEvaluation {
     private DetectorResult searchable;
     private DetectorResult applicable;
     private DetectorResult extractable;
-    private DetectorResult discoverable;
 
     private ExtractionEnvironment extractionEnvironment;
     private Extraction extraction;
+    private Discovery discovery;
 
     // The detector evaluation is built over time. The only thing you need at the start is the rule this evaluation represents.
     public DetectorEvaluation(DetectorRule detectorRule) {
@@ -85,6 +86,18 @@ public class DetectorEvaluation {
         return isExtractable() && this.extraction != null && this.extraction.getResult() == Extraction.ExtractionResultType.EXCEPTION;
     }
 
+    public boolean wasDiscoverySuccessful() {
+        return isExtractable() && this.discovery != null && this.discovery.getResult() == Discovery.DiscoveryResultType.SUCCESS;
+    }
+
+    public boolean wasDiscoveryFailure() {
+        return isExtractable() && this.discovery != null && this.discovery.getResult() == Discovery.DiscoveryResultType.FAILURE;
+    }
+
+    public boolean wasDiscoveryException() {
+        return isExtractable() && this.discovery != null && this.discovery.getResult() == Discovery.DiscoveryResultType.EXCEPTION;
+    }
+
     public void setSearchable(final DetectorResult searchable) {
         this.searchable = searchable;
     }
@@ -105,16 +118,12 @@ public class DetectorEvaluation {
         return isSearchable() && this.applicable != null && this.applicable.getPassed();
     }
 
-    public void setDiscoverable(final DetectorResult applicable) {
-        this.discoverable = discoverable;
+    public void setDiscovery(final Discovery discovery) {
+        this.discovery = discovery;
     }
 
-    public boolean isDiscoverable() {
-        return isExtractable() && this.discoverable != null && this.discoverable.getPassed();
-    }
-
-    public String getsDiscoverabilityMessage() {
-        return getDetectorResultDescription(discoverable).orElse(NO_MESSAGE);
+    public Discovery getDiscovery() {
+        return discovery;
     }
 
     public String getApplicabilityMessage() {
