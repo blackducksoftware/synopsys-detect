@@ -39,8 +39,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.detect.kotlin.nameversion.DetectorEvaluationNameVersionDecider;
-import com.synopsys.integration.detect.kotlin.nameversion.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.kotlin.nameversion.DetectorNameVersionHandler;
 import com.synopsys.integration.detect.kotlin.nameversion.NameVersionDecision;
 import com.synopsys.integration.detect.kotlin.nameversion.PreferredDetectorNameVersionHandler;
