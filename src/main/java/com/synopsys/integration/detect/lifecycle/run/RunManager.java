@@ -125,8 +125,9 @@ public class RunManager {
 
         final RunResult runResult = new RunResult();
         final RunOptions runOptions = detectConfigurationFactory.createRunOptions();
-
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
+
+        logger.info(ReportConstants.RUN_SEPARATOR);
 
         if (productRunData.shouldUsePolarisProduct()) {
             runPolarisProduct(productRunData, detectConfiguration, directoryManager, eventSystem, connectionManager, executableRunner, detectToolFilter);

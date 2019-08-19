@@ -113,6 +113,7 @@ import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetecta
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
+import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonDiscoverer;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
@@ -155,7 +156,9 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLineLevelP
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
+
 import freemarker.template.Configuration;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
@@ -166,6 +169,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
 import java.io.File;
 import java.util.Optional;
 
@@ -404,6 +408,11 @@ public class DetectableBeanConfiguration {
     @Bean
     public NpmCliExtractor npmCliExtractor() {
         return new NpmCliExtractor(executableRunner, npmCliDependencyFinder(), detectableOptionFactory.createNpmCliExtractorOptions());
+    }
+
+    @Bean
+    public NpmPackageJsonDiscoverer npmPackageJsonDiscoverer() {
+        return new NpmPackageJsonDiscoverer(gson);
     }
 
     @Bean
@@ -748,7 +757,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public NpmCliDetectable npmCliBomTool(final DetectableEnvironment environment) {
-        return new NpmCliDetectable(environment, fileFinder, detectExecutableResolver, npmCliExtractor());
+        return new NpmCliDetectable(environment, fileFinder, detectExecutableResolver, npmCliExtractor(), npmPackageJsonDiscoverer());
     }
 
     @Bean
