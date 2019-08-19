@@ -7,7 +7,9 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.synopsys.integration.detect.kotlin.nameversion.DetectorNameVersionDecider;
+import com.synopsys.integration.detect.kotlin.nameversion.DetectorNameVersionHandler;
+import com.synopsys.integration.detect.kotlin.nameversion.DetectorProjectInfoMetadata;
+import com.synopsys.integration.detect.kotlin.nameversion.PreferredDetectorNameVersionHandler;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.util.NameVersion;
@@ -112,18 +114,29 @@ public class ProjectNameDeciderTests {
         assertNoProject(DetectorType.GRADLE, possibilities);
     }
 
-    private void assertProject(final String projectName, final DetectorType preferred, final List<DetectorProjectInfo> possibilities) throws DetectUserFriendlyException {
-        final DetectorNameVersionDecider decider = new DetectorNameVersionDecider();
-        final Optional<NameVersion> chosen = decider.decideProjectNameVersion(possibilities, preferred);
+    private Optional<NameVersion> decide(final DetectorType preferred, final List<DetectorProjectInfo> possibilities) {
+        final DetectorNameVersionHandler decider;
+        if (preferred != null) {
+            decider = new PreferredDetectorNameVersionHandler(preferred);
+        } else {
+            decider = new DetectorNameVersionHandler();
+        }
+        for (final DetectorProjectInfo possibility : possibilities) {
+            if (decider.willAccept(new DetectorProjectInfoMetadata(possibility.getDetectorType(), possibility.getDepth()))) {
+                decider.accept(possibility);
+            }
+        }
+        return decider.finalDecision().getChosenNameVersion();
+    }
 
+    private void assertProject(final String projectName, final DetectorType preferred, final List<DetectorProjectInfo> possibilities) throws DetectUserFriendlyException {
+        Optional<NameVersion> chosen = decide(preferred, possibilities);
         Assert.assertTrue(chosen.isPresent());
         Assert.assertEquals(chosen.get().getName(), projectName);
     }
 
     private void assertNoProject(final DetectorType preferred, final List<DetectorProjectInfo> possibilities) throws DetectUserFriendlyException {
-        final DetectorNameVersionDecider decider = new DetectorNameVersionDecider();
-        final Optional<NameVersion> chosen = decider.decideProjectNameVersion(possibilities, preferred);
-
+        Optional<NameVersion> chosen = decide(preferred, possibilities);
         Assert.assertFalse(chosen.isPresent());
     }
 
