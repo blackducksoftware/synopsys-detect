@@ -7,9 +7,11 @@ import java.io.File;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonDiscoverer;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 
@@ -29,7 +31,7 @@ public class NpmCliDetectableTest {
         Mockito.when(environment.getDirectory()).thenReturn(dir);
         Mockito.when(fileFinder.findFile(dir, PACKAGE_JSON_FILENAME)).thenReturn(new File(PACKAGE_JSON_FILENAME));
 
-        final NpmCliDetectable detectable = new NpmCliDetectable(environment, fileFinder, npmResolver, npmCliExtractor);
+        final NpmCliDetectable detectable = new NpmCliDetectable(environment, fileFinder, npmResolver, npmCliExtractor, new NpmPackageJsonDiscoverer(new Gson()));
 
         assertTrue(detectable.applicable().getPassed());
     }
