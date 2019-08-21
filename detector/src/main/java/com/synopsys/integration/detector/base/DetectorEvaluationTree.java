@@ -26,9 +26,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.io.File;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
 public class DetectorEvaluationTree {
@@ -50,16 +52,16 @@ public class DetectorEvaluationTree {
         this.detectorRuleSet = detectorRuleSet;
     }
 
-    public List<DetectorEvaluationTree> asFlatList(){
+    public List<DetectorEvaluationTree> asFlatList() {
         List<DetectorEvaluationTree> evaluationTrees = new ArrayList<DetectorEvaluationTree>();
         evaluationTrees.add(this);
-        for (DetectorEvaluationTree detectorEvaluationTree : children){
+        for (DetectorEvaluationTree detectorEvaluationTree : children) {
             evaluationTrees.addAll(detectorEvaluationTree.asFlatList());
         }
         return evaluationTrees;
     }
 
-    public List<DetectorEvaluation> allDescendentEvaluations(){
+    public List<DetectorEvaluation> allDescendentEvaluations() {
         return asFlatList()
                    .stream()
                    .flatMap(it -> it.getOrderedEvaluations().stream())
@@ -76,6 +78,12 @@ public class DetectorEvaluationTree {
 
     public List<DetectorEvaluation> getOrderedEvaluations() {
         return orderedEvaluations;
+    }
+
+    public Optional<DetectorEvaluation> getEvaluation(DetectorRule rule) {
+        return orderedEvaluations.stream()
+                   .filter(detectorEvaluation1 -> detectorEvaluation1.getDetectorRule().equals(rule))
+                   .findFirst();
     }
 
     public Set<DetectorEvaluationTree> getChildren() {
