@@ -24,7 +24,9 @@ package com.synopsys.integration.detect.tool.detector;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -141,7 +143,7 @@ public class DetectorTool {
         if (preferredProjectDetector.isPresent()) {
             detectorNameVersionHandler = new PreferredDetectorNameVersionHandler(preferredProjectDetector.get());
         } else {
-            detectorNameVersionHandler = new DetectorNameVersionHandler();
+            detectorNameVersionHandler = new DetectorNameVersionHandler(Collections.singletonList(DetectorType.GIT));
         }
 
         detectorEvaluator.discoveryEvaluation(rootEvaluation, new DetectDiscoveryFilter(eventSystem, detectorNameVersionHandler));

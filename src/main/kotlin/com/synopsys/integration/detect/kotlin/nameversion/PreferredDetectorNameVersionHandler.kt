@@ -14,7 +14,7 @@ Thus, instead of a 'Decider' that decides at the end, we have a handler that tak
 The handler will accept until it has the 'decided' discovery and then rejects all future discoveries.
 This allows discovery to run only the minimum amount of discoveries needed.
  */
-class PreferredDetectorNameVersionHandler(private val preferredDetectorType: DetectorType) : DetectorNameVersionHandler() {
+class PreferredDetectorNameVersionHandler(private val preferredDetectorType: DetectorType) : DetectorNameVersionHandler(emptyList()) {
     private val logger: Logger = LoggerFactory.getLogger(PreferredDetectorNameVersionHandler::class.java)
 
     override fun willAccept(metadata: DetectorProjectInfoMetadata): Boolean {

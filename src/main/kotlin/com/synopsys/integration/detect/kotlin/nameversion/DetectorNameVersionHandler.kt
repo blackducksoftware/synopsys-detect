@@ -15,7 +15,7 @@ Thus, instead of a 'Decider' that decides at the end, we have a handler that tak
 The handler will accept until it has the 'decided' discovery and then rejects all future discoveries.
 This allows discovery to run only the minimum amount of discoveries needed.
  */
-open class DetectorNameVersionHandler {
+open class DetectorNameVersionHandler(val lowPriorityDetectorTypes: List<DetectorType>) {
     private val logger: Logger = LoggerFactory.getLogger(DetectorNameVersionHandler::class.java)
 
     val lowestDepth = ArrayList<DetectorProjectInfo>()
@@ -56,11 +56,11 @@ open class DetectorNameVersionHandler {
     }
 
     private fun decideProjectNameVersionArbitrarily(allPossibilities: List<DetectorProjectInfo>): NameVersionDecision {
-        val notGitPossibilities = allPossibilities.filter { it.detectorType != DetectorType.GIT }
+        val normalPossibilities = allPossibilities.filter { !lowPriorityDetectorTypes.contains(it.detectorType) }
 
         val chosenPossibilities = when {
-            notGitPossibilities.isEmpty() -> allPossibilities
-            else -> notGitPossibilities
+            normalPossibilities.isEmpty() -> allPossibilities
+            else -> normalPossibilities
         }
 
         val chosen = chosenPossibilities.minBy { it.nameVersion.name }
