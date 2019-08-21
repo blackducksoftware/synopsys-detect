@@ -23,7 +23,9 @@
 package com.synopsys.integration.detect.workflow.report;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReporterUtils;
@@ -31,7 +33,7 @@ import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
-public class ErrorSummaryReporter {
+public class DetectorIssueSummaryReporter {
 
     public void writeSummary(final ReportWriter writer, final DetectorEvaluationTree rootEvaluationTree) {
         writeSummaries(writer, rootEvaluationTree.asFlatList());
@@ -59,8 +61,6 @@ public class ErrorSummaryReporter {
             ReporterUtils.printFooter(writer);
         }
     }
-
-
 
     private void writeEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, final Function<DetectorEvaluation, String> reason) {
         if (evaluations.size() > 0) {
