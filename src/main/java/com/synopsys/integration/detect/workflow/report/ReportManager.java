@@ -43,7 +43,7 @@ public class ReportManager {
     private final PreparationSummaryReporter preparationSummaryReporter;
     private final ExtractionSummaryReporter extractionSummaryReporter;
     private final DiscoverySummaryReporter discoverySummaryReporter;
-    private final ErrorSummaryReporter errorSummaryReporter;
+    private final DetectorIssueSummaryReporter detectorIssueSummaryReporter;
 
     private final ReportWriter logWriter = new InfoLogReportWriter();
     private final ReportWriter traceLogWriter = new TraceLogReportWriter();
@@ -51,20 +51,20 @@ public class ReportManager {
     private final DiscoveryLogger discoveryLogger;
 
     public static ReportManager createDefault(EventSystem eventSystem) {
-        return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new DiscoverySummaryReporter(), new ErrorSummaryReporter(), new ExtractionLogger(),
+        return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new DiscoverySummaryReporter(), new DetectorIssueSummaryReporter(), new ExtractionLogger(),
             new DiscoveryLogger());
     }
 
     public ReportManager(final EventSystem eventSystem,
         final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter,
-        final DiscoverySummaryReporter discoverySummaryReporter, ErrorSummaryReporter errorSummaryReporter,
+        final DiscoverySummaryReporter discoverySummaryReporter, DetectorIssueSummaryReporter detectorIssueSummaryReporter,
         ExtractionLogger extractionLogger, final DiscoveryLogger discoveryLogger) {
         this.eventSystem = eventSystem;
         this.preparationSummaryReporter = preparationSummaryReporter;
         this.extractionSummaryReporter = extractionSummaryReporter;
         this.searchSummaryReporter = searchSummaryReporter;
         this.discoverySummaryReporter = discoverySummaryReporter;
-        this.errorSummaryReporter = errorSummaryReporter;
+        this.detectorIssueSummaryReporter = detectorIssueSummaryReporter;
         this.extractionLogger = extractionLogger;
         this.discoveryLogger = discoveryLogger;
 
@@ -133,7 +133,7 @@ public class ReportManager {
 
     public void printDetectorIssues() {
         if (detectorToolResult != null && detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
-            errorSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get());
+            detectorIssueSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get());
         }
     }
 }
