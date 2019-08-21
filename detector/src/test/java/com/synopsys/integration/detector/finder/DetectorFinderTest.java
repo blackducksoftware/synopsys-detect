@@ -58,7 +58,7 @@ public class DetectorFinderTest {
         final File subSubDir2 = new File(subDir, "subSubDir2");
         subSubDir2.mkdir();
 
-        final DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0));
+        final DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0), new HashMap<>());
         final Predicate<File> fileFilter = f -> true;
         final int maximumDepth = 10;
         final DetectorFinderOptions options = new DetectorFinderOptions(fileFilter, maximumDepth);
@@ -97,7 +97,7 @@ public class DetectorFinderTest {
         final File regularDir = new File(subDir, "regularDir");
         regularDir.mkdir();
 
-        final DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0));
+        final DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0), new HashMap<>(0));
         final Predicate<File> fileFilter = f -> {
             return true;
         };

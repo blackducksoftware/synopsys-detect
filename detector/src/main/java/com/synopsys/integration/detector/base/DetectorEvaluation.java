@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detector.base;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.Detectable;
@@ -48,6 +50,9 @@ public class DetectorEvaluation {
     private ExtractionEnvironment extractionEnvironment;
     private Extraction extraction;
     private Discovery discovery;
+
+    private DetectorEvaluation fallbackTo;
+    private DetectorEvaluation fallbackFrom;
 
     // The detector evaluation is built over time. The only thing you need at the start is the rule this evaluation represents.
     public DetectorEvaluation(DetectorRule detectorRule) {
@@ -138,8 +143,27 @@ public class DetectorEvaluation {
         return isApplicable() && this.extractable != null && this.extractable.getPassed();
     }
 
+    public boolean isFallbackExtractable() {
+        return fallbackTo != null && (fallbackTo.isExtractable() || fallbackTo.isFallbackExtractable());
+    }
+
+    public boolean isPreviousExtractable() {
+        return fallbackFrom != null && (fallbackFrom.isExtractable() || fallbackFrom.isPreviousExtractable());
+    }
+
     public String getExtractabilityMessage() {
         return getDetectorResultDescription(extractable).orElse(NO_MESSAGE);
+    }
+
+    public Optional<DetectorEvaluation> getSuccessfullFallback() {
+        if (fallbackTo != null) {
+            if (fallbackTo.isExtractable()) {
+                return Optional.of(fallbackTo);
+            } else {
+                return fallbackTo.getSuccessfullFallback();
+            }
+        }
+        return Optional.empty();
     }
 
     private Optional<String> getDetectorResultDescription(final DetectorResult detectorResult) {
@@ -174,5 +198,31 @@ public class DetectorEvaluation {
 
     public void setDetectable(final Detectable detectable) {
         this.detectable = detectable;
+    }
+
+    public DetectorEvaluation getFallbackTo() {
+        return fallbackTo;
+    }
+
+    public List<DetectorEvaluation> getFallbacks() {
+        if (fallbackTo != null) {
+            List<DetectorEvaluation> fallbacks = new ArrayList<>();
+            fallbacks.add(fallbackTo);
+            fallbacks.addAll(fallbackTo.getFallbacks());
+            return fallbacks;
+        }
+        return new ArrayList<>();
+    }
+
+    public void setFallbackTo(final DetectorEvaluation fallbackTo) {
+        this.fallbackTo = fallbackTo;
+    }
+
+    public DetectorEvaluation getFallbackFrom() {
+        return fallbackFrom;
+    }
+
+    public void setFallbackFrom(final DetectorEvaluation fallbackFrom) {
+        this.fallbackFrom = fallbackFrom;
     }
 }

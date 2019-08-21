@@ -38,6 +38,7 @@ import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FallbackNotNeededDetectableResult;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.result.DetectorResult;
@@ -67,8 +68,10 @@ public class DetectorEvaluator {
 
             final DetectorRule detectorRule = detectorEvaluation.getDetectorRule();
             logger.trace("Evaluating detector: " + detectorRule.getDescriptiveName());
+
             final SearchEnvironment searchEnvironment = new SearchEnvironment(detectorEvaluationTree.getDepthFromRoot(), evaluationOptions.getDetectorFilter(), evaluationOptions.isForceNested(), appliedInParent, appliedSoFar);
             detectorEvaluation.setSearchEnvironment(searchEnvironment);
+
             final DetectorResult searchableResult = detectorRuleSetEvaluator.evaluateSearchable(detectorEvaluationTree.getDetectorRuleSet(), detectorEvaluation.getDetectorRule(), searchEnvironment);
             detectorEvaluation.setSearchable(searchableResult);
 
@@ -120,13 +123,33 @@ public class DetectorEvaluator {
                 getDetectorEvaluatorListener().ifPresent(it -> it.extractableStarted(detectorEvaluation));
 
                 logger.trace("Detector was searchable and applicable, will check extractable: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
-                final Detectable detectable = detectorEvaluation.getDetectable();
-                DetectableResult detectableExtractableResult;
-                try {
-                    detectableExtractableResult = detectable.extractable();
-                } catch (final DetectableException e) {
-                    detectableExtractableResult = new ExceptionDetectableResult(e);
+
+                logger.trace("Checking to see if this detector is a fallback detector.");
+                DetectableResult detectableExtractableResult = null;
+                Optional<DetectorRule> fallbackFrom = detectorEvaluationTree.getDetectorRuleSet().getFallbackFrom(detectorEvaluation.getDetectorRule());
+                if (fallbackFrom.isPresent()) {
+                    Optional<DetectorEvaluation> fallbackEvaluationOptional = detectorEvaluationTree.getEvaluation(fallbackFrom.get());
+
+                    if (fallbackEvaluationOptional.isPresent()) {
+                        DetectorEvaluation fallbackEvaluation = fallbackEvaluationOptional.get();
+                        fallbackEvaluation.setFallbackTo(detectorEvaluation);
+                        detectorEvaluation.setFallbackFrom(fallbackEvaluation);
+
+                        if (fallbackEvaluation.isExtractable()) {
+                            detectableExtractableResult = new FallbackNotNeededDetectableResult(fallbackEvaluation.getDetectable());
+                        }
+                    }
                 }
+
+                if (detectableExtractableResult == null) {
+                    final Detectable detectable = detectorEvaluation.getDetectable();
+                    try {
+                        detectableExtractableResult = detectable.extractable();
+                    } catch (final DetectableException e) {
+                        detectableExtractableResult = new ExceptionDetectableResult(e);
+                    }
+                }
+
                 final DetectorResult extractableResult = new DetectorResult(detectableExtractableResult.getPassed(), detectableExtractableResult.toDescription());
                 detectorEvaluation.setExtractable(extractableResult);
                 if (detectorEvaluation.isExtractable()) {
