@@ -15,7 +15,7 @@ Thus, instead of a 'Decider' that decides at the end, we have a handler that tak
 The handler will accept until it has the 'decided' discovery and then rejects all future discoveries.
 This allows discovery to run only the minimum amount of discoveries needed.
  */
-open class DetectorNameVersionHandler(val lowPriorityDetectorTypes: List<DetectorType>) {
+open class DetectorNameVersionHandler(private val lowPriorityDetectorTypes: List<DetectorType>) {
     private val logger: Logger = LoggerFactory.getLogger(DetectorNameVersionHandler::class.java)
 
     val lowestDepth = ArrayList<DetectorProjectInfo>()
