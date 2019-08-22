@@ -81,10 +81,13 @@ public class DetectorIssueSummaryReporter {
     private void writeFallbackEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, final Function<DetectorEvaluation, String> reason) {
         if (evaluations.size() > 0) {
             evaluations.stream().forEach(evaluation -> {
-                writer.writeLine(prefix + evaluation.getDetectorRule().getDescriptiveName());
                 Optional<DetectorEvaluation> fallback = evaluation.getSuccessfullFallback();
-                fallback.ifPresent(detectorEvaluation -> writer.writeLine(spacer + "Fallback: " + detectorEvaluation.getDetectorRule().getDescriptiveName()));
-                writer.writeLine(spacer + "Reason: " + reason.apply(evaluation));
+                fallback.ifPresent(detectorEvaluation -> {
+                    writer.writeLine(prefix + detectorEvaluation.getDetectorRule().getDescriptiveName());
+                    writer.writeLine(spacer + "Preferred Detector: " + evaluation.getDetectorRule().getDescriptiveName());
+                    writer.writeLine(spacer + "Reason: " + reason.apply(evaluation));
+                });
+
             });
         }
     }

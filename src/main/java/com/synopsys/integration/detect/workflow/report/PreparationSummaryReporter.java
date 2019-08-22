@@ -56,10 +56,10 @@ public class PreparationSummaryReporter {
             if (ready.size() > 0 || not_extractable.size() > 0) {
                 lines.add(detectorEvaluationTree.getDirectory().toString());
                 if (ready.size() > 0) {
-                    lines.add("\t  READY: " + ready.stream()
-                                                  .map(it -> it.getDetectorRule().getDescriptiveName())
-                                                  .sorted()
-                                                  .collect(Collectors.joining(", ")));
+                    lines.add("\t    READY: " + ready.stream()
+                                                    .map(it -> it.getDetectorRule().getDescriptiveName())
+                                                    .sorted()
+                                                    .collect(Collectors.joining(", ")));
                 }
                 if (failed_with_fallback.size() > 0) {
                     lines.addAll(failed_with_fallback.stream()
@@ -69,13 +69,13 @@ public class PreparationSummaryReporter {
                 }
                 if (failed_not_skipped.size() > 0) {
                     lines.addAll(failed_not_skipped.stream()
-                                     .map(it -> "\t FAILED: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
+                                     .map(it -> "\t   FAILED: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
                                      .sorted()
                                      .collect(Collectors.toList()));
                 }
                 if (skipped_fallbacks.size() > 0) {
                     lines.addAll(skipped_fallbacks.stream()
-                                     .map(it -> "\tSKIPPED: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
+                                     .map(it -> "\t  SKIPPED: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
                                      .sorted()
                                      .collect(Collectors.toList()));
                 }
