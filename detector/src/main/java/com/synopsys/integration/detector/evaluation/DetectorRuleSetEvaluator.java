@@ -63,7 +63,7 @@ public class DetectorRuleSetEvaluator {
             if (environment.getAppliedToParent().stream().anyMatch(parentApplied -> parentApplied.equals(detectorRule))) {
                 return new NotSelfNestableDetectorResult();
             }
-        } else if (environment.getAppliedToParent().stream().anyMatch(it -> it.getDetectorType() != DetectorType.GIT)) {
+        } else if (environment.getAppliedToParent().stream().anyMatch(it -> !it.isNestInvisible())) {
             return new NotNestableDetectorResult();
         }
 
