@@ -97,7 +97,7 @@ public class DetectorRuleFactory {
 
         final DetectorRule gitParse = ruleSet.addDetector(DetectorType.GIT, "Git Parse", detectableFactory::createGitParseDetectable).defaults().build();
         final DetectorRule gitCli = ruleSet.addDetector(DetectorType.GIT, "Git Cli", detectableFactory::createGitCliDetectable).defaults().build();
-        ruleSet.yield(gitParse).to(gitCli);
+        ruleSet.fallback(gitCli).to(gitParse);
 
         return ruleSet.build();
     }
@@ -140,8 +140,8 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", detectableFactory::createSbtResolutionCacheDetectable).defaults().build();
 
-        final DetectorRule gitParse = ruleSet.addDetector(DetectorType.GIT, "Git Parse", detectableFactory::createGitParseDetectable).defaults().build();
-        final DetectorRule gitCli = ruleSet.addDetector(DetectorType.GIT, "Git Cli", detectableFactory::createGitCliDetectable).defaults().build();
+        final DetectorRule gitParse = ruleSet.addDetector(DetectorType.GIT, "Git Parse", detectableFactory::createGitParseDetectable).defaults().invisibleToNesting().build();
+        final DetectorRule gitCli = ruleSet.addDetector(DetectorType.GIT, "Git Cli", detectableFactory::createGitCliDetectable).defaults().invisibleToNesting().build();
         ruleSet.yield(gitParse).to(gitCli);
 
         return ruleSet.build();

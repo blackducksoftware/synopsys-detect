@@ -188,7 +188,6 @@ public class DetectableFactory implements BeanFactoryAware {
     }
 
     public PipInspectorDetectable createPipInspectorDetectable(final DetectableEnvironment environment) {
-        //final String requirementsFile = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None);
         return beanFactory.getBean(PipInspectorDetectable.class, environment);
     }
 

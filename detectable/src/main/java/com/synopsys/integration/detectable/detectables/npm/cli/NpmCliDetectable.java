@@ -23,9 +23,14 @@
 package com.synopsys.integration.detectable.detectables.npm.cli;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+
+import org.apache.commons.io.FileUtils;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.Discovery;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -36,6 +41,8 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NpmRunInstallDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonDiscoverer;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
 public class NpmCliDetectable extends Detectable {
     public static final String NODE_MODULES = "node_modules";
@@ -44,19 +51,27 @@ public class NpmCliDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final NpmResolver npmResolver;
     private final NpmCliExtractor npmCliExtractor;
+    private final NpmPackageJsonDiscoverer npmPackageJsonDiscoverer;
 
+    private File packageJson;
     private File npmExe;
 
-    public NpmCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NpmResolver npmResolver, final NpmCliExtractor npmCliExtractor) {
+    public NpmCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NpmResolver npmResolver, final NpmCliExtractor npmCliExtractor, final NpmPackageJsonDiscoverer npmPackageJsonDiscoverer) {
         super(environment, "Npm Cli", "NPM");
         this.fileFinder = fileFinder;
         this.npmResolver = npmResolver;
         this.npmCliExtractor = npmCliExtractor;
+        this.npmPackageJsonDiscoverer = npmPackageJsonDiscoverer;
+    }
+
+    @Override
+    public Discovery discover(final ExtractionEnvironment extractionEnvironment) {
+        return npmPackageJsonDiscoverer.discover(packageJson);
     }
 
     @Override
     public DetectableResult applicable() {
-        final File packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
+        packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
 
         if (packageJson == null) {
             return new FileNotFoundDetectableResult(PACKAGE_JSON);

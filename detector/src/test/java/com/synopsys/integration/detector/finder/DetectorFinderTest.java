@@ -3,6 +3,7 @@ package com.synopsys.integration.detector.finder;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assume;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
@@ -13,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -58,7 +58,7 @@ public class DetectorFinderTest {
         final File subSubDir2 = new File(subDir, "subSubDir2");
         subSubDir2.mkdir();
 
-        final DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0));
+        final DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0), new HashMap<>());
         final Predicate<File> fileFilter = f -> true;
         final int maximumDepth = 10;
         final DetectorFinderOptions options = new DetectorFinderOptions(fileFilter, maximumDepth);
@@ -97,8 +97,10 @@ public class DetectorFinderTest {
         final File regularDir = new File(subDir, "regularDir");
         regularDir.mkdir();
 
-        final DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0));
-        final Predicate<File> fileFilter = f -> { return true; };
+        final DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0), new HashMap<>(0));
+        final Predicate<File> fileFilter = f -> {
+            return true;
+        };
         final int maximumDepth = 10;
         final DetectorFinderOptions options = new DetectorFinderOptions(fileFilter, maximumDepth);
 
@@ -106,7 +108,7 @@ public class DetectorFinderTest {
         final Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options);
 
         // make sure the symlink was omitted from results
-//        final Set<DetectorEvaluationTree> subDirResults = tree.get().getChildren().iterator().next().getChildren();
+        //        final Set<DetectorEvaluationTree> subDirResults = tree.get().getChildren().iterator().next().getChildren();
         final Set<DetectorEvaluationTree> testDirs = tree.get().getChildren();
         DetectorEvaluationTree symLinkTestDir = null;
         for (DetectorEvaluationTree testDir : testDirs) {

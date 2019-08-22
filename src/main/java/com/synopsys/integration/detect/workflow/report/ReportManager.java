@@ -42,30 +42,40 @@ public class ReportManager {
     private final SearchSummaryReporter searchSummaryReporter;
     private final PreparationSummaryReporter preparationSummaryReporter;
     private final ExtractionSummaryReporter extractionSummaryReporter;
-    private final ErrorSummaryReporter errorSummaryReporter;
+    private final DiscoverySummaryReporter discoverySummaryReporter;
+    private final DetectorIssueSummaryReporter detectorIssueSummaryReporter;
 
     private final ReportWriter logWriter = new InfoLogReportWriter();
     private final ReportWriter traceLogWriter = new TraceLogReportWriter();
     private final ExtractionLogger extractionLogger;
+    private final DiscoveryLogger discoveryLogger;
 
     public static ReportManager createDefault(EventSystem eventSystem) {
-        return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new ErrorSummaryReporter(), new ExtractionLogger());
+        return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new DiscoverySummaryReporter(), new DetectorIssueSummaryReporter(), new ExtractionLogger(),
+            new DiscoveryLogger());
     }
 
     public ReportManager(final EventSystem eventSystem,
-        final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter, ErrorSummaryReporter errorSummaryReporter,
-        ExtractionLogger extractionLogger) {
+        final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter,
+        final DiscoverySummaryReporter discoverySummaryReporter, DetectorIssueSummaryReporter detectorIssueSummaryReporter,
+        ExtractionLogger extractionLogger, final DiscoveryLogger discoveryLogger) {
         this.eventSystem = eventSystem;
         this.preparationSummaryReporter = preparationSummaryReporter;
         this.extractionSummaryReporter = extractionSummaryReporter;
         this.searchSummaryReporter = searchSummaryReporter;
-        this.errorSummaryReporter = errorSummaryReporter;
+        this.discoverySummaryReporter = discoverySummaryReporter;
+        this.detectorIssueSummaryReporter = detectorIssueSummaryReporter;
         this.extractionLogger = extractionLogger;
+        this.discoveryLogger = discoveryLogger;
 
         eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event));
         eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event));
         eventSystem.registerListener(Event.DetectorsComplete, event -> bomToolsComplete(event));
         eventSystem.registerListener(Event.CodeLocationsCalculated, event -> codeLocationsCompleted(event.getCodeLocationNames()));
+
+        eventSystem.registerListener(Event.DiscoveryCount, event -> discoveryCount(event));
+        eventSystem.registerListener(Event.DiscoveryStarted, event -> discoveryStarted(event));
+        eventSystem.registerListener(Event.DiscoveryEnded, event -> discoveryEnded(event));
 
         eventSystem.registerListener(Event.ExtractionCount, event -> exractionCount(event));
         eventSystem.registerListener(Event.ExtractionStarted, event -> exractionStarted(event));
@@ -82,6 +92,18 @@ public class ReportManager {
 
     public void preparationsCompleted(final DetectorEvaluationTree detectorEvaluationTree) {
         preparationSummaryReporter.write(logWriter, detectorEvaluationTree);
+    }
+
+    public void discoveryCount(final Integer count) {
+        discoveryLogger.setDiscoveryCount(count);
+    }
+
+    public void discoveryStarted(final DetectorEvaluation detectorEvaluation) {
+        discoveryLogger.discoveryStarted(detectorEvaluation);
+    }
+
+    public void discoveryEnded(final DetectorEvaluation detectorEvaluation) {
+        discoveryLogger.discoveryEnded(detectorEvaluation);
     }
 
     public void exractionCount(final Integer count) {
@@ -104,13 +126,14 @@ public class ReportManager {
 
     public void codeLocationsCompleted(final Map<DetectCodeLocation, String> codeLocationNameMap) {
         if (detectorToolResult != null && detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
+            discoverySummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get());
             extractionSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get(), detectorToolResult.codeLocationMap, codeLocationNameMap);
         }
     }
 
     public void printDetectorIssues() {
         if (detectorToolResult != null && detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
-            errorSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get());
+            detectorIssueSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get());
         }
     }
 }

@@ -23,7 +23,9 @@
 package com.synopsys.integration.detect.workflow.report;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReporterUtils;
@@ -31,7 +33,7 @@ import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
-public class ErrorSummaryReporter {
+public class DetectorIssueSummaryReporter {
 
     public void writeSummary(final ReportWriter writer, final DetectorEvaluationTree rootEvaluationTree) {
         writeSummaries(writer, rootEvaluationTree.asFlatList());
@@ -43,14 +45,21 @@ public class ErrorSummaryReporter {
             final List<DetectorEvaluation> excepted = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionException);
             final List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionFailure);
             final List<DetectorEvaluation> notExtractable = DetectorEvaluationUtils.filteredChildren(tree, (evaluation) -> evaluation.isApplicable() && !evaluation.isExtractable());
-            if (excepted.size() > 0 || failed.size() > 0 || notExtractable.size() > 0) {
+            List<DetectorEvaluation> extractable_failed = notExtractable.stream().filter(it -> !it.isFallbackExtractable() && !it.isPreviousExtractable()).collect(Collectors.toList());
+            //For now, log only ones that used fallback.
+            List<DetectorEvaluation> extractable_failed_but_fallback = notExtractable.stream().filter(it -> it.isFallbackExtractable()).collect(Collectors.toList());
+            //List<DetectorEvaluation> extractable_failed_but_skipped = notExtractable.stream().filter(it -> it.isPreviousExtractable()).collect(Collectors.toList());
+
+            if (excepted.size() > 0 || failed.size() > 0 || extractable_failed.size() > 0 || extractable_failed_but_fallback.size() > 0) {
                 if (!printedOne) {
                     printedOne = true;
                     ReporterUtils.printHeader(writer, "Detector Issue Summary");
                 }
                 writer.writeLine(tree.getDirectory().toString());
                 final String spacer = "\t\t";
-                writeEvaluationsIfNotEmpty(writer, "\tNot Extractable: ", spacer, notExtractable, DetectorEvaluation::getExtractabilityMessage);
+                writeFallbackEvaluationsIfNotEmpty(writer, "\tUsed Fallback: ", spacer, extractable_failed_but_fallback, DetectorEvaluation::getExtractabilityMessage);
+                //writeEvaluationsIfNotEmpty(writer, "\tSkipped: ", spacer, extractable_failed_but_skipped, DetectorEvaluation::getExtractabilityMessage);
+                writeEvaluationsIfNotEmpty(writer, "\tNot Extractable: ", spacer, extractable_failed, DetectorEvaluation::getExtractabilityMessage);
                 writeEvaluationsIfNotEmpty(writer, "\tFailure: ", spacer, failed, detectorEvaluation -> detectorEvaluation.getExtraction().getDescription());
                 writeEvaluationsIfNotEmpty(writer, "\tException: ", spacer, excepted, detectorEvaluation -> ExceptionUtil.oneSentenceDescription(detectorEvaluation.getExtraction().getError()));
             }
@@ -60,13 +69,25 @@ public class ErrorSummaryReporter {
         }
     }
 
-
-
     private void writeEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, final Function<DetectorEvaluation, String> reason) {
         if (evaluations.size() > 0) {
             evaluations.stream().forEach(evaluation -> {
                 writer.writeLine(prefix + evaluation.getDetectorRule().getDescriptiveName());
                 writer.writeLine(spacer + reason.apply(evaluation));
+            });
+        }
+    }
+
+    private void writeFallbackEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, final Function<DetectorEvaluation, String> reason) {
+        if (evaluations.size() > 0) {
+            evaluations.stream().forEach(evaluation -> {
+                Optional<DetectorEvaluation> fallback = evaluation.getSuccessfullFallback();
+                fallback.ifPresent(detectorEvaluation -> {
+                    writer.writeLine(prefix + detectorEvaluation.getDetectorRule().getDescriptiveName());
+                    writer.writeLine(spacer + "Preferred Detector: " + evaluation.getDetectorRule().getDescriptiveName());
+                    writer.writeLine(spacer + "Reason: " + reason.apply(evaluation));
+                });
+
             });
         }
     }

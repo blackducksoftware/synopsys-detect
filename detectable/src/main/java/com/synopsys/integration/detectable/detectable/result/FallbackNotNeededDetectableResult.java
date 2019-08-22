@@ -1,5 +1,5 @@
 /**
- * detector
+ * detectable
  *
  * Copyright (c) 2019 Synopsys, Inc.
  *
@@ -20,24 +20,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.evaluation;
+package com.synopsys.integration.detectable.detectable.result;
 
-import com.synopsys.integration.detector.base.DetectorEvaluation;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-public interface DetectorEvaluatorListener {
-    void applicableStarted(DetectorEvaluation detectorEvaluation);
+import com.synopsys.integration.detectable.Detectable;
 
-    void applicableEnded(DetectorEvaluation detectorEvaluation);
+public class FallbackNotNeededDetectableResult extends FailedDetectableResult {
+    private final Detectable passingDetectable;
 
-    void extractableStarted(DetectorEvaluation detectorEvaluation);
+    public FallbackNotNeededDetectableResult(final Detectable passingDetectable) {
+        this.passingDetectable = passingDetectable;
+    }
 
-    void extractableEnded(DetectorEvaluation detectorEvaluation);
-
-    void discoveryStarted(DetectorEvaluation detectorEvaluation);
-
-    void discoveryEnded(DetectorEvaluation detectorEvaluation);
-
-    void extractionStarted(DetectorEvaluation detectorEvaluation);
-
-    void extractionEnded(DetectorEvaluation detectorEvaluation);
+    @Override
+    public String toDescription() {
+        return "No fallback needed, detector passed: " + passingDetectable.getDescriptiveName();
+    }
 }

@@ -20,24 +20,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.evaluation;
+package com.synopsys.integration.detector.rule;
 
-import com.synopsys.integration.detector.base.DetectorEvaluation;
+public class DetectorRuleFallbackBuilder {
 
-public interface DetectorEvaluatorListener {
-    void applicableStarted(DetectorEvaluation detectorEvaluation);
+    private final DetectorRule failingDetector;
+    private DetectorRule fallbackToDetector;
 
-    void applicableEnded(DetectorEvaluation detectorEvaluation);
+    public DetectorRuleFallbackBuilder(final DetectorRule failingDetector) {
+        this.failingDetector = failingDetector;
+    }
 
-    void extractableStarted(DetectorEvaluation detectorEvaluation);
+    public DetectorRuleFallbackBuilder to(final DetectorRule Detector) {
+        this.fallbackToDetector = Detector;
+        return this;
+    }
 
-    void extractableEnded(DetectorEvaluation detectorEvaluation);
+    public DetectorRule getFailingDetector() {
+        return failingDetector;
+    }
 
-    void discoveryStarted(DetectorEvaluation detectorEvaluation);
-
-    void discoveryEnded(DetectorEvaluation detectorEvaluation);
-
-    void extractionStarted(DetectorEvaluation detectorEvaluation);
-
-    void extractionEnded(DetectorEvaluation detectorEvaluation);
+    public DetectorRule getFallbackToDetector() {
+        return fallbackToDetector;
+    }
 }

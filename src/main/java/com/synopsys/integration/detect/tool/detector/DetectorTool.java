@@ -24,7 +24,9 @@ package com.synopsys.integration.detect.tool.detector;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,15 +35,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.detect.kotlin.nameversion.DetectorEvaluationNameVersionDecider;
-import com.synopsys.integration.detect.kotlin.nameversion.DetectorNameVersionDecider;
+import com.synopsys.integration.detect.kotlin.nameversion.DetectorNameVersionHandler;
+import com.synopsys.integration.detect.kotlin.nameversion.NameVersionDecision;
+import com.synopsys.integration.detect.kotlin.nameversion.PreferredDetectorNameVersionHandler;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -58,7 +60,8 @@ import com.synopsys.integration.detector.finder.DetectorFinderDirectoryListExcep
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
-import com.synopsys.integration.util.NameVersion;
+
+import freemarker.template.utility.StringUtil;
 
 public class DetectorTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -74,7 +77,7 @@ public class DetectorTool {
         this.codeLocationConverter = codeLocationConverter;
     }
 
-    public DetectorToolResult performDetectors(final File directory, DetectorRuleSet detectorRuleSet, final DetectorFinderOptions detectorFinderOptions, DetectorEvaluationOptions evaluationOptions, final String projectBomTool,
+    public DetectorToolResult performDetectors(final File directory, DetectorRuleSet detectorRuleSet, final DetectorFinderOptions detectorFinderOptions, DetectorEvaluationOptions evaluationOptions, final String projectDetector,
         final String requiredDetectors)
         throws DetectUserFriendlyException {
         logger.info("Initializing detector system.");
@@ -114,28 +117,48 @@ public class DetectorTool {
         eventSystem.publishEvent(Event.ApplicableCompleted, applicable);
         eventSystem.publishEvent(Event.SearchCompleted, rootEvaluation);
 
-        logger.info("Starting detector preparation.");
+        logger.debug("Starting detector preparation.");
         detectorEvaluator.extractableEvaluation(rootEvaluation);
         eventSystem.publishEvent(Event.PreparationsCompleted, rootEvaluation);
 
-        logger.info("Starting detector extraction.");
+        logger.debug("Preparing detectors for discovery and extraction.");
+        detectorEvaluator.setupDiscoveryAndExtractions(rootEvaluation, extractionEnvironmentProvider::createExtractionEnvironment);
+
+        logger.debug("Counting detectors that will be evaluated.");
         final Integer extractionCount = Math.toIntExact(detectorEvaluations.stream()
                                                             .filter(DetectorEvaluation::isExtractable)
                                                             .count());
         eventSystem.publishEvent(Event.ExtractionCount, extractionCount);
+        eventSystem.publishEvent(Event.DiscoveryCount, extractionCount); //right now discovery and extraction are the same. -jp 8/14/19
 
-        logger.info("Total number of extractions: " + extractionCount);
+        logger.debug("Total number of detectors: " + extractionCount);
 
-        detectorEvaluator.extractionEvaluation(rootEvaluation, extractionEnvironmentProvider::createExtractionEnvironment);
+        logger.debug("Starting detector project discovery.");
+        Optional<DetectorType> preferredProjectDetector = Optional.empty();
+        if (StringUtils.isNotBlank(projectDetector)) {
+            preferredProjectDetector = preferredDetectorTypeFromString(projectDetector);
+        }
+
+        DetectorNameVersionHandler detectorNameVersionHandler;
+        if (preferredProjectDetector.isPresent()) {
+            detectorNameVersionHandler = new PreferredDetectorNameVersionHandler(preferredProjectDetector.get());
+        } else {
+            detectorNameVersionHandler = new DetectorNameVersionHandler(Collections.singletonList(DetectorType.GIT));
+        }
+
+        detectorEvaluator.discoveryEvaluation(rootEvaluation, new DetectDiscoveryFilter(eventSystem, detectorNameVersionHandler));
+        eventSystem.publishEvent(Event.DiscoveriesCompleted, rootEvaluation);
+
+        logger.debug("Starting detector extraction.");
+        detectorEvaluator.extractionEvaluation(rootEvaluation);
         eventSystem.publishEvent(Event.ExtractionsCompleted, rootEvaluation);
 
+        logger.debug("Finished detectors.");
         final Map<DetectorType, StatusType> statusMap = extractStatus(detectorEvaluations);
         statusMap.forEach((detectorType, statusType) -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(detectorType, statusType)));
         if (statusMap.containsValue(StatusType.FAILURE)) {
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "One or more detectors were not succesfull."));
         }
-
-        logger.info("Finished extractions.");
 
         final DetectorToolResult detectorToolResult = new DetectorToolResult();
 
@@ -152,10 +175,9 @@ public class DetectorTool {
 
         detectorToolResult.bomToolCodeLocations = new ArrayList<>(detectorToolResult.codeLocationMap.values());
 
-        final DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
-        final Optional<NameVersion> bomToolNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorEvaluations, projectBomTool);
-        detectorToolResult.bomToolProjectNameVersion = bomToolNameVersion;
-        logger.info("Finished evaluating detectors for project info.");
+        NameVersionDecision nameVersionDecision = detectorNameVersionHandler.finalDecision();
+        nameVersionDecision.printDescription(logger);
+        detectorToolResult.bomToolProjectNameVersion = nameVersionDecision.getChosenNameVersion();
 
         //Check required detector types
         RequiredDetectorChecker requiredDetectorChecker = new RequiredDetectorChecker();
@@ -167,7 +189,7 @@ public class DetectorTool {
         }
 
         //Completed.
-        logger.info("Finished running detectors.");
+        logger.debug("Finished running detectors.");
         eventSystem.publishEvent(Event.DetectorsComplete, detectorToolResult);
 
         return detectorToolResult;
@@ -190,6 +212,8 @@ public class DetectorTool {
                         logger.warn("An issue occurred in the detector system, an unknown evaluation status was created. Please don't do this again.");
                         statusType = StatusType.FAILURE;
                     }
+                } else if (detectorEvaluation.isFallbackExtractable() || detectorEvaluation.isPreviousExtractable()) {
+                    statusType = StatusType.SUCCESS;
                 } else {
                     statusType = StatusType.FAILURE;
                 }
@@ -199,5 +223,17 @@ public class DetectorTool {
             }
         }
         return statusMap;
+    }
+
+    private Optional<DetectorType> preferredDetectorTypeFromString(String detectorType) {
+        if (detectorType != null && StringUtils.isNotBlank(detectorType)) {
+            if (DetectorType.POSSIBLE_NAMES.contains(detectorType)) {
+                return Optional.of(DetectorType.valueOf(detectorType));
+            } else {
+                logger.info("A valid preferred detector type was not provided, deciding project name automatically.");
+                return Optional.empty();
+            }
+        }
+        return Optional.empty();
     }
 }

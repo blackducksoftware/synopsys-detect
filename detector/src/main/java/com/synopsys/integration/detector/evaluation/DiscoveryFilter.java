@@ -22,22 +22,9 @@
  */
 package com.synopsys.integration.detector.evaluation;
 
+import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 
-public interface DetectorEvaluatorListener {
-    void applicableStarted(DetectorEvaluation detectorEvaluation);
-
-    void applicableEnded(DetectorEvaluation detectorEvaluation);
-
-    void extractableStarted(DetectorEvaluation detectorEvaluation);
-
-    void extractableEnded(DetectorEvaluation detectorEvaluation);
-
-    void discoveryStarted(DetectorEvaluation detectorEvaluation);
-
-    void discoveryEnded(DetectorEvaluation detectorEvaluation);
-
-    void extractionStarted(DetectorEvaluation detectorEvaluation);
-
-    void extractionEnded(DetectorEvaluation detectorEvaluation);
+public interface DiscoveryFilter {
+    boolean shouldDiscover(DetectorEvaluation detectorEvaluation);
 }

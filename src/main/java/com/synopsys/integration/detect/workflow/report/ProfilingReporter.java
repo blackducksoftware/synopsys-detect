@@ -43,6 +43,9 @@ public class ProfilingReporter {
         writer.writeSeperator();
         writeReport(writer, detectorTimings.getExtractableTimings());
         writer.writeSeperator();
+        writer.writeLine("Discovery Times");
+        writer.writeSeperator();
+        writeReport(writer, detectorTimings.getDiscoveryTimings());
         writer.writeLine("Extraction Times");
         writer.writeSeperator();
         writeReport(writer, detectorTimings.getExtractionTimings());

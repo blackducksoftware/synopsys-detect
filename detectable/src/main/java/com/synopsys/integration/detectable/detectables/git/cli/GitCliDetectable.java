@@ -59,20 +59,15 @@ public class GitCliDetectable extends Detectable {
             return new FileNotFoundDetectableResult(GIT_DIRECTORY_NAME);
         }
 
-        try {
-            gitExecutable = gitResolver.resolveGit();
-            if (gitExecutable == null) {
-                throw new DetectableException();
-            }
-        } catch (final DetectableException exception) {
-            return new ExecutableNotFoundDetectableResult("git");
-        }
-
         return new PassedDetectableResult();
     }
 
     @Override
-    public DetectableResult extractable() {
+    public DetectableResult extractable() throws DetectableException {
+        gitExecutable = gitResolver.resolveGit();
+        if (gitExecutable == null) {
+            return new ExecutableNotFoundDetectableResult("git");
+        }
         return new PassedDetectableResult();
     }
 

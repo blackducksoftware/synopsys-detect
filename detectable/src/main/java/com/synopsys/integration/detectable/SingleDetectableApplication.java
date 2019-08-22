@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable;
 
 import java.io.File;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
@@ -35,6 +36,7 @@ import com.synopsys.integration.detectable.detectable.factory.ExtractorFactory;
 import com.synopsys.integration.detectable.detectable.factory.UtilityFactory;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
+import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonDiscoverer;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractorOptions;
@@ -65,7 +67,8 @@ public class SingleDetectableApplication {
         final ExecutableRunner executableRunner = new SimpleExecutableRunner();
         final NpmCliParser npmCliParser = new NpmCliParser(new ExternalIdFactory());
         final NpmCliExtractor npmCliExtractor = new NpmCliExtractor(executableRunner, npmCliParser, npmCliExtractorOptions);
-        final NpmCliDetectable npmCliDetectable = new NpmCliDetectable(environment, simpleFileFinder, npmResolver, npmCliExtractor);
+        final NpmPackageJsonDiscoverer npmPackageJsonDiscoverer = new NpmPackageJsonDiscoverer(new Gson());
+        final NpmCliDetectable npmCliDetectable = new NpmCliDetectable(environment, simpleFileFinder, npmResolver, npmCliExtractor, npmPackageJsonDiscoverer);
 
         //Extraction
         if (npmCliDetectable.applicable().getPassed()) {
