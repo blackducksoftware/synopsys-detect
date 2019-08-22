@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.workflow.project;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -119,7 +120,7 @@ public class ProjectNameDeciderTests {
         if (preferred != null) {
             decider = new PreferredDetectorNameVersionHandler(preferred);
         } else {
-            decider = new DetectorNameVersionHandler();
+            decider = new DetectorNameVersionHandler(Collections.singletonList(DetectorType.GIT));
         }
         for (final DetectorProjectInfo possibility : possibilities) {
             if (decider.willAccept(new DetectorProjectInfoMetadata(possibility.getDetectorType(), possibility.getDepth()))) {
