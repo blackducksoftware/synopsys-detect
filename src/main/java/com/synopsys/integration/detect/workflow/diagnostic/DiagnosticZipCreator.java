@@ -50,7 +50,7 @@ public class DiagnosticZipCreator {
             try (FileOutputStream fileStream = new FileOutputStream(zip)) {
                 try (ZipOutputStream outputStream = new ZipOutputStream(fileStream)) {
                     for (final File file : compressList) {
-                        compress(outputStream, outputDirectory.toPath(), file.toPath(), zip, runId);
+                        compress(outputStream, outputDirectory.toPath(), file.toPath(), runId);
                     }
                     logger.info("Diagnostics file created at: " + zip.getCanonicalPath());
                 }
@@ -83,7 +83,7 @@ public class DiagnosticZipCreator {
         }
     }
 
-    public void compress(final ZipOutputStream outputStream, final Path sourceDir, final Path toCompress, final File out, final String removePiece) throws IOException {
+    public void compress(final ZipOutputStream outputStream, final Path sourceDir, final Path toCompress, final String removePiece) throws IOException {
         Files.walkFileTree(toCompress, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(final Path file, final BasicFileAttributes attributes) {
