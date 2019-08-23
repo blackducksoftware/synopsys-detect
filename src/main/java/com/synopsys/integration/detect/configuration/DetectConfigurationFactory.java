@@ -27,16 +27,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.boot.context.properties.bind.BindResult;
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.context.properties.source.ConfigurationPropertySource;
-import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
-
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
+import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFileFilter;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFilter;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
@@ -45,7 +40,6 @@ import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.CustomFieldDocument;
-import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
@@ -221,5 +215,13 @@ public class DetectConfigurationFactory {
             return detectConfiguration.getLongProperty(DetectProperty.DETECT_REPORT_TIMEOUT, PropertyAuthority.None);
         }
 
+    }
+
+    public BinaryScanOptions createBinaryScanOptions() {
+        String singleTarget = detectConfiguration.getProperty(DetectProperty.DETECT_BINARY_SCAN_FILE, PropertyAuthority.None);
+        final String[] mutlipleTargets = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BINARY_SCAN_FILE_NAME_PATTERNS, PropertyAuthority.None);
+        final String codeLocationPrefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.None);
+        final String codeLocationSuffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.None);
+        return new BinaryScanOptions(singleTarget, Arrays.asList(mutlipleTargets), codeLocationPrefix, codeLocationSuffix);
     }
 }

@@ -64,6 +64,7 @@ public class DirectoryManager {
         Scan("scan"),
         Docker("docker"),
         Bdio("bdio"),
+        Binary("binary"),
         Shared("shared");
 
         private String directoryName;
@@ -180,6 +181,10 @@ public class DirectoryManager {
 
     public File getDockerOutputDirectory() {
         return getRunDirectory(RunDirectory.Docker);
+    }
+
+    public File getBinaryOutputDirectory() {
+        return getRunDirectory(RunDirectory.Binary);
     }
 
     public File getRelevantOutputDirectory() {

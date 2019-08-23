@@ -28,18 +28,43 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.compress.utils.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DetectZipUtil {
+    private final static Logger logger = LoggerFactory.getLogger(DetectZipUtil.class);
 
     public static void unzip(File zip, File dest) throws IOException {
         unzip(zip, dest, Charset.defaultCharset());
+    }
+
+    public static void zip(final File zip, final Map<String, Path> entries) throws IOException {
+        try (FileOutputStream fileStream = new FileOutputStream(zip)) {
+            try (ZipOutputStream outputStream = new ZipOutputStream(fileStream)) {
+                for (final Map.Entry<String, Path> entry : entries.entrySet()) {
+                    logger.info("Adding entry '{}' to zip as '{}'.", entry.getValue().toString(), entry.getKey());
+                    outputStream.putNextEntry(new ZipEntry(entry.getKey()));
+                    final byte[] bytes = Files.readAllBytes(entry.getValue());
+                    outputStream.write(bytes, 0, bytes.length);
+                    outputStream.closeEntry();
+                }
+            }
+        }
     }
 
     public static void unzip(File zip, File dest, Charset charset) throws IOException {
