@@ -82,7 +82,7 @@ public class ClangDetectable extends Detectable {
         selectedPackageManager = findPkgMgr(environment.getDirectory());
         if (selectedPackageManager == null) {
             logger.warn("Unable to execute any supported package manager; Please make sure that one of the supported clang package managers is on the PATH");
-            return new ExecutableNotFoundDetectableResult("Any supported Linux package manager");
+            return new ExecutableNotFoundDetectableResult("supported Linux package manager");
         }
         return new PassedDetectableResult();
     }
