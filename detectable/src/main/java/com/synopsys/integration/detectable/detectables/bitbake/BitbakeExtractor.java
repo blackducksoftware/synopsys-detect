@@ -69,13 +69,13 @@ public class BitbakeExtractor {
         this.bitbakeGraphTransformer = bitbakeGraphTransformer;
     }
 
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment, final File buildEnvScript, final String[] packageNames, final File bash) {
+    public Extraction extract(final ExtractionEnvironment extractionEnvironment, final File buildEnvScript, final String[] sourceArguments, final String[] packageNames, final File bash) {
         final File outputDirectory = extractionEnvironment.getOutputDirectory();
 
         final List<CodeLocation> codeLocations = new ArrayList<>();
         for (final String packageName : packageNames) {
             try {
-                final Optional<BitbakeResult> bitbakeResult = executeBitbakeForDependencies(outputDirectory, buildEnvScript, packageName, bash);
+                final Optional<BitbakeResult> bitbakeResult = executeBitbakeForDependencies(outputDirectory, buildEnvScript, sourceArguments, packageName, bash);
                 if (!bitbakeResult.isPresent()) {
                     final String filesSearchedFor = StringUtils.joinWith(", ", Arrays.stream(BitbakeFileType.values()).map(BitbakeFileType::getFileName).collect(Collectors.toList()));
                     throw new IntegrationException(String.format("Failed to find any bitbake results. Looked for: %s", filesSearchedFor));
@@ -114,9 +114,10 @@ public class BitbakeExtractor {
         return extraction;
     }
 
-    private Optional<BitbakeResult> executeBitbakeForDependencies(final File outputDirectory, final File buildEnvScript, final String packageName, final File bash) throws ExecutableRunnerException, IOException {
+    private Optional<BitbakeResult> executeBitbakeForDependencies(final File outputDirectory, final File buildEnvScript, final String[] sourceArguments, final String packageName, final File bash)
+        throws ExecutableRunnerException, IOException {
         final String bitbakeCommand = "bitbake -g " + packageName;
-        final ExecutableOutput executableOutput = runBitbake(outputDirectory, buildEnvScript, bitbakeCommand, bash);
+        final ExecutableOutput executableOutput = runBitbake(outputDirectory, buildEnvScript, sourceArguments, bitbakeCommand, bash);
         final int returnCode = executableOutput.getReturnCode();
         BitbakeResult bitbakeResult = null;
 
@@ -136,9 +137,14 @@ public class BitbakeExtractor {
         return Optional.ofNullable(bitbakeResult);
     }
 
-    private ExecutableOutput runBitbake(final File outputDirectory, final File buildEnvScript, final String bitbakeCommand, final File bash) throws ExecutableRunnerException, IOException {
+    private ExecutableOutput runBitbake(final File outputDirectory, final File buildEnvScript, final String[] sourceArguments, final String bitbakeCommand, final File bash) throws ExecutableRunnerException, IOException {
         try {
-            return executableRunner.execute(outputDirectory, bash, "-c", "source " + buildEnvScript.getCanonicalPath() + "; " + bitbakeCommand);
+            final StringBuilder sourceCommand = new StringBuilder("source " + buildEnvScript.getCanonicalPath());
+            for (final String sourceArgument : sourceArguments) {
+                sourceCommand.append(" ");
+                sourceCommand.append(sourceArgument);
+            }
+            return executableRunner.execute(outputDirectory, bash, "-c", sourceCommand.toString() + "; " + bitbakeCommand);
         } catch (final ExecutableRunnerException e) {
             logger.error(String.format("Failed executing bitbake command. %s", bitbakeCommand));
             logger.debug(e.getMessage(), e);

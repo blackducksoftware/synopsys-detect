@@ -170,6 +170,10 @@ public enum DetectProperty {
     @HelpDescription("A comma-separated list of package names from which dependencies are extracted.")
     DETECT_BITBAKE_PACKAGE_NAMES("detect.bitbake.package.names", "BitBake Package Names", "4.4.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
+    @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
+    @HelpDescription("A comma-separated list of arguments to supply when sourcing the build environment init script.")
+    DETECT_BITBAKE_SOURCE_ARGUMENTS("detect.bitbake.source.arguments", "BitBake Source Arguments", "6.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, ""),
+
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Additional arguments to use when running the Black Duck signature scanner.")
     @HelpDetailed("For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). " +
