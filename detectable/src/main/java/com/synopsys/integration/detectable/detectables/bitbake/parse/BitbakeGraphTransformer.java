@@ -42,7 +42,7 @@ public class BitbakeGraphTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(final BitbakeGraph bitbakeGraph, final String architecture) {
+    public DependencyGraph transform(final BitbakeGraph bitbakeGraph) {
         final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
         final Map<String, Dependency> namesToExternalIds = new HashMap<>();
@@ -50,7 +50,7 @@ public class BitbakeGraphTransformer {
             if (bitbakeNode.getVersion().isPresent()) {
                 final String name = bitbakeNode.getName();
                 final String version = bitbakeNode.getVersion().get();
-                final ExternalId externalId = externalIdFactory.createArchitectureExternalId(Forge.YOCTO, name, version, architecture);
+                final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.YOCTO, name, version);
                 final Dependency dependency = new Dependency(name, version, externalId);
                 namesToExternalIds.put(bitbakeNode.getName(), dependency);
             }

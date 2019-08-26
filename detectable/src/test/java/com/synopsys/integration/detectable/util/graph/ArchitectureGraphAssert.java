@@ -10,11 +10,11 @@ public class ArchitectureGraphAssert extends GraphAssert {
         super(forge, graph);
     }
 
-    public ExternalId hasDependency(String name, String version, String architecture) {
+    public ExternalId hasDependency(final String name, final String version, final String architecture) {
         return this.hasDependency(externalIdFactory.createArchitectureExternalId(forge, name, version, architecture));
     }
 
-    public ExternalId noDependency(String name, String version, String architecture) {
+    public ExternalId noDependency(final String name, final String version, final String architecture) {
         return this.hasNoDependency(externalIdFactory.createArchitectureExternalId(forge, name, version, architecture));
     }
 }

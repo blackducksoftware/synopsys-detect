@@ -167,10 +167,6 @@ public enum DetectProperty {
     DETECT_BITBAKE_BUILD_ENV_NAME("detect.bitbake.build.env.name", "BitBake Init Script Name", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "oe-init-build-env"),
 
     @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
-    @HelpDescription("The reference implementation of the Yocto project. These characters are stripped from the discovered target architecture.")
-    DETECT_BITBAKE_REFERENCE_IMPL("detect.bitbake.reference.impl", "Reference implementation", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "-poky-linux"),
-
-    @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
     @HelpDescription("A comma-separated list of package names from which dependencies are extracted.")
     DETECT_BITBAKE_PACKAGE_NAMES("detect.bitbake.package.names", "BitBake Package Names", "4.4.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
@@ -784,6 +780,12 @@ public enum DetectProperty {
     /**********************************************************************************************
      * DEPRECATED START
      *********************************************************************************************/
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is no longer required and will not be used in the Bitbake Detector.", failInVersion = DetectMajorVersion.SEVEN, removeInVersion = DetectMajorVersion.EIGHT)
+    @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
+    @HelpDescription("The reference implementation of the Yocto project. These characters are stripped from the discovered target architecture.")
+    DETECT_BITBAKE_REFERENCE_IMPL("detect.bitbake.reference.impl", "Reference implementation", "4.4.0", PropertyType.STRING, PropertyAuthority.None, "-poky-linux"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is now deprecated. Please use --detect.report.timeout in the future. NOTE the new property is in SECONDS not MILLISECONDS.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
