@@ -11,7 +11,7 @@ Synopsys Detect consolidates the functionality of Black Duck™ , Black Duck Bin
 
 ## Where can I get the latest release? ##
 
-*Available from GitHub for Linux by running:*  
+*Available from GitHub for Linux/MacOS by running:*  
 bash <(curl -s -L https://detect.synopsys.com/detect.sh)
 
 *Available from GitHub for Windows by running:*  
