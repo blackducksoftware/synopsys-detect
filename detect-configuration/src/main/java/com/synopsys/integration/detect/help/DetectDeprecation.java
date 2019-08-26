@@ -32,10 +32,9 @@ import com.synopsys.integration.detect.DetectMajorVersion;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface DetectDeprecation {
-    String description() default "";
+    String description();
 
-    DetectMajorVersion failInVersion() default DetectMajorVersion.ONE;
+    DetectMajorVersion failInVersion();
 
-    DetectMajorVersion removeInVersion() default DetectMajorVersion.ONE;
-
+    DetectMajorVersion removeInVersion();
 }
