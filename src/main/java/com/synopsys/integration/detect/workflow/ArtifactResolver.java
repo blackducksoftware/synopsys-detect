@@ -35,6 +35,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.google.gson.Gson;
@@ -63,21 +66,20 @@ public class ArtifactResolver {
      * @param overrideArtifactPattern The pattern to use when the override version is provided of the full artifact location.
      * @return the location of the artifact
      */
-    public Optional<String> resolveArtifactLocation(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey, final String overrideVersion, final String overrideArtifactPattern)
-            throws IntegrationException, DetectUserFriendlyException, IOException {
+    public String resolveArtifactLocation(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey, final String overrideVersion, final String overrideArtifactPattern)
+        throws IntegrationException, DetectUserFriendlyException, IOException {
         if (StringUtils.isNotBlank(overrideVersion) && StringUtils.isNotBlank(overrideArtifactPattern)) {
             logger.info("An override version was provided, will resolve using the given version.");
             String repoUrl = artifactoryBaseUrl + repositoryUrl;
             String versionUrl = overrideArtifactPattern.replace(ArtifactoryConstants.VERSION_PLACEHOLDER, overrideVersion);
             String artifactUrl = repoUrl + versionUrl;
             logger.debug("Determined the artifact url is: " + artifactUrl);
-            return Optional.of(artifactUrl);
+            return artifactUrl;
         } else {
             logger.info("Will find version from artifactory.");
             String apiUrl = artifactoryBaseUrl + "api/storage/" + repositoryUrl;
             logger.debug(String.format("Checking '%s' for property '%s'.", apiUrl, propertyKey));
-            Optional<String> artifactUrl = downloadProperty(apiUrl, propertyKey);
-            return artifactUrl;
+            return downloadProperty(apiUrl, propertyKey);
         }
     }
 
@@ -89,24 +91,20 @@ public class ArtifactResolver {
      * @param overrideVersion    The version to use, if provided, overrides the property tag.
      * @return the calculated version of the artifact
      */
-    public Optional<String> resolveArtifactVersion(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey, final String overrideVersion) throws IntegrationException, DetectUserFriendlyException, IOException {
+    public String resolveArtifactVersion(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey, final String overrideVersion) throws IntegrationException, DetectUserFriendlyException, IOException {
         if (StringUtils.isNotBlank(overrideVersion)) {
             logger.info("Resolved version from override: " + overrideVersion);
-            return Optional.of(overrideVersion);
+            return overrideVersion;
         } else {
             logger.debug(String.format("Resolving artifact version from repository %s with property %s", repositoryUrl, propertyKey));
             String apiUrl = artifactoryBaseUrl + "api/storage/" + repositoryUrl;
-            Optional<String> artifactVersion = downloadProperty(apiUrl, propertyKey);
-            if (artifactVersion.isPresent()) {
-                logger.info("Resolved version online: " + artifactVersion.get());
-            } else {
-                logger.info("Failed to resolve version.");
-            }
+            String artifactVersion = downloadProperty(apiUrl, propertyKey);
+            logger.info("Resolved version online: " + artifactVersion);
             return artifactVersion;
         }
     }
 
-    private Optional<String> downloadProperty(String apiUrl, String propertyKey) throws IntegrationException, DetectUserFriendlyException, IOException {
+    private String downloadProperty(String apiUrl, String propertyKey) throws IntegrationException, DetectUserFriendlyException, IOException {
         String propertyUrl = apiUrl + "?properties=" + propertyKey;
         logger.debug("Downloading property: " + propertyUrl);
         final Request request = new Request.Builder().uri(propertyUrl).build();
@@ -114,15 +112,11 @@ public class ArtifactResolver {
         try (final Response response = restConnection.execute(request)) {
             try (final InputStreamReader reader = new InputStreamReader(response.getContent())) {
                 logger.debug("Downloaded property, attempting to parse response.");
-                Map json = gson.fromJson(reader, Map.class);
-                Map propertyMap = (Map) json.get("properties");
-                List propertyUrls = (List) propertyMap.get(propertyKey);
-                Optional<String> foundProperty = propertyUrls.stream().findFirst();
-                if (foundProperty.isPresent()) {
-                    logger.debug("Successfully parsed property: " + propertyUrls);
-                } else {
-                    logger.debug("Failed to find property.");
-                }
+                JsonObject json = gson.fromJson(reader, JsonElement.class).getAsJsonObject();
+                JsonObject propertyMap = json.getAsJsonObject("properties");
+                JsonArray propertyUrls = propertyMap.getAsJsonArray(propertyKey);
+                String foundProperty = propertyUrls.get(0).getAsString();
+                logger.debug("Successfully parsed property: " + propertyUrls);
                 return foundProperty;
             }
         }
