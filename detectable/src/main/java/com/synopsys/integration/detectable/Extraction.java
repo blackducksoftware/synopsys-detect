@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.util.NameVersion;
 
 public class Extraction {
     private final List<CodeLocation> codeLocations;
@@ -113,6 +114,14 @@ public class Extraction {
 
         public Builder projectVersion(final String projectVersion) {
             this.projectVersion = projectVersion;
+            return this;
+        }
+
+        public Builder nameVersionIfPresent(final Optional<NameVersion> nameVersion) {
+            if (nameVersion.isPresent()) {
+                this.projectName(nameVersion.get().getName());
+                this.projectVersion(nameVersion.get().getVersion());
+            }
             return this;
         }
 
