@@ -46,27 +46,23 @@ public class DockerInspectorInstaller {
 
     public File installJar(File dockerDirectory, Optional<String> dockerVersion) throws IntegrationException, IOException, DetectUserFriendlyException {
         logger.info("Determining the location of the Docker inspector.");
-        final Optional<String> location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.DOCKER_INSPECTOR_REPO, ArtifactoryConstants.DOCKER_INSPECTOR_PROPERTY, dockerVersion.orElse(""),
+        final String location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.DOCKER_INSPECTOR_REPO, ArtifactoryConstants.DOCKER_INSPECTOR_PROPERTY, dockerVersion.orElse(""),
             ArtifactoryConstants.DOCKER_INSPECTOR_VERSION_OVERRIDE);
         return download(location, dockerDirectory);
     }
 
     public File installAirGap(File dockerDirectory) throws IntegrationException, IOException, DetectUserFriendlyException {
         logger.info("Determining the location of the Docker inspector.");
-        final Optional<String> location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.DOCKER_INSPECTOR_REPO, ArtifactoryConstants.DOCKER_INSPECTOR_AIR_GAP_PROPERTY, "", "");
+        final String location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.DOCKER_INSPECTOR_REPO, ArtifactoryConstants.DOCKER_INSPECTOR_AIR_GAP_PROPERTY, "", "");
         return download(location, dockerDirectory);
     }
 
-    private File download(Optional<String> location, File dockerDirectory) throws IntegrationException, IOException, DetectUserFriendlyException {
-        if (location.isPresent()) {
-            logger.info("Finding or downloading the docker inspector.");
-            logger.debug(String.format("Downloading docker inspector from '%s' to '%s'.", location.get(), dockerDirectory.getAbsolutePath()));
-            final File jarFile = artifactResolver.downloadOrFindArtifact(dockerDirectory, location.get());
-            logger.info("Found online docker inspector: " + jarFile.getAbsolutePath());
-            return jarFile;
-        } else {
-            throw new DetectableException("Unable to find Docker version from artifactory.");
-        }
+    private File download(String location, File dockerDirectory) throws IntegrationException, IOException, DetectUserFriendlyException {
+        logger.info("Finding or downloading the docker inspector.");
+        logger.debug(String.format("Downloading docker inspector from '%s' to '%s'.", location, dockerDirectory.getAbsolutePath()));
+        final File jarFile = artifactResolver.downloadOrFindArtifact(dockerDirectory, location);
+        logger.info("Found online docker inspector: " + jarFile.getAbsolutePath());
+        return jarFile;
     }
 
 }

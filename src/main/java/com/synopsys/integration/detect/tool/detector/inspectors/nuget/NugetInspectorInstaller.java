@@ -48,7 +48,7 @@ public class NugetInspectorInstaller {
     public File installDotNet(File destination, Optional<String> overrideVersion) throws DetectableException {
         try {
             logger.info("Will attempt to resolve the dotnet inspector version.");
-            Optional<String> source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.NUGET_INSPECTOR_REPO, ArtifactoryConstants.NUGET_INSPECTOR_PROPERTY,
+            String source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.NUGET_INSPECTOR_REPO, ArtifactoryConstants.NUGET_INSPECTOR_PROPERTY,
                 overrideVersion.orElse(""),
                 ArtifactoryConstants.NUGET_INSPECTOR_VERSION_OVERRIDE);
             return installFromSource(destination, source);
@@ -60,7 +60,7 @@ public class NugetInspectorInstaller {
     public File installExeInspector(File destination, Optional<String> overrideVersion) throws DetectableException {
         try {
             logger.info("Will attempt to resolve the classic inspector version.");
-            Optional<String> source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_REPO, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_PROPERTY,
+            String source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_REPO, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_PROPERTY,
                 overrideVersion.orElse(""),
                 ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_VERSION_OVERRIDE);
             return installFromSource(destination, source);
@@ -69,27 +69,23 @@ public class NugetInspectorInstaller {
         }
     }
 
-    private File installFromSource(File dest, Optional<String> source) throws IntegrationException, IOException, DetectUserFriendlyException {
-        if (source.isPresent()) {
-            logger.debug("Resolved the nuget inspector url: " + source.get());
-            final String nupkgName = artifactResolver.parseFileName(source.get());
-            logger.debug("Parsed artifact name: " + nupkgName);
-            final String inspectorFolderName = nupkgName.replace(".nupkg", "");
-            File inspectorFolder = new File(dest, inspectorFolderName);
-            if (!inspectorFolder.exists()) {
-                logger.info("Downloading nuget inspector.");
-                final File nupkgFile = new File(dest, nupkgName);
-                artifactResolver.downloadArtifact(nupkgFile, source.get());
-                logger.info("Extracting nuget inspector.");
-                DetectZipUtil.unzip(nupkgFile, inspectorFolder, Charset.defaultCharset());
-                nupkgFile.delete();
-                return inspectorFolder;
-            } else {
-                logger.debug("Inspector is already downloaded, folder exists.");
-                return inspectorFolder;
-            }
+    private File installFromSource(File dest, String source) throws IntegrationException, IOException, DetectUserFriendlyException {
+        logger.debug("Resolved the nuget inspector url: " + source);
+        final String nupkgName = artifactResolver.parseFileName(source);
+        logger.debug("Parsed artifact name: " + nupkgName);
+        final String inspectorFolderName = nupkgName.replace(".nupkg", "");
+        File inspectorFolder = new File(dest, inspectorFolderName);
+        if (!inspectorFolder.exists()) {
+            logger.info("Downloading nuget inspector.");
+            final File nupkgFile = new File(dest, nupkgName);
+            artifactResolver.downloadArtifact(nupkgFile, source);
+            logger.info("Extracting nuget inspector.");
+            DetectZipUtil.unzip(nupkgFile, inspectorFolder, Charset.defaultCharset());
+            nupkgFile.delete();
+            return inspectorFolder;
         } else {
-            throw new DetectableException("Unable to find nuget inspector location in Artifactory.");
+            logger.debug("Inspector is already downloaded, folder exists.");
+            return inspectorFolder;
         }
     }
 }

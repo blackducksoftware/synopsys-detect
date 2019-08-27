@@ -107,6 +107,7 @@ public class PolarisTool {
             }
         } else {
             logger.error("Check the logs - the Polaris CLI could not be found.");
+            eventSystem.publishEvent(Event.StatusSummary, new Status("POLARIS", StatusType.FAILURE));
         }
     }
 

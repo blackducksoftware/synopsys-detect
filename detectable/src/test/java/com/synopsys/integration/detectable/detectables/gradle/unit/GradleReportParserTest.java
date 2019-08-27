@@ -11,11 +11,16 @@
  */
 package com.synopsys.integration.detectable.detectables.gradle.unit;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleGav;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleTreeNode;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportLineParser;
+import com.synopsys.integration.util.NameVersion;
 
 public class GradleReportParserTest {
     //private final TestUtil testUtil = new TestUtil();
@@ -52,8 +57,19 @@ compile
 
      */
     @Test
-    public void parseNoDependencies() {
+    public void parseSuffixIgnored() {
+        assertParsedGavDoesNotContain("+--- com.fasterxml.jackson.core:jackson-databind:2.9.5 (n)", "(n)");
+        assertParsedGavDoesNotContain("+--- com.fasterxml.jackson.core:jackson-databind:2.9.5 (c)", "(c)");
+        assertParsedGavDoesNotContain("+--- com.fasterxml.jackson.core:jackson-databind:2.9.5 (*)", "(*)");
+    }
 
+    private void assertParsedGavDoesNotContain(String line, String contains) {
+        final GradleReportLineParser gradleReportLineParser = new GradleReportLineParser();
+        GradleTreeNode node = gradleReportLineParser.parseLine(line);
+        assertTrue(node.getGav().isPresent());
+
+        GradleGav gav = node.getGav().get();
+        assertFalse(gav.getVersion().contains(contains));
     }
 
     @Test

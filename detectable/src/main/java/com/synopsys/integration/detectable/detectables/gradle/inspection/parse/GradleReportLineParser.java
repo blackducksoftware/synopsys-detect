@@ -38,7 +38,7 @@ public class GradleReportLineParser {
     private static final String[] TREE_LEVEL_TERMINALS = new String[] { "+---", "\\---" };
     private static final String[] PROJECT_INDICATORS = new String[] { "--- project " };
     private static final String COMPONENT_PREFIX = "--- ";
-    private static final String SEEN_ELSEWHERE_SUFFIX = " (*)";
+    private static final String[] REMOVE_SUFFIXES = new String[] { " (*)", " (c)", " (n)" };
     private static final String WINNING_INDICATOR = " -> ";
 
     public GradleTreeNode parseLine(final String line) {
@@ -61,14 +61,21 @@ public class GradleReportLineParser {
         }
     }
 
+    private String removeSuffixes(String line) {
+        for (String suffix : REMOVE_SUFFIXES) {
+            if (line.endsWith(suffix)) {
+                final int lastSeenElsewhereIndex = line.lastIndexOf(suffix);
+                line = line.substring(0, lastSeenElsewhereIndex);
+            }
+        }
+        return line;
+    }
+
     private List<String> parseGav(final String line) {
         String cleanedOutput = StringUtils.trimToEmpty(line);
         cleanedOutput = cleanedOutput.substring(cleanedOutput.indexOf(COMPONENT_PREFIX) + COMPONENT_PREFIX.length());
 
-        if (cleanedOutput.endsWith(SEEN_ELSEWHERE_SUFFIX)) {
-            final int lastSeenElsewhereIndex = cleanedOutput.lastIndexOf(SEEN_ELSEWHERE_SUFFIX);
-            cleanedOutput = cleanedOutput.substring(0, lastSeenElsewhereIndex);
-        }
+        cleanedOutput = removeSuffixes(cleanedOutput);
 
         // we might need to modify the returned list, so it needs to be an actual ArrayList
         List<String> gavPieces = new ArrayList<>(Arrays.asList(cleanedOutput.split(":")));
