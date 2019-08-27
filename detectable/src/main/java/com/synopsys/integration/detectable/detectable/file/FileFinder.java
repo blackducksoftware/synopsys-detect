@@ -33,7 +33,7 @@ public interface FileFinder {
     @Nullable
     default File findFile(File directoryToSearch, String filenamePattern) {
         List<File> files = findFiles(directoryToSearch, Arrays.asList(filenamePattern), 0);
-        if (files != null && files.size() > 0){
+        if (files != null && files.size() > 0) {
             return files.get(0);
         }
         return null;
@@ -47,6 +47,11 @@ public interface FileFinder {
     @NotNull
     default List<File> findFiles(File directoryToSearch, String filenamePattern, int depth) {
         return findFiles(directoryToSearch, Arrays.asList(filenamePattern), depth);
+    }
+
+    @NotNull
+    default List<File> findFiles(File directoryToSearch, List<String> filenamePatterns) {
+        return findFiles(directoryToSearch, filenamePatterns, 0);
     }
 
     @NotNull
