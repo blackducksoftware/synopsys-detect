@@ -575,7 +575,7 @@ public enum DetectProperty {
     DETECT_PIPENV_PATH("detect.pipenv.path", "Pipenv Executable", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Path of the swift executable")
+    @HelpDescription("Path of the swift executable.")
     DETECT_SWIFT_PATH("detect.swift.path", "Swift Executable", "6.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, SEARCH_GROUP_GLOBAL })
