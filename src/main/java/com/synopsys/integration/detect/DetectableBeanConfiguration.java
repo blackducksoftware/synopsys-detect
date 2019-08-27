@@ -172,6 +172,10 @@ import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.Ge
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheExtractor;
+import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
+import com.synopsys.integration.detectable.detectables.swift.SwiftCliParser;
+import com.synopsys.integration.detectable.detectables.swift.SwiftExtractor;
+import com.synopsys.integration.detectable.detectables.swift.SwiftPackageTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLineLevelParser;
@@ -633,6 +637,21 @@ public class DetectableBeanConfiguration {
         return new GradleParseExtractor(buildGradleParser());
     }
 
+    @Bean
+    public SwiftCliParser swiftCliParser() {
+        return new SwiftCliParser(gson);
+    }
+
+    @Bean
+    public SwiftPackageTransformer swiftPackageTransformer() {
+        return new SwiftPackageTransformer(externalIdFactory);
+    }
+
+    @Bean
+    public SwiftExtractor swiftExtractor() {
+        return new SwiftExtractor(executableRunner, swiftCliParser(), swiftPackageTransformer());
+    }
+
     //Detectables
     //Should be scoped to Prototype so a new Detectable is created every time one is needed.
     //Should only be accessed through the DetectableFactory.
@@ -833,6 +852,12 @@ public class DetectableBeanConfiguration {
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public SbtResolutionCacheDetectable sbtResolutionCacheBomTool(final DetectableEnvironment environment) {
         return new SbtResolutionCacheDetectable(environment, fileFinder, sbtResolutionCacheExtractor());
+    }
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public SwiftCliDetectable swiftCliDetectable(final DetectableEnvironment environment) {
+        return new SwiftCliDetectable(environment, fileFinder, swiftExtractor(), detectExecutableResolver);
     }
 
     @Bean

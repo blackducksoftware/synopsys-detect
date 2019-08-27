@@ -60,6 +60,7 @@ import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectable;
+import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 
 public class DetectableFactory implements BeanFactoryAware {
@@ -201,6 +202,10 @@ public class DetectableFactory implements BeanFactoryAware {
 
     public SbtResolutionCacheDetectable createSbtResolutionCacheDetectable(final DetectableEnvironment environment) {
         return beanFactory.getBean(SbtResolutionCacheDetectable.class, environment);
+    }
+
+    public SwiftCliDetectable createSwiftCliDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(SwiftCliDetectable.class, environment);
     }
 
     public YarnLockDetectable createYarnLockDetectable(final DetectableEnvironment environment) {
