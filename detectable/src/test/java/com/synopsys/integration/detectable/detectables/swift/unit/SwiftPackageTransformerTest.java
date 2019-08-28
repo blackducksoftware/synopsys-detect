@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.swift.SwiftPackageTransformer;
@@ -21,9 +22,15 @@ class SwiftPackageTransformerTest {
         final CodeLocation codeLocation = swiftPackageTransformer.transform(swiftPackage);
 
         final GraphAssert graphAssert = new GraphAssert(SwiftPackageTransformer.SWIFT_FORGE, codeLocation.getDependencyGraph());
-        graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(SwiftPackageTransformer.SWIFT_FORGE, "FisherYates", "2.0.5"));
-        graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(SwiftPackageTransformer.SWIFT_FORGE, "PlayingCard", "3.0.5"));
-        graphAssert.hasNoDependency(externalIdFactory.createNameVersionExternalId(SwiftPackageTransformer.SWIFT_FORGE, "DeckOfPlayingCards", "unspecified"));
+
+        final ExternalId fisherYates = externalIdFactory.createNameVersionExternalId(SwiftPackageTransformer.SWIFT_FORGE, "FisherYates", "2.0.5");
+        final ExternalId playingCard = externalIdFactory.createNameVersionExternalId(SwiftPackageTransformer.SWIFT_FORGE, "PlayingCard", "3.0.5");
+        final ExternalId playingCard2 = externalIdFactory.createModuleNamesExternalId(SwiftPackageTransformer.SWIFT_FORGE, "PlayingCard2");
+        final ExternalId deckOfPlayingCards = externalIdFactory.createNameVersionExternalId(SwiftPackageTransformer.SWIFT_FORGE, "DeckOfPlayingCards", "unspecified");
+        graphAssert.hasRootDependency(fisherYates);
+        graphAssert.hasRootDependency(playingCard);
+        graphAssert.hasParentChildRelationship(playingCard, playingCard2);
+        graphAssert.hasNoDependency(deckOfPlayingCards);
     }
 
     private SwiftPackage createSwiftPackage() {
@@ -38,6 +45,11 @@ class SwiftPackageTransformerTest {
         final SwiftPackage playingCard = new SwiftPackage();
         playingCard.setName("PlayingCard");
         playingCard.setVersion("3.0.5");
+
+        final SwiftPackage playingCard2 = new SwiftPackage();
+        playingCard2.setName("PlayingCard2");
+        playingCard2.setVersion("unspecified");
+        playingCard.getDependencies().add(playingCard2);
 
         final List<SwiftPackage> dependencies = new ArrayList<>();
         dependencies.add(fisherYates);
