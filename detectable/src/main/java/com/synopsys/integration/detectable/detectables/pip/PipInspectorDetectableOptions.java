@@ -24,18 +24,18 @@ package com.synopsys.integration.detectable.detectables.pip;
 
 public class PipInspectorDetectableOptions {
     private final String pipProjectName;
-    private final String requirementsFilePath;
+    private final String[] requirementsFilePaths;
 
-    public PipInspectorDetectableOptions(final String pipProjectName, final String requirementsFilePath) {
+    public PipInspectorDetectableOptions(final String pipProjectName, final String[] requirementsFilePaths) {
         this.pipProjectName = pipProjectName;
-        this.requirementsFilePath = requirementsFilePath;
+        this.requirementsFilePaths = requirementsFilePaths;
     }
 
     public String getPipProjectName() {
         return pipProjectName;
     }
 
-    public String getRequirementsFilePath() {
-        return requirementsFilePath;
+    public String[] getRequirementsFilePaths() {
+        return requirementsFilePaths;
     }
 }
