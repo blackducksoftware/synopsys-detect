@@ -23,6 +23,9 @@
 package com.synopsys.integration.detectable.detectables.nuget;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.naming.spi.DirectoryManager;
 
@@ -41,7 +44,7 @@ import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDe
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
 public class NugetSolutionDetectable extends Detectable {
-    static final String[] SUPPORTED_SOLUTION_PATTERNS = new String[] { "*.sln" };
+    static final List<String> SUPPORTED_SOLUTION_PATTERNS = Arrays.asList("*.sln");
 
     private final FileFinder fileFinder;
     private final NugetInspectorResolver nugetInspectorResolver;
@@ -49,6 +52,7 @@ public class NugetSolutionDetectable extends Detectable {
 
     private NugetInspectorOptions nugetInspectorOptions;
     private NugetInspector inspector;
+    private List<File> solutionFiles = new ArrayList<>();
 
     public NugetSolutionDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NugetInspectorResolver nugetInspectorManager, final NugetInspectorExtractor nugetInspectorExtractor,
         final NugetInspectorOptions nugetInspectorOptions) {
@@ -61,12 +65,13 @@ public class NugetSolutionDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        for (final String filepattern : SUPPORTED_SOLUTION_PATTERNS) {
-            if (fileFinder.findFile(environment.getDirectory(), filepattern) != null) {
-                return new PassedDetectableResult();
-            }
+        solutionFiles = fileFinder.findFiles(environment.getDirectory(), SUPPORTED_SOLUTION_PATTERNS);
+
+        if (solutionFiles != null || solutionFiles.size() > 0) {
+            return new PassedDetectableResult();
+        } else {
+            return new FilesNotFoundDetectableResult(SUPPORTED_SOLUTION_PATTERNS);
         }
-        return new FilesNotFoundDetectableResult(SUPPORTED_SOLUTION_PATTERNS);
     }
 
     @Override
@@ -83,7 +88,7 @@ public class NugetSolutionDetectable extends Detectable {
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         final File outputDirectory = extractionEnvironment.getOutputDirectory();
-        return nugetInspectorExtractor.extract(environment.getDirectory(), outputDirectory, inspector, nugetInspectorOptions);
+        return nugetInspectorExtractor.extract(solutionFiles, outputDirectory, inspector, nugetInspectorOptions);
     }
 
 }

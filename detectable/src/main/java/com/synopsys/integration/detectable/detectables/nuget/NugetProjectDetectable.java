@@ -22,6 +22,11 @@
  */
 package com.synopsys.integration.detectable.detectables.nuget;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
@@ -37,7 +42,7 @@ import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDe
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
 public class NugetProjectDetectable extends Detectable {
-    static final String[] SUPPORTED_PROJECT_PATTERNS = new String[] {
+    static final List<String> SUPPORTED_PROJECT_PATTERNS = Arrays.asList(
         // C#
         "*.csproj",
         // F#
@@ -82,7 +87,7 @@ public class NugetProjectDetectable extends Detectable {
         "*.dbproj",
         // RStudio
         "*.rproj"
-    };
+    );
 
     private final FileFinder fileFinder;
     private final NugetInspectorOptions nugetInspectorOptions;
@@ -90,6 +95,7 @@ public class NugetProjectDetectable extends Detectable {
     private final NugetInspectorExtractor nugetInspectorExtractor;
 
     private NugetInspector inspector;
+    private List<File> projectFiles = new ArrayList<>();
 
     public NugetProjectDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions, final NugetInspectorResolver nugetInspectorResolver,
         final NugetInspectorExtractor nugetInspectorExtractor) {
@@ -102,12 +108,13 @@ public class NugetProjectDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        for (final String filepattern : SUPPORTED_PROJECT_PATTERNS) {
-            if (fileFinder.findFile(environment.getDirectory(), filepattern) != null) {
-                return new PassedDetectableResult();
-            }
+        projectFiles = fileFinder.findFiles(environment.getDirectory(), SUPPORTED_PROJECT_PATTERNS);
+
+        if (projectFiles != null && projectFiles.size() > 0) {
+            return new PassedDetectableResult();
+        } else {
+            return new FilesNotFoundDetectableResult(SUPPORTED_PROJECT_PATTERNS);
         }
-        return new FilesNotFoundDetectableResult(SUPPORTED_PROJECT_PATTERNS);
     }
 
     @Override
@@ -123,7 +130,7 @@ public class NugetProjectDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return nugetInspectorExtractor.extract(environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector, nugetInspectorOptions);
+        return nugetInspectorExtractor.extract(projectFiles, extractionEnvironment.getOutputDirectory(), inspector, nugetInspectorOptions);
     }
 
 }

@@ -23,17 +23,22 @@
 package com.synopsys.integration.detectable.detectable.result;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class FilesNotFoundDetectableResult extends FailedDetectableResult {
-    private final String[] patterns;
+    private final List<String> patterns;
 
     public FilesNotFoundDetectableResult(final String... patterns) {
+        this.patterns = Arrays.asList(patterns);
+    }
+
+    public FilesNotFoundDetectableResult(final List<String> patterns) {
         this.patterns = patterns;
     }
 
     @Override
     public String toDescription() {
-        return "No files were found with any of the patterns: " + Arrays.asList(patterns).stream().collect(Collectors.joining(","));
+        return "No files were found with any of the patterns: " + String.join(",", patterns);
     }
 }

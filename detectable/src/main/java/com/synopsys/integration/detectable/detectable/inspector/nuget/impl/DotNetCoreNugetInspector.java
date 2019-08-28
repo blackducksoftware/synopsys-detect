@@ -45,10 +45,10 @@ public class DotNetCoreNugetInspector implements NugetInspector {
     }
 
     @Override
-    public ExecutableOutput execute(final File workingDirectory, final File sourcePath, final File outputDirectory, final NugetInspectorOptions nugetInspectorOptions) throws ExecutableRunnerException, IOException {
+    public ExecutableOutput execute(final File workingDirectory, final File targetFile, final File outputDirectory, final NugetInspectorOptions nugetInspectorOptions) throws ExecutableRunnerException, IOException {
         final List<String> dotnetArguments = new ArrayList<String>();
         dotnetArguments.add(inspectorDll);
-        dotnetArguments.addAll(NugetInspectorArguments.fromInspectorOptions(nugetInspectorOptions, sourcePath, outputDirectory));
+        dotnetArguments.addAll(NugetInspectorArguments.fromInspectorOptions(nugetInspectorOptions, targetFile, outputDirectory));
 
         return executableRunner.execute(workingDirectory, dotnetExe, dotnetArguments);
     }
