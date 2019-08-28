@@ -53,14 +53,12 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.PipRes
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.YarnResolver;
-import com.synopsys.integration.detectable.detectable.inspector.go.GoDepResolver;
-import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
-import com.synopsys.integration.detectable.detectable.inspector.go.impl.GithubGoDepResolver;
 
 public class DetectExecutableResolver
     implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
-                   DockerResolver, DotNetResolver, GitResolver {
+                   DockerResolver, DotNetResolver, GitResolver, SwiftResolver {
 
     private final SimpleExecutableResolver simpleExecutableResolver;
     private final DetectConfiguration detectConfiguration;
@@ -73,7 +71,7 @@ public class DetectExecutableResolver
 
     private File resolveExecutable(final String cacheKey, final Supplier<File> resolveExecutable, final String executableOverride) throws DetectableException {
         if (StringUtils.isNotBlank(executableOverride)) {
-            File exe = new File(executableOverride);
+            final File exe = new File(executableOverride);
             if (!exe.exists()) {
                 throw new DetectableException("Executable override must exist: " + executableOverride);
             } else if (!exe.isFile()) {
@@ -187,5 +185,10 @@ public class DetectExecutableResolver
     @Override
     public File resolveGit() throws DetectableException {
         return resolveExecutable("git", simpleExecutableResolver::resolveGit, detectConfiguration.getProperty(DetectProperty.DETECT_GIT_PATH, PropertyAuthority.None));
+    }
+
+    @Override
+    public File resolveSwift() throws DetectableException {
+        return resolveExecutable("swift", simpleExecutableResolver::resolveSwift, detectConfiguration.getProperty(DetectProperty.DETECT_SWIFT_PATH, PropertyAuthority.None));
     }
 }

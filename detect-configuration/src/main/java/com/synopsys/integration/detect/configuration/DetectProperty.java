@@ -567,12 +567,16 @@ public enum DetectProperty {
     DETECT_PIP_PROJECT_VERSION_NAME("detect.pip.project.version.name", "PIP Project Version Name", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PIP, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The path to the requirements.txt file.")
-    DETECT_PIP_REQUIREMENTS_PATH("detect.pip.requirements.path", "PIP Requirements Path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    @HelpDescription("A comma-separated list of paths to requirements.txt files.")
+    DETECT_PIP_REQUIREMENTS_PATH("detect.pip.requirements.path", "PIP Requirements Path", "3.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, null),
 
     @HelpGroup(primary = GROUP_PIP, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path to the Pipenv executable.")
     DETECT_PIPENV_PATH("detect.pipenv.path", "Pipenv Executable", "4.1.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
+    @HelpDescription("Path of the swift executable.")
+    DETECT_SWIFT_PATH("detect.swift.path", "Swift Executable", "6.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, SEARCH_GROUP_GLOBAL })
     @HelpDescription("The url of your polaris instance.")

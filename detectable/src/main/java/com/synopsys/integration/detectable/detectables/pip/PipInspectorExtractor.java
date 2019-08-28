@@ -31,6 +31,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
@@ -45,19 +46,39 @@ public class PipInspectorExtractor {
         this.pipInspectorTreeParser = pipInspectorTreeParser;
     }
 
-    public Extraction extract(final File directory, final File pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath, final String providedProjectName) {
+    public Extraction extract(final File directory, final File pythonExe, final File pipInspector, final File setupFile, final String[] requirementFilePaths, final String providedProjectName) {
         Extraction extractionResult;
         try {
             final String projectName = getProjectName(directory, pythonExe, setupFile, providedProjectName);
-            final Optional<PipParseResult> result;
+            final List<CodeLocation> codeLocations = new ArrayList<>();
+            String projectVersion = null;
 
-            final List<String> inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
-            result = pipInspectorTreeParser.parse(inspectorOutput, directory.toString());
+            final List<String> requirementsPaths = new ArrayList<>(Arrays.asList(requirementFilePaths));
 
-            if (!result.isPresent()) {
-                extractionResult = new Extraction.Builder().failure("The Pip Inspector tree parse failed to produce output").build();
+            if (requirementsPaths.isEmpty()) {
+                requirementsPaths.add(null);
+            }
+
+            for (final String requirementFilePath : requirementsPaths) {
+                final List<String> inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
+                final Optional<PipParseResult> result = pipInspectorTreeParser.parse(inspectorOutput, directory.toString());
+                if (result.isPresent()) {
+                    codeLocations.add(result.get().getCodeLocation());
+                    final String potentialProjectVersion = result.get().getProjectVersion();
+                    if (projectVersion == null && StringUtils.isNotBlank(potentialProjectVersion)) {
+                        projectVersion = potentialProjectVersion;
+                    }
+                }
+            }
+
+            if (codeLocations.isEmpty()) {
+                extractionResult = new Extraction.Builder().failure("The Pip Inspector tree parse failed to produce output.").build();
             } else {
-                extractionResult = new Extraction.Builder().success(result.get().getCodeLocation()).projectName(result.get().getProjectName()).projectVersion(result.get().getProjectVersion()).build();
+                extractionResult = new Extraction.Builder()
+                                       .success(codeLocations)
+                                       .projectName(projectName)
+                                       .projectVersion(projectVersion)
+                                       .build();
             }
         } catch (final Exception e) {
             extractionResult = new Extraction.Builder().exception(e).build();

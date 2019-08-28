@@ -24,7 +24,6 @@ package com.synopsys.integration.detectable.detectables.pip;
 
 import java.io.File;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +73,7 @@ public class PipInspectorDetectable extends Detectable {
     public DetectableResult applicable() {
         setupFile = fileFinder.findFile(environment.getDirectory(), SETUPTOOLS_DEFAULT_FILE_NAME);
         final boolean hasSetups = setupFile != null;
-        final boolean hasRequirements = StringUtils.isNotBlank(pipInspectorDetectableOptions.getRequirementsFilePath());
+        final boolean hasRequirements = pipInspectorDetectableOptions.getRequirementsFilePaths() != null && pipInspectorDetectableOptions.getRequirementsFilePaths().length > 0;
         if (hasSetups || hasRequirements) {
             return new PassedDetectableResult();
         } else {
@@ -95,7 +94,6 @@ public class PipInspectorDetectable extends Detectable {
         }
 
         pipInspector = pipInspectorResolver.resolvePipInspector();
-
         if (pipInspector == null) {
             return new InspectorNotFoundDetectableResult("pip-inspector.py");
         }
@@ -105,6 +103,6 @@ public class PipInspectorDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return pipInspectorExtractor.extract(environment.getDirectory(), pythonExe, pipInspector, setupFile, pipInspectorDetectableOptions.getRequirementsFilePath(), pipInspectorDetectableOptions.getPipProjectName());
+        return pipInspectorExtractor.extract(environment.getDirectory(), pythonExe, pipInspector, setupFile, pipInspectorDetectableOptions.getRequirementsFilePaths(), pipInspectorDetectableOptions.getPipProjectName());
     }
 }

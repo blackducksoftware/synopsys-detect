@@ -95,6 +95,8 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.CLANG, "Clang", detectableFactory::createClangDetectable).defaults().build();
 
+        ruleSet.addDetector(DetectorType.SWIFT, "Swift", detectableFactory::createSwiftCliDetectable).defaults().build();
+
         final DetectorRule gitParse = ruleSet.addDetector(DetectorType.GIT, "Git Parse", detectableFactory::createGitParseDetectable).defaults().build();
         final DetectorRule gitCli = ruleSet.addDetector(DetectorType.GIT, "Git Cli", detectableFactory::createGitCliDetectable).defaults().build();
         ruleSet.fallback(gitCli).to(gitParse);

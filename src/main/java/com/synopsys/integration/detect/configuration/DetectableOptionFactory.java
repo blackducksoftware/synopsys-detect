@@ -166,7 +166,7 @@ public class DetectableOptionFactory {
 
     public PipInspectorDetectableOptions createPipInspectorDetectableOptions() {
         final String pipProjectName = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME, PropertyAuthority.None);
-        final String requirementsFilePath = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None);
+        final String[] requirementsFilePath = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None);
         return new PipInspectorDetectableOptions(pipProjectName, requirementsFilePath);
     }
 

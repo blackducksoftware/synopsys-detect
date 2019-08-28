@@ -54,7 +54,9 @@ public class PipInspectorDetectableTest {
 
         final File dir = new File(".");
         Mockito.when(environment.getDirectory()).thenReturn(dir);
-        Mockito.when(pipInspectorDetectableOptions.getRequirementsFilePath()).thenReturn("testReqtsPath");
+        final String[] requirementsFilePaths = new String[1];
+        requirementsFilePaths[0] = "testReqtsPath";
+        Mockito.when(pipInspectorDetectableOptions.getRequirementsFilePaths()).thenReturn(requirementsFilePaths);
 
         final PipInspectorDetectable detectable = new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor, pipInspectorDetectableOptions);
 
