@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.nuget.unit;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -15,23 +16,18 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspe
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.nuget.NugetInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectDetectable;
+import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
+import com.synopsys.integration.detectable.util.MockFileFinder;
 
 public class NugetProjectDetectableTest {
-    private static final String FILENAME_PATTERN = "*.rproj";
-
     @Test
-    public void testApplicable() {
-
+    public void testApplicableForRproj() {
         final NugetInspectorOptions nugetInspectorOptions = null;
         final NugetInspectorResolver nugetInspectorResolver = null;
         final NugetInspectorExtractor nugetInspectorExtractor = null;
 
-        final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
-        final FileFinder fileFinder = Mockito.mock(FileFinder.class);
-
-        final File dir = new File(".");
-        Mockito.when(environment.getDirectory()).thenReturn(dir);
-        Mockito.when(fileFinder.findFiles(Mockito.any(), Mockito.anyList())).thenReturn(Arrays.asList(new File(".")));
+        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
+        final FileFinder fileFinder = MockFileFinder.withFileNamed("example.rproj");
 
         final NugetProjectDetectable detectable = new NugetProjectDetectable(environment, fileFinder, nugetInspectorOptions, nugetInspectorResolver, nugetInspectorExtractor);
 
