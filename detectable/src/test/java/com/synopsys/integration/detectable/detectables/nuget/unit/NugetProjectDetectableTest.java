@@ -3,6 +3,8 @@ package com.synopsys.integration.detectable.detectables.nuget.unit;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -29,7 +31,7 @@ public class NugetProjectDetectableTest {
 
         final File dir = new File(".");
         Mockito.when(environment.getDirectory()).thenReturn(dir);
-        Mockito.when(fileFinder.findFile(dir, FILENAME_PATTERN)).thenReturn(new File("."));
+        Mockito.when(fileFinder.findFiles(Mockito.any(), Mockito.anyList())).thenReturn(Arrays.asList(new File(".")));
 
         final NugetProjectDetectable detectable = new NugetProjectDetectable(environment, fileFinder, nugetInspectorOptions, nugetInspectorResolver, nugetInspectorExtractor);
 
