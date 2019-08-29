@@ -10,21 +10,19 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.BazelR
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
+import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
 
 public class BazelDetectableTest {
 
     @Test
     public void testApplicable() {
+        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
+        final BazelExtractor bazelExtractor = null;
+        final BazelResolver bazelResolver = null;
 
-        final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
-        final BazelExtractor bazelExtractor = Mockito.mock(BazelExtractor.class);
-        final BazelResolver bazelResolver = Mockito.mock(BazelResolver.class);
-        final BazelDetectableOptions bazelDetectableOptions = Mockito.mock(BazelDetectableOptions.class);
+        final BazelDetectableOptions bazelDetectableOptions = new BazelDetectableOptions("target", "");
 
-        Mockito.when(bazelDetectableOptions.getTargetName()).thenReturn("target");
-
-        final BazelDetectable detectable = new BazelDetectable(environment, bazelExtractor,
-            bazelResolver, bazelDetectableOptions);
+        final BazelDetectable detectable = new BazelDetectable(environment, bazelExtractor, bazelResolver, bazelDetectableOptions);
 
         assertTrue(detectable.applicable().getPassed());
     }

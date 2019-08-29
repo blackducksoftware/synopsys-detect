@@ -14,10 +14,10 @@ import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorR
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
+import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
+import com.synopsys.integration.detectable.util.MockFileFinder;
 
 public class GradleInspectorDetectableTest {
-    private static final String BUILD_GRADLE_FILENAME = "build.gradle";
-
     @Test
     public void testApplicable() {
 
@@ -26,12 +26,8 @@ public class GradleInspectorDetectableTest {
         final GradleInspectorExtractor gradleInspectorExtractor = null;
         final GradleInspectorOptions gradleInspectorOptions = null;
 
-        final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
-        final FileFinder fileFinder = Mockito.mock(FileFinder.class);
-
-        final File dir = new File(".");
-        Mockito.when(environment.getDirectory()).thenReturn(dir);
-        Mockito.when(fileFinder.findFile(dir, BUILD_GRADLE_FILENAME)).thenReturn(new File(BUILD_GRADLE_FILENAME));
+        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
+        final FileFinder fileFinder = MockFileFinder.withFileNamed("build.gradle");
 
         final GradleInspectorDetectable detectable = new GradleInspectorDetectable(environment, fileFinder, gradleResolver, gradleInspectorResolver, gradleInspectorExtractor, gradleInspectorOptions);
 

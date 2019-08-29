@@ -11,21 +11,17 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseExtractor;
+import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
+import com.synopsys.integration.detectable.util.MockFileFinder;
 
 public class GradleParseDetectableTest {
-    private static final String BUILD_GRADLE_FILENAME = "build.gradle";
-
     @Test
     public void testApplicable() {
 
         final GradleParseExtractor gradleParseExtractor = null;
 
-        final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
-        final FileFinder fileFinder = Mockito.mock(FileFinder.class);
-
-        final File dir = new File(".");
-        Mockito.when(environment.getDirectory()).thenReturn(dir);
-        Mockito.when(fileFinder.findFile(dir, BUILD_GRADLE_FILENAME)).thenReturn(new File(BUILD_GRADLE_FILENAME));
+        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
+        final FileFinder fileFinder = MockFileFinder.withFileNamed("build.gradle");
 
         final GradleParseDetectable detectable = new GradleParseDetectable(environment, fileFinder, gradleParseExtractor);
 

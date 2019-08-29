@@ -11,23 +11,17 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockExtractor;
+import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
+import com.synopsys.integration.detectable.util.MockFileFinder;
 
 public class ComposerLockDetectableTest {
-    private static final String COMPOSER_LOCK = "composer.lock";
-    private static final String COMPOSER_JSON = "composer.json";
-
     @Test
     public void testApplicable() {
 
         final ComposerLockExtractor composerLockExtractor = null;
 
-        final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
-        final FileFinder fileFinder = Mockito.mock(FileFinder.class);
-
-        final File dir = new File(".");
-        Mockito.when(environment.getDirectory()).thenReturn(dir);
-        Mockito.when(fileFinder.findFile(dir, COMPOSER_LOCK)).thenReturn(new File(COMPOSER_LOCK));
-        Mockito.when(fileFinder.findFile(dir, COMPOSER_JSON)).thenReturn(new File(COMPOSER_JSON));
+        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
+        final FileFinder fileFinder = MockFileFinder.withFilesNamed("composer.lock", "composer.json");
 
         final ComposerLockDetectable detectable = new ComposerLockDetectable(environment, fileFinder, composerLockExtractor);
 

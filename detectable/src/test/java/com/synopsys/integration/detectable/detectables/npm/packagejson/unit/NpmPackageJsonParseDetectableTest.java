@@ -12,6 +12,8 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectable;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
+import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
+import com.synopsys.integration.detectable.util.MockFileFinder;
 
 public class NpmPackageJsonParseDetectableTest {
 
@@ -22,15 +24,10 @@ public class NpmPackageJsonParseDetectableTest {
 
         final PackageJsonExtractor packageJsonExtractor = null;
 
-        final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
-        final FileFinder fileFinder = Mockito.mock(FileFinder.class);
+        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
+        final FileFinder fileFinder = MockFileFinder.withFileNamed("package.json");
 
-        final File dir = new File(".");
-        Mockito.when(environment.getDirectory()).thenReturn(dir);
-        Mockito.when(fileFinder.findFile(dir, PACKAGE_JSON_FILENAME)).thenReturn(new File(PACKAGE_JSON_FILENAME));
-
-        final NpmPackageJsonParseDetectableOptions npmPackageJsonParseDetectableOptions = Mockito.mock(NpmPackageJsonParseDetectableOptions.class);
-        Mockito.when(npmPackageJsonParseDetectableOptions.shouldIncludeDevDependencies()).thenReturn(Boolean.TRUE);
+        final NpmPackageJsonParseDetectableOptions npmPackageJsonParseDetectableOptions = new NpmPackageJsonParseDetectableOptions(false);
 
         final NpmPackageJsonParseDetectable detectable = new NpmPackageJsonParseDetectable(environment, fileFinder, packageJsonExtractor, npmPackageJsonParseDetectableOptions);
 

@@ -27,6 +27,14 @@ public class MockFileFinder implements FileFinder {
         return finder;
     }
 
+    public static MockFileFinder withFilesNamed(String... names) {
+        MockFileFinder finder = new MockFileFinder();
+        for (String name : names) {
+            finder.addFileNamed(name, 0);
+        }
+        return finder;
+    }
+
     public void addFile(File file, int depth) {
         if (!files.containsKey(depth)) {
             files.put(depth, new ArrayList<>());

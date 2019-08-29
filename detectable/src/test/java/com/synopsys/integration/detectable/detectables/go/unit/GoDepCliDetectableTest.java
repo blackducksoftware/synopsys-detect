@@ -15,10 +15,10 @@ import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
+import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
+import com.synopsys.integration.detectable.util.MockFileFinder;
 
 public class GoDepCliDetectableTest {
-    private static final String GOFILE_FILENAME_PATTERN = "*.go";
-
     @Test
     public void testApplicable() {
 
@@ -27,14 +27,8 @@ public class GoDepCliDetectableTest {
         final GoDepExtractor goDepExtractor = null;
         final GoDepCliDetectableOptions goDepCliDetectableOptions = null;
 
-        final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
-        Mockito.when(environment.getDirectory()).thenReturn(new File("."));
-
-        final FileFinder fileFinder = Mockito.mock(FileFinder.class);
-
-        final File dir = new File(".");
-        Mockito.when(environment.getDirectory()).thenReturn(dir);
-        Mockito.when(fileFinder.findFiles(dir, GOFILE_FILENAME_PATTERN)).thenReturn(Arrays.asList(new File(GOFILE_FILENAME_PATTERN)));
+        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
+        final FileFinder fileFinder = MockFileFinder.withFileNamed("example.go");
 
         final GoDepCliDetectable detectable = new GoDepCliDetectable(environment, fileFinder, goResolver, goDepResolver, goDepExtractor, goDepCliDetectableOptions);
 

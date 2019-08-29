@@ -11,6 +11,8 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrExtractor;
+import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
+import com.synopsys.integration.detectable.util.MockFileFinder;
 
 public class GoVndrDetectableTest {
     private static final String VNDR_CONF_FILENAME = "vendor.conf";
@@ -19,12 +21,9 @@ public class GoVndrDetectableTest {
     public void testApplicable() {
 
         final GoVndrExtractor goVndrExtractor = null;
-        final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
-        final FileFinder fileFinder = Mockito.mock(FileFinder.class);
 
-        final File dir = new File(".");
-        Mockito.when(environment.getDirectory()).thenReturn(dir);
-        Mockito.when(fileFinder.findFile(dir, VNDR_CONF_FILENAME)).thenReturn(new File(VNDR_CONF_FILENAME));
+        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
+        final FileFinder fileFinder = MockFileFinder.withFileNamed("vendor.conf");
 
         final GoVndrDetectable detectable = new GoVndrDetectable(environment, fileFinder, goVndrExtractor);
 

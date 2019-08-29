@@ -15,10 +15,10 @@ import com.synopsys.integration.detectable.detectable.inspector.PipInspectorReso
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorExtractor;
+import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
+import com.synopsys.integration.detectable.util.MockFileFinder;
 
 public class PipInspectorDetectableTest {
-    public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
-
     @Test
     public void testApplicableSetUpToolsFile() {
 
@@ -28,12 +28,8 @@ public class PipInspectorDetectableTest {
         final PipInspectorExtractor pipInspectorExtractor = null;
         final PipInspectorDetectableOptions pipInspectorDetectableOptions = Mockito.mock(PipInspectorDetectableOptions.class);
 
-        final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
-        final FileFinder fileFinder = Mockito.mock(FileFinder.class);
-
-        final File dir = new File(".");
-        Mockito.when(environment.getDirectory()).thenReturn(dir);
-        Mockito.when(fileFinder.findFile(dir, SETUPTOOLS_DEFAULT_FILE_NAME)).thenReturn(new File(SETUPTOOLS_DEFAULT_FILE_NAME));
+        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
+        final FileFinder fileFinder = MockFileFinder.withFileNamed("setup.py");
 
         final PipInspectorDetectable detectable = new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor, pipInspectorDetectableOptions);
 

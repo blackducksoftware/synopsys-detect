@@ -14,6 +14,8 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipenvExtractor;
+import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
+import com.synopsys.integration.detectable.util.MockFileFinder;
 
 public class PipenvDetectableTest {
     private static final String PIPFILE_FILE_NAME = "Pipfile";
@@ -24,7 +26,6 @@ public class PipenvDetectableTest {
         final PipenvDetectable detectable = constructDetectable(PIPFILE_FILE_NAME);
         assertTrue(detectable.applicable().getPassed());
     }
-
 
     @Test
     public void testApplicablePipfileDotLock() {
@@ -38,12 +39,8 @@ public class PipenvDetectableTest {
         final PipenvResolver pipenvResolver = null;
         final PipenvExtractor pipenvExtractor = null;
 
-        final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
-        final FileFinder fileFinder = Mockito.mock(FileFinder.class);
-
-        final File dir = new File(".");
-        Mockito.when(environment.getDirectory()).thenReturn(dir);
-        Mockito.when(fileFinder.findFile(dir, targetFilename)).thenReturn(new File(targetFilename));
+        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
+        final FileFinder fileFinder = MockFileFinder.withFileNamed(targetFilename);
 
         return new PipenvDetectable(environment, pipenvDetectableOptions, fileFinder, pythonResolver, pipenvResolver, pipenvExtractor);
     }

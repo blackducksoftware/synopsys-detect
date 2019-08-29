@@ -11,20 +11,16 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockExtractor;
+import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
+import com.synopsys.integration.detectable.util.MockFileFinder;
 
 public class PodlockDetectableTest {
-    private static final String PODFILE_LOCK_FILENAME = "Podfile.lock";
-
     @Test
     public void testApplicable() {
-
-        final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
-        final FileFinder fileFinder = Mockito.mock(FileFinder.class);
         final PodlockExtractor podlockExtractor = null;
 
-        final File dir = new File(".");
-        Mockito.when(environment.getDirectory()).thenReturn(dir);
-        Mockito.when(fileFinder.findFile(dir, PODFILE_LOCK_FILENAME)).thenReturn(new File(PODFILE_LOCK_FILENAME));
+        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
+        final FileFinder fileFinder = MockFileFinder.withFileNamed("Podfile.lock");
 
         final PodlockDetectable detectable = new PodlockDetectable(environment, fileFinder, podlockExtractor);
 
