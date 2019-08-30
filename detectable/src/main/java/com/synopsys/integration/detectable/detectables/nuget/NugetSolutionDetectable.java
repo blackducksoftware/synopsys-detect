@@ -67,7 +67,7 @@ public class NugetSolutionDetectable extends Detectable {
     public DetectableResult applicable() {
         solutionFiles = fileFinder.findFiles(environment.getDirectory(), SUPPORTED_SOLUTION_PATTERNS);
 
-        if (solutionFiles != null || solutionFiles.size() > 0) {
+        if (solutionFiles != null && solutionFiles.size() > 0) {
             return new PassedDetectableResult();
         } else {
             return new FilesNotFoundDetectableResult(SUPPORTED_SOLUTION_PATTERNS);
