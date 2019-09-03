@@ -113,6 +113,9 @@ import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockFileGenerator;
 import com.synopsys.integration.detectable.detectables.go.godep.parse.GoLockParser;
+import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleDetectable;
+import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleExtractor;
+import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleLockParser;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorExtractor;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
@@ -613,6 +616,16 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
+    public GoGradleLockParser goGradleLockParser() {
+        return new GoGradleLockParser(externalIdFactory);
+    }
+
+    @Bean
+    public GoGradleExtractor goGradleExtractor() {
+        return new GoGradleExtractor(goGradleLockParser());
+    }
+
+    @Bean
     public PackageJsonExtractor packageJsonExtractor() {
         return new PackageJsonExtractor(gson, externalIdFactory);
     }
@@ -738,6 +751,12 @@ public class DetectableBeanConfiguration {
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GoVendorDetectable goVendorBomTool(final DetectableEnvironment environment) {
         return new GoVendorDetectable(environment, fileFinder, goVendorExtractor());
+    }
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public GoGradleDetectable goGradleDetectable(final DetectableEnvironment environment) {
+        return new GoGradleDetectable(environment, fileFinder, goGradleExtractor());
     }
 
     @Bean

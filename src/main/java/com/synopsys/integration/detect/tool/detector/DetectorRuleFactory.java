@@ -48,16 +48,20 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.CPAN, "Cpan Cli", detectableFactory::createCpanCliDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.CRAN, "Packrat Lock", detectableFactory::createPackratLockDetectable).defaults().build();
 
+        final DetectorRule goGradle = ruleSet.addDetector(DetectorType.GO_GRADLE, "Go Gradle", detectableFactory::createGoGradleDetectable).defaults().build();
         final DetectorRule goLock = ruleSet.addDetector(DetectorType.GO_DEP, "Go Lock", detectableFactory::createGoLockDetectable).defaults().build();
         final DetectorRule goVnd = ruleSet.addDetector(DetectorType.GO_VNDR, "Go Vndr", detectableFactory::createGoVndrDetectable).defaults().build();
         final DetectorRule goVendor = ruleSet.addDetector(DetectorType.GO_VENDOR, "Go Vendor", detectableFactory::createGoVendorDetectable).defaults().build();
         final DetectorRule goCli = ruleSet.addDetector(DetectorType.GO_DEP, "Go Cli", detectableFactory::createGoCliDetectable).defaults().build();
 
+        ruleSet.yield(goLock).to(goGradle);
+        ruleSet.yield(goCli).to(goGradle);
         ruleSet.yield(goCli).to(goLock);
         ruleSet.yield(goCli).to(goVnd);
         ruleSet.yield(goCli).to(goVendor);
 
-        ruleSet.addDetector(DetectorType.GRADLE, "Gradle Inspector", detectableFactory::createGradleInspectorDetectable).defaults().build();
+        final DetectorRule gradleInspector = ruleSet.addDetector(DetectorType.GRADLE, "Gradle Inspector", detectableFactory::createGradleInspectorDetectable).defaults().build();
+        ruleSet.yield(gradleInspector).to(goGradle);
         ruleSet.addDetector(DetectorType.HEX, "Rebar", detectableFactory::createRebarDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom", detectableFactory::createMavenPomDetectable).defaults().build();

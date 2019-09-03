@@ -36,6 +36,7 @@ public enum DetectorType {
     GO_DEP,
     GO_VNDR,
     GO_VENDOR,
+    GO_GRADLE,
     GRADLE,
     HEX,
     MAVEN,
