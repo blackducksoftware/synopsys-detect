@@ -69,13 +69,13 @@ public class BitbakeExtractor {
         this.bitbakeGraphTransformer = bitbakeGraphTransformer;
     }
 
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment, final File buildEnvScript, final String[] sourceArguments, final String[] packageNames, final File bash) {
+    public Extraction extract(final File sourceDirectory, final ExtractionEnvironment extractionEnvironment, final File buildEnvScript, final String[] sourceArguments, final String[] packageNames, final File bash) {
         final File outputDirectory = extractionEnvironment.getOutputDirectory();
 
         final List<CodeLocation> codeLocations = new ArrayList<>();
         for (final String packageName : packageNames) {
             try {
-                final Optional<BitbakeResult> bitbakeResult = executeBitbakeForDependencies(outputDirectory, buildEnvScript, sourceArguments, packageName, bash);
+                final Optional<BitbakeResult> bitbakeResult = executeBitbakeForDependencies(sourceDirectory, outputDirectory, buildEnvScript, sourceArguments, packageName, bash);
                 if (!bitbakeResult.isPresent()) {
                     final String filesSearchedFor = StringUtils.joinWith(", ", Arrays.stream(BitbakeFileType.values()).map(BitbakeFileType::getFileName).collect(Collectors.toList()));
                     throw new IntegrationException(String.format("Failed to find any bitbake results. Looked for: %s", filesSearchedFor));
@@ -114,7 +114,7 @@ public class BitbakeExtractor {
         return extraction;
     }
 
-    private Optional<BitbakeResult> executeBitbakeForDependencies(final File outputDirectory, final File buildEnvScript, final String[] sourceArguments, final String packageName, final File bash)
+    private Optional<BitbakeResult> executeBitbakeForDependencies(final File sourceDirectory, final File outputDirectory, final File buildEnvScript, final String[] sourceArguments, final String packageName, final File bash)
         throws ExecutableRunnerException, IOException {
         final String bitbakeCommand = "bitbake -g " + packageName;
         final ExecutableOutput executableOutput = runBitbake(outputDirectory, buildEnvScript, sourceArguments, bitbakeCommand, bash);
@@ -123,11 +123,18 @@ public class BitbakeExtractor {
 
         if (returnCode == 0) {
             for (final BitbakeFileType bitbakeFileType : BitbakeFileType.values()) {
-                final File file = fileFinder.findFiles(outputDirectory, bitbakeFileType.getFileName(), 1).stream().findFirst().orElse(null);
+                File file = fileFinder.findFiles(outputDirectory, bitbakeFileType.getFileName(), 1).stream().findFirst().orElse(null);
 
                 if (file != null) {
                     bitbakeResult = new BitbakeResult(bitbakeFileType, file);
                     break;
+                } else {
+                    // If we didn't find the files where we expect, also look in the sourceDirectory
+                    file = fileFinder.findFiles(sourceDirectory, bitbakeFileType.getFileName(), 1).stream().findFirst().orElse(null);
+                    if (file != null) {
+                        bitbakeResult = new BitbakeResult(bitbakeFileType, file);
+                        break;
+                    }
                 }
             }
         } else {
