@@ -32,6 +32,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.env.AbstractPropertyResolver;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
@@ -65,6 +68,7 @@ public class Application implements ApplicationRunner {
     @Autowired
     public Application(ConfigurableEnvironment environment) {
         this.environment = environment;
+        environment.setIgnoreUnresolvableNestedPlaceholders(true);
     }
 
     public static void main(final String[] args) {
