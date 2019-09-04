@@ -58,6 +58,7 @@ public class DetectorRuleFactory {
         ruleSet.yield(goCli).to(goVendor);
 
         ruleSet.addDetector(DetectorType.GRADLE, "Gradle Inspector", detectableFactory::createGradleDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.GO_GRADLE, "Go Gradle", detectableFactory::createGoGradleDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.HEX, "Rebar", detectableFactory::createRebarDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom", detectableFactory::createMavenPomDetectable).defaults().build();
