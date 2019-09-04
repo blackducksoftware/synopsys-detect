@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.nuget.unit;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -30,4 +31,19 @@ public class NugetSolutionDetectableTest {
 
         assertTrue(detectable.applicable().getPassed());
     }
+
+    @Test
+    public void notApplicableForPodfile() {
+        final NugetInspectorResolver nugetInspectorManager = null;
+        final NugetInspectorExtractor nugetInspectorExtractor = null;
+        final NugetInspectorOptions nugetInspectorOptions = null;
+
+        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
+        final FileFinder fileFinder = MockFileFinder.withFileNamed("podfile.lock");
+
+        final NugetSolutionDetectable detectable = new NugetSolutionDetectable(environment, fileFinder, nugetInspectorManager, nugetInspectorExtractor, nugetInspectorOptions);
+
+        assertFalse(detectable.applicable().getPassed());
+    }
 }
+
