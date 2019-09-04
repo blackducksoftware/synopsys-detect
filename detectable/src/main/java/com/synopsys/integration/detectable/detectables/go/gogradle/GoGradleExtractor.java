@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.gradle.gogradle;
+package com.synopsys.integration.detectable.detectables.go.gogradle;
 
 import java.io.File;
 import java.io.IOException;
