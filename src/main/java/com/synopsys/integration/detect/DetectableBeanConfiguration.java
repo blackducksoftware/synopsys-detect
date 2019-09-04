@@ -122,7 +122,6 @@ import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrExtractor;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorExtractor;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleTaskChecker;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
@@ -617,11 +616,6 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
-    public GradleTaskChecker gradleTaskChecker() {
-        return new GradleTaskChecker(executableRunner);
-    }
-
-    @Bean
     public GoGradleLockParser goGradleLockParser() {
         return new GoGradleLockParser(externalIdFactory);
     }
@@ -768,7 +762,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GradleDetectable gradleDetectable(final DetectableEnvironment environment) {
-        return new GradleDetectable(environment, fileFinder, detectExecutableResolver, gradleInspectorResolver(), gradleInspectorExtractor(), detectableOptionFactory.createGradleInspectorOptions(), gradleTaskChecker());
+        return new GradleDetectable(environment, fileFinder, detectExecutableResolver, gradleInspectorResolver(), gradleInspectorExtractor(), detectableOptionFactory.createGradleInspectorOptions());
     }
 
     @Bean
