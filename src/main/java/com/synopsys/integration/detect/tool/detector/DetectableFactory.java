@@ -39,10 +39,10 @@ import com.synopsys.integration.detectable.detectables.git.cli.GitCliDetectable;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
-import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorDetectable;
+import com.synopsys.integration.detectable.detectables.gradle.gogradle.GoGradleDetectable;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseDetectable;
 import com.synopsys.integration.detectable.detectables.hex.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
@@ -141,8 +141,8 @@ public class DetectableFactory implements BeanFactoryAware {
         return beanFactory.getBean(GradleParseDetectable.class, environment);
     }
 
-    public GradleInspectorDetectable createGradleInspectorDetectable(final DetectableEnvironment environment) {
-        return beanFactory.getBean(GradleInspectorDetectable.class, environment);
+    public GradleDetectable createGradleDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(GradleDetectable.class, environment);
     }
 
     public MavenPomDetectable createMavenPomDetectable(final DetectableEnvironment environment) {

@@ -60,7 +60,7 @@ public class DetectorRuleFactory {
         ruleSet.yield(goCli).to(goVnd);
         ruleSet.yield(goCli).to(goVendor);
 
-        final DetectorRule gradleInspector = ruleSet.addDetector(DetectorType.GRADLE, "Gradle Inspector", detectableFactory::createGradleInspectorDetectable).defaults().build();
+        final DetectorRule gradleInspector = ruleSet.addDetector(DetectorType.GRADLE, "Gradle Inspector", detectableFactory::createGradleDetectable).defaults().build();
         ruleSet.yield(gradleInspector).to(goGradle);
         ruleSet.addDetector(DetectorType.HEX, "Rebar", detectableFactory::createRebarDetectable).defaults().build();
 

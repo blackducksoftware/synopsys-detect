@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.go.gogradle;
+package com.synopsys.integration.detectable.detectables.gradle.gogradle;
 
 import java.io.File;
 
@@ -42,6 +42,6 @@ public class GoGradleDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return goGradleExtractor.extract(environment.getDirectory(), goLock);
+        return goGradleExtractor.extract(goLock);
     }
 }

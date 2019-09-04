@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.go.gogradle;
+package com.synopsys.integration.detectable.detectables.gradle.gogradle;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class GoGradleExtractor {
         this.goGradleLockParser = goGradleLockParser;
     }
 
-    public Extraction extract(final File directory, final File goGradleLockFile) {
+    public Extraction extract(final File goGradleLockFile) {
         try {
             final DependencyGraph dependencyGraph = goGradleLockParser.parse(goGradleLockFile);
             final CodeLocation codeLocation = new CodeLocation(dependencyGraph);

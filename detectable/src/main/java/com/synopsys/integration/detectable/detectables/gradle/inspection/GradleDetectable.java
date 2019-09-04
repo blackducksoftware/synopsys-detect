@@ -37,12 +37,11 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-public class GradleInspectorDetectable extends Detectable {
+public class GradleDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
@@ -53,18 +52,21 @@ public class GradleInspectorDetectable extends Detectable {
     private final GradleInspectorResolver gradleInspectorResolver;
     private final GradleInspectorExtractor gradleInspectorExtractor;
     private final GradleInspectorOptions gradleInspectorOptions;
+    private final GradleTaskChecker gradleTaskChecker;
 
     private File gradleExe;
     private File gradleInspector;
+    private String gradleTask;
 
-    public GradleInspectorDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GradleResolver gradleResolver, final GradleInspectorResolver gradleInspectorResolver,
-        final GradleInspectorExtractor gradleInspectorExtractor, final GradleInspectorOptions gradleInspectorOptions) {
-        super(environment, "Gradle Inspector", "Gradle");
+    public GradleDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GradleResolver gradleResolver, final GradleInspectorResolver gradleInspectorResolver,
+        final GradleInspectorExtractor gradleInspectorExtractor, final GradleInspectorOptions gradleInspectorOptions, final GradleTaskChecker gradleTaskChecker) {
+        super(environment, "Gradle", "Gradle");
         this.fileFinder = fileFinder;
         this.gradleResolver = gradleResolver;
         this.gradleInspectorResolver = gradleInspectorResolver;
         this.gradleInspectorExtractor = gradleInspectorExtractor;
         this.gradleInspectorOptions = gradleInspectorOptions;
+        this.gradleTaskChecker = gradleTaskChecker;
     }
 
     @Override
@@ -94,12 +96,17 @@ public class GradleInspectorDetectable extends Detectable {
             return new InspectorNotFoundDetectableResult("gradle");
         }
 
+        gradleTask = gradleTaskChecker.getGoGradleTask(environment.getDirectory(), gradleExe).orElse(null);
+
         return new PassedDetectableResult();
     }
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleInspectorOptions.getGradleBuildCommand(), gradleInspector, extractionEnvironment.getOutputDirectory());
-    }
+        final Extraction gradleInspectorExtraction = gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleInspectorOptions.getGradleBuildCommand(), gradleInspector, extractionEnvironment.getOutputDirectory());
+        if (gradleTask != null) {
 
+        }
+        return gradleInspectorExtraction;
+    }
 }
