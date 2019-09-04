@@ -129,7 +129,7 @@ public class BitbakeExtractor {
                     bitbakeResult = new BitbakeResult(bitbakeFileType, file);
                     break;
                 } else {
-                    // If we didn't find the files where we expect, also look in the sourceDirectory
+                    // If we didn't find the files where we expect, also look in the sourceDirectory. See IDETECT-1493.
                     file = fileFinder.findFiles(sourceDirectory, bitbakeFileType.getFileName(), 1).stream().findFirst().orElse(null);
                     if (file != null) {
                         bitbakeResult = new BitbakeResult(bitbakeFileType, file);
