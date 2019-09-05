@@ -26,20 +26,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.help.DetectOption;
 import com.synopsys.integration.detect.help.DetectOptionHelp;
-import com.synopsys.integration.detect.help.html.HelpHtmlWriter;
 
 import freemarker.template.Configuration;
 
 public class HelpJsonWriter {
-    private final Logger logger = LoggerFactory.getLogger(HelpHtmlWriter.class);
+    private final Logger logger = LoggerFactory.getLogger(HelpJsonWriter.class);
 
     private final Configuration configuration;
     private final Gson gson;
@@ -52,10 +55,8 @@ public class HelpJsonWriter {
     public void writeGsonDocument(final String filename, final List<DetectOption> detectOptions) {
         final HelpJsonData data = new HelpJsonData();
 
-        for (final DetectOption option : detectOptions) {
-            final HelpJsonOption helpJsonOption = convertOption(option);
-            data.options.add(helpJsonOption);
-        }
+        data.options.addAll(detectOptions.stream().map(this::convertOption).collect(Collectors.toList()));
+        data.exitCodes.addAll(Stream.of(ExitCodeType.values()).map(this::convertExitCode).collect(Collectors.toList()));
 
         try {
             try (final Writer writer = new FileWriter(filename)) {
@@ -66,6 +67,14 @@ public class HelpJsonWriter {
         } catch (final IOException e) {
             logger.error("There was an error when creating the html file", e);
         }
+    }
+
+    public HelpJsonExitCode convertExitCode(final ExitCodeType exitCodeType) {
+        HelpJsonExitCode helpJsonExitCode = new HelpJsonExitCode();
+        helpJsonExitCode.exitCodeKey = exitCodeType.name();
+        helpJsonExitCode.exitCodeValue = exitCodeType.getExitCode();
+        helpJsonExitCode.exitCodeDescription = exitCodeType.getDescription();
+        return helpJsonExitCode;
     }
 
     public HelpJsonOption convertOption(final DetectOption detectOption) {

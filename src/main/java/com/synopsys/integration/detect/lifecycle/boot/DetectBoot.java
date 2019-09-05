@@ -53,7 +53,6 @@ import com.synopsys.integration.detect.help.DetectArgumentState;
 import com.synopsys.integration.detect.help.DetectArgumentStateParser;
 import com.synopsys.integration.detect.help.DetectOption;
 import com.synopsys.integration.detect.help.DetectOptionManager;
-import com.synopsys.integration.detect.help.html.HelpHtmlWriter;
 import com.synopsys.integration.detect.help.json.HelpJsonWriter;
 import com.synopsys.integration.detect.help.print.DetectInfoPrinter;
 import com.synopsys.integration.detect.help.print.HelpPrinter;
@@ -133,11 +132,6 @@ public class DetectBoot {
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             printAppropriateHelp(options, detectArgumentState);
-            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty());
-        }
-
-        if (detectArgumentState.isHelpHtmlDocument()) {
-            printHelpHtmlDocument(options, detectInfo, configuration);
             return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty());
         }
 
@@ -244,11 +238,6 @@ public class DetectBoot {
     private void printAppropriateHelp(List<DetectOption> detectOptions, DetectArgumentState detectArgumentState) {
         HelpPrinter helpPrinter = new HelpPrinter();
         helpPrinter.printAppropriateHelpMessage(System.out, detectOptions, detectArgumentState);
-    }
-
-    private void printHelpHtmlDocument(List<DetectOption> detectOptions, DetectInfo detectInfo, Configuration configuration) {
-        HelpHtmlWriter helpHtmlWriter = new HelpHtmlWriter(configuration);
-        helpHtmlWriter.writeHtmlDocument(String.format("synopsys-detect-%s-help.html", detectInfo.getDetectVersion()), detectOptions);
     }
 
     private void printHelpJsonDocument(List<DetectOption> detectOptions, DetectInfo detectInfo, Configuration configuration, Gson gson) {
