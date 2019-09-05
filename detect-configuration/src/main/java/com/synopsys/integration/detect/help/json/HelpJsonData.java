@@ -26,5 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HelpJsonData {
+    public List<HelpJsonExitCode> exitCodes = new ArrayList<>();
     public List<HelpJsonOption> options = new ArrayList<>();
 }
