@@ -12,7 +12,7 @@ import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetecta
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
 public class GoGradleDetectable extends Detectable {
-    private static final String GO_GRADLE_LOCK = "gogradle.lock";
+    public static final String GO_GRADLE_LOCK = "gogradle.lock";
 
     private final FileFinder fileFinder;
     private final GoGradleExtractor goGradleExtractor;

@@ -13,6 +13,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class GoGradleLockParser {
     private final ExternalIdFactory externalIdFactory;
@@ -21,25 +22,28 @@ public class GoGradleLockParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph parse(final File goGradleLockFile) throws IOException {
+    public DependencyGraph parse(final File goGradleLockFile) throws IOException, IntegrationException {
         final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         final YAMLMapper mapper = new YAMLMapper();
-        for (final JsonNode scopeNodes : mapper.readTree(goGradleLockFile)) {
-            for (final JsonNode scopeNodeContent : scopeNodes) {
-                for (final JsonNode dependencyNode : scopeNodeContent) {
-                    final Optional<String> name = Optional.ofNullable(dependencyNode.get("name")).map(JsonNode::textValue);
-                    final Optional<String> commit = Optional.ofNullable(dependencyNode.get("commit")).map(JsonNode::textValue);
+        final JsonNode rootNode = mapper.readTree(goGradleLockFile);
+        final JsonNode buildNode = rootNode.findPath("build");
 
-                    if (name.isPresent() && commit.isPresent()) {
-                        String dependencyName = name.get();
-                        if (dependencyName.startsWith("golang.org/x/")) {
-                            dependencyName = dependencyName.replace("golang.org/x/", "");
-                        }
-                        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, dependencyName, commit.get());
-                        final Dependency dependency = new Dependency(externalId);
-                        dependencyGraph.addChildToRoot(dependency);
-                    }
+        if (buildNode == null) {
+            throw new IntegrationException(String.format("Failed to find build node in %s", GoGradleDetectable.GO_GRADLE_LOCK));
+        }
+
+        for (final JsonNode dependencyNode : buildNode) {
+            final Optional<String> name = Optional.ofNullable(dependencyNode.get("name")).map(JsonNode::textValue);
+            final Optional<String> commit = Optional.ofNullable(dependencyNode.get("commit")).map(JsonNode::textValue);
+
+            if (name.isPresent() && commit.isPresent()) {
+                String dependencyName = name.get();
+                if (dependencyName.startsWith("golang.org/x/")) {
+                    dependencyName = dependencyName.replace("golang.org/x/", "");
                 }
+                final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, dependencyName, commit.get());
+                final Dependency dependency = new Dependency(externalId);
+                dependencyGraph.addChildToRoot(dependency);
             }
         }
 

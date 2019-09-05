@@ -15,34 +15,4 @@ dependencies:
     commit: "9756ffdc24725223350eb3266ffb92590d28f278"
     url: "https://go.googlesource.com/crypto"
     transitive: false
-  - vcs: "git"
-    name: "golang.org/x/net"
-    commit: "ba9fcec4b297b415637633c5a6e8fa592e4a16c3"
-    url: "https://go.googlesource.com/net"
-    transitive: false
-  - vcs: "git"
-    name: "golang.org/x/sync"
-    commit: "112230192c580c3556b8cee6403af37a4fc5f28c"
-    url: "https://go.googlesource.com/sync"
-    transitive: false
-  - vcs: "git"
-    name: "golang.org/x/sys"
-    commit: "1e83adbbebd0f5dc971915fd7e5db032c3d2b731"
-    url: "https://go.googlesource.com/sys"
-    transitive: false
-  - vcs: "git"
-    name: "golang.org/x/text"
-    commit: "3d0f7978add91030e5e8976ff65ccdd828286cba"
-    url: "https://go.googlesource.com/text"
-    transitive: false
-  - vcs: "git"
-    name: "golang.org/x/tools"
-    commit: "f340ed3ae274cf744edc12c671194b31a12fe4ac"
-    url: "https://go.googlesource.com/tools"
-    transitive: false
-  - vcs: "git"
-    name: "golang.org/x/xerrors"
-    commit: "a985d3407aa71f30cf86696ee0a2f409709f22e1"
-    url: "https://go.googlesource.com/xerrors"
-    transitive: false
   test: []
