@@ -37,6 +37,7 @@ version = '6.0.0-SNAPSHOT'
 apply plugin: 'com.blackducksoftware.integration.solution'
 apply plugin: 'org.springframework.boot'
 apply from: 'artifactory-properties.gradle'
+apply from: 'docs.gradle'
 
 def createArtifactName() {
     return "${buildDir}/libs/${project.name}-${version}.jar"
