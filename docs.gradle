@@ -93,9 +93,19 @@ task generatedPropertyMarkdown() {
     }
 }
 
+task generatedExitCodeMarkdown() {
+    dependsOn helpData
+    doLast {
+        def exitCodeTemplate = helpData.templates.getTemplate("exit-codes.ftl")
+        def exitCodeMd = new File(helpData.output, "exit-codes.md")
+        exitCodeMd.withWriter('utf-8') { out -> exitCodeTemplate.process(helpData.helpJson, out) }
+    }
+}
+
 task docs() {
     dependsOn staticMarkdown
     dependsOn generatedPropertyMarkdown
+    dependsOn generatedExitCodeMarkdown
 
     doLast {
         exec {
