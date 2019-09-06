@@ -23,7 +23,7 @@ public class BitbakeGraphTransformerTest {
         bitbakeGraph.addChild("example", "foobar");
 
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, null, null); // TODO: Provide maps
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
 
@@ -40,7 +40,7 @@ public class BitbakeGraphTransformerTest {
         bitbakeGraph.addChild("example", "foobar");
 
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, null, null); // TODO: Provide maps
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.hasRootSize(1);
@@ -54,7 +54,7 @@ public class BitbakeGraphTransformerTest {
         bitbakeGraph.addNode("example", Optional.empty());
 
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, null, null); // TODO: Provide maps
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.noDependency("example", null);

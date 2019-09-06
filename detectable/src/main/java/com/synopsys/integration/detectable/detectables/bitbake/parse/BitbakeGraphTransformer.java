@@ -23,7 +23,11 @@
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
@@ -34,15 +38,19 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeNode;
+import com.synopsys.integration.log.IntLogger;
+import com.synopsys.integration.log.Slf4jIntLogger;
 
 public class BitbakeGraphTransformer {
+    private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
+
     private final ExternalIdFactory externalIdFactory;
 
     public BitbakeGraphTransformer(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(final BitbakeGraph bitbakeGraph) {
+    public DependencyGraph transform(final BitbakeGraph bitbakeGraph, final Map<String, List<String>> componentLayerMap, final Map<String, Integer> layerPriorityMap) {
         final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
         final Map<String, Dependency> namesToExternalIds = new HashMap<>();
@@ -50,9 +58,14 @@ public class BitbakeGraphTransformer {
             if (bitbakeNode.getVersion().isPresent()) {
                 final String name = bitbakeNode.getName();
                 final String version = bitbakeNode.getVersion().get();
-                final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.YOCTO, name, version);
-                final Dependency dependency = new Dependency(name, version, externalId);
-                namesToExternalIds.put(bitbakeNode.getName(), dependency);
+                final Optional<Dependency> dependency = generateExternalId(name, version, componentLayerMap, layerPriorityMap)
+                                                            .map(externalId -> new Dependency(name, version, externalId));
+
+                if (dependency.isPresent()) {
+                    namesToExternalIds.put(bitbakeNode.getName(), dependency.get());
+                } else {
+                    logger.warn("Failed to properly construct external ID for '%s==$s'. It may be missing a layer mapping.");
+                }
             }
         }
 
@@ -73,4 +86,29 @@ public class BitbakeGraphTransformer {
         return dependencyGraph;
     }
 
+    private Optional<ExternalId> generateExternalId(final String name, final String version, final Map<String, List<String>> componentLayerMap, final Map<String, Integer> layerPriorityMap) {
+        final List<String> potentialLayers = componentLayerMap.get(name);
+        if (potentialLayers == null || potentialLayers.isEmpty()) {
+            logger.debug(String.format("Creating legacy external id for component '%s==%s'.", name, version));
+            return Optional.ofNullable(externalIdFactory.createNameVersionExternalId(Forge.YOCTO, name, version));
+        } else {
+            final Optional<String> highestPriorityLayer = getHighestPriorityLayer(potentialLayers, layerPriorityMap);
+            return highestPriorityLayer.map(layer -> externalIdFactory.createModuleNamesExternalId(Forge.YOCTO, layer, name, version));
+        }
+
+    }
+
+    private Optional<String> getHighestPriorityLayer(final List<String> layerNames, final Map<String, Integer> layerPriorityMap) {
+        String layerName = null;
+        Integer layerPriority = null;
+        for (final String layer : layerNames) {
+            final Integer priority = layerPriorityMap.get(layer);
+            if (layerPriority == null || priority > layerPriority) {
+                layerName = layer;
+                layerPriority = priority;
+            }
+        }
+
+        return Optional.ofNullable(layerName);
+    }
 }

@@ -73,6 +73,8 @@ import com.synopsys.integration.detectable.detectables.bazel.parse.XPathParser;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeLayersParser;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
@@ -556,8 +558,18 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
+    public BitbakeLayersParser bitbakeLayersParser() {
+        return new BitbakeLayersParser();
+    }
+
+    @Bean
+    public BitbakeRecipesParser bitbakeRecipesParser() {
+        return new BitbakeRecipesParser();
+    }
+
+    @Bean
     public BitbakeExtractor bitbakeExtractor() {
-        return new BitbakeExtractor(executableRunner, fileFinder, graphParserTransformer(), bitbakeGraphTransformer());
+        return new BitbakeExtractor(executableRunner, fileFinder, graphParserTransformer(), bitbakeGraphTransformer(), bitbakeLayersParser(), bitbakeRecipesParser());
     }
 
     @Bean

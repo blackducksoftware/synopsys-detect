@@ -28,7 +28,7 @@ public class BitbakeDependencyGraphFunctionalTest {
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
 
         final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser, BitbakeFileType.RECIPE_DEPENDS);
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, null, null); // TODO: Provide maps
 
         assert dependencyGraph.getRootDependencies().size() == 480;
     }
@@ -40,7 +40,7 @@ public class BitbakeDependencyGraphFunctionalTest {
         final GraphParser graphParser = new GraphParser(inputStream);
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
         final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser, BitbakeFileType.RECIPE_DEPENDS);
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, null, null); // TODO: Provide maps
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
         final ExternalId attr = graphAssert.hasDependency("attr", "2.4.47-r0");
@@ -57,7 +57,7 @@ public class BitbakeDependencyGraphFunctionalTest {
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
 
         final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser, BitbakeFileType.PACKAGE_DEPENDS);
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, null, null); // TODO: Provide maps
 
         Assertions.assertEquals(771, dependencyGraph.getRootDependencies().size());
     }
@@ -69,7 +69,7 @@ public class BitbakeDependencyGraphFunctionalTest {
         final GraphParser graphParser = new GraphParser(inputStream);
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
         final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser, BitbakeFileType.PACKAGE_DEPENDS);
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, null, null); // TODO: Provide maps
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
         final ExternalId attr = graphAssert.hasDependency("shadow-native", "4.2.1-r0");
