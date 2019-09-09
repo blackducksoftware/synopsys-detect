@@ -1,5 +1,4 @@
 # ${groupName}
- ${groupDescription!"TBD: This group still needs a description."}
 
 <#list options as option>
 ##${option.propertyName}
@@ -14,6 +13,7 @@
 ```
 
 ${option.description}
+
 ${option.detailedDescription!""}
 
 |Details||

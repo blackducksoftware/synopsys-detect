@@ -102,8 +102,18 @@ task generatedExitCodeMarkdown() {
     }
 }
 
+task generatedIndex() {
+    dependsOn helpData
+    doLast {
+        def indexTemplate = helpData.templates.getTemplate("index.ftl")
+        def indexMd = new File(helpData.output, "index.md")
+        indexMd.withWriter('utf-8') { out -> indexTemplate.process([version: version], out) }
+    }
+}
+
 task docs() {
     dependsOn staticMarkdown
+    dependsOn generatedIndex
     dependsOn generatedPropertyMarkdown
     dependsOn generatedExitCodeMarkdown
 
