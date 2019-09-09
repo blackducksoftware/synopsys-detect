@@ -29,7 +29,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeLayer;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeLayerPriority;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
@@ -58,7 +58,7 @@ public class BitbakeLayersParser {
         return layerPriorityMap;
     }
 
-    private Optional<BitbakeLayer> parseLine(final String line) {
+    private Optional<BitbakeLayerPriority> parseLine(final String line) {
         final String trimmedLine = line.trim();
 
         final int indexOfFirstSpace = trimmedLine.indexOf(" ");
@@ -77,7 +77,7 @@ public class BitbakeLayersParser {
 
         try {
             final int layerPriority = Integer.parseInt(layerPriorityString);
-            return Optional.of(new BitbakeLayer(layerName.trim(), layerPriority));
+            return Optional.of(new BitbakeLayerPriority(layerName.trim(), layerPriority));
         } catch (final NumberFormatException e) {
             logger.debug(String.format("Failed to parse bitbake layer priority from line '%s'.", line), e);
             return Optional.empty();

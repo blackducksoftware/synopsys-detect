@@ -30,6 +30,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
@@ -40,12 +41,12 @@ public class BitbakeRecipesParser {
      * @param output is the executable output.
      * @return Component names mapped to a list of layer names.
      */
-    public Map<String, List<String>> parseComponentLayerMap(final String output) {
-        final Map<String, List<String>> componentLayerMap = new HashMap<>();
+    public Map<String, BitbakeRecipe> parseComponentLayerMap(final String output) {
+        final Map<String, BitbakeRecipe> componentLayerMap = new HashMap<>();
 
         boolean started = false;
         String currentComponentName = null;
-        List<String> currentLayers = null;
+        List<BitbakeRecipe.Layer> currentLayers = null;
         for (final String line : output.split(System.lineSeparator())) {
             if (StringUtils.isBlank(line)) {
                 continue;
@@ -58,7 +59,8 @@ public class BitbakeRecipesParser {
 
             if (line.contains(":") && !line.startsWith("  ")) {
                 if (currentComponentName != null) {
-                    componentLayerMap.put(currentComponentName.trim(), currentLayers);
+                    final BitbakeRecipe bitbakeRecipe = new BitbakeRecipe(currentComponentName, currentLayers);
+                    componentLayerMap.put(currentComponentName.trim(), bitbakeRecipe);
                 }
 
                 currentComponentName = line.replace(":", "").trim();
@@ -66,10 +68,12 @@ public class BitbakeRecipesParser {
             } else if (currentComponentName != null && line.startsWith("  ")) {
                 final String trimmedLine = line.trim();
                 final int indexOfFirstSpace = trimmedLine.indexOf(" ");
+                final int indexOfLastSpace = trimmedLine.lastIndexOf(" ");
 
-                if (indexOfFirstSpace != -1) {
+                if (indexOfFirstSpace != -1 && indexOfLastSpace != -1 && indexOfLastSpace + 1 < trimmedLine.length()) {
                     final String layer = trimmedLine.substring(0, indexOfFirstSpace);
-                    currentLayers.add(layer);
+                    final String version = trimmedLine.substring(indexOfLastSpace + 1);
+                    currentLayers.add(new BitbakeRecipe.Layer(layer, version));
                 } else {
                     logger.debug(String.format("Failed to parse layer for component '%s' from line '%s'.", currentComponentName, line));
                 }
@@ -81,7 +85,8 @@ public class BitbakeRecipesParser {
         }
 
         if (currentComponentName != null) {
-            componentLayerMap.put(currentComponentName.trim(), currentLayers);
+            final BitbakeRecipe bitbakeRecipe = new BitbakeRecipe(currentComponentName, currentLayers);
+            componentLayerMap.put(currentComponentName.trim(), bitbakeRecipe);
         }
 
         return componentLayerMap;

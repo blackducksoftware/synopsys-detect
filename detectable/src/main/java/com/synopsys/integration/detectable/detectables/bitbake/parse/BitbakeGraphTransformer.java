@@ -23,7 +23,6 @@
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,11 +37,13 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeNode;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
 public class BitbakeGraphTransformer {
-    private final String NATIVE_SUFFIX = "-native";
+    private static final String NATIVE_SUFFIX = "-native";
+
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
     private final ExternalIdFactory externalIdFactory;
@@ -51,7 +52,7 @@ public class BitbakeGraphTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(final BitbakeGraph bitbakeGraph, final Map<String, List<String>> componentLayerMap, final Map<String, Integer> layerPriorityMap) {
+    public DependencyGraph transform(final BitbakeGraph bitbakeGraph, final Map<String, BitbakeRecipe> componentLayerMap, final Map<String, Integer> layerPriorityMap) {
         final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
         final Map<String, Dependency> namesToExternalIds = new HashMap<>();
@@ -59,8 +60,7 @@ public class BitbakeGraphTransformer {
             if (bitbakeNode.getVersion().isPresent()) {
                 final String name = bitbakeNode.getName();
                 final String version = bitbakeNode.getVersion().get();
-                final Optional<Dependency> dependency = generateExternalId(name, version, componentLayerMap, layerPriorityMap)
-                                                            .map(externalId -> new Dependency(name, version, externalId));
+                final Optional<Dependency> dependency = generateExternalId(name, version, componentLayerMap, layerPriorityMap).map(Dependency::new);
 
                 if (dependency.isPresent()) {
                     namesToExternalIds.put(bitbakeNode.getName(), dependency.get());
@@ -87,9 +87,9 @@ public class BitbakeGraphTransformer {
         return dependencyGraph;
     }
 
-    private Optional<ExternalId> generateExternalId(final String name, final String version, final Map<String, List<String>> componentLayerMap, final Map<String, Integer> layerPriorityMap) {
-        final List<String> potentialLayers = componentLayerMap.get(name);
-        if (potentialLayers == null || potentialLayers.isEmpty()) {
+    private Optional<ExternalId> generateExternalId(final String name, final String version, final Map<String, BitbakeRecipe> componentLayerMap, final Map<String, Integer> layerPriorityMap) {
+        final BitbakeRecipe bitbakeRecipe = componentLayerMap.get(name);
+        if (bitbakeRecipe == null) {
             if (componentLayerMap.containsKey(name)) {
                 logger.debug(String.format("Component '%s' is in the component layer map. But not potential layers were populated.", name));
             } else {
@@ -103,22 +103,22 @@ public class BitbakeGraphTransformer {
                 return Optional.ofNullable(externalIdFactory.createNameVersionExternalId(Forge.YOCTO, name, version));
             }
         } else {
-            final Optional<String> highestPriorityLayer = getHighestPriorityLayer(potentialLayers, layerPriorityMap);
-            return highestPriorityLayer.map(layer -> externalIdFactory.createModuleNamesExternalId(Forge.YOCTO, layer, name, version));
+            final Optional<BitbakeRecipe.Layer> highestPriorityLayer = getHighestPriorityLayer(bitbakeRecipe, layerPriorityMap);
+            return highestPriorityLayer.map(layer -> externalIdFactory.createModuleNamesExternalId(Forge.YOCTO, layer.getLayerName(), name, layer.getComponentVersion()));
         }
     }
 
-    private Optional<String> getHighestPriorityLayer(final List<String> layerNames, final Map<String, Integer> layerPriorityMap) {
-        String layerName = null;
+    private Optional<BitbakeRecipe.Layer> getHighestPriorityLayer(final BitbakeRecipe layerNames, final Map<String, Integer> layerPriorityMap) {
+        BitbakeRecipe.Layer priorityLayer = null;
         Integer layerPriority = null;
-        for (final String layer : layerNames) {
-            final Integer priority = layerPriorityMap.get(layer);
+        for (final BitbakeRecipe.Layer layer : layerNames.getLayers()) {
+            final Integer priority = layerPriorityMap.get(layer.getLayerName());
             if (layerPriority == null || priority > layerPriority) {
-                layerName = layer;
+                priorityLayer = layer;
                 layerPriority = priority;
             }
         }
 
-        return Optional.ofNullable(layerName);
+        return Optional.ofNullable(priorityLayer);
     }
 }

@@ -49,6 +49,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeResult;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeLayersParser;
@@ -85,7 +86,7 @@ public class BitbakeExtractor {
             try {
                 final BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName);
                 final Map<String, Integer> layerPriorityMap = bitbakeSession.executeBitbakeForLayers();
-                final Map<String, List<String>> componentLayerMap = bitbakeSession.executeBitbakeForRecipeMap();
+                final Map<String, BitbakeRecipe> componentLayerMap = bitbakeSession.executeBitbakeForRecipeMap();
 
                 final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap, layerPriorityMap);
                 final CodeLocation codeLocation = new CodeLocation(dependencyGraph);

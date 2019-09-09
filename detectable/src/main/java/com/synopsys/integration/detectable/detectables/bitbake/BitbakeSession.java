@@ -24,7 +24,6 @@ package com.synopsys.integration.detectable.detectables.bitbake;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,6 +34,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeResult;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeLayersParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
@@ -98,7 +98,7 @@ public class BitbakeSession {
         return Optional.ofNullable(bitbakeResult);
     }
 
-    public Map<String, List<String>> executeBitbakeForRecipeMap() throws ExecutableRunnerException, IOException, IntegrationException {
+    public Map<String, BitbakeRecipe> executeBitbakeForRecipeMap() throws ExecutableRunnerException, IOException, IntegrationException {
         final String bitbakeCommand = "bitbake-layers show-recipes";
         final ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
         if (executableOutput.getReturnCode() == 0) {

@@ -22,11 +22,11 @@
  */
 package com.synopsys.integration.detectable.detectables.bitbake.model;
 
-public class BitbakeLayer {
+public class BitbakeLayerPriority {
     private final String layerName;
     private final int priority;
 
-    public BitbakeLayer(final String layerName, final int priority) {
+    public BitbakeLayerPriority(final String layerName, final int priority) {
         this.layerName = layerName;
         this.priority = priority;
     }
