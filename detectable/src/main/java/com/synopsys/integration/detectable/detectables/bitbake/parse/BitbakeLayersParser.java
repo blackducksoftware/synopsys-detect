@@ -77,7 +77,7 @@ public class BitbakeLayersParser {
 
         try {
             final int layerPriority = Integer.parseInt(layerPriorityString);
-            return Optional.of(new BitbakeLayer(layerName, layerPriority));
+            return Optional.of(new BitbakeLayer(layerName.trim(), layerPriority));
         } catch (final NumberFormatException e) {
             logger.debug(String.format("Failed to parse bitbake layer priority from line '%s'.", line), e);
             return Optional.empty();

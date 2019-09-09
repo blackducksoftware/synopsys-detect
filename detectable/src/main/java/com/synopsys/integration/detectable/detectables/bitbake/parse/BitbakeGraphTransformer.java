@@ -42,6 +42,7 @@ import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
 public class BitbakeGraphTransformer {
+    private final String NATIVE_SUFFIX = "-native";
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
     private final ExternalIdFactory externalIdFactory;
@@ -89,13 +90,22 @@ public class BitbakeGraphTransformer {
     private Optional<ExternalId> generateExternalId(final String name, final String version, final Map<String, List<String>> componentLayerMap, final Map<String, Integer> layerPriorityMap) {
         final List<String> potentialLayers = componentLayerMap.get(name);
         if (potentialLayers == null || potentialLayers.isEmpty()) {
-            logger.debug(String.format("Creating legacy external id for component '%s==%s'.", name, version));
-            return Optional.ofNullable(externalIdFactory.createNameVersionExternalId(Forge.YOCTO, name, version));
+            if (componentLayerMap.containsKey(name)) {
+                logger.debug(String.format("Component '%s' is in the component layer map. But not potential layers were populated.", name));
+            } else {
+                logger.debug(String.format("Failed to find component '%s' in component layer map.", name));
+            }
+            if (name.endsWith(NATIVE_SUFFIX)) {
+                logger.debug(String.format("Generating alternative component name for '%s==%s'\n", name, version));
+                return generateExternalId(name.replace(NATIVE_SUFFIX, ""), version, componentLayerMap, layerPriorityMap);
+            } else {
+                logger.debug(String.format("Creating legacy external id for component '%s==%s'.\n", name, version));
+                return Optional.ofNullable(externalIdFactory.createNameVersionExternalId(Forge.YOCTO, name, version));
+            }
         } else {
             final Optional<String> highestPriorityLayer = getHighestPriorityLayer(potentialLayers, layerPriorityMap);
             return highestPriorityLayer.map(layer -> externalIdFactory.createModuleNamesExternalId(Forge.YOCTO, layer, name, version));
         }
-
     }
 
     private Optional<String> getHighestPriorityLayer(final List<String> layerNames, final Map<String, Integer> layerPriorityMap) {

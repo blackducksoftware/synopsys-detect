@@ -56,9 +56,9 @@ public class BitbakeRecipesParser {
                 continue;
             }
 
-            if (line.contains(":")) {
+            if (line.contains(":") && !line.startsWith("  ")) {
                 if (currentComponentName != null) {
-                    componentLayerMap.put(currentComponentName, currentLayers);
+                    componentLayerMap.put(currentComponentName.trim(), currentLayers);
                 }
 
                 currentComponentName = line.replace(":", "").trim();
@@ -80,8 +80,8 @@ public class BitbakeRecipesParser {
             }
         }
 
-        if (currentLayers != null) {
-            componentLayerMap.put(currentComponentName, currentLayers);
+        if (currentComponentName != null) {
+            componentLayerMap.put(currentComponentName.trim(), currentLayers);
         }
 
         return componentLayerMap;
