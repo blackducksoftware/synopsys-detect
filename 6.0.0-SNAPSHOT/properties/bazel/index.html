@@ -180,18 +180,42 @@
       
       
 
+
+  <li class="md-nav__item">
+    <a href="../../common-tasks/" title="Common Tasks" class="md-nav__link">
+      Common Tasks
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../exit-codes/" title="Exit codes" class="md-nav__link">
+      Exit codes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
   
 
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
     
-    <label class="md-nav__link" for="nav-2">
+    <label class="md-nav__link" for="nav-4">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-2">
+      <label class="md-nav__title" for="nav-4">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -242,8 +266,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bazel-executable" class="md-nav__link">
-    Bazel Executable
+  <a href="#bazel-advanced-rules-file" class="md-nav__link">
+    Bazel Advanced Rules File
   </a>
   
 </li>
@@ -256,8 +280,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-advanced-rules-file" class="md-nav__link">
-    Bazel Advanced Rules File
+  <a href="#bazel-executable" class="md-nav__link">
+    Bazel Executable
   </a>
   
 </li>
@@ -659,8 +683,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bazel-executable" class="md-nav__link">
-    Bazel Executable
+  <a href="#bazel-advanced-rules-file" class="md-nav__link">
+    Bazel Advanced Rules File
   </a>
   
 </li>
@@ -673,8 +697,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-advanced-rules-file" class="md-nav__link">
-    Bazel Advanced Rules File
+  <a href="#bazel-executable" class="md-nav__link">
+    Bazel Executable
   </a>
   
 </li>
@@ -697,12 +721,12 @@
                 
                 
                 <h1 id="bazel">bazel</h1>
-<p>TBD: This group still needs a description.</p>
-<h2 id="bazel-executable">Bazel Executable</h2>
-<pre><code>--detect.bazel.path
+<h2 id="bazel-advanced-rules-file">Bazel Advanced Rules File</h2>
+<pre><code>--detect.bazel.advanced.rules.path
 </code></pre>
 
-<p>The path to the Bazel executable.</p>
+<p>The path to a file containing a list of BazelExternalIdExtractionXPathRule objects in json for overriding the default behavior).</p>
+<p>This property is normally not set, but could potentially be used to customize the Bazel detector.</p>
 <table>
 <thead>
 <tr>
@@ -784,12 +808,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bazel-advanced-rules-file">Bazel Advanced Rules File</h2>
-<pre><code>--detect.bazel.advanced.rules.path
+<h2 id="bazel-executable">Bazel Executable</h2>
+<pre><code>--detect.bazel.path
 </code></pre>
 
-<p>The path to a file containing a list of BazelExternalIdExtractionXPathRule objects in json for overriding the default behavior).
-This property is normally not set, but could potentially be used to customize the Bazel detector.</p>
+<p>The path to the Bazel executable.</p>
 <table>
 <thead>
 <tr>

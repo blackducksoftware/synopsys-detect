@@ -180,18 +180,42 @@
       
       
 
+
+  <li class="md-nav__item">
+    <a href="../../common-tasks/" title="Common Tasks" class="md-nav__link">
+      Common Tasks
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../exit-codes/" title="Exit codes" class="md-nav__link">
+      Exit codes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
   
 
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
     
-    <label class="md-nav__link" for="nav-2">
+    <label class="md-nav__link" for="nav-4">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-2">
+      <label class="md-nav__title" for="nav-4">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -530,15 +554,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bypass-proxy-hosts" class="md-nav__link">
-    Bypass Proxy Hosts
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ntlm-proxy-workstation" class="md-nav__link">
-    NTLM Proxy Workstation
+  <a href="#proxy-password" class="md-nav__link">
+    Proxy Password
   </a>
   
 </li>
@@ -551,8 +568,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#proxy-username" class="md-nav__link">
-    Proxy Username
+  <a href="#ntlm-proxy-workstation" class="md-nav__link">
+    NTLM Proxy Workstation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proxy-port" class="md-nav__link">
+    Proxy Port
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bypass-proxy-hosts" class="md-nav__link">
+    Bypass Proxy Hosts
   </a>
   
 </li>
@@ -565,15 +596,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#proxy-password" class="md-nav__link">
-    Proxy Password
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#proxy-port" class="md-nav__link">
-    Proxy Port
+  <a href="#proxy-username" class="md-nav__link">
+    Proxy Username
   </a>
   
 </li>
@@ -687,15 +711,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bypass-proxy-hosts" class="md-nav__link">
-    Bypass Proxy Hosts
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ntlm-proxy-workstation" class="md-nav__link">
-    NTLM Proxy Workstation
+  <a href="#proxy-password" class="md-nav__link">
+    Proxy Password
   </a>
   
 </li>
@@ -708,8 +725,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#proxy-username" class="md-nav__link">
-    Proxy Username
+  <a href="#ntlm-proxy-workstation" class="md-nav__link">
+    NTLM Proxy Workstation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proxy-port" class="md-nav__link">
+    Proxy Port
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bypass-proxy-hosts" class="md-nav__link">
+    Bypass Proxy Hosts
   </a>
   
 </li>
@@ -722,15 +753,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#proxy-password" class="md-nav__link">
-    Proxy Password
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#proxy-port" class="md-nav__link">
-    Proxy Port
+  <a href="#proxy-username" class="md-nav__link">
+    Proxy Username
   </a>
   
 </li>
@@ -753,56 +777,11 @@
                 
                 
                 <h1 id="proxy">proxy</h1>
-<p>TBD: This group still needs a description.</p>
-<h2 id="bypass-proxy-hosts">Bypass Proxy Hosts</h2>
-<pre><code>--blackduck.proxy.ignored.hosts
+<h2 id="proxy-password">Proxy Password</h2>
+<pre><code>--blackduck.proxy.password
 </code></pre>
 
-<p>A comma separated list of regular expression host patterns that should not use the proxy.
-These patterns must adhere to Java regular expressions: https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.2.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="ntlm-proxy-workstation">NTLM Proxy Workstation</h2>
-<pre><code>--blackduck.proxy.ntlm.workstation
-</code></pre>
-
-<p>NTLM Proxy workstation.</p>
+<p>Proxy password.</p>
 <table>
 <thead>
 <tr>
@@ -884,11 +863,98 @@ These patterns must adhere to Java regular expressions: https://docs.oracle.com/
 </tr>
 </tbody>
 </table>
-<h2 id="proxy-username">Proxy Username</h2>
-<pre><code>--blackduck.proxy.username
+<h2 id="ntlm-proxy-workstation">NTLM Proxy Workstation</h2>
+<pre><code>--blackduck.proxy.ntlm.workstation
 </code></pre>
 
-<p>Proxy username.</p>
+<p>NTLM Proxy workstation.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="proxy-port">Proxy Port</h2>
+<pre><code>--blackduck.proxy.port
+</code></pre>
+
+<p>Proxy port.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bypass-proxy-hosts">Bypass Proxy Hosts</h2>
+<pre><code>--blackduck.proxy.ignored.hosts
+</code></pre>
+
+<p>A comma separated list of regular expression host patterns that should not use the proxy.</p>
+<p>These patterns must adhere to Java regular expressions: https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html</p>
 <table>
 <thead>
 <tr>
@@ -970,54 +1036,11 @@ These patterns must adhere to Java regular expressions: https://docs.oracle.com/
 </tr>
 </tbody>
 </table>
-<h2 id="proxy-password">Proxy Password</h2>
-<pre><code>--blackduck.proxy.password
+<h2 id="proxy-username">Proxy Username</h2>
+<pre><code>--blackduck.proxy.username
 </code></pre>
 
-<p>Proxy password.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.2.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="proxy-port">Proxy Port</h2>
-<pre><code>--blackduck.proxy.port
-</code></pre>
-
-<p>Proxy port.</p>
+<p>Proxy username.</p>
 <table>
 <thead>
 <tr>

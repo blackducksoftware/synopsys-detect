@@ -180,18 +180,42 @@
       
       
 
+
+  <li class="md-nav__item">
+    <a href="../../common-tasks/" title="Common Tasks" class="md-nav__link">
+      Common Tasks
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../exit-codes/" title="Exit codes" class="md-nav__link">
+      Exit codes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
   
 
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
     
-    <label class="md-nav__link" for="nav-2">
+    <label class="md-nav__link" for="nav-4">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-2">
+      <label class="md-nav__title" for="nav-4">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -350,15 +374,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#godep-run-initensure" class="md-nav__link">
-    Godep Run init/ensure
+  <a href="#godep-executable" class="md-nav__link">
+    Godep Executable
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#godep-executable" class="md-nav__link">
-    Godep Executable
+  <a href="#godep-run-initensure" class="md-nav__link">
+    Godep Run init/ensure
   </a>
   
 </li>
@@ -652,15 +676,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#godep-run-initensure" class="md-nav__link">
-    Godep Run init/ensure
+  <a href="#godep-executable" class="md-nav__link">
+    Godep Executable
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#godep-executable" class="md-nav__link">
-    Godep Executable
+  <a href="#godep-run-initensure" class="md-nav__link">
+    Godep Run init/ensure
   </a>
   
 </li>
@@ -683,50 +707,6 @@
                 
                 
                 <h1 id="go">go</h1>
-<p>TBD: This group still needs a description.</p>
-<h2 id="godep-run-initensure">Godep Run init/ensure</h2>
-<pre><code>--detect.go.run.dep.init=false
-</code></pre>
-
-<p>If set to true, Detect will attempt to run 'dep init' and 'dep ensure' in your source directory which can modify files.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="godep-executable">Godep Executable</h2>
 <pre><code>--detect.go.dep.path
 </code></pre>
@@ -751,6 +731,49 @@
 <tr>
 <td>Default Value</td>
 <td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="godep-run-initensure">Godep Run init/ensure</h2>
+<pre><code>--detect.go.run.dep.init=false
+</code></pre>
+
+<p>If set to true, Detect will attempt to run 'dep init' and 'dep ensure' in your source directory which can modify files.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

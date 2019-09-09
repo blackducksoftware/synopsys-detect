@@ -180,18 +180,42 @@
       
       
 
+
+  <li class="md-nav__item">
+    <a href="../../common-tasks/" title="Common Tasks" class="md-nav__link">
+      Common Tasks
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../exit-codes/" title="Exit codes" class="md-nav__link">
+      Exit codes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
   
 
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
     
-    <label class="md-nav__link" for="nav-2">
+    <label class="md-nav__link" for="nav-4">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-2">
+      <label class="md-nav__title" for="nav-4">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -254,13 +278,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bitbake-init-script-name" class="md-nav__link">
-    BitBake Init Script Name
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#reference-implementation" class="md-nav__link">
     Reference implementation
   </a>
@@ -268,8 +285,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-source-arguments" class="md-nav__link">
-    BitBake Source Arguments
+  <a href="#bitbake-init-script-name" class="md-nav__link">
+    BitBake Init Script Name
   </a>
   
 </li>
@@ -277,6 +294,13 @@
         <li class="md-nav__item">
   <a href="#bitbake-package-names" class="md-nav__link">
     BitBake Package Names
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bitbake-source-arguments" class="md-nav__link">
+    BitBake Source Arguments
   </a>
   
 </li>
@@ -666,13 +690,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bitbake-init-script-name" class="md-nav__link">
-    BitBake Init Script Name
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#reference-implementation" class="md-nav__link">
     Reference implementation
   </a>
@@ -680,8 +697,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-source-arguments" class="md-nav__link">
-    BitBake Source Arguments
+  <a href="#bitbake-init-script-name" class="md-nav__link">
+    BitBake Init Script Name
   </a>
   
 </li>
@@ -689,6 +706,13 @@
         <li class="md-nav__item">
   <a href="#bitbake-package-names" class="md-nav__link">
     BitBake Package Names
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bitbake-source-arguments" class="md-nav__link">
+    BitBake Source Arguments
   </a>
   
 </li>
@@ -711,50 +735,6 @@
                 
                 
                 <h1 id="bitbake">bitbake</h1>
-<p>TBD: This group still needs a description.</p>
-<h2 id="bitbake-init-script-name">BitBake Init Script Name</h2>
-<pre><code>--detect.bitbake.build.env.name=oe-init-build-env
-</code></pre>
-
-<p>The name of the build environment init script.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.4.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>oe-init-build-env</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="reference-implementation">Reference implementation</h2>
 <pre><code>--detect.bitbake.reference.impl=-poky-linux
 </code></pre>
@@ -798,11 +778,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bitbake-source-arguments">BitBake Source Arguments</h2>
-<pre><code>--detect.bitbake.source.arguments=
+<h2 id="bitbake-init-script-name">BitBake Init Script Name</h2>
+<pre><code>--detect.bitbake.build.env.name=oe-init-build-env
 </code></pre>
 
-<p>A comma-separated list of arguments to supply when sourcing the build environment init script.</p>
+<p>The name of the build environment init script.</p>
 <table>
 <thead>
 <tr>
@@ -813,15 +793,15 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.0.0</td>
+<td>4.4.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>String[]</td>
+<td>String</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>oe-init-build-env</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -865,6 +845,49 @@
 <tr>
 <td>Default Value</td>
 <td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bitbake-source-arguments">BitBake Source Arguments</h2>
+<pre><code>--detect.bitbake.source.arguments=
+</code></pre>
+
+<p>A comma-separated list of arguments to supply when sourcing the build environment init script.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String[]</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

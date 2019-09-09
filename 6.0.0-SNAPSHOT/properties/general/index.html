@@ -180,18 +180,42 @@
       
       
 
+
+  <li class="md-nav__item">
+    <a href="../../common-tasks/" title="Common Tasks" class="md-nav__link">
+      Common Tasks
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../exit-codes/" title="Exit codes" class="md-nav__link">
+      Exit codes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
   
 
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
     
-    <label class="md-nav__link" for="nav-2">
+    <label class="md-nav__link" for="nav-4">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-2">
+      <label class="md-nav__title" for="nav-4">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -338,6 +362,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#force-success" class="md-nav__link">
+    Force Success
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#wait-for-results" class="md-nav__link">
     Wait For Results
   </a>
@@ -347,13 +378,6 @@
         <li class="md-nav__item">
   <a href="#buildless-mode" class="md-nav__link">
     Buildless Mode
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#force-success" class="md-nav__link">
-    Force Success
   </a>
   
 </li>
@@ -666,6 +690,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#force-success" class="md-nav__link">
+    Force Success
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#wait-for-results" class="md-nav__link">
     Wait For Results
   </a>
@@ -675,13 +706,6 @@
         <li class="md-nav__item">
   <a href="#buildless-mode" class="md-nav__link">
     Buildless Mode
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#force-success" class="md-nav__link">
-    Force Success
   </a>
   
 </li>
@@ -711,7 +735,49 @@
                 
                 
                 <h1 id="general">general</h1>
-<p>TBD: This group still needs a description.</p>
+<h2 id="force-success">Force Success</h2>
+<pre><code>--detect.force.success=false
+</code></pre>
+
+<p>If true, Detect will always exit with code 0.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="wait-for-results">Wait For Results</h2>
 <pre><code>--detect.wait.for.results=false
 </code></pre>
@@ -798,55 +864,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="force-success">Force Success</h2>
-<pre><code>--detect.force.success=false
-</code></pre>
-
-<p>If true, Detect will always exit with code 0.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="detect-ignore-connection-failures">Detect Ignore Connection Failures</h2>
 <pre><code>--detect.ignore.connection.failures=false
 </code></pre>
 
-<p>If true, Detect will ignore any products that it cannot connect to.
-If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.</p>
+<p>If true, Detect will ignore any products that it cannot connect to.</p>
+<p>If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.</p>
 <table>
 <thead>
 <tr>

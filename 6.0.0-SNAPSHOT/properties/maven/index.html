@@ -180,18 +180,42 @@
       
       
 
+
+  <li class="md-nav__item">
+    <a href="../../common-tasks/" title="Common Tasks" class="md-nav__link">
+      Common Tasks
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../exit-codes/" title="Exit codes" class="md-nav__link">
+      Exit codes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
   
 
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
     
-    <label class="md-nav__link" for="nav-2">
+    <label class="md-nav__link" for="nav-4">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-2">
+      <label class="md-nav__title" for="nav-4">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -417,15 +441,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-build-command" class="md-nav__link">
-    Maven Build Command
+  <a href="#dependency-scope-included" class="md-nav__link">
+    Dependency Scope Included
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-modules-included" class="md-nav__link">
-    Maven Modules Included
+  <a href="#maven-executable" class="md-nav__link">
+    Maven Executable
   </a>
   
 </li>
@@ -438,15 +462,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-included" class="md-nav__link">
-    Dependency Scope Included
+  <a href="#maven-modules-included" class="md-nav__link">
+    Maven Modules Included
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-executable" class="md-nav__link">
-    Maven Executable
+  <a href="#maven-build-command" class="md-nav__link">
+    Maven Build Command
   </a>
   
 </li>
@@ -687,15 +711,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-build-command" class="md-nav__link">
-    Maven Build Command
+  <a href="#dependency-scope-included" class="md-nav__link">
+    Dependency Scope Included
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-modules-included" class="md-nav__link">
-    Maven Modules Included
+  <a href="#maven-executable" class="md-nav__link">
+    Maven Executable
   </a>
   
 </li>
@@ -708,15 +732,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-included" class="md-nav__link">
-    Dependency Scope Included
+  <a href="#maven-modules-included" class="md-nav__link">
+    Maven Modules Included
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-executable" class="md-nav__link">
-    Maven Executable
+  <a href="#maven-build-command" class="md-nav__link">
+    Maven Build Command
   </a>
   
 </li>
@@ -739,13 +763,12 @@
                 
                 
                 <h1 id="maven">maven</h1>
-<p>TBD: This group still needs a description.</p>
 <h2 id="maven-modules-excluded">Maven Modules Excluded</h2>
 <pre><code>--detect.maven.excluded.modules
 </code></pre>
 
-<p>A comma-separated list of Maven modules (sub-projects) to exclude.
-As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property.</p>
+<p>A comma-separated list of Maven modules (sub-projects) to exclude.</p>
+<p>As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property.</p>
 <table>
 <thead>
 <tr>
@@ -784,12 +807,12 @@ As Detect parses the mvn dependency:tree output for dependencies, Detect will sk
 </tr>
 </tbody>
 </table>
-<h2 id="maven-build-command">Maven Build Command</h2>
-<pre><code>--detect.maven.build.command
+<h2 id="dependency-scope-included">Dependency Scope Included</h2>
+<pre><code>--detect.maven.scope
 </code></pre>
 
-<p>Maven command line arguments to add to the mvn/mvnw command line.
-By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings ${HOME}/maven_dev_settings.xml --define reason=other'</p>
+<p>The name of a Maven scope. Output will be limited to dependencies with this scope.</p>
+<p>If set, Detect will include only dependencies of the given Maven scope.</p>
 <table>
 <thead>
 <tr>
@@ -828,12 +851,12 @@ By default, Detect runs the mvn (or mvnw) command with one argument: dependency:
 </tr>
 </tbody>
 </table>
-<h2 id="maven-modules-included">Maven Modules Included</h2>
-<pre><code>--detect.maven.included.modules
+<h2 id="maven-executable">Maven Executable</h2>
+<pre><code>--detect.maven.path
 </code></pre>
 
-<p>A comma-separated list of Maven modules (sub-projects) to include.
-As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
+<p>The path to the Maven executable (mvn or mvnw).</p>
+<p>If set, Detect will use the given Maven executable instead of searching for one.</p>
 <table>
 <thead>
 <tr>
@@ -915,12 +938,12 @@ As Detect parses the mvn dependency:tree output for dependencies, if this proper
 </tr>
 </tbody>
 </table>
-<h2 id="dependency-scope-included">Dependency Scope Included</h2>
-<pre><code>--detect.maven.scope
+<h2 id="maven-modules-included">Maven Modules Included</h2>
+<pre><code>--detect.maven.included.modules
 </code></pre>
 
-<p>The name of a Maven scope. Output will be limited to dependencies with this scope.
-If set, Detect will include only dependencies of the given Maven scope.</p>
+<p>A comma-separated list of Maven modules (sub-projects) to include.</p>
+<p>As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
 <table>
 <thead>
 <tr>
@@ -959,12 +982,12 @@ If set, Detect will include only dependencies of the given Maven scope.</p>
 </tr>
 </tbody>
 </table>
-<h2 id="maven-executable">Maven Executable</h2>
-<pre><code>--detect.maven.path
+<h2 id="maven-build-command">Maven Build Command</h2>
+<pre><code>--detect.maven.build.command
 </code></pre>
 
-<p>The path to the Maven executable (mvn or mvnw).
-If set, Detect will use the given Maven executable instead of searching for one.</p>
+<p>Maven command line arguments to add to the mvn/mvnw command line.</p>
+<p>By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings ${HOME}/maven_dev_settings.xml --define reason=other'</p>
 <table>
 <thead>
 <tr>

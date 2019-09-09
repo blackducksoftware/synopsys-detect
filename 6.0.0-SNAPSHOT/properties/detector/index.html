@@ -180,18 +180,42 @@
       
       
 
+
+  <li class="md-nav__item">
+    <a href="../../common-tasks/" title="Common Tasks" class="md-nav__link">
+      Common Tasks
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../exit-codes/" title="Exit codes" class="md-nav__link">
+      Exit codes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
   
 
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
     
-    <label class="md-nav__link" for="nav-2">
+    <label class="md-nav__link" for="nav-4">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-2">
+      <label class="md-nav__title" for="nav-4">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -314,6 +338,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#detector-types-included" class="md-nav__link">
+    Detector Types Included
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#detector-types-excluded" class="md-nav__link">
     Detector Types Excluded
   </a>
@@ -323,13 +354,6 @@
         <li class="md-nav__item">
   <a href="#required-detect-types" class="md-nav__link">
     Required Detect Types
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#detector-types-included" class="md-nav__link">
-    Detector Types Included
   </a>
   
 </li>
@@ -659,6 +683,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#detector-types-included" class="md-nav__link">
+    Detector Types Included
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#detector-types-excluded" class="md-nav__link">
     Detector Types Excluded
   </a>
@@ -668,13 +699,6 @@
         <li class="md-nav__item">
   <a href="#required-detect-types" class="md-nav__link">
     Required Detect Types
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#detector-types-included" class="md-nav__link">
-    Detector Types Included
   </a>
   
 </li>
@@ -697,13 +721,12 @@
                 
                 
                 <h1 id="detector">detector</h1>
-<p>TBD: This group still needs a description.</p>
-<h2 id="detector-types-excluded">Detector Types Excluded</h2>
-<pre><code>--detect.excluded.detector.types
+<h2 id="detector-types-included">Detector Types Included</h2>
+<pre><code>--detect.included.detector.types
 </code></pre>
 
-<p>By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify "ALL". Exclusion rules always win.
-If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them.</p>
+<p>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.</p>
+<p>If you want to limit Detect to a subset of its detectors, use this property to specify that subset.</p>
 <table>
 <thead>
 <tr>
@@ -715,50 +738,6 @@ If Detect runs one or more detector on your project that you would like to exclu
 <tr>
 <td>Added</td>
 <td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="required-detect-types">Required Detect Types</h2>
-<pre><code>--detect.required.detector.types
-</code></pre>
-
-<p>The set of required detectors.
-If you want one or more detectors to be required (must be found to apply), use this property to specify the set of required detectors. If this property is set, and one (or more) of the given detectors is not found to apply, Detect will fail.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.3.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -787,49 +766,6 @@ If you want one or more detectors to be required (must be found to apply), use t
 </tbody>
 </table>
 <h2 id="_1"></h2>
-<pre><code>--detect.excluded.bom.tool.types
-</code></pre>
-
-<p>By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify "ALL". Exclusion rules always win.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="_2"></h2>
 <pre><code>--detect.included.bom.tool.types
 </code></pre>
 
@@ -872,12 +808,12 @@ If you want one or more detectors to be required (must be found to apply), use t
 </tr>
 </tbody>
 </table>
-<h2 id="detector-types-included">Detector Types Included</h2>
-<pre><code>--detect.included.detector.types
+<h2 id="detector-types-excluded">Detector Types Excluded</h2>
+<pre><code>--detect.excluded.detector.types
 </code></pre>
 
-<p>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.
-If you want to limit Detect to a subset of its detectors, use this property to specify that subset.</p>
+<p>By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify "ALL". Exclusion rules always win.</p>
+<p>If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them.</p>
 <table>
 <thead>
 <tr>
@@ -916,7 +852,7 @@ If you want to limit Detect to a subset of its detectors, use this property to s
 </tr>
 </tbody>
 </table>
-<h2 id="_3"></h2>
+<h2 id="_2"></h2>
 <pre><code>--detect.required.bom.tool.types
 </code></pre>
 
@@ -932,6 +868,93 @@ If you want to limit Detect to a subset of its detectors, use this property to s
 <tr>
 <td>Added</td>
 <td>4.3.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="required-detect-types">Required Detect Types</h2>
+<pre><code>--detect.required.detector.types
+</code></pre>
+
+<p>The set of required detectors.</p>
+<p>If you want one or more detectors to be required (must be found to apply), use this property to specify the set of required detectors. If this property is set, and one (or more) of the given detectors is not found to apply, Detect will fail.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.3.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3"></h2>
+<pre><code>--detect.excluded.bom.tool.types
+</code></pre>
+
+<p>By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify "ALL". Exclusion rules always win.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
