@@ -24,10 +24,8 @@ package com.synopsys.integration.detectable.detectables.git.cli;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Extraction;
@@ -42,9 +40,11 @@ public class GitCliExtractor {
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
     private final ExecutableRunner executableRunner;
+    private final GitUrlParser gitUrlParser;
 
-    public GitCliExtractor(final ExecutableRunner executableRunner) {
+    public GitCliExtractor(final ExecutableRunner executableRunner, final GitUrlParser gitUrlParser) {
         this.executableRunner = executableRunner;
+        this.gitUrlParser = gitUrlParser;
     }
 
     public Extraction extract(final File gitExecutable, final File directory) {
@@ -67,22 +67,7 @@ public class GitCliExtractor {
 
     private String getRepoName(final File gitExecutable, final File directory) throws ExecutableRunnerException, IntegrationException, MalformedURLException {
         final String remoteUrlString = runGitSingleLinesResponse(gitExecutable, directory, "config", "--get", "remote.origin.url");
-
-        final String remoteUrlPath;
-        if (remoteUrlString.contains("@")) {
-            // Parses urls such as: git@github.com:blackducksoftware/synopsys-detect.git
-            final String[] tokens = remoteUrlString.split(":");
-            if (tokens.length != 2) {
-                throw new IntegrationException(String.format("Failed to extract project name from: %s", remoteUrlString));
-            }
-            remoteUrlPath = tokens[1].trim();
-        } else {
-            // Parses urls such as: https://github.com/blackducksoftware/synopsys-detect
-            final URL remoteURL = new URL(remoteUrlString);
-            remoteUrlPath = remoteURL.getPath().trim();
-        }
-
-        return StringUtils.removeEnd(StringUtils.removeStart(remoteUrlPath, "/"), ".git");
+        return gitUrlParser.getRepoName(remoteUrlString);
     }
 
     private String getRepoBranch(final File gitExecutable, final File directory) throws ExecutableRunnerException, IntegrationException {
@@ -101,6 +86,6 @@ public class GitCliExtractor {
             throw new IntegrationException("git output is of a different expected size.");
         }
 
-        return lines.get(0);
+        return lines.get(0).trim();
     }
 }

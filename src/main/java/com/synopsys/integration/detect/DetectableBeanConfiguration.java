@@ -104,6 +104,7 @@ import com.synopsys.integration.detectable.detectables.docker.DockerInspectorRes
 import com.synopsys.integration.detectable.detectables.docker.DockerProperties;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliDetectable;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
+import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
@@ -340,8 +341,13 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
+    public GitUrlParser gitUrlParser() {
+        return new GitUrlParser();
+    }
+
+    @Bean
     public GitCliExtractor gitCliExtractor() {
-        return new GitCliExtractor(executableRunner);
+        return new GitCliExtractor(executableRunner, gitUrlParser());
     }
 
     @Bean
