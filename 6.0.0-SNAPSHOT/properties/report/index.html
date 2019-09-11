@@ -194,8 +194,32 @@
 
 
   <li class="md-nav__item">
+    <a href="../../detectors/" title="Detectors" class="md-nav__link">
+      Detectors
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="../../exit-codes/" title="Exit codes" class="md-nav__link">
       Exit codes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../inspectors/" title="Inspectors" class="md-nav__link">
+      Inspectors
     </a>
   </li>
 
@@ -209,13 +233,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
     
-    <label class="md-nav__link" for="nav-4">
+    <label class="md-nav__link" for="nav-6">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-4">
+      <label class="md-nav__title" for="nav-6">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -578,8 +602,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#generate-risk-report-pdf" class="md-nav__link">
-    Generate Risk Report (PDF)
+  <a href="#generate-notices-report" class="md-nav__link">
+    Generate Notices Report
   </a>
   
 </li>
@@ -587,6 +611,13 @@
         <li class="md-nav__item">
   <a href="#sbt-configurations-excluded" class="md-nav__link">
     SBT Configurations Excluded
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generate-risk-report-pdf" class="md-nav__link">
+    Generate Risk Report (PDF)
   </a>
   
 </li>
@@ -601,13 +632,6 @@
         <li class="md-nav__item">
   <a href="#notices-report-path" class="md-nav__link">
     Notices Report Path
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generate-notices-report" class="md-nav__link">
-    Generate Notices Report
   </a>
   
 </li>
@@ -697,8 +721,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#generate-risk-report-pdf" class="md-nav__link">
-    Generate Risk Report (PDF)
+  <a href="#generate-notices-report" class="md-nav__link">
+    Generate Notices Report
   </a>
   
 </li>
@@ -706,6 +730,13 @@
         <li class="md-nav__item">
   <a href="#sbt-configurations-excluded" class="md-nav__link">
     SBT Configurations Excluded
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generate-risk-report-pdf" class="md-nav__link">
+    Generate Risk Report (PDF)
   </a>
   
 </li>
@@ -720,13 +751,6 @@
         <li class="md-nav__item">
   <a href="#notices-report-path" class="md-nav__link">
     Notices Report Path
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generate-notices-report" class="md-nav__link">
-    Generate Notices Report
   </a>
   
 </li>
@@ -749,11 +773,11 @@
                 
                 
                 <h1 id="report">report</h1>
-<h2 id="generate-risk-report-pdf">Generate Risk Report (PDF)</h2>
-<pre><code>--detect.risk.report.pdf=false
+<h2 id="generate-notices-report">Generate Notices Report</h2>
+<pre><code>--detect.notices.report=false
 </code></pre>
 
-<p>When set to true, a Black Duck risk report in PDF form will be created.</p>
+<p>When set to true, a Black Duck notices report in text form will be created in your source directory.</p>
 <table>
 <thead>
 <tr>
@@ -816,6 +840,49 @@
 <tr>
 <td>Default Value</td>
 <td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="generate-risk-report-pdf">Generate Risk Report (PDF)</h2>
+<pre><code>--detect.risk.report.pdf=false
+</code></pre>
+
+<p>When set to true, a Black Duck risk report in PDF form will be created.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -902,49 +969,6 @@
 <tr>
 <td>Default Value</td>
 <td>.</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="generate-notices-report">Generate Notices Report</h2>
-<pre><code>--detect.notices.report=false
-</code></pre>
-
-<p>When set to true, a Black Duck notices report in text form will be created in your source directory.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>false</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

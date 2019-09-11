@@ -194,8 +194,32 @@
 
 
   <li class="md-nav__item">
+    <a href="../../detectors/" title="Detectors" class="md-nav__link">
+      Detectors
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="../../exit-codes/" title="Exit codes" class="md-nav__link">
       Exit codes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../inspectors/" title="Inspectors" class="md-nav__link">
+      Inspectors
     </a>
   </li>
 
@@ -209,13 +233,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
     
-    <label class="md-nav__link" for="nav-4">
+    <label class="md-nav__link" for="nav-6">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-4">
+      <label class="md-nav__title" for="nav-6">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -554,6 +578,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#proxy-host" class="md-nav__link">
+    Proxy Host
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#proxy-password" class="md-nav__link">
     Proxy Password
   </a>
@@ -568,20 +599,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ntlm-proxy-workstation" class="md-nav__link">
-    NTLM Proxy Workstation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#proxy-port" class="md-nav__link">
-    Proxy Port
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#bypass-proxy-hosts" class="md-nav__link">
     Bypass Proxy Hosts
   </a>
@@ -589,8 +606,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#proxy-host" class="md-nav__link">
-    Proxy Host
+  <a href="#ntlm-proxy-workstation" class="md-nav__link">
+    NTLM Proxy Workstation
   </a>
   
 </li>
@@ -598,6 +615,13 @@
         <li class="md-nav__item">
   <a href="#proxy-username" class="md-nav__link">
     Proxy Username
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proxy-port" class="md-nav__link">
+    Proxy Port
   </a>
   
 </li>
@@ -711,6 +735,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#proxy-host" class="md-nav__link">
+    Proxy Host
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#proxy-password" class="md-nav__link">
     Proxy Password
   </a>
@@ -725,20 +756,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ntlm-proxy-workstation" class="md-nav__link">
-    NTLM Proxy Workstation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#proxy-port" class="md-nav__link">
-    Proxy Port
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#bypass-proxy-hosts" class="md-nav__link">
     Bypass Proxy Hosts
   </a>
@@ -746,8 +763,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#proxy-host" class="md-nav__link">
-    Proxy Host
+  <a href="#ntlm-proxy-workstation" class="md-nav__link">
+    NTLM Proxy Workstation
   </a>
   
 </li>
@@ -755,6 +772,13 @@
         <li class="md-nav__item">
   <a href="#proxy-username" class="md-nav__link">
     Proxy Username
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proxy-port" class="md-nav__link">
+    Proxy Port
   </a>
   
 </li>
@@ -777,6 +801,49 @@
                 
                 
                 <h1 id="proxy">proxy</h1>
+<h2 id="proxy-host">Proxy Host</h2>
+<pre><code>--blackduck.proxy.host
+</code></pre>
+
+<p>Hostname for proxy server.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="proxy-password">Proxy Password</h2>
 <pre><code>--blackduck.proxy.password
 </code></pre>
@@ -863,92 +930,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="ntlm-proxy-workstation">NTLM Proxy Workstation</h2>
-<pre><code>--blackduck.proxy.ntlm.workstation
-</code></pre>
-
-<p>NTLM Proxy workstation.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.2.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="proxy-port">Proxy Port</h2>
-<pre><code>--blackduck.proxy.port
-</code></pre>
-
-<p>Proxy port.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.2.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="bypass-proxy-hosts">Bypass Proxy Hosts</h2>
 <pre><code>--blackduck.proxy.ignored.hosts
 </code></pre>
@@ -993,11 +974,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="proxy-host">Proxy Host</h2>
-<pre><code>--blackduck.proxy.host
+<h2 id="ntlm-proxy-workstation">NTLM Proxy Workstation</h2>
+<pre><code>--blackduck.proxy.ntlm.workstation
 </code></pre>
 
-<p>Hostname for proxy server.</p>
+<p>NTLM Proxy workstation.</p>
 <table>
 <thead>
 <tr>
@@ -1041,6 +1022,49 @@
 </code></pre>
 
 <p>Proxy username.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="proxy-port">Proxy Port</h2>
+<pre><code>--blackduck.proxy.port
+</code></pre>
+
+<p>Proxy port.</p>
 <table>
 <thead>
 <tr>

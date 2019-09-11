@@ -194,8 +194,32 @@
 
 
   <li class="md-nav__item">
+    <a href="../../detectors/" title="Detectors" class="md-nav__link">
+      Detectors
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="../../exit-codes/" title="Exit codes" class="md-nav__link">
       Exit codes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../inspectors/" title="Inspectors" class="md-nav__link">
+      Inspectors
     </a>
   </li>
 
@@ -209,13 +233,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
     
-    <label class="md-nav__link" for="nav-4">
+    <label class="md-nav__link" for="nav-6">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-4">
+      <label class="md-nav__title" for="nav-6">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -386,20 +410,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gradle-build-command" class="md-nav__link">
-    Gradle Build Command
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#gradle-include-projects" class="md-nav__link">
-    Gradle Include Projects
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#gradle-exclude-projects" class="md-nav__link">
     Gradle Exclude Projects
   </a>
@@ -414,15 +424,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-executable" class="md-nav__link">
-    Gradle Executable
+  <a href="#gradle-inspector-version" class="md-nav__link">
+    Gradle Inspector Version
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-inspector-airgap-path" class="md-nav__link">
-    Gradle Inspector AirGap Path
+  <a href="#gradle-include-projects" class="md-nav__link">
+    Gradle Include Projects
   </a>
   
 </li>
@@ -435,8 +445,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-inspector-version" class="md-nav__link">
-    Gradle Inspector Version
+  <a href="#gradle-build-command" class="md-nav__link">
+    Gradle Build Command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gradle-inspector-airgap-path" class="md-nav__link">
+    Gradle Inspector AirGap Path
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gradle-executable" class="md-nav__link">
+    Gradle Executable
   </a>
   
 </li>
@@ -718,20 +742,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gradle-build-command" class="md-nav__link">
-    Gradle Build Command
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#gradle-include-projects" class="md-nav__link">
-    Gradle Include Projects
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#gradle-exclude-projects" class="md-nav__link">
     Gradle Exclude Projects
   </a>
@@ -746,15 +756,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-executable" class="md-nav__link">
-    Gradle Executable
+  <a href="#gradle-inspector-version" class="md-nav__link">
+    Gradle Inspector Version
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-inspector-airgap-path" class="md-nav__link">
-    Gradle Inspector AirGap Path
+  <a href="#gradle-include-projects" class="md-nav__link">
+    Gradle Include Projects
   </a>
   
 </li>
@@ -767,8 +777,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-inspector-version" class="md-nav__link">
-    Gradle Inspector Version
+  <a href="#gradle-build-command" class="md-nav__link">
+    Gradle Build Command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gradle-inspector-airgap-path" class="md-nav__link">
+    Gradle Inspector AirGap Path
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gradle-executable" class="md-nav__link">
+    Gradle Executable
   </a>
   
 </li>
@@ -791,143 +815,12 @@
                 
                 
                 <h1 id="gradle">gradle</h1>
-<h2 id="gradle-build-command">Gradle Build Command</h2>
-<pre><code>--detect.gradle.build.command
-</code></pre>
-
-<p>Gradle command line arguments to add to the mvn/mvnw command line.</p>
-<p>By default, Detect runs the gradle (or gradlew) command with one task: dependencies. You can use this property to insert one or more additional gradle command line arguments (options or tasks) before the dependencies argument.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="gradle-include-projects">Gradle Include Projects</h2>
-<pre><code>--detect.gradle.included.projects
-</code></pre>
-
-<p>A comma-separated list of Gradle sub-projects to include.</p>
-<p>As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="gradle-exclude-projects">Gradle Exclude Projects</h2>
 <pre><code>--detect.gradle.excluded.projects
 </code></pre>
 
 <p>A comma-separated list of Gradle sub-projects to exclude.</p>
 <p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="_1"></h2>
-<pre><code>--detect.gradle.inspector.repository.url
-</code></pre>
-
-<p>The respository gradle should use to look for the gradle inspector dependencies.</p>
 <table>
 <thead>
 <tr>
@@ -1010,12 +903,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-executable">Gradle Executable</h2>
-<pre><code>--detect.gradle.path
+<h2 id="gradle-inspector-version">Gradle Inspector Version</h2>
+<pre><code>--detect.gradle.inspector.version=
 </code></pre>
 
-<p>The path to the Gradle executable (gradle or gradlew).</p>
-<p>If set, Detect will use the given Gradle executable instead of searching for one.</p>
+<p>The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.</p>
+<p>The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector.</p>
 <table>
 <thead>
 <tr>
@@ -1034,7 +927,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>None</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1054,12 +947,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-inspector-airgap-path">Gradle Inspector AirGap Path</h2>
-<pre><code>--detect.gradle.inspector.air.gap.path
+<h2 id="gradle-include-projects">Gradle Include Projects</h2>
+<pre><code>--detect.gradle.included.projects
 </code></pre>
 
-<p>The path to the directory containing the air gap dependencies for the gradle inspector.</p>
-<p>Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory.</p>
+<p>A comma-separated list of Gradle sub-projects to include.</p>
+<p>As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
 <table>
 <thead>
 <tr>
@@ -1142,12 +1035,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-inspector-version">Gradle Inspector Version</h2>
-<pre><code>--detect.gradle.inspector.version=
+<h2 id="gradle-build-command">Gradle Build Command</h2>
+<pre><code>--detect.gradle.build.command
 </code></pre>
 
-<p>The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.</p>
-<p>The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector.</p>
+<p>Gradle command line arguments to add to the mvn/mvnw command line.</p>
+<p>By default, Detect runs the gradle (or gradlew) command with one task: dependencies. You can use this property to insert one or more additional gradle command line arguments (options or tasks) before the dependencies argument.</p>
 <table>
 <thead>
 <tr>
@@ -1166,7 +1059,138 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="gradle-inspector-airgap-path">Gradle Inspector AirGap Path</h2>
+<pre><code>--detect.gradle.inspector.air.gap.path
+</code></pre>
+
+<p>The path to the directory containing the air gap dependencies for the gradle inspector.</p>
+<p>Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="gradle-executable">Gradle Executable</h2>
+<pre><code>--detect.gradle.path
+</code></pre>
+
+<p>The path to the Gradle executable (gradle or gradlew).</p>
+<p>If set, Detect will use the given Gradle executable instead of searching for one.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_1"></h2>
+<pre><code>--detect.gradle.inspector.repository.url
+</code></pre>
+
+<p>The respository gradle should use to look for the gradle inspector dependencies.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

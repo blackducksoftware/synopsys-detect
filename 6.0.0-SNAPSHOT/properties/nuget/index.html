@@ -194,8 +194,32 @@
 
 
   <li class="md-nav__item">
+    <a href="../../detectors/" title="Detectors" class="md-nav__link">
+      Detectors
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="../../exit-codes/" title="Exit codes" class="md-nav__link">
       Exit codes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../inspectors/" title="Inspectors" class="md-nav__link">
+      Inspectors
     </a>
   </li>
 
@@ -209,13 +233,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
     
-    <label class="md-nav__link" for="nav-4">
+    <label class="md-nav__link" for="nav-6">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-4">
+      <label class="md-nav__title" for="nav-6">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -458,8 +482,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#nuget-inspector-version" class="md-nav__link">
-    Nuget Inspector Version
+  <a href="#dotnet-executable" class="md-nav__link">
+    dotnet Executable
   </a>
   
 </li>
@@ -479,6 +503,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#nuget-projects-excluded" class="md-nav__link">
+    Nuget Projects Excluded
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#nuget-packages-repository-url" class="md-nav__link">
     Nuget Packages Repository URL
   </a>
@@ -486,8 +517,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-inspector-airgap-path" class="md-nav__link">
-    Nuget Inspector AirGap Path
+  <a href="#nuget-inspector-version" class="md-nav__link">
+    Nuget Inspector Version
   </a>
   
 </li>
@@ -500,15 +531,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dotnet-executable" class="md-nav__link">
-    dotnet Executable
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nuget-projects-excluded" class="md-nav__link">
-    Nuget Projects Excluded
+  <a href="#nuget-inspector-airgap-path" class="md-nav__link">
+    Nuget Inspector AirGap Path
   </a>
   
 </li>
@@ -718,8 +742,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#nuget-inspector-version" class="md-nav__link">
-    Nuget Inspector Version
+  <a href="#dotnet-executable" class="md-nav__link">
+    dotnet Executable
   </a>
   
 </li>
@@ -739,6 +763,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#nuget-projects-excluded" class="md-nav__link">
+    Nuget Projects Excluded
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#nuget-packages-repository-url" class="md-nav__link">
     Nuget Packages Repository URL
   </a>
@@ -746,8 +777,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-inspector-airgap-path" class="md-nav__link">
-    Nuget Inspector AirGap Path
+  <a href="#nuget-inspector-version" class="md-nav__link">
+    Nuget Inspector Version
   </a>
   
 </li>
@@ -760,15 +791,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dotnet-executable" class="md-nav__link">
-    dotnet Executable
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nuget-projects-excluded" class="md-nav__link">
-    Nuget Projects Excluded
+  <a href="#nuget-inspector-airgap-path" class="md-nav__link">
+    Nuget Inspector AirGap Path
   </a>
   
 </li>
@@ -791,11 +815,11 @@
                 
                 
                 <h1 id="nuget">nuget</h1>
-<h2 id="nuget-inspector-version">Nuget Inspector Version</h2>
-<pre><code>--detect.nuget.inspector.version=
+<h2 id="dotnet-executable">dotnet Executable</h2>
+<pre><code>--detect.dotnet.path
 </code></pre>
 
-<p>Version of the Nuget Inspector. By default Detect will communicate with Artifactory.</p>
+<p>The path to the dotnet executable.</p>
 <table>
 <thead>
 <tr>
@@ -806,7 +830,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>4.4.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -814,7 +838,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>None</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -859,6 +883,49 @@
 <tr>
 <td>Default Value</td>
 <td>IntegrationNugetInspector</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_2"></h2>
+<pre><code>--detect.nuget.path
+</code></pre>
+
+<p>The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -964,6 +1031,49 @@
 </tr>
 </tbody>
 </table>
+<h2 id="nuget-projects-excluded">Nuget Projects Excluded</h2>
+<pre><code>--detect.nuget.excluded.modules
+</code></pre>
+
+<p>The names of the projects in a solution to exclude.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="nuget-packages-repository-url">Nuget Packages Repository URL</h2>
 <pre><code>--detect.nuget.packages.repo.url=https://api.nuget.org/v3/index.json
 </code></pre>
@@ -1008,11 +1118,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="nuget-inspector-airgap-path">Nuget Inspector AirGap Path</h2>
-<pre><code>--detect.nuget.inspector.air.gap.path
+<h2 id="nuget-inspector-version">Nuget Inspector Version</h2>
+<pre><code>--detect.nuget.inspector.version=
 </code></pre>
 
-<p>The path to the directory containing the nuget inspector nupkg.</p>
+<p>Version of the Nuget Inspector. By default Detect will communicate with Artifactory.</p>
 <table>
 <thead>
 <tr>
@@ -1031,50 +1141,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="_2"></h2>
-<pre><code>--detect.nuget.path
-</code></pre>
-
-<p>The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1137,54 +1204,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="dotnet-executable">dotnet Executable</h2>
-<pre><code>--detect.dotnet.path
+<h2 id="nuget-inspector-airgap-path">Nuget Inspector AirGap Path</h2>
+<pre><code>--detect.nuget.inspector.air.gap.path
 </code></pre>
 
-<p>The path to the dotnet executable.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.4.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="nuget-projects-excluded">Nuget Projects Excluded</h2>
-<pre><code>--detect.nuget.excluded.modules
-</code></pre>
-
-<p>The names of the projects in a solution to exclude.</p>
+<p>The path to the directory containing the nuget inspector nupkg.</p>
 <table>
 <thead>
 <tr>
