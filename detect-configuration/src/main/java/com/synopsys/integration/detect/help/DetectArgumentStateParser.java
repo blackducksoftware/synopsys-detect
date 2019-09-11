@@ -30,7 +30,6 @@ public class DetectArgumentStateParser {
 
     public DetectArgumentState parseArgs(final ArgumentParser parser) {
         final boolean isHelp = parser.isArgumentPresent("-h", "--help");
-        final boolean isHelpHtmlDocument = parser.isArgumentPresent("-hdoc", "--helpdocument");
         final boolean isHelpJsonDocument = parser.isArgumentPresent("-hjson", "--helpjson");
         final boolean isInteractive = parser.isArgumentPresent("-i", "--interactive");
 
@@ -59,7 +58,7 @@ public class DetectArgumentStateParser {
             parsedValue = parser.findValueForCommand("-z", "--zip");
         }
 
-        return new DetectArgumentState(isHelp, isHelpHtmlDocument, isHelpJsonDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue, isDiagnostic, isDiagnosticExtended, isGenerateAirGapZip);
+        return new DetectArgumentState(isHelp, isHelpJsonDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue, isDiagnostic, isDiagnosticExtended, isGenerateAirGapZip);
     }
 
 }

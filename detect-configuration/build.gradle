@@ -1,4 +1,6 @@
-final def versionFile = new File("${projectDir}/src/main/resources/version.txt")
+final def resources = new File("${projectDir}/src/main/resources")
+final def versionFile = new File(resources, "version.txt")
+resources.mkdirs()
 versionFile.delete()
 versionFile << version
 

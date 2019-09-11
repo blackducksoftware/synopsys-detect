@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.help.html.HelpHtmlOption;
 import com.synopsys.integration.detect.help.print.HelpTextWriter;
 
 public abstract class DetectOption {
@@ -193,29 +192,6 @@ public abstract class DetectOption {
             writer.println(help.detailedHelp);
             writer.println();
         }
-    }
-
-    public HelpHtmlOption createHtmlOption() {
-        final String description = getDetectOptionHelp().description;
-        String acceptableValues = "";
-        if (getValidValues().size() > 0) {
-            acceptableValues = getValidValues().stream().collect(Collectors.joining(", "));
-        }
-        String deprecationNotice = "";
-        if (getDetectOptionHelp().isDeprecated) {
-            deprecationNotice = getDeprecationText() + getDetectOptionHelp().deprecation;
-        }
-        String propertyKey = "";
-        String defaultValue = "";
-        if (StringUtils.isNotBlank(detectProperty.getPropertyKey())) {
-            propertyKey = detectProperty.getPropertyKey();
-        }
-        if (StringUtils.isNotBlank(detectProperty.getDefaultValue())) {
-            defaultValue = detectProperty.getDefaultValue();
-        }
-
-        final HelpHtmlOption htmlOption = new HelpHtmlOption(propertyKey, defaultValue, description, acceptableValues, getDetectOptionHelp().detailedHelp, deprecationNotice);
-        return htmlOption;
     }
 
     public enum FinalValueType {

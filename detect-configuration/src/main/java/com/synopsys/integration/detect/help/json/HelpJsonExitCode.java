@@ -20,19 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.help.html;
+package com.synopsys.integration.detect.help.json;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class HelpHtmlGroup {
-    public String groupName;
-    public List<HelpHtmlOption> options;
-    
-    public String getGroupName() {
-        return groupName;
-    }
-    
-    public List<HelpHtmlOption> getOptions() {
-        return options;
-    }
+public class HelpJsonExitCode {
+    public String exitCodeKey = "";
+    public String exitCodeDescription = "";
+    public int exitCodeValue = 0;
 }

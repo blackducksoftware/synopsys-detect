@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,7 +52,7 @@ import com.synopsys.integration.detect.help.DetectArgumentState;
 import com.synopsys.integration.detect.help.DetectArgumentStateParser;
 import com.synopsys.integration.detect.help.DetectOption;
 import com.synopsys.integration.detect.help.DetectOptionManager;
-import com.synopsys.integration.detect.help.html.HelpHtmlWriter;
+import com.synopsys.integration.detect.help.json.HelpJsonDetector;
 import com.synopsys.integration.detect.help.json.HelpJsonWriter;
 import com.synopsys.integration.detect.help.print.DetectInfoPrinter;
 import com.synopsys.integration.detect.help.print.HelpPrinter;
@@ -70,6 +69,8 @@ import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.property.SpringPropertySource;
+import com.synopsys.integration.detect.tool.detector.DetectableFactory;
+import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
@@ -101,6 +102,8 @@ import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExec
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleLocalExecutableFinder;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detector.rule.DetectorRule;
+import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
 import freemarker.template.Configuration;
 
@@ -133,11 +136,6 @@ public class DetectBoot {
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             printAppropriateHelp(options, detectArgumentState);
-            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty());
-        }
-
-        if (detectArgumentState.isHelpHtmlDocument()) {
-            printHelpHtmlDocument(options, detectInfo, configuration);
             return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty());
         }
 
@@ -246,14 +244,35 @@ public class DetectBoot {
         helpPrinter.printAppropriateHelpMessage(System.out, detectOptions, detectArgumentState);
     }
 
-    private void printHelpHtmlDocument(List<DetectOption> detectOptions, DetectInfo detectInfo, Configuration configuration) {
-        HelpHtmlWriter helpHtmlWriter = new HelpHtmlWriter(configuration);
-        helpHtmlWriter.writeHtmlDocument(String.format("synopsys-detect-%s-help.html", detectInfo.getDetectVersion()), detectOptions);
+    private void printHelpJsonDocument(List<DetectOption> detectOptions, DetectInfo detectInfo, Configuration configuration, Gson gson) {
+        DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
+        DetectorRuleSet build = ruleFactory.createRules(new DetectableFactory(), false);
+        DetectorRuleSet buildless = ruleFactory.createRules(new DetectableFactory(), true);
+        List<HelpJsonDetector> buildDetectors = build.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, build)).collect(Collectors.toList());
+        List<HelpJsonDetector> buildlessDetectors = buildless.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, buildless)).collect(Collectors.toList());
+
+        HelpJsonWriter helpJsonWriter = new HelpJsonWriter(configuration, gson);
+        helpJsonWriter.writeGsonDocument(String.format("synopsys-detect-%s-help.json", detectInfo.getDetectVersion()), detectOptions, buildDetectors, buildlessDetectors);
     }
 
-    private void printHelpJsonDocument(List<DetectOption> detectOptions, DetectInfo detectInfo, Configuration configuration, Gson gson) {
-        HelpJsonWriter helpJsonWriter = new HelpJsonWriter(configuration, gson);
-        helpJsonWriter.writeGsonDocument(String.format("synopsys-detect-%s-help.json", detectInfo.getDetectVersion()), detectOptions);
+    private HelpJsonDetector convertDetectorRule(DetectorRule rule, DetectorRuleSet ruleSet) {
+        HelpJsonDetector helpData = new HelpJsonDetector();
+        helpData.detectorName = rule.getName();
+        helpData.detectorDescriptiveName = rule.getDescriptiveName();
+        helpData.detectorType = rule.getDetectorType().toString();
+        helpData.maxDepth = rule.getMaxDepth();
+        helpData.nestable = rule.isNestable();
+        helpData.nestInvisible = rule.isNestInvisible();
+        helpData.yieldsTo = ruleSet.getYieldsTo(rule).stream().map(DetectorRule::getDescriptiveName).collect(Collectors.toList());
+        helpData.fallbackTo = ruleSet.getFallbackFrom(rule).map(DetectorRule::getDescriptiveName).orElse("");
+
+        //Attempt to create the detectable.
+        //Not currently possible. Need a full DetectableConfiguration to be able to make Detectables.
+        //Detectable detectable = rule.createDetectable(null);
+        //helpData.detectableGroup = detectable.getGroupName();
+        //helpData.detectableName = detectable.getName();
+        //helpData.detectableDescriptiveName = detectable.getName();
+        return helpData;
     }
 
     private void printDetectInfo(DetectInfo detectInfo) {

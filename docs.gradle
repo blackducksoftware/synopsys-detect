@@ -1,0 +1,156 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.freemarker:freemarker:2.3.26-incubating'
+    }
+}
+
+def outputPath = "docs/generated"
+def templatePath = "docs/templates"
+def staticPath = "docs/static"
+
+task helpJson(type: JavaExec) {
+    dependsOn build
+
+    classpath = files(createArtifactName())
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'com.synopsys.integration.detect.Application'
+    args = ['--helpjson']
+}
+
+task helpData() {
+    dependsOn helpJson
+    doLast {
+        def jsonHelpFile = "synopsys-detect-${version}-help.json"
+        def helpJson = new groovy.json.JsonSlurper().parseText(file(jsonHelpFile).text)
+        def cfg = new freemarker.template.Configuration()
+        cfg.setDirectoryForTemplateLoading(file(templatePath))
+        cfg.setDefaultEncoding("UTF-8")
+
+        def output = file(outputPath)
+        if (output.exists()) {
+            println "Cleaning existing output directory: ${output}"
+            output.deleteDir()
+        }
+        output.mkdirs()
+
+        helpData.ext.helpJson = helpJson
+        helpData.ext.templates = cfg
+        helpData.ext.output = output
+    }
+}
+
+task staticMarkdown() {
+    dependsOn helpData
+    doLast {
+        def staticFiles = file(staticPath)
+        copy {
+            from staticFiles
+            into helpData.output
+        }
+    }
+}
+
+task propertiesFolder() {
+    dependsOn helpData
+    doLast {
+        def propertiesFile = new File(helpData.output, "properties")
+        if (propertiesFile.exists()) {
+            propertiesFile.deleteDir()
+        }
+        propertiesFile.mkdirs()
+
+        propertiesFolder.ext.asFile = propertiesFile
+    }
+}
+
+task generatedPropertyMarkdown() {
+    dependsOn helpData
+    dependsOn propertiesFolder
+    doLast {
+        def groups = []
+        helpData.helpJson.options.forEach { property ->
+            def found = groups.find { group -> group.groupName == property.group }
+            if (found == null) {
+                found = [groupName: property.group, options: []]
+                groups.add(found)
+            }
+            found.options.add(property)
+        }
+
+        groups.forEach { group ->
+            def template = helpData.templates.getTemplate("property-group.ftl")
+            def target = new File(propertiesFolder.asFile, "${group.groupName}.md")
+            target.withWriter('utf-8') { out -> template.process(group, out) }
+            println("Created: ${target}")
+        }
+
+        def allpropertiestemplate = helpData.templates.getTemplate("all-properties.ftl")
+        def allpropertiesmd = new File(propertiesFolder.asFile, "all-properties.md")
+        allpropertiesmd.withWriter('utf-8') { out -> allpropertiestemplate.process([groups: groups], out) }
+    }
+}
+
+task generatedExitCodeMarkdown() {
+    dependsOn helpData
+    doLast {
+        def exitCodeTemplate = helpData.templates.getTemplate("exit-codes.ftl")
+        def exitCodeMd = new File(helpData.output, "exit-codes.md")
+        exitCodeMd.withWriter('utf-8') { out -> exitCodeTemplate.process(helpData.helpJson, out) }
+    }
+}
+
+task generatedDetectorMarkdown() {
+    dependsOn helpData
+    doLast {
+        def buildGroups = []
+        helpData.helpJson.buildDetectors.forEach { detector ->
+            def found = buildGroups.find { group -> group.groupName == detector.detectorType }
+            if (found == null) {
+                found = [groupName: detector.detectorType, detectors: []]
+                buildGroups.add(found)
+            }
+            found.detectors.add(detector.detectorName)
+        }
+
+        def buildlessGroups = []
+        helpData.helpJson.buildlessDetectors.forEach { detector ->
+            def found = buildlessGroups.find { group -> group.groupName == detector.detectorType }
+            if (found == null) {
+                found = [groupName: detector.detectorType, detectors: []]
+                buildlessGroups.add(found)
+            }
+            found.detectors.add(detector.detectorName)
+        }
+
+        def template = helpData.templates.getTemplate("detectors.ftl")
+        def markdown = new File(helpData.output, "detectors.md")
+        markdown.withWriter('utf-8') { out -> template.process([build: buildGroups, buildless: buildlessGroups], out) }
+    }
+}
+
+task generatedIndex() {
+    dependsOn helpData
+    doLast {
+        def indexTemplate = helpData.templates.getTemplate("index.ftl")
+        def indexMd = new File(helpData.output, "index.md")
+        indexMd.withWriter('utf-8') { out -> indexTemplate.process([version: version], out) }
+    }
+}
+
+task docs() {
+    dependsOn staticMarkdown
+    dependsOn generatedIndex
+    dependsOn generatedPropertyMarkdown
+    dependsOn generatedExitCodeMarkdown
+    dependsOn generatedDetectorMarkdown
+
+    doLast {
+        exec {
+            commandLine 'mkdocs', 'build'
+            workingDir "docs"
+        }
+    }
+}

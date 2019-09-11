@@ -20,18 +20,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.help.html;
+package com.synopsys.integration.detect.help.json;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class HelpHtmlData {
-    public List<HelpHtmlGroup> groups;
-    
-    public HelpHtmlData(List<HelpHtmlGroup> groups) { 
-        this.groups = groups;
-    }
-    
-    public List<HelpHtmlGroup> getGroups() {
-        return groups;
-    }
+public class HelpJsonDetector {
+    public String detectableName = "";
+    public String detectableDescriptiveName = "";
+    public String detectableGroup = "";
+    public String detectorType = "";
+    public String detectorName = "";
+    public String detectorDescriptiveName = "";
+    public int maxDepth = 0;
+    public boolean nestable = false;
+    public boolean nestInvisible = false;
+
+    public List<String> yieldsTo = new ArrayList<>();
+    public String fallbackTo = "";
 }

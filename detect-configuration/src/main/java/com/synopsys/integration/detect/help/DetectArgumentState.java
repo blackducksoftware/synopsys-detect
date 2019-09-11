@@ -24,7 +24,6 @@ package com.synopsys.integration.detect.help;
 
 public class DetectArgumentState {
     private final boolean isHelp;
-    private final boolean isHelpHtmlDocument;
     private final boolean isHelpJsonDocument;
     private final boolean isInteractive;
 
@@ -37,11 +36,10 @@ public class DetectArgumentState {
 
     private final boolean isGenerateAirGapZip;
 
-    public DetectArgumentState(final boolean isHelp, final boolean isHelpHtmlDocument, final boolean isHelpJsonDocument, final boolean isInteractive, final boolean isVerboseHelp, final boolean isDeprecatedHelp, final String parsedValue,
+    public DetectArgumentState(final boolean isHelp, final boolean isHelpJsonDocument, final boolean isInteractive, final boolean isVerboseHelp, final boolean isDeprecatedHelp, final String parsedValue,
         final boolean isDiagnostic,
         final boolean isDiagnosticExtended, final boolean isGenerateAirGapZip) {
         this.isHelp = isHelp;
-        this.isHelpHtmlDocument = isHelpHtmlDocument;
         this.isHelpJsonDocument = isHelpJsonDocument;
         this.isInteractive = isInteractive;
         this.isVerboseHelp = isVerboseHelp;
@@ -54,10 +52,6 @@ public class DetectArgumentState {
 
     public boolean isHelp() {
         return isHelp;
-    }
-
-    public boolean isHelpHtmlDocument() {
-        return isHelpHtmlDocument;
     }
 
     public boolean isHelpJsonDocument() {
