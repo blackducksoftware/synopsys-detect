@@ -52,11 +52,13 @@ public class HelpJsonWriter {
         this.gson = gson;
     }
 
-    public void writeGsonDocument(final String filename, final List<DetectOption> detectOptions) {
+    public void writeGsonDocument(final String filename, final List<DetectOption> detectOptions, List<HelpJsonDetector> buildDetectors, List<HelpJsonDetector> buildlessDetectors) {
         final HelpJsonData data = new HelpJsonData();
 
         data.options.addAll(detectOptions.stream().map(this::convertOption).collect(Collectors.toList()));
         data.exitCodes.addAll(Stream.of(ExitCodeType.values()).map(this::convertExitCode).collect(Collectors.toList()));
+        data.buildlessDetectors = buildlessDetectors;
+        data.buildDetectors = buildDetectors;
 
         try {
             try (final Writer writer = new FileWriter(filename)) {

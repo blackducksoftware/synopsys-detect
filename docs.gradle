@@ -102,6 +102,35 @@ task generatedExitCodeMarkdown() {
     }
 }
 
+task generatedDetectorMarkdown() {
+    dependsOn helpData
+    doLast {
+        def buildGroups = []
+        helpData.helpJson.buildDetectors.forEach { detector ->
+            def found = buildGroups.find { group -> group.groupName == detector.detectorType }
+            if (found == null) {
+                found = [groupName: detector.detectorType, detectors: []]
+                buildGroups.add(found)
+            }
+            found.detectors.add(detector.detectorName)
+        }
+
+        def buildlessGroups = []
+        helpData.helpJson.buildlessDetectors.forEach { detector ->
+            def found = buildlessGroups.find { group -> group.groupName == detector.detectorType }
+            if (found == null) {
+                found = [groupName: detector.detectorType, detectors: []]
+                buildlessGroups.add(found)
+            }
+            found.detectors.add(detector.detectorName)
+        }
+
+        def template = helpData.templates.getTemplate("detectors.ftl")
+        def markdown = new File(helpData.output, "detectors.md")
+        markdown.withWriter('utf-8') { out -> template.process([build: buildGroups, buildless: buildlessGroups], out) }
+    }
+}
+
 task generatedIndex() {
     dependsOn helpData
     doLast {
@@ -116,6 +145,7 @@ task docs() {
     dependsOn generatedIndex
     dependsOn generatedPropertyMarkdown
     dependsOn generatedExitCodeMarkdown
+    dependsOn generatedDetectorMarkdown
 
     doLast {
         exec {
