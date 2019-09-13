@@ -68,14 +68,14 @@ public class BitbakeDependencyGraphFunctionalTest {
         final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap, layerPriorityMap);
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
-        final ExternalId attr = graphAssert.hasDependency(externalIdFactory.createModuleNamesExternalId(Forge.YOCTO, "meta", "attr", "2.4.47"));
-        final ExternalId acl = graphAssert.hasDependency(externalIdFactory.createModuleNamesExternalId(Forge.YOCTO, "meta", "acl", "2.2.52"));
+        final ExternalId attr = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "attr", "2.4.47-r0"));
+        final ExternalId acl = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "acl", "2.2.52-r0"));
         graphAssert.hasParentChildRelationship(acl, attr);
         graphAssert.hasRootSize(2);
     }
 
     @Test
-    public void found736RootInOutputPackage() {
+    public void found747RootInOutputPackage() {
         final GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
         final InputStream inputStream = FunctionalTestFiles.asInputStream("/bitbake/Bitbake_PackageDepends_Full.dot");
         final GraphParser graphParser = new GraphParser(inputStream);
@@ -93,7 +93,7 @@ public class BitbakeDependencyGraphFunctionalTest {
 
         final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap, layerPriorityMap);
 
-        Assertions.assertEquals(736, dependencyGraph.getRootDependencies().size());
+        Assertions.assertEquals(747, dependencyGraph.getRootDependencies().size());
     }
 
     @Test
@@ -106,8 +106,8 @@ public class BitbakeDependencyGraphFunctionalTest {
         final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser, BitbakeFileType.PACKAGE_DEPENDS);
 
         final Map<String, BitbakeRecipe> componentLayerMap = new HashMap<>();
-        final BitbakeRecipe busyboxRecipe = new BitbakeRecipe("busybox", Collections.singletonList(new BitbakeRecipe.Layer("meta", "1.23.2")));
-        final BitbakeRecipe attrRecipe = new BitbakeRecipe("shadow", Collections.singletonList(new BitbakeRecipe.Layer("meta", "4.2.1")));
+        final BitbakeRecipe busyboxRecipe = new BitbakeRecipe("busybox", Collections.singletonList(new BitbakeRecipe.Layer("meta", "1.23.2-r0")));
+        final BitbakeRecipe attrRecipe = new BitbakeRecipe("shadow", Collections.singletonList(new BitbakeRecipe.Layer("meta", "4.2.1-r0")));
         componentLayerMap.put(busyboxRecipe.getName(), busyboxRecipe);
         componentLayerMap.put(attrRecipe.getName(), attrRecipe);
 
@@ -117,8 +117,8 @@ public class BitbakeDependencyGraphFunctionalTest {
         final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap, layerPriorityMap);
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
-        final ExternalId busybox = graphAssert.hasDependency(externalIdFactory.createModuleNamesExternalId(Forge.YOCTO, "meta", "busybox", "1.23.2"));
-        final ExternalId shadow = graphAssert.hasDependency(externalIdFactory.createModuleNamesExternalId(Forge.YOCTO, "meta", "shadow", "4.2.1"));
+        final ExternalId busybox = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "busybox", "1.23.2-r0"));
+        final ExternalId shadow = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "shadow", "4.2.1-r0"));
         graphAssert.hasParentChildRelationship(busybox, shadow);
         graphAssert.hasRootSize(2);
     }

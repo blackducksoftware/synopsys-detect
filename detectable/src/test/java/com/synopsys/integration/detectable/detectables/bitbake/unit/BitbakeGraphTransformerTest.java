@@ -42,8 +42,8 @@ public class BitbakeGraphTransformerTest {
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
 
-        final ExternalId example = graphAssert.hasDependency(externalIdFactory.createModuleNamesExternalId(Forge.YOCTO, "meta", "example", "1.2.3"));
-        final ExternalId foobar = graphAssert.hasDependency(externalIdFactory.createModuleNamesExternalId(Forge.YOCTO, "meta", "foobar", "4.5.6"));
+        final ExternalId example = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "example", "75"));
+        final ExternalId foobar = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "foobar", "12"));
         graphAssert.hasParentChildRelationship(example, foobar);
     }
 
@@ -69,7 +69,7 @@ public class BitbakeGraphTransformerTest {
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.hasRootSize(1);
-        final ExternalId externalId = graphAssert.hasDependency(externalIdFactory.createModuleNamesExternalId(Forge.YOCTO, "meta", "example", "1.2.3"));
+        final ExternalId externalId = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "example", "75"));
         graphAssert.hasRelationshipCount(externalId, 0);
     }
 
