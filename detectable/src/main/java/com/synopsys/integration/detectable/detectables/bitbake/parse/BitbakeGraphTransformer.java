@@ -104,7 +104,7 @@ public class BitbakeGraphTransformer {
             }
         } else {
             final Optional<BitbakeRecipe.Layer> highestPriorityLayer = getHighestPriorityLayer(bitbakeRecipe, layerPriorityMap);
-            return highestPriorityLayer.map(layer -> externalIdFactory.createYoctoExternalId(layer.getLayerName(), name, layer.getComponentVersion()));
+            return highestPriorityLayer.map(layer -> externalIdFactory.createYoctoExternalId(layer.getLayerName(), name, version));
         }
     }
 
