@@ -40,6 +40,7 @@ import com.synopsys.integration.detectable.detectables.git.parsing.GitParseDetec
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleDetectable;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
@@ -127,6 +128,10 @@ public class DetectableFactory implements BeanFactoryAware {
 
     public GoDepLockDetectable createGoLockDetectable(final DetectableEnvironment environment) {
         return beanFactory.getBean(GoDepLockDetectable.class, environment);
+    }
+
+    public GoModCliDetectable createGoModCliDetectable(final DetectableEnvironment environment) {
+        return beanFactory.getBean(GoModCliDetectable.class, environment);
     }
 
     public GoVndrDetectable createGoVndrDetectable(final DetectableEnvironment environment) {

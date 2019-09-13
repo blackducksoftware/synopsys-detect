@@ -117,6 +117,9 @@ import com.synopsys.integration.detectable.detectables.go.godep.parse.GoLockPars
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleDetectable;
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleExtractor;
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleLockParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphParser;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorExtractor;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
@@ -363,6 +366,16 @@ public class DetectableBeanConfiguration {
     @Bean //final GoDepLockFileGenerator goDepLockFileGenerator, final GoLockParser goLockParser,
     public GoDepExtractor goDepExtractor() {
         return new GoDepExtractor(goDepLockFileGenerator(), goLockParser(), externalIdFactory);
+    }
+
+    @Bean
+    public GoModGraphParser goModGraphParser() {
+        return new GoModGraphParser(externalIdFactory);
+    }
+
+    @Bean
+    public GoModCliExtractor goModCliExtractor() {
+        return new GoModCliExtractor(executableRunner, goModGraphParser());
     }
 
     @Bean
@@ -739,6 +752,12 @@ public class DetectableBeanConfiguration {
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GoDepCliDetectable goCliBomTool(final DetectableEnvironment environment) {
         return new GoDepCliDetectable(environment, fileFinder, githubGoDepResolver, githubGoDepResolver, goDepExtractor(), detectableOptionFactory.createGoDepCliDetectableOptions());
+    }
+
+    @Bean
+    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+    public GoModCliDetectable goModCliBomTool(final DetectableEnvironment environment) {
+        return new GoModCliDetectable(environment, fileFinder, githubGoDepResolver, goModCliExtractor());
     }
 
     @Bean

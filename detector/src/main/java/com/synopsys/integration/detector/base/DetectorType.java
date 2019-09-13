@@ -33,6 +33,7 @@ public enum DetectorType {
     CPAN,
     CRAN,
     GIT,
+    GO_MOD,
     GO_DEP,
     GO_VNDR,
     GO_VENDOR,
