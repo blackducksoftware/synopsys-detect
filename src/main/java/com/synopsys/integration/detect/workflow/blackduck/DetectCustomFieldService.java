@@ -47,27 +47,28 @@ public class DetectCustomFieldService {
     private List<CustomFieldOperation> determineOperations(CustomFieldDocument customFieldDocument, ProjectVersionWrapper projectVersionWrapper, BlackDuckService blackDuckService) throws DetectUserFriendlyException {
         List<CustomFieldView> projectFields = retrieveCustomFields(projectVersionWrapper.getProjectView(), blackDuckService);
         List<CustomFieldView> versionFields = retrieveCustomFields(projectVersionWrapper.getProjectVersionView(), blackDuckService);
-        List<CustomFieldOperation> projectOperations = pairOperationFromViews(customFieldDocument.getProject(), projectFields, "project");
-        List<CustomFieldOperation> versionOperations = pairOperationFromViews(customFieldDocument.getVersion(), versionFields, "project version");
+        List<CustomFieldOperation> projectOperations = pairOperationFromViews(customFieldDocument.getProject(), projectFields, "project", blackDuckService);
+        List<CustomFieldOperation> versionOperations = pairOperationFromViews(customFieldDocument.getVersion(), versionFields, "project version", blackDuckService);
         List<CustomFieldOperation> allOperations = new ArrayList<>();
         allOperations.addAll(projectOperations);
         allOperations.addAll(versionOperations);
         return allOperations;
     }
 
+    //radio, multiselect, and dropdown
     private void executeCustomFieldOperations(List<CustomFieldOperation> operations, BlackDuckService blackDuckService) throws DetectUserFriendlyException {
         for (CustomFieldOperation operation : operations) {
             CustomFieldView fieldView = operation.customField;
-            fieldView.setValues(operation.customFieldElement.getValue());
+            fieldView.setValues(operation.values);
             try {
                 blackDuckService.put(fieldView);
             } catch (IntegrationException e) {
-                throw new DetectUserFriendlyException(String.format("Unable to update custom field label with name '%s'", operation.customFieldElement.getLabel()), e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+                throw new DetectUserFriendlyException(String.format("Unable to update custom field label with name '%s'", operation.customField.getLabel()), e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
         }
     }
 
-    private List<CustomFieldOperation> pairOperationFromViews(List<CustomFieldElement> elements, List<CustomFieldView> views, String targetName) throws DetectUserFriendlyException {
+    private List<CustomFieldOperation> pairOperationFromViews(List<CustomFieldElement> elements, List<CustomFieldView> views, String targetName, BlackDuckService blackDuckService) throws DetectUserFriendlyException {
         List<CustomFieldOperation> operations = new ArrayList<>();
         for (CustomFieldElement element : elements) {
             Optional<CustomFieldView> fieldView = views.stream()
@@ -78,7 +79,27 @@ public class DetectCustomFieldService {
                 throw new DetectUserFriendlyException(String.format("Unable to find custom field view with label '%s' on the %s. Ensure it exists.", element.getLabel(), targetName), ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
 
-            operations.add(new CustomFieldOperation(fieldView.get(), element));
+            List<String> values = new ArrayList<>();
+            List<CustomFieldOptionView> options = retrieveCustomFieldOptions(fieldView.get(), blackDuckService);
+            if (options.size() <= 0) {
+                logger.debug("Did not find any associated options for this field, will use raw values.");
+                values = element.getValue();
+            } else {
+                logger.debug("Found one or more options for this field. Will attempt to map given values to fields..");
+                for (String value : element.getValue()) {
+                    Optional<CustomFieldOptionView> option = options.stream()
+                                                                 .filter(it -> it.getLabel().equals(value))
+                                                                 .findFirst();
+                    if (option.isPresent() && option.get().getHref().isPresent()) {
+                        values.add(option.get().getHref().get());
+                    } else {
+                        throw new DetectUserFriendlyException(String.format("Unable to update custom field '%s', unable to find option for value '%s'", element.getLabel(), value),
+                            ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+                    }
+                }
+            }
+
+            operations.add(new CustomFieldOperation(fieldView.get(), values));
         }
         return operations;
     }
@@ -90,6 +111,18 @@ public class DetectCustomFieldService {
         }
         try {
             return blackDuckService.getAllResponses(new BlackDuckPathMultipleResponses<>(new BlackDuckPath(customFieldLink.get()), CustomFieldView.class));
+        } catch (IntegrationException e) {
+            return Collections.emptyList();
+        }
+    }
+
+    private List<CustomFieldOptionView> retrieveCustomFieldOptions(BlackDuckView view, BlackDuckService blackDuckService) {
+        final Optional<String> customFieldLink = view.getFirstLink("custom-field-option-list");
+        if (!customFieldLink.isPresent()) {
+            return Collections.emptyList();
+        }
+        try {
+            return blackDuckService.getAllResponses(new BlackDuckPathMultipleResponses<>(new BlackDuckPath(customFieldLink.get()), CustomFieldOptionView.class));
         } catch (IntegrationException e) {
             return Collections.emptyList();
         }

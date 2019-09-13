@@ -24,12 +24,25 @@ package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.util.List;
 
-public class CustomFieldOperation {
-    public final CustomFieldView customField;
-    public final List<String> values;
+import com.synopsys.integration.blackduck.api.core.BlackDuckView;
 
-    public CustomFieldOperation(final CustomFieldView customField, final List<String> values) {
-        this.customField = customField;
-        this.values = values;
+public class CustomFieldOptionView extends BlackDuckView {
+    private int position;
+    private String label;
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(final int position) {
+        this.position = position;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(final String label) {
+        this.label = label;
     }
 }
