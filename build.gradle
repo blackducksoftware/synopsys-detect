@@ -184,13 +184,24 @@ task verifyBlackDuckDetect() {
     }
 }
 
+String parseAirGapZipPath(ByteArrayOutputStream standardOutput) {
+    String line = standardOutput.toString().split('\n').find { it.contains("Detect Air Gap Zip: ") }
+    String path = line.substring(line.lastIndexOf("Detect Air Gap Zip: ") + "Detect Air Gap Zip: ".length()).trim()
+    println "Found Air Gap Zip: " + path
+    return path
+}
+
 task createAirGapZip(type: JavaExec) {
     dependsOn build
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
-    args = ['--detect.gradle.path=gradlew', '-z']
+    args = ["--detect.output.path=${buildDir}/libs/", '-z']
+    standardOutput = new ByteArrayOutputStream()
+    doLast {
+        createAirGapZip.ext.airGapPath = parseAirGapZipPath(standardOutput)
+    }
 }
 
 task publishAirGapZip() {
@@ -198,7 +209,7 @@ task publishAirGapZip() {
 
     doLast {
         def airGapZipName = "${project.name}-${version}-air-gap.zip"
-        def airGapZipLocation = "${buildDir}/libs/${airGapZipName}"
+        def airGapZipLocation = createAirGapZip.airGapPath
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
                     "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
@@ -213,13 +224,18 @@ task createAirGapZipWithoutDocker(type: JavaExec) {
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
     args = ['--detect.gradle.path=gradlew', '-z', 'GRADLE,NUGET']
+    standardOutput = new ByteArrayOutputStream()
+    doLast {
+        createAirGapZipWithoutDocker.ext.airGapPath = parseAirGapZipPath(standardOutput)
+    }
+
 }
 
 task publishAirGapZipWithoutDocker() {
     dependsOn createAirGapZipWithoutDocker
 
     doLast {
-        def airGapZipName = "${project.name}-${version}-air-gap-gradle-nuget.zip"
+        def airGapZipName = createAirGapZipWithoutDocker.airGapPath
         def airGapZipLocation = "${buildDir}/libs/${airGapZipName}"
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',

@@ -48,7 +48,8 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 public class ShutdownManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public void shutdown(Optional<ProductRunData> productRunData, Optional<DetectConfiguration> detectConfigurationOptional, Optional<DirectoryManager> directoryManagerOptional, Optional<DiagnosticSystem> diagnosticSystem) {
+    public void shutdown(Optional<ProductRunData> productRunData, Optional<File> airgapZip, Optional<DetectConfiguration> detectConfigurationOptional, Optional<DirectoryManager> directoryManagerOptional,
+        Optional<DiagnosticSystem> diagnosticSystem) {
 
         if (productRunData.isPresent() && productRunData.get().shouldUseBlackDuckProduct()) {
             stopPhoneHome(productRunData.get());
@@ -59,7 +60,7 @@ public class ShutdownManager {
         if (detectConfigurationOptional.isPresent() && directoryManagerOptional.isPresent()) {
             DetectConfiguration detectConfiguration = detectConfigurationOptional.get();
             DirectoryManager directoryManager = directoryManagerOptional.get();
-            cleanupRun(productRunData, directoryManager, detectConfiguration);
+            cleanupRun(productRunData, airgapZip, directoryManager, detectConfiguration);
         }
     }
 
@@ -75,7 +76,7 @@ public class ShutdownManager {
         }
     }
 
-    private void cleanupRun(Optional<ProductRunData> productRunData, DirectoryManager directoryManager, DetectConfiguration detectConfiguration) {
+    private void cleanupRun(Optional<ProductRunData> productRunData, Optional<File> airgapZip, DirectoryManager directoryManager, DetectConfiguration detectConfiguration) {
         try {
             if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.None)) {
                 logger.info("Detect will cleanup.");
@@ -97,6 +98,10 @@ public class ShutdownManager {
                 if (offline) {
                     logger.debug("Will not cleanup bdio folder.");
                     cleanupToSkip.add(directoryManager.getBdioOutputDirectory());
+                }
+                if (airgapZip.isPresent()) {
+                    logger.debug("Will not cleanup Air Gap file.");
+                    cleanupToSkip.add(airgapZip.get());
                 }
                 logger.debug("Cleaning up directory: " + directoryManager.getRunHomeDirectory().getAbsolutePath());
                 cleanup(directoryManager.getRunHomeDirectory(), cleanupToSkip);

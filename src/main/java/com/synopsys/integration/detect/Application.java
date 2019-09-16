@@ -144,6 +144,7 @@ public class Application implements ApplicationRunner {
             ShutdownManager shutdownManager = new ShutdownManager();
             shutdownManager.shutdown(
                 ifPresentMap(detectBootResultOptional, DetectBootResult::getProductRunData),
+                ifPresentMap(detectBootResultOptional, DetectBootResult::getAirGapZip),
                 ifPresentMap(detectBootResultOptional, DetectBootResult::getDetectConfiguration),
                 ifPresentMap(detectBootResultOptional, DetectBootResult::getDirectoryManager),
                 ifPresentMap(detectBootResultOptional, DetectBootResult::getDiagnosticSystem));

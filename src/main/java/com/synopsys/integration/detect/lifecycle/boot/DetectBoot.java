@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -136,12 +137,12 @@ public class DetectBoot {
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             printAppropriateHelp(options, detectArgumentState);
-            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty());
+            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty(), Optional.empty());
         }
 
         if (detectArgumentState.isHelpJsonDocument()) {
             printHelpJsonDocument(options, detectInfo, configuration, gson);
-            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty());
+            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty(), Optional.empty());
         }
 
         printDetectInfo(detectInfo);
@@ -177,12 +178,13 @@ public class DetectBoot {
         if (detectArgumentState.isGenerateAirGapZip()) {
             DetectOverrideableFilter inspectorFilter = new DetectOverrideableFilter("", detectArgumentState.getParsedValue());
             String airGapSuffix = String.join("-", inspectorFilter.getIncludedSet().stream().sorted().collect(Collectors.toList()));
+            File airGapZip = null;
             try {
-                createAirGapZip(inspectorFilter, detectConfiguration, gson, eventSystem, configuration, airGapSuffix);
+                airGapZip = createAirGapZip(inspectorFilter, detectConfiguration, directoryManager, gson, eventSystem, configuration, airGapSuffix);
             } catch (DetectUserFriendlyException e) {
                 return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.of(directoryManager), diagnosticSystem);
             }
-            return DetectBootResult.exit(detectConfiguration, Optional.of(directoryManager), diagnosticSystem);
+            return DetectBootResult.exit(detectConfiguration, Optional.ofNullable(airGapZip), Optional.of(directoryManager), diagnosticSystem);
         }
 
         final RunOptions runOptions = factory.createRunOptions();
@@ -208,7 +210,7 @@ public class DetectBoot {
 
         if (productRunData == null) {
             logger.info("No products to run, Detect is complete.");
-            return DetectBootResult.exit(detectConfiguration, Optional.of(directoryManager), diagnosticSystem);
+            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.of(directoryManager), diagnosticSystem);
         }
 
         //TODO: Only need this if in diagnostic or online (for phone home):
@@ -305,7 +307,7 @@ public class DetectBoot {
             ErrorLogReportWriter errorLogReportWriter = new ErrorLogReportWriter();
             detectConfigurationReporter.printFailures(errorLogReportWriter, failureProperties);
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION));
-            return Optional.of(DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty()));
+            return Optional.of(DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty(), Optional.empty()));
         }
 
         //Finally log all fields that are deprecated but still being used (that are not failure).
@@ -343,7 +345,8 @@ public class DetectBoot {
         }
     }
 
-    private void createAirGapZip(DetectFilter inspectorFilter, DetectConfiguration detectConfiguration, Gson gson, EventSystem eventSystem, Configuration configuration, String airGapSuffix) throws DetectUserFriendlyException {
+    private File createAirGapZip(DetectFilter inspectorFilter, DetectConfiguration detectConfiguration, DirectoryManager directoryManager, Gson gson, EventSystem eventSystem, Configuration configuration, String airGapSuffix)
+        throws DetectUserFriendlyException {
         ConnectionManager connectionManager = new ConnectionManager(detectConfiguration);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionManager, gson);
 
@@ -362,6 +365,6 @@ public class DetectBoot {
         DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
 
         AirGapCreator airGapCreator = new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
-        airGapCreator.createAirGapZip(inspectorFilter, airGapSuffix);
+        return airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix);
     }
 }

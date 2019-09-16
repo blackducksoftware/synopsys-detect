@@ -72,14 +72,15 @@ public class AirGapCreator {
         this.dockerAirGapCreator = dockerAirGapCreator;
     }
 
-    public void createAirGapZip(DetectFilter inspectorFilter, String airGapSuffix) throws DetectUserFriendlyException {
+    public File createAirGapZip(DetectFilter inspectorFilter, File outputPath, String airGapSuffix) throws DetectUserFriendlyException {
         try {
             logger.info("");
             logger.info(ReportConstants.RUN_SEPARATOR);
             logger.info(ReportConstants.RUN_SEPARATOR);
             logger.info("Detect is in Air Gap Creation mode.");
             logger.info("Detect will create an air gap of itself and then exit.");
-            logger.info(String.format("Specify desired inspectors after -z argument in a comma separated list of ALL, NONE, %s", Arrays.stream(AirGapInspectors.values()).map(Enum::name).collect(Collectors.joining(","))));
+            logger.info("The created air gap zip will not be cleaned up.");
+            logger.info(String.format("Specify desired inspectors after -z argument in a comma separated list of ALL, NONE, %s", Arrays.stream(AirGapInspectors.values()).map(Enum::name).collect(Collectors.joining(", "))));
             logger.info(ReportConstants.RUN_SEPARATOR);
             logger.info(ReportConstants.RUN_SEPARATOR);
             logger.info("");
@@ -90,16 +91,15 @@ public class AirGapCreator {
             }
             logger.info("The detect jar location: " + detectJar.getCanonicalPath());
 
-            File base = detectJar.getParentFile().getCanonicalFile();
-            logger.info("Creating zip at location: " + base);
+            logger.info("Creating zip at location: " + outputPath);
 
             String basename = FilenameUtils.removeExtension(detectJar.getName());
             String airGapName = basename + "-air-gap";
             if (StringUtils.isNotBlank(airGapSuffix)) {
                 airGapName = airGapName + "-" + airGapSuffix.toLowerCase();
             }
-            File target = new File(base, airGapName + ".zip");
-            File installFolder = new File(base, basename);
+            File target = new File(outputPath, airGapName + ".zip");
+            File installFolder = new File(outputPath, basename);
 
             logger.info("Will build the zip in the following folder: " + installFolder.getCanonicalPath());
 
@@ -121,6 +121,7 @@ public class AirGapCreator {
             logger.info(ReportConstants.RUN_SEPARATOR);
 
             eventSystem.publishEvent(Event.ResultProduced, () -> "Detect Air Gap Zip: " + result);
+            return target;
         } catch (IOException e) {
             throw new DetectUserFriendlyException("Failed to create detect air gap zip.", e, ExitCodeType.FAILURE_UNKNOWN_ERROR);
         }
