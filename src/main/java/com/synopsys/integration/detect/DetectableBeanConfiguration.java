@@ -198,8 +198,7 @@ import freemarker.template.Configuration;
 @org.springframework.context.annotation.Configuration
 public class DetectableBeanConfiguration {
     //The Important Ones
-    @Autowired
-    public FileFinder fileFinder;
+    private FileFinder fileFinder;
     @Autowired
     public ExecutableRunner executableRunner;
     @Autowired
@@ -228,6 +227,10 @@ public class DetectableBeanConfiguration {
     public ArtifactResolver artifactResolver;
     @Autowired
     public GithubGoDepResolver githubGoDepResolver;
+
+    public DetectableBeanConfiguration(final FileFinder fileFinder) {
+        this.fileFinder = fileFinder;
+    }
 
     //DetectableFactory
     //This is the ONLY class that should be taken from the Configuration manually.

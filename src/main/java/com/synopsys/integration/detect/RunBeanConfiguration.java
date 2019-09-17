@@ -31,7 +31,6 @@ import org.springframework.context.annotation.Lazy;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
@@ -40,6 +39,7 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
+import com.synopsys.integration.detect.tool.detector.DetectFileFinder;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
@@ -47,13 +47,13 @@ import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureS
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRun;
+import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
+import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
-import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
@@ -92,9 +92,14 @@ public class RunBeanConfiguration {
         return new ExternalIdFactory();
     }
 
+    // This is not a bean!
+    public FileFinder simpleFileFinder() {
+        return new SimpleFileFinder();
+    }
+
     @Bean
     public FileFinder fileFinder() {
-        return new SimpleFileFinder();
+        return new DetectFileFinder(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES, PropertyAuthority.None));
     }
 
     @Bean
@@ -156,7 +161,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public SimpleExecutableFinder simpleExecutableFinder() {
-        return SimpleExecutableFinder.forCurrentOperatingSystem(fileFinder());
+        return SimpleExecutableFinder.forCurrentOperatingSystem(simpleFileFinder());
     }
 
     @Bean
@@ -187,12 +192,12 @@ public class RunBeanConfiguration {
     @Bean
     public DockerInspectorResolver dockerInspectorResolver() {
         DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver());
-        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fileFinder(), dockerInspectorInstaller, detectableOptionFactory().createDockerDetectableOptions());
+        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), simpleFileFinder(), dockerInspectorInstaller, detectableOptionFactory().createDockerDetectableOptions());
     }
 
     @Lazy
     @Bean()
     public BlackDuckSignatureScanner blackDuckSignatureScanner(final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, final ScanBatchRunner scanBatchRunner, final BlackDuckServerConfig blackDuckServerConfig) {
-        return new BlackDuckSignatureScanner(directoryManager, fileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, blackDuckServerConfig);
+        return new BlackDuckSignatureScanner(directoryManager, simpleFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, blackDuckServerConfig);
     }
 }
