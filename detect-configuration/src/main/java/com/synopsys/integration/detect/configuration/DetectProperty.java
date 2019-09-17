@@ -331,6 +331,10 @@ public enum DetectProperty {
     DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS("detect.detector.search.exclusion.paths", " Detector Directory Path Exclusions", "5.5.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
+    @HelpDescription("A comma-separated list of file names to exclude from detector search.")
+    DETECT_DETECTOR_SEARCH_EXCLUSION_FILES("detect.detector.search.exclusion.files", " Detector File Exclusions", "6.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.")
     @HelpDetailed("If true, these directories will be excluded from the detector search: " + DetectorSearchExcludedDirectories.DIRECTORY_NAMES + ".")
     DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS("detect.detector.search.exclusion.defaults", "Detector Exclude Default Directories", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
