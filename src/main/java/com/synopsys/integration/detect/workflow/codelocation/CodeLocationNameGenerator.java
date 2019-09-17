@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.workflow.codelocation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,8 @@ import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 
+import freemarker.template.utility.StringUtil;
+
 public class CodeLocationNameGenerator {
     private final Logger logger = LoggerFactory.getLogger(CodeLocationNameGenerator.class);
     private final String codeLocationNameOverride;
@@ -50,17 +53,23 @@ public class CodeLocationNameGenerator {
         this.codeLocationNameOverride = codeLocationNameOverride;
     }
 
-    public String createBomCodeLocationName(final String detectSourcePath, final String sourcePath, final DetectCodeLocation detectCodeLocation, final String prefix, final String suffix) {
+    public String createBomCodeLocationName(final String detectSourcePath, final String sourcePath, final String projectName, final String projectVersionName, final DetectCodeLocation detectCodeLocation, final String prefix,
+        final String suffix) {
         final String pathPiece = FileNameUtils.relativize(detectSourcePath, sourcePath);
 
-        final List<String> pieces = Arrays.asList(detectCodeLocation.getExternalId().getExternalIdPieces());
-        final String externalIdPiece = StringUtils.join(pieces, "/");
+        final String externalIdPiece = StringUtils.join(detectCodeLocation.getExternalId().getExternalIdPieces(), "/");
 
         // misc pieces
         final String codeLocationTypeString = CodeLocationNameType.BOM.toString().toLowerCase();
         final String bomToolTypeString = deriveCreator(detectCodeLocation).toLowerCase();
 
-        final List<String> bomCodeLocationNamePieces = Arrays.asList(pathPiece, externalIdPiece);
+        final List<String> bomCodeLocationNamePieces = new ArrayList<>();
+        bomCodeLocationNamePieces.add(projectName);
+        bomCodeLocationNamePieces.add(projectVersionName);
+        if (StringUtils.isNotBlank(pathPiece)) {
+            bomCodeLocationNamePieces.add(pathPiece);
+        }
+        bomCodeLocationNamePieces.add(externalIdPiece);
         final List<String> bomCodeLocationEndPieces = Arrays.asList(bomToolTypeString, codeLocationTypeString);
 
         return createCodeLocationName(prefix, bomCodeLocationNamePieces, suffix, bomCodeLocationEndPieces);

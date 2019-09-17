@@ -69,7 +69,7 @@ public class CodeLocationNameManager {
                 final String dockerImage = detectCodeLocation.getDockerImageName().get();
                 codeLocationName = codeLocationNameGenerator.createDockerCodeLocationName(sourcePath, projectName, projectVersionName, dockerImage, prefix, suffix);
             } else {
-                codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, sourcePath, detectCodeLocation, prefix, suffix);
+                codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, sourcePath, projectName, projectVersionName, detectCodeLocation, prefix, suffix);
             }
         }
         return codeLocationName;

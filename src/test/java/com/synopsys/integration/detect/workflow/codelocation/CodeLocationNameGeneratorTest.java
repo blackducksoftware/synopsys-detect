@@ -60,7 +60,7 @@ public class CodeLocationNameGeneratorTest {
 
     @Test
     public void testBomCodeLocationName() {
-        final String expected = "common-rest/child/group/name/version npm/bom";
+        final String expected = "projectName/projectVersion/child/group/name/version npm/bom";
         // = path/externalId tool/type
 
         final ExternalIdFactory factory = new ExternalIdFactory();
@@ -76,15 +76,14 @@ public class CodeLocationNameGeneratorTest {
 
         final String prefix = "";
         final String suffix = "";
-        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, detectCodeLocation, prefix, suffix);
+        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, "projectName", "projectVersion", detectCodeLocation, prefix, suffix);
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void testLongCodeLocationNames() {
-        final String expected = "common-rest/common-...n-rest-common-rest/group/name/version npm/bom";
-
+        final String expected = "projectName/projectVersion/common-rest-common-...n-rest-common-rest/group/name/version npm/bom";
         final ExternalIdFactory factory = new ExternalIdFactory();
         final ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
         final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
@@ -97,7 +96,7 @@ public class CodeLocationNameGeneratorTest {
         final String codeLocationPath = "/Users/ekerwin/Documents/source/functional/common-rest/common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest";
         final String prefix = "";
         final String suffix = "";
-        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, detectCodeLocation, prefix, suffix);
+        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, "projectName", "projectVersion", detectCodeLocation, prefix, suffix);
 
         assertEquals(expected, actual);
     }
@@ -115,7 +114,8 @@ public class CodeLocationNameGeneratorTest {
         externalId.path = "externalIdPath";
         Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
 
-        assertEquals("testPrefix/aaa/bbb/externalIdPath/testSuffix detect/bom", codeLocationNameGenerator.createBomCodeLocationName("/tmp/aaa", "/tmp/aaa/bbb", detectCodeLocation, "testPrefix", "testSuffix"));
+        String actual = codeLocationNameGenerator.createBomCodeLocationName("/tmp/aaa", "/tmp/aaa/bbb", "projectName", "projectVersion", detectCodeLocation, "testPrefix", "testSuffix");
+        assertEquals("testPrefix/projectName/projectVersion/bbb/externalIdPath/testSuffix detect/bom", actual);
     }
 
     @Test

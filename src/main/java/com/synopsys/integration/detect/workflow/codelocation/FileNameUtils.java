@@ -34,15 +34,31 @@ import org.slf4j.LoggerFactory;
 public class FileNameUtils {
     private static final Logger logger = LoggerFactory.getLogger(FileNameUtils.class);
 
-    // Warning: This method relativizes from the *parent* of from, not from itself. No idea why.
-    // It also swallows all exceptions.
     public static String relativize(final String from, final String to) {
         String relative = to;
         try {
             final Path toPath = new File(to).toPath();
             final Path fromPath = new File(from).toPath();
-            final Path fromParentPath = fromPath.getParent();
-            final Path relativePath = fromParentPath.relativize(toPath);
+            final Path relativePath = fromPath.relativize(toPath);
+            final List<String> relativePieces = new ArrayList<>();
+            for (int i = 0; i < relativePath.getNameCount(); i++) {
+                relativePieces.add(relativePath.getName(i).toFile().getName());
+            }
+            relative = StringUtils.join(relativePieces, "/");
+        } catch (final Exception e) {
+            logger.info(String.format("Unable to relativize path, full source path will be used: %s", to));
+            logger.debug("The reason relativize failed: ", e);
+        }
+
+        return relative;
+    }
+
+    public static String relativizeParent(final String from, final String to) {
+        String relative = to;
+        try {
+            final Path toPath = new File(to).toPath();
+            final Path fromPath = new File(from).toPath();
+            final Path relativePath = fromPath.getParent().relativize(toPath);
             final List<String> relativePieces = new ArrayList<>();
             for (int i = 0; i < relativePath.getNameCount(); i++) {
                 relativePieces.add(relativePath.getName(i).toFile().getName());

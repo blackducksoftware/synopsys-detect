@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +50,8 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
+
+import freemarker.template.utility.StringUtil;
 
 public class AggregateBdioCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -125,7 +128,9 @@ public class AggregateBdioCreator {
 
         final List<String> externalIdPieces = new ArrayList<>();
         externalIdPieces.addAll(Arrays.asList(original.getExternalIdPieces()));
-        externalIdPieces.add(relativePath);
+        if (StringUtils.isNotBlank(relativePath)) {
+            externalIdPieces.add(relativePath);
+        }
         externalIdPieces.add(bomToolType);
         final String[] pieces = externalIdPieces.toArray(new String[externalIdPieces.size()]);
         return new Dependency(name, version, new ExternalIdFactory().createModuleNamesExternalId(original.forge, pieces));
