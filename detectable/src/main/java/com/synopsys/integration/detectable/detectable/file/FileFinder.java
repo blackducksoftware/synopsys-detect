@@ -55,5 +55,11 @@ public interface FileFinder {
     }
 
     @NotNull
-    List<File> findFiles(File directoryToSearch, List<String> filenamePatterns, int depth);
+    default List<File> findFiles(File directoryToSearch, List<String> filenamePatterns, int depth) {
+        return findFiles(directoryToSearch, filenamePatterns, depth, true);
+    }
+
+    @NotNull
+    List<File> findFiles(File directoryToSearch, List<String> filenamePatterns, int depth, boolean findInsideMatchingDirectories);
+
 }

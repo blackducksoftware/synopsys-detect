@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -37,31 +38,31 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 
 public class SimpleFileFinder implements FileFinder {
 
-    private List<File> findFiles(final File directoryToSearch, final FilenameFilter filenameFilter, final int depth) {
+    private List<File> findFiles(final File directoryToSearch, final FilenameFilter filenameFilter, final int depth, boolean findInsideMatchingDirectories) {
         final List<File> foundFiles = new ArrayList<>();
         if (Files.isSymbolicLink(directoryToSearch.toPath())) {
             return foundFiles;
         }
         final File[] allFiles = directoryToSearch.listFiles();
-        if (allFiles != null && depth > 0) {
-            final List<File> subFiles = Arrays.stream(allFiles)
-                                            .filter(File::isDirectory)
-                                            .filter(file -> !Files.isSymbolicLink(file.toPath()))
-                                            .flatMap(file -> findFiles(file, filenameFilter, depth - 1).stream())
-                                            .collect(Collectors.toList());
-            foundFiles.addAll(subFiles);
-        }
-
-        final File[] matchingFiles = directoryToSearch.listFiles(filenameFilter); //We could do this without iterating the directory twice - but this works and is clean.
-        if (matchingFiles != null && matchingFiles.length > 0) {
-            foundFiles.addAll(Arrays.asList(matchingFiles));
+        if (allFiles != null) {
+            for (File file : allFiles) {
+                boolean matches = filenameFilter.accept(directoryToSearch, file.getName());
+                if (matches) {
+                    foundFiles.add(file);
+                }
+                if (!matches || findInsideMatchingDirectories) {
+                    if (file.isDirectory() && !Files.isSymbolicLink(file.toPath())) {
+                        foundFiles.addAll(findFiles(file, filenameFilter, depth - 1, findInsideMatchingDirectories));
+                    }
+                }
+            }
         }
 
         return foundFiles;
     }
 
     @Override
-    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth) {
-        return findFiles(directoryToSearch, new WildcardFileFilter(filenamePatterns), depth);
+    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, boolean findInsideMatchingDirectories) {
+        return findFiles(directoryToSearch, new WildcardFileFilter(filenamePatterns), depth, findInsideMatchingDirectories);
     }
 }

@@ -41,8 +41,8 @@ public class DetectFileFinder extends SimpleFileFinder {
     }
 
     @Override
-    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth) {
-        return super.findFiles(directoryToSearch, filenamePatterns, depth).stream()
+    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, boolean findInsideMatchingDirectories) {
+        return super.findFiles(directoryToSearch, filenamePatterns, depth, findInsideMatchingDirectories).stream()
                    .filter(file -> !excludedFileNames.contains(file.getName()))
                    .collect(Collectors.toList());
     }
