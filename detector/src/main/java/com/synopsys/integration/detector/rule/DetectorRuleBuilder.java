@@ -29,6 +29,7 @@ public class DetectorRuleBuilder {
     private final DetectableCreatable detectableCreatable;
     private int maxDepth;
     private boolean nestable;
+    private boolean selfNestable = false;
     private boolean nestInvisible = false;
 
     private String name;
@@ -43,7 +44,11 @@ public class DetectorRuleBuilder {
     }
 
     public DetectorRuleBuilder defaults() {
-        return noMaxDepth().nestable().visibleToNesting();
+        return noMaxDepth().nestable().notSelfNestable().visibleToNesting();
+    }
+
+    public DetectorRuleBuilder defaultLock() {
+        return noMaxDepth().nestable().selfNestable().visibleToNesting();
     }
 
     public DetectorRuleBuilder noMaxDepth() {
@@ -57,6 +62,11 @@ public class DetectorRuleBuilder {
 
     public DetectorRuleBuilder isNestable(boolean nestable) {
         this.nestable = nestable;
+        return this;
+    }
+
+    public DetectorRuleBuilder isSelfNestable(boolean selfNestable) {
+        this.selfNestable = selfNestable;
         return this;
     }
 
@@ -81,8 +91,16 @@ public class DetectorRuleBuilder {
         return isNestable(false);
     }
 
+    public DetectorRuleBuilder selfNestable() {
+        return isSelfNestable(true);
+    }
+
+    public DetectorRuleBuilder notSelfNestable() {
+        return isSelfNestable(true);
+    }
+
     public DetectorRule build() {
-        DetectorRule rule = new DetectorRule(detectableCreatable, maxDepth, nestable, detectorType, name, nestInvisible);
+        DetectorRule rule = new DetectorRule(detectableCreatable, maxDepth, nestable, selfNestable, detectorType, name, nestInvisible);
         if (detectorRuleSetBuilder != null) {
             detectorRuleSetBuilder.add(rule);
         }

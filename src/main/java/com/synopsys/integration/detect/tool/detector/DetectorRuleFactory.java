@@ -67,9 +67,9 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom", detectableFactory::createMavenPomDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Wrapper", detectableFactory::createMavenPomWrapperDetectable).defaults().build();
 
-        final DetectorRule yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", detectableFactory::createYarnLockDetectable).defaults().build();
-        final DetectorRule npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", detectableFactory::createNpmPackageLockDetectable).defaults().build();
-        final DetectorRule npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", detectableFactory::createNpmShrinkwrapDetectable).defaults().build();
+        final DetectorRule yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", detectableFactory::createYarnLockDetectable).defaultLock().build();
+        final DetectorRule npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", detectableFactory::createNpmPackageLockDetectable).defaultLock().build();
+        final DetectorRule npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", detectableFactory::createNpmShrinkwrapDetectable).defaultLock().build();
         final DetectorRule npmCli = ruleSet.addDetector(DetectorType.NPM, "Npm Cli", detectableFactory::createNpmCliDetectable).defaults().build();
 
         ruleSet.yield(npmShrinkwrap).to(npmPackageLock);

@@ -31,14 +31,16 @@ public class DetectorRule {
     private final DetectableCreatable detectableCreatable;
     private final int maxDepth;
     private final boolean nestable;
+    private final boolean selfNestable;
     private final DetectorType detectorType;
     private final String name;
     private final boolean nestInvisible;
 
-    public DetectorRule(final DetectableCreatable detectableCreatable, final int maxDepth, final boolean nestable, final DetectorType detectorType, final String name, final boolean nestInvisible) {
+    public DetectorRule(final DetectableCreatable detectableCreatable, final int maxDepth, final boolean nestable, boolean selfNestable, final DetectorType detectorType, final String name, final boolean nestInvisible) {
         this.detectableCreatable = detectableCreatable;
         this.maxDepth = maxDepth;
         this.nestable = nestable;
+        this.selfNestable = selfNestable;
         this.detectorType = detectorType;
         this.name = name;
         this.nestInvisible = nestInvisible;
@@ -74,5 +76,9 @@ public class DetectorRule {
 
     public boolean isNestInvisible() {
         return nestInvisible;
+    }
+
+    public boolean isSelfNestable() {
+        return selfNestable;
     }
 }
