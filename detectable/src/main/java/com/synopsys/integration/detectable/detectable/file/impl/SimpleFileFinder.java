@@ -40,6 +40,9 @@ public class SimpleFileFinder implements FileFinder {
 
     private List<File> findFiles(final File directoryToSearch, final FilenameFilter filenameFilter, final int depth, boolean findInsideMatchingDirectories) {
         final List<File> foundFiles = new ArrayList<>();
+        if (depth < 0) {
+            return foundFiles;
+        }
         if (Files.isSymbolicLink(directoryToSearch.toPath())) {
             return foundFiles;
         }
