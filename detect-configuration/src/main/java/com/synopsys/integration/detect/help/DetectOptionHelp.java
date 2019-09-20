@@ -29,6 +29,7 @@ import com.synopsys.integration.detect.DetectMajorVersion;
 
 public class DetectOptionHelp {
 
+    public String category = "";
     public String description = "";
     public String detailedHelp = "";
 

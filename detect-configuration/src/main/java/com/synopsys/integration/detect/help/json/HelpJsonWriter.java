@@ -92,6 +92,7 @@ public class HelpJsonWriter {
         final DetectOptionHelp optionHelp = detectOption.getDetectOptionHelp();
         helpJsonOption.group = optionHelp.primaryGroup;
         helpJsonOption.additionalGroups = optionHelp.additionalGroups;
+        helpJsonOption.category = optionHelp.category;
         helpJsonOption.description = optionHelp.description;
         helpJsonOption.detailedDescription = optionHelp.detailedHelp;
         helpJsonOption.deprecated = optionHelp.isDeprecated;

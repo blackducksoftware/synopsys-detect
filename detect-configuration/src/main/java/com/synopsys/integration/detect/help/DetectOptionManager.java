@@ -261,6 +261,7 @@ public class DetectOptionManager {
 
         final HelpDescription descriptionAnnotation = field.getAnnotation(HelpDescription.class);
         help.description = descriptionAnnotation.value();
+        help.category = descriptionAnnotation.category();
 
         final HelpGroup groupAnnotation = field.getAnnotation(HelpGroup.class);
         help.primaryGroup = groupAnnotation.primary();

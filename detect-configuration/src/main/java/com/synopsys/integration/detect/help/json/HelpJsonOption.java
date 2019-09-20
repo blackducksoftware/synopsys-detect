@@ -31,6 +31,7 @@ public class HelpJsonOption {
     public String propertyType = "";
     public String defaultValue = "";
     public String addedInVersion = "";
+    public String category = "";
     public String group = "";
     public List<String> additionalGroups = new ArrayList<>();
     public String description = "";

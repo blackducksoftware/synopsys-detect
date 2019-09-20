@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.configuration;
 
+import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.ADVANCED;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.DEFAULT_HELP;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_BAZEL;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_BITBAKE;
@@ -63,6 +64,7 @@ import static com.synopsys.integration.detect.configuration.DetectProperty.Prope
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_POLICY;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_PROJECT_SETTING;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_REPORT_SETTING;
+import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SIMPLE;
 
 import com.synopsys.integration.detect.DetectMajorVersion;
 import com.synopsys.integration.detect.help.AcceptableValues;
@@ -87,40 +89,40 @@ public enum DetectProperty {
     BLACKDUCK_PASSWORD("blackduck.password", "Black Duck Password", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
-    @HelpDescription("Hostname for proxy server.")
+    @HelpDescription(category = ADVANCED, value = "Hostname for proxy server.")
     BLACKDUCK_PROXY_HOST("blackduck.proxy.host", "Proxy Host", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
-    @HelpDescription("A comma separated list of regular expression host patterns that should not use the proxy.")
+    @HelpDescription(category = ADVANCED, value = "A comma separated list of regular expression host patterns that should not use the proxy.")
     @HelpDetailed("These patterns must adhere to Java regular expressions: https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html")
     BLACKDUCK_PROXY_IGNORED_HOSTS("blackduck.proxy.ignored.hosts", "Bypass Proxy Hosts", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
-    @HelpDescription("NTLM Proxy domain.")
+    @HelpDescription(category = ADVANCED, value = "NTLM Proxy domain.")
     BLACKDUCK_PROXY_NTLM_DOMAIN("blackduck.proxy.ntlm.domain", "NTLM Proxy Domain", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
-    @HelpDescription("NTLM Proxy workstation.")
+    @HelpDescription(category = ADVANCED, value = "NTLM Proxy workstation.")
     BLACKDUCK_PROXY_NTLM_WORKSTATION("blackduck.proxy.ntlm.workstation", "NTLM Proxy Workstation", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
-    @HelpDescription("Proxy password.")
+    @HelpDescription(category = ADVANCED, value = "Proxy password.")
     BLACKDUCK_PROXY_PASSWORD("blackduck.proxy.password", "Proxy Password", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
-    @HelpDescription("Proxy port.")
+    @HelpDescription(category = ADVANCED, value = "Proxy port.")
     BLACKDUCK_PROXY_PORT("blackduck.proxy.port", "Proxy Port", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROXY, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
-    @HelpDescription("Proxy username.")
+    @HelpDescription(category = ADVANCED, value = "Proxy username.")
     BLACKDUCK_PROXY_USERNAME("blackduck.proxy.username", "Proxy Username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
-    @HelpDescription("The time to wait for network connections to complete (in seconds).")
+    @HelpDescription(category = ADVANCED, value = "The time to wait for network connections to complete (in seconds).")
     BLACKDUCK_TIMEOUT("blackduck.timeout", "Black Duck Timeout", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "120"),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
-    @HelpDescription("If true, automatically trust the certificate for the current run of Detect only.")
+    @HelpDescription(category = ADVANCED, value = "If true, automatically trust the certificate for the current run of Detect only.")
     BLACKDUCK_TRUST_CERT("blackduck.trust.cert", "Trust All SSL Certificates", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
@@ -216,7 +218,7 @@ public enum DetectProperty {
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS("detect.blackduck.signature.scanner.exclusion.patterns", "Exclusion Patterns", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Black Duck's urls for different operating systems.")
+    @HelpDescription(category = ADVANCED, value = "If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Black Duck's urls for different operating systems.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL("detect.blackduck.signature.scanner.host.url", "Signature Scanner Host URL", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
@@ -224,15 +226,15 @@ public enum DetectProperty {
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH("detect.blackduck.signature.scanner.local.path", "Signature Scanner Local Path", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The memory for the scanner to use.")
+    @HelpDescription(category = ADVANCED, value = "The memory for the scanner to use.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY("detect.blackduck.signature.scanner.memory", "Signature Scanner Memory", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "4096"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
+    @HelpDescription(category = ADVANCED, value = "To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH("detect.blackduck.signature.scanner.offline.local.path", "Signature Scanner Local Path (Offline)", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
+    @HelpDescription(category = ADVANCED, value = "The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS("detect.blackduck.signature.scanner.parallel.processors", "Signature Scanner Parallel Processors", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "1"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
@@ -249,7 +251,7 @@ public enum DetectProperty {
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE("detect.blackduck.signature.scanner.upload.source.mode", "Upload source mode", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.")
+    @HelpDescription(category = ADVANCED, value = "If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.")
     DETECT_BOM_AGGREGATE_NAME("detect.bom.aggregate.name", "Aggregate BDIO File Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
@@ -261,15 +263,15 @@ public enum DetectProperty {
     DETECT_CLEANUP("detect.cleanup", "Cleanup Output", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("The name of the project version to clone this project version from. Respects the given Clone Categories in detect.project.clone.categories or as set on the Black Duck server.")
+    @HelpDescription(category = ADVANCED, value = "The name of the project version to clone this project version from. Respects the given Clone Categories in detect.project.clone.categories or as set on the Black Duck server.")
     DETECT_CLONE_PROJECT_VERSION_NAME("detect.clone.project.version.name", "Clone Project Version Name", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("If set to true, detect will attempt to use the latest project version as the clone for this project. The project must exist and have at least one version.")
+    @HelpDescription(category = ADVANCED, value = "If set to true, detect will attempt to use the latest project version as the clone for this project. The project must exist and have at least one version.")
     DETECT_CLONE_PROJECT_VERSION_LATEST("detect.clone.project.version.latest", "Clone Latest Project Version", "5.6.0", PropertyType.BOOLEAN, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("An override for the name Detect will use for the scan file it creates. If supplied and multiple scans are found, Detect will append an index to each scan name.")
+    @HelpDescription(category = ADVANCED, value = "An override for the name Detect will use for the scan file it creates. If supplied and multiple scans are found, Detect will append an index to each scan name.")
     DETECT_CODE_LOCATION_NAME("detect.code.location.name", "Scan Name", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_CONDA, additional = { GROUP_SOURCE_SCAN })
@@ -289,15 +291,15 @@ public enum DetectProperty {
     DETECT_CPANM_PATH("detect.cpanm.path", "cpanm Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'.")
+    @HelpDescription(category = ADVANCED, value = "The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'.")
     DETECT_DEFAULT_PROJECT_VERSION_SCHEME("detect.default.project.version.scheme", "Default Project Version Name Scheme", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "text"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The text to use as the default project version.")
+    @HelpDescription(category = ADVANCED, value = "The text to use as the default project version.")
     DETECT_DEFAULT_PROJECT_VERSION_TEXT("detect.default.project.version.text", "Default Project Version Name Text", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "Default Detect Version"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The timestamp format to use as the default project version.")
+    @HelpDescription(category = ADVANCED, value = "The timestamp format to use as the default project version.")
     DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT("detect.default.project.version.timeformat", "Default Project Version Name Timestamp Format", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "yyyy-MM-dd\\'T\\'HH:mm:ss.SSS"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
@@ -306,17 +308,17 @@ public enum DetectProperty {
     DETECT_DETECTOR_SEARCH_DEPTH("detect.detector.search.depth", "Detector Search Depth", "3.2.0", PropertyType.INTEGER, PropertyAuthority.None, "0"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
-    @HelpDescription("If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.")
+    @HelpDescription(category = ADVANCED, value = "If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.")
     @HelpDetailed("If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc.\r\nIf false, Detect will only find bom tools in subdirectories of a project if they are of a different type such as an Npm project in a subdirectory of a Gradle project.")
     DETECT_DETECTOR_SEARCH_CONTINUE("detect.detector.search.continue", "Detector Search Continue", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma-separated list of directory names to exclude from detector search.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of directory names to exclude from detector search.")
     @HelpDetailed("While searching the source directory to determine which detectors to run, subdirectories whose name appear in this list will not be searched.")
     DETECT_DETECTOR_SEARCH_EXCLUSION("detect.detector.search.exclusion", "Detector Directory Exclusions", "3.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma-separated list of directory name patterns to exclude from detector search.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of directory name patterns to exclude from detector search.")
     @HelpDetailed(
         "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched.\n\rThese patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). "
             +
@@ -326,21 +328,21 @@ public enum DetectProperty {
     DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS("detect.detector.search.exclusion.patterns", " Detector Directory Patterns Exclusions", "3.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)")
     @HelpDetailed("This property performs the same basic function as detect.detector.search.exclusion, but lets you be more specific.")
     DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS("detect.detector.search.exclusion.paths", " Detector Directory Path Exclusions", "5.5.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma-separated list of file names to exclude from detector search.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of file names to exclude from detector search.")
     DETECT_DETECTOR_SEARCH_EXCLUSION_FILES("detect.detector.search.exclusion.files", " Detector File Exclusions", "6.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { GROUP_DETECTOR, SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
-    @HelpDescription("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.")
+    @HelpDescription(category = ADVANCED, value = "If true, the bom tool search will exclude the default directory names. See the detailed help for more information.")
     @HelpDetailed("If true, these directories will be excluded from the detector search: " + DetectorSearchExcludedDirectories.DIRECTORY_NAMES + ".")
     DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS("detect.detector.search.exclusion.defaults", "Detector Exclude Default Directories", "3.2.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_GENERAL, additional = { GROUP_BLACKDUCK_SERVER, GROUP_POLARIS })
-    @HelpDescription("If true, Detect will ignore any products that it cannot connect to.")
+    @HelpDescription(category = ADVANCED, value = "If true, Detect will ignore any products that it cannot connect to.")
     @HelpDetailed("If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.")
     DETECT_IGNORE_CONNECTION_FAILURES("detect.ignore.connection.failures", "Detect Ignore Connection Failures", "5.3.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
@@ -349,15 +351,15 @@ public enum DetectProperty {
     DETECT_DOCKER_IMAGE("detect.docker.image", "Docker Image Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path to the directory containing the Docker Inspector jar and images.")
+    @HelpDescription(category = ADVANCED, value = "The path to the directory containing the Docker Inspector jar and images.")
     DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH("detect.docker.inspector.air.gap.path", "Docker Inspector AirGap Path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a local Docker Inspector .jar file at this path.")
+    @HelpDescription(category = ADVANCED, value = "This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a local Docker Inspector .jar file at this path.")
     DETECT_DOCKER_INSPECTOR_PATH("detect.docker.inspector.path", "Docker Inspector .jar File Path", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Version of the Docker Inspector to use. By default Detect will attempt to automatically determine the version to use.")
+    @HelpDescription(category = ADVANCED, value = "Version of the Docker Inspector to use. By default Detect will attempt to automatically determine the version to use.")
     DETECT_DOCKER_INSPECTOR_VERSION("detect.docker.inspector.version", "Docker Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
@@ -365,7 +367,7 @@ public enum DetectProperty {
     DETECT_DOCKER_PATH("detect.docker.path", "Docker Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable.")
+    @HelpDescription(category = ADVANCED, value = "If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable.")
     DETECT_DOCKER_PATH_REQUIRED("detect.docker.path.required", "Run Without Docker in Path", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
@@ -377,12 +379,12 @@ public enum DetectProperty {
     DETECT_DOTNET_PATH("detect.dotnet.path", "dotnet Executable", "4.4.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win.")
+    @HelpDescription(category = ADVANCED, value = "By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win.")
     @HelpDetailed("If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them.")
     DETECT_EXCLUDED_DETECTOR_TYPES("detect.excluded.detector.types", "Detector Types Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("If true, Detect will always exit with code 0.")
+    @HelpDescription(category = ADVANCED, value = "If true, Detect will always exit with code 0.")
     DETECT_FORCE_SUCCESS("detect.force.success", "Force Success", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
@@ -399,32 +401,32 @@ public enum DetectProperty {
     DETECT_GRADLE_BUILD_COMMAND("detect.gradle.build.command", "Gradle Build Command", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma-separated list of Gradle configurations to exclude.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Gradle configurations to exclude.")
     @HelpDetailed("As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property.")
     DETECT_GRADLE_EXCLUDED_CONFIGURATIONS("detect.gradle.excluded.configurations", "Gradle Exclude Configurations", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma-separated list of Gradle sub-projects to exclude.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Gradle sub-projects to exclude.")
     @HelpDetailed("As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.")
     DETECT_GRADLE_EXCLUDED_PROJECTS("detect.gradle.excluded.projects", "Gradle Exclude Projects", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma-separated list of Gradle configurations to include.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Gradle configurations to include.")
     @HelpDetailed("As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.")
     DETECT_GRADLE_INCLUDED_CONFIGURATIONS("detect.gradle.included.configurations", "Gradle Include Configurations", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma-separated list of Gradle sub-projects to include.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Gradle sub-projects to include.")
     @HelpDetailed("As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.")
     DETECT_GRADLE_INCLUDED_PROJECTS("detect.gradle.included.projects", "Gradle Include Projects", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path to the directory containing the air gap dependencies for the gradle inspector.")
+    @HelpDescription(category = ADVANCED, value = "The path to the directory containing the air gap dependencies for the gradle inspector.")
     @HelpDetailed("Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory.")
     DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH("detect.gradle.inspector.air.gap.path", "Gradle Inspector AirGap Path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.")
+    @HelpDescription(category = ADVANCED, value = "The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.")
     @HelpDetailed("The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector.")
     DETECT_GRADLE_INSPECTOR_VERSION("detect.gradle.inspector.version", "Gradle Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
@@ -438,7 +440,7 @@ public enum DetectProperty {
     DETECT_HEX_REBAR3_PATH("detect.hex.rebar3.path", "Rebar3 Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
+    @HelpDescription(category = ADVANCED, value = "By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
     @HelpDetailed("If you want to limit Detect to a subset of its detectors, use this property to specify that subset.")
     DETECT_INCLUDED_DETECTOR_TYPES("detect.included.detector.types", "Detector Types Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
@@ -456,12 +458,12 @@ public enum DetectProperty {
     DETECT_MAVEN_BUILD_COMMAND("detect.maven.build.command", "Maven Build Command", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma-separated list of Maven modules (sub-projects) to exclude.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Maven modules (sub-projects) to exclude.")
     @HelpDetailed("As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property.")
     DETECT_MAVEN_EXCLUDED_MODULES("detect.maven.excluded.modules", "Maven Modules Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma-separated list of Maven modules (sub-projects) to include.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Maven modules (sub-projects) to include.")
     @HelpDetailed("As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.")
     DETECT_MAVEN_INCLUDED_MODULES("detect.maven.included.modules", "Maven Modules Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
@@ -476,7 +478,7 @@ public enum DetectProperty {
     DETECT_MAVEN_SCOPE("detect.maven.scope", "Dependency Scope Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Whether or not detect will include the plugins section when parsing a pom.xml.")
+    @HelpDescription(category = ADVANCED, value = "Whether or not detect will include the plugins section when parsing a pom.xml.")
     DETECT_MAVEN_INCLUDE_PLUGINS("detect.maven.include.plugins", "Maven Include Plugins", "5.6.0", PropertyType.BOOLEAN, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_REPORT, additional = { SEARCH_GROUP_GLOBAL })
@@ -504,23 +506,23 @@ public enum DetectProperty {
     DETECT_NUGET_CONFIG_PATH("detect.nuget.config.path", "Nuget Config File", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The names of the projects in a solution to exclude.")
+    @HelpDescription(category = ADVANCED, value = "The names of the projects in a solution to exclude.")
     DETECT_NUGET_EXCLUDED_MODULES("detect.nuget.excluded.modules", "Nuget Projects Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("If true errors will be logged and then ignored.")
+    @HelpDescription(category = ADVANCED, value = "If true errors will be logged and then ignored.")
     DETECT_NUGET_IGNORE_FAILURE("detect.nuget.ignore.failure", "Ignore Nuget Failures", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The names of the projects in a solution to include (overrides exclude).")
+    @HelpDescription(category = ADVANCED, value = "The names of the projects in a solution to include (overrides exclude).")
     DETECT_NUGET_INCLUDED_MODULES("detect.nuget.included.modules", "Nuget Modules Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path to the directory containing the nuget inspector nupkg.")
+    @HelpDescription(category = ADVANCED, value = "The path to the directory containing the nuget inspector nupkg.")
     DETECT_NUGET_INSPECTOR_AIR_GAP_PATH("detect.nuget.inspector.air.gap.path", "Nuget Inspector AirGap Path", "3.0.0", PropertyType.STRING, PropertyAuthority.AirGapManager),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("Version of the Nuget Inspector. By default Detect will communicate with Artifactory.")
+    @HelpDescription(category = ADVANCED, value = "Version of the Nuget Inspector. By default Detect will communicate with Artifactory.")
     DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version", "Nuget Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
@@ -534,7 +536,7 @@ public enum DetectProperty {
     DETECT_OUTPUT_PATH("detect.output.path", "Detect Output Path", "3.0.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path to the tools directory where detect should download and/or access things like the Signature Scanner that it shares over multiple runs.")
+    @HelpDescription(category = ADVANCED, value = "The path to the tools directory where detect should download and/or access things like the Signature Scanner that it shares over multiple runs.")
     @HelpDetailed("If set, Detect will use the given directory instead of using the default location of output path plus tools.")
     DETECT_TOOLS_OUTPUT_PATH("detect.tools.output.path", "Detect Tools Output Path", "5.6.0", PropertyType.STRING, PropertyAuthority.DirectoryManager),
 
@@ -588,32 +590,32 @@ public enum DetectProperty {
     DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES("detect.policy.check.fail.on.severities", "Fail on Policy Violation Severities", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("Sets the 'Application ID' project setting.")
+    @HelpDescription(category = ADVANCED, value = "Sets the 'Application ID' project setting.")
     DETECT_PROJECT_APPLICATION_ID("detect.project.application.id", "Application ID", "5.2.0", PropertyType.STRING, PropertyAuthority.None, null),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("A  list of custom fields with a label and comma-separated value starting from index 0. For example detect.custom.fields.project[0].label='example' and detect.custom.fields.project[0].value='one,two'. Note that these will not show up in the detect configuration log.")
+    @HelpDescription(category = ADVANCED, value = "A  list of custom fields with a label and comma-separated value starting from index 0. For example detect.custom.fields.project[0].label='example' and detect.custom.fields.project[0].value='one,two'. Note that these will not show up in the detect configuration log.")
     DETECT_CUSTOM_FIELDS_PROJECT("detect.custom.fields.project", "Custom Fields", "5.6.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("A  list of custom fields with a label and comma-separated value starting from index 0. For example detect.custom.fields.version[0].label='example' and detect.custom.fields.version[0].value='one,two'. Note that these will not show up in the detect configuration log.")
+    @HelpDescription(category = ADVANCED, value = "A  list of custom fields with a label and comma-separated value starting from index 0. For example detect.custom.fields.version[0].label='example' and detect.custom.fields.version[0].value='one,two'. Note that these will not show up in the detect configuration log.")
     DETECT_CUSTOM_FIELDS_VERSION("detect.custom.fields.version", "Custom Fields", "5.6.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set.")
+    @HelpDescription(category = ADVANCED, value = "An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set.")
     @AcceptableValues(value = { "COMPONENT_DATA", "VULN_DATA" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
     DETECT_PROJECT_CLONE_CATEGORIES("detect.project.clone.categories", "Clone Project Categories", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, "COMPONENT_DATA,VULN_DATA"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_GLOBAL })
-    @HelpDescription("A prefix to the name of the scans created by Detect. Useful for running against the same projects on multiple machines.")
+    @HelpDescription(category = ADVANCED, value = "A prefix to the name of the scans created by Detect. Useful for running against the same projects on multiple machines.")
     DETECT_PROJECT_CODELOCATION_PREFIX("detect.project.codelocation.prefix", "Scan Name Prefix", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_GLOBAL })
-    @HelpDescription("A suffix to the name of the scans created by Detect.")
+    @HelpDescription(category = ADVANCED, value = "A suffix to the name of the scans created by Detect.")
     DETECT_PROJECT_CODELOCATION_SUFFIX("detect.project.codelocation.suffix", "Scan Name Suffix", "3.0.0", PropertyType.STRING, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("If set to true, unmaps all other scans mapped to the project version produced by the current run of Detect.")
+    @HelpDescription(category = ADVANCED, value = "If set to true, unmaps all other scans mapped to the project version produced by the current run of Detect.")
     DETECT_PROJECT_CODELOCATION_UNMAP("detect.project.codelocation.unmap", "Unmap All Other Scans for Project", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
@@ -621,20 +623,20 @@ public enum DetectProperty {
     DETECT_PROJECT_DESCRIPTION("detect.project.description", "Project Description", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("A comma-separated list of names of user groups to add to the project.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of names of user groups to add to the project.")
     DETECT_PROJECT_USER_GROUPS("detect.project.user.groups", "Project User Groups", "5.4.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("A comma-separated list of tags to add to the project.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of tags to add to the project.")
     DETECT_PROJECT_TAGS("detect.project.tags", "Project Tags", "5.6.0", PropertyType.STRING_ARRAY, PropertyAuthority.None, ""),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The detector that will be used to determine the project name and version when multiple detector types. This property should be used with the detect.project.tool.")
+    @HelpDescription(category = ADVANCED, value = "The detector that will be used to determine the project name and version when multiple detector types. This property should be used with the detect.project.tool.")
     @HelpDetailed("If Detect finds that multiple detectors apply, this property can be used to select the detector that will provide the project name and version. When using this property, you should also set detect.project.tool=DETECTOR")
     DETECT_PROJECT_DETECTOR("detect.project.detector", "Project Name/Version Detector", "4.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_GLOBAL })
-    @HelpDescription("An override for the Project level matches.")
+    @HelpDescription(category = ADVANCED, value = "An override for the Project level matches.")
     DETECT_PROJECT_LEVEL_ADJUSTMENTS("detect.project.level.adjustments", "Allow Project Level Adjustments", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
@@ -642,11 +644,11 @@ public enum DetectProperty {
     DETECT_PROJECT_NAME("detect.project.name", "Project Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version.")
+    @HelpDescription(category = ADVANCED, value = "When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version.")
     DETECT_PARENT_PROJECT_NAME("detect.parent.project.name", "Parent Project Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version.")
+    @HelpDescription(category = ADVANCED, value = "When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version.")
     DETECT_PARENT_PROJECT_VERSION_NAME("detect.parent.project.version.name", "Parent Project Version Name", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
@@ -655,13 +657,13 @@ public enum DetectProperty {
     DETECT_PROJECT_TIER("detect.project.tier", "Project Tier", "3.1.0", PropertyType.INTEGER, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The tool priority for project name and version. The project name and version will be determined by the first tool in this list that provides them.")
+    @HelpDescription(category = ADVANCED, value = "The tool priority for project name and version. The project name and version will be determined by the first tool in this list that provides them.")
     @HelpDetailed("This allows you to control which tool provides the project name and version when more than one tool are capable of providing it.")
     @AcceptableValues(value = { "DETECTOR", "DOCKER", "BAZEL" }, caseSensitive = true, strict = true, isCommaSeparatedList = true)
     DETECT_PROJECT_TOOL("detect.project.tool", "Detector Tool Priority", "5.0.0", PropertyType.STRING, PropertyAuthority.None, "DOCKER,DETECTOR,BAZEL"),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription("An override for the Project Version distribution")
+    @HelpDescription(category = ADVANCED, value = "An override for the Project Version distribution")
     @AcceptableValues(value = { "EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE" }, caseSensitive = false, strict = false)
     DETECT_PROJECT_VERSION_DISTRIBUTION("detect.project.version.distribution", "Version Distribution", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "External"),
 
@@ -717,7 +719,7 @@ public enum DetectProperty {
     DETECT_RISK_REPORT_PDF_PATH("detect.risk.report.pdf.path", "Risk Report Output Path", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "."),
 
     @HelpGroup(primary = GROUP_REPORT, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The names of the sbt configurations to exclude.")
+    @HelpDescription(category = ADVANCED, value = "The names of the sbt configurations to exclude.")
     DETECT_SBT_EXCLUDED_CONFIGURATIONS("detect.sbt.excluded.configurations", "SBT Configurations Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_RUBY, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
@@ -729,7 +731,7 @@ public enum DetectProperty {
     DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES("detect.ruby.include.dev.dependencies", "Ruby Development Dependencies", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
 
     @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The names of the sbt configurations to include.")
+    @HelpDescription(category = ADVANCED, value = "The names of the sbt configurations to include.")
     DETECT_SBT_INCLUDED_CONFIGURATIONS("detect.sbt.included.configurations", "SBT Configurations Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
@@ -1126,6 +1128,11 @@ public enum DetectProperty {
     }
 
     public final class PropertyConstants {
+        //Category
+        public static final String SIMPLE = "simple";
+        public static final String ADVANCED = "advanced";
+
+        //Group
         public static final String GROUP_ARTIFACTORY = "artifactory";
         public static final String GROUP_BLACKDUCK_SERVER = "blackduck server";
         public static final String GROUP_CLEANUP = "cleanup";

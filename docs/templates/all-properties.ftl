@@ -1,6 +1,8 @@
+For advanced and deprecated properties use the search feature. 
+
 <#list groups as group>
 
-${group.groupName}
+[${group.groupName}](/properties/${group.groupName}/)
 
 | Property | Description | 
 | --- | --- | 

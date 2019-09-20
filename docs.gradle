@@ -80,16 +80,33 @@ task generatedPropertyMarkdown() {
             found.options.add(property)
         }
 
+        def simple_groups = []
         groups.forEach { group ->
             def template = helpData.templates.getTemplate("property-group.ftl")
             def target = new File(propertiesFolder.asFile, "${group.groupName}.md")
-            target.withWriter('utf-8') { out -> template.process(group, out) }
+            def simple = []
+            def advanced = []
+            def deprecated = []
+            group.options.forEach { property ->
+                if (property.deprecated) {
+                    deprecated.add(property)
+                } else if (property.category == "simple") {
+                    simple.add(property)
+                } else {
+                    advanced.add(property)
+                }
+            }
+            target.withWriter('utf-8') { out -> template.process([groupName: group.groupName, simple: simple, advanced: advanced, deprecated: deprecated], out) }
+            group.options = simple
+            if (simple.size() > 0) {
+                simple_groups.add(group)
+            }
             println("Created: ${target}")
         }
 
         def allpropertiestemplate = helpData.templates.getTemplate("all-properties.ftl")
         def allpropertiesmd = new File(propertiesFolder.asFile, "all-properties.md")
-        allpropertiesmd.withWriter('utf-8') { out -> allpropertiestemplate.process([groups: groups], out) }
+        allpropertiesmd.withWriter('utf-8') { out -> allpropertiestemplate.process([groups: simple_groups], out) }
     }
 }
 
