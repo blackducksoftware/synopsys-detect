@@ -496,10 +496,6 @@ public enum DetectProperty {
     DETECT_NPM_INCLUDE_DEV_DEPENDENCIES("detect.npm.include.dev.dependencies", "Include NPM Development Dependencies", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "true"),
 
     @HelpGroup(primary = GROUP_NPM, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path to the node executable that is used by Npm.")
-    DETECT_NPM_NODE_PATH("detect.npm.node.path", "Node Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
-
-    @HelpGroup(primary = GROUP_NPM, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path to the Npm executable.")
     DETECT_NPM_PATH("detect.npm.path", "NPM Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
@@ -553,10 +549,6 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_PEAR, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path to the pear executable.")
     DETECT_PEAR_PATH("detect.pear.path", "Pear Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
-
-    @HelpGroup(primary = GROUP_CPAN, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The path to the perl executable.")
-    DETECT_PERL_PATH("detect.perl.path", "Perl Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_PIP, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("The name of your PIP project, to be used if your project's name cannot be correctly inferred from its setup.py file.")
