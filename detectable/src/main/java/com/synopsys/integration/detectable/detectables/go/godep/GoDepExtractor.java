@@ -36,33 +36,13 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.go.godep.parse.GoLockParser;
 
 public class GoDepExtractor {
-    private final GoDepLockFileGenerator goDepLockFileGenerator;
     private final GoLockParser goLockParser;
-    private final ExternalIdFactory externalIdFactory;
 
-    public GoDepExtractor(final GoDepLockFileGenerator goDepLockFileGenerator, final GoLockParser goLockParser, final ExternalIdFactory externalIdFactory) {
-        this.goDepLockFileGenerator = goDepLockFileGenerator;
+    public GoDepExtractor(final GoLockParser goLockParser) {
         this.goLockParser = goLockParser;
-        this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(final File directory, final File goDepInspector, final boolean allowsRunInit) {
-        try {
-            final Optional<File> lockFile = goDepLockFileGenerator.findOrMakeLockFile(directory, goDepInspector, allowsRunInit);
-
-            if (lockFile.isPresent()) {
-                try (final InputStream lockInputStream = new FileInputStream(lockFile.get())) {
-                    return extract(directory, lockInputStream);
-                }
-            } else {
-                return new Extraction.Builder().failure("Failed to find a go lock file.").build();
-            }
-        } catch (final Exception e) {
-            return new Extraction.Builder().exception(e).build();
-        }
-    }
-
-    public Extraction extract(final File directory, final InputStream goLockInputStream) {
+    public Extraction extract(final InputStream goLockInputStream) {
         final DependencyGraph graph = goLockParser.parseDepLock(goLockInputStream);
         final CodeLocation codeLocation = new CodeLocation(graph);
         return new Extraction.Builder().success(codeLocation).build();

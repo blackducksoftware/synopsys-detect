@@ -391,11 +391,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_GO, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Path to the Godep executable.")
-    DETECT_GO_DEP_PATH("detect.go.dep.path", "Godep Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
-
-    @HelpGroup(primary = GROUP_GO, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
-    @HelpDescription("If set to true, Detect will attempt to run 'dep init' and 'dep ensure' in your source directory which can modify files.")
-    DETECT_GO_RUN_DEP_INIT("detect.go.run.dep.init", "Godep Run init/ensure", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.None, "false"),
+    DETECT_GO_PATH("detect.go.path", "Godep Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription("Gradle command line arguments to add to the mvn/mvnw command line.")

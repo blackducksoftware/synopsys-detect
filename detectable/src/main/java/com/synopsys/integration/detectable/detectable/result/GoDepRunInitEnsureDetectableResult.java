@@ -20,16 +20,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.go.godep;
+package com.synopsys.integration.detectable.detectable.result;
 
-public class GoDepCliDetectableOptions {
-    private final boolean allowRunInit;
+public class GoDepRunInitEnsureDetectableResult extends FailedDetectableResult {
+    private final String directoryPath;
 
-    public GoDepCliDetectableOptions(final boolean allowRunInit) {
-        this.allowRunInit = allowRunInit;
+    public GoDepRunInitEnsureDetectableResult(final String directoryPath) {
+        this.directoryPath = directoryPath;
     }
 
-    public boolean isAllowingRunInit() {
-        return allowRunInit;
+    @Override
+    public String toDescription() {
+        return String.format("A Gopkg.toml was located in %s, but the Gopkg.lock file was NOT located. Please run 'go dep init' and 'go dep ensure' in that location and try again.", directoryPath);
     }
 }

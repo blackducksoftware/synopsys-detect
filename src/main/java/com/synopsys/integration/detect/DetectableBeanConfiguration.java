@@ -62,7 +62,6 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
-import com.synopsys.integration.detectable.detectable.inspector.go.impl.GithubGoDepResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
@@ -109,10 +108,8 @@ import com.synopsys.integration.detectable.detectables.git.parsing.GitParseDetec
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileTransformer;
-import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
-import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockFileGenerator;
 import com.synopsys.integration.detectable.detectables.go.godep.parse.GoLockParser;
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleDetectable;
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleExtractor;
@@ -225,8 +222,6 @@ public class DetectableBeanConfiguration {
     public DetectInfo detectInfo;
     @Autowired
     public ArtifactResolver artifactResolver;
-    @Autowired
-    public GithubGoDepResolver githubGoDepResolver;
 
     public DetectableBeanConfiguration(final FileFinder fileFinder) {
         this.fileFinder = fileFinder;
@@ -361,14 +356,9 @@ public class DetectableBeanConfiguration {
         return new GoLockParser(externalIdFactory);
     }
 
-    @Bean
-    public GoDepLockFileGenerator goDepLockFileGenerator() {
-        return new GoDepLockFileGenerator(executableRunner);
-    }
-
     @Bean //final GoDepLockFileGenerator goDepLockFileGenerator, final GoLockParser goLockParser,
     public GoDepExtractor goDepExtractor() {
-        return new GoDepExtractor(goDepLockFileGenerator(), goLockParser(), externalIdFactory);
+        return new GoDepExtractor(goLockParser());
     }
 
     @Bean
@@ -752,14 +742,8 @@ public class DetectableBeanConfiguration {
 
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
-    public GoDepCliDetectable goCliBomTool(final DetectableEnvironment environment) {
-        return new GoDepCliDetectable(environment, fileFinder, githubGoDepResolver, githubGoDepResolver, goDepExtractor(), detectableOptionFactory.createGoDepCliDetectableOptions());
-    }
-
-    @Bean
-    @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public GoModCliDetectable goModCliBomTool(final DetectableEnvironment environment) {
-        return new GoModCliDetectable(environment, fileFinder, githubGoDepResolver, goModCliExtractor());
+        return new GoModCliDetectable(environment, fileFinder, detectExecutableResolver, goModCliExtractor());
     }
 
     @Bean

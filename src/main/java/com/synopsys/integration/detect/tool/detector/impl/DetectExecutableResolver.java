@@ -55,10 +55,11 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.Python
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.YarnResolver;
+import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 
 public class DetectExecutableResolver
     implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
-                   DockerResolver, DotNetResolver, GitResolver, SwiftResolver {
+                   DockerResolver, DotNetResolver, GitResolver, SwiftResolver, GoResolver {
 
     private final SimpleExecutableResolver simpleExecutableResolver;
     private final DetectConfiguration detectConfiguration;
@@ -190,5 +191,10 @@ public class DetectExecutableResolver
     @Override
     public File resolveSwift() throws DetectableException {
         return resolveExecutable("swift", simpleExecutableResolver::resolveSwift, detectConfiguration.getProperty(DetectProperty.DETECT_SWIFT_PATH, PropertyAuthority.None));
+    }
+
+    @Override
+    public File resolveGo() throws DetectableException {
+        return resolveExecutable("go", simpleExecutableResolver::resolveSwift, detectConfiguration.getProperty(DetectProperty.DETECT_GO_PATH, PropertyAuthority.None));
     }
 }

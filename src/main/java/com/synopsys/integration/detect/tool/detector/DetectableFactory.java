@@ -37,7 +37,6 @@ import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectabl
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliDetectable;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseDetectable;
-import com.synopsys.integration.detectable.detectables.go.godep.GoDepCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleDetectable;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
@@ -116,10 +115,6 @@ public class DetectableFactory implements BeanFactoryAware {
 
     public GemspecParseDetectable createGemspecParseDetectable(final DetectableEnvironment environment) {
         return beanFactory.getBean(GemspecParseDetectable.class, environment);
-    }
-
-    public GoDepCliDetectable createGoCliDetectable(final DetectableEnvironment environment) {
-        return beanFactory.getBean(GoDepCliDetectable.class, environment);
     }
 
     public GoGradleDetectable createGoGradleDetectable(final DetectableEnvironment environment) {

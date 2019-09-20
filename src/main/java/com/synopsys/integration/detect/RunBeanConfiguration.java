@@ -63,7 +63,6 @@ import com.synopsys.integration.detectable.detectable.executable.impl.SimpleLoca
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
-import com.synopsys.integration.detectable.detectable.inspector.go.impl.GithubGoDepResolver;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 
 import freemarker.template.Configuration;
@@ -174,11 +173,6 @@ public class RunBeanConfiguration {
     @Bean
     public SimpleExecutableResolver simpleExecutableResolver() {
         return new SimpleExecutableResolver(detectableOptionFactory.createCachedExecutableResolverOptions(), simpleLocalExecutableFinder(), simpleSystemExecutableFinder());
-    }
-
-    @Bean
-    public GithubGoDepResolver githubGoDepResolver() {
-        return new GithubGoDepResolver(executableRunner(), simpleLocalExecutableFinder(), simpleSystemExecutableFinder(), directoryManager.getPermanentDirectory("go")); // TODO: Make sure this is the right download directory
     }
 
     @Bean

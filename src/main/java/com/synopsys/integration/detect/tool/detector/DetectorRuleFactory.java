@@ -48,18 +48,11 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.CPAN, "Cpan Cli", detectableFactory::createCpanCliDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.CRAN, "Packrat Lock", detectableFactory::createPackratLockDetectable).defaults().build();
 
-        final DetectorRule goMod = ruleSet.addDetector(DetectorType.GO_MOD, "Go Mod Cli", detectableFactory::createGoModCliDetectable).defaults().build();
-        final DetectorRule goGradle = ruleSet.addDetector(DetectorType.GO_GRADLE, "Go Gradle", detectableFactory::createGoGradleDetectable).defaults().build();
-        final DetectorRule goLock = ruleSet.addDetector(DetectorType.GO_DEP, "Go Lock", detectableFactory::createGoLockDetectable).defaults().build();
-        final DetectorRule goVnd = ruleSet.addDetector(DetectorType.GO_VNDR, "Go Vndr", detectableFactory::createGoVndrDetectable).defaults().build();
-        final DetectorRule goVendor = ruleSet.addDetector(DetectorType.GO_VENDOR, "Go Vendor", detectableFactory::createGoVendorDetectable).defaults().build();
-        final DetectorRule goCli = ruleSet.addDetector(DetectorType.GO_DEP, "Go Cli", detectableFactory::createGoCliDetectable).defaults().build();
-
-        ruleSet.yield(goCli).to(goMod);
-        ruleSet.yield(goCli).to(goGradle);
-        ruleSet.yield(goCli).to(goLock);
-        ruleSet.yield(goCli).to(goVnd);
-        ruleSet.yield(goCli).to(goVendor);
+        ruleSet.addDetector(DetectorType.GO_MOD, "Go Mod Cli", detectableFactory::createGoModCliDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.GO_GRADLE, "Go Gradle", detectableFactory::createGoGradleDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.GO_DEP, "Go Lock", detectableFactory::createGoLockDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.GO_VNDR, "Go Vndr", detectableFactory::createGoVndrDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.GO_VENDOR, "Go Vendor", detectableFactory::createGoVendorDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.GRADLE, "Gradle Inspector", detectableFactory::createGradleDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.HEX, "Rebar", detectableFactory::createRebarDetectable).defaults().build();

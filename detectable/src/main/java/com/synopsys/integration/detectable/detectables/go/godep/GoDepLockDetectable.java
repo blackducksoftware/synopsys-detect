@@ -34,15 +34,20 @@ import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.GoDepRunInitEnsureDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.NpmRunInstallDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
 public class GoDepLockDetectable extends Detectable {
     public static final String GOPKG_LOCK_FILENAME = "Gopkg.lock";
+    public static final String GOFILE_FILENAME_PATTERN = "Gopkg.toml";
 
     private final FileFinder fileFinder;
     private final GoDepExtractor goDepExtractor;
 
     private File goLock;
+    private File goToml;
 
     public GoDepLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GoDepExtractor goDepExtractor) {
         super(environment, "Go Lock", "Go Dep");
@@ -54,7 +59,10 @@ public class GoDepLockDetectable extends Detectable {
     public DetectableResult applicable() {
         goLock = fileFinder.findFile(environment.getDirectory(), GOPKG_LOCK_FILENAME);
         if (goLock == null) {
-            return new FileNotFoundDetectableResult(GOPKG_LOCK_FILENAME);
+            goToml = fileFinder.findFile(environment.getDirectory(), GOFILE_FILENAME_PATTERN);
+            if (goToml == null) {
+                return new FilesNotFoundDetectableResult(GOPKG_LOCK_FILENAME, GOFILE_FILENAME_PATTERN);
+            }
         }
 
         return new PassedDetectableResult();
@@ -62,13 +70,16 @@ public class GoDepLockDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() {
+        if (goLock == null && goToml != null) {
+            return new GoDepRunInitEnsureDetectableResult(environment.getDirectory().getAbsolutePath());
+        }
         return new PassedDetectableResult();
     }
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         try (final InputStream inputStream = new FileInputStream(goLock)) {
-            return goDepExtractor.extract(environment.getDirectory(), inputStream);
+            return goDepExtractor.extract(inputStream);
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
