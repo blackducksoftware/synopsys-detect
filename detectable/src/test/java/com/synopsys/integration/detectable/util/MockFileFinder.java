@@ -50,7 +50,7 @@ public class MockFileFinder implements FileFinder {
     }
 
     @Override
-    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth) {
+    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, boolean findInsideMatchingDirectories) {
         List<File> found = new ArrayList<>();
         for (int i = 0; i <= depth; i++) {
             if (files.containsKey(i)) {
