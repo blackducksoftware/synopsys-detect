@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.configuration;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
+import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
@@ -57,9 +59,11 @@ public class DetectableOptionFactory {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DetectConfiguration detectConfiguration;
+    private final Optional<DiagnosticSystem> diagnosticSystemOptional;
 
-    public DetectableOptionFactory(final DetectConfiguration detectConfiguration) {
+    public DetectableOptionFactory(final DetectConfiguration detectConfiguration, Optional<DiagnosticSystem> diagnosticSystem) {
         this.detectConfiguration = detectConfiguration;
+        diagnosticSystemOptional = diagnosticSystem;
     }
 
     public BazelDetectableOptions createBazelDetectableOptions() {
@@ -102,6 +106,7 @@ public class DetectableOptionFactory {
         final String dockerInspectorLoggingLevel = detectConfiguration.getProperty(DetectProperty.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, PropertyAuthority.None);
         final String dockerInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION, PropertyAuthority.None);
         final Map<String, String> additionalDockerProperties = detectConfiguration.getDockerProperties();
+        diagnosticSystemOptional.ifPresent(diagnosticSystem -> additionalDockerProperties.putAll(diagnosticSystem.getAdditionalDockerProperties()));
         final String dockerInspectorPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH, PropertyAuthority.None);
         return new DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath);
     }

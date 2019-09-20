@@ -24,12 +24,15 @@ package com.synopsys.integration.detect.workflow.diagnostic;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectInfo;
+import com.synopsys.integration.detect.configuration.DetectPropertyMap;
 import com.synopsys.integration.detect.help.DetectOption;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -85,6 +88,12 @@ public class DiagnosticSystem {
         diagnosticReportHandler.configurationsReport(detectInfo, detectOptions);
 
         logger.info("Diagnostics is ready.");
+    }
+
+    public Map<String, String> getAdditionalDockerProperties() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("logging.level.com.synopsys", "TRACE");
+        return properties;
     }
 
     public void finish() {

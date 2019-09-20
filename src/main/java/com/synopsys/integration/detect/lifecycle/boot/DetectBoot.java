@@ -46,6 +46,7 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationManager;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.DetectPropertyMap;
 import com.synopsys.integration.detect.configuration.DetectPropertySource;
+import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
@@ -173,6 +174,8 @@ public class DetectBoot {
         DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
         Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectOptionManager.getDetectOptions(), detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
+        DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem);
+
         logger.info("Main boot completed. Deciding what Detect should do.");
 
         if (detectArgumentState.isGenerateAirGapZip()) {
@@ -233,6 +236,8 @@ public class DetectBoot {
         detectContext.registerBean(objectMapper);
         detectContext.registerBean(xml);
         detectContext.registerBean(configuration);
+
+        detectContext.registerBean(detectableOptionFactory);
 
         detectContext.registerConfiguration(RunBeanConfiguration.class);
         detectContext.registerConfiguration(DetectableBeanConfiguration.class);

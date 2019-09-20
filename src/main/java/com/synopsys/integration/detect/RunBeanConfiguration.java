@@ -86,6 +86,8 @@ public class RunBeanConfiguration {
     public Configuration configuration;
     @Autowired
     public DocumentBuilder documentBuilder;
+    @Autowired
+    public DetectableOptionFactory detectableOptionFactory;
 
     @Bean
     public ExternalIdFactory externalIdFactory() {
@@ -155,11 +157,6 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public DetectableOptionFactory detectableOptionFactory() {
-        return new DetectableOptionFactory(detectConfiguration);
-    }
-
-    @Bean
     public SimpleExecutableFinder simpleExecutableFinder() {
         return SimpleExecutableFinder.forCurrentOperatingSystem(simpleFileFinder());
     }
@@ -176,7 +173,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public SimpleExecutableResolver simpleExecutableResolver() {
-        return new SimpleExecutableResolver(detectableOptionFactory().createCachedExecutableResolverOptions(), simpleLocalExecutableFinder(), simpleSystemExecutableFinder());
+        return new SimpleExecutableResolver(detectableOptionFactory.createCachedExecutableResolverOptions(), simpleLocalExecutableFinder(), simpleSystemExecutableFinder());
     }
 
     @Bean
@@ -192,7 +189,7 @@ public class RunBeanConfiguration {
     @Bean
     public DockerInspectorResolver dockerInspectorResolver() {
         DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver());
-        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), simpleFileFinder(), dockerInspectorInstaller, detectableOptionFactory().createDockerDetectableOptions());
+        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), simpleFileFinder(), dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
     }
 
     @Lazy
