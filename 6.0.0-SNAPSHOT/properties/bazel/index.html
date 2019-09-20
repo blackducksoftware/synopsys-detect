@@ -290,13 +290,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bazel-advanced-rules-file" class="md-nav__link">
-    Bazel Advanced Rules File
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#bazel-target" class="md-nav__link">
     Bazel Target
   </a>
@@ -306,6 +299,13 @@
         <li class="md-nav__item">
   <a href="#bazel-executable" class="md-nav__link">
     Bazel Executable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bazel-advanced-rules-file" class="md-nav__link">
+    Bazel Advanced Rules File
   </a>
   
 </li>
@@ -707,13 +707,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bazel-advanced-rules-file" class="md-nav__link">
-    Bazel Advanced Rules File
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#bazel-target" class="md-nav__link">
     Bazel Target
   </a>
@@ -723,6 +716,13 @@
         <li class="md-nav__item">
   <a href="#bazel-executable" class="md-nav__link">
     Bazel Executable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bazel-advanced-rules-file" class="md-nav__link">
+    Bazel Advanced Rules File
   </a>
   
 </li>
@@ -745,50 +745,6 @@
                 
                 
                 <h1 id="bazel">bazel</h1>
-<h2 id="bazel-advanced-rules-file">Bazel Advanced Rules File</h2>
-<pre><code>--detect.bazel.advanced.rules.path
-</code></pre>
-
-<p>The path to a file containing a list of BazelExternalIdExtractionXPathRule objects in json for overriding the default behavior).</p>
-<p>This property is normally not set, but could potentially be used to customize the Bazel detector.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>5.2.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="bazel-target">Bazel Target</h2>
 <pre><code>--detect.bazel.target
 </code></pre>
@@ -837,6 +793,50 @@
 </code></pre>
 
 <p>The path to the Bazel executable.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>5.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bazel-advanced-rules-file">Bazel Advanced Rules File</h2>
+<pre><code>--detect.bazel.advanced.rules.path
+</code></pre>
+
+<p>The path to a file containing a list of BazelExternalIdExtractionXPathRule objects in json for overriding the default behavior).</p>
+<p>This property is normally not set, but could potentially be used to customize the Bazel detector.</p>
 <table>
 <thead>
 <tr>

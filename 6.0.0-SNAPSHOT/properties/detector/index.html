@@ -362,13 +362,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#detector-types-included" class="md-nav__link">
-    Detector Types Included
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#required-detect-types" class="md-nav__link">
     Required Detect Types
   </a>
@@ -376,8 +369,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detector-types-excluded" class="md-nav__link">
-    Detector Types Excluded
+  <a href="#detector-types-included-advanced" class="md-nav__link">
+    Detector Types Included (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detector-types-excluded-advanced" class="md-nav__link">
+    Detector Types Excluded (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deprecated" class="md-nav__link">
+    (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deprecated_1" class="md-nav__link">
+    (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deprecated_2" class="md-nav__link">
+    (Deprecated)
   </a>
   
 </li>
@@ -707,13 +728,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#detector-types-included" class="md-nav__link">
-    Detector Types Included
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#required-detect-types" class="md-nav__link">
     Required Detect Types
   </a>
@@ -721,8 +735,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detector-types-excluded" class="md-nav__link">
-    Detector Types Excluded
+  <a href="#detector-types-included-advanced" class="md-nav__link">
+    Detector Types Included (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detector-types-excluded-advanced" class="md-nav__link">
+    Detector Types Excluded (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deprecated" class="md-nav__link">
+    (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deprecated_1" class="md-nav__link">
+    (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deprecated_2" class="md-nav__link">
+    (Deprecated)
   </a>
   
 </li>
@@ -745,136 +787,6 @@
                 
                 
                 <h1 id="detector">detector</h1>
-<h2 id="detector-types-included">Detector Types Included</h2>
-<pre><code>--detect.included.detector.types
-</code></pre>
-
-<p>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.</p>
-<p>If you want to limit Detect to a subset of its detectors, use this property to specify that subset.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="_1"></h2>
-<pre><code>--detect.required.bom.tool.types
-</code></pre>
-
-<p>If set, Detect will fail if it does not find the bom tool types supplied here.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.3.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="_2"></h2>
-<pre><code>--detect.excluded.bom.tool.types
-</code></pre>
-
-<p>By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify "ALL". Exclusion rules always win.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="required-detect-types">Required Detect Types</h2>
 <pre><code>--detect.required.detector.types
 </code></pre>
@@ -919,7 +831,51 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detector-types-excluded">Detector Types Excluded</h2>
+<h2 id="detector-types-included-advanced">Detector Types Included (Advanced)</h2>
+<pre><code>--detect.included.detector.types
+</code></pre>
+
+<p>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.</p>
+<p>If you want to limit Detect to a subset of its detectors, use this property to specify that subset.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detector-types-excluded-advanced">Detector Types Excluded (Advanced)</h2>
 <pre><code>--detect.excluded.detector.types
 </code></pre>
 
@@ -963,7 +919,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="_3"></h2>
+<h2 id="deprecated">(Deprecated)</h2>
 <pre><code>--detect.included.bom.tool.types
 </code></pre>
 
@@ -979,6 +935,92 @@
 <tr>
 <td>Added</td>
 <td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="deprecated_1">(Deprecated)</h2>
+<pre><code>--detect.excluded.bom.tool.types
+</code></pre>
+
+<p>By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify "ALL". Exclusion rules always win.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="deprecated_2">(Deprecated)</h2>
+<pre><code>--detect.required.bom.tool.types
+</code></pre>
+
+<p>If set, Detect will fail if it does not find the bom tool types supplied here.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.3.0</td>
 </tr>
 <tr>
 <td>Type</td>

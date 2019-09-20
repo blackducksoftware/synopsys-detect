@@ -302,8 +302,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#reference-implementation" class="md-nav__link">
-    Reference implementation
+  <a href="#bitbake-package-names" class="md-nav__link">
+    BitBake Package Names
   </a>
   
 </li>
@@ -323,8 +323,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-package-names" class="md-nav__link">
-    BitBake Package Names
+  <a href="#reference-implementation-deprecated" class="md-nav__link">
+    Reference implementation (Deprecated)
   </a>
   
 </li>
@@ -714,8 +714,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#reference-implementation" class="md-nav__link">
-    Reference implementation
+  <a href="#bitbake-package-names" class="md-nav__link">
+    BitBake Package Names
   </a>
   
 </li>
@@ -735,8 +735,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-package-names" class="md-nav__link">
-    BitBake Package Names
+  <a href="#reference-implementation-deprecated" class="md-nav__link">
+    Reference implementation (Deprecated)
   </a>
   
 </li>
@@ -759,11 +759,11 @@
                 
                 
                 <h1 id="bitbake">bitbake</h1>
-<h2 id="reference-implementation">Reference implementation</h2>
-<pre><code>--detect.bitbake.reference.impl=-poky-linux
+<h2 id="bitbake-package-names">BitBake Package Names</h2>
+<pre><code>--detect.bitbake.package.names
 </code></pre>
 
-<p>The reference implementation of the Yocto project. These characters are stripped from the discovered target architecture.</p>
+<p>A comma-separated list of package names from which dependencies are extracted.</p>
 <table>
 <thead>
 <tr>
@@ -778,11 +778,11 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>String[]</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>-poky-linux</td>
+<td>None</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -888,11 +888,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bitbake-package-names">BitBake Package Names</h2>
-<pre><code>--detect.bitbake.package.names
+<h2 id="reference-implementation-deprecated">Reference implementation (Deprecated)</h2>
+<pre><code>--detect.bitbake.reference.impl=-poky-linux
 </code></pre>
 
-<p>A comma-separated list of package names from which dependencies are extracted.</p>
+<p>The reference implementation of the Yocto project. These characters are stripped from the discovered target architecture.</p>
 <table>
 <thead>
 <tr>
@@ -907,11 +907,11 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>String[]</td>
+<td>String</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>None</td>
+<td>-poky-linux</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
