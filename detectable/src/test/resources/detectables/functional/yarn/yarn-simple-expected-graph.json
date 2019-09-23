@@ -1,0 +1,21 @@
+{
+  "externalDataIdRelationships": {
+    "http:npmjs/async/0_9_2": [
+      "http:npmjs/minimist/0_0_8"
+    ],
+    "http:npmjs/minimist/0.0.8": []
+  },
+  "dependencySummaries": {
+    "http:npmjs/minimist/0_0_8": {
+      "name": "minimist",
+      "version": "0.0.8"
+    },
+    "http:npmjs/async/0_9_2": {
+      "name": "async",
+      "version": "0.9.2"
+    }
+  },
+  "rootExternalDataIds": [
+    "http:npmjs/async/0_9_2"
+  ]
+}

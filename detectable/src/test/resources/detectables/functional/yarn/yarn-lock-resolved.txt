@@ -1,0 +1,26 @@
+ajv@5.5.2:
+  version "5.5.2"
+  resolved "http://nexus/nexus3/repository/npm-all/ajv/-/ajv-4.11.8.tgz#82ffb02b29e662ae53bdc20af15947706739c536"
+  dependencies:
+    co "^4.6.0"
+    tr46 "~0.0.3"
+    cssstyle ">= 0.2.37 < 0.3.0"
+
+co@^4.6.0:
+  version "4.6.0"
+  resolved "http://nexus/nexus3/repository/npm-all/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
+  dependencies:
+    hoek "4.x.x"
+
+tr46@~0.0.3:
+  version "0.0.3"
+  resolved "http://nexus/nexus3/repository/npm-all/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
+
+"cssstyle@>= 0.2.37 < 0.3.0":
+  version "0.2.37"
+  resolved "http://nexus/nexus3/repository/npm-all/cssstyle/-/cssstyle-0.2.37.tgz#541097234cb2513c83ceed3acddc27ff27987d54"
+  dependencies:
+    cssom "0.3.x"
+hoek@4.x.x:
+  version "4.2.1"
+  resolved "http://nexus/nexus3/repository/npm-all/hoek/-/hoek-4.2.1.tgz#9634502aa12c445dd5a7c5734b572bb8738aacbb"
