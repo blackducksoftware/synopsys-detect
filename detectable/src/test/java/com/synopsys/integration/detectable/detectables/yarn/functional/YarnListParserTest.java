@@ -23,6 +23,16 @@ import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 @FunctionalTest
 public class YarnListParserTest {
     @Test
+    void parseCrazyYarnListTest() {
+        List<String> yarnLock = FunctionalTestFiles.asListOfStrings("/yarn/yarn-lock-missing.txt");
+        List<String> yarnList = FunctionalTestFiles.asListOfStrings("/yarn/yarn-list-missing.txt");
+
+        DependencyGraph dependencyGraph = createDependencyGraph(yarnLock, yarnList);
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
+        graphAssert.hasDependency("missing", "1.0.0");
+    }
+
+    @Test
     void parseYarnListTest() {
         List<String> yarnLock = FunctionalTestFiles.asListOfStrings("/yarn/yarn-lock-simple.txt");
         List<String> yarnList = FunctionalTestFiles.asListOfStrings("/yarn/yarn-list-simple.txt");

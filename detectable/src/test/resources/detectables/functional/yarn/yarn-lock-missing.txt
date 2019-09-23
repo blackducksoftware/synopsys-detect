@@ -1,0 +1,3 @@
+missing@:
+  version "1.0.0"
+  resolved "http://nexus/nexus3/repository/npm-all/ajv/-/ajv-4.11.8.tgz#82ffb02b29e662ae53bdc20af15947706739c536"

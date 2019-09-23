@@ -42,7 +42,7 @@ public class YarnListParser {
         List<YarnListNode> yarnListNodes = new ArrayList<>();
 
         for (final String line : yarnListAsList) {
-            if (shouldParseLine(line.toLowerCase().trim())){
+            if (shouldParseLine(line.toLowerCase().trim())) {
                 final String cleanedLine = lineLevelParser.replaceTreeCharactersWithSpaces(line);
                 YarnListNode yarnListNode = parseDependencyFromLine(cleanedLine);
                 yarnListNodes.add(yarnListNode);
@@ -75,6 +75,13 @@ public class YarnListParser {
         }
 
         final String[] nameVersionArray = cleanedFuzzyNameVersionString.split("@");
-        return new NameVersion(nameVersionArray[0], nameVersionArray[1]);
+        if (nameVersionArray.length == 2) {
+            return new NameVersion(nameVersionArray[0], nameVersionArray[1]);
+        } else if (nameVersionArray.length == 1) {
+            return new NameVersion(nameVersionArray[0]);
+        } else {
+            logger.warn("Unknown yarn list dependency format: " + nameVersionLine);
+            return new NameVersion(nameVersionLine);
+        }
     }
 }
