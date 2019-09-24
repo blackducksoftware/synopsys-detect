@@ -32,12 +32,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.help.DetectOption;
 import com.synopsys.integration.detect.property.PropertyType;
 import com.synopsys.integration.detect.util.TildeInPathResolver;
-import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 
 public class DetectConfigurationManager {
     public final static String USER_HOME = System.getProperty("user.home");
@@ -50,7 +50,7 @@ public class DetectConfigurationManager {
 
     // properties to be updated
     private String policyCheckFailOnSeverities;
-    private int hubSignatureScannerParallelProcessors;
+    private int parallelProcessors;
     private boolean hubOfflineMode;
     // end properties to be updated
 
@@ -62,6 +62,7 @@ public class DetectConfigurationManager {
     public void process(final List<DetectOption> detectOptions, String runId) throws DetectUserFriendlyException {
         resolveTildeInPaths();
         resolvePolicyProperties();
+        resolveParallelProcessingProperties();
         resolveSignatureScannerProperties(detectOptions);
         resolveDetectorSearchProperties();
 
@@ -105,13 +106,15 @@ public class DetectConfigurationManager {
         }
     }
 
-    private void resolveSignatureScannerProperties(final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
-        int hubSignatureScannerParallelProcessors = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, PropertyAuthority.None);
-        if (hubSignatureScannerParallelProcessors == -1) {
-            hubSignatureScannerParallelProcessors = Runtime.getRuntime().availableProcessors();
+    private void resolveParallelProcessingProperties() {
+        int providedParallelProcessors = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_PARALLEL_PROCESSORS, PropertyAuthority.None);
+        if (providedParallelProcessors <= 0) {
+            providedParallelProcessors = Runtime.getRuntime().availableProcessors();
         }
-        this.hubSignatureScannerParallelProcessors = hubSignatureScannerParallelProcessors;
+        this.parallelProcessors = providedParallelProcessors;
+    }
 
+    private void resolveSignatureScannerProperties(final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
         if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, PropertyAuthority.None)) &&
                 StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, PropertyAuthority.None))) {
             throw new DetectUserFriendlyException(
@@ -145,8 +148,8 @@ public class DetectConfigurationManager {
         updateOptionValue(detectOptions, DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, policyCheckFailOnSeverities);
         detectConfiguration.setDetectProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, policyCheckFailOnSeverities);
 
-        updateOptionValue(detectOptions, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, String.valueOf(hubSignatureScannerParallelProcessors));
-        detectConfiguration.setDetectProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, String.valueOf(hubSignatureScannerParallelProcessors));
+        updateOptionValue(detectOptions, DetectProperty.DETECT_PARALLEL_PROCESSORS, String.valueOf(parallelProcessors));
+        detectConfiguration.setDetectProperty(DetectProperty.DETECT_PARALLEL_PROCESSORS, String.valueOf(parallelProcessors));
 
         updateOptionValue(detectOptions, DetectProperty.BLACKDUCK_OFFLINE_MODE, String.valueOf(hubOfflineMode));
         detectConfiguration.setDetectProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, String.valueOf(hubOfflineMode));
