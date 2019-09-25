@@ -109,26 +109,31 @@ public class ShutdownManager {
                 logger.info("Skipping cleanup, it is disabled.");
             }
         } catch (final Exception e) {
-            logger.debug(String.format("Error trying cleanup: %s", e.getMessage()));
+            logger.debug("Error trying cleanup: ", e);
         }
     }
 
     private void cleanup(File directory, List<File> skip) throws IOException {
         IOException exception = null;
-        for (final File file : directory.listFiles()) {
-            try {
-                if (skip.contains(file)) {
-                    logger.debug("Skipping cleanup for: " + file.getAbsolutePath());
-                } else {
-                    logger.debug("Cleaning up: " + file.getAbsolutePath());
-                    FileUtils.forceDelete(file);
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (final File file : files) {
+                try {
+                    if (skip.contains(file)) {
+                        logger.debug("Skipping cleanup for: " + file.getAbsolutePath());
+                    } else {
+                        logger.debug("Cleaning up: " + file.getAbsolutePath());
+                        FileUtils.forceDelete(file);
+                    }
+                } catch (final IOException ioe) {
+                    exception = ioe;
                 }
-            } catch (final IOException ioe) {
-                exception = ioe;
             }
         }
 
-        if (directory.listFiles().length == 0) {
+        files = directory.listFiles();
+        boolean noFiles = files == null || files.length == 0;
+        if (noFiles && directory.exists()) {
             logger.info("Cleaning up directory: " + directory.getAbsolutePath());
             FileUtils.forceDelete(directory);
         }
