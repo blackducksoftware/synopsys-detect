@@ -472,9 +472,14 @@ public enum DetectProperty {
     DETECT_MAVEN_PATH("detect.maven.path", "Maven Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The name of a Maven scope. Output will be limited to dependencies with this scope.")
+    @HelpDescription("A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).")
     @HelpDetailed("If set, Detect will include only dependencies of the given Maven scope.")
-    DETECT_MAVEN_SCOPE("detect.maven.scope", "Dependency Scope Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_MAVEN_INCLUDED_SCOPES("detect.maven.included.scopes", "Dependency Scope Included", "6.0.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
+    @HelpDescription("A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).")
+    @HelpDetailed("If set, Detect will include only dependencies outside of the given Maven scope.")
+    DETECT_MAVEN_EXCLUDED_SCOPES("detect.maven.excluded.scopes", "Dependency Scope Excluded", "6.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription(category = ADVANCED, value = "Whether or not detect will include the plugins section when parsing a pom.xml.")
@@ -1069,6 +1074,13 @@ public enum DetectProperty {
     @HelpDescription("The logging level of Detect.")
     @AcceptableValues(value = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
     LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION("logging.level.com.blackducksoftware.integration", "Logging Level", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "INFO"),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.maven.included.scope in the future.", failInVersion = DetectMajorVersion.SEVEN, removeInVersion = DetectMajorVersion.EIGHT)
+    @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
+    @HelpDescription("The name of a Maven scope. Output will be limited to dependencies with this scope.")
+    @HelpDetailed("If set, Detect will include only dependencies of the given Maven scope.")
+    DETECT_MAVEN_SCOPE("detect.maven.scope", "Dependency Scope Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is now deprecated. Please use --detect.blackduck.signature.scanner.snippet.matching in the future. NOTE the new property is one of a particular set of values. You will need to consult the documentation for the Signature Scanner in Black Duck for details.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)

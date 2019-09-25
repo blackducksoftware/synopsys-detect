@@ -130,10 +130,11 @@ public class DetectableOptionFactory {
 
     public MavenCliExtractorOptions createMavenCliOptions() {
         final String mavenBuildCommand = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_BUILD_COMMAND, PropertyAuthority.None);
-        final String mavenScope = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_SCOPE, PropertyAuthority.None);
+        final String mavenExcludedScopes = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_SCOPES, PropertyAuthority.None);
+        final String mavenIncludedScopes = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_SCOPES, PropertyAuthority.None);
         final String mavenExcludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_MODULES, PropertyAuthority.None);
         final String mavenIncludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_MODULES, PropertyAuthority.None);
-        return new MavenCliExtractorOptions(mavenBuildCommand, mavenScope, mavenExcludedModules, mavenIncludedModules);
+        return new MavenCliExtractorOptions(mavenBuildCommand, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules);
     }
 
     public NpmCliExtractorOptions createNpmCliExtractorOptions() {

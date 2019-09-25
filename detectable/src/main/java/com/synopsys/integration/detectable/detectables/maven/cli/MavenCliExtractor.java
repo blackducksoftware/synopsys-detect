@@ -67,12 +67,11 @@ public class MavenCliExtractor {
             final ExecutableOutput mvnOutput = executableRunner.execute(directory, mavenExe, arguments);
 
             if (mvnOutput.getReturnCode() == 0) {
-
-                final String mavenScope = mavenCliExtractorOptions.getMavenScope();
+                final String excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes();
+                final String includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes();
                 final String excludedModules = mavenCliExtractorOptions.getMavenExcludedModules();
                 final String includedModules = mavenCliExtractorOptions.getMavenIncludedModules();
-                final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(),
-                    mavenScope, excludedModules, includedModules);
+                final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(), excludedScopes, includedScopes, excludedModules, includedModules);
 
                 final List<CodeLocation> codeLocations = mavenResults.stream()
                                                              .map(mavenResult -> mavenResult.codeLocation)
