@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -109,7 +110,9 @@ public class DetectOptionManager {
     }
 
     public BlackDuckServerConfig createBlackDuckServerConfig(final IntLogger logger) throws DetectUserFriendlyException {
-        final BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = new BlackDuckServerConfigBuilder().setLogger(logger);
+        final BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = new BlackDuckServerConfigBuilder()
+                                                                              .setExecutorService(Executors.newFixedThreadPool(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_PARALLEL_PROCESSORS, PropertyAuthority.None)))
+                                                                              .setLogger(logger);
 
         final Set<String> allBlackDuckKeys = new HashSet<>(blackDuckServerConfigBuilder.getPropertyKeys());
         final Map<String, String> blackDuckProperties = detectConfiguration.getProperties(allBlackDuckKeys);

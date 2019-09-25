@@ -64,7 +64,6 @@ import static com.synopsys.integration.detect.configuration.DetectProperty.Prope
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_POLICY;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_PROJECT_SETTING;
 import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_REPORT_SETTING;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SIMPLE;
 
 import com.synopsys.integration.detect.DetectMajorVersion;
 import com.synopsys.integration.detect.help.AcceptableValues;
@@ -132,6 +131,10 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
     @HelpDescription("Black Duck username.")
     BLACKDUCK_USERNAME("blackduck.username", "Black Duck Username", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
+    @HelpDescription(category = ADVANCED, value = "The number of threads to run processes in parallel, defaults to 1, but if you specify less than or equal to 0, the number of processors on the machine will be used.")
+    DETECT_PARALLEL_PROCESSORS("detect.parallel.processors", "Detect Parallel Processors", "6.0.0", PropertyType.INTEGER, PropertyAuthority.None, "1"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Path to the Bash executable.")
@@ -232,10 +235,6 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription(category = ADVANCED, value = "To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH("detect.blackduck.signature.scanner.offline.local.path", "Signature Scanner Local Path (Offline)", "4.2.0", PropertyType.STRING, PropertyAuthority.None),
-
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription(category = ADVANCED, value = "The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS("detect.blackduck.signature.scanner.parallel.processors", "Signature Scanner Parallel Processors", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "1"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("These paths and only these paths will be scanned.")
@@ -473,9 +472,14 @@ public enum DetectProperty {
     DETECT_MAVEN_PATH("detect.maven.path", "Maven Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("The name of a Maven scope. Output will be limited to dependencies with this scope.")
+    @HelpDescription("A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).")
     @HelpDetailed("If set, Detect will include only dependencies of the given Maven scope.")
-    DETECT_MAVEN_SCOPE("detect.maven.scope", "Dependency Scope Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
+    DETECT_MAVEN_INCLUDED_SCOPES("detect.maven.included.scopes", "Dependency Scope Included", "6.0.0", PropertyType.STRING, PropertyAuthority.None),
+
+    @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
+    @HelpDescription("A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).")
+    @HelpDetailed("If set, Detect will include only dependencies outside of the given Maven scope.")
+    DETECT_MAVEN_EXCLUDED_SCOPES("detect.maven.excluded.scopes", "Dependency Scope Excluded", "6.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription(category = ADVANCED, value = "Whether or not detect will include the plugins section when parsing a pom.xml.")
@@ -1041,7 +1045,13 @@ public enum DetectProperty {
     DETECT_HUB_SIGNATURE_SCANNER_HOST_URL("detect.hub.signature.scanner.host.url", "", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
-    @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.parallel.processors in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
+    @DetectDeprecation(description = "This property is changing. Please use --detect.parallel.processors in the future. The --detect.parallel.processors property will take precedence over this property.", failInVersion = DetectMajorVersion.SEVEN, removeInVersion = DetectMajorVersion.EIGHT)
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
+    @HelpDescription(category = ADVANCED, value = "The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS("detect.blackduck.signature.scanner.parallel.processors", "Signature Scanner Parallel Processors", "4.2.0", PropertyType.INTEGER, PropertyAuthority.None, "1"),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.parallel.processors in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
     DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS("detect.hub.signature.scanner.parallel.processors", "", "3.0.0", PropertyType.INTEGER, PropertyAuthority.None, "1"),
@@ -1064,6 +1074,13 @@ public enum DetectProperty {
     @HelpDescription("The logging level of Detect.")
     @AcceptableValues(value = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
     LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION("logging.level.com.blackducksoftware.integration", "Logging Level", "3.0.0", PropertyType.STRING, PropertyAuthority.None, "INFO"),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is changing. Please use --detect.maven.included.scope in the future.", failInVersion = DetectMajorVersion.SEVEN, removeInVersion = DetectMajorVersion.EIGHT)
+    @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
+    @HelpDescription("The name of a Maven scope. Output will be limited to dependencies with this scope.")
+    @HelpDetailed("If set, Detect will include only dependencies of the given Maven scope.")
+    DETECT_MAVEN_SCOPE("detect.maven.scope", "Dependency Scope Included", "3.0.0", PropertyType.STRING, PropertyAuthority.None),
 
     @Deprecated
     @DetectDeprecation(description = "This property is now deprecated. Please use --detect.blackduck.signature.scanner.snippet.matching in the future. NOTE the new property is one of a particular set of values. You will need to consult the documentation for the Signature Scanner in Black Duck for details.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)

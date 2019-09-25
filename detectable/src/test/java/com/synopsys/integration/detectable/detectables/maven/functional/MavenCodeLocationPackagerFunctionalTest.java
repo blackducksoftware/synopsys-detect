@@ -4,13 +4,17 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocationPackager;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenParseResult;
+import com.synopsys.integration.detectable.detectables.maven.cli.ScopedDependency;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.GraphCompare;
 
@@ -67,19 +71,45 @@ public class MavenCodeLocationPackagerFunctionalTest {
     @Test
     public void extractCodeLocationsTestNoScope() {
         final String mavenOutputText = FunctionalTestFiles.asString("/maven/compileScopeUnderTestScope.txt");
-        createNewCodeLocationTest(mavenOutputText, "/maven/compileScopeUnderTestScopeNoScope.json", 3, "", "", 2, null);
+        createNewCodeLocationTest(mavenOutputText, "/maven/compileScopeUnderTestScopeNoScope.json", 3, "", "", 2, null, null);
     }
 
     @Test
     public void extractCodeLocationsTestCompileScope() {
         final String mavenOutputText = FunctionalTestFiles.asString("/maven/compileScopeUnderTestScope.txt");
-        createNewCodeLocationTest(mavenOutputText, "/maven/compileScopeUnderTestScopeCompileScope.json", 3, "", "", 2, "compile");
+        createNewCodeLocationTest(mavenOutputText, "/maven/compileScopeUnderTestScopeCompileScope.json", 3, "", "", 2, null, "compile");
+    }
+
+    @Test
+    public void extractCodeLocationsTestCompileScope2() {
+        final String mavenOutputText = FunctionalTestFiles.asString("/maven/compileScopeUnderTestScope.txt");
+        final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
+        final List<MavenParseResult> result = mavenCodeLocationPackager.extractCodeLocations("/test/path", mavenOutputText, "test", null, null, null);
+        assertEquals(3, result.size());
+
+        for (final MavenParseResult mavenParseResult : result) {
+            final DependencyGraph dependencyGraph = mavenParseResult.codeLocation.getDependencyGraph();
+            for (final Dependency rootDependency : dependencyGraph.getRootDependencies()) {
+                if (rootDependency instanceof ScopedDependency) {
+                    walkGraphExcludingScope(dependencyGraph, (ScopedDependency) rootDependency, "test");
+                } else {
+                    System.out.println(String.format("Dependency is not a scoped dependency. Validation cannot occur. %s", rootDependency.externalId.createExternalId()));
+                }
+            }
+        }
+    }
+
+    private void walkGraphExcludingScope(final DependencyGraph dependencyGraph, final ScopedDependency scopedDependency, final String scope) {
+        Assertions.assertNotEquals(scope, scopedDependency.scope);
+        for (final Dependency dependency : dependencyGraph.getChildrenForParent(scopedDependency)) {
+            walkGraphExcludingScope(dependencyGraph, (ScopedDependency) dependency, scope);
+        }
     }
 
     @Test
     public void extractCodeLocationsTestComplexTree() {
         final String mavenOutputText = FunctionalTestFiles.asString("/maven/mavenComplexOutput.txt");
-        createNewCodeLocationTest(mavenOutputText, "/maven/mavenComplexOutputResult.json", 85, "", "", 84, "compile");
+        createNewCodeLocationTest(mavenOutputText, "/maven/mavenComplexOutputResult.json", 85, "", "", 84, null, "compile");
     }
 
     private void createNewCodeLocationTest(final String mavenOutputText, final String expectedResourcePath) {
@@ -91,13 +121,13 @@ public class MavenCodeLocationPackagerFunctionalTest {
     }
 
     private void createNewCodeLocationTest(final String mavenOutputText, final String expectedResourcePath, final int numberOfCodeLocations, final String excludedModules, final String includedModules, final int codeLocationIndex) {
-        createNewCodeLocationTest(mavenOutputText, expectedResourcePath, numberOfCodeLocations, excludedModules, includedModules, codeLocationIndex, null);
+        createNewCodeLocationTest(mavenOutputText, expectedResourcePath, numberOfCodeLocations, excludedModules, includedModules, codeLocationIndex, null, null);
     }
 
     private void createNewCodeLocationTest(final String mavenOutputText, final String expectedResourcePath, final int numberOfCodeLocations, final String excludedModules, final String includedModules, final int codeLocationIndex,
-        final String scope) {
+        final String excludedScopes, final String includedScopes) {
         final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
-        final List<MavenParseResult> result = mavenCodeLocationPackager.extractCodeLocations("/test/path", mavenOutputText, scope, excludedModules, includedModules);
+        final List<MavenParseResult> result = mavenCodeLocationPackager.extractCodeLocations("/test/path", mavenOutputText, excludedScopes, includedScopes, excludedModules, includedModules);
         assertEquals(numberOfCodeLocations, result.size());
         final CodeLocation codeLocation = result.get(codeLocationIndex).codeLocation;
 
