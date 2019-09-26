@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.workflow.status;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.log.IntLogger;
@@ -44,22 +45,22 @@ public class DetectStatusLogger {
         if (!detectIssues.isEmpty()) {
             logger.info("======== Detect Issues ========");
             logger.info("");
-            final List<DetectIssue> deprecations = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.Deprecation).collect(Collectors.toList());
-            if (deprecations.size() > 0) {
-                logger.info("Deprecations:");
-                deprecations.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
-                logger.info("");
-            }
-            final List<DetectIssue> detectors = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.Detector).collect(Collectors.toList());
+            List<DetectIssue> detectors = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.Detector).collect(Collectors.toList());
             if (detectors.size() > 0) {
-                logger.info("Detectors:");
+                logger.info("DETECTORS:");
                 detectors.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
                 logger.info("");
             }
-            final List<DetectIssue> exceptions = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.Exception).collect(Collectors.toList());
+            List<DetectIssue> exceptions = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.Exception).collect(Collectors.toList());
             if (exceptions.size() > 0) {
-                logger.info("Exceptions:");
+                logger.info("EXCEPTIONS:");
                 exceptions.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
+                logger.info("");
+            }
+            List<DetectIssue> deprecations = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.Deprecation).collect(Collectors.toList());
+            if (deprecations.size() > 0) {
+                logger.info("DEPRECATIONS:");
+                deprecations.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
                 logger.info("");
             }
         }

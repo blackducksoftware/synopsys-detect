@@ -110,7 +110,7 @@ public class DetectConfigurationReporter {
         final List<DetectOption> allWarnings = sortedOptions.stream().filter(it -> it.getWarnings().size() > 0).collect(Collectors.toList());
         for (final DetectOption option : allWarnings) {
             for (final String warning : option.getWarnings()) {
-                DetectIssue.publish(eventSystem, DetectIssueType.Deprecation, option.getDetectProperty().getPropertyKey() + ": " + warning);
+                DetectIssue.publish(eventSystem, DetectIssueType.Deprecation, option.getDetectProperty().getPropertyKey(), "\t" + warning);
             }
         }
     }

@@ -27,6 +27,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.antlr.v4.runtime.misc.Nullable;
+
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
 
@@ -38,12 +40,14 @@ public class DetectableToolResult {
     }
 
     private final DetectableToolResultType resultType;
-
-    private final Optional<File> dockerTar;
-    private final Optional<DetectToolProjectInfo> detectToolProjectInfo;
     private final List<DetectCodeLocation> detectCodeLocations;
 
-    public DetectableToolResult(final DetectableToolResultType resultType, final Optional<DetectToolProjectInfo> detectToolProjectInfo, final List<DetectCodeLocation> detectCodeLocations, final Optional<File> dockerTar) {
+    @Nullable
+    private final File dockerTar;
+    @Nullable
+    private final DetectToolProjectInfo detectToolProjectInfo;
+
+    public DetectableToolResult(final DetectableToolResultType resultType, final DetectToolProjectInfo detectToolProjectInfo, final List<DetectCodeLocation> detectCodeLocations, final File dockerTar) {
         this.resultType = resultType;
         this.detectToolProjectInfo = detectToolProjectInfo;
         this.detectCodeLocations = detectCodeLocations;
@@ -51,23 +55,23 @@ public class DetectableToolResult {
     }
 
     public static DetectableToolResult skip() {
-        return new DetectableToolResult(DetectableToolResultType.SKIPPED, Optional.empty(), Collections.emptyList(), Optional.empty());
+        return new DetectableToolResult(DetectableToolResultType.SKIPPED, null, Collections.emptyList(), null);
     }
 
     public static DetectableToolResult failed() {
-        return new DetectableToolResult(DetectableToolResultType.FAILED, Optional.empty(), Collections.emptyList(), Optional.empty());
+        return new DetectableToolResult(DetectableToolResultType.FAILED, null, Collections.emptyList(), null);
     }
 
-    public static DetectableToolResult success(final List<DetectCodeLocation> codeLocations, final Optional<DetectToolProjectInfo> projectInfo, final Optional<File> dockerTar) {
+    public static DetectableToolResult success(final List<DetectCodeLocation> codeLocations, @Nullable final DetectToolProjectInfo projectInfo, @Nullable final File dockerTar) {
         return new DetectableToolResult(DetectableToolResultType.SUCCESS, projectInfo, codeLocations, dockerTar);
     }
 
     public Optional<File> getDockerTar() {
-        return dockerTar;
+        return Optional.ofNullable(dockerTar);
     }
 
     public Optional<DetectToolProjectInfo> getDetectToolProjectInfo() {
-        return detectToolProjectInfo;
+        return Optional.ofNullable(detectToolProjectInfo);
     }
 
     public List<DetectCodeLocation> getDetectCodeLocations() {

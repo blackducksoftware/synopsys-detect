@@ -89,6 +89,7 @@ import com.synopsys.integration.detect.workflow.airgap.DockerAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.GradleAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.NugetAirGapCreator;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
+import com.synopsys.integration.detect.workflow.diagnostic.RelevantFileTracker;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -137,31 +138,31 @@ public class DetectBoot {
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             printAppropriateHelp(options, detectArgumentState);
-            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty(), Optional.empty());
+            return DetectBootResult.exit(detectConfiguration);
         }
 
         if (detectArgumentState.isHelpJsonDocument()) {
-            printHelpJsonDocument(options, detectInfo, gson);
-            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty(), Optional.empty());
+            printHelpJsonDocument(options, detectInfo, configuration, gson);
+            return DetectBootResult.exit(detectConfiguration);
         }
 
         printDetectInfo(detectInfo);
 
         if (detectArgumentState.isInteractive()) {
-            startInteractiveMode(detectOptionManager);
+            startInteractiveMode(detectOptionManager, detectConfiguration, gson, objectMapper);
         }
 
         try {
-            processDetectConfiguration(detectInfo, detectConfiguration, options);
+            processDetectConfiguration(detectInfo, detectRun, detectConfiguration, options);
         } catch (final DetectUserFriendlyException e) {
-            return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.empty(), Optional.empty());
+            return DetectBootResult.exception(e, detectConfiguration);
         }
 
         detectOptionManager.postConfigurationProcessedInit();
 
         logger.debug("Configuration processed completely.");
 
-        final Optional<DetectBootResult> configurationResult = printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT, PropertyAuthority.NONE), detectOptionManager, detectConfiguration,
+        final Optional<DetectBootResult> configurationResult = printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT, PropertyAuthority.None), detectOptionManager, detectConfiguration,
             eventSystem, options);
         if (configurationResult.isPresent()) {
             return configurationResult.get();
@@ -180,22 +181,25 @@ public class DetectBoot {
         if (detectArgumentState.isGenerateAirGapZip()) {
             final DetectOverrideableFilter inspectorFilter = new DetectOverrideableFilter("", detectArgumentState.getParsedValue());
             final String airGapSuffix = String.join("-", inspectorFilter.getIncludedSet().stream().sorted().collect(Collectors.toList()));
-            File airGapZip = null;
+            final File airGapZip;
             try {
                 airGapZip = createAirGapZip(inspectorFilter, detectConfiguration, directoryManager, gson, eventSystem, configuration, airGapSuffix);
             } catch (final DetectUserFriendlyException e) {
-                return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.of(directoryManager), diagnosticSystem);
+                return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
             }
-            return DetectBootResult.exit(detectConfiguration, Optional.ofNullable(airGapZip), Optional.of(directoryManager), diagnosticSystem);
+            return DetectBootResult.exit(detectConfiguration, airGapZip, directoryManager, diagnosticSystem);
         }
 
         final RunOptions runOptions = factory.createRunOptions();
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
         final ProductDecider productDecider = new ProductDecider();
         final ProductDecision productDecision;
-
-        logger.info("");
-        productDecision = productDecider.decide(detectConfiguration, directoryManager.getUserHome(), detectToolFilter);
+        try {
+            logger.info("");
+            productDecision = productDecider.decide(detectConfiguration, directoryManager.getUserHome(), detectToolFilter);
+        } catch (final DetectUserFriendlyException e) {
+            return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
+        }
 
         logger.debug("Decided what products will be run. Starting product boot.");
 
@@ -205,12 +209,12 @@ public class DetectBoot {
         try {
             productRunData = productBoot.boot(productDecision, detectConfiguration, new BlackDuckConnectivityChecker(), new PolarisConnectivityChecker(), productBootFactory);
         } catch (final DetectUserFriendlyException e) {
-            return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.of(directoryManager), diagnosticSystem);
+            return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
         }
 
         if (productRunData == null) {
             logger.info("No products to run, Detect is complete.");
-            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.of(directoryManager), diagnosticSystem);
+            return DetectBootResult.exit(detectConfiguration, directoryManager, diagnosticSystem);
         }
 
         //TODO: Only need this if in diagnostic or online (for phone home):
@@ -248,14 +252,14 @@ public class DetectBoot {
         helpPrinter.printAppropriateHelpMessage(System.out, detectOptions, detectArgumentState);
     }
 
-    private void printHelpJsonDocument(final List<DetectOption> detectOptions, final DetectInfo detectInfo, final Gson gson) {
+    private void printHelpJsonDocument(final List<DetectOption> detectOptions, final DetectInfo detectInfo, final Configuration configuration, final Gson gson) {
         final DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
         final DetectorRuleSet build = ruleFactory.createRules(new DetectableFactory(), false);
         final DetectorRuleSet buildless = ruleFactory.createRules(new DetectableFactory(), true);
         final List<HelpJsonDetector> buildDetectors = build.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, build)).collect(Collectors.toList());
         final List<HelpJsonDetector> buildlessDetectors = buildless.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, buildless)).collect(Collectors.toList());
 
-        final HelpJsonWriter helpJsonWriter = new HelpJsonWriter(gson);
+        final HelpJsonWriter helpJsonWriter = new HelpJsonWriter(configuration, gson);
         helpJsonWriter.writeGsonDocument(String.format("synopsys-detect-%s-help.json", detectInfo.getDetectVersion()), detectOptions, buildDetectors, buildlessDetectors);
     }
 
@@ -301,7 +305,7 @@ public class DetectBoot {
                 throw new DetectUserFriendlyException(invalidDetectOptionResults.get(0).getValidationMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
             }
         } catch (final DetectUserFriendlyException e) {
-            return Optional.of(DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.empty(), Optional.empty()));
+            return Optional.of(DetectBootResult.exception(e, detectConfiguration));
         }
 
         //Check for deprecated fields that are still being used but should cause a failure.
@@ -310,7 +314,7 @@ public class DetectBoot {
             final ErrorLogReportWriter errorLogReportWriter = new ErrorLogReportWriter();
             detectConfigurationReporter.printFailures(errorLogReportWriter, failureProperties);
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION));
-            return Optional.of(DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty(), Optional.empty()));
+            return Optional.of(DetectBootResult.exit(detectConfiguration));
         }
 
         //Finally log all fields that are deprecated but still being used (that are not failure).
@@ -319,7 +323,7 @@ public class DetectBoot {
         return Optional.empty();
     }
 
-    private void startInteractiveMode(final DetectOptionManager detectOptionManager) {
+    private void startInteractiveMode(final DetectOptionManager detectOptionManager, final DetectConfiguration detectConfiguration, final Gson gson, final ObjectMapper objectMapper) {
         final InteractiveManager interactiveManager = new InteractiveManager(detectOptionManager);
         final DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(detectOptionManager);
         interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
@@ -331,17 +335,18 @@ public class DetectBoot {
         return detectArgumentState;
     }
 
-    private void processDetectConfiguration(final DetectInfo detectInfo, final DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
+    private void processDetectConfiguration(final DetectInfo detectInfo, final DetectRun detectRun, final DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
         final TildeInPathResolver tildeInPathResolver = new TildeInPathResolver(DetectConfigurationManager.USER_HOME, detectInfo.getCurrentOs());
         final DetectConfigurationManager detectConfigurationManager = new DetectConfigurationManager(tildeInPathResolver, detectConfiguration);
-        detectConfigurationManager.process(detectOptions);
+        detectConfigurationManager.process(detectOptions, detectRun.getRunId());
     }
 
     private Optional<DiagnosticSystem> createDiagnostics(
         final List<DetectOption> detectOptions, final DetectRun detectRun, final DetectInfo detectInfo, final DetectArgumentState detectArgumentState, final EventSystem eventSystem, final DirectoryManager directoryManager) {
         if (detectArgumentState.isDiagnostic() || detectArgumentState.isDiagnosticExtended()) {
             final boolean extendedMode = detectArgumentState.isDiagnosticExtended();
-            final DiagnosticSystem diagnosticSystem = new DiagnosticSystem(extendedMode, detectOptions, detectRun, detectInfo, directoryManager, eventSystem);
+            final RelevantFileTracker relevantFileTracker = new RelevantFileTracker(detectArgumentState.isDiagnostic(), detectArgumentState.isDiagnosticExtended(), directoryManager);
+            final DiagnosticSystem diagnosticSystem = new DiagnosticSystem(extendedMode, detectOptions, detectRun, detectInfo, relevantFileTracker, directoryManager, eventSystem);
             return Optional.of(diagnosticSystem);
         } else {
             return Optional.empty();
@@ -349,7 +354,8 @@ public class DetectBoot {
     }
 
     private File createAirGapZip(final DetectFilter inspectorFilter, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final Gson gson, final EventSystem eventSystem, final Configuration configuration,
-        final String airGapSuffix) throws DetectUserFriendlyException {
+        final String airGapSuffix)
+        throws DetectUserFriendlyException {
         final ConnectionManager connectionManager = new ConnectionManager(detectConfiguration);
         final ArtifactResolver artifactResolver = new ArtifactResolver(connectionManager, gson);
 
@@ -362,7 +368,7 @@ public class DetectBoot {
         final DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(executableResolver, detectConfiguration);
         final GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
         final SimpleExecutableRunner simpleExecutableRunner = new SimpleExecutableRunner();
-        final GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, gradleInspectorInstaller, simpleExecutableRunner, configuration);
+        final GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(artifactResolver, detectExecutableResolver, gradleInspectorInstaller, simpleExecutableRunner, configuration);
 
         final NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactResolver));
         final DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
