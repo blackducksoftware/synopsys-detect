@@ -195,7 +195,7 @@ import freemarker.template.Configuration;
 @org.springframework.context.annotation.Configuration
 public class DetectableBeanConfiguration {
     //The Important Ones
-    private FileFinder fileFinder;
+    private final FileFinder fileFinder;
     @Autowired
     public ExecutableRunner executableRunner;
     @Autowired
@@ -283,7 +283,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public PodlockExtractor podlockExtractor() {
-        return new PodlockExtractor(podlockParser(), externalIdFactory);
+        return new PodlockExtractor(podlockParser());
     }
 
     @Bean
@@ -293,7 +293,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public CondaCliExtractor condaCliExtractor() {
-        return new CondaCliExtractor(condaListParser(), externalIdFactory, executableRunner, detectableOptionFactory.createCondaOptions());
+        return new CondaCliExtractor(condaListParser(), executableRunner, detectableOptionFactory.createCondaOptions());
     }
 
     @Bean
@@ -303,7 +303,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public CpanCliExtractor cpanCliExtractor() {
-        return new CpanCliExtractor(cpanListParser(), externalIdFactory, executableRunner);
+        return new CpanCliExtractor(cpanListParser(), executableRunner);
     }
 
     public DockerInspectorResolver dockerInspectorResolver() {
@@ -323,7 +323,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public PackratLockExtractor packratLockExtractor() {
-        return new PackratLockExtractor(packratDescriptionFileParser(), packratLockFileParser(), externalIdFactory, fileFinder);
+        return new PackratLockExtractor(packratDescriptionFileParser(), packratLockFileParser(), fileFinder);
     }
 
     @Bean
@@ -513,7 +513,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public PipenvExtractor pipenvExtractor() {
-        return new PipenvExtractor(executableRunner, pipenvGraphParser(), detectableOptionFactory.createPipenvDetectableOptions());
+        return new PipenvExtractor(executableRunner, pipenvGraphParser());
     }
 
     @Bean
@@ -563,7 +563,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public YarnLockExtractor yarnLockExtractor() {
-        return new YarnLockExtractor(externalIdFactory, yarnListParser(), executableRunner, yarnLockParser(), detectableOptionFactory.createYarnLockOptions(), yarnTransformer());
+        return new YarnLockExtractor(yarnListParser(), executableRunner, yarnLockParser(), detectableOptionFactory.createYarnLockOptions(), yarnTransformer());
     }
 
     @Bean

@@ -25,17 +25,10 @@ package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 import java.io.File;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.synopsys.integration.detect.workflow.ArtifactResolver;
-import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
 public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final NugetInspectorInstaller nugetInspectorInstaller;
     private final DirectoryManager directoryManager;
     private final String overrideVersion;
@@ -49,9 +42,9 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
     @Override
     public File locateDotnetInspector() throws DetectableException {
         try {
-            File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
+            final File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
             return nugetInspectorInstaller.installDotNet(nugetDirectory, Optional.of(overrideVersion));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }
     }
@@ -59,9 +52,9 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
     @Override
     public File locateExeInspector() throws DetectableException {
         try {
-            File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
+            final File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
             return nugetInspectorInstaller.installExeInspector(nugetDirectory, Optional.of(overrideVersion));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }
     }

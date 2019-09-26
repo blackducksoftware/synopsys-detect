@@ -22,15 +22,11 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot.product;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
-
 public class PolarisConnectivityResult {
-    private boolean successfullyConnected;
+    private final boolean successfullyConnected;
 
     //if failure, the following is populated
-    private String failureReason;
+    private final String failureReason;
 
     private PolarisConnectivityResult(final boolean successfullyConnected, final String failureReason) {
         this.successfullyConnected = successfullyConnected;
@@ -41,7 +37,7 @@ public class PolarisConnectivityResult {
         return new PolarisConnectivityResult(true, null);
     }
 
-    public static PolarisConnectivityResult failure(String reason) {
+    public static PolarisConnectivityResult failure(final String reason) {
         return new PolarisConnectivityResult(false, reason);
     }
 

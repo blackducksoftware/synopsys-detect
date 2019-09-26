@@ -74,17 +74,17 @@ public class MavenCliExtractor {
                 final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(), excludedScopes, includedScopes, excludedModules, includedModules);
 
                 final List<CodeLocation> codeLocations = mavenResults.stream()
-                                                             .map(mavenResult -> mavenResult.codeLocation)
+                                                             .map(mavenResult -> mavenResult.getCodeLocation())
                                                              .collect(Collectors.toList());
 
                 final Optional<MavenParseResult> firstWithName = mavenResults.stream()
-                                                                     .filter(it -> StringUtils.isNoneBlank(it.projectName))
+                                                                     .filter(it -> StringUtils.isNoneBlank(it.getProjectName()))
                                                                      .findFirst();
 
                 final Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
                 if (firstWithName.isPresent()) {
-                    builder.projectName(firstWithName.get().projectName);
-                    builder.projectVersion(firstWithName.get().projectVersion);
+                    builder.projectName(firstWithName.get().getProjectName());
+                    builder.projectVersion(firstWithName.get().getProjectVersion());
                 }
                 return builder.build();
             } else {

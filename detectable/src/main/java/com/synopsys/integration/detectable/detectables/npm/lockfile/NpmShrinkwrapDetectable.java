@@ -78,11 +78,7 @@ public class NpmShrinkwrapDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment environment) {
-        //        addRelevantDiagnosticFile(lockfile); // TODO: Jordan FIX ME
-        //        if (packageJson != null) {
-        //            addRelevantDiagnosticFile(packageJson);
-        //        }
-        return npmLockfileExtractor.extract(environment.getOutputDirectory(), lockfile, packageJson, includeDevDependencies);
+        return npmLockfileExtractor.extract(lockfile, packageJson, includeDevDependencies);
     }
 
 }

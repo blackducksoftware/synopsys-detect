@@ -26,21 +26,21 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Pack
 public class DependencyFileDetailGeneratorTest {
     @Test
     public void testFileThatDoesNotExistIsSkipped() throws ExecutableRunnerException {
-        File mockFile = Mockito.mock(File.class);
+        final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.toString()).thenReturn("Example");
 
-        FilePathGenerator filePathGenerator = Mockito.mock(FilePathGenerator.class);
+        final FilePathGenerator filePathGenerator = Mockito.mock(FilePathGenerator.class);
         Mockito.when(filePathGenerator.fromCompileCommand(mockFile, null, true)).thenReturn(Arrays.asList("does_not_exist.h"));
 
-        DependencyFileDetailGenerator dependencyFileDetailGenerator = new DependencyFileDetailGenerator(filePathGenerator);
+        final DependencyFileDetailGenerator dependencyFileDetailGenerator = new DependencyFileDetailGenerator(filePathGenerator);
 
-        Set<File> fileDetailsSet = dependencyFileDetailGenerator.fromCompileCommands(Arrays.asList(new CompileCommand()),null, true);
+        final Set<File> fileDetailsSet = dependencyFileDetailGenerator.fromCompileCommands(Arrays.asList(new CompileCommand()), null, true);
         Assert.assertEquals(0, fileDetailsSet.size());
     }
 
     @Test
     public void testDependencyCreatedWithEachForge() throws ExecutableRunnerException {
-        File mockFile = Mockito.mock(File.class);
+        final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.toString()).thenReturn("Example");
 
         final Set<PackageDetails> packages = new HashSet<>();
@@ -49,7 +49,7 @@ public class DependencyFileDetailGeneratorTest {
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final ClangPackageDetailsTransformer clangPackageDetailsTransformer = new ClangPackageDetailsTransformer(externalIdFactory);
-        final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(Forge.CENTOS, Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT), mockFile, packages);
+        final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT), packages);
 
         final Set<Dependency> dependencies = codeLocation.getDependencyGraph().getRootDependencies();
         assertEquals(6, dependencies.size());

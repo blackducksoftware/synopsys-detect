@@ -46,7 +46,7 @@ public class CompileCommandParser {
     private static final String ESCAPE_SEQUENCE_FOR_SPACE_CHAR = "%20";
     private static final String ESCAPE_SEQUENCE_FOR_TAB_CHAR = "%09";
 
-    public List<String> parseCommand(CompileCommand compileCommand, final Map<String, String> optionOverrides) {
+    public List<String> parseCommand(final CompileCommand compileCommand, final Map<String, String> optionOverrides) {
 
         String commandString = compileCommand.command;
         if (StringUtils.isBlank(commandString)) {
@@ -59,18 +59,18 @@ public class CompileCommandParser {
     // This method will be used in future CMake support (in addition to CLang)
     public List<String> parseCommandString(final String commandString, final Map<String, String> optionOverrides) {
         logger.trace(String.format("origCompileCommand         : %s", commandString));
-        String quotesRemovedCompileCommand = escapeQuotedWhitespace(commandString);
+        final String quotesRemovedCompileCommand = escapeQuotedWhitespace(commandString);
         logger.trace(String.format("quotesRemovedCompileCommand: %s", quotesRemovedCompileCommand));
-        StringTokenizer tokenizer = new StringTokenizer(quotesRemovedCompileCommand);
+        final StringTokenizer tokenizer = new StringTokenizer(quotesRemovedCompileCommand);
         tokenizer.setQuoteMatcher(StringMatcherFactory.INSTANCE.quoteMatcher());
         final List<String> commandList = new ArrayList<>();
         String lastPart = "";
         int partIndex = 0;
         while (tokenizer.hasNext()) {
-            String part = unEscapeDoubleQuotes(restoreWhitespace(tokenizer.nextToken()));
+            final String part = unEscapeDoubleQuotes(restoreWhitespace(tokenizer.nextToken()));
             if (partIndex > 0) {
                 String optionValueOverride = null;
-                for (String optionToOverride : optionOverrides.keySet()) {
+                for (final String optionToOverride : optionOverrides.keySet()) {
                     if (optionToOverride.equals(lastPart)) {
                         optionValueOverride = optionOverrides.get(optionToOverride);
                     }
@@ -89,25 +89,25 @@ public class CompileCommandParser {
         return commandList;
     }
 
-    private String restoreWhitespace(String givenString) {
-        String newString = givenString.replaceAll(ESCAPE_SEQUENCE_FOR_SPACE_CHAR, SPACE_CHAR_AS_STRING).replaceAll(ESCAPE_SEQUENCE_FOR_TAB_CHAR, TAB_CHAR_AS_STRING);
+    private String restoreWhitespace(final String givenString) {
+        final String newString = givenString.replaceAll(ESCAPE_SEQUENCE_FOR_SPACE_CHAR, SPACE_CHAR_AS_STRING).replaceAll(ESCAPE_SEQUENCE_FOR_TAB_CHAR, TAB_CHAR_AS_STRING);
         logger.trace(String.format("restoreWhitespace() changed %s to %s", givenString, newString));
         return newString;
     }
 
-    private String unEscapeDoubleQuotes(String givenString) {
-        String newString = givenString.replaceAll(ESCAPED_DOUBLE_QUOTE, DOUBLE_QUOTE);
+    private String unEscapeDoubleQuotes(final String givenString) {
+        final String newString = givenString.replaceAll(ESCAPED_DOUBLE_QUOTE, DOUBLE_QUOTE);
         logger.trace(String.format("unEscapeDoubleQuotes() changed %s to %s", givenString, newString));
         return newString;
     }
 
-    private String escapeQuotedWhitespace(String givenString) {
-        StringBuilder newString = new StringBuilder();
+    private String escapeQuotedWhitespace(final String givenString) {
+        final StringBuilder newString = new StringBuilder();
         boolean lastCharWasEscapeChar = false;
         boolean inQuotes = false;
         boolean quoteTypeIsDouble = false;
         for (int i = 0; i < givenString.length(); i++) {
-            char c = givenString.charAt(i);
+            final char c = givenString.charAt(i);
             if (!inQuotes) {
                 if (!lastCharWasEscapeChar && (c == SINGLE_QUOTE_CHAR)) {
                     inQuotes = true;
@@ -120,9 +120,9 @@ public class CompileCommandParser {
                 }
             } else {
                 // Currently inside a quoted substring
-                if (!lastCharWasEscapeChar && (c == SINGLE_QUOTE_CHAR) && (quoteTypeIsDouble == false)) {
+                if (!lastCharWasEscapeChar && (c == SINGLE_QUOTE_CHAR) && !quoteTypeIsDouble) {
                     inQuotes = false;
-                } else if (!lastCharWasEscapeChar && (c == DOUBLE_QUOTE_CHAR) && (quoteTypeIsDouble == true)) {
+                } else if (!lastCharWasEscapeChar && (c == DOUBLE_QUOTE_CHAR) && quoteTypeIsDouble) {
                     inQuotes = false;
                 } else if (c == SPACE_CHAR) {
                     newString.append(ESCAPE_SEQUENCE_FOR_SPACE_CHAR);

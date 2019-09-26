@@ -44,19 +44,19 @@ public class SbtModuleAggregator {
 
         return aggregates.stream().map(aggregate -> {
             final SbtDependencyModule aggregated = new SbtDependencyModule();
-            aggregated.name = aggregate.name;
-            aggregated.version = aggregate.version;
-            aggregated.org = aggregate.org;
+            aggregated.setName(aggregate.getName());
+            aggregated.setVersion(aggregate.getVersion());
+            aggregated.setOrg(aggregate.getOrg());
 
             final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-            aggregated.graph = graph;
+            aggregated.setGraph(graph);
 
             final DependencyGraphCombiner combiner = new DependencyGraphCombiner();
 
             modules.forEach(module -> {
                 if (moduleEqualsAggregate(module, aggregate)) {
-                    logger.debug("Combining '" + module.name + "' with '" + aggregate.name + "'");
-                    combiner.addGraphAsChildrenToRoot(graph, module.graph);
+                    logger.debug("Combining '" + module.getName() + "' with '" + aggregate.getName() + "'");
+                    combiner.addGraphAsChildrenToRoot(graph, module.getGraph());
                 }
             });
 
@@ -65,19 +65,19 @@ public class SbtModuleAggregator {
     }
 
     private boolean moduleEqualsAggregate(final SbtDependencyModule module, final SbtAggregate aggregate) {
-        final boolean namesMatch = module.name.equals(aggregate.name);
-        final boolean versionsMatch = module.version.equals(aggregate.version);
-        final boolean groupsMatch = module.org.equals(aggregate.org);
+        final boolean namesMatch = module.getName().equals(aggregate.getName());
+        final boolean versionsMatch = module.getVersion().equals(aggregate.getVersion());
+        final boolean groupsMatch = module.getOrg().equals(aggregate.getOrg());
 
         return namesMatch && groupsMatch && versionsMatch;
     }
 
     private SbtAggregate moduleToAggregate(final SbtDependencyModule module) {
-        final SbtAggregate aggregate = new SbtAggregate(module.name, module.org, module.version);
+        final SbtAggregate aggregate = new SbtAggregate(module.getName(), module.getOrg(), module.getVersion());
         return aggregate;
     }
 
     private Set<SbtAggregate> uniqueAggregates(final List<SbtDependencyModule> modules) {
-        return modules.stream().map(module -> moduleToAggregate(module)).collect(Collectors.toSet());
+        return modules.stream().map(this::moduleToAggregate).collect(Collectors.toSet());
     }
 }

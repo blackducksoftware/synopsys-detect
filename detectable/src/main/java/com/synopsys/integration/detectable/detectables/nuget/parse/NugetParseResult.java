@@ -28,9 +28,9 @@ import java.util.List;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 
 public class NugetParseResult {
-    public String projectName;
-    public String projectVersion;
-    public List<CodeLocation> codeLocations;
+    private String projectName;
+    private String projectVersion;
+    private List<CodeLocation> codeLocations;
 
     public NugetParseResult(final String projectName, final String projectVersion, final List<CodeLocation> codeLocations) {
         this.projectName = projectName;
@@ -43,5 +43,29 @@ public class NugetParseResult {
         this.projectVersion = projectVersion;
         this.codeLocations = new ArrayList<>();
         this.codeLocations.add(codeLocation);
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(final String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getProjectVersion() {
+        return projectVersion;
+    }
+
+    public void setProjectVersion(final String projectVersion) {
+        this.projectVersion = projectVersion;
+    }
+
+    public List<CodeLocation> getCodeLocations() {
+        return codeLocations;
+    }
+
+    public void setCodeLocations(final List<CodeLocation> codeLocations) {
+        this.codeLocations = codeLocations;
     }
 }

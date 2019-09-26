@@ -22,9 +22,6 @@
  */
 package com.synopsys.integration.detect.help.json;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class HelpJsonExitCode {
     public String exitCodeKey = "";
     public String exitCodeDescription = "";

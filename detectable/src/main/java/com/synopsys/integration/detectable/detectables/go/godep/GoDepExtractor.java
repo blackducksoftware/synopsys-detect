@@ -22,15 +22,9 @@
  */
 package com.synopsys.integration.detectable.detectables.go.godep;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Optional;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.go.godep.parse.GoLockParser;

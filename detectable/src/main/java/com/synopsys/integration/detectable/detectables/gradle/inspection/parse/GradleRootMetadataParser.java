@@ -40,7 +40,7 @@ import com.synopsys.integration.util.NameVersion;
 // TODO: Improve later
 public class GradleRootMetadataParser {
     public Optional<NameVersion> parseRootProjectNameVersion(final File rootProjectMetadataFile) {
-        NameVersion nameVersion = null;
+        NameVersion nameVersion;
         String rootProjectName = null;
         String rootProjectVersionName = null;
         boolean processingMetaData = false;
@@ -63,7 +63,6 @@ public class GradleRootMetadataParser {
                     } else if (line.startsWith(ROOT_PROJECT_VERSION_PREFIX)) {
                         rootProjectVersionName = line.substring(ROOT_PROJECT_VERSION_PREFIX.length()).trim();
                     }
-                    continue;
                 }
             }
             nameVersion = new NameVersion(rootProjectName, rootProjectVersionName);

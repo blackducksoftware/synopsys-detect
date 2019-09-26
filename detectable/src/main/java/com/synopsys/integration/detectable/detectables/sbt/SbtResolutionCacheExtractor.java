@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -83,16 +82,16 @@ public class SbtResolutionCacheExtractor {
 
             String projectName = null;
             String projectVersion = null;
-            for (final SbtDependencyModule module : project.modules) {
+            for (final SbtDependencyModule module : project.getModules()) {
                 final CodeLocation codeLocation;
-                if (project.projectExternalId != null) {
-                    codeLocation = new CodeLocation(module.graph, project.projectExternalId);
+                if (project.getProjectExternalId() != null) {
+                    codeLocation = new CodeLocation(module.getGraph(), project.getProjectExternalId());
                 } else {
-                    codeLocation = new CodeLocation(module.graph);
+                    codeLocation = new CodeLocation(module.getGraph());
                 }
                 if (projectName == null) {
-                    projectName = project.projectName;
-                    projectVersion = project.projectVersion;
+                    projectName = project.getProjectName();
+                    projectVersion = project.getProjectVersion();
                 }
                 codeLocations.add(codeLocation);
             }
@@ -111,30 +110,30 @@ public class SbtResolutionCacheExtractor {
 
     private SbtProject extractProject(final File path, final int depth, final String included, final String excluded) throws IOException, SAXException, ParserConfigurationException {
         final List<SbtDependencyModule> rawModules = extractModules(path, depth, included, excluded);
-        final List<SbtDependencyModule> modules = rawModules.stream().filter(it -> it.graph != null).collect(Collectors.toList());
+        final List<SbtDependencyModule> modules = rawModules.stream().filter(it -> it.getGraph() != null).collect(Collectors.toList());
         final int skipped = rawModules.size() - modules.size();
         if (skipped > 0) {
             logger.error(String.format("Skipped %s", skipped));
         }
         final SbtProject result = new SbtProject();
-        result.modules = modules;
+        result.setModules(modules);
 
-        if (modules.size() == 0) {
+        if (modules.isEmpty()) {
             logger.warn("Unable to create an sbt project, no sbt modules were found.");
         } else if (modules.size() == 1) {
             logger.warn("Found exactly one root module, using it's name and version.");
-            result.projectName = modules.get(0).name;
-            result.projectVersion = modules.get(0).version;
-            result.projectExternalId = externalIdFactory.createMavenExternalId(modules.get(0).org, modules.get(0).name, modules.get(0).version);
+            result.setProjectName(modules.get(0).getName());
+            result.setProjectVersion(modules.get(0).getVersion());
+            result.setProjectExternalId(externalIdFactory.createMavenExternalId(modules.get(0).getOrg(), modules.get(0).getName(), modules.get(0).getVersion()));
         } else {
             logger.warn("Unable to find exactly one root module. Using source path for root project name - will not set an external id.");
-            result.projectName = path.getName();
-            result.projectVersion = findFirstModuleVersion(modules, result.projectName, "root");
-            result.projectExternalId = null;
+            result.setProjectName(path.getName());
+            result.setProjectVersion(findFirstModuleVersion(modules, result.getProjectName(), "root"));
+            result.setProjectExternalId(null);
 
-            if (result.projectVersion == null && modules.size() > 1) {
-                logger.warn(String.format("Getting version from first project: %s", modules.get(0).name));
-                result.projectVersion = modules.get(0).version;
+            if (result.getProjectVersion() == null && modules.size() > 1) {
+                logger.warn(String.format("Getting version from first project: %s", modules.get(0).getName()));
+                result.setProjectVersion(modules.get(0).getVersion());
             }
         }
 
@@ -146,9 +145,9 @@ public class SbtResolutionCacheExtractor {
         final List<String> nameList = new ArrayList<>(Arrays.asList(names));
 
         for (final SbtDependencyModule it : modules) {
-            if (version == null && it.name != null && nameList.contains(it.name)) {
-                logger.debug(String.format("Matched %s to project version.", it.name));
-                version = it.version;
+            if (version == null && it.getName() != null && nameList.contains(it.getName())) {
+                logger.debug(String.format("Matched %s to project version.", it.getName()));
+                version = it.getVersion();
             }
         }
         return version;
@@ -181,18 +180,18 @@ public class SbtResolutionCacheExtractor {
         }
 
         modules.removeIf(it -> {
-            if (it.name.contains("temp-module")) {
-                logger.debug("Excluding temp module: " + it.name);
+            if (it.getName().contains("temp-module")) {
+                logger.debug("Excluding temp module: " + it.getName());
                 return true;
             } else {
                 return false;
             }
         });
 
-        if (modules.size() == 0) {
-            if (sbtFiles.size() == 0) {
+        if (modules.isEmpty()) {
+            if (sbtFiles.isEmpty()) {
                 logger.error("Sbt found no build.sbt files even though it applied.");
-            } else if (resolutionCaches.size() == 0) {
+            } else if (resolutionCaches.isEmpty()) {
                 logger.error("Sbt found no resolution-caches, this most likely means you are not running post build.");
                 logger.error("Please build the project before running detect.");
             } else {
@@ -219,7 +218,7 @@ public class SbtResolutionCacheExtractor {
         } else {
             usedReports.add(canonical);
             final List<File> reportFiles = fileFinder.findFiles(reportPath, REPORT_FILE_PATTERN);
-            if (reportFiles == null || reportFiles.size() <= 0) {
+            if (reportFiles == null || reportFiles.isEmpty()) {
                 logger.debug(String.format("No reports were found in: %s", reportPath));
             } else {
                 final List<SbtDependencyModule> aggregatedModules = makeModuleAggregate(reportFiles, included, excluded);
@@ -229,9 +228,9 @@ public class SbtResolutionCacheExtractor {
                 } else {
                     logger.debug(String.format("Found %s aggregate dependencies in report folder: %s", aggregatedModules.size(), reportPath));
                     for (final SbtDependencyModule aggregatedModule : aggregatedModules) {
-                        logger.debug(String.format("Generated root node of %s %s", aggregatedModule.name, aggregatedModule.version));
+                        logger.debug(String.format("Generated root node of %s %s", aggregatedModule.getName(), aggregatedModule.getVersion()));
 
-                        aggregatedModule.sourcePath = source;
+                        aggregatedModule.setSourcePath(source);
 
                         modules.add(aggregatedModule);
                     }
@@ -260,12 +259,12 @@ public class SbtResolutionCacheExtractor {
             modules.add(tree);
         }
 
-        final List<SbtDependencyModule> includedModules = modules.stream().filter(module -> filter.shouldInclude(module.configuration)).collect(Collectors.toList());
+        final List<SbtDependencyModule> includedModules = modules.stream().filter(module -> filter.shouldInclude(module.getConfiguration())).collect(Collectors.toList());
 
-        if (modules.size() <= 0) {
+        if (modules.isEmpty()) {
             logger.warn("No sbt configurations were found in report folder.");
             return null;
-        } else if (includedModules.size() <= 0) {
+        } else if (includedModules.isEmpty()) {
             logger.warn(String.format("Although %s configs were found, none were included.", modules.size()));
             return null;
         }

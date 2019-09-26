@@ -29,7 +29,6 @@ import java.io.FileWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 
 public class FileReportWriter implements ReportWriter {
@@ -38,11 +37,11 @@ public class FileReportWriter implements ReportWriter {
     private BufferedWriter writer;
     private FileWriter fileWriter;
 
-    public FileReportWriter(final File reportFile, final String name, final String description, final String runId) throws DetectUserFriendlyException {
+    public FileReportWriter(final File reportFile, final String name, final String description, final String runId) {
         try {
             fileWriter = new FileWriter(reportFile, true);
             writer = new BufferedWriter(fileWriter);
-            writeSeperator();
+            writeSeparator();
             writer.newLine();
             writer.append("Report: " + name);
             writer.newLine();
@@ -51,7 +50,7 @@ public class FileReportWriter implements ReportWriter {
             writer.append(description);
             writer.newLine();
             writer.newLine();
-            writeSeperator();
+            writeSeparator();
         } catch (final Exception e) {
             logger.error("Diagnostics failed to create a report.", e);
         }
@@ -71,7 +70,7 @@ public class FileReportWriter implements ReportWriter {
     public void writeLine(final String line, final Exception e) {
         writeLine(line);
         writeLine(e.getMessage());
-        for (StackTraceElement element : e.getStackTrace()) {
+        for (final StackTraceElement element : e.getStackTrace()) {
             writeLine(element.toString());
         }
     }
@@ -82,7 +81,7 @@ public class FileReportWriter implements ReportWriter {
     }
 
     @Override
-    public void writeSeperator() {
+    public void writeSeparator() {
         writeLine(ReportConstants.SEPERATOR);
     }
 

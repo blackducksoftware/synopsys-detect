@@ -38,9 +38,7 @@ import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetecta
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
 public class CpanCliDetectable extends Detectable {
-    public static final String CPAN_EXECUTABLE_NAME = "cpan";
-    public static final String CPANM_EXECUTABLE_NAME = "cpanm";
-    public static final String MAKEFILE = "Makefile.PL";
+    private static final String MAKEFILE = "Makefile.PL";
 
     private final FileFinder fileFinder;
     private final CpanResolver cpanResolver;
@@ -91,7 +89,7 @@ public class CpanCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return cpanCliExtractor.extract(environment.getDirectory(), cpanExe, cpanmExe, extractionEnvironment.getOutputDirectory());
+        return cpanCliExtractor.extract(cpanExe, cpanmExe, extractionEnvironment.getOutputDirectory());
     }
 
 }

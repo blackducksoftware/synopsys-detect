@@ -49,8 +49,8 @@ public abstract class Detectable {
     /*
      * Perform project information discovery and try not to throw an exception. Instead return a discovery built with an exception.
      */
-    public Discovery discover(ExtractionEnvironment extractionEnvironment) {
-        Extraction extraction = extract(extractionEnvironment);
+    public Discovery discover(final ExtractionEnvironment extractionEnvironment) {
+        final Extraction extraction = extract(extractionEnvironment);
         if (extraction.isSuccess()) {
             return new Discovery.Builder().success(extraction).build();
         } else {
@@ -72,11 +72,6 @@ public abstract class Detectable {
     }
 
     public String getDescriptiveName() {
-        return String.format("%s - %s", getGroupName().toString(), getName());
+        return String.format("%s - %s", getGroupName(), getName());
     }
-
-    public boolean isSame(final Detectable detector) {
-        return this.getClass().equals(detector.getClass());
-    }
-
 }

@@ -25,13 +25,8 @@ package com.synopsys.integration.detect.lifecycle.shutdown;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.swing.text.html.Option;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -48,8 +43,8 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 public class ShutdownManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public void shutdown(Optional<ProductRunData> productRunData, Optional<File> airgapZip, Optional<DetectConfiguration> detectConfigurationOptional, Optional<DirectoryManager> directoryManagerOptional,
-        Optional<DiagnosticSystem> diagnosticSystem) {
+    public void shutdown(final Optional<ProductRunData> productRunData, final Optional<File> airgapZip, final Optional<DetectConfiguration> detectConfigurationOptional, final Optional<DirectoryManager> directoryManagerOptional,
+        final Optional<DiagnosticSystem> diagnosticSystem) {
 
         if (productRunData.isPresent() && productRunData.get().shouldUseBlackDuckProduct()) {
             stopPhoneHome(productRunData.get());
@@ -58,14 +53,14 @@ public class ShutdownManager {
         diagnosticSystem.ifPresent(DiagnosticSystem::finish);
 
         if (detectConfigurationOptional.isPresent() && directoryManagerOptional.isPresent()) {
-            DetectConfiguration detectConfiguration = detectConfigurationOptional.get();
-            DirectoryManager directoryManager = directoryManagerOptional.get();
+            final DetectConfiguration detectConfiguration = detectConfigurationOptional.get();
+            final DirectoryManager directoryManager = directoryManagerOptional.get();
             cleanupRun(productRunData, airgapZip, directoryManager, detectConfiguration);
         }
     }
 
-    private void stopPhoneHome(ProductRunData productRunData) {
-        BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
+    private void stopPhoneHome(final ProductRunData productRunData) {
+        final BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
         if (blackDuckRunData.getPhoneHomeManager().isPresent()) {
             try {
                 logger.debug("Ending phone home.");
@@ -76,21 +71,21 @@ public class ShutdownManager {
         }
     }
 
-    private void cleanupRun(Optional<ProductRunData> productRunData, Optional<File> airgapZip, DirectoryManager directoryManager, DetectConfiguration detectConfiguration) {
+    private void cleanupRun(final Optional<ProductRunData> productRunData, final Optional<File> airgapZip, final DirectoryManager directoryManager, final DetectConfiguration detectConfiguration) {
         try {
-            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.None)) {
+            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.NONE)) {
                 logger.debug("Detect will cleanup.");
-                boolean dryRun = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, PropertyAuthority.None);
+                final boolean dryRun = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, PropertyAuthority.NONE);
 
                 boolean offline = false;
                 if (productRunData.isPresent() && productRunData.get().shouldUseBlackDuckProduct()) {
-                    BlackDuckRunData blackDuckRunData = productRunData.get().getBlackDuckRunData();
+                    final BlackDuckRunData blackDuckRunData = productRunData.get().getBlackDuckRunData();
                     if (!blackDuckRunData.isOnline()) {
                         offline = true;
                     }
                 }
 
-                List<File> cleanupToSkip = new ArrayList<>();
+                final List<File> cleanupToSkip = new ArrayList<>();
                 if (dryRun || offline) {
                     logger.debug("Will not cleanup scan folder.");
                     cleanupToSkip.add(directoryManager.getScanOutputDirectory());
@@ -113,7 +108,7 @@ public class ShutdownManager {
         }
     }
 
-    private void cleanup(File directory, List<File> skip) throws IOException {
+    private void cleanup(final File directory, final List<File> skip) throws IOException {
         IOException exception = null;
         File[] files = directory.listFiles();
         if (files != null) {
@@ -132,7 +127,7 @@ public class ShutdownManager {
         }
 
         files = directory.listFiles();
-        boolean noFiles = files == null || files.length == 0;
+        final boolean noFiles = files == null || files.length == 0;
         if (noFiles && directory.exists()) {
             logger.info("Cleaning up directory: " + directory.getAbsolutePath());
             FileUtils.forceDelete(directory);

@@ -35,35 +35,25 @@ import org.apache.commons.lang3.StringUtils;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 
 public class ObjectPrinter {
-    public static void printObject(final ReportWriter writer, final String prefix, final Object guy) {
-        Map<String, String> fieldMap = new HashMap<>();
-        populateObject(prefix, guy, fieldMap);
-        fieldMap.forEach((key, value) -> {
-            writer.writeLine(key + ": " + value);
-        });
-    }
-
     public static void printObjectPrivate(final ReportWriter writer, final Object guy) {
-        Map<String, String> fieldMap = new HashMap<>();
+        final Map<String, String> fieldMap = new HashMap<>();
         populateObjectPrivate(null, guy, fieldMap);
-        fieldMap.forEach((key, value) -> {
-            writer.writeLine(key + ": " + value);
-        });
+        fieldMap.forEach((key, value) -> writer.writeLine(key + ": " + value));
     }
 
-    public static void populateObjectPrivate(final String prefix, final Object guy, Map<String, String> fieldMap) {
+    public static void populateObjectPrivate(final String prefix, final Object guy, final Map<String, String> fieldMap) {
         for (final Field field : guy.getClass().getDeclaredFields()) {
             populateField(field, prefix, guy, fieldMap);
         }
     }
 
-    public static void populateObject(final String prefix, final Object guy, Map<String, String> fieldMap) {
+    public static void populateObject(final String prefix, final Object guy, final Map<String, String> fieldMap) {
         for (final Field field : guy.getClass().getFields()) {
             populateField(field, prefix, guy, fieldMap);
         }
     }
 
-    public static void populateField(final Field field, final String prefix, final Object guy, Map<String, String> fieldMap) {
+    public static void populateField(final Field field, final String prefix, final Object guy, final Map<String, String> fieldMap) {
         if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
             return; // don't print static fields.
         }

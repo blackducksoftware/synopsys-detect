@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectTool;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
@@ -75,7 +74,7 @@ public class DetectableTool {
         this.eventSystem = eventSystem;
     }
 
-    public DetectableToolResult execute(final File sourcePath) throws DetectUserFriendlyException { //TODO: Caller publishes result.
+    public DetectableToolResult execute(final File sourcePath) { //TODO: Caller publishes result.
         logger.trace("Starting a detectable tool.");
 
         final DetectableEnvironment detectableEnvironment = new DetectableEnvironment(sourcePath);
@@ -105,7 +104,7 @@ public class DetectableTool {
             logger.error("Was not extractable: " + extractable.toDescription());
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.FAILURE));
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
-            return DetectableToolResult.failed(Optional.ofNullable(extractableException));
+            return DetectableToolResult.failed();
         }
 
         logger.info("Extractable passed.");
@@ -117,7 +116,7 @@ public class DetectableTool {
             logger.error("Extraction was not success.");
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.FAILURE));
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
-            return DetectableToolResult.failed(Optional.empty());
+            return DetectableToolResult.failed();
         } else {
             logger.info("Extraction success.");
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.SUCCESS));

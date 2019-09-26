@@ -59,7 +59,7 @@ public abstract class InteractiveMode {
 
     public String askSecretQuestion(final String question) {
         printStream.println(question);
-        return interactiveReader.readPassword().toString();
+        return interactiveReader.readPassword();
     }
 
     public void setPropertyFromQuestion(final DetectProperty detectProperty, final String question) {
@@ -162,20 +162,6 @@ public abstract class InteractiveMode {
             printProfile();
         }
 
-    }
-
-    public void printOptions() {
-        for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
-            String fieldValue = interactiveOption.getInteractiveValue();
-            final String propertyKey = interactiveOption.getDetectProperty().getPropertyKey().toLowerCase();
-            if (propertyKey.contains("password") || propertyKey.contains("api.token")|| propertyKey.contains("access.token")) {
-                fieldValue = "";
-                for (int i = 0; i < interactiveOption.getInteractiveValue().length(); i++) {
-                    fieldValue += "*";
-                }
-            }
-            printStream.println("--" + interactiveOption.getDetectProperty().getPropertyKey() + "=" + fieldValue);
-        }
     }
 
     public void saveOptionsToApplicationProperties() {

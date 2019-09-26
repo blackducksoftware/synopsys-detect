@@ -53,7 +53,7 @@ public class NpmLockfileParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public NpmParseResult parse(final String sourcePath, final Optional<String> packageJsonText, final String lockFileText, final boolean includeDevDependencies) {
+    public NpmParseResult parse(final Optional<String> packageJsonText, final String lockFileText, final boolean includeDevDependencies) {
         final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         logger.debug("Parsing lock file text: ");
         logger.debug(lockFileText);
@@ -75,12 +75,12 @@ public class NpmLockfileParser {
             final NpmProject project = dependencyConverter.convertLockFile(packageLock, packageJson);
 
             //First we will recreate the graph from the resolved npm dependencies
-            for (NpmDependency resolved : project.getResolvedDependencies()) {
+            for (final NpmDependency resolved : project.getResolvedDependencies()) {
                 transformTreeToGraph(resolved, project, dependencyGraph, includeDevDependencies);
             }
 
             //Then we will add relationships between the project (root) and the graph
-            boolean atLeastOneRequired = project.getDeclaredDependencies().size() > 0 || project.getDeclaredDevDependencies().size() > 0;
+            final boolean atLeastOneRequired = project.getDeclaredDependencies().size() > 0 || project.getDeclaredDevDependencies().size() > 0;
             if (atLeastOneRequired) {
                 addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDependencies(), dependencyGraph);
                 if (includeDevDependencies) {
@@ -102,9 +102,9 @@ public class NpmLockfileParser {
         return new NpmParseResult(packageLock.name, packageLock.version, codeLocation);
     }
 
-    private void addRootDependencies(List<NpmDependency> resolvedDependencies, List<NpmRequires> requires, final MutableDependencyGraph dependencyGraph) {
-        for (NpmRequires dependency : requires) {
-            NpmDependency resolved = firstDependencyWithName(resolvedDependencies, dependency.getName());
+    private void addRootDependencies(final List<NpmDependency> resolvedDependencies, final List<NpmRequires> requires, final MutableDependencyGraph dependencyGraph) {
+        for (final NpmRequires dependency : requires) {
+            final NpmDependency resolved = firstDependencyWithName(resolvedDependencies, dependency.getName());
             if (resolved != null) {
                 dependencyGraph.addChildToRoot(resolved.getGraphDependency());
             } else {
@@ -133,7 +133,7 @@ public class NpmLockfileParser {
 
     //returns the first dependency in the following order: directly under this dependency, under a parent, under the project
     private NpmDependency lookupDependency(final NpmDependency npmDependency, final NpmProject project, final String name) {
-        NpmDependency resolved = firstDependencyWithName(npmDependency.getDependencies(), name);
+        final NpmDependency resolved = firstDependencyWithName(npmDependency.getDependencies(), name);
 
         if (resolved != null) {
             return resolved;

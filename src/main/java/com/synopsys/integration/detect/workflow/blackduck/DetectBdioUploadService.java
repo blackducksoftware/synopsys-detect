@@ -27,12 +27,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.BdioUploadCodeLocationCreationRequest;
@@ -41,6 +35,11 @@ import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatch;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadOutput;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
+import com.synopsys.integration.detect.configuration.DetectConfiguration;
+import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.PropertyAuthority;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectBdioUploadService {
@@ -48,24 +47,22 @@ public class DetectBdioUploadService {
 
     private final DetectConfiguration detectConfiguration;
     private final BdioUploadService bdioUploadService;
-    private final EventSystem eventSystem;
 
-    public DetectBdioUploadService(final DetectConfiguration detectConfiguration, final BdioUploadService bdioUploadService, EventSystem eventSystem) {
+    public DetectBdioUploadService(final DetectConfiguration detectConfiguration, final BdioUploadService bdioUploadService) {
         this.detectConfiguration = detectConfiguration;
         this.bdioUploadService = bdioUploadService;
-        this.eventSystem = eventSystem;
     }
 
-    public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(List<UploadTarget> uploadTargets) throws IntegrationException, DetectUserFriendlyException {
-        UploadBatch uploadBatch = new UploadBatch();
-        for (UploadTarget uploadTarget : uploadTargets) {
-            logger.debug(String.format("uploading %s to %s", uploadTarget.getUploadFile().getName(), detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None)));
+    public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(final List<UploadTarget> uploadTargets) throws IntegrationException, DetectUserFriendlyException {
+        final UploadBatch uploadBatch = new UploadBatch();
+        for (final UploadTarget uploadTarget : uploadTargets) {
+            logger.debug(String.format("uploading %s to %s", uploadTarget.getUploadFile().getName(), detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.NONE)));
             uploadBatch.addUploadTarget(uploadTarget);
         }
 
-        BdioUploadCodeLocationCreationRequest uploadRequest = bdioUploadService.createUploadRequest(uploadBatch);
-        CodeLocationCreationData<UploadBatchOutput> response = bdioUploadService.uploadBdio(uploadRequest);
-        for (UploadOutput uploadOutput : response.getOutput()) {
+        final BdioUploadCodeLocationCreationRequest uploadRequest = bdioUploadService.createUploadRequest(uploadBatch);
+        final CodeLocationCreationData<UploadBatchOutput> response = bdioUploadService.uploadBdio(uploadRequest);
+        for (final UploadOutput uploadOutput : response.getOutput()) {
             if (uploadOutput.getResult() == Result.FAILURE) {
                 logger.error("Failed to upload code location: " + uploadOutput.getCodeLocationName());
                 logger.error("Reason: " + uploadOutput.getErrorMessage().orElse("Unknown reason."));

@@ -24,9 +24,6 @@ package com.synopsys.integration.detectable.detectables.pip;
 
 import java.io.File;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
@@ -43,9 +40,7 @@ import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDe
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
 public class PipInspectorDetectable extends Detectable {
-    public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
 
     private final FileFinder fileFinder;
     private final PythonResolver pythonResolver;

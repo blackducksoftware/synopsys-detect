@@ -129,7 +129,7 @@ public class GemspecLineParser {
 
     // Example: fakegem.rb -> fakegem
     private String stripFileExtension(final String name) {
-        final int extensionIndex = name.lastIndexOf(".");
+        final int extensionIndex = name.lastIndexOf('.');
         if (extensionIndex < 0) {
             return name;
         }
@@ -155,7 +155,7 @@ public class GemspecLineParser {
             return null;
         }
 
-        final String versionText = line.substring(line.indexOf(","));
+        final String versionText = line.substring(line.indexOf(','));
         final String[] versionSegments = versionText.replace("[", "").replace("]", "").split(",");
 
         return Arrays.stream(versionSegments)
@@ -165,7 +165,7 @@ public class GemspecLineParser {
                    .collect(Collectors.joining(", "));
     }
 
-    private class LineStart {
+    private static class LineStart {
         private final int startingIndex;
         private final GemspecDependencyType gemspecDependencyType;
 

@@ -27,24 +27,60 @@ import java.io.File;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 
 public class SbtDependencyModule {
-    public File sourcePath;
-    public String name;
-    public String version;
-    public String org;
-    public DependencyGraph graph;
+    private File sourcePath;
+    private String name;
+    private String version;
+    private String org;
+    private DependencyGraph graph;
 
     // if this is from a specific configuration
-    public String configuration = null;
+    private String configuration = null;
 
-    public SbtDependencyModule() {
+    public File getSourcePath() {
+        return sourcePath;
     }
 
-    public SbtDependencyModule(final String name, final String version, final String org, final DependencyGraph graph, final File sourcePath) {
+    public void setSourcePath(final File sourcePath) {
         this.sourcePath = sourcePath;
-        this.graph = graph;
+    }
 
-        this.org = org;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(final String name) {
         this.name = name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(final String version) {
         this.version = version;
+    }
+
+    public String getOrg() {
+        return org;
+    }
+
+    public void setOrg(final String org) {
+        this.org = org;
+    }
+
+    public DependencyGraph getGraph() {
+        return graph;
+    }
+
+    public void setGraph(final DependencyGraph graph) {
+        this.graph = graph;
+    }
+
+    public String getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(final String configuration) {
+        this.configuration = configuration;
     }
 }

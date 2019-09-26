@@ -32,9 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -46,13 +43,11 @@ public class PackratLockExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final PackratDescriptionFileParser packratDescriptionFileParser;
     private final PackratLockFileParser packRatLockFileParser;
-    private final ExternalIdFactory externalIdFactory;
     private final FileFinder fileFinder;
 
-    public PackratLockExtractor(final PackratDescriptionFileParser packratDescriptionFileParser, final PackratLockFileParser packRatLockFileParser, final ExternalIdFactory externalIdFactory, final FileFinder fileFinder) {
+    public PackratLockExtractor(final PackratDescriptionFileParser packratDescriptionFileParser, final PackratLockFileParser packRatLockFileParser, final FileFinder fileFinder) {
         this.packratDescriptionFileParser = packratDescriptionFileParser;
         this.packRatLockFileParser = packRatLockFileParser;
-        this.externalIdFactory = externalIdFactory;
         this.fileFinder = fileFinder;
     }
 

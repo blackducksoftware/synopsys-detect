@@ -41,9 +41,9 @@ public class DetectInfoUtility {
     }
 
     public DetectInfo createDetectInfo() {
-        String versionText = findDetectVersionFromResources();
-        int majorVersion = parseMajorVersion(versionText);
-        OperatingSystemType os = findOperatingSystemType();
+        final String versionText = findDetectVersionFromResources();
+        final int majorVersion = parseMajorVersion(versionText);
+        final OperatingSystemType os = findOperatingSystemType();
         logger.debug("You seem to be running in a " + os + " operating system.");
         return new DetectInfo(versionText, majorVersion, os);
     }
@@ -57,7 +57,6 @@ public class DetectInfoUtility {
     }
 
     public OperatingSystemType findOperatingSystemType() {
-        OperatingSystemType operatingSystemType;
         if (SystemUtils.IS_OS_LINUX) {
             return OperatingSystemType.LINUX;
         } else if (SystemUtils.IS_OS_MAC) {
@@ -70,7 +69,7 @@ public class DetectInfoUtility {
         return OperatingSystemType.LINUX;
     }
 
-    public int parseMajorVersion(String detectVersionText) {
+    public int parseMajorVersion(final String detectVersionText) {
         return Integer.parseInt(detectVersionText.split(Pattern.quote("."))[0]);
     }
 }

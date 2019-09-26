@@ -30,13 +30,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.swing.text.html.Option;
-
+import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorToolResult {
@@ -45,7 +42,6 @@ public class DetectorToolResult {
 
     public Set<DetectorType> applicableDetectorTypes = new HashSet<>();
     public Set<DetectorType> failedDetectorTypes = new HashSet<>();
-    public Set<DetectorType> succesfullDetectorTypes = new HashSet<>();
 
     public Optional<DetectorEvaluationTree> rootDetectorEvaluationTree = Optional.empty();
     public Map<CodeLocation, DetectCodeLocation> codeLocationMap = new HashMap<>();

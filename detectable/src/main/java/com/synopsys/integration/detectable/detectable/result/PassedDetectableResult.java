@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectable.result;
 
-public class PassedDetectableResult extends DetectableResult {
+public class PassedDetectableResult implements DetectableResult {
     @Override
     public boolean getPassed() {
         return true;

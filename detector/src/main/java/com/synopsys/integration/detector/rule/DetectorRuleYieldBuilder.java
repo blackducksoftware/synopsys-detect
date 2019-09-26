@@ -31,8 +31,8 @@ public class DetectorRuleYieldBuilder {
         this.yieldingDetector = yieldingDetector;
     }
 
-    public DetectorRuleYieldBuilder to(final DetectorRule Detector) {
-        this.yieldingToDetector = Detector;
+    public DetectorRuleYieldBuilder to(final DetectorRule detector) {
+        this.yieldingToDetector = detector;
         return this;
     }
 

@@ -30,7 +30,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.help.DetectOption;
-import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
@@ -45,7 +44,7 @@ public class DetectConfigurationReporter {
                    .collect(Collectors.toList());
     }
 
-    public void print(final ReportWriter writer, final List<DetectOption> detectOptions, boolean skipDefaults) throws IllegalArgumentException, SecurityException {
+    public void print(final ReportWriter writer, final List<DetectOption> detectOptions, final boolean skipDefaults) throws IllegalArgumentException, SecurityException {
         writer.writeLine("Detect Configuration");
         writer.writeLine(StringUtils.repeat("-", 60));
 
@@ -105,7 +104,7 @@ public class DetectConfigurationReporter {
 
     }
 
-    public void publishWarnings(EventSystem eventSystem, final List<DetectOption> detectOptions) {
+    public void publishWarnings(final EventSystem eventSystem, final List<DetectOption> detectOptions) {
         final List<DetectOption> sortedOptions = sortOptions(detectOptions);
 
         final List<DetectOption> allWarnings = sortedOptions.stream().filter(it -> it.getWarnings().size() > 0).collect(Collectors.toList());

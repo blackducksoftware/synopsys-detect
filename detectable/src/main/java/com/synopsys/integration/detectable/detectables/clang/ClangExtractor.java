@@ -72,9 +72,8 @@ public class ClangExtractor {
             logger.trace("Found : " + results.getFoundPackages() + " packages.");
             logger.trace("Found : " + results.getFailedDependencyFiles() + " non-package files.");
 
-            final Forge defaultForge = currentPackageManager.getPackageManagerInfo().getDefaultForge();
             final List<Forge> packageForges = currentPackageManager.getPackageManagerInfo().getForges();
-            final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(defaultForge, packageForges, sourceDirectory, results.getFoundPackages());
+            final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(packageForges, results.getFoundPackages());
 
             logSummary(results.getFailedDependencyFiles(), sourceDirectory);
 
@@ -84,7 +83,7 @@ public class ClangExtractor {
         }
     }
 
-    private void logSummary(final Set<File> failedDependencyFiles, File sourceDirectory) {
+    private void logSummary(final Set<File> failedDependencyFiles, final File sourceDirectory) {
         logger.debug("Dependency files outside the build directory that were not recognized by the package manager:");
         for (final File failedDependencyFile : failedDependencyFiles) {
             try {
@@ -93,7 +92,7 @@ public class ClangExtractor {
                 } else {
                     logger.debug(String.format("\t%s", failedDependencyFile.getAbsolutePath()));
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 logger.debug(String.format("%s may or may not be in the source dir, failed to check.", failedDependencyFile.getAbsolutePath()));
                 logger.debug(String.format("\t%s", failedDependencyFile.getAbsolutePath()));
             }

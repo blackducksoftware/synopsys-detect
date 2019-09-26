@@ -25,15 +25,15 @@ package com.synopsys.integration.detect.lifecycle.shutdown;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class ExitCodeUtility {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private static String BLACKDUCK_ERROR_MESSAGE = "An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Detect documentation: https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect";
+    private static final String BLACKDUCK_ERROR_MESSAGE = "An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Detect documentation: https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect";
 
     public ExitCodeType getExitCodeFromExceptionDetails(final Exception e) {
         final ExitCodeType exceptionExitCodeType;
@@ -45,7 +45,7 @@ public class ExitCodeUtility {
             final DetectUserFriendlyException friendlyException = (DetectUserFriendlyException) e;
             exceptionExitCodeType = friendlyException.getExitCodeType();
         } else if (e instanceof BlackDuckApiException) {
-            BlackDuckApiException be = (BlackDuckApiException) e;
+            final BlackDuckApiException be = (BlackDuckApiException) e;
 
             logger.error(BLACKDUCK_ERROR_MESSAGE);
             logger.error(be.getMessage());

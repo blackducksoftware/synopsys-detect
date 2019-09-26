@@ -22,15 +22,23 @@
  */
 package com.synopsys.integration.detect.tool.binaryscanner;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScan;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatch;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanUploadService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -46,21 +54,6 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.util.NameVersion;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.zip.ZipOutputStream;
-
-import freemarker.template.utility.StringUtil;
-
 public class BlackDuckBinaryScannerTool {
     private final Logger logger = LoggerFactory.getLogger(BlackDuckBinaryScannerTool.class);
     private static final String STATUS_KEY = "BINARY_SCAN";
@@ -68,11 +61,11 @@ public class BlackDuckBinaryScannerTool {
     private final CodeLocationNameManager codeLocationNameManager;
     private final DirectoryManager directoryManager;
     private final FileFinder fileFinder;
-    private BinaryScanOptions binaryScanOptions;
-    private BlackDuckServicesFactory blackDuckServicesFactory;
-    private EventSystem eventSystem;
+    private final BinaryScanOptions binaryScanOptions;
+    private final BlackDuckServicesFactory blackDuckServicesFactory;
+    private final EventSystem eventSystem;
 
-    public BlackDuckBinaryScannerTool(EventSystem eventSystem, final CodeLocationNameManager codeLocationNameManager, DirectoryManager directoryManager, FileFinder fileFinder, final BinaryScanOptions binaryScanOptions,
+    public BlackDuckBinaryScannerTool(final EventSystem eventSystem, final CodeLocationNameManager codeLocationNameManager, final DirectoryManager directoryManager, final FileFinder fileFinder, final BinaryScanOptions binaryScanOptions,
         final BlackDuckServicesFactory blackDuckServicesFactory) {
         this.codeLocationNameManager = codeLocationNameManager;
         this.directoryManager = directoryManager;
@@ -99,13 +92,13 @@ public class BlackDuckBinaryScannerTool {
         if (StringUtils.isNotBlank(binaryScanOptions.getSingleTargetFilePath())) {
             binaryUpload = new File(binaryScanOptions.getSingleTargetFilePath());
         } else if (binaryScanOptions.getMultipleTargetFileNamePatterns().stream().anyMatch(StringUtils::isNotBlank)) {
-            List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), binaryScanOptions.getMultipleTargetFileNamePatterns(), 0);
+            final List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), binaryScanOptions.getMultipleTargetFileNamePatterns(), 0);
             if (multipleTargets != null && multipleTargets.size() > 0) {
                 logger.info("Binary scan found {} files to archive for binary scan upload.", multipleTargets.size());
                 try {
                     final String zipPath = "binary-upload.zip";
                     final File zip = new File(directoryManager.getBinaryOutputDirectory(), zipPath);
-                    Map<String, Path> uploadTargets = multipleTargets.stream().collect(Collectors.toMap(File::getName, File::toPath));
+                    final Map<String, Path> uploadTargets = multipleTargets.stream().collect(Collectors.toMap(File::getName, File::toPath));
                     DetectZipUtil.zip(zip, uploadTargets);
                     logger.info("Binary scan created the following zip for upload: " + zip.toPath());
                     binaryUpload = zip;
@@ -116,9 +109,9 @@ public class BlackDuckBinaryScannerTool {
         }
 
         if (binaryUpload != null && binaryUpload.isFile() && binaryUpload.canRead()) {
-            String name = projectNameVersion.getName();
-            String version = projectNameVersion.getVersion();
-            BinaryScanUploadService uploadService = blackDuckServicesFactory.createBinaryScanUploadService();
+            final String name = projectNameVersion.getName();
+            final String version = projectNameVersion.getVersion();
+            final BinaryScanUploadService uploadService = blackDuckServicesFactory.createBinaryScanUploadService();
             final CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData = uploadBinaryScanFile(uploadService, binaryUpload, name, version);
             return BinaryScanToolResult.SUCCESS(codeLocationCreationData);
         } else {
@@ -129,24 +122,24 @@ public class BlackDuckBinaryScannerTool {
         }
     }
 
-    public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(BinaryScanUploadService binaryScanUploadService, final File binaryScanFile, final String projectName, final String projectVersionName)
+    public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(final BinaryScanUploadService binaryScanUploadService, final File binaryScanFile, final String projectName, final String projectVersionName)
         throws DetectUserFriendlyException {
-        String prefix = binaryScanOptions.getCodeLocationPrefix();
-        String suffix = binaryScanOptions.getCodeLocationSuffix();
+        final String prefix = binaryScanOptions.getCodeLocationPrefix();
+        final String suffix = binaryScanOptions.getCodeLocationSuffix();
         final String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(binaryScanFile.getName(), projectName, projectVersionName, prefix, suffix);
         try {
             logger.info("Preparing to upload binary scan file: " + codeLocationName);
-            BinaryScan binaryScan = new BinaryScan(binaryScanFile, projectName, projectVersionName, codeLocationName);
-            BinaryScanBatch binaryScanBatch = new BinaryScanBatch(binaryScan);
-            CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData = binaryScanUploadService.uploadBinaryScan(binaryScanBatch);
+            final BinaryScan binaryScan = new BinaryScan(binaryScanFile, projectName, projectVersionName, codeLocationName);
+            final BinaryScanBatch binaryScanBatch = new BinaryScanBatch(binaryScan);
+            final CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData = binaryScanUploadService.uploadBinaryScan(binaryScanBatch);
 
-            BinaryScanBatchOutput binaryScanBatchOutput = codeLocationCreationData.getOutput();
+            final BinaryScanBatchOutput binaryScanBatchOutput = codeLocationCreationData.getOutput();
             binaryScanBatchOutput.throwExceptionForError(new Slf4jIntLogger(logger));
 
             logger.info("Successfully uploaded binary scan file: " + codeLocationName);
             eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.SUCCESS));
             return codeLocationCreationData;
-        } catch (IntegrationException e) {
+        } catch (final IntegrationException e) {
             logger.error("Failed to upload binary scan file: " + e.getMessage());
             eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.FAILURE));
             throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);

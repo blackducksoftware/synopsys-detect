@@ -24,7 +24,6 @@ package com.synopsys.integration.detectable.detectable.result;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FilesNotFoundDetectableResult extends FailedDetectableResult {
     private final List<String> patterns;

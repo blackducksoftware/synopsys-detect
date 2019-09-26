@@ -26,6 +26,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SignatureScanPath {
-    public String targetPath;
-    public Set<String> exclusions = new HashSet<>();
+    private String targetPath;
+    private final Set<String> exclusions = new HashSet<>();
+
+    public String getTargetPath() {
+        return targetPath;
+    }
+
+    public void setTargetPath(final String targetPath) {
+        this.targetPath = targetPath;
+    }
+
+    public Set<String> getExclusions() {
+        return exclusions;
+    }
 }

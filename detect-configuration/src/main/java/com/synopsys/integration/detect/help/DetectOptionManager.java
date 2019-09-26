@@ -83,11 +83,9 @@ public class DetectOptionManager {
         final Map<DetectProperty, Object> propertyMap = detectConfiguration.getCurrentProperties();
         if (null != propertyMap && !propertyMap.isEmpty()) {
             for (final DetectProperty detectProperty : propertyMap.keySet()) {
-                final DetectOption option = processField(detectProperty, detectConfiguration.getPropertyValueAsString(detectProperty, PropertyAuthority.None));
-                if (option != null) {
-                    if (!detectOptionsMap.containsKey(detectProperty)) {
-                        detectOptionsMap.put(detectProperty, option);
-                    }
+                final DetectOption option = processField(detectProperty, detectConfiguration.getPropertyValueAsString(detectProperty, PropertyAuthority.NONE));
+                if (option != null && !detectOptionsMap.containsKey(detectProperty)) {
+                    detectOptionsMap.put(detectProperty, option);
                 }
             }
         }
@@ -111,7 +109,7 @@ public class DetectOptionManager {
 
     public BlackDuckServerConfig createBlackDuckServerConfig(final IntLogger logger) throws DetectUserFriendlyException {
         final BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = new BlackDuckServerConfigBuilder()
-                                                                              .setExecutorService(Executors.newFixedThreadPool(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_PARALLEL_PROCESSORS, PropertyAuthority.None)))
+                                                                              .setExecutorService(Executors.newFixedThreadPool(detectConfiguration.getIntegerProperty(DetectProperty.DETECT_PARALLEL_PROCESSORS, PropertyAuthority.NONE)))
                                                                               .setLogger(logger);
 
         final Set<String> allBlackDuckKeys = new HashSet<>(blackDuckServerConfigBuilder.getPropertyKeys());
@@ -120,10 +118,10 @@ public class DetectOptionManager {
                                                                    .filter(it -> !it.getKey().toLowerCase().contains("proxy"))
                                                                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        final List<Pattern> ignoredProxyHostPatterns = ProxyUtil.getIgnoredProxyHostPatterns(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS, PropertyAuthority.None));
+        final List<Pattern> ignoredProxyHostPatterns = ProxyUtil.getIgnoredProxyHostPatterns(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS, PropertyAuthority.NONE));
         boolean ignoreProxy = false;
         try {
-            ignoreProxy = ProxyUtil.shouldIgnoreHost(new URL(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None)).getHost(), ignoredProxyHostPatterns);
+            ignoreProxy = ProxyUtil.shouldIgnoreHost(new URL(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.NONE)).getHost(), ignoredProxyHostPatterns);
         } catch (final MalformedURLException e) {
             logger.error("Unable to decide if proxy should be used for the given host, will use proxy.");
         }
@@ -146,7 +144,7 @@ public class DetectOptionManager {
         for (final DetectOption option : detectOptions) {
             String fieldValue = option.getPostInitValue();
             if (StringUtils.isBlank(fieldValue)) {
-                fieldValue = detectConfiguration.getPropertyValueAsString(option.getDetectProperty(), PropertyAuthority.None);
+                fieldValue = detectConfiguration.getPropertyValueAsString(option.getDetectProperty(), PropertyAuthority.NONE);
             }
             final boolean valuesMatch = option.getResolvedValue().equals(fieldValue);
             final boolean propertyWasSet = detectConfiguration.wasPropertyActuallySet(option.getDetectProperty());
@@ -236,8 +234,7 @@ public class DetectOptionManager {
             field.setAccessible(true);
 
             final boolean hasValue = null != currentValue;
-            if (defaultValue != null && !defaultValue.trim().isEmpty() && !hasValue) {
-                resolvedValue = defaultValue;
+            if (!defaultValue.trim().isEmpty() && !hasValue) {
                 detectConfiguration.setDetectProperty(detectProperty, resolvedValue);
             } else if (hasValue) {
                 resolvedValue = currentValue;
@@ -296,10 +293,8 @@ public class DetectOptionManager {
     private void checkForRemovedProperties() {
         final int detectMajorVersion = detectInfo.getDetectMajorVersion();
         for (final DetectOption detectOption : detectOptions) {
-            if (detectOption.getDetectOptionHelp().isDeprecated) {
-                if (detectMajorVersion >= detectOption.getDetectOptionHelp().deprecationRemoveInVersion.getIntValue()) {
-                    throw new RuntimeException("A property should have been removed in this Detect Major Version: " + detectOption.getDetectProperty().getPropertyKey());
-                }
+            if (detectOption.getDetectOptionHelp().isDeprecated && detectMajorVersion >= detectOption.getDetectOptionHelp().deprecationRemoveInVersion.getIntValue()) {
+                throw new RuntimeException("A property should have been removed in this Detect Major Version: " + detectOption.getDetectProperty().getPropertyKey());
             }
         }
     }

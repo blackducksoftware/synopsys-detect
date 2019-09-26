@@ -25,7 +25,6 @@ package com.synopsys.integration.detect.workflow.airgap;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -36,8 +35,6 @@ import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
-import ch.qos.logback.core.util.FileUtil;
-
 public class NugetAirGapCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -47,7 +44,7 @@ public class NugetAirGapCreator {
         this.nugetInspectorInstaller = nugetInspectorInstaller;
     }
 
-    public void installNugetDependencies(File nugetFolder) throws DetectUserFriendlyException {
+    public void installNugetDependencies(final File nugetFolder) throws DetectUserFriendlyException {
         logger.info("Installing nuget dotnet inspector.");
         installThenCopy(nugetFolder, "nuget_dotnet", true);
 
@@ -55,10 +52,10 @@ public class NugetAirGapCreator {
         installThenCopy(nugetFolder, "nuget_classic", false);
     }
 
-    private void installThenCopy(File nugetFolder, String folderName, boolean dotnet) throws DetectUserFriendlyException {
+    private void installThenCopy(final File nugetFolder, final String folderName, final boolean dotnet) throws DetectUserFriendlyException {
         try {
-            File inspectorFolder = new File(nugetFolder, folderName);
-            File installTarget;
+            final File inspectorFolder = new File(nugetFolder, folderName);
+            final File installTarget;
             if (dotnet) {
                 installTarget = nugetInspectorInstaller.installDotNet(inspectorFolder, Optional.empty());
             } else {
@@ -66,7 +63,7 @@ public class NugetAirGapCreator {
             }
             FileUtils.copyDirectory(installTarget, inspectorFolder);
             FileUtils.deleteDirectory(installTarget);
-        } catch (DetectableException | IOException e) {
+        } catch (final DetectableException | IOException e) {
             throw new DetectUserFriendlyException("An error occurred installing to the " + folderName + " inspector folder.", e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 

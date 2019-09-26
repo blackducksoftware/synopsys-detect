@@ -32,9 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.env.AbstractPropertyResolver;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
@@ -42,8 +39,8 @@ import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
-import com.synopsys.integration.detect.lifecycle.boot.DetectBootFactory;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBoot;
+import com.synopsys.integration.detect.lifecycle.boot.DetectBootFactory;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootResult;
 import com.synopsys.integration.detect.lifecycle.run.RunManager;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
@@ -54,7 +51,6 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.event.EventType;
 import com.synopsys.integration.detect.workflow.report.ReportManager;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
@@ -66,16 +62,16 @@ public class Application implements ApplicationRunner {
 
     public static boolean SHOULD_EXIT = true;
 
-    private ConfigurableEnvironment environment;
+    private final ConfigurableEnvironment environment;
 
     @Autowired
-    public Application(ConfigurableEnvironment environment) {
+    public Application(final ConfigurableEnvironment environment) {
         this.environment = environment;
         environment.setIgnoreUnresolvableNestedPlaceholders(true);
     }
 
     public static void main(final String[] args) {
-        SpringApplicationBuilder builder = new SpringApplicationBuilder(Application.class);
+        final SpringApplicationBuilder builder = new SpringApplicationBuilder(Application.class);
         builder.logStartupInfo(false);
         builder.run(args);
     }
@@ -85,18 +81,18 @@ public class Application implements ApplicationRunner {
         final long startTime = System.currentTimeMillis();
 
         //Events, Status and Exit Codes are required even if boot fails.
-        EventSystem eventSystem = new EventSystem();
-        DetectStatusManager statusManager = new DetectStatusManager(eventSystem);
+        final EventSystem eventSystem = new EventSystem();
+        final DetectStatusManager statusManager = new DetectStatusManager(eventSystem);
 
-        ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
-        ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
+        final ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
+        final ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
 
-        ReportManager reportManager = ReportManager.createDefault(eventSystem);
+        final ReportManager reportManager = ReportManager.createDefault(eventSystem);
 
         //Before boot even begins, we create a new Spring context for Detect to work within.
         logger.debug("Initializing detect.");
-        DetectRun detectRun = DetectRun.createDefault();
-        DetectContext detectContext = new DetectContext(detectRun);
+        final DetectRun detectRun = DetectRun.createDefault();
+        final DetectContext detectContext = new DetectContext(detectRun);
 
         Optional<DetectBootResult> detectBootResultOptional = Optional.empty();
         boolean printOutput = true;
@@ -104,7 +100,7 @@ public class Application implements ApplicationRunner {
 
         try {
             logger.debug("Detect boot begin.");
-            DetectBoot detectBoot = new DetectBoot(new DetectBootFactory());
+            final DetectBoot detectBoot = new DetectBoot(new DetectBootFactory());
             detectBootResultOptional = Optional.ofNullable(detectBoot.boot(detectRun, applicationArguments.getSourceArgs(), environment, eventSystem, detectContext));
             logger.debug("Detect boot completed.");
         } catch (final Exception e) {
@@ -112,11 +108,11 @@ public class Application implements ApplicationRunner {
             exitCodeManager.requestExitCode(e);
         }
         if (detectBootResultOptional.isPresent()) {
-            DetectBootResult detectBootResult = detectBootResultOptional.get();
+            final DetectBootResult detectBootResult = detectBootResultOptional.get();
             if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && detectBootResult.getProductRunData().isPresent()) {
                 logger.debug("Detect will attempt to run.");
-                ProductRunData productRunData = detectBootResult.getProductRunData().get();
-                RunManager runManager = new RunManager(detectContext);
+                final ProductRunData productRunData = detectBootResult.getProductRunData().get();
+                final RunManager runManager = new RunManager(detectContext);
                 try {
                     logger.debug("Detect run begin: " + detectRun.getRunId());
                     runManager.run(productRunData);
@@ -137,15 +133,15 @@ public class Application implements ApplicationRunner {
             }
 
             if (detectBootResult.getDetectConfiguration().isPresent()) {
-                DetectConfiguration detectConfiguration = detectBootResult.getDetectConfiguration().get();
-                printOutput = !detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT, PropertyAuthority.None);
-                shouldForceSuccess = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS, PropertyAuthority.None);
+                final DetectConfiguration detectConfiguration = detectBootResult.getDetectConfiguration().get();
+                printOutput = !detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT, PropertyAuthority.NONE);
+                shouldForceSuccess = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS, PropertyAuthority.NONE);
             }
         }
 
         try {
             logger.debug("Detect shutdown begin.");
-            ShutdownManager shutdownManager = new ShutdownManager();
+            final ShutdownManager shutdownManager = new ShutdownManager();
             shutdownManager.shutdown(
                 ifPresentMap(detectBootResultOptional, DetectBootResult::getProductRunData),
                 ifPresentMap(detectBootResultOptional, DetectBootResult::getAirGapZip),
@@ -166,7 +162,7 @@ public class Application implements ApplicationRunner {
         }
 
         //Find the final (as requested) exit code
-        ExitCodeType finalExitCode = exitCodeManager.getWinningExitCode();
+        final ExitCodeType finalExitCode = exitCodeManager.getWinningExitCode();
 
         //Print detect's status
         if (printOutput) {
@@ -193,7 +189,7 @@ public class Application implements ApplicationRunner {
         }
     }
 
-    public static <T, U> Optional<U> ifPresentMap(Optional<T> optional, Function<T, Optional<U>> operator) {
+    private static <T, U> Optional<U> ifPresentMap(final Optional<T> optional, final Function<T, Optional<U>> operator) {
         if (optional.isPresent()) {
             return operator.apply(optional.get());
         } else {

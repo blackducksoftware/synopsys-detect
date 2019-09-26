@@ -26,19 +26,15 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 
 public class SimpleFileFinder implements FileFinder {
 
-    private List<File> findFiles(final File directoryToSearch, final FilenameFilter filenameFilter, final int depth, boolean findInsideMatchingDirectories) {
+    private List<File> findFiles(final File directoryToSearch, final FilenameFilter filenameFilter, final int depth, final boolean findInsideMatchingDirectories) {
         final List<File> foundFiles = new ArrayList<>();
         if (depth < 0) {
             return foundFiles;
@@ -48,8 +44,8 @@ public class SimpleFileFinder implements FileFinder {
         }
         final File[] allFiles = directoryToSearch.listFiles();
         if (allFiles != null) {
-            for (File file : allFiles) {
-                boolean matches = filenameFilter.accept(directoryToSearch, file.getName());
+            for (final File file : allFiles) {
+                final boolean matches = filenameFilter.accept(directoryToSearch, file.getName());
                 if (matches) {
                     foundFiles.add(file);
                 }
@@ -65,7 +61,7 @@ public class SimpleFileFinder implements FileFinder {
     }
 
     @Override
-    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, boolean findInsideMatchingDirectories) {
+    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, final boolean findInsideMatchingDirectories) {
         return findFiles(directoryToSearch, new WildcardFileFilter(filenamePatterns), depth, findInsideMatchingDirectories);
     }
 }

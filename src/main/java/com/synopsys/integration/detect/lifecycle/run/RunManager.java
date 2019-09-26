@@ -113,7 +113,7 @@ public class RunManager {
         this.detectContext = detectContext;
     }
 
-    public RunResult run(final ProductRunData productRunData) throws DetectUserFriendlyException, InterruptedException, IntegrationException {
+    public RunResult run(final ProductRunData productRunData) throws DetectUserFriendlyException, IntegrationException {
         //TODO: Better way for run manager to get dependencies so he can be tested. (And better ways of creating his objects)
         final DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
         final DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
@@ -132,7 +132,7 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
 
         if (productRunData.shouldUsePolarisProduct()) {
-            runPolarisProduct(productRunData, detectConfiguration, directoryManager, eventSystem, connectionManager, executableRunner, detectToolFilter);
+            runPolarisProduct(productRunData, detectConfiguration, directoryManager, eventSystem, executableRunner, detectToolFilter);
         } else {
             logger.info("Polaris tools will NOT be run.");
         }
@@ -200,9 +200,9 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
             logger.info("Will include the detector tool.");
-            final String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DETECTOR, PropertyAuthority.None);
-            final String requiredDetectors = detectConfiguration.getProperty(DetectProperty.DETECT_REQUIRED_DETECTOR_TYPES, PropertyAuthority.None);
-            final boolean buildless = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BUILDLESS, PropertyAuthority.None);
+            final String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DETECTOR, PropertyAuthority.NONE);
+            final String requiredDetectors = detectConfiguration.getProperty(DetectProperty.DETECT_REQUIRED_DETECTOR_TYPES, PropertyAuthority.NONE);
+            final boolean buildless = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BUILDLESS, PropertyAuthority.NONE);
 
             final DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
             final DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectableFactory, buildless);
@@ -245,15 +245,13 @@ public class RunManager {
         }
     }
 
-    private void runPolarisProduct(
-        final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final EventSystem eventSystem, final ConnectionManager connectionManager,
-        final ExecutableRunner executableRunner,
-        final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
+    private void runPolarisProduct(final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final EventSystem eventSystem, final ExecutableRunner executableRunner,
+        final DetectToolFilter detectToolFilter) {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
             logger.info("Will include the Polaris tool.");
             final PolarisServerConfig polarisServerConfig = productRunData.getPolarisRunData().getPolarisServerConfig();
-            final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, executableRunner, connectionManager, detectConfiguration, polarisServerConfig);
+            final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, executableRunner, detectConfiguration, polarisServerConfig);
             polarisTool.runPolaris(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
             logger.info("Polaris actions finished.");
         } else {
@@ -297,7 +295,7 @@ public class RunManager {
         logger.debug("Completed project and version actions.");
 
         logger.debug("Processing Detect Code Locations.");
-        final BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new IntegrationEscapeUtil(), codeLocationNameManager, detectConfiguration, bdioCodeLocationCreator, directoryManager, eventSystem);
+        final BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new IntegrationEscapeUtil(), codeLocationNameManager, bdioCodeLocationCreator, directoryManager, eventSystem);
         final BdioResult bdioResult = bdioManager.createBdioFiles(aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations());
 
         final CodeLocationWaitData codeLocationWaitData = new CodeLocationWaitData();
@@ -306,7 +304,7 @@ public class RunManager {
             bdioResult.getUploadTargets().forEach(it -> eventSystem.publishEvent(Event.OutputFileOfInterest, it.getUploadFile()));
             if (null != blackDuckServicesFactory) {
                 logger.debug("Uploading BDIO files.");
-                final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, blackDuckServicesFactory.createBdioUploadService(), eventSystem);
+                final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, blackDuckServicesFactory.createBdioUploadService());
                 final CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
                 codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
             }

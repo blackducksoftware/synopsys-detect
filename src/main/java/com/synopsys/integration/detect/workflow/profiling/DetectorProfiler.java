@@ -26,30 +26,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorType;
 
 public class DetectorProfiler {
-    public Timekeeper<DetectorEvaluation> applicableTimekeeper = new Timekeeper();
-    public Timekeeper<DetectorEvaluation> extractableTimekeeper = new Timekeeper();
-    public Timekeeper<DetectorEvaluation> discoveryTimekeeper = new Timekeeper();
-    public Timekeeper<DetectorEvaluation> extractionTimekeeper = new Timekeeper();
+    private final Timekeeper<DetectorEvaluation> applicableTimekeeper = new Timekeeper<>();
+    private final Timekeeper<DetectorEvaluation> extractableTimekeeper = new Timekeeper<>();
+    private final Timekeeper<DetectorEvaluation> discoveryTimekeeper = new Timekeeper<>();
+    private final Timekeeper<DetectorEvaluation> extractionTimekeeper = new Timekeeper<>();
 
-    private EventSystem eventSystem;
+    private final EventSystem eventSystem;
 
-    public DetectorProfiler(EventSystem eventSystem) {
+    public DetectorProfiler(final EventSystem eventSystem) {
         this.eventSystem = eventSystem;
 
-        eventSystem.registerListener(Event.ApplicableStarted, event -> applicableStarted(event));
-        eventSystem.registerListener(Event.ApplicableEnded, event -> applicableEnded(event));
-        eventSystem.registerListener(Event.ExtractableStarted, event -> extractableStarted(event));
-        eventSystem.registerListener(Event.ExtractableEnded, event -> extractableEnded(event));
-        eventSystem.registerListener(Event.DiscoveryStarted, event -> discoveryStarted(event));
-        eventSystem.registerListener(Event.DiscoveryEnded, event -> discoveryEnded(event));
-        eventSystem.registerListener(Event.ExtractionStarted, event -> extractionStarted(event));
-        eventSystem.registerListener(Event.ExtractionEnded, event -> extractionEnded(event));
+        eventSystem.registerListener(Event.ApplicableStarted, this::applicableStarted);
+        eventSystem.registerListener(Event.ApplicableEnded, this::applicableEnded);
+        eventSystem.registerListener(Event.ExtractableStarted, this::extractableStarted);
+        eventSystem.registerListener(Event.ExtractableEnded, this::extractableEnded);
+        eventSystem.registerListener(Event.DiscoveryStarted, this::discoveryStarted);
+        eventSystem.registerListener(Event.DiscoveryEnded, this::discoveryEnded);
+        eventSystem.registerListener(Event.ExtractionStarted, this::extractionStarted);
+        eventSystem.registerListener(Event.ExtractionEnded, this::extractionEnded);
         eventSystem.registerListener(Event.DetectorsComplete, event -> detectorsComplete());
     }
 
@@ -102,7 +102,7 @@ public class DetectorProfiler {
     }
 
     public void detectorsComplete() {
-        DetectorTimings timings = new DetectorTimings(getAggregateDetectorGroupTimes(), getApplicableTimings(), getExtractableTimings(), getDiscoveryTimings(), getExtractionTimings());
+        final DetectorTimings timings = new DetectorTimings(getAggregateDetectorGroupTimes(), getApplicableTimings(), getExtractableTimings(), getDiscoveryTimings(), getExtractionTimings());
         eventSystem.publishEvent(Event.DetectorsProfiled, timings);
     }
 

@@ -24,11 +24,9 @@ package com.synopsys.integration.detectable.detectables.clang.packagemanager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +39,8 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.reso
 public class ClangPackageManagerRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public boolean applies(ClangPackageManager currentPackageManager, File workingDirectory, final ExecutableRunner executor) {
-        ClangPackageManagerInfo packageManagerInfo = currentPackageManager.getPackageManagerInfo();
+    public boolean applies(final ClangPackageManager currentPackageManager, final File workingDirectory, final ExecutableRunner executor) {
+        final ClangPackageManagerInfo packageManagerInfo = currentPackageManager.getPackageManagerInfo();
         try {
             final ExecutableOutput versionOutput = executor.execute(workingDirectory, packageManagerInfo.getPkgMgrName(), packageManagerInfo.getCheckPresenceCommandArgs());
             logger.debug(String.format("packageStatusOutput: %s", versionOutput.getStandardOutput()));
@@ -60,11 +58,11 @@ public class ClangPackageManagerRunner {
         return false;
     }
 
-    public PackageDetailsResult getAllPackages(ClangPackageManager currentPackageManager, File workingDirectory, final ExecutableRunner executableRunner, final Set<File> dependencyFiles) {
-        Set<PackageDetails> packageDetails = new HashSet<>();
-        Set<File> failedDependencyFiles = new HashSet<>();
-        for (File dependencyFile : dependencyFiles) {
-            PackageDetailsResult packageDetailsResult = getPackages(currentPackageManager, workingDirectory, executableRunner, dependencyFile);
+    public PackageDetailsResult getAllPackages(final ClangPackageManager currentPackageManager, final File workingDirectory, final ExecutableRunner executableRunner, final Set<File> dependencyFiles) {
+        final Set<PackageDetails> packageDetails = new HashSet<>();
+        final Set<File> failedDependencyFiles = new HashSet<>();
+        for (final File dependencyFile : dependencyFiles) {
+            final PackageDetailsResult packageDetailsResult = getPackages(currentPackageManager, workingDirectory, executableRunner, dependencyFile);
             packageDetails.addAll(packageDetailsResult.getFoundPackages());
             failedDependencyFiles.addAll(packageDetailsResult.getFailedDependencyFiles());
         }
@@ -72,8 +70,8 @@ public class ClangPackageManagerRunner {
         return new PackageDetailsResult(packageDetails, failedDependencyFiles);
     }
 
-    public PackageDetailsResult getPackages(ClangPackageManager currentPackageManager, File workingDirectory, final ExecutableRunner executableRunner, final File dependencyFile) {
-        ClangPackageManagerInfo packageManagerInfo = currentPackageManager.getPackageManagerInfo();
+    public PackageDetailsResult getPackages(final ClangPackageManager currentPackageManager, final File workingDirectory, final ExecutableRunner executableRunner, final File dependencyFile) {
+        final ClangPackageManagerInfo packageManagerInfo = currentPackageManager.getPackageManagerInfo();
         final Set<PackageDetails> dependencyDetails = new HashSet<>();
         final Set<File> failedDependencyFiles = new HashSet<>();
         try {
@@ -81,8 +79,8 @@ public class ClangPackageManagerRunner {
             fileSpecificGetOwnerArgs.add(dependencyFile.getAbsolutePath());
             final ExecutableOutput queryPackageOutput = executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetOwnerArgs);
 
-            ClangPackageManagerResolver resolver = currentPackageManager.getPackageResolver();
-            List<PackageDetails> packageDetails = resolver.resolvePackages(currentPackageManager.getPackageManagerInfo(), executableRunner, workingDirectory, queryPackageOutput.getStandardOutput());
+            final ClangPackageManagerResolver resolver = currentPackageManager.getPackageResolver();
+            final List<PackageDetails> packageDetails = resolver.resolvePackages(currentPackageManager.getPackageManagerInfo(), executableRunner, workingDirectory, queryPackageOutput.getStandardOutput());
             dependencyDetails.addAll(packageDetails);
         } catch (final ExecutableRunnerException e) {
             logger.debug(String.format("Error with dependency file %s when running %s", dependencyFile.getAbsolutePath(), packageManagerInfo.getPkgMgrCmdString()));

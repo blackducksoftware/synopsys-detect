@@ -23,14 +23,8 @@
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -39,8 +33,6 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 
 public class GoModCliExtractor {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final ExecutableRunner executableRunner;
     private final GoModGraphParser goModGraphParser;
 
@@ -51,16 +43,16 @@ public class GoModCliExtractor {
 
     public Extraction extract(final File directory, final File goExe) {
         try {
-            List<String> listOutput = execute(directory, goExe, "Querying go for the list of modules failed: ", "list", "-m");
-            List<String> modGraphOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "mod", "graph");
-            List<CodeLocation> codeLocations = goModGraphParser.parseListAndGoModGraph(listOutput, modGraphOutput);
+            final List<String> listOutput = execute(directory, goExe, "Querying go for the list of modules failed: ", "list", "-m");
+            final List<String> modGraphOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "mod", "graph");
+            final List<CodeLocation> codeLocations = goModGraphParser.parseListAndGoModGraph(listOutput, modGraphOutput);
             return new Extraction.Builder().success(codeLocations).build();//no project info - hoping git can help with that.
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    private List<String> execute(final File directory, final File goExe, String failureMessage, String... arguments) throws DetectableException, ExecutableRunnerException {
+    private List<String> execute(final File directory, final File goExe, final String failureMessage, final String... arguments) throws DetectableException, ExecutableRunnerException {
         final ExecutableOutput output = executableRunner.execute(directory, goExe, arguments);
 
         if (output.getReturnCode() == 0) {

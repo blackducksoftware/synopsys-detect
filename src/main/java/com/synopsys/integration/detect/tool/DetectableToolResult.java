@@ -23,7 +23,6 @@
 package com.synopsys.integration.detect.tool;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -38,35 +37,29 @@ public class DetectableToolResult {
         SUCCESS
     }
 
-    private DetectableToolResultType resultType;
-    private Optional<Exception> exception = Optional.empty();
+    private final DetectableToolResultType resultType;
 
-    private Optional<File> dockerTar = Optional.empty();
+    private final Optional<File> dockerTar;
     private final Optional<DetectToolProjectInfo> detectToolProjectInfo;
     private final List<DetectCodeLocation> detectCodeLocations;
 
-    public DetectableToolResult(DetectableToolResultType resultType, final Optional<DetectToolProjectInfo> detectToolProjectInfo, final List<DetectCodeLocation> detectCodeLocations, Optional<File> dockerTar, Optional<Exception> exception) {
+    public DetectableToolResult(final DetectableToolResultType resultType, final Optional<DetectToolProjectInfo> detectToolProjectInfo, final List<DetectCodeLocation> detectCodeLocations, final Optional<File> dockerTar) {
         this.resultType = resultType;
-        this.exception = exception;
         this.detectToolProjectInfo = detectToolProjectInfo;
         this.detectCodeLocations = detectCodeLocations;
         this.dockerTar = dockerTar;
     }
 
     public static DetectableToolResult skip() {
-        return new DetectableToolResult(DetectableToolResultType.SKIPPED, Optional.empty(), Collections.emptyList(), Optional.empty(), Optional.empty());
+        return new DetectableToolResult(DetectableToolResultType.SKIPPED, Optional.empty(), Collections.emptyList(), Optional.empty());
     }
 
-    public static DetectableToolResult failed(Exception e) {
-        return new DetectableToolResult(DetectableToolResultType.FAILED, Optional.empty(), Collections.emptyList(), Optional.empty(), Optional.of(e));
+    public static DetectableToolResult failed() {
+        return new DetectableToolResult(DetectableToolResultType.FAILED, Optional.empty(), Collections.emptyList(), Optional.empty());
     }
 
-    public static DetectableToolResult failed(Optional<Exception> e) {
-        return new DetectableToolResult(DetectableToolResultType.FAILED, Optional.empty(), Collections.emptyList(), Optional.empty(), e);
-    }
-
-    public static DetectableToolResult success(List<DetectCodeLocation> codeLocations, Optional<DetectToolProjectInfo> projectInfo, Optional<File> dockerTar) {
-        return new DetectableToolResult(DetectableToolResultType.SUCCESS, projectInfo, codeLocations, dockerTar, Optional.empty());
+    public static DetectableToolResult success(final List<DetectCodeLocation> codeLocations, final Optional<DetectToolProjectInfo> projectInfo, final Optional<File> dockerTar) {
+        return new DetectableToolResult(DetectableToolResultType.SUCCESS, projectInfo, codeLocations, dockerTar);
     }
 
     public Optional<File> getDockerTar() {

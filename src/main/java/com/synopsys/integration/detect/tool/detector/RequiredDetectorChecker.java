@@ -71,7 +71,7 @@ public class RequiredDetectorChecker {
             try {
                 final DetectorType type = DetectorType.valueOf(rawType.toUpperCase());
                 required.add(type);
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 logger.error("Unable to parse detector type: " + rawType);
             }
         }

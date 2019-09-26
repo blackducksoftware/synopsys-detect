@@ -28,16 +28,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -47,15 +41,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DetectZipUtil {
-    private final static Logger logger = LoggerFactory.getLogger(DetectZipUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(DetectZipUtil.class);
 
-    public static void unzip(File zip, File dest) throws IOException {
+    public static void unzip(final File zip, final File dest) throws IOException {
         unzip(zip, dest, Charset.defaultCharset());
     }
 
     public static void zip(final File zip, final Map<String, Path> entries) throws IOException {
-        try (FileOutputStream fileStream = new FileOutputStream(zip)) {
-            try (ZipOutputStream outputStream = new ZipOutputStream(fileStream)) {
+        try (final FileOutputStream fileStream = new FileOutputStream(zip)) {
+            try (final ZipOutputStream outputStream = new ZipOutputStream(fileStream)) {
                 for (final Map.Entry<String, Path> entry : entries.entrySet()) {
                     logger.info("Adding entry '{}' to zip as '{}'.", entry.getValue().toString(), entry.getKey());
                     outputStream.putNextEntry(new ZipEntry(entry.getKey()));
@@ -67,21 +61,21 @@ public class DetectZipUtil {
         }
     }
 
-    public static void unzip(File zip, File dest, Charset charset) throws IOException {
-        Path destPath = dest.toPath();
-        try (ZipFile zipFile = new ZipFile(zip, ZipFile.OPEN_READ, charset)) {
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+    public static void unzip(final File zip, final File dest, final Charset charset) throws IOException {
+        final Path destPath = dest.toPath();
+        try (final ZipFile zipFile = new ZipFile(zip, ZipFile.OPEN_READ, charset)) {
+            final Enumeration<? extends ZipEntry> entries = zipFile.entries();
             while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                Path entryPath = destPath.resolve(entry.getName());
+                final ZipEntry entry = entries.nextElement();
+                final Path entryPath = destPath.resolve(entry.getName());
                 if (!entryPath.normalize().startsWith(dest.toPath()))
                     throw new IOException("Zip entry contained path traversal");
                 if (entry.isDirectory()) {
                     Files.createDirectories(entryPath);
                 } else {
                     Files.createDirectories(entryPath.getParent());
-                    try (InputStream in = zipFile.getInputStream(entry)) {
-                        try (OutputStream out = new FileOutputStream(entryPath.toFile())) {
+                    try (final InputStream in = zipFile.getInputStream(entry)) {
+                        try (final OutputStream out = new FileOutputStream(entryPath.toFile())) {
                             IOUtils.copy(in, out);
                         }
                     }

@@ -25,14 +25,10 @@ package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 import java.io.File;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 
 public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
-    private final Logger logger = LoggerFactory.getLogger(AirgapNugetInspectorLocator.class);
-    private AirGapInspectorPaths airGapInspectorPaths;
+    private final AirGapInspectorPaths airGapInspectorPaths;
 
     public AirgapNugetInspectorLocator(final AirGapInspectorPaths airGapInspectorPaths) {
         this.airGapInspectorPaths = airGapInspectorPaths;
@@ -40,13 +36,13 @@ public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
 
     @Override
     public File locateExeInspector() {
-        Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
-        return new File(nugetAirGapPath.get(), "nuget_classic");
+        final Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
+        return new File(nugetAirGapPath.get(), "nuget_classic"); // TODO: Why is there no ifPresent() check?
     }
 
     @Override
     public File locateDotnetInspector() {
-        Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
-        return new File(nugetAirGapPath.get(), "nuget_dotnet");
+        final Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
+        return new File(nugetAirGapPath.get(), "nuget_dotnet"); // TODO: Why is there no ifPresent() check?
     }
 }

@@ -111,10 +111,6 @@ public class GemlockParser {
         return lazyBuilder.build();
     }
 
-    private void encounteredDependency(final String name) {
-        encounteredDependencies.add(name);
-    }
-
     private void discoveredDependencyInfo(final NameVersionDependencyId id) {
         final NameDependencyId nameOnlyId = new NameDependencyId(id.name);
 

@@ -27,8 +27,40 @@ import java.util.List;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
 public class SbtProject {
-    public String projectName;
-    public String projectVersion;
-    public ExternalId projectExternalId;
-    public List<SbtDependencyModule> modules;
+    private String projectName;
+    private String projectVersion;
+    private ExternalId projectExternalId;
+    private List<SbtDependencyModule> modules;
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(final String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getProjectVersion() {
+        return projectVersion;
+    }
+
+    public void setProjectVersion(final String projectVersion) {
+        this.projectVersion = projectVersion;
+    }
+
+    public ExternalId getProjectExternalId() {
+        return projectExternalId;
+    }
+
+    public void setProjectExternalId(final ExternalId projectExternalId) {
+        this.projectExternalId = projectExternalId;
+    }
+
+    public List<SbtDependencyModule> getModules() {
+        return modules;
+    }
+
+    public void setModules(final List<SbtDependencyModule> modules) {
+        this.modules = modules;
+    }
 }

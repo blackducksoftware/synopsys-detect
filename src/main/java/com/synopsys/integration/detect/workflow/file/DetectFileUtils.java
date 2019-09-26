@@ -25,6 +25,7 @@ package com.synopsys.integration.detect.workflow.file;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -32,14 +33,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DetectFileUtils {
-    private final static Logger logger = LoggerFactory.getLogger(DetectFileUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(DetectFileUtils.class);
 
     public static String extractFinalPieceFromPath(final String path) {
         if (path == null || path.length() == 0) {
             return "";
         }
         final String normalizedPath = FilenameUtils.normalizeNoEndSeparator(path, true);
-        return normalizedPath.substring(normalizedPath.lastIndexOf("/") + 1, normalizedPath.length());
+        return normalizedPath.substring(normalizedPath.lastIndexOf('/') + 1, normalizedPath.length());
     }
 
     public static File writeToFile(final File file, final String contents) throws IOException {
@@ -51,7 +52,7 @@ public class DetectFileUtils {
             return null;
         }
         if (overwrite && file.exists()) {
-            file.delete();
+            Files.delete(file.toPath());
         }
         if (file.exists()) {
             logger.info(String.format("%s exists and not being overwritten", file.getAbsolutePath()));

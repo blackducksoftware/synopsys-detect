@@ -28,15 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.detectable.Detectable;
-import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 
 public class GemspecParseExtractor {
@@ -46,7 +39,7 @@ public class GemspecParseExtractor {
         this.gemspecParser = gemspecParser;
     }
 
-    public Extraction extract(File gemspec, boolean includeRuntime, boolean includeDev) {
+    public Extraction extract(final File gemspec, final boolean includeRuntime, final boolean includeDev) {
         try (final InputStream inputStream = new FileInputStream(gemspec)) {
             final DependencyGraph dependencyGraph = gemspecParser.parse(inputStream, includeRuntime, includeDev);
             final CodeLocation codeLocation = new CodeLocation(dependencyGraph);

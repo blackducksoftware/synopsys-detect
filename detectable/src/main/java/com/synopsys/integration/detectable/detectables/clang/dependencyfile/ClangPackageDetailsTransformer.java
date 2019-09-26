@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.clang.dependencyfile;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -48,7 +47,7 @@ public class ClangPackageDetailsTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public CodeLocation toCodeLocation(final Forge codeLocationForge, final List<Forge> dependencyForges, final File rootDir, final Set<PackageDetails> packages) {
+    public CodeLocation toCodeLocation(final List<Forge> dependencyForges, final Set<PackageDetails> packages) {
         final List<Dependency> dependencies = packages.parallelStream()
                                                   .flatMap(pkg -> toDependency(dependencyForges, pkg).stream())
                                                   .collect(Collectors.toList());

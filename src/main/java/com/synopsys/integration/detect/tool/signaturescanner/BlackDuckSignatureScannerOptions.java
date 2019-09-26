@@ -22,13 +22,9 @@
  */
 package com.synopsys.integration.detect.tool.signaturescanner;
 
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
-
 import org.antlr.v4.runtime.misc.Nullable;
-import org.apache.commons.lang3.EnumUtils;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.Optional;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 
 public class BlackDuckSignatureScannerOptions {
     private final String[] signatureScannerPaths;

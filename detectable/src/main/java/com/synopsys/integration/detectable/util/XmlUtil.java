@@ -29,7 +29,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class XmlUtil {
-
     public static Node getNode(final String key, final Node parentNode) {
         return getNodeList(key, parentNode).get(0);
     }

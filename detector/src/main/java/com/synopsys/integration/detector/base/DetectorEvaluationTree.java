@@ -22,10 +22,9 @@
  */
 package com.synopsys.integration.detector.base;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,14 +34,11 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
 public class DetectorEvaluationTree {
     //The following evaluation details are known when the evaluation is created.
-    private File directory;
-    private int depthFromRoot;
-    private DetectorRuleSet detectorRuleSet;
-    private List<DetectorEvaluation> orderedEvaluations;
-    private Set<DetectorEvaluationTree> children;
-
-    //The following are learned while being evaluated.
-    private Set<DetectorType> appliedInParent = new HashSet<>();
+    private final File directory;
+    private final int depthFromRoot;
+    private final DetectorRuleSet detectorRuleSet;
+    private final List<DetectorEvaluation> orderedEvaluations;
+    private final Set<DetectorEvaluationTree> children;
 
     public DetectorEvaluationTree(final File directory, final int depthFromRoot, final DetectorRuleSet detectorRuleSet, final List<DetectorEvaluation> orderedEvaluations, final Set<DetectorEvaluationTree> children) {
         this.directory = directory;
@@ -53,9 +49,9 @@ public class DetectorEvaluationTree {
     }
 
     public List<DetectorEvaluationTree> asFlatList() {
-        List<DetectorEvaluationTree> evaluationTrees = new ArrayList<DetectorEvaluationTree>();
+        final List<DetectorEvaluationTree> evaluationTrees = new ArrayList<>();
         evaluationTrees.add(this);
-        for (DetectorEvaluationTree detectorEvaluationTree : children) {
+        for (final DetectorEvaluationTree detectorEvaluationTree : children) {
             evaluationTrees.addAll(detectorEvaluationTree.asFlatList());
         }
         return evaluationTrees;
@@ -80,7 +76,7 @@ public class DetectorEvaluationTree {
         return orderedEvaluations;
     }
 
-    public Optional<DetectorEvaluation> getEvaluation(DetectorRule rule) {
+    public Optional<DetectorEvaluation> getEvaluation(final DetectorRule rule) {
         return orderedEvaluations.stream()
                    .filter(detectorEvaluation1 -> detectorEvaluation1.getDetectorRule().equals(rule))
                    .findFirst();
@@ -88,14 +84,6 @@ public class DetectorEvaluationTree {
 
     public Set<DetectorEvaluationTree> getChildren() {
         return children;
-    }
-
-    public Set<DetectorType> getAppliedInParent() {
-        return appliedInParent;
-    }
-
-    public void setAppliedInParent(final Set<DetectorType> appliedInParent) {
-        this.appliedInParent = appliedInParent;
     }
 
     public DetectorRuleSet getDetectorRuleSet() {

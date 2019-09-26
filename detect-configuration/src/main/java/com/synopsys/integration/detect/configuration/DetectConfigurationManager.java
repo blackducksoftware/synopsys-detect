@@ -40,7 +40,7 @@ import com.synopsys.integration.detect.property.PropertyType;
 import com.synopsys.integration.detect.util.TildeInPathResolver;
 
 public class DetectConfigurationManager {
-    public final static String USER_HOME = System.getProperty("user.home");
+    public static final String USER_HOME = System.getProperty("user.home");
     private final Logger logger = LoggerFactory.getLogger(DetectConfigurationManager.class);
 
     private final TildeInPathResolver tildeInPathResolver;
@@ -59,34 +59,32 @@ public class DetectConfigurationManager {
         this.detectConfiguration = detectConfiguration;
     }
 
-    public void process(final List<DetectOption> detectOptions, String runId) throws DetectUserFriendlyException {
+    public void process(final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
         resolveTildeInPaths();
         resolvePolicyProperties();
         resolveParallelProcessingProperties();
-        resolveSignatureScannerProperties(detectOptions);
+        resolveSignatureScannerProperties();
         resolveDetectorSearchProperties();
 
         updateDetectProperties(detectOptions);
     }
 
-    private void resolveTildeInPaths() throws DetectUserFriendlyException {
-        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RESOLVE_TILDE_IN_PATHS, PropertyAuthority.None)) {
-            detectConfiguration.getCurrentProperties().keySet().stream()
-                .forEach(it -> resolveTildeInDetectProperty(it));
+    private void resolveTildeInPaths() {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RESOLVE_TILDE_IN_PATHS, PropertyAuthority.NONE)) {
+            detectConfiguration.getCurrentProperties().keySet()
+                .forEach(this::resolveTildeInDetectProperty);
         }
     }
 
     private void resolveTildeInDetectProperty(final DetectProperty detectProperty) {
         if (PropertyType.STRING == detectProperty.getPropertyType()) {
-            final Optional<String> resolved = tildeInPathResolver.resolveTildeInValue(detectConfiguration.getProperty(detectProperty, PropertyAuthority.None));
-            if (resolved.isPresent()) {
-                detectConfiguration.setDetectProperty(detectProperty, resolved.get());
-            }
+            final Optional<String> resolved = tildeInPathResolver.resolveTildeInValue(detectConfiguration.getProperty(detectProperty, PropertyAuthority.NONE));
+            resolved.ifPresent(s -> detectConfiguration.setDetectProperty(detectProperty, s));
         }
     }
 
     private void resolvePolicyProperties() {
-        final String policyCheckFailOnSeverities = detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.None);
+        final String policyCheckFailOnSeverities = detectConfiguration.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, PropertyAuthority.NONE);
         final boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
         if (atLeastOnePolicySeverity) {
             boolean allSeverities = false;
@@ -98,7 +96,7 @@ public class DetectConfigurationManager {
                 }
             }
             if (allSeverities) {
-                final List<String> allPolicyTypes = Arrays.stream(PolicySeverityType.values()).filter(type -> type != PolicySeverityType.UNSPECIFIED).map(type -> type.toString()).collect(Collectors.toList());
+                final List<String> allPolicyTypes = Arrays.stream(PolicySeverityType.values()).filter(type -> type != PolicySeverityType.UNSPECIFIED).map(Enum::toString).collect(Collectors.toList());
                 this.policyCheckFailOnSeverities = StringUtils.join(allPolicyTypes, ",");
             } else {
                 this.policyCheckFailOnSeverities = StringUtils.join(splitSeverities, ",");
@@ -107,27 +105,27 @@ public class DetectConfigurationManager {
     }
 
     private void resolveParallelProcessingProperties() {
-        int providedParallelProcessors = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_PARALLEL_PROCESSORS, PropertyAuthority.None);
+        int providedParallelProcessors = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_PARALLEL_PROCESSORS, PropertyAuthority.NONE);
         if (providedParallelProcessors <= 0) {
             providedParallelProcessors = Runtime.getRuntime().availableProcessors();
         }
         this.parallelProcessors = providedParallelProcessors;
     }
 
-    private void resolveSignatureScannerProperties(final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
-        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, PropertyAuthority.None)) &&
-                StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, PropertyAuthority.None))) {
+    private void resolveSignatureScannerProperties() throws DetectUserFriendlyException {
+        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, PropertyAuthority.NONE)) &&
+                StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, PropertyAuthority.NONE))) {
             throw new DetectUserFriendlyException(
                 "You have provided both a Black Duck signature scanner url AND a local Black Duck signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
                 ExitCodeType.FAILURE_GENERAL_ERROR);
         }
-        final Boolean originalOfflineMode = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
+        final Boolean originalOfflineMode = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.NONE);
         hubOfflineMode = originalOfflineMode;
-        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, PropertyAuthority.None))) {
+        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, PropertyAuthority.NONE))) {
             logger.info("A Black Duck signature scanner url was provided, which requires Black Duck offline mode. Setting Black Duck offline mode to true.");
             hubOfflineMode = true;
         }
-        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, PropertyAuthority.None))) {
+        if (StringUtils.isNotBlank(detectConfiguration.getProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, PropertyAuthority.NONE))) {
             logger.info("A local Black Duck signature scanner path was provided, which requires Black Duck offline mode. Setting Black Duck offline mode to true.");
             hubOfflineMode = true;
         }
@@ -135,10 +133,9 @@ public class DetectConfigurationManager {
 
     private void resolveDetectorSearchProperties() {
         detectorSearchDirectoryExclusions = new ArrayList<>();
-        for (final String exclusion : detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION, PropertyAuthority.None)) {
-            detectorSearchDirectoryExclusions.add(exclusion);
-        }
-        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS, PropertyAuthority.None)) {
+        detectorSearchDirectoryExclusions.addAll(Arrays.asList(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION, PropertyAuthority.NONE)));
+
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS, PropertyAuthority.NONE)) {
             final List<String> defaultExcludedNames = Arrays.stream(DetectorSearchExcludedDirectories.values()).map(DetectorSearchExcludedDirectories::getDirectoryName).collect(Collectors.toList());
             detectorSearchDirectoryExclusions.addAll(defaultExcludedNames);
         }
@@ -160,7 +157,7 @@ public class DetectConfigurationManager {
     }
 
     private void updateOptionValue(final List<DetectOption> detectOptions, final DetectProperty detectProperty, final String value) {
-        detectOptions.stream().forEach(option -> {
+        detectOptions.forEach(option -> {
             if (option.getDetectProperty() == detectProperty) {
                 option.setPostInitValue(value);
             }
@@ -169,7 +166,7 @@ public class DetectConfigurationManager {
 
     @SuppressWarnings("unused")
     private void requestDeprecation(final List<DetectOption> detectOptions, final DetectProperty detectProperty) {
-        detectOptions.stream().forEach(option -> {
+        detectOptions.forEach(option -> {
             if (option.getDetectProperty() == detectProperty) {
                 option.requestDeprecation();
             }

@@ -74,13 +74,13 @@ public class GradleReportParser {
                 }
                 if (processingMetaData) {
                     if (line.startsWith(PROJECT_PATH_PREFIX)) {
-                        gradleReport.projectSourcePath = line.substring(PROJECT_PATH_PREFIX.length()).trim();
+                        gradleReport.setProjectSourcePath(line.substring(PROJECT_PATH_PREFIX.length()).trim());
                     } else if (line.startsWith(PROJECT_GROUP_PREFIX)) {
-                        gradleReport.projectGroup = line.substring(PROJECT_GROUP_PREFIX.length()).trim();
+                        gradleReport.setProjectGroup(line.substring(PROJECT_GROUP_PREFIX.length()).trim());
                     } else if (line.startsWith(PROJECT_NAME_PREFIX)) {
-                        gradleReport.projectName = line.substring(PROJECT_NAME_PREFIX.length()).trim();
+                        gradleReport.setProjectName(line.substring(PROJECT_NAME_PREFIX.length()).trim());
                     } else if (line.startsWith(PROJECT_VERSION_PREFIX)) {
-                        gradleReport.projectVersionName = line.substring(PROJECT_VERSION_PREFIX.length()).trim();
+                        gradleReport.setProjectVersionName(line.substring(PROJECT_VERSION_PREFIX.length()).trim());
                     }
                     continue;
                 }
@@ -108,7 +108,7 @@ public class GradleReportParser {
             final String header = configurationLines.get(0);
             final List<String> dependencyTree = configurationLines.stream().skip(1).collect(Collectors.toList());
             final GradleConfiguration configuration = gradleReportConfigurationParser.parse(header, dependencyTree);
-            gradleReport.configurations.add(configuration);
+            gradleReport.getConfigurations().add(configuration);
         }
     }
 

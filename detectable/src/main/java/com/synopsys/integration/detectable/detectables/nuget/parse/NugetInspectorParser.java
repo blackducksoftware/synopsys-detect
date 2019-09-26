@@ -57,11 +57,11 @@ public class NugetInspectorParser {
             final Optional<NugetParseResult> possibleParseResult = createDetectCodeLocationFromNugetContainer(it);
             if (possibleParseResult.isPresent()) {
                 final NugetParseResult result = possibleParseResult.get();
-                if (StringUtils.isNotBlank(result.projectName)) {
-                    projectName = result.projectName;
-                    projectVersion = result.projectVersion;
+                if (StringUtils.isNotBlank(result.getProjectName())) {
+                    projectName = result.getProjectName();
+                    projectVersion = result.getProjectVersion();
                 }
-                codeLocations.addAll(result.codeLocations);
+                codeLocations.addAll(result.getCodeLocations());
             }
         }
 

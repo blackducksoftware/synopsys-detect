@@ -45,7 +45,6 @@ import com.synopsys.integration.util.OperatingSystemType;
 
 public class DockerDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final DetectableEnvironment environment;
     private final DockerInspectorResolver dockerInspectorResolver;
     private final JavaResolver javaResolver;
     private final BashResolver bashResolver;
@@ -58,9 +57,8 @@ public class DockerDetectable extends Detectable {
     private DockerInspectorInfo dockerInspectorInfo;
 
     public DockerDetectable(final DetectableEnvironment environment, final DockerInspectorResolver dockerInspectorResolver, final JavaResolver javaResolver, final BashResolver bashResolver, final DockerResolver dockerResolver,
-        final DockerExtractor dockerExtractor, DockerDetectableOptions dockerDetectableOptions) {
+        final DockerExtractor dockerExtractor, final DockerDetectableOptions dockerDetectableOptions) {
         super(environment, "Docker", "DOCKER");
-        this.environment = environment;
         this.javaResolver = javaResolver;
         this.bashResolver = bashResolver;
         this.dockerResolver = dockerResolver;

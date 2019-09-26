@@ -35,7 +35,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class VndrParser {
-    public ExternalIdFactory externalIdFactory;
+    private final ExternalIdFactory externalIdFactory;
 
     public VndrParser(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;

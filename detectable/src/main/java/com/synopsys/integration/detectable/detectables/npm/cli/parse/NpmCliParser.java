@@ -55,7 +55,7 @@ public class NpmCliParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public NpmParseResult generateCodeLocation(final String sourcePath, final String npmLsOutput) {
+    public NpmParseResult generateCodeLocation(final String npmLsOutput) {
         if (StringUtils.isBlank(npmLsOutput)) {
             logger.error("Ran into an issue creating and writing to file");
             return null;
@@ -63,10 +63,10 @@ public class NpmCliParser {
 
         logger.debug("Generating results from npm ls -json");
 
-        return convertNpmJsonFileToCodeLocation(sourcePath, npmLsOutput);
+        return convertNpmJsonFileToCodeLocation(npmLsOutput);
     }
 
-    public NpmParseResult convertNpmJsonFileToCodeLocation(final String sourcePath, final String npmLsOutput) {
+    public NpmParseResult convertNpmJsonFileToCodeLocation(final String npmLsOutput) {
         final JsonObject npmJson = new JsonParser().parse(npmLsOutput).getAsJsonObject();
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
@@ -98,27 +98,28 @@ public class NpmCliParser {
         final Set<Entry<String, JsonElement>> elements = parentNodeChildren.entrySet();
         elements.forEach(it -> {
             if (it.getValue() != null && it.getValue().isJsonObject()) {
-
-            }
-            final JsonObject element = it.getValue().getAsJsonObject();
-            final String name = it.getKey();
-            String version = null;
-            final JsonPrimitive versionPrimitive = element.getAsJsonPrimitive(JSON_VERSION);
-            if (versionPrimitive != null && versionPrimitive.isString()) {
-                version = versionPrimitive.getAsString();
-            }
-            final JsonObject children = element.getAsJsonObject(JSON_DEPENDENCIES);
-
-            if (name != null && version != null) {
-                final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
-                final Dependency child = new Dependency(name, version, externalId);
-
-                populateChildren(graph, child, children, false);
-                if (root) {
-                    graph.addChildToRoot(child);
-                } else {
-                    graph.addParentWithChild(parentDependency, child);
+                final JsonObject element = it.getValue().getAsJsonObject();
+                final String name = it.getKey();
+                String version = null;
+                final JsonPrimitive versionPrimitive = element.getAsJsonPrimitive(JSON_VERSION);
+                if (versionPrimitive != null && versionPrimitive.isString()) {
+                    version = versionPrimitive.getAsString();
                 }
+                final JsonObject children = element.getAsJsonObject(JSON_DEPENDENCIES);
+
+                if (name != null && version != null) {
+                    final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
+                    final Dependency child = new Dependency(name, version, externalId);
+
+                    populateChildren(graph, child, children, false);
+                    if (root) {
+                        graph.addChildToRoot(child);
+                    } else {
+                        graph.addParentWithChild(parentDependency, child);
+                    }
+                }
+            } else {
+                // TODO: Log?
             }
         });
     }

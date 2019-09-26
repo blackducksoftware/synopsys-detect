@@ -42,6 +42,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.util.ExcludedIncludedFilter;
 
+// TODO: Re-write. Some fields could be local variables. Includes many code smells. A component none:Additional_Components:none appears in the graph.
 public class MavenCodeLocationPackager {
     public static final List<String> indentationStrings = Arrays.asList("+- ", "|  ", "\\- ", "   ");
     public static final List<String> KNOWN_SCOPES = Arrays.asList("compile", "provided", "runtime", "test", "system", "import");
@@ -103,8 +104,8 @@ public class MavenCodeLocationPackager {
                 // this is the first line of a new code location, the following lines will be the tree of dependencies for this code location
                 currentGraph = new MutableMapDependencyGraph();
                 final MavenParseResult mavenProject = createMavenParseResult(sourcePath, line, currentGraph);
-                if (null != mavenProject && modulesFilter.shouldInclude(mavenProject.projectName)) {
-                    logger.trace(String.format("Project: %s", mavenProject.projectName));
+                if (null != mavenProject && modulesFilter.shouldInclude(mavenProject.getProjectName())) {
+                    logger.trace(String.format("Project: %s", mavenProject.getProjectName()));
                     this.currentMavenProject = mavenProject;
                     codeLocations.add(mavenProject);
                 } else {

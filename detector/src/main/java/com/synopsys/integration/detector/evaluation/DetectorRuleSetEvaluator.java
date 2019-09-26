@@ -25,7 +25,6 @@ package com.synopsys.integration.detector.evaluation;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.result.ExcludedDetectorResult;
 import com.synopsys.integration.detector.result.ForcedNestedPassedDetectorResult;
