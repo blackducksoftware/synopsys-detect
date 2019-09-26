@@ -24,6 +24,9 @@ package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
@@ -33,6 +36,8 @@ import com.synopsys.integration.blackduck.service.CodeLocationService;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectCodeLocationUnmapService {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final BlackDuckService blackDuckService;
     private CodeLocationService codeLocationService;
 
@@ -48,6 +53,7 @@ public class DetectCodeLocationUnmapService {
             for (final CodeLocationView codeLocationView : codeLocationViews) {
                 codeLocationService.unmapCodeLocation(codeLocationView);
             }
+            logger.info("Successfully unmapped (" + codeLocationViews.size() + ") code locations.");
         } catch (final IntegrationException e) {
             throw new DetectUserFriendlyException(String.format("There was a problem unmapping Code Locations: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }

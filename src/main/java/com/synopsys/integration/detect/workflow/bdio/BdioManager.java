@@ -73,17 +73,17 @@ public class BdioManager {
         DetectBdioWriter detectBdioWriter = new DetectBdioWriter(simpleBdioFactory, detectInfo);
 
         if (aggregateOptions.shouldAggregate() && aggregateOptions.getAggregateName().isPresent()) {
-            logger.info("Creating aggregate BDIO file.");
+            logger.debug("Creating aggregate BDIO file.");
             AggregateBdioCreator aggregateBdioCreator = new AggregateBdioCreator(simpleBdioFactory, integrationEscapeUtil, codeLocationNameManager, detectConfiguration, detectBdioWriter);
             final Optional<UploadTarget> uploadTarget = aggregateBdioCreator.createAggregateBdioFile(aggregateOptions.getAggregateName().get(), aggregateOptions.shouldUploadEmptyAggregate(), directoryManager.getSourceDirectory(),
                 directoryManager.getBdioOutputDirectory(), codeLocations, projectNameVersion);
             return new BdioResult(uploadTarget);
         } else {
-            logger.info("Creating BDIO code locations.");
+            logger.debug("Creating BDIO code locations.");
             final BdioCodeLocationResult codeLocationResult = bdioCodeLocationCreator.createFromDetectCodeLocations(codeLocations, projectNameVersion);
             codeLocationResult.getFailedBomToolGroupTypes().forEach(it -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(it, StatusType.FAILURE)));
 
-            logger.info("Creating BDIO files from code locations.");
+            logger.debug("Creating BDIO files from code locations.");
             CodeLocationBdioCreator codeLocationBdioCreator = new CodeLocationBdioCreator(detectBdioWriter, simpleBdioFactory);
             final List<UploadTarget> uploadTargets = codeLocationBdioCreator.createBdioFiles(directoryManager.getBdioOutputDirectory(), codeLocationResult.getBdioCodeLocations(), projectNameVersion);
 

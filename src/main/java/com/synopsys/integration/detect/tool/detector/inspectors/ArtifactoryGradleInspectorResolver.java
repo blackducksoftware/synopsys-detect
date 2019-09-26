@@ -84,7 +84,7 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
                                                          .filter(Optional::isPresent)
                                                          .map(Optional::get);
                     if (version.isPresent()) {
-                        logger.info("Resolved the gradle inspector version: " + version.get());
+                        logger.debug("Resolved the gradle inspector version: " + version.get());
                         generatedGradleScriptPath = gradleInspectorScriptCreator.createOnlineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions, version.get());
                     } else {
                         throw new DetectableException("Unable to find the gradle inspector version from artifactory.");

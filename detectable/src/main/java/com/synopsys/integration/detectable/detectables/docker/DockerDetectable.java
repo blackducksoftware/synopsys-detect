@@ -101,7 +101,7 @@ public class DockerDetectable extends Detectable {
             if (dockerDetectableOptions.isDockerPathRequired()) {
                 return new ExecutableNotFoundDetectableResult("docker");
             } else {
-                logger.info("Docker executable not found, but it has been configured as not-required; proceeding with execution of Docker tool");
+                logger.debug("Docker executable not found, but it has been configured as not-required; proceeding with execution of Docker tool");
             }
         }
         dockerInspectorInfo = dockerInspectorResolver.resolveDockerInspector();

@@ -62,7 +62,7 @@ public class ClangExtractor {
     public Extraction extract(final ClangPackageManager currentPackageManager, final ClangPackageManagerRunner packageManagerRunner, final File sourceDirectory, final File outputDirectory, final File jsonCompilationDatabaseFile,
         final boolean cleanup) {
         try {
-            logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
+            logger.debug(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
 
             final List<CompileCommand> compileCommands = compileCommandDatabaseParser.parseCompileCommandDatabase(jsonCompilationDatabaseFile);
@@ -85,17 +85,17 @@ public class ClangExtractor {
     }
 
     private void logSummary(final Set<File> failedDependencyFiles, File sourceDirectory) {
-        logger.info("Dependency files outside the build directory that were not recognized by the package manager:");
+        logger.debug("Dependency files outside the build directory that were not recognized by the package manager:");
         for (final File failedDependencyFile : failedDependencyFiles) {
             try {
-                if (FileUtils.directoryContains(sourceDirectory, failedDependencyFile)){
+                if (FileUtils.directoryContains(sourceDirectory, failedDependencyFile)) {
                     logger.debug(String.format("\t%s is not managed, but it's in the source.dir, ignoring.", failedDependencyFile.getAbsolutePath()));
                 } else {
-                    logger.info(String.format("\t%s", failedDependencyFile.getAbsolutePath()));
+                    logger.debug(String.format("\t%s", failedDependencyFile.getAbsolutePath()));
                 }
             } catch (IOException e) {
                 logger.debug(String.format("%s may or may not be in the source dir, failed to check.", failedDependencyFile.getAbsolutePath()));
-                logger.info(String.format("\t%s", failedDependencyFile.getAbsolutePath()));
+                logger.debug(String.format("\t%s", failedDependencyFile.getAbsolutePath()));
             }
         }
     }

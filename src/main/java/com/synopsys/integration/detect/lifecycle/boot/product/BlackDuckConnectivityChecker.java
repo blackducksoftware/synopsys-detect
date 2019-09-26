@@ -52,7 +52,7 @@ public class BlackDuckConnectivityChecker {
     public BlackDuckConnectivityResult determineConnectivity(final BlackDuckServerConfig blackDuckServerConfig)
         throws DetectUserFriendlyException {
 
-        logger.info("Detect will check if it can communicate with the Black Duck Server.");
+        logger.debug("Detect will check if it can communicate with the Black Duck Server.");
 
         final ConnectionResult connectionResult = blackDuckServerConfig.attemptConnection(new SilentIntLogger());
 
@@ -73,14 +73,14 @@ public class BlackDuckConnectivityChecker {
             logger.info(String.format("Successfully connected to BlackDuck (version %s)!", currentVersion.getVersion()));
 
             final UserView userView = blackDuckService.getResponse(ApiDiscovery.CURRENT_USER_LINK_RESPONSE);
-            logger.info("Connected as: " + userView.getUserName());
+            logger.debug("Connected as: " + userView.getUserName());
 
             final UserGroupService userGroupService = blackDuckServicesFactory.createUserGroupService();
             List<RoleAssignmentView> response = userGroupService.getRolesForUser(userView);
-            logger.info("Roles: " + response.stream().map(RoleAssignmentView::getName).distinct().collect(Collectors.joining(", ")));
+            logger.debug("Roles: " + response.stream().map(RoleAssignmentView::getName).distinct().collect(Collectors.joining(", ")));
 
             List<UserGroupView> groups = blackDuckService.getAllResponses(userView.getFirstLink("usergroups").get(), UserGroupView.class);
-            logger.info("Group: " + groups.stream().map(UserGroupView::getName).distinct().collect(Collectors.joining(", ")));
+            logger.debug("Group: " + groups.stream().map(UserGroupView::getName).distinct().collect(Collectors.joining(", ")));
 
         } catch (final IntegrationException e) {
             throw new DetectUserFriendlyException("Could not determine which version of Black Duck detect connected to or which user is connecting.", e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);

@@ -46,7 +46,7 @@ public class ScanBatchRunnerFactory {
 
     private final IntEnvironmentVariables intEnvironmentVariables;
     private final ExecutorService executorService;
-    private final Slf4jIntLogger slf4jIntLogger;
+    private final SignatureScannerLogger slf4jIntLogger;
     private final OperatingSystemType operatingSystemType;
     private final ScanPathsUtility scanPathsUtility;
     private final ScanCommandRunner scanCommandRunner;
@@ -54,7 +54,7 @@ public class ScanBatchRunnerFactory {
     public ScanBatchRunnerFactory(IntEnvironmentVariables intEnvironmentVariables, ExecutorService executorService) {
         this.intEnvironmentVariables = intEnvironmentVariables;
         this.executorService = executorService;
-        slf4jIntLogger = new Slf4jIntLogger(logger);
+        slf4jIntLogger = new SignatureScannerLogger(logger);
         operatingSystemType = OperatingSystemType.determineFromSystem();
         scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, intEnvironmentVariables, operatingSystemType);
         scanCommandRunner = new ScanCommandRunner(slf4jIntLogger, intEnvironmentVariables, scanPathsUtility, executorService);

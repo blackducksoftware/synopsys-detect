@@ -69,14 +69,14 @@ public class ArtifactResolver {
     public String resolveArtifactLocation(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey, final String overrideVersion, final String overrideArtifactPattern)
         throws IntegrationException, DetectUserFriendlyException, IOException {
         if (StringUtils.isNotBlank(overrideVersion) && StringUtils.isNotBlank(overrideArtifactPattern)) {
-            logger.info("An override version was provided, will resolve using the given version.");
+            logger.debug("An override version was provided, will resolve using the given version.");
             String repoUrl = artifactoryBaseUrl + repositoryUrl;
             String versionUrl = overrideArtifactPattern.replace(ArtifactoryConstants.VERSION_PLACEHOLDER, overrideVersion);
             String artifactUrl = repoUrl + versionUrl;
             logger.debug("Determined the artifact url is: " + artifactUrl);
             return artifactUrl;
         } else {
-            logger.info("Will find version from artifactory.");
+            logger.debug("Will find version from artifactory.");
             String apiUrl = artifactoryBaseUrl + "api/storage/" + repositoryUrl;
             logger.debug(String.format("Checking '%s' for property '%s'.", apiUrl, propertyKey));
             return downloadProperty(apiUrl, propertyKey);
@@ -93,13 +93,13 @@ public class ArtifactResolver {
      */
     public String resolveArtifactVersion(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey, final String overrideVersion) throws IntegrationException, DetectUserFriendlyException, IOException {
         if (StringUtils.isNotBlank(overrideVersion)) {
-            logger.info("Resolved version from override: " + overrideVersion);
+            logger.debug("Resolved version from override: " + overrideVersion);
             return overrideVersion;
         } else {
             logger.debug(String.format("Resolving artifact version from repository %s with property %s", repositoryUrl, propertyKey));
             String apiUrl = artifactoryBaseUrl + "api/storage/" + repositoryUrl;
             String artifactVersion = downloadProperty(apiUrl, propertyKey);
-            logger.info("Resolved version online: " + artifactVersion);
+            logger.debug("Resolved version online: " + artifactVersion);
             return artifactVersion;
         }
     }

@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExtractionEnvironment;
 import com.synopsys.integration.detect.workflow.report.util.ObjectPrinter;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
+import com.synopsys.integration.detect.workflow.report.writer.DebugLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detectable.Extraction;
@@ -48,25 +49,25 @@ public class ExtractionLogger {
         final DetectExtractionEnvironment detectExtractionEnvironment = (DetectExtractionEnvironment) detectorEvaluation.getExtractionEnvironment();
         final Integer i = detectExtractionEnvironment.getExtractionId().getId();
         final String progress = Integer.toString((int) Math.floor((i * 100.0f) / extractionCount));
-        logger.info(String.format("Extracting %d of %d (%s%%)", i + 1, extractionCount, progress));
-        logger.info(ReportConstants.SEPERATOR);
+        logger.debug(String.format("Extracting %d of %d (%s%%)", i + 1, extractionCount, progress));
+        logger.debug(ReportConstants.SEPERATOR);
 
-        logger.info("Starting extraction: " + detectorEvaluation.getDetectorRule().getDetectorType() + " - " + detectorEvaluation.getDetectorRule().getName());
-        logger.info("Identifier: " + detectExtractionEnvironment.getExtractionId().toUniqueString());
-        ObjectPrinter.printObjectPrivate(new InfoLogReportWriter(logger), detectorEvaluation.getDetectable());
-        logger.info(ReportConstants.SEPERATOR);
+        logger.debug("Starting extraction: " + detectorEvaluation.getDetectorRule().getDetectorType() + " - " + detectorEvaluation.getDetectorRule().getName());
+        logger.debug("Identifier: " + detectExtractionEnvironment.getExtractionId().toUniqueString());
+        ObjectPrinter.printObjectPrivate(new DebugLogReportWriter(logger), detectorEvaluation.getDetectable());
+        logger.debug(ReportConstants.SEPERATOR);
     }
 
     public void extractionEnded(final DetectorEvaluation detectorEvaluation) {
-        logger.info(ReportConstants.SEPERATOR);
-        logger.info("Finished extraction: " + detectorEvaluation.getExtraction().getResult().toString());
-        logger.info("Code locations found: " + detectorEvaluation.getExtraction().getCodeLocations().size());
+        logger.debug(ReportConstants.SEPERATOR);
+        logger.debug("Finished extraction: " + detectorEvaluation.getExtraction().getResult().toString());
+        logger.debug("Code locations found: " + detectorEvaluation.getExtraction().getCodeLocations().size());
         if (detectorEvaluation.getExtraction().getResult() == Extraction.ExtractionResultType.EXCEPTION) {
-            logger.info("Exception: " + ExceptionUtil.oneSentenceDescription(detectorEvaluation.getExtraction().getError()));
+            logger.debug("Exception: " + ExceptionUtil.oneSentenceDescription(detectorEvaluation.getExtraction().getError()));
             logger.debug("Details: ", detectorEvaluation.getExtraction().getError());
         } else if (detectorEvaluation.getExtraction().getResult() == Extraction.ExtractionResultType.FAILURE) {
-            logger.info(detectorEvaluation.getExtraction().getDescription());
+            logger.debug(detectorEvaluation.getExtraction().getDescription());
         }
-        logger.info(ReportConstants.SEPERATOR);
+        logger.debug(ReportConstants.SEPERATOR);
     }
 }

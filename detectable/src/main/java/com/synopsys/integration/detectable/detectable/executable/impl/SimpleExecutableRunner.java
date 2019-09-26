@@ -68,10 +68,10 @@ public class SimpleExecutableRunner implements ExecutableRunner {
             final Process process = processBuilder.start();
 
             try (InputStream standardOutputStream = process.getInputStream(); InputStream standardErrorStream = process.getErrorStream()) {
-                final ExecutableStreamThread standardOutputThread = new ExecutableStreamThread(standardOutputStream, logger::info, logger::trace);
+                final ExecutableStreamThread standardOutputThread = new ExecutableStreamThread(standardOutputStream, logger::debug, logger::trace);
                 standardOutputThread.start();
 
-                final ExecutableStreamThread errorOutputThread = new ExecutableStreamThread(standardErrorStream, logger::info, logger::trace);
+                final ExecutableStreamThread errorOutputThread = new ExecutableStreamThread(standardErrorStream, logger::debug, logger::trace);
                 errorOutputThread.start();
 
                 final int returnCode = process.waitFor();

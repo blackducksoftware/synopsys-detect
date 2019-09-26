@@ -54,7 +54,10 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.event.EventType;
 import com.synopsys.integration.detect.workflow.report.ReportManager;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
+import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.DetectStatusManager;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
@@ -91,7 +94,7 @@ public class Application implements ApplicationRunner {
         ReportManager reportManager = ReportManager.createDefault(eventSystem);
 
         //Before boot even begins, we create a new Spring context for Detect to work within.
-        logger.info("Initializing detect.");
+        logger.debug("Initializing detect.");
         DetectRun detectRun = DetectRun.createDefault();
         DetectContext detectContext = new DetectContext(detectRun);
 
@@ -100,10 +103,10 @@ public class Application implements ApplicationRunner {
         boolean shouldForceSuccess = false;
 
         try {
-            logger.info("Detect boot begin.");
+            logger.debug("Detect boot begin.");
             DetectBoot detectBoot = new DetectBoot(new DetectBootFactory());
             detectBootResultOptional = Optional.ofNullable(detectBoot.boot(detectRun, applicationArguments.getSourceArgs(), environment, eventSystem, detectContext));
-            logger.info("Detect boot completed.");
+            logger.debug("Detect boot completed.");
         } catch (final Exception e) {
             logger.error("Detect boot failed.");
             exitCodeManager.requestExitCode(e);
@@ -115,9 +118,9 @@ public class Application implements ApplicationRunner {
                 ProductRunData productRunData = detectBootResult.getProductRunData().get();
                 RunManager runManager = new RunManager(detectContext);
                 try {
-                    logger.info("Detect run begin: " + detectRun.getRunId());
+                    logger.debug("Detect run begin: " + detectRun.getRunId());
                     runManager.run(productRunData);
-                    logger.info("Detect run completed.");
+                    logger.debug("Detect run completed.");
                 } catch (final Exception e) {
                     if (e.getMessage() != null) {
                         logger.error("Detect run failed: " + e.getMessage());
@@ -128,8 +131,9 @@ public class Application implements ApplicationRunner {
                     exitCodeManager.requestExitCode(e);
                 }
             } else {
-                logger.info("Detect will NOT attempt to run.");
+                logger.debug("Detect will NOT attempt to run.");
                 detectBootResult.getException().ifPresent(exitCodeManager::requestExitCode);
+                detectBootResult.getException().ifPresent(e -> DetectIssue.publish(eventSystem, DetectIssueType.Exception, e.getMessage()));
             }
 
             if (detectBootResult.getDetectConfiguration().isPresent()) {
@@ -140,7 +144,7 @@ public class Application implements ApplicationRunner {
         }
 
         try {
-            logger.info("Detect shutdown begin.");
+            logger.debug("Detect shutdown begin.");
             ShutdownManager shutdownManager = new ShutdownManager();
             shutdownManager.shutdown(
                 ifPresentMap(detectBootResultOptional, DetectBootResult::getProductRunData),
@@ -154,7 +158,7 @@ public class Application implements ApplicationRunner {
             exitCodeManager.requestExitCode(e);
         }
 
-        logger.info("All Detect actions completed.");
+        logger.debug("All Detect actions completed.");
 
         //Generally, when requesting a failure status, an exit code is also requested, but if it is not, we default to an unknown error.
         if (statusManager.hasAnyFailure()) {

@@ -163,7 +163,7 @@ public class DetectConfiguration {
 
     public void lock() {
         isLocked = true;
-        logger.info("Configuration has finished.");
+        logger.debug("Configuration has finished.");
     }
 
     private void authorize(final DetectProperty property, final PropertyAuthority authority) {
@@ -279,7 +279,6 @@ public class DetectConfiguration {
             final String casedKey = detectKey.toUpperCase().replaceAll("\\.", "_");
             return Optional.of(DetectProperty.valueOf(casedKey));
         } catch (final Exception e) {
-            logger.trace("Could not convert key to detect key: " + detectKey);
             return Optional.empty();
         }
     }

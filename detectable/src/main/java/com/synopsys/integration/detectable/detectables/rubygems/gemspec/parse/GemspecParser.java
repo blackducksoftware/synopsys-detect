@@ -68,10 +68,10 @@ public class GemspecParser {
             final GemspecDependency gemspecDependency = gemspecDependencyOptional.get();
 
             if (!includeRuntimeDependencies && gemspecDependency.getGemspecDependencyType() == GemspecDependencyType.RUNTIME) {
-                logger.info(String.format("Excluding component '%s' from graph because it is a runtime dependency", gemspecDependency.getName()));
+                logger.debug(String.format("Excluding component '%s' from graph because it is a runtime dependency", gemspecDependency.getName()));
                 continue;
             } else if (!includeDevelopmentDependencies && gemspecDependency.getGemspecDependencyType() == GemspecDependencyType.DEVELOPMENT) {
-                logger.info(String.format("Excluding component '%s' from graph because it is a development dependency", gemspecDependency.getName()));
+                logger.debug(String.format("Excluding component '%s' from graph because it is a development dependency", gemspecDependency.getName()));
                 continue;
             }
             String name = gemspecDependency.getName();

@@ -47,7 +47,7 @@ public class ClangPackageManagerRunner {
             final ExecutableOutput versionOutput = executor.execute(workingDirectory, packageManagerInfo.getPkgMgrName(), packageManagerInfo.getCheckPresenceCommandArgs());
             logger.debug(String.format("packageStatusOutput: %s", versionOutput.getStandardOutput()));
             if (versionOutput.getStandardOutput().contains(packageManagerInfo.getCheckPresenceCommandOutputExpectedText())) {
-                logger.info(String.format("Found package manager %s", packageManagerInfo.getPkgMgrName()));
+                logger.debug(String.format("Found package manager %s", packageManagerInfo.getPkgMgrName()));
                 return true;
             }
             logger.debug(String.format("Output of %s %s does not look right; concluding that the %s package manager is not present. The output: %s", packageManagerInfo.getPkgMgrName(), packageManagerInfo.getCheckPresenceCommandArgs(),

@@ -39,7 +39,7 @@ public class ConfigurationReporter {
         writer.writeLine("Detect Configuration");
         writer.writeSeperator();
         DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
-        detectConfigurationReporter.print(writer, detectOptions);
+        detectConfigurationReporter.print(writer, detectOptions, false);
         writer.writeSeperator();
     }
 }

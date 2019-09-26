@@ -78,18 +78,18 @@ public class ProjectNameVersionDecider {
         }
 
         if (!decidedProjectName.isPresent()) {
-            logger.info("A project name could not be decided. Using the name of the source path.");
+            logger.debug("A project name could not be decided. Using the name of the source path.");
             decidedProjectName = Optional.of(projectVersionOptions.sourcePathName);
         }
 
         if (!decidedProjectVersion.isPresent()) {
             if ("timestamp".equals(projectVersionOptions.defaultProjectVersionScheme)) {
-                logger.info("A project version name could not be decided. Using the current timestamp.");
+                logger.debug("A project version name could not be decided. Using the current timestamp.");
                 final String timeformat = projectVersionOptions.defaultProjectVersionFormat;
                 final String timeString = DateTimeFormatter.ofPattern(timeformat).withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
                 decidedProjectVersion = Optional.of(timeString);
             } else {
-                logger.info("A project version name could not be decided. Using the default version text.");
+                logger.debug("A project version name could not be decided. Using the default version text.");
                 decidedProjectVersion = Optional.of(projectVersionOptions.defaultProjectVersionText);
             }
         }
@@ -119,7 +119,7 @@ public class ProjectNameVersionDecider {
             chosenTool = findProjectInfoForTool(tool, detectToolProjectInfo);
 
             if (chosenTool.isPresent()) {
-                logger.info("Using the first ordered tool with project info: " + tool.toString());
+                logger.debug("Using the first ordered tool with project info: " + tool.toString());
                 break;
             }
         }

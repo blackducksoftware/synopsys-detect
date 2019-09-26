@@ -55,7 +55,7 @@ public class NpmLockfileParser {
 
     public NpmParseResult parse(final String sourcePath, final Optional<String> packageJsonText, final String lockFileText, final boolean includeDevDependencies) {
         final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        logger.info("Parsing lock file text: ");
+        logger.debug("Parsing lock file text: ");
         logger.debug(lockFileText);
 
         Optional<PackageJson> packageJson = Optional.empty();
@@ -67,15 +67,15 @@ public class NpmLockfileParser {
         final PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
         logger.debug(lockFileText);
 
-        logger.info("Processing project.");
+        logger.debug("Processing project.");
         if (packageLock.dependencies != null) {
-            logger.info(String.format("Found %d dependencies.", packageLock.dependencies.size()));
+            logger.debug(String.format("Found %d dependencies.", packageLock.dependencies.size()));
             //Convert to our custom format
             final NpmDependencyConverter dependencyConverter = new NpmDependencyConverter(externalIdFactory);
             final NpmProject project = dependencyConverter.convertLockFile(packageLock, packageJson);
 
             //First we will recreate the graph from the resolved npm dependencies
-            for (NpmDependency resolved : project.getResolvedDependencies()){
+            for (NpmDependency resolved : project.getResolvedDependencies()) {
                 transformTreeToGraph(resolved, project, dependencyGraph, includeDevDependencies);
             }
 
@@ -94,9 +94,9 @@ public class NpmLockfileParser {
             }
 
         } else {
-            logger.info("Lock file did not have a 'dependencies' section.");
+            logger.debug("Lock file did not have a 'dependencies' section.");
         }
-        logger.info("Finished processing.");
+        logger.debug("Finished processing.");
         final ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, packageLock.name, packageLock.version);
         final CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectId);
         return new NpmParseResult(packageLock.name, packageLock.version, codeLocation);

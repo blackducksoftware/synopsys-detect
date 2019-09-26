@@ -33,9 +33,11 @@ import com.synopsys.integration.log.IntLogger;
 public class DetectStatusManager {
     private final List<Status> statusSummaries = new ArrayList<>();
     private final List<DetectResult> detectResults = new ArrayList<>();
+    private final List<DetectIssue> detectIssues = new ArrayList<>();
 
     public DetectStatusManager(final EventSystem eventSystem) {
         eventSystem.registerListener(Event.StatusSummary, this::addStatusSummary);
+        eventSystem.registerListener(Event.Issue, this::addIssue);
         eventSystem.registerListener(Event.ResultProduced, this::addDetectResult);
     }
 
@@ -43,12 +45,16 @@ public class DetectStatusManager {
         statusSummaries.add(status);
     }
 
+    public void addIssue(DetectIssue issue) {
+        detectIssues.add(issue);
+    }
+
     public void addDetectResult(final DetectResult detectResult) {
         detectResults.add(detectResult);
     }
 
     public void logDetectResults(final IntLogger logger, final ExitCodeType exitCodeType) {
-        new DetectStatusLogger().logDetectStatus(logger, statusSummaries, detectResults, exitCodeType);
+        new DetectStatusLogger().logDetectStatus(logger, statusSummaries, detectResults, detectIssues, exitCodeType);
     }
 
     public boolean hasAnyFailure() {

@@ -57,7 +57,7 @@ public class ProductDecider {
 
     public PolarisDecision determinePolaris(final DetectConfiguration detectConfiguration, final File userHome, final DetectToolFilter detectToolFilter) {
         if (!detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
-            logger.info("Polaris will NOT run because it is excluded.");
+            logger.debug("Polaris will NOT run because it is excluded.");
             return PolarisDecision.skip();
         }
         final PolarisServerConfigBuilder polarisServerConfigBuilder = createPolarisServerConfigBuilder(detectConfiguration, userHome);
@@ -67,13 +67,13 @@ public class ProductDecider {
         if (!polarisCanRun) {
             final String polarisUrl = detectConfiguration.getProperty(DetectProperty.POLARIS_URL, PropertyAuthority.None);
             if (StringUtils.isBlank(polarisUrl)) {
-                logger.info("Polaris will NOT run: The Polaris url must be provided.");
+                logger.debug("Polaris will NOT run: The Polaris url must be provided.");
             } else {
                 logger.debug("Polaris will NOT run: " + builderStatus.getFullErrorMessage());
             }
             return PolarisDecision.skip();
         } else {
-            logger.info("Polaris will run: An access token and url were found.");
+            logger.debug("Polaris will run: An access token and url were found.");
             return PolarisDecision.runOnline(polarisServerConfigBuilder.build());
         }
     }
@@ -82,13 +82,13 @@ public class ProductDecider {
         final boolean offline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
         final String blackDuckUrl = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None);
         if (offline) {
-            logger.info("Black Duck will run: Black Duck offline mode was set to true.");
+            logger.debug("Black Duck will run: Black Duck offline mode was set to true.");
             return BlackDuckDecision.runOffline();
         } else if (StringUtils.isNotBlank(blackDuckUrl)) {
-            logger.info("Black Duck will run: A Black Duck url was found.");
+            logger.debug("Black Duck will run: A Black Duck url was found.");
             return BlackDuckDecision.runOnline();
         } else {
-            logger.info("Black Duck will NOT run: The Black Duck url must be provided or offline mode must be set to true.");
+            logger.debug("Black Duck will NOT run: The Black Duck url must be provided or offline mode must be set to true.");
             return BlackDuckDecision.skip();
         }
     }

@@ -47,7 +47,7 @@ public class NugetInspectorInstaller {
 
     public File installDotNet(File destination, Optional<String> overrideVersion) throws DetectableException {
         try {
-            logger.info("Will attempt to resolve the dotnet inspector version.");
+            logger.debug("Will attempt to resolve the dotnet inspector version.");
             String source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.NUGET_INSPECTOR_REPO, ArtifactoryConstants.NUGET_INSPECTOR_PROPERTY,
                 overrideVersion.orElse(""),
                 ArtifactoryConstants.NUGET_INSPECTOR_VERSION_OVERRIDE);
@@ -59,7 +59,7 @@ public class NugetInspectorInstaller {
 
     public File installExeInspector(File destination, Optional<String> overrideVersion) throws DetectableException {
         try {
-            logger.info("Will attempt to resolve the classic inspector version.");
+            logger.debug("Will attempt to resolve the classic inspector version.");
             String source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_REPO, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_PROPERTY,
                 overrideVersion.orElse(""),
                 ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_VERSION_OVERRIDE);
@@ -76,10 +76,10 @@ public class NugetInspectorInstaller {
         final String inspectorFolderName = nupkgName.replace(".nupkg", "");
         File inspectorFolder = new File(dest, inspectorFolderName);
         if (!inspectorFolder.exists()) {
-            logger.info("Downloading nuget inspector.");
+            logger.debug("Downloading nuget inspector.");
             final File nupkgFile = new File(dest, nupkgName);
             artifactResolver.downloadArtifact(nupkgFile, source);
-            logger.info("Extracting nuget inspector.");
+            logger.debug("Extracting nuget inspector.");
             DetectZipUtil.unzip(nupkgFile, inspectorFolder, Charset.defaultCharset());
             nupkgFile.delete();
             return inspectorFolder;

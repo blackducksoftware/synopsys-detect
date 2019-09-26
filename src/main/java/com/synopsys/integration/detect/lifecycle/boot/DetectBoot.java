@@ -97,6 +97,7 @@ import com.synopsys.integration.detect.workflow.profiling.DetectorProfiler;
 import com.synopsys.integration.detect.workflow.report.DetectConfigurationReporter;
 import com.synopsys.integration.detect.workflow.report.writer.ErrorLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
@@ -160,7 +161,7 @@ public class DetectBoot {
 
         detectOptionManager.postConfigurationProcessedInit();
 
-        logger.info("Configuration processed completely.");
+        logger.debug("Configuration processed completely.");
 
         Optional<DetectBootResult> configurationResult = printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT, PropertyAuthority.None), detectOptionManager, detectConfiguration,
             eventSystem, options);
@@ -168,7 +169,7 @@ public class DetectBoot {
             return configurationResult.get();
         }
 
-        logger.info("Initializing Detect.");
+        logger.debug("Initializing Detect.");
 
         DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
         DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
@@ -176,7 +177,7 @@ public class DetectBoot {
 
         DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem);
 
-        logger.info("Main boot completed. Deciding what Detect should do.");
+        logger.debug("Main boot completed. Deciding what Detect should do.");
 
         if (detectArgumentState.isGenerateAirGapZip()) {
             DetectOverrideableFilter inspectorFilter = new DetectOverrideableFilter("", detectArgumentState.getParsedValue());
@@ -195,12 +196,13 @@ public class DetectBoot {
         ProductDecider productDecider = new ProductDecider();
         ProductDecision productDecision;
         try {
+            logger.info("");
             productDecision = productDecider.decide(detectConfiguration, directoryManager.getUserHome(), detectToolFilter);
         } catch (DetectUserFriendlyException e) {
             return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.of(directoryManager), diagnosticSystem);
         }
 
-        logger.info("Decided what products will be run. Starting product boot.");
+        logger.debug("Decided what products will be run. Starting product boot.");
 
         ProductBootFactory productBootFactory = new ProductBootFactory(detectConfiguration, detectInfo, eventSystem, detectOptionManager);
         ProductBoot productBoot = new ProductBoot();
@@ -293,7 +295,7 @@ public class DetectBoot {
         DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
         InfoLogReportWriter infoLogReportWriter = new InfoLogReportWriter();
         if (!fullConfiguration) {
-            detectConfigurationReporter.print(infoLogReportWriter, detectOptions);
+            detectConfigurationReporter.print(infoLogReportWriter, detectOptions, true);
         }
 
         //Next check for options that are just plain bad, ie giving an detector type we don't know about.
@@ -316,7 +318,7 @@ public class DetectBoot {
         }
 
         //Finally log all fields that are deprecated but still being used (that are not failure).
-        detectConfigurationReporter.printWarnings(infoLogReportWriter, detectOptions);
+        detectConfigurationReporter.publishWarnings(eventSystem, detectOptions);
 
         return Optional.empty();
     }

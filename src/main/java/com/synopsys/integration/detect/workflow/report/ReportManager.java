@@ -28,6 +28,7 @@ import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.report.writer.DebugLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.TraceLogReportWriter;
@@ -43,34 +44,37 @@ public class ReportManager {
     private final PreparationSummaryReporter preparationSummaryReporter;
     private final ExtractionSummaryReporter extractionSummaryReporter;
     private final DiscoverySummaryReporter discoverySummaryReporter;
-    private final DetectorIssueSummaryReporter detectorIssueSummaryReporter;
+    private final DetectorIssuePublisher detectorIssuePublisher;
 
     private final ReportWriter logWriter = new InfoLogReportWriter();
     private final ReportWriter traceLogWriter = new TraceLogReportWriter();
+    private final ReportWriter debugLogWriter = new DebugLogReportWriter();
     private final ExtractionLogger extractionLogger;
     private final DiscoveryLogger discoveryLogger;
 
     public static ReportManager createDefault(EventSystem eventSystem) {
-        return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new DiscoverySummaryReporter(), new DetectorIssueSummaryReporter(), new ExtractionLogger(),
+        return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new DiscoverySummaryReporter(), new DetectorIssuePublisher(), new ExtractionLogger(),
             new DiscoveryLogger());
     }
 
     public ReportManager(final EventSystem eventSystem,
         final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter,
-        final DiscoverySummaryReporter discoverySummaryReporter, DetectorIssueSummaryReporter detectorIssueSummaryReporter,
+        final DiscoverySummaryReporter discoverySummaryReporter, DetectorIssuePublisher detectorIssuePublisher,
         ExtractionLogger extractionLogger, final DiscoveryLogger discoveryLogger) {
         this.eventSystem = eventSystem;
         this.preparationSummaryReporter = preparationSummaryReporter;
         this.extractionSummaryReporter = extractionSummaryReporter;
         this.searchSummaryReporter = searchSummaryReporter;
         this.discoverySummaryReporter = discoverySummaryReporter;
-        this.detectorIssueSummaryReporter = detectorIssueSummaryReporter;
+        this.detectorIssuePublisher = detectorIssuePublisher;
         this.extractionLogger = extractionLogger;
         this.discoveryLogger = discoveryLogger;
 
         eventSystem.registerListener(Event.SearchCompleted, event -> searchCompleted(event));
         eventSystem.registerListener(Event.PreparationsCompleted, event -> preparationsCompleted(event));
+        eventSystem.registerListener(Event.DiscoveriesCompleted, event -> discoveriesCompleted(event));
         eventSystem.registerListener(Event.DetectorsComplete, event -> bomToolsComplete(event));
+
         eventSystem.registerListener(Event.CodeLocationsCalculated, event -> codeLocationsCompleted(event.getCodeLocationNames()));
 
         eventSystem.registerListener(Event.DiscoveryCount, event -> discoveryCount(event));
@@ -85,13 +89,13 @@ public class ReportManager {
 
     // Reports
     public void searchCompleted(final DetectorEvaluationTree rootEvaluation) {
-        searchSummaryReporter.print(logWriter, rootEvaluation);
+        searchSummaryReporter.print(debugLogWriter, rootEvaluation);
         final DetailedSearchSummaryReporter detailedSearchSummaryReporter = new DetailedSearchSummaryReporter();
         detailedSearchSummaryReporter.print(traceLogWriter, rootEvaluation);
     }
 
     public void preparationsCompleted(final DetectorEvaluationTree detectorEvaluationTree) {
-        preparationSummaryReporter.write(logWriter, detectorEvaluationTree);
+        preparationSummaryReporter.write(debugLogWriter, detectorEvaluationTree);
     }
 
     public void discoveryCount(final Integer count) {
@@ -124,16 +128,19 @@ public class ReportManager {
         this.detectorToolResult = detectorToolResult;
     }
 
+    public void discoveriesCompleted(DetectorEvaluationTree detectorEvaluationTree) {
+        discoverySummaryReporter.writeSummary(debugLogWriter, detectorEvaluationTree);
+    }
+
     public void codeLocationsCompleted(final Map<DetectCodeLocation, String> codeLocationNameMap) {
         if (detectorToolResult != null && detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
-            discoverySummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get());
-            extractionSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get(), detectorToolResult.codeLocationMap, codeLocationNameMap);
+            extractionSummaryReporter.writeSummary(debugLogWriter, detectorToolResult.rootDetectorEvaluationTree.get(), detectorToolResult.codeLocationMap, codeLocationNameMap, false);
         }
     }
 
     public void printDetectorIssues() {
         if (detectorToolResult != null && detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
-            detectorIssueSummaryReporter.writeSummary(logWriter, detectorToolResult.rootDetectorEvaluationTree.get());
+            detectorIssuePublisher.publishEvents(eventSystem, detectorToolResult.rootDetectorEvaluationTree.get());
         }
     }
 }

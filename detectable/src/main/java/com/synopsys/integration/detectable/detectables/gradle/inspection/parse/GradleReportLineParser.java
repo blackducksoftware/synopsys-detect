@@ -50,7 +50,7 @@ public class GradleReportLineParser {
         } else {
             final List<String> gav = parseGav(line);
             if (gav.size() != 3) {
-                logger.warn(String.format("The line can not be reasonably split in to the necessary parts: %s", line));
+                logger.trace(String.format("The line can not be reasonably split in to the necessary parts: %s", line)); //All project lines: +--- org.springframework.boot:spring-boot-starter-activemq (n)
                 return GradleTreeNode.newUnknown(level);
             } else {
                 final String group = gav.get(0);

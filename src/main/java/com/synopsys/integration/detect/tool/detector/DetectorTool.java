@@ -80,10 +80,10 @@ public class DetectorTool {
     public DetectorToolResult performDetectors(final File directory, DetectorRuleSet detectorRuleSet, final DetectorFinderOptions detectorFinderOptions, DetectorEvaluationOptions evaluationOptions, final String projectDetector,
         final String requiredDetectors)
         throws DetectUserFriendlyException {
-        logger.info("Initializing detector system.");
+        logger.debug("Initializing detector system.");
         final Optional<DetectorEvaluationTree> possibleRootEvaluation;
         try {
-            logger.info("Starting detector file system traversal.");
+            logger.debug("Starting detector file system traversal.");
             possibleRootEvaluation = detectorFinder.findDetectors(directory, detectorRuleSet, detectorFinderOptions);
 
         } catch (final DetectorFinderDirectoryListException e) {
@@ -105,7 +105,7 @@ public class DetectorTool {
         final DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions);
         detectorEvaluator.setDetectorEvaluatorListener(eventBroadcaster);
 
-        logger.info("Starting detector evaluations.");
+        logger.info("Searching for detectors. This may take a while.");
         detectorEvaluator.searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
 
         Set<DetectorType> applicable = detectorEvaluations.stream()
@@ -116,6 +116,8 @@ public class DetectorTool {
 
         eventSystem.publishEvent(Event.ApplicableCompleted, applicable);
         eventSystem.publishEvent(Event.SearchCompleted, rootEvaluation);
+
+        logger.info("");
 
         logger.debug("Starting detector preparation.");
         detectorEvaluator.extractableEvaluation(rootEvaluation);
@@ -175,6 +177,7 @@ public class DetectorTool {
 
         detectorToolResult.bomToolCodeLocations = new ArrayList<>(detectorToolResult.codeLocationMap.values());
 
+        logger.info("");
         NameVersionDecision nameVersionDecision = detectorNameVersionHandler.finalDecision();
         nameVersionDecision.printDescription(logger);
         detectorToolResult.bomToolProjectNameVersion = nameVersionDecision.getChosenNameVersion();

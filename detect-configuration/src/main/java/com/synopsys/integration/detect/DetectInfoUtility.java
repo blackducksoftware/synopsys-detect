@@ -44,7 +44,7 @@ public class DetectInfoUtility {
         String versionText = findDetectVersionFromResources();
         int majorVersion = parseMajorVersion(versionText);
         OperatingSystemType os = findOperatingSystemType();
-        logger.info("You seem to be running in a " + os + " operating system.");
+        logger.debug("You seem to be running in a " + os + " operating system.");
         return new DetectInfo(versionText, majorVersion, os);
     }
 

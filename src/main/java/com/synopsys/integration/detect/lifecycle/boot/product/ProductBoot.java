@@ -44,17 +44,18 @@ import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
 public class ProductBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public ProductRunData boot(final ProductDecision productDecision, final DetectConfiguration detectConfiguration, final BlackDuckConnectivityChecker blackDuckConnectivityChecker, final PolarisConnectivityChecker polarisConnectivityChecker,
+    public ProductRunData boot(final ProductDecision productDecision, final DetectConfiguration detectConfiguration, final BlackDuckConnectivityChecker blackDuckConnectivityChecker,
+        final PolarisConnectivityChecker polarisConnectivityChecker,
         final ProductBootFactory productBootFactory) throws DetectUserFriendlyException {
         if (!productDecision.willRunAny()) {
             throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
         }
 
-        logger.info("Detect product boot start.");
+        logger.debug("Detect product boot start.");
         BlackDuckRunData blackDuckRunData = null;
         final BlackDuckDecision blackDuckDecision = productDecision.getBlackDuckDecision();
         if (blackDuckDecision.shouldRun()) {
-            logger.info("Will boot Black Duck product.");
+            logger.debug("Will boot Black Duck product.");
             if (blackDuckDecision.isOffline()) {
                 blackDuckRunData = BlackDuckRunData.offline();
             } else {
@@ -79,7 +80,7 @@ public class ProductBoot {
         PolarisRunData polarisRunData = null;
         final PolarisDecision polarisDecision = productDecision.getPolarisDecision();
         if (polarisDecision.shouldRun()) {
-            logger.info("Will boot Polaris product.");
+            logger.debug("Will boot Polaris product.");
             final PolarisServerConfig polarisServerConfig = polarisDecision.getPolarisServerConfig();
             final PolarisConnectivityResult polarisConnectivityResult = polarisConnectivityChecker.determineConnectivity(polarisServerConfig);
 
@@ -91,11 +92,11 @@ public class ProductBoot {
         }
 
         if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
-            logger.info(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
+            logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
             return null;
         }
 
-        logger.info("Detect product boot completed.");
+        logger.debug("Detect product boot completed.");
         return new ProductRunData(polarisRunData, blackDuckRunData);
     }
 }

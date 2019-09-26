@@ -79,7 +79,7 @@ public class ShutdownManager {
     private void cleanupRun(Optional<ProductRunData> productRunData, Optional<File> airgapZip, DirectoryManager directoryManager, DetectConfiguration detectConfiguration) {
         try {
             if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.None)) {
-                logger.info("Detect will cleanup.");
+                logger.debug("Detect will cleanup.");
                 boolean dryRun = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, PropertyAuthority.None);
 
                 boolean offline = false;

@@ -22,25 +22,31 @@
  */
 package com.synopsys.integration.detect.workflow.report;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.synopsys.integration.detect.workflow.event.Event;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
-import com.synopsys.integration.detect.workflow.report.util.ReporterUtils;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
+import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
-public class DetectorIssueSummaryReporter {
+public class DetectorIssuePublisher {
 
-    public void writeSummary(final ReportWriter writer, final DetectorEvaluationTree rootEvaluationTree) {
-        writeSummaries(writer, rootEvaluationTree.asFlatList());
+    public void publishEvents(EventSystem eventSystem, final DetectorEvaluationTree rootEvaluationTree) {
+        publishEvents(eventSystem, rootEvaluationTree.asFlatList());
     }
 
-    private void writeSummaries(final ReportWriter writer, final List<DetectorEvaluationTree> trees) {
+    private void publishEvents(final EventSystem eventSystem, final List<DetectorEvaluationTree> trees) {
         boolean printedOne = false;
+        final String spacer = "\t\t";
         for (final DetectorEvaluationTree tree : trees) {
             final List<DetectorEvaluation> excepted = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionException);
             final List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionFailure);
@@ -50,42 +56,38 @@ public class DetectorIssueSummaryReporter {
             List<DetectorEvaluation> extractable_failed_but_fallback = notExtractable.stream().filter(it -> it.isFallbackExtractable()).collect(Collectors.toList());
             //List<DetectorEvaluation> extractable_failed_but_skipped = notExtractable.stream().filter(it -> it.isPreviousExtractable()).collect(Collectors.toList());
 
-            if (excepted.size() > 0 || failed.size() > 0 || extractable_failed.size() > 0 || extractable_failed_but_fallback.size() > 0) {
-                if (!printedOne) {
-                    printedOne = true;
-                    ReporterUtils.printHeader(writer, "Detector Issue Summary");
-                }
-                writer.writeLine(tree.getDirectory().toString());
-                final String spacer = "\t\t";
-                writeFallbackEvaluationsIfNotEmpty(writer, "\tUsed Fallback: ", spacer, extractable_failed_but_fallback, DetectorEvaluation::getExtractabilityMessage);
-                //writeEvaluationsIfNotEmpty(writer, "\tSkipped: ", spacer, extractable_failed_but_skipped, DetectorEvaluation::getExtractabilityMessage);
-                writeEvaluationsIfNotEmpty(writer, "\tNot Extractable: ", spacer, extractable_failed, DetectorEvaluation::getExtractabilityMessage);
-                writeEvaluationsIfNotEmpty(writer, "\tFailure: ", spacer, failed, detectorEvaluation -> detectorEvaluation.getExtraction().getDescription());
-                writeEvaluationsIfNotEmpty(writer, "\tException: ", spacer, excepted, detectorEvaluation -> ExceptionUtil.oneSentenceDescription(detectorEvaluation.getExtraction().getError()));
+            List<String> messages = new ArrayList<>();
+
+            addFallbackIfNotEmpty(messages, "\tUsed Fallback: ", spacer, extractable_failed_but_fallback, DetectorEvaluation::getExtractabilityMessage);
+            //writeEvaluationsIfNotEmpty(writer, "\tSkipped: ", spacer, extractable_failed_but_skipped, DetectorEvaluation::getExtractabilityMessage);
+            addIfNotEmpty(messages, "\tNot Extractable: ", spacer, extractable_failed, DetectorEvaluation::getExtractabilityMessage);
+            addIfNotEmpty(messages, "\tFailure: ", spacer, failed, detectorEvaluation -> detectorEvaluation.getExtraction().getDescription());
+            addIfNotEmpty(messages, "\tException: ", spacer, excepted, detectorEvaluation -> ExceptionUtil.oneSentenceDescription(detectorEvaluation.getExtraction().getError()));
+
+            if (messages.size() > 0) {
+                messages.add(0, tree.getDirectory().toString());
+                eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.Detector, messages));
             }
-        }
-        if (printedOne) {
-            ReporterUtils.printFooter(writer);
         }
     }
 
-    private void writeEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, final Function<DetectorEvaluation, String> reason) {
+    private void addIfNotEmpty(final List<String> messages, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, final Function<DetectorEvaluation, String> reason) {
         if (evaluations.size() > 0) {
             evaluations.stream().forEach(evaluation -> {
-                writer.writeLine(prefix + evaluation.getDetectorRule().getDescriptiveName());
-                writer.writeLine(spacer + reason.apply(evaluation));
+                messages.add(prefix + evaluation.getDetectorRule().getDescriptiveName());
+                messages.add(spacer + reason.apply(evaluation));
             });
         }
     }
 
-    private void writeFallbackEvaluationsIfNotEmpty(final ReportWriter writer, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, final Function<DetectorEvaluation, String> reason) {
+    private void addFallbackIfNotEmpty(final List<String> messages, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, final Function<DetectorEvaluation, String> reason) {
         if (evaluations.size() > 0) {
             evaluations.stream().forEach(evaluation -> {
                 Optional<DetectorEvaluation> fallback = evaluation.getSuccessfullFallback();
                 fallback.ifPresent(detectorEvaluation -> {
-                    writer.writeLine(prefix + detectorEvaluation.getDetectorRule().getDescriptiveName());
-                    writer.writeLine(spacer + "Preferred Detector: " + evaluation.getDetectorRule().getDescriptiveName());
-                    writer.writeLine(spacer + "Reason: " + reason.apply(evaluation));
+                    messages.add(prefix + detectorEvaluation.getDetectorRule().getDescriptiveName());
+                    messages.add(spacer + "Preferred Detector: " + evaluation.getDetectorRule().getDescriptiveName());
+                    messages.add(spacer + "Reason: " + reason.apply(evaluation));
                 });
 
             });

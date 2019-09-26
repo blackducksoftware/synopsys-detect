@@ -102,8 +102,8 @@ public class DetectorEvaluator {
         }
 
         if (appliedSoFar.size() > 0) {
-            logger.info("Found (" + appliedSoFar.size() + ") applicable detectors in: " + detectorEvaluationTree.getDirectory()
-                                                                                              .toString()); //TODO: Perfect log level also matters here. To little and we may appear stuck, but we may also be flooding the logs.
+            logger.debug("Found (" + appliedSoFar.size() + ") applicable detectors in: " + detectorEvaluationTree.getDirectory()
+                                                                                               .toString()); //TODO: Perfect log level also matters here. To little and we may appear stuck, but we may also be flooding the logs.
         }
 
         final Set<DetectorRule> nextAppliedInParent = new HashSet<>();
@@ -226,7 +226,7 @@ public class DetectorEvaluator {
 
                 Discovery discovery = detectorEvaluation.getDiscovery();
                 if (discovery != null && discovery.getExtraction() != null) {
-                    logger.info("Extraction already completed during project discovery.");
+                    logger.debug("Extraction already completed during project discovery.");
                     detectorEvaluation.setExtraction(discovery.getExtraction());
                 } else {
                     try {

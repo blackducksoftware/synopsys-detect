@@ -227,9 +227,9 @@ public class RunManager {
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        logger.info("Completed code location tools.");
+        logger.debug("Completed code location tools.");
 
-        logger.info("Determining project info.");
+        logger.debug("Determining project info.");
 
         final ProjectNameVersionOptions projectNameVersionOptions = detectConfigurationFactory.createProjectNameVersionOptions(directoryManager.getSourceDirectory().getName());
         final ProjectNameVersionDecider projectNameVersionDecider = new ProjectNameVersionDecider(projectNameVersionOptions);
@@ -265,8 +265,7 @@ public class RunManager {
         final EventSystem eventSystem,
         final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions,
         final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion, final AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException {
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        logger.info("Black Duck tools will run.");
+        logger.debug("Black Duck tools will run.");
 
         final BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
 
@@ -277,7 +276,7 @@ public class RunManager {
         BlackDuckServicesFactory blackDuckServicesFactory = null;
         if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
             blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
-            logger.info("Getting or creating project.");
+            logger.debug("Getting or creating project.");
             final DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
             final ProjectMappingService detectProjectMappingService = blackDuckServicesFactory.createProjectMappingService();
             final DetectCustomFieldService detectCustomFieldService = new DetectCustomFieldService();
@@ -285,7 +284,7 @@ public class RunManager {
             projectVersionWrapper = detectProjectService.createOrUpdateBlackDuckProject(projectNameVersion);
 
             if (null != projectVersionWrapper && runOptions.shouldUnmapCodeLocations()) {
-                logger.info("Unmapping code locations.");
+                logger.debug("Unmapping code locations.");
                 final DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createCodeLocationService());
                 detectCodeLocationUnmapService.unmapCodeLocations(projectVersionWrapper.getProjectVersionView());
             } else {
@@ -295,9 +294,9 @@ public class RunManager {
             logger.debug("Detect is not online, and will not create the project.");
         }
 
-        logger.info("Completed project and version actions.");
+        logger.debug("Completed project and version actions.");
 
-        logger.info("Processing Detect Code Locations.");
+        logger.debug("Processing Detect Code Locations.");
         final BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new IntegrationEscapeUtil(), codeLocationNameManager, detectConfiguration, bdioCodeLocationCreator, directoryManager, eventSystem);
         final BdioResult bdioResult = bdioManager.createBdioFiles(aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations());
 
@@ -306,7 +305,7 @@ public class RunManager {
             logger.info("Created " + bdioResult.getUploadTargets().size() + " BDIO files.");
             bdioResult.getUploadTargets().forEach(it -> eventSystem.publishEvent(Event.OutputFileOfInterest, it.getUploadFile()));
             if (null != blackDuckServicesFactory) {
-                logger.info("Uploading BDIO files.");
+                logger.debug("Uploading BDIO files.");
                 final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, blackDuckServicesFactory.createBdioUploadService(), eventSystem);
                 final CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
                 codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
@@ -315,7 +314,7 @@ public class RunManager {
             logger.debug("Did not create any BDIO files.");
         }
 
-        logger.info("Completed Detect Code Location processing.");
+        logger.debug("Completed Detect Code Location processing.");
 
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {

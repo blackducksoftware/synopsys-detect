@@ -56,7 +56,7 @@ public class DetectBdioWriter {
             final SpdxCreator detectCreator = SpdxCreator.createToolSpdxCreator("Detect", detectVersion);
             simpleBdioDocument.billOfMaterials.creationInfo.setPrimarySpdxCreator(detectCreator);
             simpleBdioFactory.writeSimpleBdioDocumentToFile(outputFile, simpleBdioDocument);
-            logger.info(String.format("BDIO Generated: %s", outputFile.getAbsolutePath()));
+            logger.debug(String.format("BDIO Generated: %s", outputFile.getAbsolutePath()));
         } catch (final IOException e) {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }

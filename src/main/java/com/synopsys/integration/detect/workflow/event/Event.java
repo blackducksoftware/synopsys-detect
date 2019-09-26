@@ -29,6 +29,7 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectResult;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
@@ -56,6 +57,7 @@ public class Event {
     public static EventType<BdioCodeLocationResult> CodeLocationsCalculated = new EventType(BdioCodeLocationResult.class);
     public static EventType<ExitCodeRequest> ExitCode = new EventType(ExitCodeRequest.class);
     public static EventType<Status> StatusSummary = new EventType(Status.class);
+    public static EventType<DetectIssue> Issue = new EventType(DetectIssue.class);
     public static EventType<DetectResult> ResultProduced = new EventType(DetectResult.class);
     public static EventType<File> OutputFileOfInterest = new EventType(File.class);
     public static EventType<File> CustomerFileOfInterest = new EventType(File.class);

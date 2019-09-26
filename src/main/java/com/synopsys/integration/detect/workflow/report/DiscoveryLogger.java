@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExtractionEnvironment;
 import com.synopsys.integration.detect.workflow.report.util.ObjectPrinter;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
+import com.synopsys.integration.detect.workflow.report.writer.DebugLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detectable.Discovery;
 import com.synopsys.integration.detectable.Extraction;
@@ -48,31 +49,31 @@ public class DiscoveryLogger {
         final DetectExtractionEnvironment detectExtractionEnvironment = (DetectExtractionEnvironment) detectorEvaluation.getExtractionEnvironment();
         final Integer i = detectExtractionEnvironment.getExtractionId().getId();
         final String progress = Integer.toString((int) Math.floor((i * 100.0f) / discoveryCount));
-        logger.info(String.format("Discovery %d of %d (%s%%)", i + 1, discoveryCount, progress));
-        logger.info(ReportConstants.SEPERATOR);
+        logger.debug(String.format("Discovery %d of %d (%s%%)", i + 1, discoveryCount, progress));
+        logger.debug(ReportConstants.SEPERATOR);
 
-        logger.info("Starting discovery: " + detectorEvaluation.getDetectorRule().getDetectorType() + " - " + detectorEvaluation.getDetectorRule().getName());
-        logger.info("Identifier: " + detectExtractionEnvironment.getExtractionId().toUniqueString());
-        ObjectPrinter.printObjectPrivate(new InfoLogReportWriter(logger), detectorEvaluation.getDetectable());
-        logger.info(ReportConstants.SEPERATOR);
+        logger.debug("Starting discovery: " + detectorEvaluation.getDetectorRule().getDetectorType() + " - " + detectorEvaluation.getDetectorRule().getName());
+        logger.debug("Identifier: " + detectExtractionEnvironment.getExtractionId().toUniqueString());
+        ObjectPrinter.printObjectPrivate(new DebugLogReportWriter(logger), detectorEvaluation.getDetectable());
+        logger.debug(ReportConstants.SEPERATOR);
     }
 
     public void discoveryEnded(final DetectorEvaluation detectorEvaluation) {
-        logger.info(ReportConstants.SEPERATOR);
-        logger.info("Finished discovery: " + detectorEvaluation.getDiscovery().getResult().toString());
+        logger.debug(ReportConstants.SEPERATOR);
+        logger.debug("Finished discovery: " + detectorEvaluation.getDiscovery().getResult().toString());
 
         boolean projectInformationFound = StringUtils.isNotBlank(detectorEvaluation.getDiscovery().getProjectName());
-        logger.info("Project information found: " + projectInformationFound);
+        logger.debug("Project information found: " + projectInformationFound);
         if (projectInformationFound) {
-            logger.info("Project name: " + detectorEvaluation.getDiscovery().getProjectName());
-            logger.info("Project version: " + detectorEvaluation.getDiscovery().getProjectVersion());
+            logger.debug("Project name: " + detectorEvaluation.getDiscovery().getProjectName());
+            logger.debug("Project version: " + detectorEvaluation.getDiscovery().getProjectVersion());
         }
         if (detectorEvaluation.getDiscovery().getResult() == Discovery.DiscoveryResultType.EXCEPTION) {
-            logger.info("Exception: " + ExceptionUtil.oneSentenceDescription(detectorEvaluation.getDiscovery().getError()));
+            logger.debug("Exception: " + ExceptionUtil.oneSentenceDescription(detectorEvaluation.getDiscovery().getError()));
             logger.debug("Details: ", detectorEvaluation.getDiscovery().getError());
         } else if (detectorEvaluation.getDiscovery().getResult() == Discovery.DiscoveryResultType.FAILURE) {
-            logger.info(detectorEvaluation.getDiscovery().getDescription());
+            logger.debug(detectorEvaluation.getDiscovery().getDescription());
         }
-        logger.info(ReportConstants.SEPERATOR);
+        logger.debug(ReportConstants.SEPERATOR);
     }
 }

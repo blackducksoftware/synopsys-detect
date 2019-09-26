@@ -62,7 +62,7 @@ public class DetectorFinder {
             return Optional.empty();
         }
 
-        logger.info("Traversing directory: " + directory.getPath()); //TODO: Finding the perfect log level here is important. At INFO, we log a lot during a deep traversal but if we don't we might look stuck.
+        logger.debug("Traversing directory: " + directory.getPath()); //TODO: Finding the perfect log level here is important. At INFO, we log a lot during a deep traversal but if we don't we might look stuck.
         final List<DetectorEvaluation> evaluations = detectorRuleSet.getOrderedDetectorRules().stream()
                                                          .map(DetectorEvaluation::new)
                                                          .collect(Collectors.toList());

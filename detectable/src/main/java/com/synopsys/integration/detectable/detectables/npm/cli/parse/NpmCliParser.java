@@ -61,7 +61,7 @@ public class NpmCliParser {
             return null;
         }
 
-        logger.info("Generating results from npm ls -json");
+        logger.debug("Generating results from npm ls -json");
 
         return convertNpmJsonFileToCodeLocation(sourcePath, npmLsOutput);
     }

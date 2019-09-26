@@ -84,18 +84,18 @@ public class DetectProjectService {
         setApplicationId(projectVersionWrapper.getProjectView(), detectProjectServiceOptions.getApplicationId());
         CustomFieldDocument customFieldDocument = detectProjectServiceOptions.getCustomFields();
         if (customFieldDocument != null && (customFieldDocument.getProject().size() > 0 || customFieldDocument.getVersion().size() > 0)) {
-            logger.info("Will update the following custom fields and values.");
+            logger.debug("Will update the following custom fields and values.");
             for (CustomFieldElement element : customFieldDocument.getProject()) {
-                logger.info(String.format("Project field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
+                logger.debug(String.format("Project field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
             }
             for (CustomFieldElement element : customFieldDocument.getVersion()) {
-                logger.info(String.format("Version field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
+                logger.debug(String.format("Version field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
             }
 
             detectCustomFieldService.updateCustomFields(projectVersionWrapper, customFieldDocument, blackDuckServicesFactory.createBlackDuckService());
-            logger.info("Successfully updated custom fields.");
+            logger.info("Successfully updated (" + (customFieldDocument.getVersion().size() + customFieldDocument.getProject().size()) + ") custom fields.");
         } else {
-            logger.info("No custom fields to set.");
+            logger.debug("No custom fields to set.");
         }
 
         final ProjectUsersService projectUsersService = blackDuckServicesFactory.createProjectUsersService();
@@ -108,7 +108,7 @@ public class DetectProjectService {
     private void mapToParentProjectVersion(ProjectService projectService, ProjectBomService projectBomService, String parentProjectName, String parentVersionName, ProjectVersionWrapper projectVersionWrapper)
         throws DetectUserFriendlyException {
         if (StringUtils.isNotBlank(parentProjectName) || StringUtils.isNotBlank(parentVersionName)) {
-            logger.info("Will attempt to add this project to a parent.");
+            logger.debug("Will attempt to add this project to a parent.");
             if (StringUtils.isBlank(parentProjectName) || StringUtils.isBlank(parentVersionName)) {
                 throw new DetectUserFriendlyException("Both the parent project name and the parent project version name must be specified if either is specified.", ExitCodeType.FAILURE_CONFIGURATION);
             }
@@ -200,7 +200,7 @@ public class DetectProjectService {
 
         final Optional<String> cloneUrl = findCloneUrl(projectNameVersion.getName()); //TODO: Be passed the clone url.
         if (cloneUrl.isPresent()) {
-            logger.info("Cloning project version from release url: " + cloneUrl.get());
+            logger.debug("Cloning project version from release url: " + cloneUrl.get());
             projectSyncModel.setCloneFromReleaseUrl(cloneUrl.get());
         }
 
@@ -228,7 +228,7 @@ public class DetectProjectService {
 
     public Optional<String> findCloneUrl(String projectName) throws DetectUserFriendlyException {
         if (detectProjectServiceOptions.getCloneLatestProjectVersion()) {
-            logger.info("Cloning the most recent project version.");
+            logger.debug("Cloning the most recent project version.");
             return findLatestProjectVersionCloneUrl(blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createProjectService(), projectName);
         } else if (StringUtils.isNotBlank(detectProjectServiceOptions.getCloneVersionName())) {
             return findNamedCloneUrl(projectName, detectProjectServiceOptions.getCloneVersionName(), blackDuckServicesFactory.createProjectService());
@@ -276,12 +276,12 @@ public class DetectProjectService {
 
     public void setApplicationId(final ProjectView projectView, final String applicationId) throws DetectUserFriendlyException {
         if (StringUtils.isBlank(applicationId)) {
-            logger.info("No Application ID to set");
+            logger.debug("No Application ID to set.");
             return;
         }
 
         try {
-            logger.info("Populating project Application ID");
+            logger.debug("Populating project Application ID");
             projectMappingService.populateApplicationId(projectView, applicationId);
         } catch (final IntegrationException e) {
             throw new DetectUserFriendlyException(String.format("Unable to set Application ID for project: %s", projectView.getName()), e, ExitCodeType.FAILURE_CONFIGURATION);

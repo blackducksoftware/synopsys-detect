@@ -59,7 +59,7 @@ public class DetectBdioUploadService {
     public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(List<UploadTarget> uploadTargets) throws IntegrationException, DetectUserFriendlyException {
         UploadBatch uploadBatch = new UploadBatch();
         for (UploadTarget uploadTarget : uploadTargets) {
-            logger.info(String.format("uploading %s to %s", uploadTarget.getUploadFile().getName(), detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None)));
+            logger.debug(String.format("uploading %s to %s", uploadTarget.getUploadFile().getName(), detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None)));
             uploadBatch.addUploadTarget(uploadTarget);
         }
 

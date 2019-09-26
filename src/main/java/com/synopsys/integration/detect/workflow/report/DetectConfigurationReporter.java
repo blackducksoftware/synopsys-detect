@@ -30,8 +30,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.help.DetectOption;
+import com.synopsys.integration.detect.workflow.event.Event;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
+import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 
 public class DetectConfigurationReporter {
 
@@ -41,19 +45,22 @@ public class DetectConfigurationReporter {
                    .collect(Collectors.toList());
     }
 
-    public void print(final ReportWriter writer, final List<DetectOption> detectOptions) throws IllegalArgumentException, SecurityException {
-        writer.writeLine("");
-        writer.writeLine("Current property values:");
-        writer.writeLine("--property = value [notes]");
+    public void print(final ReportWriter writer, final List<DetectOption> detectOptions, boolean skipDefaults) throws IllegalArgumentException, SecurityException {
+        writer.writeLine("Detect Configuration");
         writer.writeLine(StringUtils.repeat("-", 60));
 
         final List<DetectOption> sortedOptions = sortOptions(detectOptions);
 
+        boolean atLeaseOneWritten = false;
         for (final DetectOption option : sortedOptions) {
             final String key = option.getDetectProperty().getPropertyKey();
             String fieldValue = option.getFinalValue();
             final DetectOption.FinalValueType fieldType = option.getFinalValueType();
             if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(fieldValue) && !"metaClass".equals(key)) {
+                if (fieldType == DetectOption.FinalValueType.DEFAULT && skipDefaults) {
+                    continue;
+                }
+                atLeaseOneWritten = true;
                 final boolean containsPassword = key.toLowerCase().contains("password") || key.toLowerCase().contains("api.token") || key.toLowerCase().contains("access.token");
                 if (containsPassword) {
                     fieldValue = StringUtils.repeat("*", fieldValue.length());
@@ -85,35 +92,27 @@ public class DetectConfigurationReporter {
                 }
 
                 if (option.getWarnings().size() > 0) {
-                    text += "\t *** WARNING ***";
+                    text += "\t *** DEPRECATED ***";
                 }
                 writer.writeLine(text);
             }
+        }
+        if (!atLeaseOneWritten) {
+            writer.writeLine("All configuration values are the default.");
         }
         writer.writeLine(StringUtils.repeat("-", 60));
         writer.writeLine("");
 
     }
 
-    public void printWarnings(final ReportWriter writer, final List<DetectOption> detectOptions) {
+    public void publishWarnings(EventSystem eventSystem, final List<DetectOption> detectOptions) {
         final List<DetectOption> sortedOptions = sortOptions(detectOptions);
 
         final List<DetectOption> allWarnings = sortedOptions.stream().filter(it -> it.getWarnings().size() > 0).collect(Collectors.toList());
-        if (allWarnings.size() > 0) {
-            writer.writeLine("");
-            writer.writeLine(StringUtils.repeat("*", 60));
-            if (allWarnings.size() == 1) {
-                writer.writeLine("WARNING (" + allWarnings.size() + ")");
-            } else {
-                writer.writeLine("WARNINGS (" + allWarnings.size() + ")");
+        for (final DetectOption option : allWarnings) {
+            for (final String warning : option.getWarnings()) {
+                DetectIssue.publish(eventSystem, DetectIssueType.Deprecation, option.getDetectProperty().getPropertyKey() + ": " + warning);
             }
-            for (final DetectOption option : allWarnings) {
-                for (final String warning : option.getWarnings()) {
-                    writer.writeLine(option.getDetectProperty().getPropertyKey() + ": " + warning);
-                }
-            }
-            writer.writeLine(StringUtils.repeat("*", 60));
-            writer.writeLine("");
         }
     }
 
@@ -139,7 +138,6 @@ public class DetectConfigurationReporter {
             writer.writeLine("To ignore these messages and force detect to exit with success supply --" + DetectProperty.DETECT_FORCE_SUCCESS.getPropertyKey() + "=true");
             writer.writeLine("This will not force detect to run, but it will pretend to have succeeded.");
             writer.writeLine(ReportConstants.ERROR_SEPERATOR);
-            writer.writeLine("");
         }
     }
 }

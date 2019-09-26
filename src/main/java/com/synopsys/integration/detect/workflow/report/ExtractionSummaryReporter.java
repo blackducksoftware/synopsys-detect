@@ -37,7 +37,8 @@ import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class ExtractionSummaryReporter {
 
-    public void writeSummary(final ReportWriter writer, final DetectorEvaluationTree rootEvaluation, final Map<CodeLocation, DetectCodeLocation> detectableMap, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+    public void writeSummary(final ReportWriter writer, final DetectorEvaluationTree rootEvaluation, final Map<CodeLocation, DetectCodeLocation> detectableMap, final Map<DetectCodeLocation, String> codeLocationNameMap,
+        boolean writeCodeLocationNames) {
         ReporterUtils.printHeader(writer, "Extraction results:");
         boolean printedAny = false;
         for (final DetectorEvaluationTree it : rootEvaluation.asFlatList()) {
@@ -49,7 +50,9 @@ public class ExtractionSummaryReporter {
                 writer.writeLine(it.getDirectory().toString());
                 final List<String> codeLocationNames = findCodeLocationNames(it, detectableMap, codeLocationNameMap);
                 writer.writeLine("\tCode locations: " + codeLocationNames.size());
-                codeLocationNames.forEach(name -> writer.writeLine("\t\t" + name));
+                if (writeCodeLocationNames) {
+                    codeLocationNames.forEach(name -> writer.writeLine("\t\t" + name));
+                }
                 writeEvaluationsIfNotEmpty(writer, "\tSuccess: ", success);
                 writeEvaluationsIfNotEmpty(writer, "\tFailure: ", failed);
                 writeEvaluationsIfNotEmpty(writer, "\tException: ", exception);

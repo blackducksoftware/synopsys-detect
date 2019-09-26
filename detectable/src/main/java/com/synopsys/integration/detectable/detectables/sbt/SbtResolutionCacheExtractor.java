@@ -85,7 +85,7 @@ public class SbtResolutionCacheExtractor {
             String projectVersion = null;
             for (final SbtDependencyModule module : project.modules) {
                 final CodeLocation codeLocation;
-                if (project.projectExternalId != null){
+                if (project.projectExternalId != null) {
                     codeLocation = new CodeLocation(module.graph, project.projectExternalId);
                 } else {
                     codeLocation = new CodeLocation(module.graph);
@@ -158,8 +158,8 @@ public class SbtResolutionCacheExtractor {
         final List<File> sbtFiles = fileFinder.findFiles(path, BUILD_SBT_FILENAME, depth);
         final List<File> resolutionCaches = fileFinder.findFiles(path, RESOLUTION_CACHE_DIRECTORY, depth); // TODO: ensure this does what the old method did. findDirectoriesContainingDirectoriesToDepth
 
-        logger.info(String.format("Found %s build.sbt files.", sbtFiles.size()));
-        logger.info(String.format("Found %s resolution caches.", resolutionCaches.size()));
+        logger.debug(String.format("Found %s build.sbt files.", sbtFiles.size()));
+        logger.debug(String.format("Found %s resolution caches.", resolutionCaches.size()));
 
         final List<SbtDependencyModule> modules = new ArrayList<>();
         final List<String> usedReports = new ArrayList<>();
@@ -182,7 +182,7 @@ public class SbtResolutionCacheExtractor {
 
         modules.removeIf(it -> {
             if (it.name.contains("temp-module")) {
-                logger.info("Excluding temp module: " + it.name);
+                logger.debug("Excluding temp module: " + it.name);
                 return true;
             } else {
                 return false;
