@@ -44,7 +44,7 @@ public class DetectBootResult {
     //And in the case of an exception, this should be populated so the proper exit code can be thrown.
     private final Exception exception;
 
-    public DetectBootResult(final BootType bootType, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final File airGapZip, final DiagnosticSystem diagnosticSystem,
+    private DetectBootResult(final BootType bootType, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final File airGapZip, final DiagnosticSystem diagnosticSystem,
         final ProductRunData productRunData, final Exception exception) {
         this.bootType = bootType;
         this.detectConfiguration = detectConfiguration;
@@ -89,16 +89,27 @@ public class DetectBootResult {
         EXCEPTION
     }
 
-    public static DetectBootResult run(DetectConfiguration detectConfiguration, ProductRunData productRunData, DirectoryManager directoryManager, Optional<DiagnosticSystem> diagnosticSystem) {
+    public static DetectBootResult run(final DetectConfiguration detectConfiguration, final ProductRunData productRunData, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
         return new DetectBootResult(BootType.RUN, detectConfiguration, directoryManager, null, diagnosticSystem.orElse(null), productRunData, null);
     }
 
-    public static DetectBootResult exit(DetectConfiguration detectConfiguration, Optional<File> airGapZip, Optional<DirectoryManager> directoryManager, Optional<DiagnosticSystem> diagnosticSystem) {
-        return new DetectBootResult(BootType.EXIT, detectConfiguration, directoryManager.orElse(null), airGapZip.orElse(null), diagnosticSystem.orElse(null), null, null);
+    public static DetectBootResult exit(final DetectConfiguration detectConfiguration) {
+        return new DetectBootResult(BootType.EXIT, detectConfiguration, null, null, null, null, null);
     }
 
-    public static DetectBootResult exception(Exception exception, Optional<DetectConfiguration> detectConfiguration, Optional<DirectoryManager> directoryManager, Optional<DiagnosticSystem> diagnosticSystem) {
-        return new DetectBootResult(BootType.EXCEPTION, detectConfiguration.orElse(null), directoryManager.orElse(null), null, diagnosticSystem.orElse(null), null, exception);
+    public static DetectBootResult exit(final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
+        return new DetectBootResult(BootType.EXIT, detectConfiguration, directoryManager, null, diagnosticSystem.orElse(null), null, null);
     }
 
+    public static DetectBootResult exit(final DetectConfiguration detectConfiguration, final File airGapZip, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
+        return new DetectBootResult(BootType.EXIT, detectConfiguration, directoryManager, airGapZip, diagnosticSystem.orElse(null), null, null);
+    }
+
+    public static DetectBootResult exception(final Exception exception, final DetectConfiguration detectConfiguration) {
+        return new DetectBootResult(BootType.EXCEPTION, detectConfiguration, null, null, null, null, exception);
+    }
+
+    public static DetectBootResult exception(final Exception exception, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
+        return new DetectBootResult(BootType.EXCEPTION, detectConfiguration, directoryManager, null, diagnosticSystem.orElse(null), null, exception);
+    }
 }

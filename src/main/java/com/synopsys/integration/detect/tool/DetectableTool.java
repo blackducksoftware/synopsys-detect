@@ -26,7 +26,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -93,19 +92,17 @@ public class DetectableTool {
         logger.info("Applicable passed.");
 
         DetectableResult extractable;
-        Exception extractableException = null; //TODO: Move into DetectableResult base class.
         try {
             extractable = detectable.extractable();
         } catch (final DetectableException e) {
             extractable = new ExceptionDetectableResult(e);
-            extractableException = e;
         }
 
         if (!extractable.getPassed()) {
             logger.error("Was not extractable: " + extractable.toDescription());
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.FAILURE));
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
-            return DetectableToolResult.failed(Optional.ofNullable(extractableException));
+            return DetectableToolResult.failed();
         }
 
         logger.info("Extractable passed.");
@@ -117,7 +114,7 @@ public class DetectableTool {
             logger.error("Extraction was not success.");
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.FAILURE));
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
-            return DetectableToolResult.failed(Optional.empty());
+            return DetectableToolResult.failed();
         } else {
             logger.info("Extraction success.");
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.SUCCESS));
@@ -126,16 +123,18 @@ public class DetectableTool {
         final Map<CodeLocation, DetectCodeLocation> detectCodeLocationMap = codeLocationConverter.toDetectCodeLocation(sourcePath, extraction, sourcePath, name);
         final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>(detectCodeLocationMap.values());
 
-        Optional<DetectToolProjectInfo> detectToolProjectInfo = Optional.empty();
+        // new DetectableToolResult
+
+        final File dockerTar = extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).orElse(null); // ifPresent(DetectableToolResult::addDockerTar)
+
+        DetectToolProjectInfo projectInfo = null;
         if (StringUtils.isNotBlank(extraction.getProjectName()) || StringUtils.isNotBlank(extraction.getProjectVersion())) {
             final NameVersion nameVersion = new NameVersion(extraction.getProjectName(), extraction.getProjectVersion());
-            detectToolProjectInfo = Optional.of(new DetectToolProjectInfo(detectTool, nameVersion));
+            projectInfo = new DetectToolProjectInfo(detectTool, nameVersion);
         }
-
-        final Optional<File> dockerTar = extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA);
 
         logger.info("Tool finished.");
 
-        return DetectableToolResult.success(detectCodeLocations, detectToolProjectInfo, dockerTar);
+        return DetectableToolResult.success(detectCodeLocations, projectInfo, dockerTar);
     }
 }

@@ -97,7 +97,6 @@ import com.synopsys.integration.detect.workflow.profiling.DetectorProfiler;
 import com.synopsys.integration.detect.workflow.report.DetectConfigurationReporter;
 import com.synopsys.integration.detect.workflow.report.writer.ErrorLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
-import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
@@ -113,38 +112,38 @@ import freemarker.template.Configuration;
 public class DetectBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private DetectBootFactory detectBootFactory;
+    private final DetectBootFactory detectBootFactory;
 
-    public DetectBoot(DetectBootFactory detectBootFactory) {
+    public DetectBoot(final DetectBootFactory detectBootFactory) {
         this.detectBootFactory = detectBootFactory;
     }
 
-    public DetectBootResult boot(DetectRun detectRun, final String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) {
-        Gson gson = detectBootFactory.createGson();
-        ObjectMapper objectMapper = detectBootFactory.createObjectMapper();
-        DocumentBuilder xml = detectBootFactory.createXmlDocumentBuilder();
-        Configuration configuration = detectBootFactory.createConfiguration();
+    public DetectBootResult boot(final DetectRun detectRun, final String[] sourceArgs, final ConfigurableEnvironment environment, final EventSystem eventSystem, final DetectContext detectContext) {
+        final Gson gson = detectBootFactory.createGson();
+        final ObjectMapper objectMapper = detectBootFactory.createObjectMapper();
+        final DocumentBuilder xml = detectBootFactory.createXmlDocumentBuilder();
+        final Configuration configuration = detectBootFactory.createConfiguration();
 
-        DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
+        final DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
 
-        SpringPropertySource springPropertySource = new SpringPropertySource(environment);
-        DetectPropertySource propertySource = new DetectPropertySource(springPropertySource);
-        DetectPropertyMap propertyMap = new DetectPropertyMap();
-        DetectConfiguration detectConfiguration = new DetectConfiguration(propertySource, propertyMap);
-        DetectOptionManager detectOptionManager = new DetectOptionManager(detectConfiguration, detectInfo);
+        final SpringPropertySource springPropertySource = new SpringPropertySource(environment);
+        final DetectPropertySource propertySource = new DetectPropertySource(springPropertySource);
+        final DetectPropertyMap propertyMap = new DetectPropertyMap();
+        final DetectConfiguration detectConfiguration = new DetectConfiguration(propertySource, propertyMap);
+        final DetectOptionManager detectOptionManager = new DetectOptionManager(detectConfiguration, detectInfo);
 
         final List<DetectOption> options = detectOptionManager.getDetectOptions();
 
-        DetectArgumentState detectArgumentState = parseDetectArgumentState(sourceArgs);
+        final DetectArgumentState detectArgumentState = parseDetectArgumentState(sourceArgs);
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             printAppropriateHelp(options, detectArgumentState);
-            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty(), Optional.empty());
+            return DetectBootResult.exit(detectConfiguration);
         }
 
         if (detectArgumentState.isHelpJsonDocument()) {
             printHelpJsonDocument(options, detectInfo, configuration, gson);
-            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty(), Optional.empty());
+            return DetectBootResult.exit(detectConfiguration);
         }
 
         printDetectInfo(detectInfo);
@@ -155,15 +154,15 @@ public class DetectBoot {
 
         try {
             processDetectConfiguration(detectInfo, detectRun, detectConfiguration, options);
-        } catch (DetectUserFriendlyException e) {
-            return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.empty(), Optional.empty());
+        } catch (final DetectUserFriendlyException e) {
+            return DetectBootResult.exception(e, detectConfiguration);
         }
 
         detectOptionManager.postConfigurationProcessedInit();
 
         logger.debug("Configuration processed completely.");
 
-        Optional<DetectBootResult> configurationResult = printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT, PropertyAuthority.None), detectOptionManager, detectConfiguration,
+        final Optional<DetectBootResult> configurationResult = printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT, PropertyAuthority.None), detectOptionManager, detectConfiguration,
             eventSystem, options);
         if (configurationResult.isPresent()) {
             return configurationResult.get();
@@ -171,55 +170,55 @@ public class DetectBoot {
 
         logger.debug("Initializing Detect.");
 
-        DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
-        DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
-        Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectOptionManager.getDetectOptions(), detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
+        final DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
+        final DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
+        final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectOptionManager.getDetectOptions(), detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
-        DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem);
+        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem);
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
         if (detectArgumentState.isGenerateAirGapZip()) {
-            DetectOverrideableFilter inspectorFilter = new DetectOverrideableFilter("", detectArgumentState.getParsedValue());
-            String airGapSuffix = String.join("-", inspectorFilter.getIncludedSet().stream().sorted().collect(Collectors.toList()));
-            File airGapZip = null;
+            final DetectOverrideableFilter inspectorFilter = new DetectOverrideableFilter("", detectArgumentState.getParsedValue());
+            final String airGapSuffix = String.join("-", inspectorFilter.getIncludedSet().stream().sorted().collect(Collectors.toList()));
+            final File airGapZip;
             try {
                 airGapZip = createAirGapZip(inspectorFilter, detectConfiguration, directoryManager, gson, eventSystem, configuration, airGapSuffix);
-            } catch (DetectUserFriendlyException e) {
-                return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.of(directoryManager), diagnosticSystem);
+            } catch (final DetectUserFriendlyException e) {
+                return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
             }
-            return DetectBootResult.exit(detectConfiguration, Optional.ofNullable(airGapZip), Optional.of(directoryManager), diagnosticSystem);
+            return DetectBootResult.exit(detectConfiguration, airGapZip, directoryManager, diagnosticSystem);
         }
 
         final RunOptions runOptions = factory.createRunOptions();
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
-        ProductDecider productDecider = new ProductDecider();
-        ProductDecision productDecision;
+        final ProductDecider productDecider = new ProductDecider();
+        final ProductDecision productDecision;
         try {
             logger.info("");
             productDecision = productDecider.decide(detectConfiguration, directoryManager.getUserHome(), detectToolFilter);
-        } catch (DetectUserFriendlyException e) {
-            return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.of(directoryManager), diagnosticSystem);
+        } catch (final DetectUserFriendlyException e) {
+            return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
         }
 
         logger.debug("Decided what products will be run. Starting product boot.");
 
-        ProductBootFactory productBootFactory = new ProductBootFactory(detectConfiguration, detectInfo, eventSystem, detectOptionManager);
-        ProductBoot productBoot = new ProductBoot();
-        ProductRunData productRunData;
+        final ProductBootFactory productBootFactory = new ProductBootFactory(detectConfiguration, detectInfo, eventSystem, detectOptionManager);
+        final ProductBoot productBoot = new ProductBoot();
+        final ProductRunData productRunData;
         try {
             productRunData = productBoot.boot(productDecision, detectConfiguration, new BlackDuckConnectivityChecker(), new PolarisConnectivityChecker(), productBootFactory);
-        } catch (DetectUserFriendlyException e) {
-            return DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.of(directoryManager), diagnosticSystem);
+        } catch (final DetectUserFriendlyException e) {
+            return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
         }
 
         if (productRunData == null) {
             logger.info("No products to run, Detect is complete.");
-            return DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.of(directoryManager), diagnosticSystem);
+            return DetectBootResult.exit(detectConfiguration, directoryManager, diagnosticSystem);
         }
 
         //TODO: Only need this if in diagnostic or online (for phone home):
-        DetectorProfiler profiler = new DetectorProfiler(eventSystem);
+        final DetectorProfiler profiler = new DetectorProfiler(eventSystem);
 
         //lock the configuration, boot has completed.
         logger.debug("Configuration is now complete. No changes should occur to configuration.");
@@ -248,24 +247,24 @@ public class DetectBoot {
         return DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem);
     }
 
-    private void printAppropriateHelp(List<DetectOption> detectOptions, DetectArgumentState detectArgumentState) {
-        HelpPrinter helpPrinter = new HelpPrinter();
+    private void printAppropriateHelp(final List<DetectOption> detectOptions, final DetectArgumentState detectArgumentState) {
+        final HelpPrinter helpPrinter = new HelpPrinter();
         helpPrinter.printAppropriateHelpMessage(System.out, detectOptions, detectArgumentState);
     }
 
-    private void printHelpJsonDocument(List<DetectOption> detectOptions, DetectInfo detectInfo, Configuration configuration, Gson gson) {
-        DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
-        DetectorRuleSet build = ruleFactory.createRules(new DetectableFactory(), false);
-        DetectorRuleSet buildless = ruleFactory.createRules(new DetectableFactory(), true);
-        List<HelpJsonDetector> buildDetectors = build.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, build)).collect(Collectors.toList());
-        List<HelpJsonDetector> buildlessDetectors = buildless.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, buildless)).collect(Collectors.toList());
+    private void printHelpJsonDocument(final List<DetectOption> detectOptions, final DetectInfo detectInfo, final Configuration configuration, final Gson gson) {
+        final DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
+        final DetectorRuleSet build = ruleFactory.createRules(new DetectableFactory(), false);
+        final DetectorRuleSet buildless = ruleFactory.createRules(new DetectableFactory(), true);
+        final List<HelpJsonDetector> buildDetectors = build.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, build)).collect(Collectors.toList());
+        final List<HelpJsonDetector> buildlessDetectors = buildless.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, buildless)).collect(Collectors.toList());
 
-        HelpJsonWriter helpJsonWriter = new HelpJsonWriter(configuration, gson);
+        final HelpJsonWriter helpJsonWriter = new HelpJsonWriter(configuration, gson);
         helpJsonWriter.writeGsonDocument(String.format("synopsys-detect-%s-help.json", detectInfo.getDetectVersion()), detectOptions, buildDetectors, buildlessDetectors);
     }
 
-    private HelpJsonDetector convertDetectorRule(DetectorRule rule, DetectorRuleSet ruleSet) {
-        HelpJsonDetector helpData = new HelpJsonDetector();
+    private HelpJsonDetector convertDetectorRule(final DetectorRule rule, final DetectorRuleSet ruleSet) {
+        final HelpJsonDetector helpData = new HelpJsonDetector();
         helpData.detectorName = rule.getName();
         helpData.detectorDescriptiveName = rule.getDescriptiveName();
         helpData.detectorType = rule.getDetectorType().toString();
@@ -284,16 +283,17 @@ public class DetectBoot {
         return helpData;
     }
 
-    private void printDetectInfo(DetectInfo detectInfo) {
-        DetectInfoPrinter detectInfoPrinter = new DetectInfoPrinter();
+    private void printDetectInfo(final DetectInfo detectInfo) {
+        final DetectInfoPrinter detectInfoPrinter = new DetectInfoPrinter();
         detectInfoPrinter.printInfo(System.out, detectInfo);
     }
 
-    private Optional<DetectBootResult> printConfiguration(boolean fullConfiguration, DetectOptionManager detectOptionManager, DetectConfiguration detectConfiguration, EventSystem eventSystem, List<DetectOption> detectOptions) {
+    private Optional<DetectBootResult> printConfiguration(final boolean fullConfiguration, final DetectOptionManager detectOptionManager, final DetectConfiguration detectConfiguration, final EventSystem eventSystem,
+        final List<DetectOption> detectOptions) {
 
         //First print the entire configuration.
-        DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
-        InfoLogReportWriter infoLogReportWriter = new InfoLogReportWriter();
+        final DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
+        final InfoLogReportWriter infoLogReportWriter = new InfoLogReportWriter();
         if (!fullConfiguration) {
             detectConfigurationReporter.print(infoLogReportWriter, detectOptions, true);
         }
@@ -304,17 +304,17 @@ public class DetectBoot {
             if (!invalidDetectOptionResults.isEmpty()) {
                 throw new DetectUserFriendlyException(invalidDetectOptionResults.get(0).getValidationMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
             }
-        } catch (DetectUserFriendlyException e) {
-            return Optional.of(DetectBootResult.exception(e, Optional.of(detectConfiguration), Optional.empty(), Optional.empty()));
+        } catch (final DetectUserFriendlyException e) {
+            return Optional.of(DetectBootResult.exception(e, detectConfiguration));
         }
 
         //Check for deprecated fields that are still being used but should cause a failure.
-        List<DetectOption> failureProperties = detectOptionManager.findDeprecatedFailureProperties();
+        final List<DetectOption> failureProperties = detectOptionManager.findDeprecatedFailureProperties();
         if (failureProperties.size() > 0) {
-            ErrorLogReportWriter errorLogReportWriter = new ErrorLogReportWriter();
+            final ErrorLogReportWriter errorLogReportWriter = new ErrorLogReportWriter();
             detectConfigurationReporter.printFailures(errorLogReportWriter, failureProperties);
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION));
-            return Optional.of(DetectBootResult.exit(detectConfiguration, Optional.empty(), Optional.empty(), Optional.empty()));
+            return Optional.of(DetectBootResult.exit(detectConfiguration));
         }
 
         //Finally log all fields that are deprecated but still being used (that are not failure).
@@ -323,55 +323,57 @@ public class DetectBoot {
         return Optional.empty();
     }
 
-    private void startInteractiveMode(DetectOptionManager detectOptionManager, DetectConfiguration detectConfiguration, Gson gson, ObjectMapper objectMapper) {
-        InteractiveManager interactiveManager = new InteractiveManager(detectOptionManager);
-        DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(detectOptionManager);
+    private void startInteractiveMode(final DetectOptionManager detectOptionManager, final DetectConfiguration detectConfiguration, final Gson gson, final ObjectMapper objectMapper) {
+        final InteractiveManager interactiveManager = new InteractiveManager(detectOptionManager);
+        final DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(detectOptionManager);
         interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
     }
 
-    private DetectArgumentState parseDetectArgumentState(String[] sourceArgs) {
-        DetectArgumentStateParser detectArgumentStateParser = new DetectArgumentStateParser();
+    private DetectArgumentState parseDetectArgumentState(final String[] sourceArgs) {
+        final DetectArgumentStateParser detectArgumentStateParser = new DetectArgumentStateParser();
         final DetectArgumentState detectArgumentState = detectArgumentStateParser.parseArgs(sourceArgs);
         return detectArgumentState;
     }
 
-    private void processDetectConfiguration(DetectInfo detectInfo, DetectRun detectRun, DetectConfiguration detectConfiguration, List<DetectOption> detectOptions) throws DetectUserFriendlyException {
-        TildeInPathResolver tildeInPathResolver = new TildeInPathResolver(DetectConfigurationManager.USER_HOME, detectInfo.getCurrentOs());
-        DetectConfigurationManager detectConfigurationManager = new DetectConfigurationManager(tildeInPathResolver, detectConfiguration);
+    private void processDetectConfiguration(final DetectInfo detectInfo, final DetectRun detectRun, final DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
+        final TildeInPathResolver tildeInPathResolver = new TildeInPathResolver(DetectConfigurationManager.USER_HOME, detectInfo.getCurrentOs());
+        final DetectConfigurationManager detectConfigurationManager = new DetectConfigurationManager(tildeInPathResolver, detectConfiguration);
         detectConfigurationManager.process(detectOptions, detectRun.getRunId());
     }
 
-    private Optional<DiagnosticSystem> createDiagnostics(List<DetectOption> detectOptions, DetectRun detectRun, DetectInfo detectInfo, DetectArgumentState detectArgumentState, EventSystem eventSystem, DirectoryManager directoryManager) {
+    private Optional<DiagnosticSystem> createDiagnostics(
+        final List<DetectOption> detectOptions, final DetectRun detectRun, final DetectInfo detectInfo, final DetectArgumentState detectArgumentState, final EventSystem eventSystem, final DirectoryManager directoryManager) {
         if (detectArgumentState.isDiagnostic() || detectArgumentState.isDiagnosticExtended()) {
-            boolean extendedMode = detectArgumentState.isDiagnosticExtended();
-            RelevantFileTracker relevantFileTracker = new RelevantFileTracker(detectArgumentState.isDiagnostic(), detectArgumentState.isDiagnosticExtended(), directoryManager);
-            DiagnosticSystem diagnosticSystem = new DiagnosticSystem(extendedMode, detectOptions, detectRun, detectInfo, relevantFileTracker, directoryManager, eventSystem);
+            final boolean extendedMode = detectArgumentState.isDiagnosticExtended();
+            final RelevantFileTracker relevantFileTracker = new RelevantFileTracker(detectArgumentState.isDiagnostic(), detectArgumentState.isDiagnosticExtended(), directoryManager);
+            final DiagnosticSystem diagnosticSystem = new DiagnosticSystem(extendedMode, detectOptions, detectRun, detectInfo, relevantFileTracker, directoryManager, eventSystem);
             return Optional.of(diagnosticSystem);
         } else {
             return Optional.empty();
         }
     }
 
-    private File createAirGapZip(DetectFilter inspectorFilter, DetectConfiguration detectConfiguration, DirectoryManager directoryManager, Gson gson, EventSystem eventSystem, Configuration configuration, String airGapSuffix)
+    private File createAirGapZip(final DetectFilter inspectorFilter, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final Gson gson, final EventSystem eventSystem, final Configuration configuration,
+        final String airGapSuffix)
         throws DetectUserFriendlyException {
-        ConnectionManager connectionManager = new ConnectionManager(detectConfiguration);
-        ArtifactResolver artifactResolver = new ArtifactResolver(connectionManager, gson);
+        final ConnectionManager connectionManager = new ConnectionManager(detectConfiguration);
+        final ArtifactResolver artifactResolver = new ArtifactResolver(connectionManager, gson);
 
         //TODO: This is awful, why is making this so convoluted.
-        SimpleFileFinder fileFinder = new SimpleFileFinder();
-        SimpleExecutableFinder simpleExecutableFinder = SimpleExecutableFinder.forCurrentOperatingSystem(fileFinder);
-        SimpleLocalExecutableFinder localExecutableFinder = new SimpleLocalExecutableFinder(simpleExecutableFinder);
-        SimpleSystemExecutableFinder simpleSystemExecutableFinder = new SimpleSystemExecutableFinder(simpleExecutableFinder);
-        SimpleExecutableResolver executableResolver = new SimpleExecutableResolver(new CachedExecutableResolverOptions(false), localExecutableFinder, simpleSystemExecutableFinder);
-        DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(executableResolver, detectConfiguration);
-        GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
-        SimpleExecutableRunner simpleExecutableRunner = new SimpleExecutableRunner();
-        GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(artifactResolver, detectExecutableResolver, gradleInspectorInstaller, simpleExecutableRunner, configuration);
+        final SimpleFileFinder fileFinder = new SimpleFileFinder();
+        final SimpleExecutableFinder simpleExecutableFinder = SimpleExecutableFinder.forCurrentOperatingSystem(fileFinder);
+        final SimpleLocalExecutableFinder localExecutableFinder = new SimpleLocalExecutableFinder(simpleExecutableFinder);
+        final SimpleSystemExecutableFinder simpleSystemExecutableFinder = new SimpleSystemExecutableFinder(simpleExecutableFinder);
+        final SimpleExecutableResolver executableResolver = new SimpleExecutableResolver(new CachedExecutableResolverOptions(false), localExecutableFinder, simpleSystemExecutableFinder);
+        final DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(executableResolver, detectConfiguration);
+        final GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
+        final SimpleExecutableRunner simpleExecutableRunner = new SimpleExecutableRunner();
+        final GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(artifactResolver, detectExecutableResolver, gradleInspectorInstaller, simpleExecutableRunner, configuration);
 
-        NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactResolver));
-        DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
+        final NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactResolver));
+        final DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
 
-        AirGapCreator airGapCreator = new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
+        final AirGapCreator airGapCreator = new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
         return airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix);
     }
 }

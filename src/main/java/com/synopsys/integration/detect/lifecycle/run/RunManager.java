@@ -214,7 +214,7 @@ public class RunManager {
             final DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter);
             final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool, requiredDetectors);
 
-            runResult.addToolNameVersionIfPresent(DetectTool.DETECTOR, detectorToolResult.bomToolProjectNameVersion);
+            detectorToolResult.bomToolProjectNameVersion.ifPresent(it -> runResult.addToolNameVersion(DetectTool.DETECTOR, new NameVersion(it.getName(), it.getVersion())));
             runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);
 
             if (detectorToolResult.failedDetectorTypes.size() > 0) {
