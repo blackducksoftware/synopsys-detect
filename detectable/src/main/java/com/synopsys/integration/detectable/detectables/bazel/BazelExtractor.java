@@ -43,6 +43,7 @@ import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.Step
 import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorEdit;
 import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorExecuteBazelOnEach;
+import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorParseEachXml;
 import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorSplit;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelQueryXmlOutputParser;
@@ -89,6 +90,7 @@ public class BazelExtractor {
             final StepExecutor stepExecutorExecuteBazelOnEach = new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor);
             final StepExecutor stepExecutorSplitEach = new StepExecutorSplit();
             final StepExecutor stepExecutorEdit = new StepExecutorEdit();
+            final StepExecutor stepExecutorParseEachXml = new StepExecutorParseEachXml();
 
             List<String> pipelineData = new ArrayList<>();
             for (final Step step : pipelineSteps) {
@@ -101,6 +103,9 @@ public class BazelExtractor {
                 }
                 if (stepExecutorEdit.applies(step.getType())) {
                     pipelineData = stepExecutorEdit.process(step, pipelineData);
+                }
+                if (stepExecutorParseEachXml.applies(step.getType())) {
+                    pipelineData = stepExecutorParseEachXml.process(step, pipelineData);
                 }
             }
             for (String artifactString : pipelineData) {

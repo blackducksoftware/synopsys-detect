@@ -28,7 +28,7 @@ public class GenerateJson {
         steps.add(new Step("edit", Arrays.asList("//.*", "")));
         steps.add(new Step("edit", Arrays.asList("^", "//external:")));
         steps.add(new Step("executeBazelOnEach", Arrays.asList("query", "kind(maven_jar, ${0})", "--output", "xml")));
-        steps.add(new Step("parseEachXml", Arrays.asList("/query/rule[@class\\u003d\\u0027maven_jar\\u0027]/string[@name\\u003d\\u0027artifact\\u0027]", "value")));
+        steps.add(new Step("parseEachXml", Arrays.asList("/query/rule[@class='maven_jar']/string[@name='artifact']", "value")));
 
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
         final String jsonString = gson.toJson(steps);

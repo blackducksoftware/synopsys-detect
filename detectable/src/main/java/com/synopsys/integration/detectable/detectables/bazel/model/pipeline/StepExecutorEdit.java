@@ -8,10 +8,7 @@ import com.synopsys.integration.exception.IntegrationException;
 public class StepExecutorEdit implements StepExecutor {
     @Override
     public boolean applies(final String stepType) {
-        if ("edit".equalsIgnoreCase(stepType)) {
-            return true;
-        }
-        return false;
+        return "edit".equalsIgnoreCase(stepType);
     }
 
     @Override

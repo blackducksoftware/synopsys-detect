@@ -62,11 +62,7 @@ public class StepExecutorExecuteBazelOnEach implements StepExecutor {
 
     @Override
     public boolean applies(final String stepType) {
-        if ("executeBazelOnEach".equalsIgnoreCase(stepType)) {
-            logger.info("StepExecutorExecuteBazelOnEach applies");
-            return true;
-        }
-        return false;
+        return "executeBazelOnEach".equalsIgnoreCase(stepType);
     }
 
     @Override

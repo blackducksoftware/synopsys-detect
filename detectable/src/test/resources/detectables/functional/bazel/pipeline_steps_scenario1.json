@@ -45,8 +45,9 @@
   {
     "type": "parseEachXml",
     "args": [
-      "/query/rule[@class\\u003d\\u0027maven_jar\\u0027]/string[@name\\u003d\\u0027artifact\\u0027]",
+      "/query/rule[@class\u003d\u0027maven_jar\u0027]/string[@name\u003d\u0027artifact\u0027]",
       "value"
     ]
   }
 ]
+

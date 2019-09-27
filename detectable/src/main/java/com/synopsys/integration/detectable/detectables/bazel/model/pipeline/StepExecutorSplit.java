@@ -9,10 +9,7 @@ import com.synopsys.integration.exception.IntegrationException;
 public class StepExecutorSplit implements StepExecutor {
     @Override
     public boolean applies(final String stepType) {
-        if ("splitEach".equalsIgnoreCase(stepType)) {
-            return true;
-        }
-        return false;
+        return "splitEach".equalsIgnoreCase(stepType);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.bazel.functional.bazel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -100,9 +101,19 @@ public class BazelExtractorTest {
 
         assertEquals(1, result.getCodeLocations().size());
         final Set<Dependency> dependencies = result.getCodeLocations().get(0).getDependencyGraph().getRootDependencies();
-        assertEquals(3, dependencies.size());
+        assertEquals(2, dependencies.size());
+        boolean foundCommonsIo = false;
+        boolean foundGuava = false;
         for (final Dependency dep : dependencies) {
             System.out.printf("externalId: %s\n", dep.externalId);
+            if ("commons-io".equals(dep.externalId.name)) {
+                foundCommonsIo = true;
+            }
+            if ("guava".equals(dep.externalId.name)) {
+                foundGuava = true;
+            }
         }
+        assertTrue(foundCommonsIo);
+        assertTrue(foundGuava);
     }
 }
