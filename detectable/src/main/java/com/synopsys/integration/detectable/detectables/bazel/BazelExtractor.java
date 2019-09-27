@@ -74,6 +74,7 @@ public class BazelExtractor {
                 pipelineSteps = loadPipelineStepsFromFile(pipelineStepsPath);
                 logger.debug(String.format("Read %d pipeline step(s) from %s", pipelineSteps.size(), pipelineStepsPath));
             } else {
+                // TODO figure out how to ship with a default, plus a few known pipelines
                 throw new OperationNotSupportedException("Have not implemented built-in pipeline steps yet");
 //                BazelExternalIdExtractionSimpleRules simpleRules = new BazelExternalIdExtractionSimpleRules(pipelineStepsPath);
 //                pipelineSteps = simpleRules.getRules().stream()
@@ -113,16 +114,6 @@ public class BazelExtractor {
                 logger.info(String.format("Adding externalId: %s", externalId));
                 codeLocationGenerator.addDependency(externalId);
             }
-
-
-//            BazelExternalIdGenerator externalIdGenerator = new BazelExternalIdGenerator(executableRunner, bazelExe.toString(), parser, workspaceDir, bazelTarget);
-//            pipelineSteps.stream()
-//                .map(externalIdGenerator::generate)
-//                .flatMap(Collection::stream)
-//                .forEach(codeLocationGenerator::addDependency);
-//            if (externalIdGenerator.isErrors()) {
-//                return new Extraction.Builder().failure(externalIdGenerator.getErrorMessage()).build();
-//            }
             final List<CodeLocation> codeLocations = codeLocationGenerator.build();
             final String projectName = cleanProjectName(bazelTarget);
             final Extraction.Builder builder = new Extraction.Builder()
