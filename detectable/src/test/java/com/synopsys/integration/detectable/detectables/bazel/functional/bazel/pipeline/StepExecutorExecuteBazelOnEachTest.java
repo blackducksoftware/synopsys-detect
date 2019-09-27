@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.collections.ArrayStack;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -18,11 +17,11 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.Step;
 import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorExecuteBazelOnEachToString;
+import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorExecuteBazelOnEach;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelVariableSubstitutor;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class StepExecutorExecuteBazelOnEachToStringTest {
+public class StepExecutorExecuteBazelOnEachTest {
 
     @Test
     public void testNoInput() throws ExecutableRunnerException, IntegrationException {
@@ -38,7 +37,7 @@ public class StepExecutorExecuteBazelOnEachToStringTest {
         Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgs)).thenReturn(bazelCmdExecutableOutput);
         final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
         final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("//:ProjectRunner");
-        final StepExecutor executor = new StepExecutorExecuteBazelOnEachToString(bazelCommandExecutor, bazelVariableSubstitutor);
+        final StepExecutor executor = new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor);
         final Step step = new Step("executeBazelOnEach", Arrays.asList("query", "filter(\\\"@.*:jar\\\", deps(${detect.bazel.target}))"));
         final List<String> input = new ArrayList<>(0);
 

@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.synopsys.integration.exception.IntegrationException;
 
-public class StepExecutorSplitEach implements StepExecutor {
+public class StepExecutorSplit implements StepExecutor {
     @Override
     public boolean applies(final String stepType) {
         if ("splitEach".equalsIgnoreCase(stepType)) {

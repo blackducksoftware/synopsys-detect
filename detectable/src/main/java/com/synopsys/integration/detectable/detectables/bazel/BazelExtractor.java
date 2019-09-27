@@ -41,8 +41,9 @@ import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.Baze
 import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.PipelineJsonProcessor;
 import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.Step;
 import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorExecuteBazelOnEachToString;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorSplitEach;
+import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorEdit;
+import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorExecuteBazelOnEach;
+import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorSplit;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelQueryXmlOutputParser;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelVariableSubstitutor;
@@ -82,8 +83,13 @@ public class BazelExtractor {
             }
             final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
-            final StepExecutor stepExecutorExecuteBazelOnEach = new StepExecutorExecuteBazelOnEachToString(bazelCommandExecutor, bazelVariableSubstitutor);
-            final StepExecutor stepExecutorSplitEach = new StepExecutorSplitEach();
+
+
+            // TODO get step executor list programmatically
+            final StepExecutor stepExecutorExecuteBazelOnEach = new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor);
+            final StepExecutor stepExecutorSplitEach = new StepExecutorSplit();
+            final StepExecutor stepExecutorEdit = new StepExecutorEdit();
+
             List<String> pipelineData = new ArrayList<>();
             for (final Step step : pipelineSteps) {
                 // TODO get step executor list programmatically
@@ -92,6 +98,9 @@ public class BazelExtractor {
                 }
                 if (stepExecutorSplitEach.applies(step.getType())) {
                     pipelineData = stepExecutorSplitEach.process(step, pipelineData);
+                }
+                if (stepExecutorEdit.applies(step.getType())) {
+                    pipelineData = stepExecutorEdit.process(step, pipelineData);
                 }
             }
             for (String artifactString : pipelineData) {

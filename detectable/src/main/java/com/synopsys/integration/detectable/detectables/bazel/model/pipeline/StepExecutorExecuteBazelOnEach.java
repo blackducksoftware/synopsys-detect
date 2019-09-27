@@ -5,15 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import javax.naming.OperationNotSupportedException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelVariableSubstitutor;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class StepExecutorExecuteBazelOnEachToString implements StepExecutor {
+public class StepExecutorExecuteBazelOnEach implements StepExecutor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final String FAKE_OUTPUT = "results {\n"
@@ -57,7 +55,7 @@ public class StepExecutorExecuteBazelOnEachToString implements StepExecutor {
     private final BazelCommandExecutor bazelCommandExecutor;
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
 
-    public StepExecutorExecuteBazelOnEachToString(final BazelCommandExecutor bazelCommandExecutor, final BazelVariableSubstitutor bazelVariableSubstitutor) {
+    public StepExecutorExecuteBazelOnEach(final BazelCommandExecutor bazelCommandExecutor, final BazelVariableSubstitutor bazelVariableSubstitutor) {
         this.bazelCommandExecutor = bazelCommandExecutor;
         this.bazelVariableSubstitutor = bazelVariableSubstitutor;
     }
@@ -65,7 +63,7 @@ public class StepExecutorExecuteBazelOnEachToString implements StepExecutor {
     @Override
     public boolean applies(final String stepType) {
         if ("executeBazelOnEach".equalsIgnoreCase(stepType)) {
-            logger.info("StepExecutorExecuteBazelOnEachToString applies");
+            logger.info("StepExecutorExecuteBazelOnEach applies");
             return true;
         }
         return false;
@@ -73,16 +71,21 @@ public class StepExecutorExecuteBazelOnEachToString implements StepExecutor {
 
     @Override
     public List<String> process(final Step step, final List<String> input) throws IntegrationException {
-        final List<String> finalizedArgs;
+        final List<String> adjustedInput;
         if (input.size() == 0) {
-            finalizedArgs = bazelVariableSubstitutor.substitute(step.getArgs(), null);
+            adjustedInput = new ArrayList<>(1);
+            adjustedInput.add(null);
+        } else {
+            adjustedInput = input;
+        }
+        final List<String> results = new ArrayList<>();
+        for (final String inputItem : adjustedInput) {
+            final List<String> finalizedArgs = bazelVariableSubstitutor.substitute(step.getArgs(), inputItem);
             final Optional<String> cmdOutput = bazelCommandExecutor.executeToString(finalizedArgs);
-            final List<String> results = new ArrayList<>(1);
             if (cmdOutput.isPresent()) {
                 results.add(cmdOutput.get());
             }
-            return results;
         }
-        throw new UnsupportedOperationException("Have not implemented this yet");
+        return results;
     }
 }
