@@ -24,9 +24,10 @@ package com.synopsys.integration.detectable.detectables.bazel;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import javax.naming.OperationNotSupportedException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,54 +36,79 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRule;
-import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRuleJsonProcessor;
-import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionSimpleRules;
+import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
+import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.BazelCommandExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.PipelineJsonProcessor;
+import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.Step;
+import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorExecuteBazelOnEachToString;
+import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorSplitEach;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
-import com.synopsys.integration.detectable.detectables.bazel.parse.BazelExternalIdGenerator;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelQueryXmlOutputParser;
-import com.synopsys.integration.detectable.detectables.bazel.parse.RuleConverter;
+import com.synopsys.integration.detectable.detectables.bazel.parse.BazelVariableSubstitutor;
 
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
     private final BazelQueryXmlOutputParser parser;
     private final BazelCodeLocationBuilder codeLocationGenerator;
-    private final BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor;
+    private final PipelineJsonProcessor pipelineJsonProcessor;
 
     public BazelExtractor(final ExecutableRunner executableRunner, BazelQueryXmlOutputParser parser,
-        final BazelCodeLocationBuilder codeLocationGenerator, final BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor) {
+        final BazelCodeLocationBuilder codeLocationGenerator, final PipelineJsonProcessor pipelineJsonProcessor) {
         this.executableRunner = executableRunner;
         this.parser = parser;
         this.codeLocationGenerator = codeLocationGenerator;
-        this.bazelExternalIdExtractionFullRuleJsonProcessor = bazelExternalIdExtractionFullRuleJsonProcessor;
+        this.pipelineJsonProcessor = pipelineJsonProcessor;
     }
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
-    public Extraction extract(final File bazelExe, final File workspaceDir, String bazelTarget, String fullRulesPath) {
+    public Extraction extract(final File bazelExe, final File workspaceDir, String bazelTarget, String pipelineStepsPath) {
         logger.debug("Bazel extractAndPublishResults()");
         try {
             codeLocationGenerator.setWorkspaceDir(workspaceDir);
-            List<BazelExternalIdExtractionFullRule> fullRules;
-            if (StringUtils.isNotBlank(fullRulesPath)) {
-                fullRules = loadXPathRulesFromFile(fullRulesPath);
-                logger.debug(String.format("Read %d rule(s) from %s", fullRules.size(), fullRulesPath));
+            List<Step> pipelineSteps;
+            if (StringUtils.isNotBlank(pipelineStepsPath)) {
+                pipelineSteps = loadPipelineStepsFromFile(pipelineStepsPath);
+                logger.debug(String.format("Read %d pipeline step(s) from %s", pipelineSteps.size(), pipelineStepsPath));
             } else {
-                BazelExternalIdExtractionSimpleRules simpleRules = new BazelExternalIdExtractionSimpleRules(fullRulesPath);
-                fullRules = simpleRules.getRules().stream()
-                                      .map(RuleConverter::simpleToFull).collect(Collectors.toList());
-                if (logger.isDebugEnabled()) {
-                    logger.debug(String.format("Using default rules:\n%s", bazelExternalIdExtractionFullRuleJsonProcessor.toJson(fullRules)));
+                throw new OperationNotSupportedException("Have not implemented built-in pipeline steps yet");
+//                BazelExternalIdExtractionSimpleRules simpleRules = new BazelExternalIdExtractionSimpleRules(pipelineStepsPath);
+//                pipelineSteps = simpleRules.getRules().stream()
+//                                      .map(RuleConverter::simpleToFull).collect(Collectors.toList());
+//                if (logger.isDebugEnabled()) {
+//                    logger.debug(String.format("Using default rules:\n%s", pipelineJsonProcessor.toJson(pipelineSteps)));
+//                }
+            }
+            final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
+            final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
+            final StepExecutor stepExecutorExecuteBazelOnEach = new StepExecutorExecuteBazelOnEachToString(bazelCommandExecutor, bazelVariableSubstitutor);
+            final StepExecutor stepExecutorSplitEach = new StepExecutorSplitEach();
+            List<String> pipelineData = new ArrayList<>();
+            for (final Step step : pipelineSteps) {
+                // TODO get step executor list programmatically
+                if (stepExecutorExecuteBazelOnEach.applies(step.getType())) {
+                    pipelineData = stepExecutorExecuteBazelOnEach.process(step, pipelineData);
+                }
+                if (stepExecutorSplitEach.applies(step.getType())) {
+                    pipelineData = stepExecutorSplitEach.process(step, pipelineData);
                 }
             }
-            BazelExternalIdGenerator externalIdGenerator = new BazelExternalIdGenerator(executableRunner, bazelExe.toString(), parser, workspaceDir, bazelTarget);
-            fullRules.stream()
-                .map(externalIdGenerator::generate)
-                .flatMap(Collection::stream)
-                .forEach(codeLocationGenerator::addDependency);
-            if (externalIdGenerator.isErrors()) {
-                return new Extraction.Builder().failure(externalIdGenerator.getErrorMessage()).build();
+            for (String artifactString : pipelineData) {
+                BazelExternalId externalId = BazelExternalId.fromBazelArtifactString(artifactString, ":");
+                logger.info(String.format("Adding externalId: %s", externalId));
+                codeLocationGenerator.addDependency(externalId);
             }
+
+
+//            BazelExternalIdGenerator externalIdGenerator = new BazelExternalIdGenerator(executableRunner, bazelExe.toString(), parser, workspaceDir, bazelTarget);
+//            pipelineSteps.stream()
+//                .map(externalIdGenerator::generate)
+//                .flatMap(Collection::stream)
+//                .forEach(codeLocationGenerator::addDependency);
+//            if (externalIdGenerator.isErrors()) {
+//                return new Extraction.Builder().failure(externalIdGenerator.getErrorMessage()).build();
+//            }
             final List<CodeLocation> codeLocations = codeLocationGenerator.build();
             final String projectName = cleanProjectName(bazelTarget);
             final Extraction.Builder builder = new Extraction.Builder()
@@ -105,9 +131,9 @@ public class BazelExtractor {
         return projectName;
     }
 
-    private List<BazelExternalIdExtractionFullRule> loadXPathRulesFromFile(final String xPathRulesJsonFilePath) throws IOException {
-        final File jsonFile = new File(xPathRulesJsonFilePath);
-        List<BazelExternalIdExtractionFullRule> loadedRules = bazelExternalIdExtractionFullRuleJsonProcessor.load(jsonFile);
-        return loadedRules;
+    private List<Step> loadPipelineStepsFromFile(final String pipelineStepsJsonFilePath) throws IOException {
+        final File jsonFile = new File(pipelineStepsJsonFilePath);
+        List<Step> loadedSteps = pipelineJsonProcessor.load(jsonFile);
+        return loadedSteps;
     }
 }

@@ -1,14 +1,9 @@
 package com.synopsys.integration.detect.tool.signaturescanner;
 
-import javax.naming.OperationNotSupportedException;
-
 import org.slf4j.Logger;
 
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.LogLevel;
-import com.synopsys.integration.log.Slf4jIntLogger;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class SignatureScannerLogger extends IntLogger {
 

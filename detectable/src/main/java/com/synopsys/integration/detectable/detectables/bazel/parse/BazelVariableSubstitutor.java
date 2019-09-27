@@ -35,22 +35,25 @@ public class BazelVariableSubstitutor {
         substitutions.put("\\$\\{detect.bazel.target}", bazelTarget);
     }
 
-    public BazelVariableSubstitutor(final String bazelTarget, final String bazelTargetDependencyId) {
-        substitutions = new HashMap<>(2);
-        substitutions.put("\\$\\{detect.bazel.target}", bazelTarget);
-        substitutions.put("\\$\\{detect.bazel.target.dependency}", bazelTargetDependencyId);
-    }
+//    public BazelVariableSubstitutor(final String bazelTarget, final String bazelTargetDependencyId) {
+//        substitutions = new HashMap<>(2);
+//        substitutions.put("\\$\\{detect.bazel.target}", bazelTarget);
+        // TODO remove: substitutions.put("\\$\\{detect.bazel.target.dependency}", bazelTargetDependencyId);
+//    }
 
-    public List<String> substitute(final List<String> origStrings) {
+    public List<String> substitute(final List<String> origStrings, final String input) {
         final List<String> modifiedStrings = new ArrayList<>(origStrings.size());
         for (String origString : origStrings) {
-            modifiedStrings.add(substitute(origString));
+            modifiedStrings.add(substitute(origString, input));
         }
         return modifiedStrings;
     }
 
-    private String substitute(final String origString) {
+    private String substitute(final String origString, final String input) {
         String modifiedString = origString;
+        if (input != null) {
+            substitutions.put("\\$\\{0}", input);
+        }
         for (String variablePattern : substitutions.keySet()) {
             modifiedString = modifiedString.replaceAll(variablePattern, substitutions.get(variablePattern));
         }
