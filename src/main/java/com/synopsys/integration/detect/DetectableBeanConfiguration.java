@@ -66,6 +66,7 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspe
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRuleJsonProcessor;
+import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.PipelineJsonProcessor;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelQueryXmlOutputParser;
 import com.synopsys.integration.detectable.detectables.bazel.parse.XPathParser;
@@ -241,10 +242,9 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public BazelExtractor bazelExtractor() {
-        final BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
         final BazelCodeLocationBuilder codeLocationGenerator = new BazelCodeLocationBuilder(externalIdFactory);
-        final BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor = new BazelExternalIdExtractionFullRuleJsonProcessor(gson);
-        return new BazelExtractor(executableRunner, parser, codeLocationGenerator, bazelExternalIdExtractionFullRuleJsonProcessor);
+        final PipelineJsonProcessor pipelineJsonProcessor = new PipelineJsonProcessor(gson);
+        return new BazelExtractor(executableRunner, codeLocationGenerator, pipelineJsonProcessor);
     }
 
     public FilePathGenerator filePathGenerator() {

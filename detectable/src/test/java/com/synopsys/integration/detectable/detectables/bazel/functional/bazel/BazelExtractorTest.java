@@ -52,13 +52,12 @@ public class BazelExtractorTest {
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
 
-        final BazelQueryXmlOutputParser parser = null;
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final BazelCodeLocationBuilder codeLocationBuilder = new BazelCodeLocationBuilder(externalIdFactory);
 
         final PipelineJsonProcessor pipelineJsonProcessor = new PipelineJsonProcessor(new GsonBuilder().setPrettyPrinting().create());
 
-        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, parser, codeLocationBuilder, pipelineJsonProcessor);
+        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, codeLocationBuilder, pipelineJsonProcessor);
         final File bazelExe = new File("/usr/bin/bazel");
 
         // bazel query 'filter("@.*:jar", deps(//:ProjectRunner))'

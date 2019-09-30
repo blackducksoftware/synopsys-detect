@@ -52,14 +52,12 @@ import com.synopsys.integration.detectable.detectables.bazel.parse.BazelVariable
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
-    private final BazelQueryXmlOutputParser parser;
     private final BazelCodeLocationBuilder codeLocationGenerator;
     private final PipelineJsonProcessor pipelineJsonProcessor;
 
-    public BazelExtractor(final ExecutableRunner executableRunner, BazelQueryXmlOutputParser parser,
+    public BazelExtractor(final ExecutableRunner executableRunner,
         final BazelCodeLocationBuilder codeLocationGenerator, final PipelineJsonProcessor pipelineJsonProcessor) {
         this.executableRunner = executableRunner;
-        this.parser = parser;
         this.codeLocationGenerator = codeLocationGenerator;
         this.pipelineJsonProcessor = pipelineJsonProcessor;
     }
