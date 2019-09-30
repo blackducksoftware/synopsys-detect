@@ -44,8 +44,4 @@ public class PipelineJsonProcessor {
         final Step[] pipelineSteps = gson.fromJson(json, Step[].class);
         return Arrays.asList(pipelineSteps);
     }
-
-    public String toJson(final List<Step> pipelineSteps) {
-        return gson.toJson(pipelineSteps);
-    }
 }

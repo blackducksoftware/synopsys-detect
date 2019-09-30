@@ -65,7 +65,6 @@ public class BazelExtractor {
     public Extraction extract(final File bazelExe, final File workspaceDir, String bazelTarget, String pipelineStepsPath) {
         logger.debug("Bazel extractAndPublishResults()");
         try {
-            codeLocationGenerator.setWorkspaceDir(workspaceDir);
             List<Step> pipelineSteps;
             if (StringUtils.isNotBlank(pipelineStepsPath)) {
                 pipelineSteps = loadPipelineStepsFromFile(pipelineStepsPath);

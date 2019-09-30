@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel.parse;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -42,16 +40,10 @@ public class BazelCodeLocationBuilder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
     private final MutableDependencyGraph dependencyGraph;
-    private File workspaceDir;
 
     public BazelCodeLocationBuilder(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
         dependencyGraph = new MutableMapDependencyGraph();
-    }
-
-    public BazelCodeLocationBuilder setWorkspaceDir(final File workspaceDir) {
-        this.workspaceDir = workspaceDir;
-        return this;
     }
 
     public BazelCodeLocationBuilder addDependency(final BazelExternalId bazelExternalId) {
@@ -67,15 +59,9 @@ public class BazelCodeLocationBuilder {
     }
 
     public List<CodeLocation> build() {
-        final Forge forge = new Forge("/", "DETECT");
         final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
         final List<CodeLocation> codeLocations = new ArrayList<>(1);
         codeLocations.add(codeLocation);
         return codeLocations;
-    }
-
-    private Dependency gavToProject(final String group, final String artifact, final String version) {
-        final ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
-        return new Dependency(artifact, version, externalId);
     }
 }

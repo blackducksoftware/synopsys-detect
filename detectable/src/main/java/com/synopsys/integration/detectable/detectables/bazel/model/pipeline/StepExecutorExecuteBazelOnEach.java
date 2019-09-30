@@ -23,18 +23,13 @@
 package com.synopsys.integration.detectable.detectables.bazel.model.pipeline;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelVariableSubstitutor;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorExecuteBazelOnEach implements StepExecutor {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final BazelCommandExecutor bazelCommandExecutor;
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
 

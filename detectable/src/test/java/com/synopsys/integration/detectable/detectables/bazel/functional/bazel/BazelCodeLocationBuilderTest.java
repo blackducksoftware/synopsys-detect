@@ -19,7 +19,7 @@ public class BazelCodeLocationBuilderTest {
     @Test
     public void test() {
         BazelCodeLocationBuilder bdioBuilder = new BazelCodeLocationBuilder(new ExternalIdFactory());
-        final List<CodeLocation> codeLocations = bdioBuilder.setWorkspaceDir(FunctionalTestFiles.asFile("/bazel/multiLevel"))
+        final List<CodeLocation> codeLocations = bdioBuilder
             .addDependency(BazelExternalId.fromBazelArtifactString("testGroup:testArtifact:testVersion", ":"))
             .build();
 
