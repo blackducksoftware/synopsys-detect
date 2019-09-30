@@ -22,7 +22,7 @@ public class GenerateJson {
 //        final Step step5 = new Step("executeBazelOnEach", Arrays.asList("query", "kind(maven_jar, ${0})", "--output", "xml"));
 //        final Step step6 = new Step("parseEachXml", Arrays.asList("/query/rule[@class\\u003d\\u0027maven_jar\\u0027]/string[@name\\u003d\\u0027artifact\\u0027]", "value"));
         final List<Step> steps = new ArrayList<>();
-        steps.add(new Step("executeBazelOnEach", Arrays.asList("query", "filter(\\\"@.*:jar\\\", deps(${detect.bazel.target}))")));
+        steps.add(new Step("executeBazelOnEach", Arrays.asList("query", "filter('@.*:jar', deps(${detect.bazel.target}))")));
         steps.add(new Step("splitEach", Arrays.asList("\\s+")));
         steps.add(new Step("edit", Arrays.asList("^@", "")));
         steps.add(new Step("edit", Arrays.asList("//.*", "")));
