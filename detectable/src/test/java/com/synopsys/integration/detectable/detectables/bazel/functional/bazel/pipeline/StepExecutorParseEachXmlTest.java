@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.Step;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorParseEachXml;
+import com.synopsys.integration.detectable.detectables.bazel.model.Step;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorParseEachXml;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorParseEachXmlTest {

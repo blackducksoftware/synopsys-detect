@@ -14,11 +14,11 @@ import org.mockito.Mockito;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.BazelCommandExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.Step;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorExecuteBazelOnEach;
-import com.synopsys.integration.detectable.detectables.bazel.parse.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelCommandExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.model.Step;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorExecuteBazelOnEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelVariableSubstitutor;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorExecuteBazelOnEachTest {

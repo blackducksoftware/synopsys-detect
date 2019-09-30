@@ -19,8 +19,8 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.PipelineJsonProcessor;
-import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.PipelineJsonProcessor;
+import com.synopsys.integration.detectable.detectables.bazel.BazelCodeLocationBuilder;
 
 public class BazelExtractorTest {
 

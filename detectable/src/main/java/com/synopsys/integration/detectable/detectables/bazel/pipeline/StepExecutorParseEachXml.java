@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel.model.pipeline;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -43,6 +43,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorParseEachXml implements StepExecutor {

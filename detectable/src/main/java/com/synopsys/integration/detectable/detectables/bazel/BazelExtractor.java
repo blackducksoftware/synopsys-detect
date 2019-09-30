@@ -37,16 +37,15 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.BazelCommandExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.PipelineJsonProcessor;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.Step;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorEdit;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorExecuteBazelOnEach;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorParseEachXml;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorSplit;
-import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
-import com.synopsys.integration.detectable.detectables.bazel.parse.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelCommandExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.PipelineJsonProcessor;
+import com.synopsys.integration.detectable.detectables.bazel.model.Step;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorEdit;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorExecuteBazelOnEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorParseEachXml;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorSplit;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelVariableSubstitutor;
 
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

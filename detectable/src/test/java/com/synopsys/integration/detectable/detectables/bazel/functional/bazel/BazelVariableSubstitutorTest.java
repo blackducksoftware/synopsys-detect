@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.bazel.parse.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelVariableSubstitutor;
 
 public class BazelVariableSubstitutorTest {
 

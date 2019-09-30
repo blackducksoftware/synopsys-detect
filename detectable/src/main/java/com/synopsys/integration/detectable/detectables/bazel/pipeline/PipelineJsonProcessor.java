@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel.model.pipeline;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +31,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 
 public class PipelineJsonProcessor {
     private final Gson gson;

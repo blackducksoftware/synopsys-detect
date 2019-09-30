@@ -65,8 +65,8 @@ import com.synopsys.integration.detectable.detectable.inspector.PipInspectorReso
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.PipelineJsonProcessor;
-import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.PipelineJsonProcessor;
+import com.synopsys.integration.detectable.detectables.bazel.BazelCodeLocationBuilder;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;

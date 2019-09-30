@@ -20,12 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel.model.pipeline;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorSplit implements StepExecutor {

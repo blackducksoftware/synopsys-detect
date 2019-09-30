@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.Step;
+import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 
 public class GenerateJson {
 
