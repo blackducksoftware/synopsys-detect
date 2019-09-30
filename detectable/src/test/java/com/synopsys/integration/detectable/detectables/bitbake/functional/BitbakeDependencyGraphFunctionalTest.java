@@ -75,7 +75,7 @@ public class BitbakeDependencyGraphFunctionalTest {
     }
 
     @Test
-    public void found747RootInOutputPackage() {
+    public void found151RootInOutputPackage() {
         final GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
         final InputStream inputStream = FunctionalTestFiles.asInputStream("/bitbake/Bitbake_PackageDepends_Full.dot");
         final GraphParser graphParser = new GraphParser(inputStream);
@@ -93,7 +93,7 @@ public class BitbakeDependencyGraphFunctionalTest {
 
         final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap, layerPriorityMap);
 
-        Assertions.assertEquals(747, dependencyGraph.getRootDependencies().size());
+        Assertions.assertEquals(151, dependencyGraph.getRootDependencies().size());
     }
 
     @Test
