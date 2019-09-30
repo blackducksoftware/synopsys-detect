@@ -79,7 +79,7 @@ public class DetectConfigurationManager {
     private void resolveTildeInDetectProperty(final DetectProperty detectProperty) {
         if (PropertyType.STRING == detectProperty.getPropertyType()) {
             final Optional<String> resolved = tildeInPathResolver.resolveTildeInValue(detectConfiguration.getProperty(detectProperty, PropertyAuthority.NONE));
-            resolved.ifPresent(s -> detectConfiguration.setDetectProperty(detectProperty, s));
+            resolved.ifPresent(resolvedValue -> detectConfiguration.setDetectProperty(detectProperty, resolvedValue));
         }
     }
 
