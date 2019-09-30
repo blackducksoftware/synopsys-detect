@@ -46,7 +46,6 @@ import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.Step
 import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorParseEachXml;
 import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.StepExecutorSplit;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
-import com.synopsys.integration.detectable.detectables.bazel.parse.BazelQueryXmlOutputParser;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelVariableSubstitutor;
 
 public class BazelExtractor {
