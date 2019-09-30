@@ -3,7 +3,7 @@
     "type": "executeBazelOnEach",
     "args": [
       "query",
-      "filter(\\\"@.*:jar\\\", deps(${detect.bazel.target}))"
+      "filter(\u0027@.*:jar\u0027, deps(${detect.bazel.target}))"
     ]
   },
   {
@@ -50,4 +50,3 @@
     ]
   }
 ]
-

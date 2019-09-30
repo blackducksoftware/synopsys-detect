@@ -21,12 +21,8 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.model.pipeline.PipelineJsonProcessor;
 import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
-import com.synopsys.integration.detectable.detectables.bazel.parse.BazelQueryXmlOutputParser;
 
 public class BazelExtractorTest {
-
-
-    // TODO make this better
 
     @Test
     public void testDefault() throws ExecutableRunnerException {
@@ -63,7 +59,7 @@ public class BazelExtractorTest {
         // bazel query 'filter("@.*:jar", deps(//:ProjectRunner))'
         final List<String> bazelArgsGetDependencies = new ArrayList<>();
         bazelArgsGetDependencies.add("query");
-        bazelArgsGetDependencies.add("filter(\\\"@.*:jar\\\", deps(//:ProjectRunner))");
+        bazelArgsGetDependencies.add("filter('@.*:jar', deps(//:ProjectRunner))");
         final ExecutableOutput bazelCmdExecutableOutputGetDependencies = Mockito.mock(ExecutableOutput.class);
         Mockito.when(bazelCmdExecutableOutputGetDependencies.getReturnCode()).thenReturn(0);
         Mockito.when(bazelCmdExecutableOutputGetDependencies.getStandardOutput()).thenReturn("@org_apache_commons_commons_io//jar:jar\n@com_google_guava_guava//jar:jar");

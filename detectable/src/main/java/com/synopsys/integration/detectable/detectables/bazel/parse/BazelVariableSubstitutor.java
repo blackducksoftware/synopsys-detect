@@ -35,12 +35,6 @@ public class BazelVariableSubstitutor {
         substitutions.put("\\$\\{detect.bazel.target}", bazelTarget);
     }
 
-//    public BazelVariableSubstitutor(final String bazelTarget, final String bazelTargetDependencyId) {
-//        substitutions = new HashMap<>(2);
-//        substitutions.put("\\$\\{detect.bazel.target}", bazelTarget);
-        // TODO remove: substitutions.put("\\$\\{detect.bazel.target.dependency}", bazelTargetDependencyId);
-//    }
-
     public List<String> substitute(final List<String> origStrings, final String input) {
         final List<String> modifiedStrings = new ArrayList<>(origStrings.size());
         for (String origString : origStrings) {

@@ -35,45 +35,6 @@ import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorExecuteBazelOnEach implements StepExecutor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private final String FAKE_OUTPUT = "results {\n"
-                                           + "  target {\n"
-                                           + "    type: RULE\n"
-                                           + "    rule {\n"
-                                           + "      name: \"@maven//:androidx_test_espresso_espresso_core\"\n"
-                                           + "      attribute {\n"
-                                           + "        name: \"tags\"\n"
-                                           + "        type: STRING_LIST\n"
-                                           + "        string_list_value: \"maven_coordinates=androidx.test.espresso:espresso-core:3.1.1\"\n"
-                                           + "        explicitly_specified: true\n"
-                                           + "        nodep: false\n"
-                                           + "      }\n"
-                                           + "    }\n"
-                                           + "  }\n"
-                                           + "  configuration {\n"
-                                           + "    checksum: \"a97574deb0f0815b04aefb212765a5ae\"\n"
-                                           + "  }\n"
-                                           + "}\n"
-        + "results {\n"
-            + "  target {\n"
-            + "    type: RULE\n"
-            + "    rule {\n"
-            + "      name: \"@maven//:junit_junit\"\n"
-            + "      attribute {\n"
-            + "        name: \"tags\"\n"
-            + "        type: STRING_LIST\n"
-            + "        string_list_value: \"maven_coordinates=junit:junit:4.12\"\n"
-            + "        explicitly_specified: true\n"
-            + "        nodep: false\n"
-            + "      }\n"
-            + "    }\n"
-            + "  }\n"
-            + "  configuration {\n"
-            + "    checksum: \"a97574deb0f0815b04aefb212765a5ae\"\n"
-            + "  }\n"
-            + "}\n";
-
-
     private final BazelCommandExecutor bazelCommandExecutor;
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
 
