@@ -42,8 +42,6 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 
-import freemarker.template.utility.StringUtil;
-
 public class CodeLocationConverter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
@@ -52,25 +50,25 @@ public class CodeLocationConverter {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Map<CodeLocation, DetectCodeLocation> toDetectCodeLocation(File detectSourcePath, DetectorEvaluation evaluation) {
-        Map<CodeLocation, DetectCodeLocation> detectCodeLocations = new HashMap<>();
+    public Map<CodeLocation, DetectCodeLocation> toDetectCodeLocation(final File detectSourcePath, final DetectorEvaluation evaluation) {
+        final Map<CodeLocation, DetectCodeLocation> detectCodeLocations = new HashMap<>();
         if (evaluation.wasExtractionSuccessful()) {
-            Extraction extraction = evaluation.getExtraction();
-            String name = evaluation.getDetectorRule().getDetectorType().toString();
+            final Extraction extraction = evaluation.getExtraction();
+            final String name = evaluation.getDetectorRule().getDetectorType().toString();
             return toDetectCodeLocation(detectSourcePath, extraction, evaluation.getDetectableEnvironment().getDirectory(), name);
         }
         return detectCodeLocations;
     }
 
-    public Map<CodeLocation, DetectCodeLocation> toDetectCodeLocation(File detectSourcePath, Extraction extraction, File overridePath, String overrideName) {
-        Map<CodeLocation, DetectCodeLocation> detectCodeLocations = new HashMap<>();
+    public Map<CodeLocation, DetectCodeLocation> toDetectCodeLocation(final File detectSourcePath, final Extraction extraction, final File overridePath, final String overrideName) {
+        final Map<CodeLocation, DetectCodeLocation> detectCodeLocations = new HashMap<>();
 
-        for (CodeLocation codeLocation : extraction.getCodeLocations()) {
-            File sourcePath = codeLocation.getSourcePath().orElse(overridePath);
-            ExternalId externalId;
+        for (final CodeLocation codeLocation : extraction.getCodeLocations()) {
+            final File sourcePath = codeLocation.getSourcePath().orElse(overridePath);
+            final ExternalId externalId;
             if (!codeLocation.getExternalId().isPresent()) {
                 logger.debug("The detector was unable to determine an external id for this code location, so an external id will be created using the file path.");
-                Forge detectForge = new Forge("/", "Detect");
+                final Forge detectForge = new Forge("/", "Detect");
                 final String relativePath = FileNameUtils.relativize(detectSourcePath.getAbsolutePath(), sourcePath.getAbsolutePath());
                 if (StringUtils.isNotBlank(relativePath)) {
                     externalId = externalIdFactory.createPathExternalId(detectForge, relativePath);
@@ -82,8 +80,8 @@ public class CodeLocationConverter {
             } else {
                 externalId = codeLocation.getExternalId().get();
             }
-            Optional<String> dockerImageName = extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA);
-            DetectCodeLocation detectCodeLocation;
+            final Optional<String> dockerImageName = extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA);
+            final DetectCodeLocation detectCodeLocation;
             if (dockerImageName.isPresent()) {
                 detectCodeLocation = DetectCodeLocation.forDocker(codeLocation.getDependencyGraph(), sourcePath, externalId, dockerImageName.get());
             } else {

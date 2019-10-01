@@ -28,14 +28,13 @@ import java.util.concurrent.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.ConnectionManager;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScannerZipInstaller;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.log.Slf4jIntLogger;
+import com.synopsys.integration.detect.configuration.ConnectionManager;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.util.CleanupZipExpander;
 import com.synopsys.integration.util.IntEnvironmentVariables;
@@ -45,35 +44,33 @@ public class ScanBatchRunnerFactory {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final IntEnvironmentVariables intEnvironmentVariables;
-    private final ExecutorService executorService;
     private final SignatureScannerLogger slf4jIntLogger;
     private final OperatingSystemType operatingSystemType;
     private final ScanPathsUtility scanPathsUtility;
     private final ScanCommandRunner scanCommandRunner;
 
-    public ScanBatchRunnerFactory(IntEnvironmentVariables intEnvironmentVariables, ExecutorService executorService) {
+    public ScanBatchRunnerFactory(final IntEnvironmentVariables intEnvironmentVariables, final ExecutorService executorService) {
         this.intEnvironmentVariables = intEnvironmentVariables;
-        this.executorService = executorService;
         slf4jIntLogger = new SignatureScannerLogger(logger);
         operatingSystemType = OperatingSystemType.determineFromSystem();
         scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, intEnvironmentVariables, operatingSystemType);
         scanCommandRunner = new ScanCommandRunner(slf4jIntLogger, intEnvironmentVariables, scanPathsUtility, executorService);
     }
 
-    public ScanBatchRunner withInstall(BlackDuckServerConfig blackDuckServerConfig) {
+    public ScanBatchRunner withInstall(final BlackDuckServerConfig blackDuckServerConfig) {
         // will will use the server to download/update the scanner - this is the most likely situation
-        ScannerZipInstaller scannerZipInstaller = ScannerZipInstaller.defaultUtility(slf4jIntLogger, blackDuckServerConfig, scanPathsUtility, operatingSystemType);
-        ScanBatchRunner scanBatchManager = ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
+        final ScannerZipInstaller scannerZipInstaller = ScannerZipInstaller.defaultUtility(slf4jIntLogger, blackDuckServerConfig, scanPathsUtility, operatingSystemType);
+        final ScanBatchRunner scanBatchManager = ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
         return scanBatchManager;
     }
 
-    public ScanBatchRunner withoutInstall(File defaultInstallDirectory) {
+    public ScanBatchRunner withoutInstall(final File defaultInstallDirectory) {
         // either we were given an existing path for the scanner or
         // we are offline - either way, we won't attempt to manage the install
         return ScanBatchRunner.createWithNoInstaller(intEnvironmentVariables, defaultInstallDirectory, scanPathsUtility, scanCommandRunner);
     }
 
-    public ScanBatchRunner withUserProvidedUrl(String userProvidedScannerInstallUrl, ConnectionManager connectionManager) throws DetectUserFriendlyException {
+    public ScanBatchRunner withUserProvidedUrl(final String userProvidedScannerInstallUrl, final ConnectionManager connectionManager) throws DetectUserFriendlyException {
         // we will use the provided url to download/update the scanner
         final IntHttpClient restConnection = connectionManager.createUnauthenticatedRestConnection(userProvidedScannerInstallUrl);
         final CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);

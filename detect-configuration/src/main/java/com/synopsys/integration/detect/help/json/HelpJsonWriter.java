@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,20 +38,16 @@ import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.help.DetectOption;
 import com.synopsys.integration.detect.help.DetectOptionHelp;
 
-import freemarker.template.Configuration;
-
 public class HelpJsonWriter {
     private final Logger logger = LoggerFactory.getLogger(HelpJsonWriter.class);
 
-    private final Configuration configuration;
     private final Gson gson;
 
-    public HelpJsonWriter(final Configuration configuration, final Gson gson) {
-        this.configuration = configuration;
+    public HelpJsonWriter(final Gson gson) {
         this.gson = gson;
     }
 
-    public void writeGsonDocument(final String filename, final List<DetectOption> detectOptions, List<HelpJsonDetector> buildDetectors, List<HelpJsonDetector> buildlessDetectors) {
+    public void writeGsonDocument(final String filename, final List<DetectOption> detectOptions, final List<HelpJsonDetector> buildDetectors, final List<HelpJsonDetector> buildlessDetectors) {
         final HelpJsonData data = new HelpJsonData();
 
         data.options.addAll(detectOptions.stream().map(this::convertOption).collect(Collectors.toList()));
@@ -72,7 +67,7 @@ public class HelpJsonWriter {
     }
 
     public HelpJsonExitCode convertExitCode(final ExitCodeType exitCodeType) {
-        HelpJsonExitCode helpJsonExitCode = new HelpJsonExitCode();
+        final HelpJsonExitCode helpJsonExitCode = new HelpJsonExitCode();
         helpJsonExitCode.exitCodeKey = exitCodeType.name();
         helpJsonExitCode.exitCodeValue = exitCodeType.getExitCode();
         helpJsonExitCode.exitCodeDescription = exitCodeType.getDescription();

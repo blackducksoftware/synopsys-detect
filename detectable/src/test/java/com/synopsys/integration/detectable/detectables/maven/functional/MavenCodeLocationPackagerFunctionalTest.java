@@ -88,7 +88,7 @@ public class MavenCodeLocationPackagerFunctionalTest {
         assertEquals(3, result.size());
 
         for (final MavenParseResult mavenParseResult : result) {
-            final DependencyGraph dependencyGraph = mavenParseResult.codeLocation.getDependencyGraph();
+            final DependencyGraph dependencyGraph = mavenParseResult.getCodeLocation().getDependencyGraph();
             for (final Dependency rootDependency : dependencyGraph.getRootDependencies()) {
                 if (rootDependency instanceof ScopedDependency) {
                     walkGraphExcludingScope(dependencyGraph, (ScopedDependency) rootDependency, "test");
@@ -129,7 +129,7 @@ public class MavenCodeLocationPackagerFunctionalTest {
         final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
         final List<MavenParseResult> result = mavenCodeLocationPackager.extractCodeLocations("/test/path", mavenOutputText, excludedScopes, includedScopes, excludedModules, includedModules);
         assertEquals(numberOfCodeLocations, result.size());
-        final CodeLocation codeLocation = result.get(codeLocationIndex).codeLocation;
+        final CodeLocation codeLocation = result.get(codeLocationIndex).getCodeLocation();
 
         GraphCompare.assertEqualsResource(expectedResourcePath, codeLocation.getDependencyGraph());
     }

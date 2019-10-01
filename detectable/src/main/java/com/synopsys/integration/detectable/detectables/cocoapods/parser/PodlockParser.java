@@ -47,8 +47,9 @@ import com.synopsys.integration.detectable.detectables.cocoapods.model.PodSource
 import com.synopsys.integration.detectable.detectables.cocoapods.model.PodfileLock;
 
 public class PodlockParser {
+    private static final List<String> fuzzyVersionIdentifiers = new ArrayList<>(Arrays.asList(">", "<", "~>", "="));
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final static List<String> fuzzyVersionIdentifiers = new ArrayList<>(Arrays.asList(">", "<", "~>", "="));
 
     private final ExternalIdFactory externalIdFactory;
 
@@ -126,10 +127,8 @@ public class PodlockParser {
             for (final String child : pod.getDependencies()) {
                 logger.trace(String.format("Processing pod dependency %s", child));
                 final Optional<DependencyId> childId = parseDependencyId(child);
-                if (childId.isPresent()) {
-                    if (!dependencyId.equals(childId.get())) {
-                        lazyBuilder.addParentWithChild(dependencyId, childId.get());
-                    }
+                if (childId.isPresent() && !dependencyId.equals(childId.get())) {
+                    lazyBuilder.addParentWithChild(dependencyId, childId.get());
                 }
             }
         }

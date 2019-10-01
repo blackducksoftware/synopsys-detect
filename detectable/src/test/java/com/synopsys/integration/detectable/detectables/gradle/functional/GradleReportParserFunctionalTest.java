@@ -43,8 +43,8 @@ public class GradleReportParserFunctionalTest {
         final CodeLocation codeLocation = transformer.transform(gradleReport.get());
         Assert.assertNotNull(codeLocation);
 
-        Assert.assertEquals("hub-detect", gradleReport.get().projectName);
-        Assert.assertEquals("2.0.0-SNAPSHOT", gradleReport.get().projectVersionName);
+        Assert.assertEquals("hub-detect", gradleReport.get().getProjectName());
+        Assert.assertEquals("2.0.0-SNAPSHOT", gradleReport.get().getProjectVersionName());
 
         final String actual = new Gson().toJson(codeLocation);
 

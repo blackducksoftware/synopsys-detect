@@ -26,6 +26,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GradleConfiguration {
-    public String name;
-    public List<GradleTreeNode> children = new ArrayList<>();
+    private String name;
+    private List<GradleTreeNode> children = new ArrayList<>();
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public List<GradleTreeNode> getChildren() {
+        return children;
+    }
+
+    public void setChildren(final List<GradleTreeNode> children) {
+        this.children = children;
+    }
 }

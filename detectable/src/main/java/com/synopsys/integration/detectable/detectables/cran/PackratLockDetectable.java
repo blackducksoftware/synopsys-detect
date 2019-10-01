@@ -65,7 +65,6 @@ public class PackratLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        // addRelevantDiagnosticFile(packratLockFile); TODO
         return packratLockExtractor.extract(environment.getDirectory(), packratLockFile);
     }
 

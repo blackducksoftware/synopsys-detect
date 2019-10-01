@@ -31,15 +31,15 @@ import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternal
 import com.synopsys.integration.detectable.detectables.bazel.model.SearchReplacePattern;
 
 public class RuleConverter {
-    public static final String BAZEL_QUERY_SUBCOMMAND = "query";
-    public static final String FILTER_GET_DEPENDENCIES_FOR_TARGET = "filter(\"%s\", deps(${detect.bazel.target}))";
-    public static final String FILTER_GET_DETAILS_FOR_DEPENDENCY = "kind(%s, ${detect.bazel.target.dependency})";
-    public static final String OUTPUT_SELECTOR = "--output";
-    public static final String OUTPUT_XML_FORMAT = "xml";
-    public static final String XPATH_QUERY_FOR_ARTIFACT = "/query/rule[@class='%s']/%s[@%s='%s']";
-    public static final String XPATH_QUERY_ARTIFACT_VALUE_ATTRIBUTE = "value";
-    public static final String XPATH_QUERY_RULE_ELEMENT_CLASS = "string";
-    public static final String XPATH_QUERY_SELECTOR_ATTRIBUTE = "name";
+    private static final String BAZEL_QUERY_SUBCOMMAND = "query";
+    private static final String FILTER_GET_DEPENDENCIES_FOR_TARGET = "filter(\"%s\", deps(${detect.bazel.target}))";
+    private static final String FILTER_GET_DETAILS_FOR_DEPENDENCY = "kind(%s, ${detect.bazel.target.dependency})";
+    private static final String OUTPUT_SELECTOR = "--output";
+    private static final String OUTPUT_XML_FORMAT = "xml";
+    private static final String XPATH_QUERY_FOR_ARTIFACT = "/query/rule[@class='%s']/%s[@%s='%s']";
+    private static final String XPATH_QUERY_ARTIFACT_VALUE_ATTRIBUTE = "value";
+    private static final String XPATH_QUERY_RULE_ELEMENT_CLASS = "string";
+    private static final String XPATH_QUERY_SELECTOR_ATTRIBUTE = "name";
 
     public static BazelExternalIdExtractionFullRule simpleToFull(final BazelExternalIdExtractionSimpleRule simpleRule) {
 
@@ -60,10 +60,10 @@ public class RuleConverter {
         final String artifactStringSeparatorRegex = simpleRule.getArtifactStringSeparatorRegex();
 
         final BazelExternalIdExtractionFullRule fullRule = new BazelExternalIdExtractionFullRule(targetDependenciesQueryBazelCmdArguments,
-        dependencyToBazelExternalIdTransforms,
-        dependencyDetailsXmlQueryBazelCmdArguments,
-        xPathQuery, ruleElementValueAttrName,
-        artifactStringSeparatorRegex);
+            dependencyToBazelExternalIdTransforms,
+            dependencyDetailsXmlQueryBazelCmdArguments,
+            xPathQuery, ruleElementValueAttrName,
+            artifactStringSeparatorRegex);
         return fullRule;
     }
 }

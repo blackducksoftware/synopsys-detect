@@ -33,22 +33,22 @@ import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class SearchSummaryReporter {
 
-    public void print(ReportWriter writer, final DetectorEvaluationTree rootEvaluation) {
+    public void print(final ReportWriter writer, final DetectorEvaluationTree rootEvaluation) {
         printDirectoriesInfo(writer, rootEvaluation.asFlatList());
     }
 
-    private void printDirectoriesInfo(ReportWriter writer, List<DetectorEvaluationTree> trees) {
+    private void printDirectoriesInfo(final ReportWriter writer, final List<DetectorEvaluationTree> trees) {
         ReporterUtils.printHeader(writer, "Search results");
         boolean printedAtLeastOne = false;
         for (final DetectorEvaluationTree tree : trees) {
-            List<DetectorEvaluation> applicable = DetectorEvaluationUtils.applicableChildren(tree);
-            if (applicable.size() > 0){
+            final List<DetectorEvaluation> applicable = DetectorEvaluationUtils.applicableChildren(tree);
+            if (applicable.size() > 0) {
                 writer.writeLine(tree.getDirectory().toString());
                 writer.writeLine("\tAPPLIES: " + applicable.stream().map(it -> it.getDetectorRule().getDescriptiveName()).sorted().collect(Collectors.joining(", ")));
                 printedAtLeastOne = true;
             }
         }
-        if (!printedAtLeastOne){
+        if (!printedAtLeastOne) {
             writer.writeLine("No detectors found.");
         }
         ReporterUtils.printFooter(writer);

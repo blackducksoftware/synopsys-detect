@@ -1,7 +1,5 @@
 package com.synopsys.integration.detectable.detectables.packagist.functional;
 
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,16 +13,16 @@ import com.synopsys.integration.detectable.util.GraphCompare;
 public class PackagistParserFunctionalTest {
 
     @Test
-    public void packagistParserTest() throws IOException {
+    public void packagistParserTest() {
         final ComposerLockDetectableOptions composerLockDetectableOptions = new ComposerLockDetectableOptions(true);
         final PackagistParser packagistParser = new PackagistParser(new ExternalIdFactory(), composerLockDetectableOptions);
 
         final String composerLockText = FunctionalTestFiles.asString("/packagist/composer.lock");
         final String composerJsonText = FunctionalTestFiles.asString("/packagist/composer.json");
-        final PackagistParseResult result = packagistParser.getDependencyGraphFromProject("source", composerJsonText, composerLockText);
+        final PackagistParseResult result = packagistParser.getDependencyGraphFromProject(composerJsonText, composerLockText);
 
-        Assert.assertEquals(result.getProjectName(), "clue/graph-composer");
-        Assert.assertEquals(result.getProjectVersion(), "1.0.0");
+        Assert.assertEquals("clue/graph-composer", result.getProjectName());
+        Assert.assertEquals("1.0.0", result.getProjectVersion());
 
         GraphCompare.assertEqualsResource("/packagist/PackagistTestDependencyNode_graph.json", result.getCodeLocation().getDependencyGraph());
     }

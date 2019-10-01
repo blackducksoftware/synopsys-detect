@@ -25,6 +25,7 @@ package com.synopsys.integration.detect.configuration;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -68,7 +69,7 @@ public class DetectConfiguration {
                 handleStandardProperty(currentProperty);
             } else if (override != null) {
                 handleDeprecatedProperty(currentProperty, override);// a deprecated property has an override
-            } else if (deprecated != null) {
+            } else {
                 handleOverrideProperty(currentProperty, deprecated);// an override property has a deprecated property
             }
         });
@@ -77,7 +78,7 @@ public class DetectConfiguration {
         if (StringUtils.isNotBlank(bdScanPaths)) {
             logger.warn("The environment variable BD_HUB_SCAN_PATH was set but you should use --" + DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS.getPropertyKey() + " instead.");
             final List<String> values = new ArrayList<>();
-            values.addAll(Arrays.asList(getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, PropertyAuthority.None)));
+            values.addAll(Arrays.asList(getStringArrayProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, PropertyAuthority.NONE)));
             values.addAll(Arrays.asList(bdScanPaths.split(",")));
             setDetectProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, values.stream().collect(Collectors.joining(",")));
         }
@@ -110,7 +111,7 @@ public class DetectConfiguration {
             if (deprecatedExists) { // even though it wasn't chosen, if deprecated was set we want to mark it as set.
                 actuallySetValues.add(deprecatedProperty);
             }
-        } else if (!currentExists && !deprecatedExists) {
+        } else if (!deprecatedExists) {
             setChosenProperty(currentProperty, deprecatedProperty, false);
         }
     }
@@ -126,18 +127,14 @@ public class DetectConfiguration {
 
     // TODO: Remove in version 6.
     private DetectProperty fromDeprecatedToOverride(final DetectProperty detectProperty) {
-        if (DetectPropertyDeprecations.PROPERTY_OVERRIDES.containsKey(detectProperty)) {
-            return DetectPropertyDeprecations.PROPERTY_OVERRIDES.get(detectProperty);
-        } else {
-            return null;
-        }
+        return DetectPropertyDeprecations.PROPERTY_OVERRIDES.getOrDefault(detectProperty, null);
     }
 
     // TODO: Remove in version 6.
     private DetectProperty fromOverrideToDeprecated(final DetectProperty detectProperty) {
         final Optional<DetectProperty> found = DetectPropertyDeprecations.PROPERTY_OVERRIDES.entrySet().stream()
                                                    .filter(it -> it.getValue().equals(detectProperty))
-                                                   .map(it -> it.getKey())
+                                                   .map(Map.Entry::getKey)
                                                    .findFirst();
 
         return found.orElse(null);
@@ -147,7 +144,7 @@ public class DetectConfiguration {
         return getKeysWithoutPrefix(detectPropertySource.getPhoneHomePropertyKeys(), DetectPropertySource.PHONE_HOME_PROPERTY_PREFIX);
     }
 
-    public Map<String, String> getProperties(Set<String> keys) {
+    public Map<String, String> getProperties(final Set<String> keys) {
         return getKeys(keys);
     }
 
@@ -248,7 +245,7 @@ public class DetectConfiguration {
 
     //Does not require authorization because you are bananas
     public Map<DetectProperty, Object> getCurrentProperties() {
-        return new HashMap<>(detectPropertyMap.getUnderlyingPropertyMap());// return an immutable copy
+        return new EnumMap<>(detectPropertyMap.getUnderlyingPropertyMap());// return an immutable copy
     }
 
     private Map<String, String> getKeys(final Set<String> keys) {
@@ -261,7 +258,7 @@ public class DetectConfiguration {
             final Optional<DetectProperty> propertyValue = getPropertyFromString(detectKey);
             String value = null;
             if (propertyValue.isPresent()) {
-                value = getPropertyValueAsString(propertyValue.get(), PropertyAuthority.None);
+                value = getPropertyValueAsString(propertyValue.get(), PropertyAuthority.NONE);
             }
             if (StringUtils.isBlank(value)) {
                 value = detectPropertySource.getProperty(detectKey);

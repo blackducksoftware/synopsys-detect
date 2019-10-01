@@ -36,16 +36,12 @@ import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvGraphParser;
 
 public class PipenvExtractor {
-    public static final String PIP_SEPARATOR = "==";
-
     private final ExecutableRunner executableRunner;
     private final PipenvGraphParser pipenvTreeParser;
-    private final PipenvDetectableOptions pipenvDetectableOptions;
 
-    public PipenvExtractor(final ExecutableRunner executableRunner, final PipenvGraphParser pipenvTreeParser, final PipenvDetectableOptions pipenvDetectableOptions) {
+    public PipenvExtractor(final ExecutableRunner executableRunner, final PipenvGraphParser pipenvTreeParser) {
         this.executableRunner = executableRunner;
         this.pipenvTreeParser = pipenvTreeParser;
-        this.pipenvDetectableOptions = pipenvDetectableOptions;
     }
 
     public Extraction extract(final File directory, final File pythonExe, final File pipenvExe, final File setupFile, final String providedProjectName, final String providedProjectVersionName) {
@@ -77,8 +73,8 @@ public class PipenvExtractor {
         String projectName = providedProjectName;
 
         if (StringUtils.isBlank(projectName) && setupFile != null && setupFile.exists()) {
-            final List<String> arguements = Arrays.asList(setupFile.getAbsolutePath(), "--name");
-            final List<String> output = executableRunner.execute(directory, pythonExe, arguements).getStandardOutputAsList();
+            final List<String> arguments = Arrays.asList(setupFile.getAbsolutePath(), "--name");
+            final List<String> output = executableRunner.execute(directory, pythonExe, arguments).getStandardOutputAsList();
             projectName = output.get(output.size() - 1).replace('_', '-').trim();
         }
 

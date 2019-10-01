@@ -35,7 +35,7 @@ import com.synopsys.integration.detectable.detectables.sbt.model.SbtReport;
 
 public class SbtDependencyResolver {
     private final Logger logger = LoggerFactory.getLogger(SbtDependencyResolver.class);
-    public ExternalIdFactory externalIdFactory;
+    private final ExternalIdFactory externalIdFactory;
 
     public SbtDependencyResolver(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
@@ -70,12 +70,12 @@ public class SbtDependencyResolver {
         });
 
         final SbtDependencyModule module = new SbtDependencyModule();
-        module.name = report.getModule();
-        module.version = report.getRevision();
-        module.org = report.getOrganisation();
+        module.setName(report.getModule());
+        module.setVersion(report.getRevision());
+        module.setOrg(report.getOrganisation());
 
-        module.graph = graph;
-        module.configuration = report.getConfiguration();
+        module.setGraph(graph);
+        module.setConfiguration(report.getConfiguration());
 
         return module;
     }

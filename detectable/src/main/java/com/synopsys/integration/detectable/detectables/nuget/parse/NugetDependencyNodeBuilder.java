@@ -36,10 +36,9 @@ import com.synopsys.integration.detectable.detectables.nuget.model.NugetPackageI
 import com.synopsys.integration.detectable.detectables.nuget.model.NugetPackageSet;
 
 public class NugetDependencyNodeBuilder {
+    private final List<NugetPackageSet> packageSets = new ArrayList<>();
 
-    final List<NugetPackageSet> packageSets = new ArrayList<>();
-
-    public ExternalIdFactory externalIdFactory;
+    private final ExternalIdFactory externalIdFactory;
 
     public NugetDependencyNodeBuilder(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
@@ -49,28 +48,20 @@ public class NugetDependencyNodeBuilder {
         packageSets.addAll(sets);
     }
 
-    public void addPackageSet(final NugetPackageSet set) {
-        packageSets.add(set);
-    }
-
     public DependencyGraph createDependencyGraph(final List<NugetPackageId> packageDependencies) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        if (packageSets != null) {
-            for (final NugetPackageSet packageSet : packageSets) {
-                if (packageSet.dependencies != null) {
-                    for (final NugetPackageId id : packageSet.dependencies) {
-                        if (packageSet.packageId != null) {
-                            graph.addParentWithChild(convertPackageId(packageSet.packageId), convertPackageId(id));
-                        }
+        for (final NugetPackageSet packageSet : packageSets) {
+            if (packageSet.dependencies != null) {
+                for (final NugetPackageId id : packageSet.dependencies) {
+                    if (packageSet.packageId != null) {
+                        graph.addParentWithChild(convertPackageId(packageSet.packageId), convertPackageId(id));
                     }
                 }
             }
         }
 
-        packageDependencies.forEach(it -> {
-            graph.addChildToRoot(convertPackageId(it));
-        });
+        packageDependencies.forEach(it -> graph.addChildToRoot(convertPackageId(it)));
 
         return graph;
     }

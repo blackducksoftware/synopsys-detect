@@ -23,6 +23,8 @@
 package com.synopsys.integration.detectable.detectables.clang.dependencyfile;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,9 +64,13 @@ public class FilePathGenerator {
     public List<String> fromCompileCommand(final File workingDir, final CompileCommand compileCommand, final boolean cleanup) {
         final Optional<File> depsMkFile = generateDepsMkFile(workingDir, compileCommand);
         if (depsMkFile.isPresent()) {
-            List<String> files = dependenyListFileParser.parseDepsMk(depsMkFile.get());
+            final List<String> files = dependenyListFileParser.parseDepsMk(depsMkFile.get());
             if (cleanup) {
-                depsMkFile.get().delete();
+                try {
+                    Files.delete(depsMkFile.get().toPath());
+                } catch (final IOException e) {
+                    logger.debug(String.format("Failed to delete file at %s", depsMkFile.get().getAbsoluteFile()), e);
+                }
             }
             return files;
         } else {
@@ -75,12 +81,12 @@ public class FilePathGenerator {
     private Optional<File> generateDepsMkFile(final File workingDir, final CompileCommand compileCommand) {
         final String depsMkFilename = deriveDependenciesListFilename(compileCommand);
         final File depsMkFile = new File(workingDir, depsMkFilename);
-        Map<String, String> optionOverrides = new HashMap<>(1);
+        final Map<String, String> optionOverrides = new HashMap<>(1);
         optionOverrides.put(COMPILER_OUTPUT_FILE_OPTION, REPLACEMENT_OUTPUT_FILENAME);
         try {
-            List<String> command = compileCommandParser.parseCommand(compileCommand, optionOverrides);
+            final List<String> command = compileCommandParser.parseCommand(compileCommand, optionOverrides);
             command.addAll(Arrays.asList("-M", "-MF", depsMkFile.getAbsolutePath()));
-            Executable executable = new Executable(new File(compileCommand.directory), Collections.emptyMap(), command);
+            final Executable executable = new Executable(new File(compileCommand.directory), Collections.emptyMap(), command);
             executableRunner.execute(executable);
         } catch (final ExecutableRunnerException e) {
             logger.debug(String.format("Error generating dependencies file for command '%s': %s", compileCommand.command, e.getMessage()));

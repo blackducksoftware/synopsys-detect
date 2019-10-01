@@ -104,7 +104,7 @@ public class PackratLockFileParser {
     }
 
     private String getValueFromLine(final String line) {
-        final int separatorIndex = line.indexOf(":");
+        final int separatorIndex = line.indexOf(':');
 
         return line.substring(separatorIndex + 1).trim();
     }

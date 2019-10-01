@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
@@ -50,8 +48,6 @@ import com.synopsys.integration.util.NameVersion;
 
 public class PearCliExtractor {
     private static final String PACKAGE_XML_FILENAME = "package.xml";
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;

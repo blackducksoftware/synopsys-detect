@@ -99,7 +99,7 @@ public class CpanListParser {
             if (StringUtils.isBlank(line)) {
                 continue;
             }
-            if (line.contains("-->") || ((line.contains(" ... ") && line.contains("Configuring")))) {
+            if (line.contains("-->") || (line.contains(" ... ") && line.contains("Configuring"))) {
                 continue;
             }
             modules.add(line.split("~")[0].trim());

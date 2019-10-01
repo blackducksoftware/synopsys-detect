@@ -51,9 +51,9 @@ public class GoLockParser {
         if (goLock.projects != null) {
             for (final Project project : goLock.projects) {
                 if (project != null) {
-                    final String projectName = project.name;
-                    final String projectVersion = Optional.ofNullable(StringUtils.stripToNull(project.version)).orElse(project.revision);
-                    project.packages.stream()
+                    final String projectName = project.getName();
+                    final String projectVersion = Optional.ofNullable(StringUtils.stripToNull(project.getVersion())).orElse(project.getRevision());
+                    project.getPackages().stream()
                         .map(packageName -> createDependencyName(projectName, packageName))
                         .map(dependencyName -> createGoDependency(dependencyName, projectVersion))
                         .forEach(graph::addChildToRoot);

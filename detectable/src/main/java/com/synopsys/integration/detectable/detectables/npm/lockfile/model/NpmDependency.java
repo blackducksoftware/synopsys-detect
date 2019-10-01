@@ -43,8 +43,8 @@ public class NpmDependency {
     }
 
     private NpmDependency parent;
-    private final List<NpmRequires> requires = new ArrayList<NpmRequires>();
-    private final List<NpmDependency> dependencies = new ArrayList<NpmDependency>();
+    private final List<NpmRequires> requires = new ArrayList<>();
+    private final List<NpmDependency> dependencies = new ArrayList<>();
 
     public Optional<NpmDependency> getParent() {
         return Optional.ofNullable(parent);

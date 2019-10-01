@@ -30,7 +30,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.misc.Nullable;
 
 public interface FileFinder {
-    @Nullable
+     @Nullable
     default File findFile(final File directoryToSearch, final String filenamePattern) {
         return findFile(directoryToSearch, filenamePattern, 0);
 
@@ -61,7 +61,7 @@ public interface FileFinder {
     }
 
     @NotNull
-    default List<File> findFiles(File directoryToSearch, List<String> filenamePatterns, int depth) {
+    default List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth) {
         return findFiles(directoryToSearch, filenamePatterns, depth, true);
     }
 

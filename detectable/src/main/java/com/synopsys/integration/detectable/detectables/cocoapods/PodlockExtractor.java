@@ -31,9 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockParser;
@@ -41,14 +38,12 @@ import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockP
 public class PodlockExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final PodlockParser podlockParser;
-    private final ExternalIdFactory externalIdFactory;
 
-    public PodlockExtractor(final PodlockParser podlockParser, final ExternalIdFactory externalIdFactory) {
+    public PodlockExtractor(final PodlockParser podlockParser) {
         this.podlockParser = podlockParser;
-        this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(final File directory, final File podlock) {
+    public Extraction extract(final File podlock) {
         final String podLockText;
         try {
             logger.trace(String.format("Reading from the pod lock file %s", podlock.getAbsolutePath()));

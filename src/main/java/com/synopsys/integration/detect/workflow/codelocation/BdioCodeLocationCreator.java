@@ -66,14 +66,14 @@ public class BdioCodeLocationCreator {
     public BdioCodeLocationResult createFromDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
         final Set<DetectorType> failedBomToolGroups = new HashSet<>();
 
-        final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.None);
-        final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.None);
+        final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.NONE);
+        final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.NONE);
 
         final List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
         final String canonicalDetectSourcePath;
         try {
             canonicalDetectSourcePath = directoryManager.getSourceDirectory().getCanonicalPath();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             final String msg = String.format("Unable to get canonical path for %s", directoryManager.getSourceDirectory().getAbsolutePath());
             throw new DetectUserFriendlyException(msg, e, ExitCodeType.FAILURE_UNKNOWN_ERROR);
         }
@@ -105,7 +105,7 @@ public class BdioCodeLocationCreator {
                 logger.warn(String.format("Dependency graph is null for code location %s", detectCodeLocation.getSourcePath()));
                 continue;
             }
-            if (detectCodeLocation.getDependencyGraph().getRootDependencies().size() <= 0) {
+            if (detectCodeLocation.getDependencyGraph().getRootDependencies().isEmpty()) {
                 logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
             }
             validCodeLocations.add(detectCodeLocation);
@@ -115,21 +115,21 @@ public class BdioCodeLocationCreator {
 
     private Map<String, List<DetectCodeLocation>> seperateCodeLocationsByName(final Map<DetectCodeLocation, String> detectCodeLocationNameMap) {
         final Map<String, List<DetectCodeLocation>> codeLocationNameMap = new HashMap<>();
-        for (final DetectCodeLocation detectCodeLocation : detectCodeLocationNameMap.keySet()) {
-            final String codeLocationName = detectCodeLocationNameMap.get(detectCodeLocation);
+        for (final Map.Entry<DetectCodeLocation, String> detectCodeLocationEntry : detectCodeLocationNameMap.entrySet()) {
+            final String codeLocationName = detectCodeLocationEntry.getValue();
             if (!codeLocationNameMap.containsKey(codeLocationName)) {
                 codeLocationNameMap.put(codeLocationName, new ArrayList<>());
             }
-            codeLocationNameMap.get(codeLocationName).add(detectCodeLocation);
+            codeLocationNameMap.get(codeLocationName).add(detectCodeLocationEntry.getKey());
         }
         return codeLocationNameMap;
     }
 
     private List<BdioCodeLocation> createBdioCodeLocations(final Map<String, List<DetectCodeLocation>> codeLocationsByName) {
         final List<BdioCodeLocation> bdioCodeLocations = new ArrayList<>();
-
-        for (final String codeLocationName : codeLocationsByName.keySet()) {
-            final List<DetectCodeLocation> codeLocations = codeLocationsByName.get(codeLocationName);
+        for (final Map.Entry<String, List<DetectCodeLocation>> codeLocationEntry : codeLocationsByName.entrySet()) {
+            final String codeLocationName = codeLocationEntry.getKey();
+            final List<DetectCodeLocation> codeLocations = codeLocationEntry.getValue();
             final List<BdioCodeLocation> transformedBdioCodeLocations = transformDetectCodeLocationsIntoBdioCodeLocations(codeLocations, codeLocationName);
             bdioCodeLocations.addAll(transformedBdioCodeLocations);
         }

@@ -43,8 +43,10 @@ public class Executable {
 
     public Executable(final File workingDirectory, final Map<String, String> environmentVariables, final String exeCmd, final List<String> executableArguments) {
         this.workingDirectory = workingDirectory;
-        this.environmentVariables.putAll(environmentVariables);
-        this.command.add(exeCmd.toString());
+        if (environmentVariables != null) {
+            this.environmentVariables.putAll(environmentVariables);
+        }
+        this.command.add(exeCmd);
         this.command.addAll(executableArguments);
     }
 
@@ -54,11 +56,11 @@ public class Executable {
         processBuilder.directory(workingDirectory);
         final Map<String, String> processBuilderEnvironment = processBuilder.environment();
         final Map<String, String> systemEnv = System.getenv();
-        for (final String key : systemEnv.keySet()) {
-            populateEnvironmentMap(processBuilderEnvironment, key, systemEnv.get(key));
+        for (final Map.Entry<String, String> systemEnvEntry : systemEnv.entrySet()) {
+            populateEnvironmentMap(processBuilderEnvironment, systemEnvEntry.getKey(), systemEnvEntry.getValue());
         }
-        for (final String key : environmentVariables.keySet()) {
-            populateEnvironmentMap(processBuilderEnvironment, key, environmentVariables.get(key));
+        for (final Map.Entry<String, String> environmentVariableEntry : environmentVariables.entrySet()) {
+            populateEnvironmentMap(processBuilderEnvironment, environmentVariableEntry.getKey(), environmentVariableEntry.getValue());
         }
         return processBuilder;
     }
@@ -76,20 +78,13 @@ public class Executable {
         return StringUtils.join(arguments, ' ');
     }
 
-    public String getExecutableDescription() {
-        return StringUtils.join(createProcessBuilderArguments(), ' ');
-    }
-
     public List<String> getCommand() {
         return command;
     }
 
     private List<String> createProcessBuilderArguments() {
         // ProcessBuilder can only be called with a List<java.lang.String> so do any needed conversion
-        final List<String> processBuilderArguments = new ArrayList<>();
-        for (final String arg : command) {
-            processBuilderArguments.add(arg);
-        }
+        final List<String> processBuilderArguments = new ArrayList<>(command);
         return processBuilderArguments;
     }
 

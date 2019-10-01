@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraphCombiner;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -67,16 +66,16 @@ public class NugetInspectorExtractor {
 
     public Extraction extract(final List<File> targets, final File outputDirectory, final NugetInspector inspector, final NugetInspectorOptions nugetInspectorOptions) {
         try {
-            List<NugetTargetResult> results = new ArrayList<>();
+            final List<NugetTargetResult> results = new ArrayList<>();
 
             for (int i = 0; i < targets.size(); i++) {
-                File targetDirectory = new File(outputDirectory, "inspection-" + i);
+                final File targetDirectory = new File(outputDirectory, "inspection-" + i);
                 results.add(executeTarget(inspector, targets.get(i), targetDirectory, nugetInspectorOptions));
             }
 
-            List<CodeLocation> codeLocations = results.stream()
-                                                   .flatMap(it -> it.codeLocations.stream())
-                                                   .collect(Collectors.toList());
+            final List<CodeLocation> codeLocations = results.stream()
+                                                         .flatMap(it -> it.codeLocations.stream())
+                                                         .collect(Collectors.toList());
 
             final Map<File, CodeLocation> codeLocationsBySource = new HashMap<>();
             final DependencyGraphCombiner combiner = new DependencyGraphCombiner();
@@ -92,10 +91,10 @@ public class NugetInspectorExtractor {
                 }
             });
 
-            Optional<NameVersion> nameVersion = results.stream()
-                                                    .filter(it -> it.nameVersion != null)
-                                                    .map(it -> it.nameVersion)
-                                                    .findFirst();
+            final Optional<NameVersion> nameVersion = results.stream()
+                                                          .filter(it -> it.nameVersion != null)
+                                                          .map(it -> it.nameVersion)
+                                                          .findFirst();
 
             final List<CodeLocation> uniqueCodeLocations = new ArrayList<>(codeLocationsBySource.values());
             return new Extraction.Builder().success(uniqueCodeLocations).nameVersionIfPresent(nameVersion).build();
@@ -104,7 +103,8 @@ public class NugetInspectorExtractor {
         }
     }
 
-    private NugetTargetResult executeTarget(final NugetInspector inspector, File targetFile, File outputDirectory, NugetInspectorOptions nugetInspectorOptions) throws ExecutableRunnerException, IOException, DetectableException {
+    private NugetTargetResult executeTarget(final NugetInspector inspector, final File targetFile, final File outputDirectory, final NugetInspectorOptions nugetInspectorOptions)
+        throws ExecutableRunnerException, IOException, DetectableException {
         if (!outputDirectory.exists() && !outputDirectory.mkdirs()) {
             throw new DetectableException(String.format("Executing the nuget inspector failed, could not create output directory: %s", outputDirectory));
         }
@@ -126,15 +126,15 @@ public class NugetInspectorExtractor {
             }
         }
 
-        NugetTargetResult targetResult = new NugetTargetResult();
+        final NugetTargetResult targetResult = new NugetTargetResult();
 
         targetResult.codeLocations = parseResults.stream()
-                                         .flatMap(it -> it.codeLocations.stream())
+                                         .flatMap(it -> it.getCodeLocations().stream())
                                          .collect(Collectors.toList());
 
         targetResult.nameVersion = parseResults.stream()
-                                       .filter(it -> StringUtils.isNotBlank(it.projectName))
-                                       .map(it -> new NameVersion(it.projectName, it.projectVersion))
+                                       .filter(it -> StringUtils.isNotBlank(it.getProjectName()))
+                                       .map(it -> new NameVersion(it.getProjectName(), it.getProjectVersion()))
                                        .findFirst()
                                        .orElse(null);
 

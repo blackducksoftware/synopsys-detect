@@ -65,7 +65,7 @@ public class GemlockDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return gemlockExtractor.extract(environment.getDirectory(), gemlock);
+        return gemlockExtractor.extract(gemlock);
     }
 
 }

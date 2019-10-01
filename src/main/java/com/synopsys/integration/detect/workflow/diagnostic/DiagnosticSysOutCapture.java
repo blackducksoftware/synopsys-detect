@@ -24,32 +24,20 @@ package com.synopsys.integration.detect.workflow.diagnostic;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 
 import org.apache.commons.io.output.TeeOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.tool.detector.ExtractionId;
-import com.synopsys.integration.detect.tool.detector.impl.DetectExtractionEnvironment;
-import com.synopsys.integration.detect.workflow.event.Event;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.FileAppender;
-
 //Logging TRACE to console is a bad idea. Here we will log DEBUG to console, and more verbose levels to files.
 public class DiagnosticSysOutCapture {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private File stdOutFile;
+    private final File stdOutFile;
     private FileOutputStream stdOutStream;
 
-    public DiagnosticSysOutCapture(File stdOutFile) {
+    public DiagnosticSysOutCapture(final File stdOutFile) {
         this.stdOutFile = stdOutFile;
     }
 

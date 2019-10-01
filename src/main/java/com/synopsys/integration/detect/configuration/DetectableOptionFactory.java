@@ -60,152 +60,152 @@ public class DetectableOptionFactory {
     private final DetectConfiguration detectConfiguration;
     private final Optional<DiagnosticSystem> diagnosticSystemOptional;
 
-    public DetectableOptionFactory(final DetectConfiguration detectConfiguration, Optional<DiagnosticSystem> diagnosticSystem) {
+    public DetectableOptionFactory(final DetectConfiguration detectConfiguration, final Optional<DiagnosticSystem> diagnosticSystem) {
         this.detectConfiguration = detectConfiguration;
         diagnosticSystemOptional = diagnosticSystem;
     }
 
     public BazelDetectableOptions createBazelDetectableOptions() {
-        final String targetName = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.None);
-        final String fullRulesPath = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_ADVANCED_RULES_PATH, PropertyAuthority.None);
+        final String targetName = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.NONE);
+        final String fullRulesPath = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_ADVANCED_RULES_PATH, PropertyAuthority.NONE);
         return new BazelDetectableOptions(targetName, fullRulesPath);
     }
 
     public BitbakeDetectableOptions createBitbakeDetectableOptions() {
-        final String buildEnvName = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_BUILD_ENV_NAME, PropertyAuthority.None);
-        final String[] sourceArguments = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_SOURCE_ARGUMENTS, PropertyAuthority.None);
-        final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES, PropertyAuthority.None);
+        final String buildEnvName = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_BUILD_ENV_NAME, PropertyAuthority.NONE);
+        final String[] sourceArguments = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_SOURCE_ARGUMENTS, PropertyAuthority.NONE);
+        final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES, PropertyAuthority.NONE);
         return new BitbakeDetectableOptions(buildEnvName, sourceArguments, packageNames);
     }
 
     public ClangDetectableOptions createClangDetectableOptions() {
-        final boolean cleanup = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.None);
+        final boolean cleanup = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.NONE);
         return new ClangDetectableOptions(cleanup);
     }
 
     public ComposerLockDetectableOptions createComposerLockDetectableOptions() {
-        final boolean includedDevDependencies = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.None);
+        final boolean includedDevDependencies = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.NONE);
         return new ComposerLockDetectableOptions(includedDevDependencies);
     }
 
     public CondaCliDetectableOptions createCondaOptions() {
-        final String environmentName = detectConfiguration.getProperty(DetectProperty.DETECT_CONDA_ENVIRONMENT_NAME, PropertyAuthority.None);
+        final String environmentName = detectConfiguration.getProperty(DetectProperty.DETECT_CONDA_ENVIRONMENT_NAME, PropertyAuthority.NONE);
         return new CondaCliDetectableOptions(environmentName);
     }
 
     public MavenParseOptions createMavenParseOptions() {
-        final Boolean includePlugins = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_MAVEN_INCLUDE_PLUGINS, PropertyAuthority.None);
+        final Boolean includePlugins = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_MAVEN_INCLUDE_PLUGINS, PropertyAuthority.NONE);
         return new MavenParseOptions(includePlugins);
     }
 
     public DockerDetectableOptions createDockerDetectableOptions() {
-        final boolean dockerPathRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED, PropertyAuthority.None);
-        final String suppliedDockerImage = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE, PropertyAuthority.None);
-        final String suppliedDockerTar = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_TAR, PropertyAuthority.None);
-        final String dockerInspectorLoggingLevel = detectConfiguration.getProperty(DetectProperty.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, PropertyAuthority.None);
-        final String dockerInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION, PropertyAuthority.None);
+        final boolean dockerPathRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED, PropertyAuthority.NONE);
+        final String suppliedDockerImage = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE, PropertyAuthority.NONE);
+        final String suppliedDockerTar = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_TAR, PropertyAuthority.NONE);
+        final String dockerInspectorLoggingLevel = detectConfiguration.getProperty(DetectProperty.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, PropertyAuthority.NONE);
+        final String dockerInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION, PropertyAuthority.NONE);
         final Map<String, String> additionalDockerProperties = detectConfiguration.getDockerProperties();
         diagnosticSystemOptional.ifPresent(diagnosticSystem -> additionalDockerProperties.putAll(diagnosticSystem.getAdditionalDockerProperties()));
-        final String dockerInspectorPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH, PropertyAuthority.None);
+        final String dockerInspectorPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH, PropertyAuthority.NONE);
         return new DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath);
     }
 
     public GradleInspectorOptions createGradleInspectorOptions() {
-        final String excludedProjectNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_PROJECTS, PropertyAuthority.None);
-        final String includedProjectNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_PROJECTS, PropertyAuthority.None);
-        final String excludedConfigurationNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS, PropertyAuthority.None);
-        final String includedConfigurationNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS, PropertyAuthority.None);
-        final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL, PropertyAuthority.None);
+        final String excludedProjectNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_PROJECTS, PropertyAuthority.NONE);
+        final String includedProjectNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_PROJECTS, PropertyAuthority.NONE);
+        final String excludedConfigurationNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS, PropertyAuthority.NONE);
+        final String includedConfigurationNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS, PropertyAuthority.NONE);
+        final String configuredGradleInspectorRepositoryUrl = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL, PropertyAuthority.NONE);
         String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
         if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
             logger.warn("Using a custom gradle repository will not be supported in the future.");
             customRepository = configuredGradleInspectorRepositoryUrl;
         }
 
-        final String onlineInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION, PropertyAuthority.None);
+        final String onlineInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION, PropertyAuthority.NONE);
         final GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion);
-        final String gradleBuildCommand = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND, PropertyAuthority.None);
+        final String gradleBuildCommand = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND, PropertyAuthority.NONE);
         return new GradleInspectorOptions(gradleBuildCommand, scriptOptions);
     }
 
     public MavenCliExtractorOptions createMavenCliOptions() {
-        final String mavenBuildCommand = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_BUILD_COMMAND, PropertyAuthority.None);
-        final String mavenExcludedScopes = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_SCOPES, PropertyAuthority.None);
-        final String mavenIncludedScopes = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_SCOPES, PropertyAuthority.None);
-        final String mavenExcludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_MODULES, PropertyAuthority.None);
-        final String mavenIncludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_MODULES, PropertyAuthority.None);
+        final String mavenBuildCommand = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_BUILD_COMMAND, PropertyAuthority.NONE);
+        final String mavenExcludedScopes = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_SCOPES, PropertyAuthority.NONE);
+        final String mavenIncludedScopes = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_SCOPES, PropertyAuthority.NONE);
+        final String mavenExcludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_MODULES, PropertyAuthority.NONE);
+        final String mavenIncludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_MODULES, PropertyAuthority.NONE);
         return new MavenCliExtractorOptions(mavenBuildCommand, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules);
     }
 
     public NpmCliExtractorOptions createNpmCliExtractorOptions() {
-        final boolean includeDevDependencies = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.None);
-        final String npmArguments = detectConfiguration.getProperty(DetectProperty.DETECT_NPM_ARGUMENTS, PropertyAuthority.None);
+        final boolean includeDevDependencies = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.NONE);
+        final String npmArguments = detectConfiguration.getProperty(DetectProperty.DETECT_NPM_ARGUMENTS, PropertyAuthority.NONE);
         return new NpmCliExtractorOptions(includeDevDependencies, npmArguments);
     }
 
     public NpmLockfileOptions createNpmLockfileOptions() {
-        final boolean includeDevDependencies = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.None);
+        final boolean includeDevDependencies = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.NONE);
         return new NpmLockfileOptions(includeDevDependencies);
     }
 
     public NpmPackageJsonParseDetectableOptions createNpmPackageJsonParseDetectableOptions() {
-        final boolean includeDevDependencies = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.None);
+        final boolean includeDevDependencies = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.NONE);
         return new NpmPackageJsonParseDetectableOptions(includeDevDependencies);
     }
 
     public PearCliDetectableOptions createPearCliDetectableOptions() {
-        final boolean onlyGatherRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PEAR_ONLY_REQUIRED_DEPS, PropertyAuthority.None);
+        final boolean onlyGatherRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PEAR_ONLY_REQUIRED_DEPS, PropertyAuthority.NONE);
         return new PearCliDetectableOptions(onlyGatherRequired);
     }
 
     public PipenvDetectableOptions createPipenvDetectableOptions() {
-        final String pipProjectName = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME, PropertyAuthority.None);
-        final String pipProjectVersionName = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_PROJECT_VERSION_NAME, PropertyAuthority.None);
+        final String pipProjectName = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME, PropertyAuthority.NONE);
+        final String pipProjectVersionName = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_PROJECT_VERSION_NAME, PropertyAuthority.NONE);
         return new PipenvDetectableOptions(pipProjectName, pipProjectVersionName);
     }
 
     public PipInspectorDetectableOptions createPipInspectorDetectableOptions() {
-        final String pipProjectName = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME, PropertyAuthority.None);
-        final String[] requirementsFilePath = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.None);
+        final String pipProjectName = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME, PropertyAuthority.NONE);
+        final String[] requirementsFilePath = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH, PropertyAuthority.NONE);
         return new PipInspectorDetectableOptions(pipProjectName, requirementsFilePath);
     }
 
     public GemspecParseDetectableOptions createGemspecParseDetectableOptions() {
-        final boolean includeRuntimeDependencies = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES, PropertyAuthority.None);
-        final boolean includeDevDeopendencies = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.None);
+        final boolean includeRuntimeDependencies = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES, PropertyAuthority.NONE);
+        final boolean includeDevDeopendencies = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES, PropertyAuthority.NONE);
         return new GemspecParseDetectableOptions(includeRuntimeDependencies, includeDevDeopendencies);
     }
 
     public SbtResolutionCacheDetectableOptions createSbtResolutionCacheDetectableOptions() {
-        final String includedConfigurations = detectConfiguration.getProperty(DetectProperty.DETECT_SBT_INCLUDED_CONFIGURATIONS, PropertyAuthority.None);
-        final String excludedConfigurations = detectConfiguration.getProperty(DetectProperty.DETECT_SBT_EXCLUDED_CONFIGURATIONS, PropertyAuthority.None);
-        final int reportDepth = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_SBT_REPORT_DEPTH, PropertyAuthority.None);
+        final String includedConfigurations = detectConfiguration.getProperty(DetectProperty.DETECT_SBT_INCLUDED_CONFIGURATIONS, PropertyAuthority.NONE);
+        final String excludedConfigurations = detectConfiguration.getProperty(DetectProperty.DETECT_SBT_EXCLUDED_CONFIGURATIONS, PropertyAuthority.NONE);
+        final int reportDepth = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_SBT_REPORT_DEPTH, PropertyAuthority.NONE);
         return new SbtResolutionCacheDetectableOptions(includedConfigurations, excludedConfigurations, reportDepth);
     }
 
     public YarnLockOptions createYarnLockOptions() {
-        final boolean useProductionOnly = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_YARN_PROD_ONLY, PropertyAuthority.None);
+        final boolean useProductionOnly = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_YARN_PROD_ONLY, PropertyAuthority.NONE);
         return new YarnLockOptions(useProductionOnly);
     }
 
     public NugetInspectorOptions createNugetInspectorOptions() {
-        final boolean ignoreFailures = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NUGET_IGNORE_FAILURE, PropertyAuthority.None);
-        final String excludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_EXCLUDED_MODULES, PropertyAuthority.None);
-        final String includedModules = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INCLUDED_MODULES, PropertyAuthority.None);
-        final String[] packagesRepoUrl = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL, PropertyAuthority.None);
-        final String nugetConfigPath = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH, PropertyAuthority.None);
+        final boolean ignoreFailures = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_NUGET_IGNORE_FAILURE, PropertyAuthority.NONE);
+        final String excludedModules = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_EXCLUDED_MODULES, PropertyAuthority.NONE);
+        final String includedModules = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INCLUDED_MODULES, PropertyAuthority.NONE);
+        final String[] packagesRepoUrl = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL, PropertyAuthority.NONE);
+        final String nugetConfigPath = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH, PropertyAuthority.NONE);
         return new NugetInspectorOptions(ignoreFailures, excludedModules, includedModules, packagesRepoUrl, nugetConfigPath);
     }
 
     public NugetLocatorOptions createNugetInstallerOptions() {
-        final String[] packagesRepoUrl = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL, PropertyAuthority.None);
-        final String nugetInspectorName = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME, PropertyAuthority.None);
-        final String nugetInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_VERSION, PropertyAuthority.None);
+        final String[] packagesRepoUrl = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL, PropertyAuthority.NONE);
+        final String nugetInspectorName = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME, PropertyAuthority.NONE);
+        final String nugetInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_VERSION, PropertyAuthority.NONE);
         return new NugetLocatorOptions(packagesRepoUrl, nugetInspectorName, nugetInspectorVersion);
     }
 
     public CachedExecutableResolverOptions createCachedExecutableResolverOptions() {
-        final boolean python3 = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PYTHON_PYTHON3, PropertyAuthority.None);
+        final boolean python3 = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PYTHON_PYTHON3, PropertyAuthority.NONE);
         return new CachedExecutableResolverOptions(python3);
     }
 }

@@ -23,14 +23,12 @@
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.type.OperatingSystemType;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -54,10 +52,10 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
 
     private boolean hasResolvedInspector;
     private NugetInspector resolvedNugetInspector;
-    private NugetInspectorLocator nugetInspectorLocator;
+    private final NugetInspectorLocator nugetInspectorLocator;
 
     public LocatorNugetInspectorResolver(final DetectExecutableResolver executableResolver, final ExecutableRunner executableRunner, final DetectInfo detectInfo,
-        final FileFinder fileFinder, String nugetInspectorName, String[] packagesRepoUrl, NugetInspectorLocator nugetInspectorLocator) {
+        final FileFinder fileFinder, final String nugetInspectorName, final String[] packagesRepoUrl, final NugetInspectorLocator nugetInspectorLocator) {
         this.executableResolver = executableResolver;
         this.executableRunner = executableRunner;
         this.detectInfo = detectInfo;
@@ -81,7 +79,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         }
     }
 
-    private NugetInspector install() throws DetectUserFriendlyException, IntegrationException, IOException {
+    private NugetInspector install() throws IntegrationException {
         //dotnet
         final File dotnetExecutable = executableResolver.resolveDotNet();
 

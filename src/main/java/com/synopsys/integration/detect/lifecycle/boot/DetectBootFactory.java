@@ -25,12 +25,10 @@ package com.synopsys.integration.detect.lifecycle.boot;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import com.synopsys.integration.detect.Application;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
-import com.synopsys.integration.util.IntegrationEscapeUtil;
+import com.synopsys.integration.detect.Application;
 
 import freemarker.template.Configuration;
 
@@ -57,13 +55,8 @@ public class DetectBootFactory {
         try {
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             return factory.newDocumentBuilder();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }
-
-    public IntegrationEscapeUtil createIntegrationEscapeUtil() {
-        return new IntegrationEscapeUtil();
-    }
-
 }

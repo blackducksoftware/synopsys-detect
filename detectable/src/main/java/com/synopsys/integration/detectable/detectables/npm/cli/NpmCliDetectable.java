@@ -23,10 +23,6 @@
 package com.synopsys.integration.detectable.detectables.npm.cli;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-
-import org.apache.commons.io.FileUtils;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -42,7 +38,6 @@ import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetecta
 import com.synopsys.integration.detectable.detectable.result.NpmRunInstallDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonDiscoverer;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
 public class NpmCliDetectable extends Detectable {
     public static final String NODE_MODULES = "node_modules";

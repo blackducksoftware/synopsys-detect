@@ -49,7 +49,7 @@ public class ProductDeciderTest {
     public void shouldRunBlackDuckOffline() throws DetectUserFriendlyException {
         File userHome = Mockito.mock(File.class);
         DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
-        Mockito.when(detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None)).thenReturn(true);
+        Mockito.when(detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.NONE)).thenReturn(true);
 
         ProductDecider productDecider = new ProductDecider();
         DetectToolFilter detectToolFilter = Mockito.mock(DetectToolFilter.class);
@@ -64,7 +64,7 @@ public class ProductDeciderTest {
     public void shouldRunBlackDuckOnline() throws DetectUserFriendlyException {
         File userHome = Mockito.mock(File.class);
         DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
-        Mockito.when(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None)).thenReturn("some-url");
+        Mockito.when(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.NONE)).thenReturn("some-url");
 
         ProductDecider productDecider = new ProductDecider();
         DetectToolFilter detectToolFilter = Mockito.mock(DetectToolFilter.class);
@@ -95,7 +95,7 @@ public class ProductDeciderTest {
         }
         DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
         Mockito.when(detectConfiguration.getProperties(Mockito.any())).thenReturn(keyMap);
-        Mockito.when(detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT, PropertyAuthority.None)).thenReturn(120);
+        Mockito.when(detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT, PropertyAuthority.NONE)).thenReturn(120);
 
         return detectConfiguration;
     }

@@ -30,24 +30,23 @@ import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
 import com.synopsys.integration.detect.workflow.profiling.Timing;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.base.DetectorType;
 
 public class ProfilingReporter {
     public void writeReport(final ReportWriter writer, final DetectorTimings detectorTimings) {
-        writer.writeSeperator();
+        writer.writeSeparator();
         writer.writeLine("Applicable Times");
-        writer.writeSeperator();
+        writer.writeSeparator();
         writeAggregateReport(writer, detectorTimings.getApplicableTimings());
-        writer.writeSeperator();
+        writer.writeSeparator();
         writer.writeLine("Extractable Times");
-        writer.writeSeperator();
+        writer.writeSeparator();
         writeReport(writer, detectorTimings.getExtractableTimings());
-        writer.writeSeperator();
+        writer.writeSeparator();
         writer.writeLine("Discovery Times");
-        writer.writeSeperator();
+        writer.writeSeparator();
         writeReport(writer, detectorTimings.getDiscoveryTimings());
         writer.writeLine("Extraction Times");
-        writer.writeSeperator();
+        writer.writeSeparator();
         writeReport(writer, detectorTimings.getExtractionTimings());
     }
 
@@ -62,8 +61,8 @@ public class ProfilingReporter {
             aggregated.put(name, aggregated.get(name) + detectorTime.getMs());
         }
 
-        for (final String key : aggregated.keySet()) {
-            writer.writeLine("\t" + padToLength(key, 30) + "\t" + aggregated.get(key));
+        for (final Map.Entry<String, Long> aggregatedEntry : aggregated.entrySet()) {
+            writer.writeLine("\t" + padToLength(aggregatedEntry.getKey(), 30) + "\t" + aggregatedEntry.getValue());
         }
     }
 

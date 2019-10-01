@@ -54,8 +54,6 @@ import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
-import freemarker.template.utility.StringUtil;
-
 public class DetectProjectService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -82,13 +80,13 @@ public class DetectProjectService {
         mapToParentProjectVersion(projectService, projectBomService, detectProjectServiceOptions.getParentProjectName(), detectProjectServiceOptions.getParentProjectVersion(), projectVersionWrapper);
 
         setApplicationId(projectVersionWrapper.getProjectView(), detectProjectServiceOptions.getApplicationId());
-        CustomFieldDocument customFieldDocument = detectProjectServiceOptions.getCustomFields();
+        final CustomFieldDocument customFieldDocument = detectProjectServiceOptions.getCustomFields();
         if (customFieldDocument != null && (customFieldDocument.getProject().size() > 0 || customFieldDocument.getVersion().size() > 0)) {
             logger.debug("Will update the following custom fields and values.");
-            for (CustomFieldElement element : customFieldDocument.getProject()) {
+            for (final CustomFieldElement element : customFieldDocument.getProject()) {
                 logger.debug(String.format("Project field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
             }
-            for (CustomFieldElement element : customFieldDocument.getVersion()) {
+            for (final CustomFieldElement element : customFieldDocument.getVersion()) {
                 logger.debug(String.format("Version field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
             }
 
@@ -105,7 +103,7 @@ public class DetectProjectService {
         return projectVersionWrapper;
     }
 
-    private void mapToParentProjectVersion(ProjectService projectService, ProjectBomService projectBomService, String parentProjectName, String parentVersionName, ProjectVersionWrapper projectVersionWrapper)
+    private void mapToParentProjectVersion(final ProjectService projectService, final ProjectBomService projectBomService, final String parentProjectName, final String parentVersionName, final ProjectVersionWrapper projectVersionWrapper)
         throws DetectUserFriendlyException {
         if (StringUtils.isNotBlank(parentProjectName) || StringUtils.isNotBlank(parentVersionName)) {
             logger.debug("Will attempt to add this project to a parent.");
@@ -113,15 +111,15 @@ public class DetectProjectService {
                 throw new DetectUserFriendlyException("Both the parent project name and the parent project version name must be specified if either is specified.", ExitCodeType.FAILURE_CONFIGURATION);
             }
             try {
-                Optional<ProjectVersionWrapper> parentWrapper = projectService.getProjectVersion(parentProjectName, parentVersionName);
+                final Optional<ProjectVersionWrapper> parentWrapper = projectService.getProjectVersion(parentProjectName, parentVersionName);
                 if (parentWrapper.isPresent()) {
-                    String componentLink = parentWrapper.get().getProjectVersionView().getFirstLink(ProjectVersionView.COMPONENTS_LINK).orElse(null);
-                    String projectLink = projectVersionWrapper.getProjectVersionView().getHref().get();
+                    final String componentLink = parentWrapper.get().getProjectVersionView().getFirstLink(ProjectVersionView.COMPONENTS_LINK).orElse(null);
+                    final String projectLink = projectVersionWrapper.getProjectVersionView().getHref().get(); // TODO: Why are we not doing an ifPresent() check?
                     projectBomService.addComponentToProjectVersion("application/json", componentLink, projectLink);
                 } else {
                     throw new DetectUserFriendlyException("Unable to find parent project or parent project version on the server.", ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
                 }
-            } catch (IntegrationException e) {
+            } catch (final IntegrationException e) {
                 throw new DetectUserFriendlyException("Unable to add project to parent.", e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
         }
@@ -144,14 +142,14 @@ public class DetectProjectService {
         if (tags == null) {
             return;
         }
-        List<String> validTags = Arrays.stream(tags).filter(StringUtils::isNotBlank).collect(Collectors.toList());
+        final List<String> validTags = Arrays.stream(tags).filter(StringUtils::isNotBlank).collect(Collectors.toList());
         if (validTags.size() > 0) {
-            List<TagView> currentTags = tagService.getAllTags(projectVersionWrapper.getProjectView());
+            final List<TagView> currentTags = tagService.getAllTags(projectVersionWrapper.getProjectView());
             for (final String tag : validTags) {
-                boolean currentTagExists = currentTags.stream().anyMatch(tagView -> tagView.getName().equalsIgnoreCase(tag));
+                final boolean currentTagExists = currentTags.stream().anyMatch(tagView -> tagView.getName().equalsIgnoreCase(tag));
                 if (!currentTagExists) {
                     logger.debug(String.format("Adding tag %s to project %s", tag, projectVersionWrapper.getProjectView().getName()));
-                    TagView tagView = new TagView();
+                    final TagView tagView = new TagView();
                     tagView.setName(tag);
                     tagService.createTag(projectVersionWrapper.getProjectView(), tagView);
                 } else {
@@ -222,11 +220,11 @@ public class DetectProjectService {
                                                                 .filter(cloneCategoryValue -> EnumUtils.isValidEnum(ProjectCloneCategoriesType.class, cloneCategoryValue))
                                                                 .map(ProjectCloneCategoriesType::valueOf)
                                                                 .collect(Collectors.toList());
-        logger.debug("Found clone categories:" + categories.stream().map(it -> it.toString()).collect(Collectors.joining(",")));
+        logger.debug("Found clone categories:" + categories.stream().map(Enum::toString).collect(Collectors.joining(",")));
         return categories;
     }
 
-    public Optional<String> findCloneUrl(String projectName) throws DetectUserFriendlyException {
+    public Optional<String> findCloneUrl(final String projectName) throws DetectUserFriendlyException {
         if (detectProjectServiceOptions.getCloneLatestProjectVersion()) {
             logger.debug("Cloning the most recent project version.");
             return findLatestProjectVersionCloneUrl(blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createProjectService(), projectName);
@@ -238,7 +236,7 @@ public class DetectProjectService {
         }
     }
 
-    public Optional<String> findNamedCloneUrl(final String cloneProjectName, String cloneProjectVersionName, final ProjectService projectService) throws DetectUserFriendlyException {
+    public Optional<String> findNamedCloneUrl(final String cloneProjectName, final String cloneProjectVersionName, final ProjectService projectService) throws DetectUserFriendlyException {
         try {
             final Optional<ProjectVersionWrapper> projectVersionWrapper = projectService.getProjectVersion(cloneProjectName, cloneProjectVersionName);
             if (projectVersionWrapper.isPresent()) {
@@ -252,12 +250,12 @@ public class DetectProjectService {
         }
     }
 
-    public Optional<String> findLatestProjectVersionCloneUrl(BlackDuckService blackDuckService, ProjectService projectService, String projectName) throws DetectUserFriendlyException {
+    public Optional<String> findLatestProjectVersionCloneUrl(final BlackDuckService blackDuckService, final ProjectService projectService, final String projectName) throws DetectUserFriendlyException {
         try {
-            Optional<ProjectView> projectView = projectService.getProjectByName(projectName);
+            final Optional<ProjectView> projectView = projectService.getProjectByName(projectName);
             if (projectView.isPresent()) {
-                List<ProjectVersionView> projectVersionViews = blackDuckService.getAllResponses(projectView.get(), ProjectView.VERSIONS_LINK_RESPONSE);
-                if (projectVersionViews.size() == 0) {
+                final List<ProjectVersionView> projectVersionViews = blackDuckService.getAllResponses(projectView.get(), ProjectView.VERSIONS_LINK_RESPONSE);
+                if (projectVersionViews.isEmpty()) {
                     logger.warn("Could not find an existing project version to clone from. Ensure the project exists when using the latest clone flag.");
                     return Optional.empty();
                 } else {
@@ -270,7 +268,7 @@ public class DetectProjectService {
                 return Optional.empty();
             }
         } catch (final IntegrationException e) {
-            throw new DetectUserFriendlyException(String.format("Error finding latest version to clone, or getting its release url."), e, ExitCodeType.FAILURE_CONFIGURATION);
+            throw new DetectUserFriendlyException("Error finding latest version to clone, or getting its release url.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
 

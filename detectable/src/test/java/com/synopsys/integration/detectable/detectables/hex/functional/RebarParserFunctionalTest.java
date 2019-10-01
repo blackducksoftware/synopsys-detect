@@ -49,7 +49,7 @@ public class RebarParserFunctionalTest {
         expectedGraph.addChildWithParents(gitOuterChildDependency, gitOuterParentDependency);
 
         final List<String> dependencyTreeOutput = FunctionalTestFiles.asListOfStrings("/hex/dependency-tree.txt");
-        final RebarParseResult result = rebar3TreeParser.parseRebarTreeOutput(dependencyTreeOutput, "");
+        final RebarParseResult result = rebar3TreeParser.parseRebarTreeOutput(dependencyTreeOutput);
         final CodeLocation codeLocation = result.getCodeLocation();
         final DependencyGraph actualGraph = codeLocation.getDependencyGraph();
 

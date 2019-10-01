@@ -68,14 +68,14 @@ public class NugetInspectorParserTest {
         final NugetInspectorParser packager = new NugetInspectorParser(gson, externalIdFactory);
         final NugetParseResult result = packager.createCodeLocation(dependencyNodeFile);
 
-        for (final CodeLocation codeLocation : result.codeLocations) {
+        for (final CodeLocation codeLocation : result.getCodeLocations()) {
             final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
             final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
 
             final DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
 
             final BdioExternalIdentifier projectId = bdioPropertyHelper.createExternalIdentifier(codeLocation.getExternalId().get());
-            final BdioProject project = bdioNodeFactory.createProject(result.projectName, result.projectVersion, BdioId.createFromPieces(Forge.NUGET.toString()), projectId);
+            final BdioProject project = bdioNodeFactory.createProject(result.getProjectName(), result.getProjectVersion(), BdioId.createFromPieces(Forge.NUGET.toString()), projectId);
 
             final Map<ExternalId, BdioNode> components = new HashMap<>();
             components.put(codeLocation.getExternalId().get(), project);
@@ -93,7 +93,7 @@ public class NugetInspectorParserTest {
         final NugetParseResult result = packager.createCodeLocation(dependencyNodeFile);
 
         for (int i = 0; i < expectedOutputFiles.size(); i++) {
-            final CodeLocation codeLocation = result.codeLocations.get(i);
+            final CodeLocation codeLocation = result.getCodeLocations().get(i);
             final String expectedOutputFile = expectedOutputFiles.get(i);
 
             GraphCompare.assertEqualsResource(expectedOutputFile, codeLocation.getDependencyGraph());

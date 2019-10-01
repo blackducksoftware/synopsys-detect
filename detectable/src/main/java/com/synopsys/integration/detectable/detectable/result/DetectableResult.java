@@ -22,8 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectable.result;
 
-public abstract class DetectableResult {
-    public abstract boolean getPassed();
+public interface DetectableResult {
+    boolean getPassed();
 
-    public abstract String toDescription();
+    String toDescription();
 }

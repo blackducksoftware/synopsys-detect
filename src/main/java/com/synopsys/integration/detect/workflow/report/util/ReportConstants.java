@@ -25,9 +25,9 @@ package com.synopsys.integration.detect.workflow.report.util;
 import org.apache.commons.lang3.StringUtils;
 
 public class ReportConstants {
-    public static String RUN_SEPARATOR = "----------------------------------";
-    public static String HEADING = "======================================================================================================";
-    public static String SEPERATOR = "------------------------------------------------------------------------------------------------------";
-    public static String ERROR_SEPERATOR = StringUtils.repeat("=", 60);
+    public static final String RUN_SEPARATOR = "----------------------------------";
+    public static final String HEADING = "======================================================================================================";
+    public static final String SEPERATOR = "------------------------------------------------------------------------------------------------------";
+    public static final String ERROR_SEPERATOR = StringUtils.repeat("=", 60);
 
 }

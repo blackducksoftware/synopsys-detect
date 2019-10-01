@@ -25,7 +25,6 @@ package com.synopsys.integration.detect.workflow.airgap;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -37,21 +36,10 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
 import com.synopsys.integration.detect.util.filter.DetectFilter;
-import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
-import com.synopsys.integration.detect.workflow.status.DetectResult;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
-import com.synopsys.integration.exception.IntegrationException;
-
-import freemarker.template.utility.StringUtil;
 
 public class AirGapCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -72,7 +60,7 @@ public class AirGapCreator {
         this.dockerAirGapCreator = dockerAirGapCreator;
     }
 
-    public File createAirGapZip(DetectFilter inspectorFilter, File outputPath, String airGapSuffix) throws DetectUserFriendlyException {
+    public File createAirGapZip(final DetectFilter inspectorFilter, final File outputPath, final String airGapSuffix) throws DetectUserFriendlyException {
         try {
             logger.info("");
             logger.info(ReportConstants.RUN_SEPARATOR);
@@ -85,7 +73,7 @@ public class AirGapCreator {
             logger.info(ReportConstants.RUN_SEPARATOR);
             logger.info("");
 
-            File detectJar = airGapPathFinder.findDetectJar();
+            final File detectJar = airGapPathFinder.findDetectJar();
             if (detectJar == null) {
                 throw new DetectUserFriendlyException("To create an air gap zip, Detect must be run from a jar and be able to find that jar. Detect was unable to find it's own jar.", ExitCodeType.FAILURE_CONFIGURATION);
             }
@@ -93,13 +81,13 @@ public class AirGapCreator {
 
             logger.info("Creating zip at location: " + outputPath);
 
-            String basename = FilenameUtils.removeExtension(detectJar.getName());
+            final String basename = FilenameUtils.removeExtension(detectJar.getName());
             String airGapName = basename + "-air-gap";
             if (StringUtils.isNotBlank(airGapSuffix)) {
                 airGapName = airGapName + "-" + airGapSuffix.toLowerCase();
             }
-            File target = new File(outputPath, airGapName + ".zip");
-            File installFolder = new File(outputPath, basename);
+            final File target = new File(outputPath, airGapName + ".zip");
+            final File installFolder = new File(outputPath, basename);
 
             logger.info("Will build the zip in the following folder: " + installFolder.getCanonicalPath());
 
@@ -116,25 +104,25 @@ public class AirGapCreator {
             FileUtils.deleteDirectory(installFolder);
 
             logger.info(ReportConstants.RUN_SEPARATOR);
-            String result = target.getCanonicalPath();
+            final String result = target.getCanonicalPath();
             logger.info("Successfully created air gap zip: " + result);
             logger.info(ReportConstants.RUN_SEPARATOR);
 
             eventSystem.publishEvent(Event.ResultProduced, () -> "Detect Air Gap Zip: " + result);
             return target;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new DetectUserFriendlyException("Failed to create detect air gap zip.", e, ExitCodeType.FAILURE_UNKNOWN_ERROR);
         }
     }
 
-    public void installAllAirGapDependencies(File zipFolder, DetectFilter inspectorFilter) throws DetectUserFriendlyException {
+    public void installAllAirGapDependencies(final File zipFolder, final DetectFilter inspectorFilter) throws DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
 
         if (inspectorFilter.shouldInclude(AirGapInspectors.GRADLE.name())) {
             logger.info("Will include GRADLE inspector.");
             logger.info("Installing gradle dependencies.");
-            File gradleTemp = airGapPathFinder.createRelativePackagedInspectorsFile(zipFolder, AirGapPathFinder.GRADLE + "-temp");
-            File gradleTarget = airGapPathFinder.createRelativePackagedInspectorsFile(zipFolder, AirGapPathFinder.GRADLE);
+            final File gradleTemp = airGapPathFinder.createRelativePackagedInspectorsFile(zipFolder, AirGapPathFinder.GRADLE + "-temp");
+            final File gradleTarget = airGapPathFinder.createRelativePackagedInspectorsFile(zipFolder, AirGapPathFinder.GRADLE);
             gradleAirGapCreator.installGradleDependencies(gradleTemp, gradleTarget);
         } else {
             logger.info("Will NOT include GRADLE inspector.");
@@ -145,7 +133,7 @@ public class AirGapCreator {
         if (inspectorFilter.shouldInclude(AirGapInspectors.NUGET.name())) {
             logger.info("Will include NUGET inspector.");
             logger.info("Installing nuget dependencies.");
-            File nugetFolder = airGapPathFinder.createRelativePackagedInspectorsFile(zipFolder, AirGapPathFinder.NUGET);
+            final File nugetFolder = airGapPathFinder.createRelativePackagedInspectorsFile(zipFolder, AirGapPathFinder.NUGET);
             nugetAirGapCreator.installNugetDependencies(nugetFolder);
         } else {
             logger.info("Will NOT include NUGET inspector.");
@@ -156,7 +144,7 @@ public class AirGapCreator {
         if (inspectorFilter.shouldInclude(AirGapInspectors.DOCKER.name())) {
             logger.info("Will include DOCKER inspector.");
             logger.info("Installing docker dependencies.");
-            File dockerFolder = airGapPathFinder.createRelativePackagedInspectorsFile(zipFolder, AirGapPathFinder.DOCKER);
+            final File dockerFolder = airGapPathFinder.createRelativePackagedInspectorsFile(zipFolder, AirGapPathFinder.DOCKER);
             dockerAirGapCreator.installDockerDependencies(dockerFolder);
         } else {
             logger.info("Will NOT include DOCKER inspector.");

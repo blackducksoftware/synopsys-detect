@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck;
 
-import java.util.List;
-
 import com.synopsys.integration.blackduck.api.core.BlackDuckView;
 
 public class CustomFieldOptionView extends BlackDuckView {

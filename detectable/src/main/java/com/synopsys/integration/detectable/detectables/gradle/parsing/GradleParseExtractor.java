@@ -39,7 +39,7 @@ public class GradleParseExtractor {
         this.buildGradleParser = buildGradleParser;
     }
 
-    public Extraction extract(File buildFile) {
+    public Extraction extract(final File buildFile) {
         try (final InputStream buildFileInputStream = new FileInputStream(buildFile)) {
             final Optional<DependencyGraph> dependencyGraph = buildGradleParser.parse(buildFileInputStream);
 
@@ -47,7 +47,7 @@ public class GradleParseExtractor {
                 final CodeLocation codeLocation = new CodeLocation(dependencyGraph.get());
                 return new Extraction.Builder().success(codeLocation).build();
             } else {
-                return new Extraction.Builder().failure(String.format("Failed to extract dependencies.")).build();
+                return new Extraction.Builder().failure("Failed to extract dependencies.").build();
             }
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

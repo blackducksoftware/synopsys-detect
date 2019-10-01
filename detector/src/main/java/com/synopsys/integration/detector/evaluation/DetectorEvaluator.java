@@ -84,7 +84,7 @@ public class DetectorEvaluator {
                 final Detectable detectable = detectorRule.createDetectable(detectableEnvironment);
                 detectorEvaluation.setDetectable(detectable);
 
-                DetectableResult applicable = detectable.applicable();
+                final DetectableResult applicable = detectable.applicable();
                 final DetectorResult applicableResult = new DetectorResult(applicable.getPassed(), applicable.toDescription());
                 detectorEvaluation.setApplicable(applicableResult);
 
@@ -126,12 +126,12 @@ public class DetectorEvaluator {
 
                 logger.trace("Checking to see if this detector is a fallback detector.");
                 DetectableResult detectableExtractableResult = null;
-                Optional<DetectorRule> fallbackFrom = detectorEvaluationTree.getDetectorRuleSet().getFallbackFrom(detectorEvaluation.getDetectorRule());
+                final Optional<DetectorRule> fallbackFrom = detectorEvaluationTree.getDetectorRuleSet().getFallbackFrom(detectorEvaluation.getDetectorRule());
                 if (fallbackFrom.isPresent()) {
-                    Optional<DetectorEvaluation> fallbackEvaluationOptional = detectorEvaluationTree.getEvaluation(fallbackFrom.get());
+                    final Optional<DetectorEvaluation> fallbackEvaluationOptional = detectorEvaluationTree.getEvaluation(fallbackFrom.get());
 
                     if (fallbackEvaluationOptional.isPresent()) {
-                        DetectorEvaluation fallbackEvaluation = fallbackEvaluationOptional.get();
+                        final DetectorEvaluation fallbackEvaluation = fallbackEvaluationOptional.get();
                         fallbackEvaluation.setFallbackTo(detectorEvaluation);
                         detectorEvaluation.setFallbackFrom(fallbackEvaluation);
 
@@ -180,7 +180,7 @@ public class DetectorEvaluator {
         }
     }
 
-    public void discoveryEvaluation(final DetectorEvaluationTree detectorEvaluationTree, DiscoveryFilter discoveryFilter) {
+    public void discoveryEvaluation(final DetectorEvaluationTree detectorEvaluationTree, final DiscoveryFilter discoveryFilter) {
         logger.trace("Project discovery started.");
 
         logger.trace("Determining discoverable detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
@@ -196,7 +196,7 @@ public class DetectorEvaluator {
                     try {
                         final Discovery discovery = detectable.discover(detectorEvaluation.getExtractionEnvironment());
                         detectorEvaluation.setDiscovery(discovery);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         detectorEvaluation.setDiscovery(new Discovery.Builder().exception(e).build());
                     }
                 } else {
@@ -224,7 +224,7 @@ public class DetectorEvaluator {
 
                 getDetectorEvaluatorListener().ifPresent(it -> it.extractionStarted(detectorEvaluation));
 
-                Discovery discovery = detectorEvaluation.getDiscovery();
+                final Discovery discovery = detectorEvaluation.getDiscovery();
                 if (discovery != null && discovery.getExtraction() != null) {
                     logger.debug("Extraction already completed during project discovery.");
                     detectorEvaluation.setExtraction(discovery.getExtraction());
@@ -232,7 +232,7 @@ public class DetectorEvaluator {
                     try {
                         final Extraction extraction = detectable.extract(detectorEvaluation.getExtractionEnvironment());
                         detectorEvaluation.setExtraction(extraction);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         detectorEvaluation.setExtraction(new Extraction.Builder().exception(e).build());
                     }
                 }

@@ -31,8 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -48,7 +46,7 @@ public class GoVendorExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(final File directory, final File vendorJsonFile) {
+    public Extraction extract(final File vendorJsonFile) {
         try {
             final GoVendorJsonParser vendorJsonParser = new GoVendorJsonParser(externalIdFactory);
             final String vendorJsonContents = FileUtils.readFileToString(vendorJsonFile, StandardCharsets.UTF_8);

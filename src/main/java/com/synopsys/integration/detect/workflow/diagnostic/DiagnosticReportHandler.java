@@ -93,9 +93,9 @@ public class DiagnosticReportHandler {
         this.runId = runId;
         createReports();
 
-        eventSystem.registerListener(Event.DetectorsComplete, event -> completedBomToolEvaluations(event));
+        eventSystem.registerListener(Event.DetectorsComplete, this::completedBomToolEvaluations);
         eventSystem.registerListener(Event.CodeLocationsCalculated, event -> completedCodeLocations(event.getCodeLocationNames()));
-        eventSystem.registerListener(Event.DetectorsProfiled, event -> detectorsProfiled(event));
+        eventSystem.registerListener(Event.DetectorsProfiled, this::detectorsProfiled);
     }
 
     public void finish() {

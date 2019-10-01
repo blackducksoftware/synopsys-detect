@@ -23,7 +23,6 @@
 package com.synopsys.integration.detect.workflow.phonehome;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,11 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
-import com.synopsys.integration.detector.base.DetectorEvaluationTree;
-import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.phonehome.PhoneHomeResponse;
 
 public abstract class PhoneHomeManager {
@@ -47,12 +44,12 @@ public abstract class PhoneHomeManager {
     protected PhoneHomeResponse currentPhoneHomeResponse;
     protected Map<String, String> additionalMetaData;
 
-    public PhoneHomeManager(Map<String, String> additionalMetaData, final DetectInfo detectInfo, EventSystem eventSystem) {
+    public PhoneHomeManager(final Map<String, String> additionalMetaData, final DetectInfo detectInfo, final EventSystem eventSystem) {
         this.detectInfo = detectInfo;
         this.eventSystem = eventSystem;
         this.additionalMetaData = additionalMetaData;
 
-        eventSystem.registerListener(Event.ApplicableCompleted, event -> startPhoneHome(event));
+        eventSystem.registerListener(Event.ApplicableCompleted, this::startPhoneHome);
         eventSystem.registerListener(Event.DetectorsProfiled, event -> startPhoneHome(event.getAggregateTimings()));
     }
 

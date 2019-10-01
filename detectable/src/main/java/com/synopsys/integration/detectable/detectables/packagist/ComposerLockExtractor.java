@@ -41,7 +41,7 @@ public class ComposerLockExtractor {
         this.packagistParser = packagistParser;
     }
 
-    public Extraction extract(final File directory, final File composerJson, final File composerLock) {
+    public Extraction extract(final File composerJson, final File composerLock) {
         try {
             final String composerJsonText = FileUtils.readFileToString(composerJson, StandardCharsets.UTF_8);
             final String composerLockText = FileUtils.readFileToString(composerLock, StandardCharsets.UTF_8);
@@ -49,7 +49,7 @@ public class ComposerLockExtractor {
             logger.debug(composerJsonText);
             logger.debug(composerLockText);
 
-            final PackagistParseResult result = packagistParser.getDependencyGraphFromProject(directory.toString(), composerJsonText, composerLockText);
+            final PackagistParseResult result = packagistParser.getDependencyGraphFromProject(composerJsonText, composerLockText);
 
             return new Extraction.Builder()
                        .success(result.getCodeLocation())

@@ -23,15 +23,10 @@
 package com.synopsys.integration.detect.workflow.diagnostic;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.io.output.TeeOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,13 +36,9 @@ import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.classic.filter.LevelFilter;
 import ch.qos.logback.classic.filter.ThresholdFilter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.FileAppender;
 
 public class DiagnosticLogSystem {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -103,11 +94,11 @@ public class DiagnosticLogSystem {
         }
     }
 
-    private void restrictConsoleToDebug(){
-        for (Iterator<Appender<ILoggingEvent>> it = DiagnosticLogUtil.getRootLogger().iteratorForAppenders(); it.hasNext(); ) {
+    private void restrictConsoleToDebug() {
+        for (final Iterator<Appender<ILoggingEvent>> it = DiagnosticLogUtil.getRootLogger().iteratorForAppenders(); it.hasNext(); ) {
             final Appender appender = it.next();
-            if (appender.getName() != null && appender.getName().equals("CONSOLE")){
-                ThresholdFilter levelFilter = new ThresholdFilter();
+            if (appender.getName() != null && appender.getName().equals("CONSOLE")) {
+                final ThresholdFilter levelFilter = new ThresholdFilter();
                 levelFilter.setLevel(Level.DEBUG.levelStr);
                 levelFilter.start();
                 appender.addFilter(levelFilter);
@@ -115,27 +106,27 @@ public class DiagnosticLogSystem {
         }
     }
 
-    private File logFileNamed(String name){
+    private File logFileNamed(final String name) {
         return new File(logDirectory, name + ".txt");
     }
 
     public void finish() {
         diagnosticSysOutCapture.stopCapture();
-        for (DiagnosticLogger logger : loggers){
-            logger.stopLogging();
+        for (final DiagnosticLogger diagnosticLogger : loggers) {
+            diagnosticLogger.stopLogging();
         }
     }
 
-    private void addLogger(Level level) {
-        File logFile = logFileNamed(level.levelStr.toLowerCase());
-        DiagnosticLogger logger = new DiagnosticLogger(logFile, level);
-        loggers.add(logger);
-        logger.startLogging();
+    private void addLogger(final Level level) {
+        final File logFile = logFileNamed(level.levelStr.toLowerCase());
+        final DiagnosticLogger diagnosticLogger = new DiagnosticLogger(logFile, level);
+        loggers.add(diagnosticLogger);
+        diagnosticLogger.startLogging();
     }
 
-    private void addLoggers(Level... levels) {
-        for (Level level : levels){
-            addLogger(level );
+    private void addLoggers(final Level... levels) {
+        for (final Level level : levels) {
+            addLogger(level);
         }
     }
 }

@@ -82,10 +82,6 @@ public class SimpleExecutableResolver
         }
     }
 
-    private File findLocalOrSystem(final String name, final DetectableEnvironment environment) {
-        return findLocalOrSystem(name, name, environment);
-    }
-
     @Override
     public File resolveGradle(final DetectableEnvironment environment) {
         return findLocalOrSystem("gradlew", "gradle", environment);
@@ -155,8 +151,7 @@ public class SimpleExecutableResolver
 
     @Override
     public File resolveBazel() {
-        final File bazel = findCachedSystem("bazel");
-        return bazel;
+        return findCachedSystem("bazel");
     }
 
     @Override

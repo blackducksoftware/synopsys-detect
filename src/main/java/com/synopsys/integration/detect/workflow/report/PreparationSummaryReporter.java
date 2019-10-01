@@ -24,7 +24,6 @@ package com.synopsys.integration.detect.workflow.report;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
@@ -40,20 +39,20 @@ public class PreparationSummaryReporter {
     }
 
     private void writeSummary(final ReportWriter writer, final List<DetectorEvaluationTree> detectorEvaluationTrees) {
-        List<String> lines = new ArrayList<>();
+        final List<String> lines = new ArrayList<>();
         for (final DetectorEvaluationTree detectorEvaluationTree : detectorEvaluationTrees) {
-            List<DetectorEvaluation> applicable = DetectorEvaluationUtils.applicableChildren(detectorEvaluationTree);
-            List<DetectorEvaluation> ready = applicable.stream().filter(it -> it.isExtractable()).collect(Collectors.toList());
-            List<DetectorEvaluation> not_extractable = applicable.stream().filter(it -> !it.isExtractable()).collect(Collectors.toList());
-            List<DetectorEvaluation> failed_no_fallback = not_extractable.stream().filter(it -> !it.isFallbackExtractable()).collect(Collectors.toList());
-            List<DetectorEvaluation> failed_with_fallback = not_extractable.stream().filter(it -> it.isFallbackExtractable()).collect(Collectors.toList());
+            final List<DetectorEvaluation> applicable = DetectorEvaluationUtils.applicableChildren(detectorEvaluationTree);
+            final List<DetectorEvaluation> ready = applicable.stream().filter(DetectorEvaluation::isExtractable).collect(Collectors.toList());
+            final List<DetectorEvaluation> notExtractable = applicable.stream().filter(it -> !it.isExtractable()).collect(Collectors.toList());
+            final List<DetectorEvaluation> failedNoFallback = notExtractable.stream().filter(it -> !it.isFallbackExtractable()).collect(Collectors.toList());
+            final List<DetectorEvaluation> failedWithFallback = notExtractable.stream().filter(DetectorEvaluation::isFallbackExtractable).collect(Collectors.toList());
 
-            List<DetectorEvaluation> skipped_fallbacks = ready.stream().flatMap(it -> it.getFallbacks().stream()).collect(Collectors.toList());
-            List<DetectorEvaluation> failed_not_skipped = failed_no_fallback.stream()
-                                                              .filter(it -> !skipped_fallbacks.contains(it))
-                                                              .collect(Collectors.toList());
+            final List<DetectorEvaluation> skippedFallbacks = ready.stream().flatMap(it -> it.getFallbacks().stream()).collect(Collectors.toList());
+            final List<DetectorEvaluation> failedNotSkipped = failedNoFallback.stream()
+                                                                  .filter(it -> !skippedFallbacks.contains(it))
+                                                                  .collect(Collectors.toList());
 
-            if (ready.size() > 0 || not_extractable.size() > 0) {
+            if (ready.size() > 0 || notExtractable.size() > 0) {
                 lines.add(detectorEvaluationTree.getDirectory().toString());
                 if (ready.size() > 0) {
                     lines.add("\t    READY: " + ready.stream()
@@ -61,20 +60,20 @@ public class PreparationSummaryReporter {
                                                     .sorted()
                                                     .collect(Collectors.joining(", ")));
                 }
-                if (failed_with_fallback.size() > 0) {
-                    lines.addAll(failed_with_fallback.stream()
+                if (failedWithFallback.size() > 0) {
+                    lines.addAll(failedWithFallback.stream()
                                      .map(it -> "\t FALLBACK: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
                                      .sorted()
                                      .collect(Collectors.toList()));
                 }
-                if (failed_not_skipped.size() > 0) {
-                    lines.addAll(failed_not_skipped.stream()
+                if (failedNotSkipped.size() > 0) {
+                    lines.addAll(failedNotSkipped.stream()
                                      .map(it -> "\t   FAILED: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
                                      .sorted()
                                      .collect(Collectors.toList()));
                 }
-                if (skipped_fallbacks.size() > 0) {
-                    lines.addAll(skipped_fallbacks.stream()
+                if (skippedFallbacks.size() > 0) {
+                    lines.addAll(skippedFallbacks.stream()
                                      .map(it -> "\t  SKIPPED: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
                                      .sorted()
                                      .collect(Collectors.toList()));

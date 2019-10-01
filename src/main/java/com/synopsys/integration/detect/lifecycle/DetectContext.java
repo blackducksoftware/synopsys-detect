@@ -28,36 +28,36 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.synopsys.integration.detect.workflow.DetectRun;
 
 public class DetectContext {
-    AnnotationConfigApplicationContext springContext;
-    ConfigurableListableBeanFactory beanFactory;
+    private final AnnotationConfigApplicationContext springContext;
+    private final ConfigurableListableBeanFactory beanFactory;
 
     private boolean lock = false;
 
-    public DetectContext(DetectRun detectRun) {
+    public DetectContext(final DetectRun detectRun) {
         //Detect context is currently actually backed by Spring.
         springContext = new AnnotationConfigApplicationContext();
         springContext.setDisplayName("Detect Context " + detectRun.getRunId());
         beanFactory = springContext.getBeanFactory();
     }
 
-    public void registerConfiguration(Class configuration) {
+    public void registerConfiguration(final Class configuration) {
         checkLock();
         springContext.register(configuration);
 
     }
 
-    public <T> T registerBean(T singleton) {
+    public <T> T registerBean(final T singleton) {
         checkLock();
         //register and return the registered object as a convenience
         beanFactory.registerSingleton(singleton.getClass().getSimpleName(), singleton);
         return singleton;
     }
 
-    public <T> T getBean(Class<T> beanClass) {
+    public <T> T getBean(final Class<T> beanClass) {
         return beanFactory.getBean(beanClass);
     }
 
-    public <T> T getBean(Class<T> beanClass, Object... args) {
+    public <T> T getBean(final Class<T> beanClass, final Object... args) {
         return beanFactory.getBean(beanClass, args);
     }
 

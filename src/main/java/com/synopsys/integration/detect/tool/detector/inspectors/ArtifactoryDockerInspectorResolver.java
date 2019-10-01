@@ -34,8 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.workflow.ArtifactResolver;
-import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -51,7 +49,7 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final static String DOCKER_SHARED_DIRECTORY_NAME = "docker";
+    private static final String DOCKER_SHARED_DIRECTORY_NAME = "docker";
 
     private final DirectoryManager directoryManager;
     private final AirGapInspectorPaths airGapInspectorPaths;
@@ -139,7 +137,7 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
         logger.debug(String.format("Checking for air gap docker inspector jar file in: %s", airGapDirPath));
         try {
             final List<File> possibleJars = fileFinder.findFiles(airGapDirPath.get(), "*.jar", 1);
-            if (possibleJars == null || possibleJars.size() == 0) {
+            if (possibleJars == null || possibleJars.isEmpty()) {
                 logger.error("Unable to locate air gap jar.");
                 return Optional.empty();
             } else {

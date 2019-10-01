@@ -35,7 +35,6 @@ import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
@@ -51,7 +50,7 @@ public class ProductDecider {
         polarisServerConfigBuilder.setLogger(new SilentIntLogger());
         polarisServerConfigBuilder.setProperties(polarisProperties.entrySet());
         polarisServerConfigBuilder.setUserHome(userHome.getAbsolutePath());
-        polarisServerConfigBuilder.setTimeoutInSeconds(detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT, PropertyAuthority.None));
+        polarisServerConfigBuilder.setTimeoutInSeconds(detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT, PropertyAuthority.NONE));
         return polarisServerConfigBuilder;
     }
 
@@ -65,7 +64,7 @@ public class ProductDecider {
         final boolean polarisCanRun = builderStatus.isValid();
 
         if (!polarisCanRun) {
-            final String polarisUrl = detectConfiguration.getProperty(DetectProperty.POLARIS_URL, PropertyAuthority.None);
+            final String polarisUrl = detectConfiguration.getProperty(DetectProperty.POLARIS_URL, PropertyAuthority.NONE);
             if (StringUtils.isBlank(polarisUrl)) {
                 logger.debug("Polaris will NOT run: The Polaris url must be provided.");
             } else {
@@ -78,9 +77,9 @@ public class ProductDecider {
         }
     }
 
-    public BlackDuckDecision determineBlackDuck(final DetectConfiguration detectConfiguration) {
-        final boolean offline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.None);
-        final String blackDuckUrl = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.None);
+    private BlackDuckDecision determineBlackDuck(final DetectConfiguration detectConfiguration) {
+        final boolean offline = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_OFFLINE_MODE, PropertyAuthority.NONE);
+        final String blackDuckUrl = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.NONE);
         if (offline) {
             logger.debug("Black Duck will run: Black Duck offline mode was set to true.");
             return BlackDuckDecision.runOffline();
@@ -93,7 +92,7 @@ public class ProductDecider {
         }
     }
 
-    public ProductDecision decide(final DetectConfiguration detectConfiguration, final File userHome, final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
+    public ProductDecision decide(final DetectConfiguration detectConfiguration, final File userHome, final DetectToolFilter detectToolFilter) {
         return new ProductDecision(determineBlackDuck(detectConfiguration), determinePolaris(detectConfiguration, userHome, detectToolFilter));
     }
 

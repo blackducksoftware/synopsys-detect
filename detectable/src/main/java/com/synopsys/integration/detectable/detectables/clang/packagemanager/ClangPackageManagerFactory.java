@@ -25,9 +25,6 @@ package com.synopsys.integration.detectable.detectables.clang.packagemanager;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.Gson;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.ApkArchitectureResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.ApkPackageManagerResolver;
@@ -36,10 +33,9 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.reso
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.RpmPackageManagerResolver;
 
 public class ClangPackageManagerFactory {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final ClangPackageManagerInfoFactory packageManagerInfoFactory;
-    public ClangPackageManagerFactory(final ClangPackageManagerInfoFactory packageManagerInfoFactory){
+
+    public ClangPackageManagerFactory(final ClangPackageManagerInfoFactory packageManagerInfoFactory) {
         this.packageManagerInfoFactory = packageManagerInfoFactory;
     }
 
@@ -48,7 +44,7 @@ public class ClangPackageManagerFactory {
     }
 
     public List<ClangPackageManager> createPackageManagers() {
-        List<ClangPackageManager> packageManagers = new ArrayList<>();
+        final List<ClangPackageManager> packageManagers = new ArrayList<>();
 
         packageManagers.add(new ClangPackageManager(packageManagerInfoFactory.apk(), new ApkPackageManagerResolver(new ApkArchitectureResolver())));
         packageManagers.add(new ClangPackageManager(packageManagerInfoFactory.dpkg(), new DpkgPackageManagerResolver(new DpkgVersionResolver())));
@@ -56,6 +52,5 @@ public class ClangPackageManagerFactory {
 
         return packageManagers;
     }
-
 
 }

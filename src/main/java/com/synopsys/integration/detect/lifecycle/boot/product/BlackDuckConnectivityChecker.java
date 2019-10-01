@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.generated.component.AssignedUserGroup;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.response.CurrentVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.RoleAssignmentView;
@@ -44,7 +43,6 @@ import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
-import com.synopsys.integration.polaris.common.service.RoleAssignmentService;
 
 public class BlackDuckConnectivityChecker {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -76,10 +74,10 @@ public class BlackDuckConnectivityChecker {
             logger.debug("Connected as: " + userView.getUserName());
 
             final UserGroupService userGroupService = blackDuckServicesFactory.createUserGroupService();
-            List<RoleAssignmentView> response = userGroupService.getRolesForUser(userView);
+            final List<RoleAssignmentView> response = userGroupService.getRolesForUser(userView);
             logger.debug("Roles: " + response.stream().map(RoleAssignmentView::getName).distinct().collect(Collectors.joining(", ")));
 
-            List<UserGroupView> groups = blackDuckService.getAllResponses(userView.getFirstLink("usergroups").get(), UserGroupView.class);
+            final List<UserGroupView> groups = blackDuckService.getAllResponses(userView.getFirstLink("usergroups").get(), UserGroupView.class);
             logger.debug("Group: " + groups.stream().map(UserGroupView::getName).distinct().collect(Collectors.joining(", ")));
 
         } catch (final IntegrationException e) {

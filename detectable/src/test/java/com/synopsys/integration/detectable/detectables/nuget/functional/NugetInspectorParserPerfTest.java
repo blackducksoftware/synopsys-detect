@@ -2,7 +2,6 @@ package com.synopsys.integration.detectable.detectables.nuget.functional;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +35,7 @@ public class NugetInspectorParserPerfTest {
         final NugetInspectorParser packager = new NugetInspectorParser(gson, externalIdFactory);
 
         final NugetParseResult result = packager.createCodeLocation(dependencyGraphFile);
-        final CodeLocation codeLocation = result.codeLocations.get(0);
+        final CodeLocation codeLocation = result.getCodeLocations().get(0);
 
         final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
         final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);

@@ -55,7 +55,7 @@ public class PackagistParser {
         this.composerLockDetectableOptions = composerLockDetectableOptions;
     }
 
-    public PackagistParseResult getDependencyGraphFromProject(final String sourcePath, final String composerJsonText, final String composerLockText) {
+    public PackagistParseResult getDependencyGraphFromProject(final String composerJsonText, final String composerLockText) {
         final LazyExternalIdDependencyGraphBuilder builder = new LazyExternalIdDependencyGraphBuilder();
 
         final JsonObject composerJsonObject = new JsonParser().parse(composerJsonText).getAsJsonObject();
@@ -162,7 +162,7 @@ public class PackagistParser {
         final List<NameVersion> dependencies = new ArrayList<>();
         requireObject.entrySet().forEach(it -> {
             if (!it.getKey().equalsIgnoreCase("php")) {
-                final NameVersion nameVersion = new NameVersion(it.getKey().toString(), it.getValue().toString());
+                final NameVersion nameVersion = new NameVersion(it.getKey(), it.getValue().toString());
                 dependencies.add(nameVersion);
             }
         });

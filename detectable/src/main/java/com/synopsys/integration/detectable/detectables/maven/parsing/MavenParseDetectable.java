@@ -23,23 +23,18 @@
 package com.synopsys.integration.detectable.detectables.maven.parsing;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Optional;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
 public class MavenParseDetectable extends Detectable {
-    public static final String POM_XML_FILENAME = "pom.xml";
+    private static final String POM_XML_FILENAME = "pom.xml";
 
     private final FileFinder fileFinder;
     private final MavenParseExtractor mavenParseExtractor;
@@ -47,7 +42,7 @@ public class MavenParseDetectable extends Detectable {
     private File pomXmlFile;
 
     public MavenParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final MavenParseExtractor mavenParseExtractor) {
-        super(environment, "pom.xml", "MAVEN");
+        super(environment, POM_XML_FILENAME, "MAVEN");
         this.fileFinder = fileFinder;
         this.mavenParseExtractor = mavenParseExtractor;
     }

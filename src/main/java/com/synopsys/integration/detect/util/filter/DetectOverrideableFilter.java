@@ -22,15 +22,11 @@
  */
 package com.synopsys.integration.detect.util.filter;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
-
-import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class DetectOverrideableFilter implements DetectFilter {
     private final Set<String> excludedSet;
@@ -55,14 +51,14 @@ public class DetectOverrideableFilter implements DetectFilter {
                 return true;
             } else if (includedSet.contains("NONE")) {
                 return false;
-            } else if (!includedSet.contains(itemName)) {
-                return false;
+            } else {
+                return includedSet.contains(itemName);
             }
         }
 
         return true;
     }
-    
+
     public Set<String> getIncludedSet() {
         return includedSet;
     }

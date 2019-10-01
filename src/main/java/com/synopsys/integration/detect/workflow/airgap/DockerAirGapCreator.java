@@ -24,10 +24,8 @@ package com.synopsys.integration.detect.workflow.airgap;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
+import java.nio.file.Files;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zeroturnaround.zip.ZipUtil;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -36,20 +34,18 @@ import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorI
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DockerAirGapCreator {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final DockerInspectorInstaller dockerInspectorInstaller;
 
     public DockerAirGapCreator(final DockerInspectorInstaller dockerInspectorInstaller) {
         this.dockerInspectorInstaller = dockerInspectorInstaller;
     }
 
-    public void installDockerDependencies(File dockerFolder) throws DetectUserFriendlyException {
+    public void installDockerDependencies(final File dockerFolder) throws DetectUserFriendlyException {
         try {
-            File dockerZip = dockerInspectorInstaller.installAirGap(dockerFolder);
+            final File dockerZip = dockerInspectorInstaller.installAirGap(dockerFolder);
             ZipUtil.unpack(dockerZip, dockerFolder);
-            dockerZip.delete();
-        } catch (IntegrationException | IOException e) {
+            Files.delete(dockerZip.toPath());
+        } catch (final IntegrationException | IOException e) {
             throw new DetectUserFriendlyException("An error occurred installing docker inspector.", e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }

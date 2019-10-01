@@ -22,9 +22,7 @@
  */
 package com.synopsys.integration.detect.workflow.report;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExtractionEnvironment;
@@ -36,7 +34,7 @@ import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class CodeLocationReporter {
-    public void writeCodeLocationReport(final ReportWriter writer, final ReportWriter writer2, DetectorEvaluationTree rootEvaluation, Map<CodeLocation, DetectCodeLocation> detectCodeLocationMap,
+    public void writeCodeLocationReport(final ReportWriter writer, final ReportWriter writer2, final DetectorEvaluationTree rootEvaluation, final Map<CodeLocation, DetectCodeLocation> detectCodeLocationMap,
         final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final CodeLocationDependencyCounter counter = new CodeLocationDependencyCounter();
         final Map<DetectCodeLocation, Integer> dependencyCounts = counter.countCodeLocations(codeLocationNameMap.keySet());
@@ -49,16 +47,17 @@ public class CodeLocationReporter {
 
     }
 
-    private void writeBomToolEvaluationDetails(final ReportWriter writer, final DetectorEvaluation evaluation, final Map<DetectCodeLocation, Integer> dependencyCounts, Map<CodeLocation, DetectCodeLocation> detectCodeLocationMap, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+    private void writeBomToolEvaluationDetails(final ReportWriter writer, final DetectorEvaluation evaluation, final Map<DetectCodeLocation, Integer> dependencyCounts, final Map<CodeLocation, DetectCodeLocation> detectCodeLocationMap,
+        final Map<DetectCodeLocation, String> codeLocationNameMap) {
         for (final CodeLocation codeLocation : evaluation.getExtraction().getCodeLocations()) {
-            DetectExtractionEnvironment detectExtractionEnvironment = (DetectExtractionEnvironment) evaluation.getExtractionEnvironment();
-            DetectCodeLocation detectCodeLocation = detectCodeLocationMap.get(codeLocation);
+            final DetectExtractionEnvironment detectExtractionEnvironment = (DetectExtractionEnvironment) evaluation.getExtractionEnvironment();
+            final DetectCodeLocation detectCodeLocation = detectCodeLocationMap.get(codeLocation);
             writeCodeLocationDetails(writer, detectCodeLocation, dependencyCounts.get(detectCodeLocation), codeLocationNameMap.get(detectCodeLocation), detectExtractionEnvironment.getExtractionId().toUniqueString());
         }
     }
 
     private void writeCodeLocationDetails(final ReportWriter writer, final DetectCodeLocation codeLocation, final Integer dependencyCount, final String codeLocationName, final String extractionId) {
-        writer.writeSeperator();
+        writer.writeSeparator();
         writer.writeLine("Name : " + codeLocationName);
         writer.writeLine("Directory : " + codeLocation.getSourcePath());
         writer.writeLine("Extraction : " + extractionId);
@@ -71,8 +70,9 @@ public class CodeLocationReporter {
     }
 
     private void writeBomToolCounts(final ReportWriter writer, final Map<String, Integer> dependencyCounts) {
-        for (final String group : dependencyCounts.keySet()) {
-            final Integer count = dependencyCounts.get(group);
+        for (final Map.Entry<String, Integer> groupCountEntry : dependencyCounts.entrySet()) {
+            final String group = groupCountEntry.getKey();
+            final Integer count = groupCountEntry.getValue();
 
             writer.writeLine(group + " : " + count);
         }

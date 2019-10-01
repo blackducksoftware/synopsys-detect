@@ -44,17 +44,17 @@ import com.synopsys.integration.rest.proxy.ProxyInfoBuilder;
 
 public class ConnectionManager {
     private final DetectConfiguration detectConfiguration;
-    private final Logger logger = LoggerFactory.getLogger(DetectConfiguration.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public ConnectionManager(final DetectConfiguration detectConfiguration) {
         this.detectConfiguration = detectConfiguration;
     }
 
     public ProxyInfo getBlackDuckProxyInfo() throws DetectUserFriendlyException {
-        CredentialsBuilder proxyCredentialsBuilder = new CredentialsBuilder();
-        proxyCredentialsBuilder.setUsername(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_USERNAME, PropertyAuthority.None));
-        proxyCredentialsBuilder.setPassword(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PASSWORD, PropertyAuthority.None));
-        Credentials proxyCredentials = null;
+        final CredentialsBuilder proxyCredentialsBuilder = new CredentialsBuilder();
+        proxyCredentialsBuilder.setUsername(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_USERNAME, PropertyAuthority.NONE));
+        proxyCredentialsBuilder.setPassword(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PASSWORD, PropertyAuthority.NONE));
+        final Credentials proxyCredentials;
         try {
             proxyCredentials = proxyCredentialsBuilder.build();
         } catch (final IllegalArgumentException e) {
@@ -64,12 +64,12 @@ public class ConnectionManager {
         final ProxyInfoBuilder proxyInfoBuilder = new ProxyInfoBuilder();
 
         proxyInfoBuilder.setCredentials(proxyCredentials);
-        proxyInfoBuilder.setHost(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_HOST, PropertyAuthority.None));
-        String proxyPortFromConfiguration = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PORT, PropertyAuthority.None);
-        int proxyPort = NumberUtils.toInt(proxyPortFromConfiguration, 0);
+        proxyInfoBuilder.setHost(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_HOST, PropertyAuthority.NONE));
+        final String proxyPortFromConfiguration = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PORT, PropertyAuthority.NONE);
+        final int proxyPort = NumberUtils.toInt(proxyPortFromConfiguration, 0);
         proxyInfoBuilder.setPort(proxyPort);
-        proxyInfoBuilder.setNtlmDomain(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_NTLM_DOMAIN, PropertyAuthority.None));
-        proxyInfoBuilder.setNtlmWorkstation(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_NTLM_WORKSTATION, PropertyAuthority.None));
+        proxyInfoBuilder.setNtlmDomain(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_NTLM_DOMAIN, PropertyAuthority.NONE));
+        proxyInfoBuilder.setNtlmWorkstation(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_NTLM_WORKSTATION, PropertyAuthority.NONE));
         try {
             return proxyInfoBuilder.build();
         } catch (final IllegalArgumentException e) {
@@ -78,17 +78,17 @@ public class ConnectionManager {
     }
 
     public IntHttpClient createUnauthenticatedRestConnection(final String url) throws DetectUserFriendlyException {
-        final List<Pattern> ignoredProxyHostPatterns = ProxyUtil.getIgnoredProxyHostPatterns(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS, PropertyAuthority.None));
-        boolean ignoreProxy;
+        final List<Pattern> ignoredProxyHostPatterns = ProxyUtil.getIgnoredProxyHostPatterns(detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS, PropertyAuthority.NONE));
+        final boolean ignoreProxy;
         try {
             ignoreProxy = ProxyUtil.shouldIgnoreHost(new URL(url).getHost(), ignoredProxyHostPatterns);
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             throw new DetectUserFriendlyException("Unable to decide if proxy should be used for a given host.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }
 
-        IntLogger intLogger = new Slf4jIntLogger(logger);
-        int timeout = detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT, PropertyAuthority.None);
-        boolean alwaysTrust = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_TRUST_CERT, PropertyAuthority.None);
+        final IntLogger intLogger = new Slf4jIntLogger(logger);
+        final int timeout = detectConfiguration.getIntegerProperty(DetectProperty.BLACKDUCK_TIMEOUT, PropertyAuthority.NONE);
+        final boolean alwaysTrust = detectConfiguration.getBooleanProperty(DetectProperty.BLACKDUCK_TRUST_CERT, PropertyAuthority.NONE);
 
         if (ignoreProxy) {
             return new IntHttpClient(intLogger, timeout, alwaysTrust, ProxyInfo.NO_PROXY_INFO);

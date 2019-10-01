@@ -43,7 +43,7 @@ public class NpmLockfileExtractor {
     /*
     packageJson is optional
      */
-    public Extraction extract(final File directory, final File lockfile, final File packageJson, final boolean includeDevDependencies) {
+    public Extraction extract(final File lockfile, final File packageJson, final boolean includeDevDependencies) {
         try {
             final String lockText = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
             Optional<String> packageText = Optional.empty();
@@ -51,9 +51,9 @@ public class NpmLockfileExtractor {
                 packageText = Optional.of(FileUtils.readFileToString(packageJson, StandardCharsets.UTF_8));
             }
 
-            final NpmParseResult result = npmLockfileParser.parse(directory.getCanonicalPath(), packageText, lockText, includeDevDependencies);
+            final NpmParseResult result = npmLockfileParser.parse(packageText, lockText, includeDevDependencies);
 
-            return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
+            return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
 
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();

@@ -22,10 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectable.result;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.synopsys.integration.detectable.Detectable;
 
 public class FallbackNotNeededDetectableResult extends FailedDetectableResult {

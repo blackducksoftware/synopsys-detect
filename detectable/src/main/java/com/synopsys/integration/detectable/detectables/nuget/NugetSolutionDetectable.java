@@ -24,10 +24,8 @@ package com.synopsys.integration.detectable.detectables.nuget;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-
-import javax.naming.spi.DirectoryManager;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -44,13 +42,13 @@ import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDe
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
 public class NugetSolutionDetectable extends Detectable {
-    static final List<String> SUPPORTED_SOLUTION_PATTERNS = Arrays.asList("*.sln");
+    private static final List<String> SUPPORTED_SOLUTION_PATTERNS = Collections.singletonList("*.sln");
 
     private final FileFinder fileFinder;
     private final NugetInspectorResolver nugetInspectorResolver;
     private final NugetInspectorExtractor nugetInspectorExtractor;
 
-    private NugetInspectorOptions nugetInspectorOptions;
+    private final NugetInspectorOptions nugetInspectorOptions;
     private NugetInspector inspector;
     private List<File> solutionFiles = new ArrayList<>();
 
