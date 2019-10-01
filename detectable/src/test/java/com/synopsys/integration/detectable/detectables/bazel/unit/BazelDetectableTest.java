@@ -20,7 +20,7 @@ public class BazelDetectableTest {
         final BazelExtractor bazelExtractor = null;
         final BazelResolver bazelResolver = null;
 
-        final BazelDetectableOptions bazelDetectableOptions = new BazelDetectableOptions("target", "");
+        final BazelDetectableOptions bazelDetectableOptions = new BazelDetectableOptions("target", null, "");
 
         final BazelDetectable detectable = new BazelDetectable(environment, bazelExtractor, bazelResolver, bazelDetectableOptions);
 

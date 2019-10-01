@@ -24,12 +24,17 @@ package com.synopsys.integration.detectable.detectables.bazel;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,26 +66,12 @@ public class BazelExtractor {
     }
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
-    public Extraction extract(final File bazelExe, final File workspaceDir, String bazelTarget, String pipelineStepsPath) {
+    public Extraction extract(final File bazelExe, final File workspaceDir, final String bazelTarget, final String bazelDependencyRule, final String pipelineStepsPath) {
         logger.debug("Bazel extractAndPublishResults()");
         try {
-            List<Step> pipelineSteps;
-            if (StringUtils.isNotBlank(pipelineStepsPath)) {
-                pipelineSteps = loadPipelineStepsFromFile(pipelineStepsPath);
-                logger.debug(String.format("Read %d pipeline step(s) from %s", pipelineSteps.size(), pipelineStepsPath));
-            } else {
-                // TODO figure out how to ship with a default, plus a few known pipelines
-                throw new OperationNotSupportedException("Have not implemented built-in pipeline steps yet");
-//                BazelExternalIdExtractionSimpleRules simpleRules = new BazelExternalIdExtractionSimpleRules(pipelineStepsPath);
-//                pipelineSteps = simpleRules.getRules().stream()
-//                                      .map(RuleConverter::simpleToFull).collect(Collectors.toList());
-//                if (logger.isDebugEnabled()) {
-//                    logger.debug(String.format("Using default rules:\n%s", pipelineJsonProcessor.toJson(pipelineSteps)));
-//                }
-            }
+            List<Step> pipelineSteps = getPipelineSteps(bazelDependencyRule, pipelineStepsPath);
             final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
-
 
             // TODO get step executor list programmatically
             final StepExecutor stepExecutorExecuteBazelOnEach = new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor);
@@ -122,6 +113,25 @@ public class BazelExtractor {
         }
     }
 
+    @NotNull
+    private List<Step> getPipelineSteps(final String bazelDependencyRule, final String pipelineStepsPath) throws IOException, OperationNotSupportedException {
+        List<Step> pipelineSteps = null;
+        if (StringUtils.isNotBlank(pipelineStepsPath)) {
+            pipelineSteps = loadPipelineStepsFromFilesystem(pipelineStepsPath);
+            logger.debug(String.format("Read %d pipeline step(s) from %s", pipelineSteps.size(), pipelineStepsPath));
+        } else {
+            if (StringUtils.isNotBlank(bazelDependencyRule) && !"UNSPECIFIED".equalsIgnoreCase(bazelDependencyRule)) {
+                pipelineSteps = loadPipelineStepsFromClasspath(bazelDependencyRule);
+            } else {
+                // TODO look in the WORKSPACE file
+            }
+        }
+        if (pipelineSteps == null) {
+            throw new OperationNotSupportedException("Have not implemented built-in pipeline steps yet");
+        }
+        return pipelineSteps;
+    }
+
     private String cleanProjectName(final String bazelTarget) {
         String projectName = bazelTarget
                                  .replaceAll("^//", "")
@@ -131,9 +141,20 @@ public class BazelExtractor {
         return projectName;
     }
 
-    private List<Step> loadPipelineStepsFromFile(final String pipelineStepsJsonFilePath) throws IOException {
+    private List<Step> loadPipelineStepsFromFilesystem(final String pipelineStepsJsonFilePath) throws IOException {
         final File jsonFile = new File(pipelineStepsJsonFilePath);
-        List<Step> loadedSteps = pipelineJsonProcessor.load(jsonFile);
+        logger.debug(String.format("Loading pipeline rules from filesystem: %s", jsonFile.getAbsolutePath()));
+        final String jsonString = FileUtils.readFileToString(jsonFile, StandardCharsets.UTF_8);
+        final List<Step> loadedSteps = pipelineJsonProcessor.fromJsonString(jsonString);
+        return loadedSteps;
+    }
+
+    private List<Step> loadPipelineStepsFromClasspath(final String bazelDependencyRuleName) throws IOException {
+        final String pipelineStepsJsonFilePath = String.format("/bazel/pipeline/%s.json", bazelDependencyRuleName);
+        logger.debug(String.format("Loading pipeline rules from classpath: %s", pipelineStepsJsonFilePath));
+        final InputStream in = this.getClass().getClassLoader().getResourceAsStream(pipelineStepsJsonFilePath);
+        final String jsonString = IOUtils.toString(in, StandardCharsets.UTF_8);
+        final List<Step> loadedSteps = pipelineJsonProcessor.fromJsonString(jsonString);
         return loadedSteps;
     }
 }

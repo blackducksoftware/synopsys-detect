@@ -1,0 +1,52 @@
+[
+  {
+    "type": "executeBazelOnEach",
+    "args": [
+      "query",
+      "filter(\u0027@.*:jar\u0027, deps(${detect.bazel.target}))"
+    ]
+  },
+  {
+    "type": "splitEach",
+    "args": [
+      "\\s+"
+    ]
+  },
+  {
+    "type": "edit",
+    "args": [
+      "^@",
+      ""
+    ]
+  },
+  {
+    "type": "edit",
+    "args": [
+      "//.*",
+      ""
+    ]
+  },
+  {
+    "type": "edit",
+    "args": [
+      "^",
+      "//external:"
+    ]
+  },
+  {
+    "type": "executeBazelOnEach",
+    "args": [
+      "query",
+      "kind(maven_jar, ${0})",
+      "--output",
+      "xml"
+    ]
+  },
+  {
+    "type": "parseEachXml",
+    "args": [
+      "/query/rule[@class\u003d\u0027maven_jar\u0027]/string[@name\u003d\u0027artifact\u0027]",
+      "value"
+    ]
+  }
+]

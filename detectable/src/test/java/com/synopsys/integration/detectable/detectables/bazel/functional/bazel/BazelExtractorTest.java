@@ -87,7 +87,7 @@ public class BazelExtractorTest {
         Mockito.when(bazelCmdExecutableOutputGetDependencyDetailsGuava.getStandardOutput()).thenReturn(guavaXml);
         Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgsGetDependencyDetailsGuava)).thenReturn(bazelCmdExecutableOutputGetDependencyDetailsGuava);
 
-        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, "//:ProjectRunner", pipelineStepsPath);
+        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, "//:ProjectRunner", null, pipelineStepsPath);
 
         assertEquals(1, result.getCodeLocations().size());
         final Set<Dependency> dependencies = result.getCodeLocations().get(0).getDependencyGraph().getRootDependencies();

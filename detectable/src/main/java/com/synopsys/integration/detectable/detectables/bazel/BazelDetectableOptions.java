@@ -24,9 +24,11 @@ package com.synopsys.integration.detectable.detectables.bazel;
 
 public class BazelDetectableOptions {
     private final String targetName;
+    private final String bazelDependencyRule;
     private final String fullRulesPath;
-    public BazelDetectableOptions(final String targetName, final String fullRulesPath) {
+    public BazelDetectableOptions(final String targetName, final String bazelDependencyRule, final String fullRulesPath) {
         this.targetName = targetName;
+        this.bazelDependencyRule = bazelDependencyRule;
         this.fullRulesPath = fullRulesPath;
     }
 
@@ -36,5 +38,9 @@ public class BazelDetectableOptions {
 
     public String getFullRulesPath() {
         return fullRulesPath;
+    }
+
+    public String getBazelDependencyRule() {
+        return bazelDependencyRule;
     }
 }

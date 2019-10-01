@@ -22,13 +22,10 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
@@ -40,8 +37,8 @@ public class PipelineJsonProcessor {
         this.gson = gson;
     }
 
-    public List<Step> load(File jsonFile) throws IOException {
-        String json = FileUtils.readFileToString(jsonFile, StandardCharsets.UTF_8);
+    @NotNull
+    public List<Step> fromJsonString(final String json) {
         final Step[] pipelineSteps = gson.fromJson(json, Step[].class);
         return Arrays.asList(pipelineSteps);
     }

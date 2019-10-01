@@ -1,0 +1,32 @@
+[
+  {
+    "type": "executeBazelOnEach",
+    "args": [
+      "cquery",
+      "deps(//:${detect.bazel.target})",
+      "--output",
+      "textproto"
+    ]
+  },
+  {
+    "type": "parseEachTextProto",
+    "args": [
+      ":results:target:rule:attribute",
+      "tags",
+      "string_list_value"
+    ]
+  },
+  {
+    "type": "filter",
+    "args": [
+      "^maven_coordinates\u003d"
+    ]
+  },
+  {
+    "type": "edit",
+    "args": [
+      "^maven_coordinates\u003d",
+      ""
+    ]
+  }
+]

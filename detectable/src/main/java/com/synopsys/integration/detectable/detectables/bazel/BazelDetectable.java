@@ -73,7 +73,7 @@ public class BazelDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), bazelDetectableOptions.getTargetName(), bazelDetectableOptions.getFullRulesPath());
+        Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), bazelDetectableOptions.getTargetName(), bazelDetectableOptions.getBazelDependencyRule(), bazelDetectableOptions.getFullRulesPath());
         return extractResult;
     }
 }
