@@ -54,6 +54,8 @@ public class BitbakeRecipe {
             return layerName;
         }
 
+        // We have decided to use the version from the .dot files for now.
+        // Keeping this around in case we need it down the road. JM - 10/2019
         public String getComponentVersion() {
             return componentVersion;
         }

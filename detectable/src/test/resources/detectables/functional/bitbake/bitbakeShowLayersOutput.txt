@@ -1,9 +1,0 @@
-NOTE: Starting bitbake server...
-layer                 path                                      priority
-==========================================================================
-meta                  /home/bit/poky/meta                       5
-meta-poky             /home/bit/poky/meta-poky                  5
-meta-yocto-bsp        /home/bit/poky/meta-yocto-bsp             6
-malformed-layer       /home/bit/poky/meta-yocto-bsp
-malformed-layer-2
-malformed-layer-3     /home/bit/poky/meta-yocto-bsp             a

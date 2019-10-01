@@ -50,7 +50,6 @@ import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGrap
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeResult;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeLayersParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 import com.synopsys.integration.exception.IntegrationException;
@@ -62,16 +61,14 @@ public class BitbakeExtractor {
     private final FileFinder fileFinder;
     private final GraphParserTransformer graphParserTransformer;
     private final BitbakeGraphTransformer bitbakeGraphTransformer;
-    private final BitbakeLayersParser bitbakeLayersParser;
     private final BitbakeRecipesParser bitbakeRecipesParser;
 
     public BitbakeExtractor(final ExecutableRunner executableRunner, final FileFinder fileFinder, final GraphParserTransformer graphParserTransformer, final BitbakeGraphTransformer bitbakeGraphTransformer,
-        final BitbakeLayersParser bitbakeLayersParser, final BitbakeRecipesParser bitbakeRecipesParser) {
+        final BitbakeRecipesParser bitbakeRecipesParser) {
         this.executableRunner = executableRunner;
         this.fileFinder = fileFinder;
         this.graphParserTransformer = graphParserTransformer;
         this.bitbakeGraphTransformer = bitbakeGraphTransformer;
-        this.bitbakeLayersParser = bitbakeLayersParser;
         this.bitbakeRecipesParser = bitbakeRecipesParser;
     }
 
@@ -79,14 +76,13 @@ public class BitbakeExtractor {
         final File outputDirectory = extractionEnvironment.getOutputDirectory();
 
         final List<CodeLocation> codeLocations = new ArrayList<>();
-        final BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeLayersParser, bitbakeRecipesParser, outputDirectory, buildEnvScript, sourceArguments, bash);
+        final BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, outputDirectory, buildEnvScript, sourceArguments, bash);
         for (final String packageName : packageNames) {
             try {
                 final BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName);
-                final Map<String, Integer> layerPriorityMap = bitbakeSession.executeBitbakeForLayers();
                 final Map<String, BitbakeRecipe> componentLayerMap = bitbakeSession.executeBitbakeForRecipeMap();
 
-                final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap, layerPriorityMap);
+                final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap);
                 final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
                 codeLocations.add(codeLocation);

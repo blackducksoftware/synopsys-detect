@@ -34,11 +34,8 @@ public class BitbakeGraphTransformerTest {
         componentLayerMap.put(exampleRecipe.getName(), exampleRecipe);
         componentLayerMap.put(foobarRecipe.getName(), foobarRecipe);
 
-        final Map<String, Integer> layerPriorityMap = new HashMap<>();
-        layerPriorityMap.put("meta", 6);
-
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap, layerPriorityMap);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap);
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
 
@@ -61,11 +58,8 @@ public class BitbakeGraphTransformerTest {
         componentLayerMap.put(exampleRecipe.getName(), exampleRecipe);
         componentLayerMap.put(foobarRecipe.getName(), foobarRecipe);
 
-        final Map<String, Integer> layerPriorityMap = new HashMap<>();
-        layerPriorityMap.put("meta", 6);
-
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap, layerPriorityMap);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap);
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.hasRootSize(1);
@@ -83,11 +77,8 @@ public class BitbakeGraphTransformerTest {
         final BitbakeRecipe exampleRecipe = new BitbakeRecipe("example", Collections.singletonList(new BitbakeRecipe.Layer("meta", null)));
         componentLayerMap.put(exampleRecipe.getName(), exampleRecipe);
 
-        final Map<String, Integer> layerPriorityMap = new HashMap<>();
-        layerPriorityMap.put("meta", 6);
-
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap, layerPriorityMap);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap);
 
         final GraphAssert graphAssert = new GraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.hasNoDependency(externalIdFactory.createModuleNamesExternalId(Forge.YOCTO, "meta", "example", null));

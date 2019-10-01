@@ -51,7 +51,7 @@ public class BitbakeGraphTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(final BitbakeGraph bitbakeGraph, final Map<String, BitbakeRecipe> componentLayerMap, final Map<String, Integer> layerPriorityMap) {
+    public DependencyGraph transform(final BitbakeGraph bitbakeGraph, final Map<String, BitbakeRecipe> componentLayerMap) {
         final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         final Map<String, Dependency> namesToExternalIds = new HashMap<>();
 
@@ -60,7 +60,7 @@ public class BitbakeGraphTransformer {
 
             if (bitbakeNode.getVersion().isPresent()) {
                 final String version = bitbakeNode.getVersion().get();
-                final Optional<Dependency> dependency = generateExternalId(name, version, componentLayerMap, layerPriorityMap).map(Dependency::new);
+                final Optional<Dependency> dependency = generateExternalId(name, version, componentLayerMap).map(Dependency::new);
 
                 dependency.ifPresent(value -> namesToExternalIds.put(bitbakeNode.getName(), value));
             } else if (name.startsWith("virtual/")) {
@@ -89,42 +89,31 @@ public class BitbakeGraphTransformer {
         return dependencyGraph;
     }
 
-    private Optional<ExternalId> generateExternalId(final String dependencyName, final String dependencyVersion, final Map<String, BitbakeRecipe> componentLayerMap, final Map<String, Integer> layerPriorityMap) {
+    private Optional<ExternalId> generateExternalId(final String dependencyName, final String dependencyVersion, final Map<String, BitbakeRecipe> componentLayerMap) {
         final BitbakeRecipe bitbakeRecipe = componentLayerMap.get(dependencyName);
         ExternalId externalId = null;
 
         if (bitbakeRecipe == null) {
             if (componentLayerMap.containsKey(dependencyName)) {
-                logger.warn(String.format("Component '%s==%s' is in the component layer map. But potential layers were not populated. This should be reported.", dependencyName, dependencyVersion));
+                logger.warn(String.format("Component '%s==%s' is in the component layer map, but layers were not populated. This should be reported.", dependencyName, dependencyVersion));
             } else {
                 logger.debug(String.format("Failed to find component '%s' in component layer map.", dependencyName));
             }
             if (dependencyName.endsWith(NATIVE_SUFFIX)) {
                 final String alternativeName = dependencyName.replace(NATIVE_SUFFIX, "");
                 logger.debug(String.format("Generating alternative component name '%s' for '%s==%s'", alternativeName, dependencyName, dependencyVersion));
-                externalId = generateExternalId(alternativeName, dependencyVersion, componentLayerMap, layerPriorityMap).orElse(null);
+                externalId = generateExternalId(alternativeName, dependencyVersion, componentLayerMap).orElse(null);
             } else {
                 logger.debug(String.format("'%s==%s' is not an actual component. Excluding from graph.", dependencyName, dependencyVersion));
             }
+        } else if (bitbakeRecipe.getLayers().isEmpty()) {
+            logger.warn("Component '%s==%s' has a recipe, but could not find any layers. This should be reported.");
         } else {
-            final Optional<BitbakeRecipe.Layer> highestPriorityLayer = getHighestPriorityLayer(bitbakeRecipe, layerPriorityMap);
-            externalId = highestPriorityLayer.map(layer -> externalIdFactory.createYoctoExternalId(layer.getLayerName(), dependencyName, dependencyVersion)).orElse(null);
+            // The layer priority can be determined by the order they appear from the "bitbake-layers show-recipes" command. The highest priority layer being first.
+            final BitbakeRecipe.Layer highestPriorityLayer = bitbakeRecipe.getLayers().get(0);
+            externalId = externalIdFactory.createYoctoExternalId(highestPriorityLayer.getLayerName(), dependencyName, dependencyVersion);
         }
 
         return Optional.ofNullable(externalId);
-    }
-
-    private Optional<BitbakeRecipe.Layer> getHighestPriorityLayer(final BitbakeRecipe layerNames, final Map<String, Integer> layerPriorityMap) {
-        BitbakeRecipe.Layer priorityLayer = null;
-        Integer layerPriority = null;
-        for (final BitbakeRecipe.Layer layer : layerNames.getLayers()) {
-            final Integer priority = layerPriorityMap.get(layer.getLayerName());
-            if (layerPriority == null || priority > layerPriority) {
-                priorityLayer = layer;
-                layerPriority = priority;
-            }
-        }
-
-        return Optional.ofNullable(priorityLayer);
     }
 }

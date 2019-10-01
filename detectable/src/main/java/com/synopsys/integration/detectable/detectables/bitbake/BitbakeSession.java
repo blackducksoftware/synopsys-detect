@@ -39,7 +39,6 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeResult;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeLayersParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -48,20 +47,16 @@ public class BitbakeSession {
 
     private final FileFinder fileFinder;
     private final ExecutableRunner executableRunner;
-    private final BitbakeLayersParser bitbakeLayersParser;
     private final BitbakeRecipesParser bitbakeRecipesParser;
     private final File outputDirectory;
     private final File buildEnvScript;
     private final String[] sourceArguments;
     private final File bashExecutable;
 
-    public BitbakeSession(final FileFinder fileFinder, final ExecutableRunner executableRunner, final BitbakeLayersParser bitbakeLayersParser,
-        final BitbakeRecipesParser bitbakeRecipesParser, final File outputDirectory,
-        final File buildEnvScript, final String[] sourceArguments,
+    public BitbakeSession(final FileFinder fileFinder, final ExecutableRunner executableRunner, final BitbakeRecipesParser bitbakeRecipesParser, final File outputDirectory, final File buildEnvScript, final String[] sourceArguments,
         final File bashExecutable) {
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;
-        this.bitbakeLayersParser = bitbakeLayersParser;
         this.bitbakeRecipesParser = bitbakeRecipesParser;
         this.outputDirectory = outputDirectory;
         this.buildEnvScript = buildEnvScript;
@@ -106,16 +101,6 @@ public class BitbakeSession {
             return bitbakeRecipesParser.parseComponentLayerMap(executableOutput.getStandardOutput());
         } else {
             throw new IntegrationException("Running command '%s' returned a non-zero exit code. Failed to extract bitbake recipe mapping.");
-        }
-    }
-
-    public Map<String, Integer> executeBitbakeForLayers() throws ExecutableRunnerException, IOException, IntegrationException {
-        final String bitbakeCommand = "bitbake-layers show-layers";
-        final ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
-        if (executableOutput.getReturnCode() == 0) {
-            return bitbakeLayersParser.parseLayerPriorityMap(executableOutput.getStandardOutput());
-        } else {
-            throw new IntegrationException("Running command '%s' returned a non-zero exit code. Failed to extract bitbake layers.");
         }
     }
 

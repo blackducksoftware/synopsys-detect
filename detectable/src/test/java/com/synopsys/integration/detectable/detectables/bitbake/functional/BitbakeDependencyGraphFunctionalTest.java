@@ -18,7 +18,6 @@ import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFile
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeLayersParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
@@ -38,11 +37,7 @@ public class BitbakeDependencyGraphFunctionalTest {
         final String recipeOutput = FunctionalTestFiles.asString("/bitbake/bitbakeShowRecipesFull_recipe.txt");
         final Map<String, BitbakeRecipe> componentLayerMap = bitbakeRecipesParser.parseComponentLayerMap(recipeOutput);
 
-        final BitbakeLayersParser bitbakeLayersParser = new BitbakeLayersParser();
-        final String layerOutput = FunctionalTestFiles.asString("/bitbake/bitbakeShowLayersFull_recipe.txt");
-        final Map<String, Integer> layerPriorityMap = bitbakeLayersParser.parseLayerPriorityMap(layerOutput);
-
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap, layerPriorityMap);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap);
 
         Assertions.assertEquals(176, dependencyGraph.getRootDependencies().size());
     }
@@ -62,10 +57,7 @@ public class BitbakeDependencyGraphFunctionalTest {
         componentLayerMap.put(aclRecipe.getName(), aclRecipe);
         componentLayerMap.put(attrRecipe.getName(), attrRecipe);
 
-        final Map<String, Integer> layerPriorityMap = new HashMap<>();
-        layerPriorityMap.put("meta", 6);
-
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap, layerPriorityMap);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap);
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
         final ExternalId attr = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "attr", "2.4.47-r0"));
@@ -87,11 +79,7 @@ public class BitbakeDependencyGraphFunctionalTest {
         final String recipeOutput = FunctionalTestFiles.asString("/bitbake/bitbakeShowRecipesFull_package.txt");
         final Map<String, BitbakeRecipe> componentLayerMap = bitbakeRecipesParser.parseComponentLayerMap(recipeOutput);
 
-        final BitbakeLayersParser bitbakeLayersParser = new BitbakeLayersParser();
-        final String layerOutput = FunctionalTestFiles.asString("/bitbake/bitbakeShowLayersFull_recipe.txt");
-        final Map<String, Integer> layerPriorityMap = bitbakeLayersParser.parseLayerPriorityMap(layerOutput);
-
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap, layerPriorityMap);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap);
 
         Assertions.assertEquals(151, dependencyGraph.getRootDependencies().size());
     }
@@ -111,10 +99,7 @@ public class BitbakeDependencyGraphFunctionalTest {
         componentLayerMap.put(busyboxRecipe.getName(), busyboxRecipe);
         componentLayerMap.put(attrRecipe.getName(), attrRecipe);
 
-        final Map<String, Integer> layerPriorityMap = new HashMap<>();
-        layerPriorityMap.put("meta", 6);
-
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap, layerPriorityMap);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap);
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
         final ExternalId busybox = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "busybox", "1.23.2-r0"));
