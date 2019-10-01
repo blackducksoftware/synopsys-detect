@@ -22,38 +22,26 @@
  */
 package com.synopsys.integration.detectable.detectables.bitbake.model;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import org.antlr.v4.runtime.misc.Nullable;
+public class BitbakeRecipe {
+    private final String name;
+    private final List<String> layerNames;
 
-public class BitbakeGraph {
-    private final List<BitbakeNode> nodes = new ArrayList<>();
-
-    private BitbakeNode getOrCreate(final String name) {
-        final Optional<BitbakeNode> existingNode = nodes.stream()
-                                                       .filter(node -> node.getName().equals(name))
-                                                       .findFirst();
-
-        if (existingNode.isPresent()) {
-            return existingNode.get();
-        }
-
-        final BitbakeNode newNode = new BitbakeNode(name);
-        nodes.add(newNode);
-        return newNode;
+    public BitbakeRecipe(final String name, final List<String> layerNames) {
+        this.name = name;
+        this.layerNames = layerNames;
     }
 
-    public void addNode(final String name, @Nullable final String version) {
-        getOrCreate(name).setVersion(version);
+    public String getName() {
+        return name;
     }
 
-    public void addChild(final String parent, final String child) {
-        getOrCreate(parent).addChild(child);
+    public List<String> getLayerNames() {
+        return layerNames;
     }
 
-    public List<BitbakeNode> getNodes() {
-        return nodes;
+    public void addLayerName(final String layer) {
+        layerNames.add(layer);
     }
 }

@@ -20,6 +20,15 @@ class GitUrlParserTest {
     @Test
     void gitUrl() throws MalformedURLException, IntegrationException {
         final GitUrlParser gitUrlParser = new GitUrlParser();
+        final String remoteUrl = "git://git.yoctoproject.org/poky.git";
+        final String repoName = gitUrlParser.getRepoName(remoteUrl);
+
+        Assertions.assertEquals("git.yoctoproject.org/poky", repoName);
+    }
+
+    @Test
+    void gitAtUrl() throws MalformedURLException, IntegrationException {
+        final GitUrlParser gitUrlParser = new GitUrlParser();
         final String remoteUrl = "git@github.com:blackducksoftware/synopsys-detect.git";
         final String repoName = gitUrlParser.getRepoName(remoteUrl);
 

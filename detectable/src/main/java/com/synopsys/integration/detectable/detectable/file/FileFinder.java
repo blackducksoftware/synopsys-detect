@@ -30,9 +30,15 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.misc.Nullable;
 
 public interface FileFinder {
-    @Nullable
+     @Nullable
     default File findFile(final File directoryToSearch, final String filenamePattern) {
-        final List<File> files = findFiles(directoryToSearch, Collections.singletonList(filenamePattern), 0);
+        return findFile(directoryToSearch, filenamePattern, 0);
+
+    }
+
+    @Nullable
+    default File findFile(final File directoryToSearch, final String filenamePattern, final int depth) {
+        final List<File> files = findFiles(directoryToSearch, Collections.singletonList(filenamePattern), depth);
         if (files != null && files.size() > 0) {
             return files.get(0);
         }
