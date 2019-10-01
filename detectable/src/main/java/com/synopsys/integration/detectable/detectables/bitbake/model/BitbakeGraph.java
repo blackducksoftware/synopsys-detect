@@ -26,13 +26,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.antlr.v4.runtime.misc.Nullable;
+
 public class BitbakeGraph {
     private final List<BitbakeNode> nodes = new ArrayList<>();
 
     private BitbakeNode getOrCreate(final String name) {
         final Optional<BitbakeNode> existingNode = nodes.stream()
-                                                 .filter(node -> node.getName().equals(name))
-                                                 .findFirst();
+                                                       .filter(node -> node.getName().equals(name))
+                                                       .findFirst();
 
         if (existingNode.isPresent()) {
             return existingNode.get();
@@ -43,14 +45,7 @@ public class BitbakeGraph {
         return newNode;
     }
 
-    public void addNode(final String name, final Optional<String> version) {
-        getOrCreate(name);
-        if (version.isPresent()) {
-            setVersion(name, version.get());
-        }
-    }
-
-    public void setVersion(final String name, final String version) {
+    public void addNode(final String name, @Nullable final String version) {
         getOrCreate(name).setVersion(version);
     }
 

@@ -2,7 +2,6 @@ package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,8 +22,8 @@ public class BitbakeGraphTransformerTest {
     public void parentHasChild() {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final BitbakeGraph bitbakeGraph = new BitbakeGraph();
-        bitbakeGraph.addNode("example", Optional.of("75"));
-        bitbakeGraph.addNode("foobar", Optional.of("12"));
+        bitbakeGraph.addNode("example", "75");
+        bitbakeGraph.addNode("foobar", "12");
         bitbakeGraph.addChild("example", "foobar");
 
         final RecipeLayerCatalog recipeLayerCatalog = new RecipeLayerCatalog(new HashMap<>());
@@ -45,8 +44,8 @@ public class BitbakeGraphTransformerTest {
     public void ignoredNoVersionRelationship() {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final BitbakeGraph bitbakeGraph = new BitbakeGraph();
-        bitbakeGraph.addNode("example", Optional.of("75"));
-        bitbakeGraph.addNode("foobar", Optional.empty());
+        bitbakeGraph.addNode("example", "75");
+        bitbakeGraph.addNode("foobar", null);
         bitbakeGraph.addChild("example", "foobar");
 
         final RecipeLayerCatalog recipeLayerCatalog = new RecipeLayerCatalog(new HashMap<>());
@@ -66,7 +65,7 @@ public class BitbakeGraphTransformerTest {
     public void ignoredNoVersion() {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final BitbakeGraph bitbakeGraph = new BitbakeGraph();
-        bitbakeGraph.addNode("example", Optional.empty());
+        bitbakeGraph.addNode("example", null);
 
         final RecipeLayerCatalog recipeLayerCatalog = new RecipeLayerCatalog(new HashMap<>());
         recipeLayerCatalog.addRecipe("example", Arrays.asList("meta", "bad-layer"));

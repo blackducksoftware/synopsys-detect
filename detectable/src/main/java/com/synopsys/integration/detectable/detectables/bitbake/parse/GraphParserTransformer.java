@@ -39,7 +39,7 @@ public class GraphParserTransformer {
 
         for (final GraphNode graphNode : graphParser.getNodes().values()) {
             final String name = getNameFromNode(graphNode);
-            final Optional<String> version = getVersionFromNode(graphNode, bitbakeFileType);
+            final String version = getVersionFromNode(graphNode, bitbakeFileType).orElse(null);
             bitbakeGraph.addNode(name, version);
         }
 
