@@ -22,26 +22,21 @@
  */
 package com.synopsys.integration.detect;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.detect.type.OperatingSystemType;
 
 public class DetectInfo {
-    private final Logger logger = LoggerFactory.getLogger(DetectInfo.class);
+    private final OperatingSystemType currentOs;
+    private final String detectVersion;
+    private final int majorVersion;
 
-    private OperatingSystemType currentOs = null;
-    private String detectVersion;
-    private int majorVersion;
-
-    public DetectInfo(String detectVersionText, int majorVersion, OperatingSystemType currentOs){
+    public DetectInfo(final String detectVersionText, final int majorVersion, final OperatingSystemType currentOs) {
         this.detectVersion = detectVersionText;
         this.currentOs = currentOs;
         this.majorVersion = majorVersion;
     }
 
     public int getDetectMajorVersion() {
-        return  majorVersion;
+        return majorVersion;
     }
 
     public String getDetectVersion() {

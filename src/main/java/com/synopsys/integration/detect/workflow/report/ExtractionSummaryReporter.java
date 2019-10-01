@@ -38,7 +38,7 @@ import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 public class ExtractionSummaryReporter {
 
     public void writeSummary(final ReportWriter writer, final DetectorEvaluationTree rootEvaluation, final Map<CodeLocation, DetectCodeLocation> detectableMap, final Map<DetectCodeLocation, String> codeLocationNameMap,
-        boolean writeCodeLocationNames) {
+        final boolean writeCodeLocationNames) {
         ReporterUtils.printHeader(writer, "Extraction results:");
         boolean printedAny = false;
         for (final DetectorEvaluationTree it : rootEvaluation.asFlatList()) {

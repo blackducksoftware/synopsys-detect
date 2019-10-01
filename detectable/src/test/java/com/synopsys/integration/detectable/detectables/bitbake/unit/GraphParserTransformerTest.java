@@ -41,6 +41,18 @@ public class GraphParserTransformerTest {
     }
 
     @Test
+    public void parsedVersionFromLabelWithEpoch_PackageDepends() {
+        final HashMap<String, GraphEdge> edges = new HashMap<>();
+        final HashMap<String, GraphNode> nodes = new HashMap<>();
+
+        addNode("name", "name epoch:version\\n/some/path/to.bb", nodes, edges);
+        final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, BitbakeFileType.PACKAGE_DEPENDS);
+
+        Assert.assertEquals(1, bitbakeGraph.getNodes().size());
+        Assert.assertEquals("epoch:version", bitbakeGraph.getNodes().get(0).getVersion().get());
+    }
+
+    @Test
     public void parsedRelationship_RecipeDepends() {
         final HashMap<String, GraphEdge> edges = new HashMap<>();
         final HashMap<String, GraphNode> nodes = new HashMap<>();

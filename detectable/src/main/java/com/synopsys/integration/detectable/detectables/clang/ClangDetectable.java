@@ -41,7 +41,6 @@ import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetecta
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManager;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerRunner;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class ClangDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

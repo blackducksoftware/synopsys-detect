@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +66,7 @@ public class SimpleExecutableRunner implements ExecutableRunner {
             final ProcessBuilder processBuilder = executable.createProcessBuilder();
             final Process process = processBuilder.start();
 
-            try (InputStream standardOutputStream = process.getInputStream(); InputStream standardErrorStream = process.getErrorStream()) {
+            try (final InputStream standardOutputStream = process.getInputStream(); final InputStream standardErrorStream = process.getErrorStream()) {
                 final ExecutableStreamThread standardOutputThread = new ExecutableStreamThread(standardOutputStream, logger::debug, logger::trace);
                 standardOutputThread.start();
 

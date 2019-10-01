@@ -53,14 +53,14 @@ public class GradleReportTransformer {
     public CodeLocation transform(final GradleReport gradleReport) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        for (final GradleConfiguration configuration : gradleReport.configurations) {
-            logger.trace(String.format("Adding configuration to the graph: %s", configuration.name));
+        for (final GradleConfiguration configuration : gradleReport.getConfigurations()) {
+            logger.trace(String.format("Adding configuration to the graph: %s", configuration.getName()));
             addConfigurationToGraph(graph, configuration);
         }
 
-        final ExternalId projectId = externalIdFactory.createMavenExternalId(gradleReport.projectGroup, gradleReport.projectName, gradleReport.projectVersionName);
-        if (StringUtils.isNotBlank(gradleReport.projectSourcePath)) {
-            return new CodeLocation(graph, projectId, new File(gradleReport.projectSourcePath));
+        final ExternalId projectId = externalIdFactory.createMavenExternalId(gradleReport.getProjectGroup(), gradleReport.getProjectName(), gradleReport.getProjectVersionName());
+        if (StringUtils.isNotBlank(gradleReport.getProjectSourcePath())) {
+            return new CodeLocation(graph, projectId, new File(gradleReport.getProjectSourcePath()));
         } else {
             return new CodeLocation(graph, projectId);
         }
@@ -70,7 +70,7 @@ public class GradleReportTransformer {
         final DependencyHistory history = new DependencyHistory();
         Optional<Integer> skipUntil = Optional.empty();
 
-        for (final GradleTreeNode currentNode : configuration.children) {
+        for (final GradleTreeNode currentNode : configuration.getChildren()) {
 
             if (skipUntil.isPresent() && currentNode.getLevel() <= skipUntil.get()) {
                 skipUntil = Optional.empty();
@@ -84,7 +84,7 @@ public class GradleReportTransformer {
                 continue;
             }
 
-            final GradleGav gav = currentNode.getGav().get();
+            final GradleGav gav = currentNode.getGav().get(); // TODO: Why are we not doing an isPresent() check here?
             final ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getArtifact(), gav.getVersion());
             final Dependency currentDependency = new Dependency(gav.getArtifact(), gav.getVersion(), externalId);
 

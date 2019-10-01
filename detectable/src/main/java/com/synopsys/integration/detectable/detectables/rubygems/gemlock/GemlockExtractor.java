@@ -31,8 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -46,7 +44,7 @@ public class GemlockExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(final File directory, final File gemlock) {
+    public Extraction extract(final File gemlock) {
         try {
             final List<String> gemlockText = Files.readAllLines(gemlock.toPath(), StandardCharsets.UTF_8);
             logger.debug(String.join(System.lineSeparator(), gemlockText));

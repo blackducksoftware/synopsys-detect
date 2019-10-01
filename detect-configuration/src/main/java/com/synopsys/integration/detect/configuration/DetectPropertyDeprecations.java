@@ -25,8 +25,9 @@ package com.synopsys.integration.detect.configuration;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("deprecation")
 public class DetectPropertyDeprecations {
-    public static final Map<DetectProperty, DetectProperty> PROPERTY_OVERRIDES = new HashMap<>();
+    static final Map<DetectProperty, DetectProperty> PROPERTY_OVERRIDES = new HashMap<>();
 
     static {
         PROPERTY_OVERRIDES.put(DetectProperty.LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION, DetectProperty.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION);

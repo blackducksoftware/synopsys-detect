@@ -25,23 +25,20 @@ package com.synopsys.integration.detect.util.filter;
 import java.util.Optional;
 
 import com.synopsys.integration.detect.DetectTool;
-import com.synopsys.integration.detect.util.filter.DetectFilter;
-import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 
 public class DetectToolFilter {
-
     private final DetectFilter excludedIncludedFilter;
     private final Optional<Boolean> deprecatedSigScanDisabled;
     private final Optional<Boolean> deprecatedPolarisEnabled;
 
-    public DetectToolFilter(String excludedTools, String includedTools, Optional<Boolean> deprecatedSigScanDisabled, Optional<Boolean> deprecatedPolarisEnabled) {
+    public DetectToolFilter(final String excludedTools, final String includedTools, final Optional<Boolean> deprecatedSigScanDisabled, final Optional<Boolean> deprecatedPolarisEnabled) {
         this.excludedIncludedFilter = new DetectOverrideableFilter(excludedTools, includedTools);
 
         this.deprecatedSigScanDisabled = deprecatedSigScanDisabled;
         this.deprecatedPolarisEnabled = deprecatedPolarisEnabled;
     }
 
-    public boolean shouldInclude(DetectTool detectTool) {
+    public boolean shouldInclude(final DetectTool detectTool) {
 
         if (detectTool == DetectTool.SIGNATURE_SCAN && deprecatedSigScanDisabled.isPresent()) {
             return !deprecatedSigScanDisabled.get();

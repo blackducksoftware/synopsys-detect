@@ -40,7 +40,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
         printWelcome();
 
         final Boolean connectToHub = askYesOrNo("Would you like to connect to a Black Duck server?");
-        if (connectToHub == true) {
+        if (connectToHub) {
             boolean connected = false;
             boolean skipConnectionTest = false;
             while (!connected && !skipConnectionTest) {
@@ -121,8 +121,8 @@ public class DefaultInteractiveMode extends InteractiveMode {
 
         final Boolean scan = askYesOrNo("Would you like run a CLI scan?");
         if (!scan) {
-            setProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, "true");
-        } else if (scan && connectToHub) {
+            setProperty(DetectProperty.DETECT_TOOLS_EXCLUDED, "SIGNATURE_SCAN");
+        } else if (connectToHub) {
             final Boolean upload = askYesOrNo("Would you like to upload CLI scan results to the Black Duck server?");
             if (!upload) {
                 setProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, "true");

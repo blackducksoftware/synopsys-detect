@@ -32,13 +32,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
@@ -48,10 +41,12 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
+import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
+import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
-
-import freemarker.template.utility.StringUtil;
 
 public class AggregateBdioCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -59,19 +54,17 @@ public class AggregateBdioCreator {
     private final SimpleBdioFactory simpleBdioFactory;
     private final IntegrationEscapeUtil integrationEscapeUtil;
     private final CodeLocationNameManager codeLocationNameManager;
-    private final DetectConfiguration detectConfiguration;
     private final DetectBdioWriter detectBdioWriter;
 
-    public AggregateBdioCreator(final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil,
-        final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, DetectBdioWriter detectBdioWriter) {
+    public AggregateBdioCreator(final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil, final CodeLocationNameManager codeLocationNameManager, final DetectBdioWriter detectBdioWriter) {
         this.simpleBdioFactory = simpleBdioFactory;
         this.integrationEscapeUtil = integrationEscapeUtil;
         this.codeLocationNameManager = codeLocationNameManager;
-        this.detectConfiguration = detectConfiguration;
         this.detectBdioWriter = detectBdioWriter;
     }
 
-    public Optional<UploadTarget> createAggregateBdioFile(String aggregateName, boolean uploadEmptyAggregate, File sourcePath, File bdioDirectory, final List<DetectCodeLocation> codeLocations, NameVersion projectNameVersion)
+    public Optional<UploadTarget> createAggregateBdioFile(final String aggregateName, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
+        final NameVersion projectNameVersion)
         throws DetectUserFriendlyException {
         final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations);
 
@@ -84,7 +77,7 @@ public class AggregateBdioCreator {
 
         detectBdioWriter.writeBdioFile(aggregateBdioFile, aggregateBdioDocument);
 
-        boolean aggregateHasDependencies = aggregateDependencyGraph.getRootDependencies().size() > 0;
+        final boolean aggregateHasDependencies = aggregateDependencyGraph.getRootDependencies().size() > 0;
         if (aggregateHasDependencies || uploadEmptyAggregate) {
             return Optional.of(UploadTarget.createDefault(codeLocationName, aggregateBdioFile));
         } else {
@@ -93,7 +86,7 @@ public class AggregateBdioCreator {
         }
     }
 
-    private DependencyGraph createAggregateDependencyGraph(File sourcePath, final List<DetectCodeLocation> codeLocations) {
+    private DependencyGraph createAggregateDependencyGraph(final File sourcePath, final List<DetectCodeLocation> codeLocations) {
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
@@ -105,7 +98,7 @@ public class AggregateBdioCreator {
         return aggregateDependencyGraph;
     }
 
-    private Dependency createAggregateDependency(File sourcePath, final DetectCodeLocation codeLocation) {
+    private Dependency createAggregateDependency(final File sourcePath, final DetectCodeLocation codeLocation) {
         String name = null;
         String version = null;
         try {
@@ -119,7 +112,7 @@ public class AggregateBdioCreator {
         final File codeLocationSourceDir = new File(codeLocationSourcePath);
         final String relativePath = FileNameUtils.relativize(sourcePath.getAbsolutePath(), codeLocationSourceDir.getAbsolutePath());
 
-        String bomToolType;
+        final String bomToolType;
         if (codeLocation.getDockerImageName().isPresent()) {
             bomToolType = "docker"; // TODO: Should docker image name be considered here?
         } else {

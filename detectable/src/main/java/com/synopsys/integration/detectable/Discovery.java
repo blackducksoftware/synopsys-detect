@@ -22,14 +22,6 @@
  */
 package com.synopsys.integration.detectable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-
 public class Discovery {
     private final DiscoveryResultType result;
     private final Exception error;
@@ -105,16 +97,15 @@ public class Discovery {
             return this;
         }
 
-        public Builder success(String projectName, String projectVersion) {
+        public Builder success(final String projectName, final String projectVersion) {
             return success().projectName(projectName).projectVersion(projectVersion);
         }
 
         public Builder skipped() {
-            this.result = DiscoveryResultType.SUCCESS;
-            return this;
+            return success();
         }
 
-        public Builder success(Extraction extraction) {
+        public Builder success(final Extraction extraction) {
             this.extraction = extraction;
             this.projectName = extraction.getProjectName();
             this.projectVersion = extraction.getProjectVersion();

@@ -38,8 +38,8 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 
 public class GoVendorDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    public static final String VENDOR_JSON_DIRNAME = "vendor";
-    public static final String VENDOR_JSON_FILENAME = "vendor.json";
+    private static final String VENDOR_JSON_DIRNAME = "vendor";
+    private static final String VENDOR_JSON_FILENAME = "vendor.json";
 
     private final FileFinder fileFinder;
     private final GoVendorExtractor goVendorExtractor;
@@ -54,7 +54,7 @@ public class GoVendorDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        File vendorDir  = fileFinder.findFile(environment.getDirectory(), VENDOR_JSON_DIRNAME);
+        final File vendorDir = fileFinder.findFile(environment.getDirectory(), VENDOR_JSON_DIRNAME);
         if (vendorDir == null) {
             logger.trace(String.format("Dir %s not found", VENDOR_JSON_DIRNAME));
             return new FileNotFoundDetectableResult(VENDOR_JSON_FILENAME);
@@ -75,7 +75,6 @@ public class GoVendorDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        //addRelevantDiagnosticFile(vendorJson);
-        return goVendorExtractor.extract(environment.getDirectory(), vendorJson);
+        return goVendorExtractor.extract(vendorJson);
     }
 }

@@ -22,21 +22,9 @@
  */
 package com.synopsys.integration.detect.tool;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import com.synopsys.integration.detect.kotlin.nameversion.NameVersionDecision;
-import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
 import com.synopsys.integration.util.NameVersion;
 
 public class UniversalToolsResult {
-    public UniversalToolsResultType getResultType() {
-        return resultType;
-    }
-
     public NameVersion getNameVersion() {
         return nameVersion;
     }
@@ -46,19 +34,19 @@ public class UniversalToolsResult {
         SUCCESS
     }
 
-    private UniversalToolsResultType resultType;
-    private NameVersion nameVersion;
+    private final UniversalToolsResultType resultType;
+    private final NameVersion nameVersion;
 
-    public UniversalToolsResult(UniversalToolsResultType resultType, NameVersion nameVersion) {
+    public UniversalToolsResult(final UniversalToolsResultType resultType, final NameVersion nameVersion) {
         this.resultType = resultType;
         this.nameVersion = nameVersion;
     }
 
-    public static UniversalToolsResult failure(NameVersion nameVersion) {
+    public static UniversalToolsResult failure(final NameVersion nameVersion) {
         return new UniversalToolsResult(UniversalToolsResultType.FAILED, nameVersion);
     }
 
-    public static UniversalToolsResult success(NameVersion nameVersion) {
+    public static UniversalToolsResult success(final NameVersion nameVersion) {
         return new UniversalToolsResult(UniversalToolsResultType.SUCCESS, nameVersion);
     }
 

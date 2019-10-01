@@ -23,12 +23,10 @@
 package com.synopsys.integration.detect.workflow.status;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.event.EventType;
 
 public class DetectIssue {
     public DetectIssueType getType() {
@@ -39,15 +37,15 @@ public class DetectIssue {
         return messages;
     }
 
-    private DetectIssueType type;
-    private List<String> messages;
+    private final DetectIssueType type;
+    private final List<String> messages;
 
-    public DetectIssue(final DetectIssueType type, List<String> messages) {
+    public DetectIssue(final DetectIssueType type, final List<String> messages) {
         this.type = type;
         this.messages = messages;
     }
 
-    public static void publish(EventSystem eventSystem, DetectIssueType type, String... messages) {
+    public static void publish(final EventSystem eventSystem, final DetectIssueType type, final String... messages) {
         eventSystem.publishEvent(Event.Issue, new DetectIssue(type, Arrays.asList(messages)));
     }
 }

@@ -28,7 +28,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
@@ -57,7 +56,7 @@ public class Rebar3TreeParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public RebarParseResult parseRebarTreeOutput(final List<String> dependencyTreeOutput, final String sourcePath) {
+    public RebarParseResult parseRebarTreeOutput(final List<String> dependencyTreeOutput) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
         final DependencyHistory history = new DependencyHistory();
         Dependency project = null;
@@ -89,10 +88,10 @@ public class Rebar3TreeParser {
         }
 
         if (project == null) {
-            CodeLocation codeLocation = new CodeLocation(graph);
+            final CodeLocation codeLocation = new CodeLocation(graph);
             return new RebarParseResult(codeLocation);
         } else {
-            CodeLocation codeLocation = new CodeLocation(graph, project.externalId);
+            final CodeLocation codeLocation = new CodeLocation(graph, project.externalId);
             return new RebarParseResult(new NameVersion(project.name, project.version), codeLocation);
         }
     }
@@ -115,7 +114,7 @@ public class Rebar3TreeParser {
         line = line.replaceFirst(HORIZONTAL_SEPARATOR_CHARACTER, "");
 
         if (line.endsWith(")")) {
-            line = line.substring(0, line.lastIndexOf("("));
+            line = line.substring(0, line.lastIndexOf('('));
         }
 
         return line.trim();
@@ -134,7 +133,7 @@ public class Rebar3TreeParser {
     public boolean isProject(final String line) {
         String forgeString = "";
         if (line.endsWith(")")) {
-            forgeString = line.substring(line.lastIndexOf("("));
+            forgeString = line.substring(line.lastIndexOf('('));
         }
 
         return PROJECT_IDENTIFIER.equals(forgeString);

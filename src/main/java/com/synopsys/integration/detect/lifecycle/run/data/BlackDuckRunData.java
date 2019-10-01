@@ -24,8 +24,6 @@ package com.synopsys.integration.detect.lifecycle.run.data;
 
 import java.util.Optional;
 
-import org.springframework.util.Assert;
-
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
@@ -40,11 +38,11 @@ public class BlackDuckRunData {
         return new BlackDuckRunData(false, null, null, null);
     }
 
-    public static BlackDuckRunData online(BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, final BlackDuckServerConfig blackDuckServerConfig) {
+    public static BlackDuckRunData online(final BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, final BlackDuckServerConfig blackDuckServerConfig) {
         return new BlackDuckRunData(true, blackDuckServicesFactory, phoneHomeManager, blackDuckServerConfig);
     }
 
-    private BlackDuckRunData(boolean isOnline, final BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
+    private BlackDuckRunData(final boolean isOnline, final BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, final BlackDuckServerConfig blackDuckServerConfig) {
         this.isOnline = isOnline;
         this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.phoneHomeManager = phoneHomeManager;

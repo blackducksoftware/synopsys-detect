@@ -26,9 +26,6 @@ import java.io.File;
 import java.util.List;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
@@ -37,16 +34,14 @@ import com.synopsys.integration.detectable.detectables.cpan.parse.CpanListParser
 
 public class CpanCliExtractor {
     private final CpanListParser cpanListParser;
-    private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;
 
-    public CpanCliExtractor(final CpanListParser cpanListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner) {
+    public CpanCliExtractor(final CpanListParser cpanListParser, final ExecutableRunner executableRunner) {
         this.cpanListParser = cpanListParser;
-        this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
     }
 
-    public Extraction extract(final File directory, final File cpanExe, final File cpanmExe, final File workingDirectory) {
+    public Extraction extract(final File cpanExe, final File cpanmExe, final File workingDirectory) {
         try {
             final ExecutableOutput cpanListOutput = executableRunner.execute(workingDirectory, cpanExe, "-l");
             final List<String> listText = cpanListOutput.getStandardOutputAsList();

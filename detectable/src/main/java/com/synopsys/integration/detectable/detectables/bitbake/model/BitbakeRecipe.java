@@ -20,16 +20,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.sbt.model;
+package com.synopsys.integration.detectable.detectables.bitbake.model;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+import java.util.List;
 
-public class SbtGraph {
-    public String sourcePath;
-    public DependencyGraph graph;
+public class BitbakeRecipe {
+    private final String name;
+    private final List<String> layerNames;
 
-    public SbtGraph(final DependencyGraph graph, final String sourcePath) {
-        this.sourcePath = sourcePath;
-        this.graph = graph;
+    public BitbakeRecipe(final String name, final List<String> layerNames) {
+        this.name = name;
+        this.layerNames = layerNames;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<String> getLayerNames() {
+        return layerNames;
+    }
+
+    public void addLayerName(final String layer) {
+        layerNames.add(layer);
     }
 }

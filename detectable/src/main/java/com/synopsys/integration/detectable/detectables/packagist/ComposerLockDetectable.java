@@ -71,7 +71,7 @@ public class ComposerLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return composerLockExtractor.extract(environment.getDirectory(), composerJson, composerLock);
+        return composerLockExtractor.extract(composerJson, composerLock);
     }
 
 }

@@ -33,10 +33,8 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.GoDepRunInitEnsureDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.NpmRunInstallDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
 public class GoDepLockDetectable extends Detectable {

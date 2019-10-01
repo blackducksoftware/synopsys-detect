@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.configuration.DetectPropertyMap;
 import com.synopsys.integration.detect.help.DetectOption;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -46,17 +45,13 @@ public class DiagnosticSystem {
     private DiagnosticLogSystem diagnosticLogSystem;
     private final DetectRun detectRun;
     private final DetectInfo detectInfo;
-    private final RelevantFileTracker relevantFileTracker;
     private final DirectoryManager directoryManager;
     private final EventSystem eventSystem;
 
-    public DiagnosticSystem(final boolean isExtendedMode, final List<DetectOption> detectOptions,
-        final DetectRun detectRun, final DetectInfo detectInfo, final RelevantFileTracker relevantFileTracker, DirectoryManager directoryManager,
-        final EventSystem eventSystem) {
+    public DiagnosticSystem(final boolean isExtendedMode, final List<DetectOption> detectOptions, final DetectRun detectRun, final DetectInfo detectInfo, final DirectoryManager directoryManager, final EventSystem eventSystem) {
         this.detectOptions = detectOptions;
         this.detectRun = detectRun;
         this.detectInfo = detectInfo;
-        this.relevantFileTracker = relevantFileTracker;
         this.directoryManager = directoryManager;
         this.eventSystem = eventSystem;
 
@@ -91,7 +86,7 @@ public class DiagnosticSystem {
     }
 
     public Map<String, String> getAdditionalDockerProperties() {
-        Map<String, String> properties = new HashMap<>();
+        final Map<String, String> properties = new HashMap<>();
         properties.put("logging.level.com.synopsys", "TRACE");
         return properties;
     }

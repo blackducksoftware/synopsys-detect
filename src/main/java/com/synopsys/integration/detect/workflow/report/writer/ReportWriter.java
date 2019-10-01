@@ -23,15 +23,15 @@
 package com.synopsys.integration.detect.workflow.report.writer;
 
 public interface ReportWriter {
-    public void writeLine();
+    void writeLine();
 
-    public void writeLine(final String line);
+    void writeLine(final String line);
 
-    public void writeLine(final String line, Exception e);
+    void writeLine(final String line, Exception e);
 
-    public void writeSeperator();
+    void writeSeparator();
 
-    public void writeHeader();
+    void writeHeader();
 
-    public void finish();
+    void finish();
 }

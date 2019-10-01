@@ -27,7 +27,7 @@ package com.synopsys.integration.detect.configuration;
 //Only the Property Authority knows the Actual Value of this property in detect, you should ask the Authority for the Value (more likely call the associated getter)
 //An Authority of None indicates that this value will never change outside of configuration and is 'Safe' for anyone to ask for the Actual Value.
 public enum PropertyAuthority {
-    None,
-    DirectoryManager,
-    AirGapManager;
+    NONE,
+    DIRECTORY_MANAGER,
+    AIR_GAP_MANAGER
 }

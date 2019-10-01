@@ -32,7 +32,6 @@ import java.util.Set;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 
 public class CodeLocationDependencyCounter {
     public Map<String, Integer> aggregateCountsByCreatorName(final Map<DetectCodeLocation, Integer> codeLocations) {

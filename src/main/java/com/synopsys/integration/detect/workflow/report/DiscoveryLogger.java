@@ -30,12 +30,8 @@ import com.synopsys.integration.detect.tool.detector.impl.DetectExtractionEnviro
 import com.synopsys.integration.detect.workflow.report.util.ObjectPrinter;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.report.writer.DebugLogReportWriter;
-import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detectable.Discovery;
-import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
-
-import freemarker.template.utility.StringUtil;
 
 public class DiscoveryLogger {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -62,7 +58,7 @@ public class DiscoveryLogger {
         logger.debug(ReportConstants.SEPERATOR);
         logger.debug("Finished discovery: " + detectorEvaluation.getDiscovery().getResult().toString());
 
-        boolean projectInformationFound = StringUtils.isNotBlank(detectorEvaluation.getDiscovery().getProjectName());
+        final boolean projectInformationFound = StringUtils.isNotBlank(detectorEvaluation.getDiscovery().getProjectName());
         logger.debug("Project information found: " + projectInformationFound);
         if (projectInformationFound) {
             logger.debug("Project name: " + detectorEvaluation.getDiscovery().getProjectName());

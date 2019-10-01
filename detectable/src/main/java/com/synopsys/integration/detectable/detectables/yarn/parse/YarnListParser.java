@@ -39,12 +39,12 @@ public class YarnListParser {
     }
 
     public List<YarnListNode> parseYarnList(final List<String> yarnListAsList) {
-        List<YarnListNode> yarnListNodes = new ArrayList<>();
+        final List<YarnListNode> yarnListNodes = new ArrayList<>();
 
         for (final String line : yarnListAsList) {
             if (shouldParseLine(line.toLowerCase().trim())) {
                 final String cleanedLine = lineLevelParser.replaceTreeCharactersWithSpaces(line);
-                YarnListNode yarnListNode = parseDependencyFromLine(cleanedLine);
+                final YarnListNode yarnListNode = parseDependencyFromLine(cleanedLine);
                 yarnListNodes.add(yarnListNode);
             }
         }
@@ -52,14 +52,11 @@ public class YarnListParser {
         return yarnListNodes;
     }
 
-    private boolean shouldParseLine(String line) {
-        if (!line.contains("@") || line.startsWith("yarn list") || line.startsWith("done in") || line.startsWith("warning")) {
-            return false;
-        }
-        return true;
+    private boolean shouldParseLine(final String line) {
+        return line.contains("@") && !line.startsWith("yarn list") && !line.startsWith("done in") && !line.startsWith("warning");
     }
 
-    public YarnListNode parseDependencyFromLine(final String cleanedLine) {
+    private YarnListNode parseDependencyFromLine(final String cleanedLine) {
         final String fuzzyNameVersion = cleanedLine.trim();
         final NameVersion nameVersion = parseNameVersion(fuzzyNameVersion);
 
@@ -68,7 +65,7 @@ public class YarnListParser {
         return new YarnListNode(lineLevel, fuzzyNameVersion, nameVersion.getName(), nameVersion.getVersion());
     }
 
-    public NameVersion parseNameVersion(String nameVersionLine) {
+    private NameVersion parseNameVersion(final String nameVersionLine) {
         String cleanedFuzzyNameVersionString = nameVersionLine;
         if (nameVersionLine.startsWith("@")) {
             cleanedFuzzyNameVersionString = nameVersionLine.substring(1);

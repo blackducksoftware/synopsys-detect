@@ -52,35 +52,36 @@ public class GemspecParser {
 
     public DependencyGraph parse(final InputStream inputStream, final boolean includeRuntimeDependencies, final boolean includeDevelopmentDependencies) throws IOException {
         final MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        
+        try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (!gemspecLineParser.shouldParseLine(line)) {
+                    continue;
+                }
 
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-            if (!gemspecLineParser.shouldParseLine(line)) {
-                continue;
+                final Optional<GemspecDependency> gemspecDependencyOptional = gemspecLineParser.parseLine(line);
+                if (!gemspecDependencyOptional.isPresent()) {
+                    continue;
+                }
+
+                final GemspecDependency gemspecDependency = gemspecDependencyOptional.get();
+
+                if (!includeRuntimeDependencies && gemspecDependency.getGemspecDependencyType() == GemspecDependencyType.RUNTIME) {
+                    logger.debug(String.format("Excluding component '%s' from graph because it is a runtime dependency", gemspecDependency.getName()));
+                    continue;
+                } else if (!includeDevelopmentDependencies && gemspecDependency.getGemspecDependencyType() == GemspecDependencyType.DEVELOPMENT) {
+                    logger.debug(String.format("Excluding component '%s' from graph because it is a development dependency", gemspecDependency.getName()));
+                    continue;
+                }
+                final String name = gemspecDependency.getName();
+                final String version = gemspecDependency.getVersion().orElse("No version");
+
+                final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, name, version);
+                final Dependency dependency = new Dependency(name, version, externalId);
+
+                dependencyGraph.addChildrenToRoot(dependency);
             }
-
-            final Optional<GemspecDependency> gemspecDependencyOptional = gemspecLineParser.parseLine(line);
-            if (!gemspecDependencyOptional.isPresent()) {
-                continue;
-            }
-
-            final GemspecDependency gemspecDependency = gemspecDependencyOptional.get();
-
-            if (!includeRuntimeDependencies && gemspecDependency.getGemspecDependencyType() == GemspecDependencyType.RUNTIME) {
-                logger.debug(String.format("Excluding component '%s' from graph because it is a runtime dependency", gemspecDependency.getName()));
-                continue;
-            } else if (!includeDevelopmentDependencies && gemspecDependency.getGemspecDependencyType() == GemspecDependencyType.DEVELOPMENT) {
-                logger.debug(String.format("Excluding component '%s' from graph because it is a development dependency", gemspecDependency.getName()));
-                continue;
-            }
-            String name = gemspecDependency.getName();
-            String version = gemspecDependency.getVersion().orElse("No version");
-
-            final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, name, version);
-            final Dependency dependency = new Dependency(name, version, externalId);
-
-            dependencyGraph.addChildrenToRoot(dependency);
         }
 
         return dependencyGraph;

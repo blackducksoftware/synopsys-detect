@@ -34,7 +34,6 @@ import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
 import com.synopsys.integration.util.NameVersion;
 
 public class RunResult {
-
     private File dockerTar = null;
     private final List<DetectToolProjectInfo> detectToolProjectInfo = new ArrayList<>();
     private final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();

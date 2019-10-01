@@ -25,7 +25,6 @@ package com.synopsys.integration.detect.help;
 import java.util.Arrays;
 
 public class ArgumentParser {
-
     private final String[] args;
 
     public ArgumentParser(final String[] args) {
@@ -40,20 +39,14 @@ public class ArgumentParser {
         for (int i = 1; i < args.length; i++) {
             final String previousArgument = args[i - 1];
             final String possibleValue = args[i];
-            if (command.equals(previousArgument) || largeCommand.equals(previousArgument)) {
-                if (isValueAcceptable(possibleValue)) {
-                    return possibleValue;
-                }
+            if ((command.equals(previousArgument) || largeCommand.equals(previousArgument)) && isValueAcceptable(possibleValue)) {
+                return possibleValue;
             }
         }
         return null;
     }
 
     private boolean isValueAcceptable(final String value) {
-        if (!value.startsWith("-")) {
-            return true;
-        }
-        return false;
+        return !value.startsWith("-");
     }
-
 }

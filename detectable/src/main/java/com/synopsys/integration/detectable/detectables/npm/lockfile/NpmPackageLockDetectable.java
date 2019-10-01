@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.Discovery;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -39,8 +38,8 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 
 public class NpmPackageLockDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    public static final String PACKAGE_LOCK_JSON = "package-lock.json";
-    public static final String PACKAGE_JSON = "package.json";
+    private static final String PACKAGE_LOCK_JSON = "package-lock.json";
+    private static final String PACKAGE_JSON = "package.json";
 
     private final FileFinder fileFinder;
     private final NpmLockfileExtractor npmLockfileExtractor;
@@ -80,11 +79,7 @@ public class NpmPackageLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        //        addRelevantDiagnosticFile(lockfile); // TODO: Jordan FIX ME
-        //        if (packageJson != null) {
-        //            addRelevantDiagnosticFile(packageJson);
-        //        }
-        return npmLockfileExtractor.extract(environment.getDirectory(), lockfile, packageJson, includeDevDependencies);
+        return npmLockfileExtractor.extract(lockfile, packageJson, includeDevDependencies);
     }
 
 }

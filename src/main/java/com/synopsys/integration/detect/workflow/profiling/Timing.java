@@ -22,9 +22,6 @@
  */
 package com.synopsys.integration.detect.workflow.profiling;
 
-import com.synopsys.integration.detectable.Detectable;
-import com.synopsys.integration.detector.base.DetectorType;
-
 public class Timing<T> {
     private final long ms;
     private final T key;

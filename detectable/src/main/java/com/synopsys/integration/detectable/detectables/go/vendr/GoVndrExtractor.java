@@ -26,14 +26,11 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -50,9 +47,9 @@ public class GoVndrExtractor {
     public Extraction extract(final File vndrConfig) {
         try {
             final VndrParser vndrParser = new VndrParser(externalIdFactory);
-            final List<String> venderConfContents = Files.readAllLines(vndrConfig.toPath(), StandardCharsets.UTF_8);
-            logger.debug(venderConfContents.stream().collect(Collectors.joining("\n")));
-            final DependencyGraph dependencyGraph = vndrParser.parseVendorConf(venderConfContents);
+            final List<String> vendorConfContents = Files.readAllLines(vndrConfig.toPath(), StandardCharsets.UTF_8);
+            logger.debug(String.join("\n", vendorConfContents));
+            final DependencyGraph dependencyGraph = vndrParser.parseVendorConf(vendorConfContents);
             final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
             return new Extraction.Builder().success(codeLocation).build();
         } catch (final Exception e) {

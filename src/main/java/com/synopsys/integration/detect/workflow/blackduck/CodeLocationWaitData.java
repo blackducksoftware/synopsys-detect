@@ -27,8 +27,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 
 public class CodeLocationWaitData {

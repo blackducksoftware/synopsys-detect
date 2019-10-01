@@ -20,29 +20,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.result;
+package com.synopsys.integration.detectable.detectables.bitbake;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.synopsys.integration.detectable.Detectable;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 
-public class YieldedDetectableResult extends FailedDetectableResult {
-    private final Set<Detectable> yieldedTo;
+public class BitbakeRecipesToLayerMapConverter {
+    public Map<String, String> convert(final List<BitbakeRecipe> bitbakeRecipes) {
+        final Map<String, String> recipeNameToLayersMap = new HashMap<>();
 
-    public YieldedDetectableResult(final Detectable yielded) {
-        yieldedTo = new HashSet<>();
-        yieldedTo.add(yielded);
-    }
+        for (final BitbakeRecipe bitbakeRecipe : bitbakeRecipes) {
+            final String key = bitbakeRecipe.getName();
+            bitbakeRecipe.getLayerNames().stream().findFirst().ifPresent(layer -> recipeNameToLayersMap.put(key, layer));
+        }
 
-    public YieldedDetectableResult(final Set<Detectable> yieldedTo) {
-        this.yieldedTo = yieldedTo;
-    }
-
-    @Override
-    public String toDescription() {
-        final String yielded = yieldedTo.stream().map(it -> it.getDescriptiveName()).collect(Collectors.joining(", "));
-        return "Yielded to detectors: " + yielded;
+        return recipeNameToLayersMap;
     }
 }

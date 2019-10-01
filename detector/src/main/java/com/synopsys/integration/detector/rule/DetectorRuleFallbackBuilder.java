@@ -31,8 +31,8 @@ public class DetectorRuleFallbackBuilder {
         this.failingDetector = failingDetector;
     }
 
-    public DetectorRuleFallbackBuilder to(final DetectorRule Detector) {
-        this.fallbackToDetector = Detector;
+    public DetectorRuleFallbackBuilder to(final DetectorRule detector) {
+        this.fallbackToDetector = detector;
         return this;
     }
 

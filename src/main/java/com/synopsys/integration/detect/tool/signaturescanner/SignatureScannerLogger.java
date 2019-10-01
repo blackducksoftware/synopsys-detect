@@ -31,11 +31,11 @@ public class SignatureScannerLogger extends IntLogger {
 
     private final Logger logger;
 
-    public SignatureScannerLogger(Logger logger) {
+    public SignatureScannerLogger(final Logger logger) {
         this.logger = logger;
     }
 
-    private boolean shouldInfo(String line) {
+    private boolean shouldInfo(final String line) {
         if (line.contains("INFO: ")) { //redirect sig scan INFO level to DEBUG.
             return false;
         } else {
@@ -105,7 +105,7 @@ public class SignatureScannerLogger extends IntLogger {
 
     @Override
     public void setLogLevel(final LogLevel logLevel) {
-
+        // TODO: Actually do something?
     }
 
     @Override

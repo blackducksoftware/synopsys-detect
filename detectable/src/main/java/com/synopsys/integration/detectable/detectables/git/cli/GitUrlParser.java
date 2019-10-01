@@ -33,12 +33,12 @@ public class GitUrlParser {
 
     public String getRepoName(final String remoteUrlString) throws IntegrationException, MalformedURLException {
         final String remoteUrlPath;
-        if (remoteUrlString.startsWith("ssh://")) {
+        if (remoteUrlString.startsWith("ssh://") || remoteUrlString.startsWith("git://")) {
             // Parses urls such as: ssh://user@synopsys.com:12345/blackducksoftware/synopsys-detect
-            final int lastIndexOfSlash = remoteUrlString.lastIndexOf("/");
+            final int lastIndexOfSlash = remoteUrlString.lastIndexOf('/');
             final String projectName = remoteUrlString.substring(lastIndexOfSlash);
             final String remainder = remoteUrlString.substring(0, lastIndexOfSlash);
-            final int remainderLastIndexOfSlash = remainder.lastIndexOf("/");
+            final int remainderLastIndexOfSlash = remainder.lastIndexOf('/');
             final String organization = remainder.substring(remainderLastIndexOfSlash);
             remoteUrlPath = organization + projectName;
         } else if (remoteUrlString.contains("@")) {

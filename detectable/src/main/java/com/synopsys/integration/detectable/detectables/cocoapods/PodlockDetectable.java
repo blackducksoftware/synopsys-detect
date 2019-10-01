@@ -64,8 +64,7 @@ public class PodlockDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        // addRelevantDiagnosticFile(foundPodlock); // TODO: Jordan FIX ME
-        return podlockExtractor.extract(environment.getDirectory(), foundPodlock);
+        return podlockExtractor.extract(foundPodlock);
     }
 
 }

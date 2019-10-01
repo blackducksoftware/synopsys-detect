@@ -1,7 +1,5 @@
 package com.synopsys.integration.detectable.detectables.npm.lockfile.functional;
 
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,13 +11,13 @@ import com.synopsys.integration.detectable.util.GraphCompare;
 
 public class NpmOutputParserTest {
     @Test
-    public void npmCliDependencyFinder() throws IOException {
+    public void npmCliDependencyFinder() {
         final NpmCliParser parser = new NpmCliParser(new ExternalIdFactory());
         final String testIn = FunctionalTestFiles.asString("/npm/packman_proj_dependencies.json");
-        final NpmParseResult result = parser.convertNpmJsonFileToCodeLocation("source", testIn);
+        final NpmParseResult result = parser.convertNpmJsonFileToCodeLocation(testIn);
 
-        Assert.assertEquals(result.projectName, "node-js");
-        Assert.assertEquals(result.projectVersion, "0.2.0");
-        GraphCompare.assertEqualsResource("/npm/npmParseOutput_graph.json", result.codeLocation.getDependencyGraph());
+        Assert.assertEquals("node-js", result.getProjectName());
+        Assert.assertEquals("0.2.0", result.getProjectVersion());
+        GraphCompare.assertEqualsResource("/npm/npmParseOutput_graph.json", result.getCodeLocation().getDependencyGraph());
     }
 }

@@ -29,10 +29,7 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
@@ -42,14 +39,12 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
 
 public class PipenvGraphParser {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    public static final String TOP_LEVEL_SEPARATOR = "==";
+    private static final String TOP_LEVEL_SEPARATOR = "==";
     public static final String DEPENDENCY_INDENTATION = "  ";
-    public static final String DEPENDENCY_NAME_PREFIX = "- ";
-    public static final String DEPENDENCY_NAME_SUFFIX = " [";
-    public static final String DEPENDENCY_VERSION_PREFIX = "installed: ";
-    public static final String DEPENDENCY_VERSION_SUFFIX = "]";
+    private static final String DEPENDENCY_NAME_PREFIX = "- ";
+    private static final String DEPENDENCY_NAME_SUFFIX = " [";
+    private static final String DEPENDENCY_VERSION_PREFIX = "installed: ";
+    private static final String DEPENDENCY_VERSION_SUFFIX = "]";
 
     private final ExternalIdFactory externalIdFactory;
 
@@ -86,7 +81,7 @@ public class PipenvGraphParser {
             }
 
             if (dependencyStack.size() > 0) {
-                Dependency peeked = dependencyStack.peek();
+                final Dependency peeked = dependencyStack.peek();
                 if (matchesProject(peeked, projectName, projectVersionName)) {
                     dependencyGraph.addChildToRoot(dependency);
                 } else {
@@ -111,7 +106,7 @@ public class PipenvGraphParser {
         }
     }
 
-    private boolean matchesProject(Dependency dependency, String projectName, String projectVersion) {
+    private boolean matchesProject(final Dependency dependency, final String projectName, final String projectVersion) {
         return dependency.name != null && dependency.version != null && dependency.name.equals(projectName) && dependency.version.equals(projectVersion);
     }
 

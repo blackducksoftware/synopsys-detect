@@ -82,7 +82,7 @@ public class DetectorFinder {
         try (final Stream<Path> pathStream = Files.list(directory.toPath())) {
             return pathStream.map(Path::toFile)
                        .filter(File::isDirectory)
-                       .filter(it -> filePredicate.test(it))
+                       .filter(filePredicate)
                        .collect(Collectors.toList());
         } catch (final IOException e) {
             throw new DetectorFinderDirectoryListException(String.format("Could not get the subdirectories for %s. %s", directory.getAbsolutePath(), e.getMessage()), e);

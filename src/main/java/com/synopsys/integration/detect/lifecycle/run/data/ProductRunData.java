@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.data;
 
-import java.util.Optional;
-
 public class ProductRunData {
     private final PolarisRunData polarisRunData;
     private final BlackDuckRunData blackDuckRunData;

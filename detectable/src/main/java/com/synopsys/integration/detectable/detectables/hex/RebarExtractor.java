@@ -56,7 +56,7 @@ public class RebarExtractor {
 
             final Executable rebar3TreeExe = new Executable(directory, envVars, rebarExe.toString(), arguments);
             final List<String> output = executableRunner.execute(rebar3TreeExe).getStandardOutputAsList();
-            final RebarParseResult parseResult = rebarTreeParser.parseRebarTreeOutput(output, directory.toString());
+            final RebarParseResult parseResult = rebarTreeParser.parseRebarTreeOutput(output);
 
             codeLocations.add(parseResult.getCodeLocation());
 

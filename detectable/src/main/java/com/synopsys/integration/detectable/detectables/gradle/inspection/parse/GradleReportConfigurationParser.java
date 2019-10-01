@@ -25,24 +25,19 @@ package com.synopsys.integration.detectable.detectables.gradle.inspection.parse;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleConfiguration;
 
 public class GradleReportConfigurationParser {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final GradleReportLineParser parser = new GradleReportLineParser();
 
     public GradleConfiguration parse(final String header, final List<String> dependencyLines) {
         final GradleConfiguration configuration = new GradleConfiguration();
 
-        configuration.name = parseConfigurationName(header);
+        configuration.setName(parseConfigurationName(header));
 
-        configuration.children = dependencyLines.stream()
-                                     .map(parser::parseLine)
-                                     .collect(Collectors.toList());
+        configuration.setChildren(dependencyLines.stream()
+                                      .map(parser::parseLine)
+                                      .collect(Collectors.toList()));
 
         return configuration;
     }

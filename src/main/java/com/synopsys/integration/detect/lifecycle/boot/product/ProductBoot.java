@@ -67,7 +67,7 @@ public class ProductBoot {
                     final PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
                     blackDuckRunData = BlackDuckRunData.online(blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
                 } else {
-                    if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES, PropertyAuthority.None)) {
+                    if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES, PropertyAuthority.NONE)) {
                         logger.info("Failed to connect to Black Duck: " + blackDuckConnectivityResult.getFailureReason());
                         logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.", DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES.getPropertyName()));
                     } else {
@@ -91,7 +91,7 @@ public class ProductBoot {
             }
         }
 
-        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.None)) {
+        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.NONE)) {
             logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
             return null;
         }

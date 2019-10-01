@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,15 +40,5 @@ public class ScopedDependency extends Dependency {
         } else {
             this.scope = scope;
         }
-    }
-
-    public boolean isInScope(final String targetScope) {
-        if (StringUtils.isBlank(targetScope)) {
-            return true;
-        }
-        if (scope.equals(targetScope)) {
-            return true;
-        }
-        return false;
     }
 }

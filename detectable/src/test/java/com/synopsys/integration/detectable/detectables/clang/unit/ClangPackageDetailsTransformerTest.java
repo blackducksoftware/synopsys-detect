@@ -55,7 +55,7 @@ public class ClangPackageDetailsTransformerTest {
 
         // The real test is: Does this get called: (if not, test will fail)
         Mockito.when(externalIdFactory.createArchitectureExternalId(forge, packageName, packageVersion, packageArch)).thenReturn(externalId);
-        final CodeLocation codeLocation = transformer.toCodeLocation(codeLocationForge, dependencyForges, rootDir, packages);
+        final CodeLocation codeLocation = transformer.toCodeLocation(dependencyForges, packages);
 
         assertEquals(1, codeLocation.getDependencyGraph().getRootDependencies().size());
         final Dependency generatedDependency = codeLocation.getDependencyGraph().getRootDependencies().iterator().next();

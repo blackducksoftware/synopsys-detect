@@ -45,8 +45,8 @@ public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
     }
 
     @Override
-    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException {
-        List<PackageDetails> packageDetailsList = new ArrayList<>();
+    public List<PackageDetails> resolvePackages(final ClangPackageManagerInfo currentPackageManager, final ExecutableRunner executableRunner, final File workingDirectory, final String queryPackageOutput) throws ExecutableRunnerException {
+        final List<PackageDetails> packageDetailsList = new ArrayList<>();
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
             logger.trace(String.format("packageLine: %s", packageLine));
@@ -75,9 +75,6 @@ public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
         if (packageLine.contains(" is not owned by ")) {
             return false;
         }
-        if (packageLine.contains("epoch:") && packageLine.contains("name:") && packageLine.contains("version:") && packageLine.contains("arch:")) {
-            return true;
-        }
-        return false;
+        return packageLine.contains("epoch:") && packageLine.contains("name:") && packageLine.contains("version:") && packageLine.contains("arch:");
     }
 }

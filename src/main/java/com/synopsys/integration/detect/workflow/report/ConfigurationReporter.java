@@ -29,17 +29,17 @@ import com.synopsys.integration.detect.help.DetectOption;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 
 public class ConfigurationReporter {
-    public void writeReport(final ReportWriter writer, DetectInfo detectInfo, final List<DetectOption> detectOptions) {
-        writer.writeSeperator();
+    public void writeReport(final ReportWriter writer, final DetectInfo detectInfo, final List<DetectOption> detectOptions) {
+        writer.writeSeparator();
         writer.writeLine("Detect Info");
-        writer.writeSeperator();
+        writer.writeSeparator();
         writer.writeLine("Detect Version: " + detectInfo.getDetectVersion());
         writer.writeLine("Operating System: " + detectInfo.getCurrentOs());
-        writer.writeSeperator();
+        writer.writeSeparator();
         writer.writeLine("Detect Configuration");
-        writer.writeSeperator();
-        DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
+        writer.writeSeparator();
+        final DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
         detectConfigurationReporter.print(writer, detectOptions, false);
-        writer.writeSeperator();
+        writer.writeSeparator();
     }
 }

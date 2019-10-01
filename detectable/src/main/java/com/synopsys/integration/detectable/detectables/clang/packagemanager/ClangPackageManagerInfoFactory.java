@@ -22,33 +22,15 @@
  */
 package com.synopsys.integration.detectable.detectables.clang.packagemanager;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.bdio.model.Forge;
 
 public class ClangPackageManagerInfoFactory {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     public static ClangPackageManagerInfoFactory standardFactory() {
         return new ClangPackageManagerInfoFactory();
     }
 
-    public List<ClangPackageManagerInfo> createPackageManagers() {
-        List<ClangPackageManagerInfo> packageManagers = new ArrayList<>();
-
-        packageManagers.add(rpm());
-        packageManagers.add(apk());
-        packageManagers.add(dpkg());
-
-        return packageManagers;
-    }
-
-    public ClangPackageManagerInfo rpm(){
-        ClangPackageManagerInfoBuilder rpm = new ClangPackageManagerInfoBuilder();
+    public ClangPackageManagerInfo rpm() {
+        final ClangPackageManagerInfoBuilder rpm = new ClangPackageManagerInfoBuilder();
         rpm.setName("rpm");
         rpm.setCmd("rpm");
         rpm.setForge(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT);
@@ -58,8 +40,8 @@ public class ClangPackageManagerInfoFactory {
         return rpm.build();
     }
 
-    public ClangPackageManagerInfo dpkg(){
-        ClangPackageManagerInfoBuilder dpkg = new ClangPackageManagerInfoBuilder();
+    public ClangPackageManagerInfo dpkg() {
+        final ClangPackageManagerInfoBuilder dpkg = new ClangPackageManagerInfoBuilder();
         dpkg.setName("dpkg");
         dpkg.setCmd("dpkg");
         dpkg.setForge(Forge.UBUNTU, Forge.DEBIAN);
@@ -70,8 +52,8 @@ public class ClangPackageManagerInfoFactory {
         return dpkg.build();
     }
 
-    public ClangPackageManagerInfo apk(){
-        ClangPackageManagerInfoBuilder apk = new ClangPackageManagerInfoBuilder();
+    public ClangPackageManagerInfo apk() {
+        final ClangPackageManagerInfoBuilder apk = new ClangPackageManagerInfoBuilder();
         apk.setName("apk");
         apk.setCmd("apk");
         apk.setForge(Forge.ALPINE);

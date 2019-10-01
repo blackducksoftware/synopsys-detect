@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (c) 2019 Synopsys, Inc.
  *
@@ -20,7 +20,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.status;
+package com.synopsys.integration.detectable.detectables.bitbake.model;
 
-public class BinaryScanStatus {
+public class BitbakeLayer {
+    private final String name;
+    private final String version;
+
+    public BitbakeLayer(final String name, final String version) {
+        this.name = name;
+        this.version = version;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
 }

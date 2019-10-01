@@ -36,7 +36,7 @@ public class DetailedSearchSummaryReporter {
         printDirectoriesDebug(writer, rootEvaluation.asFlatList());
     }
 
-    private void printDirectoriesDebug(final ReportWriter writer, List<DetectorEvaluationTree> trees) {
+    private void printDirectoriesDebug(final ReportWriter writer, final List<DetectorEvaluationTree> trees) {
         for (final DetectorEvaluationTree tree : trees) {
             final List<String> toPrint = new ArrayList<>();
             toPrint.addAll(printDetails("      APPLIED: ", DetectorEvaluationUtils.applicableChildren(tree), DetectorEvaluation::getApplicabilityMessage));
@@ -44,17 +44,17 @@ public class DetailedSearchSummaryReporter {
             toPrint.addAll(printDetails("DID NOT APPLY: ", DetectorEvaluationUtils.searchableButNotApplicableChildren(tree), DetectorEvaluation::getApplicabilityMessage));
 
             if (toPrint.size() > 0) {
-                writer.writeSeperator();
+                writer.writeSeparator();
                 writer.writeLine("Detailed search results for directory");
                 writer.writeLine(tree.getDirectory().toString());
-                writer.writeSeperator();
-                toPrint.stream().sorted().forEach(it -> writer.writeLine(it));
-                writer.writeSeperator();
+                writer.writeSeparator();
+                toPrint.stream().sorted().forEach(writer::writeLine);
+                writer.writeSeparator();
             }
         }
     }
 
-    private List<String> printDetails(final String prefix, final List<DetectorEvaluation> details, Function<DetectorEvaluation, String> reason) {
+    private List<String> printDetails(final String prefix, final List<DetectorEvaluation> details, final Function<DetectorEvaluation, String> reason) {
         final List<String> toPrint = new ArrayList<>();
         for (final DetectorEvaluation detail : details) {
             toPrint.add(prefix + detail.getDetectorRule().getDescriptiveName() + ": " + reason.apply(detail));

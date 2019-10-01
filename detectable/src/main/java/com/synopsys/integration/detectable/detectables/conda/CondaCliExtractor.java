@@ -29,9 +29,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
@@ -40,13 +37,11 @@ import com.synopsys.integration.detectable.detectables.conda.parser.CondaListPar
 
 public class CondaCliExtractor {
     private final CondaListParser condaListParser;
-    private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;
     private final CondaCliDetectableOptions condaCliDetectableOptions;
 
-    public CondaCliExtractor(final CondaListParser condaListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final CondaCliDetectableOptions condaCliDetectableOptions) {
+    public CondaCliExtractor(final CondaListParser condaListParser, final ExecutableRunner executableRunner, final CondaCliDetectableOptions condaCliDetectableOptions) {
         this.condaListParser = condaListParser;
-        this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
         this.condaCliDetectableOptions = condaCliDetectableOptions;
     }

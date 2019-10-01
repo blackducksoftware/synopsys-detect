@@ -24,7 +24,6 @@ package com.synopsys.integration.detect.workflow.codelocation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,24 +31,15 @@ import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.misc.Nullable;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 
-import freemarker.template.utility.StringUtil;
-
 public class CodeLocationNameGenerator {
-    private final Logger logger = LoggerFactory.getLogger(CodeLocationNameGenerator.class);
     private final String codeLocationNameOverride;
     private final Map<String, Integer> nameCounters = new HashMap<>();
-    public static final int MAXIMUM_CODE_LOCATION_NAME_LENGTH = 250;
+    private static final int MAXIMUM_CODE_LOCATION_NAME_LENGTH = 250;
 
-    public CodeLocationNameGenerator(@Nullable String codeLocationNameOverride) {
+    public CodeLocationNameGenerator(@Nullable final String codeLocationNameOverride) {
         this.codeLocationNameOverride = codeLocationNameOverride;
     }
 
@@ -183,7 +173,7 @@ public class CodeLocationNameGenerator {
     }
 
     public String getNextCodeLocationOverrideNameSourcedBom(final DetectCodeLocation detectCodeLocation) {
-        String creator = deriveCreator(detectCodeLocation);
+        final String creator = deriveCreator(detectCodeLocation);
         final String baseName = createBomCodeLocationName(codeLocationNameOverride, creator);
 
         final int nameIndex = deriveNameNumber(baseName);
@@ -206,7 +196,7 @@ public class CodeLocationNameGenerator {
         } else {
             adjustedGivenCodeLocationName = givenCodeLocationName;
         }
-        String codeLocationName = String.format("%s %s/%s", adjustedGivenCodeLocationName, bomToolTypeString, codeLocationTypeString);
+        final String codeLocationName = String.format("%s %s/%s", adjustedGivenCodeLocationName, bomToolTypeString, codeLocationTypeString);
 
         return codeLocationName;
     }

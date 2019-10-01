@@ -22,9 +22,6 @@
  */
 package com.synopsys.integration.detect.workflow.report;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +29,6 @@ import com.synopsys.integration.detect.tool.detector.impl.DetectExtractionEnviro
 import com.synopsys.integration.detect.workflow.report.util.ObjectPrinter;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.report.writer.DebugLogReportWriter;
-import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
-import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 

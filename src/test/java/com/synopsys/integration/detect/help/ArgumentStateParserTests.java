@@ -4,23 +4,22 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ArgumentStateParserTests {
-
-    DetectArgumentStateParser parser = new DetectArgumentStateParser();
+    private final DetectArgumentStateParser parser = new DetectArgumentStateParser();
 
     @Test
     public void helpParsesValue() {
 
-        final String[] args = new String[] {"-h", "value"};
+        final String[] args = new String[] { "-h", "value" };
         final DetectArgumentState state = parser.parseArgs(args);
 
         Assert.assertTrue(state.isHelp());
-        Assert.assertEquals(state.getParsedValue(), "value");
+        Assert.assertEquals("value", state.getParsedValue());
     }
 
     @Test
     public void helpIgnoresDash() {
 
-        final String[] args = new String[] {"-h", "-ignoreme"};
+        final String[] args = new String[] { "-h", "-ignoreme" };
         final DetectArgumentState state = parser.parseArgs(args);
 
         Assert.assertTrue(state.isHelp());
@@ -30,7 +29,7 @@ public class ArgumentStateParserTests {
     @Test
     public void helpParsesInMiddleWithNoValue() {
 
-        final String[] args = new String[] {"--propert", "--property", "-h", "--property", "--property"};
+        final String[] args = new String[] { "--propert", "--property", "-h", "--property", "--property" };
         final DetectArgumentState state = parser.parseArgs(args);
 
         Assert.assertTrue(state.isHelp());
@@ -40,23 +39,21 @@ public class ArgumentStateParserTests {
     @Test
     public void helpParsesEndValue() {
 
-        final String[] args = new String[] {"--property", "--property", "-h", "value"};
+        final String[] args = new String[] { "--property", "--property", "-h", "value" };
         final DetectArgumentState state = parser.parseArgs(args);
 
         Assert.assertTrue(state.isHelp());
-        Assert.assertEquals(state.getParsedValue(), "value");
+        Assert.assertEquals("value", state.getParsedValue());
     }
 
     @Test
     public void helpParsesStartValue() {
 
-        final String[] args = new String[] {"-h", "value", "--property", "--property", "--property"};
+        final String[] args = new String[] { "-h", "value", "--property", "--property", "--property" };
         final DetectArgumentState state = parser.parseArgs(args);
 
         Assert.assertTrue(state.isHelp());
-        Assert.assertEquals(state.getParsedValue(), "value");
+        Assert.assertEquals("value", state.getParsedValue());
     }
-
-
 
 }

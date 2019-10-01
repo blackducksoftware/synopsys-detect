@@ -89,7 +89,6 @@ import com.synopsys.integration.detect.workflow.airgap.DockerAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.GradleAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.NugetAirGapCreator;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
-import com.synopsys.integration.detect.workflow.diagnostic.RelevantFileTracker;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -142,7 +141,7 @@ public class DetectBoot {
         }
 
         if (detectArgumentState.isHelpJsonDocument()) {
-            printHelpJsonDocument(options, detectInfo, configuration, gson);
+            printHelpJsonDocument(options, detectInfo, gson);
             return DetectBootResult.exit(detectConfiguration);
         }
 
@@ -162,7 +161,7 @@ public class DetectBoot {
 
         logger.debug("Configuration processed completely.");
 
-        final Optional<DetectBootResult> configurationResult = printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT, PropertyAuthority.None), detectOptionManager, detectConfiguration,
+        final Optional<DetectBootResult> configurationResult = printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT, PropertyAuthority.NONE), detectOptionManager, detectConfiguration,
             eventSystem, options);
         if (configurationResult.isPresent()) {
             return configurationResult.get();
@@ -180,7 +179,7 @@ public class DetectBoot {
 
         if (detectArgumentState.isGenerateAirGapZip()) {
             final DetectOverrideableFilter inspectorFilter = new DetectOverrideableFilter("", detectArgumentState.getParsedValue());
-            final String airGapSuffix = String.join("-", inspectorFilter.getIncludedSet().stream().sorted().collect(Collectors.toList()));
+            final String airGapSuffix = inspectorFilter.getIncludedSet().stream().sorted().collect(Collectors.joining("-"));
             final File airGapZip;
             try {
                 airGapZip = createAirGapZip(inspectorFilter, detectConfiguration, directoryManager, gson, eventSystem, configuration, airGapSuffix);
@@ -194,12 +193,9 @@ public class DetectBoot {
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
         final ProductDecider productDecider = new ProductDecider();
         final ProductDecision productDecision;
-        try {
-            logger.info("");
-            productDecision = productDecider.decide(detectConfiguration, directoryManager.getUserHome(), detectToolFilter);
-        } catch (final DetectUserFriendlyException e) {
-            return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
-        }
+
+        logger.info("");
+        productDecision = productDecider.decide(detectConfiguration, directoryManager.getUserHome(), detectToolFilter);
 
         logger.debug("Decided what products will be run. Starting product boot.");
 
@@ -252,14 +248,14 @@ public class DetectBoot {
         helpPrinter.printAppropriateHelpMessage(System.out, detectOptions, detectArgumentState);
     }
 
-    private void printHelpJsonDocument(final List<DetectOption> detectOptions, final DetectInfo detectInfo, final Configuration configuration, final Gson gson) {
+    private void printHelpJsonDocument(final List<DetectOption> detectOptions, final DetectInfo detectInfo, final Gson gson) {
         final DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
         final DetectorRuleSet build = ruleFactory.createRules(new DetectableFactory(), false);
         final DetectorRuleSet buildless = ruleFactory.createRules(new DetectableFactory(), true);
         final List<HelpJsonDetector> buildDetectors = build.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, build)).collect(Collectors.toList());
         final List<HelpJsonDetector> buildlessDetectors = buildless.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, buildless)).collect(Collectors.toList());
 
-        final HelpJsonWriter helpJsonWriter = new HelpJsonWriter(configuration, gson);
+        final HelpJsonWriter helpJsonWriter = new HelpJsonWriter(gson);
         helpJsonWriter.writeGsonDocument(String.format("synopsys-detect-%s-help.json", detectInfo.getDetectVersion()), detectOptions, buildDetectors, buildlessDetectors);
     }
 
@@ -338,15 +334,14 @@ public class DetectBoot {
     private void processDetectConfiguration(final DetectInfo detectInfo, final DetectRun detectRun, final DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
         final TildeInPathResolver tildeInPathResolver = new TildeInPathResolver(DetectConfigurationManager.USER_HOME, detectInfo.getCurrentOs());
         final DetectConfigurationManager detectConfigurationManager = new DetectConfigurationManager(tildeInPathResolver, detectConfiguration);
-        detectConfigurationManager.process(detectOptions, detectRun.getRunId());
+        detectConfigurationManager.process(detectOptions);
     }
 
     private Optional<DiagnosticSystem> createDiagnostics(
         final List<DetectOption> detectOptions, final DetectRun detectRun, final DetectInfo detectInfo, final DetectArgumentState detectArgumentState, final EventSystem eventSystem, final DirectoryManager directoryManager) {
         if (detectArgumentState.isDiagnostic() || detectArgumentState.isDiagnosticExtended()) {
             final boolean extendedMode = detectArgumentState.isDiagnosticExtended();
-            final RelevantFileTracker relevantFileTracker = new RelevantFileTracker(detectArgumentState.isDiagnostic(), detectArgumentState.isDiagnosticExtended(), directoryManager);
-            final DiagnosticSystem diagnosticSystem = new DiagnosticSystem(extendedMode, detectOptions, detectRun, detectInfo, relevantFileTracker, directoryManager, eventSystem);
+            final DiagnosticSystem diagnosticSystem = new DiagnosticSystem(extendedMode, detectOptions, detectRun, detectInfo, directoryManager, eventSystem);
             return Optional.of(diagnosticSystem);
         } else {
             return Optional.empty();
@@ -368,7 +363,7 @@ public class DetectBoot {
         final DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(executableResolver, detectConfiguration);
         final GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
         final SimpleExecutableRunner simpleExecutableRunner = new SimpleExecutableRunner();
-        final GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(artifactResolver, detectExecutableResolver, gradleInspectorInstaller, simpleExecutableRunner, configuration);
+        final GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, gradleInspectorInstaller, simpleExecutableRunner, configuration);
 
         final NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactResolver));
         final DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
