@@ -23,7 +23,7 @@
 package com.synopsys.integration.detectable.detectable.file;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.antlr.v4.runtime.misc.NotNull;
@@ -31,8 +31,14 @@ import org.antlr.v4.runtime.misc.Nullable;
 
 public interface FileFinder {
     @Nullable
-    default File findFile(File directoryToSearch, String filenamePattern) {
-        List<File> files = findFiles(directoryToSearch, Arrays.asList(filenamePattern), 0);
+    default File findFile(final File directoryToSearch, final String filenamePattern) {
+        return findFile(directoryToSearch, filenamePattern, 0);
+
+    }
+
+    @Nullable
+    default File findFile(final File directoryToSearch, final String filenamePattern, final int depth) {
+        final List<File> files = findFiles(directoryToSearch, Collections.singletonList(filenamePattern), depth);
         if (files != null && files.size() > 0) {
             return files.get(0);
         }
@@ -40,17 +46,17 @@ public interface FileFinder {
     }
 
     @NotNull
-    default List<File> findFiles(File directoryToSearch, String filenamePattern) {
-        return findFiles(directoryToSearch, Arrays.asList(filenamePattern), 0);
+    default List<File> findFiles(final File directoryToSearch, final String filenamePattern) {
+        return findFiles(directoryToSearch, Collections.singletonList(filenamePattern), 0);
     }
 
     @NotNull
-    default List<File> findFiles(File directoryToSearch, String filenamePattern, int depth) {
-        return findFiles(directoryToSearch, Arrays.asList(filenamePattern), depth);
+    default List<File> findFiles(final File directoryToSearch, final String filenamePattern, final int depth) {
+        return findFiles(directoryToSearch, Collections.singletonList(filenamePattern), depth);
     }
 
     @NotNull
-    default List<File> findFiles(File directoryToSearch, List<String> filenamePatterns) {
+    default List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns) {
         return findFiles(directoryToSearch, filenamePatterns, 0);
     }
 

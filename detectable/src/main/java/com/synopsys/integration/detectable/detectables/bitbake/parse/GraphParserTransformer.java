@@ -39,7 +39,7 @@ public class GraphParserTransformer {
 
         for (final GraphNode graphNode : graphParser.getNodes().values()) {
             final String name = getNameFromNode(graphNode);
-            final Optional<String> version = getVersionFromNode(graphNode, bitbakeFileType);
+            final String version = getVersionFromNode(graphNode, bitbakeFileType).orElse(null);
             bitbakeGraph.addNode(name, version);
         }
 
@@ -77,8 +77,13 @@ public class GraphParserTransformer {
             final String[] components = label.split("\\\\n:|\\\\n");
             return components[1];
         } else if (bitbakeFileType.equals(BitbakeFileType.PACKAGE_DEPENDS)) {
-            final String[] components = label.split(" :|\\\\n");
-            return components[1];
+            final String[] components = label.split(" |\\\\n");
+            final String version = components[1];
+            if (version.startsWith(":")) {
+                return version.substring(1);
+            } else {
+                return version;
+            }
         } else {
             throw new NotImplementedException(String.format("The %s does not support parsing of the '%s' file type.", this.getClass().getName(), bitbakeFileType.getFileName()));
         }
