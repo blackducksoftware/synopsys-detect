@@ -89,26 +89,26 @@ public class BitbakeGraphTransformer {
         return dependencyGraph;
     }
 
-    private Optional<ExternalId> generateExternalId(final String name, final String version, final Map<String, BitbakeRecipe> componentLayerMap, final Map<String, Integer> layerPriorityMap) {
-        final BitbakeRecipe bitbakeRecipe = componentLayerMap.get(name);
+    private Optional<ExternalId> generateExternalId(final String dependencyName, final String dependencyVersion, final Map<String, BitbakeRecipe> componentLayerMap, final Map<String, Integer> layerPriorityMap) {
+        final BitbakeRecipe bitbakeRecipe = componentLayerMap.get(dependencyName);
         ExternalId externalId = null;
 
         if (bitbakeRecipe == null) {
-            if (componentLayerMap.containsKey(name)) {
-                logger.warn(String.format("Component '%s==%s' is in the component layer map. But potential layers were not populated. This should be reported.", name, version));
+            if (componentLayerMap.containsKey(dependencyName)) {
+                logger.warn(String.format("Component '%s==%s' is in the component layer map. But potential layers were not populated. This should be reported.", dependencyName, dependencyVersion));
             } else {
-                logger.debug(String.format("Failed to find component '%s' in component layer map.", name));
+                logger.debug(String.format("Failed to find component '%s' in component layer map.", dependencyName));
             }
-            if (name.endsWith(NATIVE_SUFFIX)) {
-                final String alternativeName = name.replace(NATIVE_SUFFIX, "");
-                logger.debug(String.format("Generating alternative component name '%s' for '%s==%s'", alternativeName, name, version));
-                externalId = generateExternalId(alternativeName, version, componentLayerMap, layerPriorityMap).orElse(null);
+            if (dependencyName.endsWith(NATIVE_SUFFIX)) {
+                final String alternativeName = dependencyName.replace(NATIVE_SUFFIX, "");
+                logger.debug(String.format("Generating alternative component name '%s' for '%s==%s'", alternativeName, dependencyName, dependencyVersion));
+                externalId = generateExternalId(alternativeName, dependencyVersion, componentLayerMap, layerPriorityMap).orElse(null);
             } else {
-                logger.debug(String.format("'%s==%s' is not an actual component. Excluding from graph.", name, version));
+                logger.debug(String.format("'%s==%s' is not an actual component. Excluding from graph.", dependencyName, dependencyVersion));
             }
         } else {
             final Optional<BitbakeRecipe.Layer> highestPriorityLayer = getHighestPriorityLayer(bitbakeRecipe, layerPriorityMap);
-            externalId = highestPriorityLayer.map(layer -> externalIdFactory.createYoctoExternalId(layer.getLayerName(), name, version)).orElse(null);
+            externalId = highestPriorityLayer.map(layer -> externalIdFactory.createYoctoExternalId(layer.getLayerName(), dependencyName, dependencyVersion)).orElse(null);
         }
 
         return Optional.ofNullable(externalId);

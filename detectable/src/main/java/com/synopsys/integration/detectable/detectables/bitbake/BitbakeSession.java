@@ -24,9 +24,12 @@ package com.synopsys.integration.detectable.detectables.bitbake;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
+import org.antlr.v4.runtime.misc.Nullable;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
@@ -39,11 +42,9 @@ import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeResu
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeLayersParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.log.Slf4jIntLogger;
 
 public class BitbakeSession {
-    private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final FileFinder fileFinder;
     private final ExecutableRunner executableRunner;
@@ -73,29 +74,29 @@ public class BitbakeSession {
         final String bitbakeCommand = "bitbake -g " + packageName;
         final ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
         final int returnCode = executableOutput.getReturnCode();
-        BitbakeResult bitbakeResult = null;
 
-        if (returnCode == 0) {
-            for (final BitbakeFileType bitbakeFileType : BitbakeFileType.values()) {
-                File file = fileFinder.findFiles(outputDirectory, bitbakeFileType.getFileName(), 1).stream().findFirst().orElse(null);
-
-                if (file != null) {
-                    bitbakeResult = new BitbakeResult(bitbakeFileType, file);
-                    break;
-                } else {
-                    // If we didn't find the files where we expect, also look in the sourceDirectory. See IDETECT-1493.
-                    file = fileFinder.findFiles(sourceDirectory, bitbakeFileType.getFileName(), 1).stream().findFirst().orElse(null);
-                    if (file != null) {
-                        bitbakeResult = new BitbakeResult(bitbakeFileType, file);
-                        break;
-                    }
-                }
-            }
-        } else {
+        if (returnCode != 0) {
             logger.error(String.format("Executing command '%s' returned a non-zero exit code %s", bitbakeCommand, returnCode));
+            return Optional.empty();
         }
 
-        return Optional.ofNullable(bitbakeResult);
+        return Arrays.stream(BitbakeFileType.values())
+                   .map(bitbakeFileType -> getBitbakeResult(sourceDirectory, outputDirectory, bitbakeFileType))
+                   .findFirst();
+    }
+
+    @Nullable
+    private BitbakeResult getBitbakeResult(final File sourceDirectory, final File outputDirectory, final BitbakeFileType bitbakeFileType) {
+        File file = fileFinder.findFile(outputDirectory, bitbakeFileType.getFileName(), 1);
+        if (file == null) {
+            file = fileFinder.findFile(sourceDirectory, bitbakeFileType.getFileName(), 1);
+            if (file == null) {
+                return null;
+            }
+        }
+
+        return new BitbakeResult(bitbakeFileType, file);
+
     }
 
     public Map<String, BitbakeRecipe> executeBitbakeForRecipeMap() throws ExecutableRunnerException, IOException, IntegrationException {
@@ -128,7 +129,6 @@ public class BitbakeSession {
             return executableRunner.execute(outputDirectory, bashExecutable, "-c", sourceCommand.toString() + "; " + bitbakeCommand);
         } catch (final ExecutableRunnerException e) {
             logger.error(String.format("Failed executing bitbake command. %s", bitbakeCommand));
-            logger.debug(e.getMessage(), e);
             throw e;
         }
     }

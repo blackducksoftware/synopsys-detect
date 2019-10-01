@@ -30,12 +30,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,18 +112,19 @@ public class BitbakeExtractor {
     }
 
     private BitbakeGraph generateBitbakeGraph(final BitbakeSession bitbakeSession, final File sourceDirectory, final String packageName) throws ExecutableRunnerException, IOException, IntegrationException {
-        final Optional<BitbakeResult> bitbakeResult = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName);
-        if (!bitbakeResult.isPresent()) {
-            final String filesSearchedFor = StringUtils.joinWith(", ", Arrays.stream(BitbakeFileType.values()).map(BitbakeFileType::getFileName).collect(Collectors.toList()));
-            throw new IntegrationException(String.format("Failed to find any bitbake results. Looked for: %s", filesSearchedFor));
-        }
+        final BitbakeResult bitbakeResult = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName).orElseThrow(() -> {
+            final String filesSearchedFor = Arrays.stream(BitbakeFileType.values())
+                                                .map(BitbakeFileType::getFileName)
+                                                .collect(Collectors.joining(", "));
+            return new IntegrationException(String.format("Failed to find any bitbake results. Looked for: %s", filesSearchedFor));
+        });
 
-        final File fileToParse = bitbakeResult.get().getFile();
+        final File fileToParse = bitbakeResult.getFile();
         logger.trace(FileUtils.readFileToString(fileToParse, Charset.defaultCharset()));
         final InputStream dependsFileInputStream = FileUtils.openInputStream(fileToParse);
         final GraphParser graphParser = new GraphParser(dependsFileInputStream);
 
-        final BitbakeFileType bitbakeFileType = bitbakeResult.get().getBitbakeFileType();
+        final BitbakeFileType bitbakeFileType = bitbakeResult.getBitbakeFileType();
         return graphParserTransformer.transform(graphParser, bitbakeFileType);
     }
 }
