@@ -25,7 +25,6 @@ package com.synopsys.integration.detectable.detectables.bitbake;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.misc.Nullable;
@@ -37,8 +36,8 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeResult;
+import com.synopsys.integration.detectable.detectables.bitbake.model.RecipeLayerCatalog;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -94,7 +93,7 @@ public class BitbakeSession {
 
     }
 
-    public Map<String, BitbakeRecipe> executeBitbakeForRecipeMap() throws ExecutableRunnerException, IOException, IntegrationException {
+    public RecipeLayerCatalog executeBitbakeForRecipeLayerCatalog() throws ExecutableRunnerException, IOException, IntegrationException {
         final String bitbakeCommand = "bitbake-layers show-recipes";
         final ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
         if (executableOutput.getReturnCode() == 0) {

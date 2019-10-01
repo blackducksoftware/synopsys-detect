@@ -1,8 +1,7 @@
 package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
+import com.synopsys.integration.detectable.detectables.bitbake.model.RecipeLayerCatalog;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
@@ -28,14 +27,12 @@ public class BitbakeGraphTransformerTest {
         bitbakeGraph.addNode("foobar", Optional.of("12"));
         bitbakeGraph.addChild("example", "foobar");
 
-        final Map<String, BitbakeRecipe> componentLayerMap = new HashMap<>();
-        final BitbakeRecipe exampleRecipe = new BitbakeRecipe("example", Collections.singletonList(new BitbakeRecipe.Layer("meta", "1.2.3")));
-        final BitbakeRecipe foobarRecipe = new BitbakeRecipe("foobar", Collections.singletonList(new BitbakeRecipe.Layer("meta", "4.5.6")));
-        componentLayerMap.put(exampleRecipe.getName(), exampleRecipe);
-        componentLayerMap.put(foobarRecipe.getName(), foobarRecipe);
+        final RecipeLayerCatalog recipeLayerCatalog = new RecipeLayerCatalog(new HashMap<>());
+        recipeLayerCatalog.addRecipe("example", Arrays.asList("meta", "bad-layer"));
+        recipeLayerCatalog.addRecipe("foobar", Arrays.asList("meta", "bad-layer"));
 
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeLayerCatalog);
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
 
@@ -52,14 +49,12 @@ public class BitbakeGraphTransformerTest {
         bitbakeGraph.addNode("foobar", Optional.empty());
         bitbakeGraph.addChild("example", "foobar");
 
-        final Map<String, BitbakeRecipe> componentLayerMap = new HashMap<>();
-        final BitbakeRecipe exampleRecipe = new BitbakeRecipe("example", Collections.singletonList(new BitbakeRecipe.Layer("meta", "1.2.3")));
-        final BitbakeRecipe foobarRecipe = new BitbakeRecipe("foobar", Collections.singletonList(new BitbakeRecipe.Layer("meta", "4.5.6")));
-        componentLayerMap.put(exampleRecipe.getName(), exampleRecipe);
-        componentLayerMap.put(foobarRecipe.getName(), foobarRecipe);
+        final RecipeLayerCatalog recipeLayerCatalog = new RecipeLayerCatalog(new HashMap<>());
+        recipeLayerCatalog.addRecipe("example", Arrays.asList("meta", "bad-layer"));
+        recipeLayerCatalog.addRecipe("foobar", Arrays.asList("meta", "bad-layer"));
 
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeLayerCatalog);
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.hasRootSize(1);
@@ -73,12 +68,11 @@ public class BitbakeGraphTransformerTest {
         final BitbakeGraph bitbakeGraph = new BitbakeGraph();
         bitbakeGraph.addNode("example", Optional.empty());
 
-        final Map<String, BitbakeRecipe> componentLayerMap = new HashMap<>();
-        final BitbakeRecipe exampleRecipe = new BitbakeRecipe("example", Collections.singletonList(new BitbakeRecipe.Layer("meta", null)));
-        componentLayerMap.put(exampleRecipe.getName(), exampleRecipe);
+        final RecipeLayerCatalog recipeLayerCatalog = new RecipeLayerCatalog(new HashMap<>());
+        recipeLayerCatalog.addRecipe("example", Arrays.asList("meta", "bad-layer"));
 
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, componentLayerMap);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeLayerCatalog);
 
         final GraphAssert graphAssert = new GraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.hasNoDependency(externalIdFactory.createModuleNamesExternalId(Forge.YOCTO, "meta", "example", null));

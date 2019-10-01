@@ -23,14 +23,15 @@
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
+import com.synopsys.integration.detectable.detectables.bitbake.model.RecipeLayerCatalog;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
@@ -39,56 +40,61 @@ public class BitbakeRecipesParser {
 
     /**
      * @param output is the executable output.
-     * @return Component names mapped to a list of layer names.
+     * @return Component names mapped to a recipe containing the layer names.
      */
-    public Map<String, BitbakeRecipe> parseComponentLayerMap(final String output) {
-        final Map<String, BitbakeRecipe> componentLayerMap = new HashMap<>();
+    public RecipeLayerCatalog parseComponentLayerMap(final String output) {
+        final List<BitbakeRecipe> bitbakeRecipes = new ArrayList<>();
 
         boolean started = false;
-        String currentComponentName = null;
-        List<BitbakeRecipe.Layer> currentLayers = null;
+        BitbakeRecipe currentRecipe = null;
         for (final String line : output.split(System.lineSeparator())) {
             if (StringUtils.isBlank(line)) {
                 continue;
-            } else if (!started && line.trim().startsWith("=== Available recipes: ===")) {
+            }
+
+            if (!started && line.trim().startsWith("=== Available recipes: ===")) {
                 started = true;
-                continue;
-            } else if (!started) {
-                continue;
+            } else if (started) {
+                currentRecipe = parseLine(line, currentRecipe, bitbakeRecipes);
+            }
+        }
+
+        if (currentRecipe != null) {
+            bitbakeRecipes.add(currentRecipe);
+        }
+
+        final Map<String, List<String>> recipeLayerMap = bitbakeRecipes.stream()
+                                                             .collect(Collectors.toMap(BitbakeRecipe::getName, BitbakeRecipe::getLayerNames));
+
+        return new RecipeLayerCatalog(recipeLayerMap);
+    }
+
+    private BitbakeRecipe parseLine(final String line, final BitbakeRecipe currentRecipe, final List<BitbakeRecipe> bitbakeRecipes) {
+        if (line.contains(":") && !line.startsWith("  ")) {
+            // Parse beginning of new component
+            if (currentRecipe != null) {
+                bitbakeRecipes.add(currentRecipe);
             }
 
-            if (line.contains(":") && !line.startsWith("  ")) {
-                if (currentComponentName != null) {
-                    final BitbakeRecipe bitbakeRecipe = new BitbakeRecipe(currentComponentName, currentLayers);
-                    componentLayerMap.put(currentComponentName.trim(), bitbakeRecipe);
-                }
+            final String recipeName = line.replace(":", "").trim();
+            return new BitbakeRecipe(recipeName, new ArrayList<>());
+        } else if (currentRecipe != null && line.startsWith("  ")) {
+            // Parse the layer and version for the current component
+            final String trimmedLine = line.trim();
+            final int indexOfFirstSpace = trimmedLine.indexOf(' ');
+            final int indexOfLastSpace = trimmedLine.lastIndexOf(' ');
 
-                currentComponentName = line.replace(":", "").trim();
-                currentLayers = new ArrayList<>();
-            } else if (currentComponentName != null && line.startsWith("  ")) {
-                final String trimmedLine = line.trim();
-                final int indexOfFirstSpace = trimmedLine.indexOf(" ");
-                final int indexOfLastSpace = trimmedLine.lastIndexOf(" ");
-
-                if (indexOfFirstSpace != -1 && indexOfLastSpace != -1 && indexOfLastSpace + 1 < trimmedLine.length()) {
-                    final String layer = trimmedLine.substring(0, indexOfFirstSpace);
-                    final String version = trimmedLine.substring(indexOfLastSpace + 1);
-                    currentLayers.add(new BitbakeRecipe.Layer(layer, version));
-                } else {
-                    logger.debug(String.format("Failed to parse layer for component '%s' from line '%s'.", currentComponentName, line));
-                }
+            if (indexOfFirstSpace != -1 && indexOfLastSpace != -1 && indexOfLastSpace + 1 < trimmedLine.length()) {
+                final String layer = trimmedLine.substring(0, indexOfFirstSpace);
+                currentRecipe.addLayerName(layer);
             } else {
-                currentComponentName = null;
-                currentLayers = new ArrayList<>();
-                logger.debug(String.format("Failed to parse line '%s'.", line));
+                logger.debug(String.format("Failed to parse layer for component '%s' from line '%s'.", currentRecipe.getName(), line));
             }
-        }
 
-        if (currentComponentName != null) {
-            final BitbakeRecipe bitbakeRecipe = new BitbakeRecipe(currentComponentName, currentLayers);
-            componentLayerMap.put(currentComponentName.trim(), bitbakeRecipe);
+            return currentRecipe;
+        } else {
+            logger.debug(String.format("Failed to parse line '%s'.", line));
+            return currentRecipe;
         }
-
-        return componentLayerMap;
     }
 }

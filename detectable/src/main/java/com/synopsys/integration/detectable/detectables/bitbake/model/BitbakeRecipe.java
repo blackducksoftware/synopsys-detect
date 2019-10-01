@@ -26,38 +26,22 @@ import java.util.List;
 
 public class BitbakeRecipe {
     private final String name;
-    private final List<Layer> layers;
+    private final List<String> layerNames;
 
-    public BitbakeRecipe(final String name, final List<Layer> layers) {
+    public BitbakeRecipe(final String name, final List<String> layerNames) {
         this.name = name;
-        this.layers = layers;
+        this.layerNames = layerNames;
     }
 
     public String getName() {
         return name;
     }
 
-    public List<Layer> getLayers() {
-        return layers;
+    public void addLayerName(final String layerName) {
+        layerNames.add(layerName);
     }
 
-    public static class Layer {
-        private final String layerName;
-        private final String componentVersion;
-
-        public Layer(final String layerName, final String componentVersion) {
-            this.layerName = layerName;
-            this.componentVersion = componentVersion;
-        }
-
-        public String getLayerName() {
-            return layerName;
-        }
-
-        // We have decided to use the version from the .dot files for now.
-        // Keeping this around in case we need it down the road. JM - 10/2019
-        public String getComponentVersion() {
-            return componentVersion;
-        }
+    public List<String> getLayerNames() {
+        return layerNames;
     }
 }
