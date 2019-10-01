@@ -37,11 +37,11 @@ public class BitbakeRecipe {
         return name;
     }
 
-    public void addLayerName(final String layerName) {
-        layerNames.add(layerName);
-    }
-
     public List<String> getLayerNames() {
         return layerNames;
+    }
+
+    public void addLayerName(final String layer) {
+        layerNames.add(layer);
     }
 }

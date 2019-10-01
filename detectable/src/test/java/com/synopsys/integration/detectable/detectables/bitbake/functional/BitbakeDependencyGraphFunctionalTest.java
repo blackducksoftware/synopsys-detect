@@ -1,9 +1,9 @@
 package com.synopsys.integration.detectable.detectables.bitbake.functional;
 
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,9 +14,10 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
+import com.synopsys.integration.detectable.detectables.bitbake.BitbakeRecipesToLayerMapConverter;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
-import com.synopsys.integration.detectable.detectables.bitbake.model.RecipeLayerCatalog;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
@@ -35,9 +36,11 @@ public class BitbakeDependencyGraphFunctionalTest {
 
         final BitbakeRecipesParser bitbakeRecipesParser = new BitbakeRecipesParser();
         final List<String> recipeOutput = FunctionalTestFiles.asListOfStrings("/bitbake/bitbakeShowRecipesFull_recipe.txt");
-        final RecipeLayerCatalog recipeLayerCatalog = bitbakeRecipesParser.parseRecipeLayerCatalog(recipeOutput);
+        final List<BitbakeRecipe> showRecipes = bitbakeRecipesParser.parseShowRecipes(recipeOutput);
+        final BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap = new BitbakeRecipesToLayerMapConverter();
+        final Map<String, String> recipeNameToLayerMap = bitbakeRecipesToLayerMap.convert(showRecipes);
 
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeLayerCatalog);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeNameToLayerMap);
 
         Assertions.assertEquals(176, dependencyGraph.getRootDependencies().size());
     }
@@ -51,11 +54,11 @@ public class BitbakeDependencyGraphFunctionalTest {
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
         final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser, BitbakeFileType.RECIPE_DEPENDS);
 
-        final RecipeLayerCatalog recipeLayerCatalog = new RecipeLayerCatalog(new HashMap<>());
-        recipeLayerCatalog.addRecipe("acl", Arrays.asList("meta", "bad-layer"));
-        recipeLayerCatalog.addRecipe("attr", Arrays.asList("meta", "bad-layer"));
+        final Map<String, String> recipeLayerMap = new HashMap<>();
+        recipeLayerMap.put("acl", "meta");
+        recipeLayerMap.put("attr", "meta");
 
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeLayerCatalog);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeLayerMap);
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
         final ExternalId attr = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "attr", "2.4.47-r0"));
@@ -75,9 +78,11 @@ public class BitbakeDependencyGraphFunctionalTest {
 
         final BitbakeRecipesParser bitbakeRecipesParser = new BitbakeRecipesParser();
         final List<String> recipeOutput = FunctionalTestFiles.asListOfStrings("/bitbake/bitbakeShowRecipesFull_package.txt");
-        final RecipeLayerCatalog recipeLayerCatalog = bitbakeRecipesParser.parseRecipeLayerCatalog(recipeOutput);
+        final List<BitbakeRecipe> showRecipes = bitbakeRecipesParser.parseShowRecipes(recipeOutput);
+        final BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap = new BitbakeRecipesToLayerMapConverter();
+        final Map<String, String> recipeNameToLayerMap = bitbakeRecipesToLayerMap.convert(showRecipes);
 
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeLayerCatalog);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeNameToLayerMap);
 
         Assertions.assertEquals(151, dependencyGraph.getRootDependencies().size());
     }
@@ -91,11 +96,11 @@ public class BitbakeDependencyGraphFunctionalTest {
         final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
         final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser, BitbakeFileType.PACKAGE_DEPENDS);
 
-        final RecipeLayerCatalog recipeLayerCatalog = new RecipeLayerCatalog(new HashMap<>());
-        recipeLayerCatalog.addRecipe("busybox", Arrays.asList("meta", "bad-layer"));
-        recipeLayerCatalog.addRecipe("shadow", Arrays.asList("meta", "bad-layer"));
+        final Map<String, String> recipeToLayerLayerMap = new HashMap<>();
+        recipeToLayerLayerMap.put("busybox", "meta");
+        recipeToLayerLayerMap.put("shadow", "meta");
 
-        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeLayerCatalog);
+        final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerLayerMap);
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
         final ExternalId busybox = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "busybox", "1.23.2-r0"));

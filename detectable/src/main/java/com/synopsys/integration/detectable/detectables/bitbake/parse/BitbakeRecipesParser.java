@@ -24,14 +24,11 @@ package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
-import com.synopsys.integration.detectable.detectables.bitbake.model.RecipeLayerCatalog;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
@@ -42,7 +39,7 @@ public class BitbakeRecipesParser {
      * @param output is the executable output.
      * @return Recipe names mapped to a recipe's the layer names.
      */
-    public RecipeLayerCatalog parseRecipeLayerCatalog(final List<String> showRecipeLines) {
+    public List<BitbakeRecipe> parseShowRecipes(final List<String> showRecipeLines) {
         final List<BitbakeRecipe> bitbakeRecipes = new ArrayList<>();
 
         boolean started = false;
@@ -63,10 +60,7 @@ public class BitbakeRecipesParser {
             bitbakeRecipes.add(currentRecipe);
         }
 
-        final Map<String, List<String>> recipeLayerMap = bitbakeRecipes.stream()
-                                                             .collect(Collectors.toMap(BitbakeRecipe::getName, BitbakeRecipe::getLayerNames));
-
-        return new RecipeLayerCatalog(recipeLayerMap);
+        return bitbakeRecipes;
     }
 
     private BitbakeRecipe parseLine(final String line, final BitbakeRecipe currentRecipe, final List<BitbakeRecipe> bitbakeRecipes) {

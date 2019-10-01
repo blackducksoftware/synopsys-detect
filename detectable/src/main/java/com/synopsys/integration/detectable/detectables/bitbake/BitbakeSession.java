@@ -25,6 +25,7 @@ package com.synopsys.integration.detectable.detectables.bitbake;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.misc.Nullable;
@@ -36,8 +37,8 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeResult;
-import com.synopsys.integration.detectable.detectables.bitbake.model.RecipeLayerCatalog;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -93,11 +94,11 @@ public class BitbakeSession {
 
     }
 
-    public RecipeLayerCatalog executeBitbakeForRecipeLayerCatalog() throws ExecutableRunnerException, IOException, IntegrationException {
+    public List<BitbakeRecipe> executeBitbakeForRecipeLayerCatalog() throws ExecutableRunnerException, IOException, IntegrationException {
         final String bitbakeCommand = "bitbake-layers show-recipes";
         final ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
         if (executableOutput.getReturnCode() == 0) {
-            return bitbakeRecipesParser.parseRecipeLayerCatalog(executableOutput.getStandardOutputAsList());
+            return bitbakeRecipesParser.parseShowRecipes(executableOutput.getStandardOutputAsList());
         } else {
             throw new IntegrationException("Running command '%s' returned a non-zero exit code. Failed to extract bitbake recipe mapping.");
         }

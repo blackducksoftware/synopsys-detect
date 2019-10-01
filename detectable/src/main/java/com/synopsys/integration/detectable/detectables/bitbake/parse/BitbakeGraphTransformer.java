@@ -36,7 +36,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeNode;
-import com.synopsys.integration.detectable.detectables.bitbake.model.RecipeLayerCatalog;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
@@ -51,7 +50,7 @@ public class BitbakeGraphTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(final BitbakeGraph bitbakeGraph, final RecipeLayerCatalog recipeLayerCatalog) {
+    public DependencyGraph transform(final BitbakeGraph bitbakeGraph, final Map<String, String> recipeLayerMap) {
         final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         final Map<String, Dependency> namesToExternalIds = new HashMap<>();
 
@@ -60,7 +59,7 @@ public class BitbakeGraphTransformer {
 
             if (bitbakeNode.getVersion().isPresent()) {
                 final String version = bitbakeNode.getVersion().get();
-                final Optional<Dependency> dependency = generateExternalId(name, version, recipeLayerCatalog).map(Dependency::new);
+                final Optional<Dependency> dependency = generateExternalId(name, version, recipeLayerMap).map(Dependency::new);
 
                 dependency.ifPresent(value -> namesToExternalIds.put(bitbakeNode.getName(), value));
             } else if (name.startsWith("virtual/")) {
@@ -89,19 +88,19 @@ public class BitbakeGraphTransformer {
         return dependencyGraph;
     }
 
-    private Optional<ExternalId> generateExternalId(final String dependencyName, final String dependencyVersion, final RecipeLayerCatalog recipeLayerCatalog) {
-        final Optional<String> priorityLayerName = recipeLayerCatalog.getPriorityLayerForRecipe(dependencyName);
+    private Optional<ExternalId> generateExternalId(final String dependencyName, final String dependencyVersion, final Map<String, String> recipeLayerMap) {
+        final String priorityLayerName = recipeLayerMap.get(dependencyName);
         ExternalId externalId = null;
 
-        if (priorityLayerName.isPresent()) {
-            externalId = externalIdFactory.createYoctoExternalId(priorityLayerName.get(), dependencyName, dependencyVersion);
+        if (priorityLayerName != null) {
+            externalId = externalIdFactory.createYoctoExternalId(priorityLayerName, dependencyName, dependencyVersion);
         } else {
             logger.debug(String.format("Failed to find component '%s' in component layer map.", dependencyName));
 
             if (dependencyName.endsWith(NATIVE_SUFFIX)) {
                 final String alternativeName = dependencyName.replace(NATIVE_SUFFIX, "");
                 logger.debug(String.format("Generating alternative component name '%s' for '%s==%s'", alternativeName, dependencyName, dependencyVersion));
-                externalId = generateExternalId(alternativeName, dependencyVersion, recipeLayerCatalog).orElse(null);
+                externalId = generateExternalId(alternativeName, dependencyVersion, recipeLayerMap).orElse(null);
             } else {
                 logger.debug(String.format("'%s==%s' is not an actual component. Excluding from graph.", dependencyName, dependencyVersion));
             }

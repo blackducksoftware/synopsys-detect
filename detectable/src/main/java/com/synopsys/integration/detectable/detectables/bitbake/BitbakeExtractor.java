@@ -29,6 +29,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -46,8 +47,8 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeResult;
-import com.synopsys.integration.detectable.detectables.bitbake.model.RecipeLayerCatalog;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
@@ -61,14 +62,16 @@ public class BitbakeExtractor {
     private final GraphParserTransformer graphParserTransformer;
     private final BitbakeGraphTransformer bitbakeGraphTransformer;
     private final BitbakeRecipesParser bitbakeRecipesParser;
+    private final BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap;
 
     public BitbakeExtractor(final ExecutableRunner executableRunner, final FileFinder fileFinder, final GraphParserTransformer graphParserTransformer, final BitbakeGraphTransformer bitbakeGraphTransformer,
-        final BitbakeRecipesParser bitbakeRecipesParser) {
+        final BitbakeRecipesParser bitbakeRecipesParser, final BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap) {
         this.executableRunner = executableRunner;
         this.fileFinder = fileFinder;
         this.graphParserTransformer = graphParserTransformer;
         this.bitbakeGraphTransformer = bitbakeGraphTransformer;
         this.bitbakeRecipesParser = bitbakeRecipesParser;
+        this.bitbakeRecipesToLayerMap = bitbakeRecipesToLayerMap;
     }
 
     public Extraction extract(final File sourceDirectory, final ExtractionEnvironment extractionEnvironment, final File buildEnvScript, final String[] sourceArguments, final String[] packageNames, final File bash) {
@@ -79,9 +82,10 @@ public class BitbakeExtractor {
         for (final String packageName : packageNames) {
             try {
                 final BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName);
-                final RecipeLayerCatalog recipeLayerCatalog = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
+                final List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
+                final Map<String, String> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes);
 
-                final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeLayerCatalog);
+                final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeNameToLayersMap);
                 final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
                 codeLocations.add(codeLocation);
