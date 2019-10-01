@@ -97,7 +97,7 @@ public class BitbakeSession {
         final String bitbakeCommand = "bitbake-layers show-recipes";
         final ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
         if (executableOutput.getReturnCode() == 0) {
-            return bitbakeRecipesParser.parseComponentLayerMap(executableOutput.getStandardOutput());
+            return bitbakeRecipesParser.parseRecipeLayerCatalog(executableOutput.getStandardOutputAsList());
         } else {
             throw new IntegrationException("Running command '%s' returned a non-zero exit code. Failed to extract bitbake recipe mapping.");
         }

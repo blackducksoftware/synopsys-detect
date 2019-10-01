@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.bitbake.functional;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,8 +34,8 @@ public class BitbakeDependencyGraphFunctionalTest {
         final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser, BitbakeFileType.RECIPE_DEPENDS);
 
         final BitbakeRecipesParser bitbakeRecipesParser = new BitbakeRecipesParser();
-        final String recipeOutput = FunctionalTestFiles.asString("/bitbake/bitbakeShowRecipesFull_recipe.txt");
-        final RecipeLayerCatalog recipeLayerCatalog = bitbakeRecipesParser.parseComponentLayerMap(recipeOutput);
+        final List<String> recipeOutput = FunctionalTestFiles.asListOfStrings("/bitbake/bitbakeShowRecipesFull_recipe.txt");
+        final RecipeLayerCatalog recipeLayerCatalog = bitbakeRecipesParser.parseRecipeLayerCatalog(recipeOutput);
 
         final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeLayerCatalog);
 
@@ -73,8 +74,8 @@ public class BitbakeDependencyGraphFunctionalTest {
         final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser, BitbakeFileType.PACKAGE_DEPENDS);
 
         final BitbakeRecipesParser bitbakeRecipesParser = new BitbakeRecipesParser();
-        final String recipeOutput = FunctionalTestFiles.asString("/bitbake/bitbakeShowRecipesFull_package.txt");
-        final RecipeLayerCatalog recipeLayerCatalog = bitbakeRecipesParser.parseComponentLayerMap(recipeOutput);
+        final List<String> recipeOutput = FunctionalTestFiles.asListOfStrings("/bitbake/bitbakeShowRecipesFull_package.txt");
+        final RecipeLayerCatalog recipeLayerCatalog = bitbakeRecipesParser.parseRecipeLayerCatalog(recipeOutput);
 
         final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeLayerCatalog);
 

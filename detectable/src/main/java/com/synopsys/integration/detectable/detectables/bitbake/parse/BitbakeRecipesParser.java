@@ -40,14 +40,14 @@ public class BitbakeRecipesParser {
 
     /**
      * @param output is the executable output.
-     * @return Component names mapped to a recipe containing the layer names.
+     * @return Recipe names mapped to a recipe's the layer names.
      */
-    public RecipeLayerCatalog parseComponentLayerMap(final String output) {
+    public RecipeLayerCatalog parseRecipeLayerCatalog(final List<String> showRecipeLines) {
         final List<BitbakeRecipe> bitbakeRecipes = new ArrayList<>();
 
         boolean started = false;
         BitbakeRecipe currentRecipe = null;
-        for (final String line : output.split(System.lineSeparator())) {
+        for (final String line : showRecipeLines) {
             if (StringUtils.isBlank(line)) {
                 continue;
             }
