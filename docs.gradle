@@ -153,6 +153,9 @@ task generatedDetectorMarkdown() {
             found.detectors.add(detector.detectorName)
         }
 
+        buildGroups.sort { it.groupName }
+        buildlessGroups.sort { it.groupName }
+
         def template = helpData.templates.getTemplate("detectors.ftl")
         def markdown = new File(helpData.output, "detectors.md")
         markdown.withWriter('utf-8') { out -> template.process([build: buildGroups, buildless: buildlessGroups], out) }
