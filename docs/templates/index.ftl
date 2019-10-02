@@ -8,7 +8,6 @@ All other documentation is located on our public [Confluence](https://synopsys.a
 
 ## Quick Links
 * [All Properties](properties/all-properties)
-* [Common Tasks](common-tasks)
 * [Exit Codes](exit-codes)
 * [Error Codes](error-codes)
 
