@@ -195,6 +195,6 @@ public class DetectExecutableResolver
 
     @Override
     public File resolveGo() throws DetectableException {
-        return resolveExecutable("go", simpleExecutableResolver::resolveSwift, detectConfiguration.getProperty(DetectProperty.DETECT_GO_PATH, PropertyAuthority.NONE));
+        return resolveExecutable("go", simpleExecutableResolver::resolveGo, detectConfiguration.getProperty(DetectProperty.DETECT_GO_PATH, PropertyAuthority.NONE));
     }
 }

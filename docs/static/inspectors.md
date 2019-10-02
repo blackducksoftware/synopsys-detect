@@ -19,8 +19,6 @@ The source code for the gradle inspector is located on [GitHub](https://github.c
 
 ## Docker Inspector
 
-TODO: @SteveBillings, verify this is how the docker inspector works.
-
 The Docker inspector is available as an java jar or shell script for Linux or Mac. 
 
 If you are online, the Synopsys Artifactory is used to download the docker inspector jar file. 

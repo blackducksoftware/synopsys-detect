@@ -81,6 +81,7 @@ task generatedPropertyMarkdown() {
         }
 
         def simple_groups = []
+        def split_groups = []
         groups.forEach { group ->
             def template = helpData.templates.getTemplate("property-group.ftl")
             def target = new File(propertiesFolder.asFile, "${group.groupName}.md")
@@ -96,7 +97,9 @@ task generatedPropertyMarkdown() {
                     advanced.add(property)
                 }
             }
-            target.withWriter('utf-8') { out -> template.process([groupName: group.groupName, simple: simple, advanced: advanced, deprecated: deprecated], out) }
+            def split_group = [groupName: group.groupName, simple: simple, advanced: advanced, deprecated: deprecated]
+            split_groups.add(split_group)
+            target.withWriter('utf-8') { out -> template.process(split_group, out) }
             group.options = simple
             if (simple.size() > 0) {
                 simple_groups.add(group)
@@ -104,9 +107,17 @@ task generatedPropertyMarkdown() {
             println("Created: ${target}")
         }
 
+        simple_groups.forEach { group -> group.options.sort { it.propertyKey } }
+        split_groups.forEach { group -> group.simple.sort { it.propertyKey }; group.advanced.sort { it.propertyKey }; group.deprecated.sort { it.propertyKey } }
+
+        def basicpropertiestemplate = helpData.templates.getTemplate("basic-properties.ftl")
+        def basicpropertiesmd = new File(propertiesFolder.asFile, "basic-properties.md")
+        basicpropertiesmd.withWriter('utf-8') { out -> basicpropertiestemplate.process([groups: simple_groups], out) }
+
         def allpropertiestemplate = helpData.templates.getTemplate("all-properties.ftl")
         def allpropertiesmd = new File(propertiesFolder.asFile, "all-properties.md")
-        allpropertiesmd.withWriter('utf-8') { out -> allpropertiestemplate.process([groups: simple_groups], out) }
+        allpropertiesmd.withWriter('utf-8') { out -> allpropertiestemplate.process([groups: split_groups], out) }
+
     }
 }
 
@@ -141,6 +152,9 @@ task generatedDetectorMarkdown() {
             }
             found.detectors.add(detector.detectorName)
         }
+
+        buildGroups.sort { it.groupName }
+        buildlessGroups.sort { it.groupName }
 
         def template = helpData.templates.getTemplate("detectors.ftl")
         def markdown = new File(helpData.output, "detectors.md")
