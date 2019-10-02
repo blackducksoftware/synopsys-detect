@@ -182,18 +182,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../common-tasks/" title="Common Tasks" class="md-nav__link">
-      Common Tasks
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
     <a href="../../detectors/" title="Detectors" class="md-nav__link">
       Detectors
     </a>
@@ -233,13 +221,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
     
-    <label class="md-nav__link" for="nav-6">
+    <label class="md-nav__link" for="nav-5">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-6">
+      <label class="md-nav__title" for="nav-5">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -253,6 +241,18 @@
   <li class="md-nav__item">
     <a href="../all-properties/" title="All properties" class="md-nav__link">
       All properties
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../basic-properties/" title="Basic properties" class="md-nav__link">
+      Basic properties
     </a>
   </li>
 
@@ -537,6 +537,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#pipenv-executable" class="md-nav__link">
+    Pipenv Executable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#pip-requirements-path" class="md-nav__link">
     PIP Requirements Path
   </a>
@@ -546,13 +553,6 @@
         <li class="md-nav__item">
   <a href="#pip-project-version-name" class="md-nav__link">
     PIP Project Version Name
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pipenv-executable" class="md-nav__link">
-    Pipenv Executable
   </a>
   
 </li>
@@ -721,6 +721,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#pipenv-executable" class="md-nav__link">
+    Pipenv Executable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#pip-requirements-path" class="md-nav__link">
     PIP Requirements Path
   </a>
@@ -730,13 +737,6 @@
         <li class="md-nav__item">
   <a href="#pip-project-version-name" class="md-nav__link">
     PIP Project Version Name
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pipenv-executable" class="md-nav__link">
-    Pipenv Executable
   </a>
   
 </li>
@@ -775,6 +775,49 @@
 <tr>
 <td>Added</td>
 <td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pipenv-executable">Pipenv Executable</h2>
+<pre><code>--detect.pipenv.path
+</code></pre>
+
+<p>The path to the Pipenv executable.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.1.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -850,49 +893,6 @@
 </code></pre>
 
 <p>The version of your PIP project, to be used if your project's version name cannot be correctly inferred from its setup.py file.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.1.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="pipenv-executable">Pipenv Executable</h2>
-<pre><code>--detect.pipenv.path
-</code></pre>
-
-<p>The path to the Pipenv executable.</p>
 <table>
 <thead>
 <tr>

@@ -182,18 +182,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../common-tasks/" title="Common Tasks" class="md-nav__link">
-      Common Tasks
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
     <a href="../../detectors/" title="Detectors" class="md-nav__link">
       Detectors
     </a>
@@ -233,13 +221,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
     
-    <label class="md-nav__link" for="nav-6">
+    <label class="md-nav__link" for="nav-5">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-6">
+      <label class="md-nav__title" for="nav-5">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -253,6 +241,18 @@
   <li class="md-nav__item">
     <a href="../all-properties/" title="All properties" class="md-nav__link">
       All properties
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../basic-properties/" title="Basic properties" class="md-nav__link">
+      Basic properties
     </a>
   </li>
 
@@ -369,15 +369,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detector-types-included-advanced" class="md-nav__link">
-    Detector Types Included (Advanced)
+  <a href="#detector-types-excluded-advanced" class="md-nav__link">
+    Detector Types Excluded (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#detector-types-excluded-advanced" class="md-nav__link">
-    Detector Types Excluded (Advanced)
+  <a href="#detector-types-included-advanced" class="md-nav__link">
+    Detector Types Included (Advanced)
   </a>
   
 </li>
@@ -735,15 +735,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detector-types-included-advanced" class="md-nav__link">
-    Detector Types Included (Advanced)
+  <a href="#detector-types-excluded-advanced" class="md-nav__link">
+    Detector Types Excluded (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#detector-types-excluded-advanced" class="md-nav__link">
-    Detector Types Excluded (Advanced)
+  <a href="#detector-types-included-advanced" class="md-nav__link">
+    Detector Types Included (Advanced)
   </a>
   
 </li>
@@ -831,50 +831,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detector-types-included-advanced">Detector Types Included (Advanced)</h2>
-<pre><code>--detect.included.detector.types
-</code></pre>
-
-<p>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.</p>
-<p>If you want to limit Detect to a subset of its detectors, use this property to specify that subset.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="detector-types-excluded-advanced">Detector Types Excluded (Advanced)</h2>
 <pre><code>--detect.excluded.detector.types
 </code></pre>
@@ -919,7 +875,94 @@
 </tr>
 </tbody>
 </table>
+<h2 id="detector-types-included-advanced">Detector Types Included (Advanced)</h2>
+<pre><code>--detect.included.detector.types
+</code></pre>
+
+<p>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.</p>
+<p>If you want to limit Detect to a subset of its detectors, use this property to specify that subset.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="deprecated">(Deprecated)</h2>
+<pre><code>--detect.required.bom.tool.types
+</code></pre>
+
+<p>If set, Detect will fail if it does not find the bom tool types supplied here.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.3.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="deprecated_1">(Deprecated)</h2>
 <pre><code>--detect.included.bom.tool.types
 </code></pre>
 
@@ -962,7 +1005,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="deprecated_1">(Deprecated)</h2>
+<h2 id="deprecated_2">(Deprecated)</h2>
 <pre><code>--detect.excluded.bom.tool.types
 </code></pre>
 
@@ -978,49 +1021,6 @@
 <tr>
 <td>Added</td>
 <td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="deprecated_2">(Deprecated)</h2>
-<pre><code>--detect.required.bom.tool.types
-</code></pre>
-
-<p>If set, Detect will fail if it does not find the bom tool types supplied here.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.3.0</td>
 </tr>
 <tr>
 <td>Type</td>

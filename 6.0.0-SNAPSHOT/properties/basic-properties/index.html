@@ -36,7 +36,7 @@
     
     
       
-        <title>All properties - Synopsys Detect</title>
+        <title>Basic properties - Synopsys Detect</title>
       
     
     
@@ -97,7 +97,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                All properties
+                Basic properties
               
             </span>
           
@@ -233,6 +233,18 @@
           
           
 
+
+  <li class="md-nav__item">
+    <a href="../all-properties/" title="All properties" class="md-nav__link">
+      All properties
+    </a>
+  </li>
+
+        
+          
+          
+          
+
   
 
 
@@ -241,22 +253,10 @@
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
     
-    <a href="./" title="All properties" class="md-nav__link md-nav__link--active">
-      All properties
-    </a>
-    
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../basic-properties/" title="Basic properties" class="md-nav__link">
+    <a href="./" title="Basic properties" class="md-nav__link md-nav__link--active">
       Basic properties
     </a>
+    
   </li>
 
         
@@ -650,9 +650,9 @@
               
                 
                 
-                  <h1>All properties</h1>
+                  <h1>Basic properties</h1>
                 
-                <p>This page lists all detect properties including deprecated and advanced, for most use cases see <a href="../basic-properties">basic properties</a>.</p>
+                <p>This page lists only detect's basic properties, for advanced and deprecated properties see <a href="../all-properties">all properties</a>.</p>
 <p><a href="../bazel/">bazel</a></p>
 <table>
 <thead>
@@ -697,10 +697,6 @@
 <td><a href="../bitbake/#BitBake-Source-Arguments">detect.bitbake.source.arguments</a></td>
 <td>default:  <br /><br /> BitBake Source Arguments: A comma-separated list of arguments to supply when sourcing the build environment init script. <br /><br /></td>
 </tr>
-<tr>
-<td><a href="../bitbake/#Reference-implementation">detect.bitbake.reference.impl</a> <br /> (Deprecated)</td>
-<td>default: -poky-linux <br /><br /> Reference implementation: The reference implementation of the Yocto project. These characters are stripped from the discovered target architecture. <br /><br /> <strong>DEPRECATED: This property is no longer required and will not be used in the Bitbake Detector.</strong></td>
-</tr>
 </tbody>
 </table>
 <p><a href="../blackduck server/">blackduck server</a></p>
@@ -739,18 +735,6 @@
 <tr>
 <td><a href="../blackduck server/#Test-Connection-to-Black-Duck">detect.test.connection</a></td>
 <td>default: false <br /><br /> Test Connection to Black Duck: Test the connection to Black Duck with the current configuration. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../blackduck server/#Black-Duck-Timeout">blackduck.timeout</a> <br /> (Advanced)</td>
-<td>default: 120 <br /><br /> Black Duck Timeout: The time to wait for network connections to complete (in seconds). <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../blackduck server/#Trust-All-SSL-Certificates">blackduck.trust.cert</a> <br /> (Advanced)</td>
-<td>default: false <br /><br /> Trust All SSL Certificates: If true, automatically trust the certificate for the current run of Detect only. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../blackduck server/#Check-For-Valid-Black-Duck-Connection">detect.disable.without.blackduck</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> Check For Valid Black Duck Connection: If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.ignore.connection.failures in the future.</strong></td>
 </tr>
 </tbody>
 </table>
@@ -820,26 +804,6 @@
 <td><a href="../detector/#Required-Detect-Types">detect.required.detector.types</a></td>
 <td>Required Detect Types: The set of required detectors. <br /><br /></td>
 </tr>
-<tr>
-<td><a href="../detector/#Detector-Types-Excluded">detect.excluded.detector.types</a> <br /> (Advanced)</td>
-<td>Detector Types Excluded: By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify "ALL". Exclusion rules always win. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../detector/#Detector-Types-Included">detect.included.detector.types</a> <br /> (Advanced)</td>
-<td>Detector Types Included: By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../detector/">detect.excluded.bom.tool.types</a> <br /> (Deprecated)</td>
-<td>By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify "ALL". Exclusion rules always win. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.excluded.detector.types in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../detector/">detect.included.bom.tool.types</a> <br /> (Deprecated)</td>
-<td>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.included.detector.types in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../detector/">detect.required.bom.tool.types</a> <br /> (Deprecated)</td>
-<td>If set, Detect will fail if it does not find the bom tool types supplied here. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.required.detector.types in the future.</strong></td>
-</tr>
 </tbody>
 </table>
 <p><a href="../docker/">docker</a></p>
@@ -863,22 +827,6 @@
 <td><a href="../docker/#Docker-Image-Archive-File">detect.docker.tar</a></td>
 <td>Docker Image Archive File: A saved Docker image - must be a .tar file. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images. <br /><br /></td>
 </tr>
-<tr>
-<td><a href="../docker/#Docker-Inspector-AirGap-Path">detect.docker.inspector.air.gap.path</a> <br /> (Advanced)</td>
-<td>Docker Inspector AirGap Path: The path to the directory containing the Docker Inspector jar and images. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../docker/#Docker-Inspector-.jar-File-Path">detect.docker.inspector.path</a> <br /> (Advanced)</td>
-<td>Docker Inspector .jar File Path: This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a local Docker Inspector .jar file at this path. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../docker/#Docker-Inspector-Version">detect.docker.inspector.version</a> <br /> (Advanced)</td>
-<td>default:  <br /><br /> Docker Inspector Version: Version of the Docker Inspector to use. By default Detect will attempt to automatically determine the version to use. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../docker/#Run-Without-Docker-in-Path">detect.docker.path.required</a> <br /> (Advanced)</td>
-<td>default: false <br /><br /> Run Without Docker in Path: If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable. <br /><br /></td>
-</tr>
 </tbody>
 </table>
 <p><a href="../general/">general</a></p>
@@ -897,18 +845,6 @@
 <tr>
 <td><a href="../general/#Wait-For-Results">detect.wait.for.results</a></td>
 <td>default: false <br /><br /> Wait For Results: If set to true, Detect will wait for Synopsys products until results are available or the blackduck.timeout is exceeded. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../general/#Force-Success">detect.force.success</a> <br /> (Advanced)</td>
-<td>default: false <br /><br /> Force Success: If true, Detect will always exit with code 0. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../general/#Detect-Ignore-Connection-Failures">detect.ignore.connection.failures</a> <br /> (Advanced)</td>
-<td>default: false <br /><br /> Detect Ignore Connection Failures: If true, Detect will ignore any products that it cannot connect to. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../general/#Detect-Parallel-Processors">detect.parallel.processors</a> <br /> (Advanced)</td>
-<td>default: 1 <br /><br /> Detect Parallel Processors: The number of threads to run processes in parallel, defaults to 1, but if you specify less than or equal to 0, the number of processors on the machine will be used. <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -944,34 +880,6 @@
 <td><a href="../gradle/#Gradle-Executable">detect.gradle.path</a></td>
 <td>Gradle Executable: The path to the Gradle executable (gradle or gradlew). <br /><br /></td>
 </tr>
-<tr>
-<td><a href="../gradle/#Gradle-Exclude-Configurations">detect.gradle.excluded.configurations</a> <br /> (Advanced)</td>
-<td>Gradle Exclude Configurations: A comma-separated list of Gradle configurations to exclude. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../gradle/#Gradle-Exclude-Projects">detect.gradle.excluded.projects</a> <br /> (Advanced)</td>
-<td>Gradle Exclude Projects: A comma-separated list of Gradle sub-projects to exclude. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../gradle/#Gradle-Include-Configurations">detect.gradle.included.configurations</a> <br /> (Advanced)</td>
-<td>Gradle Include Configurations: A comma-separated list of Gradle configurations to include. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../gradle/#Gradle-Include-Projects">detect.gradle.included.projects</a> <br /> (Advanced)</td>
-<td>Gradle Include Projects: A comma-separated list of Gradle sub-projects to include. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../gradle/#Gradle-Inspector-AirGap-Path">detect.gradle.inspector.air.gap.path</a> <br /> (Advanced)</td>
-<td>Gradle Inspector AirGap Path: The path to the directory containing the air gap dependencies for the gradle inspector. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../gradle/#Gradle-Inspector-Version">detect.gradle.inspector.version</a> <br /> (Advanced)</td>
-<td>default:  <br /><br /> Gradle Inspector Version: The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../gradle/">detect.gradle.inspector.repository.url</a> <br /> (Deprecated)</td>
-<td>The respository gradle should use to look for the gradle inspector dependencies. <br /><br /> <strong>DEPRECATED: In the future, the gradle inspector will no longer be downloaded from a custom repository, please use Detect Air Gap instead.</strong></td>
-</tr>
 </tbody>
 </table>
 <p><a href="../hex/">hex</a></p>
@@ -989,73 +897,6 @@
 </tr>
 </tbody>
 </table>
-<p><a href="../hub configuration/">hub configuration</a></p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="../hub configuration/">blackduck.hub.api.token</a> <br /> (Deprecated)</td>
-<td>Hub API Token. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.api.token in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../hub configuration/">blackduck.hub.offline.mode</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> This disables any Hub communication. If true, Detect does not upload BDIO files, does not check policies, and does not download and install the signature scanner. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.offline.mode in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../hub configuration/">blackduck.hub.password</a> <br /> (Deprecated)</td>
-<td>Hub password. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.password in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../hub configuration/">blackduck.hub.proxy.host</a> <br /> (Deprecated)</td>
-<td>Proxy host. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.proxy.host in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../hub configuration/">blackduck.hub.proxy.ignored.hosts</a> <br /> (Deprecated)</td>
-<td>A comma-separated list of host patterns that should not use the proxy. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.proxy.ignored.hosts in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../hub configuration/">blackduck.hub.proxy.ntlm.domain</a> <br /> (Deprecated)</td>
-<td>NTLM Proxy domain. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.proxy.ntlm.domain in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../hub configuration/">blackduck.hub.proxy.ntlm.workstation</a> <br /> (Deprecated)</td>
-<td>NTLM Proxy workstation. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.proxy.ntlm.workstation in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../hub configuration/">blackduck.hub.proxy.password</a> <br /> (Deprecated)</td>
-<td>Proxy password. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.proxy.password in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../hub configuration/">blackduck.hub.proxy.port</a> <br /> (Deprecated)</td>
-<td>Proxy port. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.proxy.port in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../hub configuration/">blackduck.hub.proxy.username</a> <br /> (Deprecated)</td>
-<td>Proxy username. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.proxy.username in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../hub configuration/">blackduck.hub.timeout</a> <br /> (Deprecated)</td>
-<td>default: 120 <br /><br /> The time to wait for rest connections to complete in seconds. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.timeout in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../hub configuration/">blackduck.hub.trust.cert</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> If true, automatically trusts the certificate for the current run of Detect only. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.trust.cert in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../hub configuration/">blackduck.hub.url</a> <br /> (Deprecated)</td>
-<td>URL of the Hub server. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.url in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../hub configuration/">blackduck.hub.username</a> <br /> (Deprecated)</td>
-<td>Hub username. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.username in the future.</strong></td>
-</tr>
-</tbody>
-</table>
 <p><a href="../logging/">logging</a></p>
 <table>
 <thead>
@@ -1068,18 +909,6 @@
 <tr>
 <td><a href="../logging/#Logging-Level">logging.level.com.synopsys.integration</a></td>
 <td>default: INFO <br /><br />  Acceptable Values: TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF <br /><br />Logging Level: The logging level of Detect. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../logging/">detect.suppress.configuration.output</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> If true, the default behavior of printing your configuration properties at startup will be suppressed. <br /><br /> <strong>DEPRECATED: This property is being removed. Configuration can no longer be suppressed individually. Log level can be used.</strong></td>
-</tr>
-<tr>
-<td><a href="../logging/">detect.suppress.results.output</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> If true, the default behavior of printing the Detect Results will be suppressed. <br /><br /> <strong>DEPRECATED: This property is being removed. Results can no longer be suppressed individually. Log level can be used.</strong></td>
-</tr>
-<tr>
-<td><a href="../logging/#Logging-Level">logging.level.com.blackducksoftware.integration</a> <br /> (Deprecated)</td>
-<td>default: INFO <br /><br />  Acceptable Values: TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF <br /><br />Logging Level: The logging level of Detect. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --logging.level.com.synopsys.integration in the future.</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1107,22 +936,6 @@
 <tr>
 <td><a href="../maven/#Maven-Executable">detect.maven.path</a></td>
 <td>Maven Executable: The path to the Maven executable (mvn or mvnw). <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../maven/#Maven-Modules-Excluded">detect.maven.excluded.modules</a> <br /> (Advanced)</td>
-<td>Maven Modules Excluded: A comma-separated list of Maven modules (sub-projects) to exclude. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../maven/#Maven-Include-Plugins">detect.maven.include.plugins</a> <br /> (Advanced)</td>
-<td>Maven Include Plugins: Whether or not detect will include the plugins section when parsing a pom.xml. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../maven/#Maven-Modules-Included">detect.maven.included.modules</a> <br /> (Advanced)</td>
-<td>Maven Modules Included: A comma-separated list of Maven modules (sub-projects) to include. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../maven/#Dependency-Scope-Included">detect.maven.scope</a> <br /> (Deprecated)</td>
-<td>Dependency Scope Included: The name of a Maven scope. Output will be limited to dependencies with this scope. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.maven.included.scope in the future.</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1169,34 +982,6 @@
 <tr>
 <td><a href="../nuget/#Nuget-Packages-Repository-URL">detect.nuget.packages.repo.url</a></td>
 <td>default: https://api.nuget.org/v3/index.json <br /><br /> Nuget Packages Repository URL: The source for nuget packages <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../nuget/#Nuget-Projects-Excluded">detect.nuget.excluded.modules</a> <br /> (Advanced)</td>
-<td>Nuget Projects Excluded: The names of the projects in a solution to exclude. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../nuget/#Ignore-Nuget-Failures">detect.nuget.ignore.failure</a> <br /> (Advanced)</td>
-<td>default: false <br /><br /> Ignore Nuget Failures: If true errors will be logged and then ignored. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../nuget/#Nuget-Modules-Included">detect.nuget.included.modules</a> <br /> (Advanced)</td>
-<td>Nuget Modules Included: The names of the projects in a solution to include (overrides exclude). <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../nuget/#Nuget-Inspector-AirGap-Path">detect.nuget.inspector.air.gap.path</a> <br /> (Advanced)</td>
-<td>Nuget Inspector AirGap Path: The path to the directory containing the nuget inspector nupkg. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../nuget/#Nuget-Inspector-Version">detect.nuget.inspector.version</a> <br /> (Advanced)</td>
-<td>default:  <br /><br /> Nuget Inspector Version: Version of the Nuget Inspector. By default Detect will communicate with Artifactory. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../nuget/">detect.nuget.inspector.name</a> <br /> (Deprecated)</td>
-<td>default: IntegrationNugetInspector <br /><br /> Name of the Nuget Inspector package and the Nuget Inspector exe. (Do not include '.exe'.) <br /><br /> <strong>DEPRECATED: In the future, Detect will not look for a custom named inspector.</strong></td>
-</tr>
-<tr>
-<td><a href="../nuget/">detect.nuget.path</a> <br /> (Deprecated)</td>
-<td>The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package. <br /><br /> <strong>DEPRECATED: In the future, Detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively.</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1272,62 +1057,6 @@
 <td><a href="../paths/#Detect-Tools-Excluded">detect.tools.excluded</a></td>
 <td>Acceptable Values: BAZEL, DETECTOR, DOCKER, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, NONE, ALL <br /><br />Detect Tools Excluded: The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win. <br /><br /></td>
 </tr>
-<tr>
-<td><a href="../paths/#Detector-Search-Continue">detect.detector.search.continue</a> <br /> (Advanced)</td>
-<td>default: false <br /><br /> Detector Search Continue: If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../paths/#Detector-Directory-Exclusions">detect.detector.search.exclusion</a> <br /> (Advanced)</td>
-<td>Detector Directory Exclusions: A comma-separated list of directory names to exclude from detector search. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../paths/#Detector-Exclude-Default-Directories">detect.detector.search.exclusion.defaults</a> <br /> (Advanced)</td>
-<td>default: true <br /><br /> Detector Exclude Default Directories: If true, the bom tool search will exclude the default directory names. See the detailed help for more information. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../paths/#-Detector-File-Exclusions">detect.detector.search.exclusion.files</a> <br /> (Advanced)</td>
-<td>Detector File Exclusions: A comma-separated list of file names to exclude from detector search. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../paths/#-Detector-Directory-Path-Exclusions">detect.detector.search.exclusion.paths</a> <br /> (Advanced)</td>
-<td>Detector Directory Path Exclusions: A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.) <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../paths/#-Detector-Directory-Patterns-Exclusions">detect.detector.search.exclusion.patterns</a> <br /> (Advanced)</td>
-<td>Detector Directory Patterns Exclusions: A comma-separated list of directory name patterns to exclude from detector search. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../paths/#Project-Name/Version-Detector">detect.project.detector</a> <br /> (Advanced)</td>
-<td>Project Name/Version Detector: The detector that will be used to determine the project name and version when multiple detector types. This property should be used with the detect.project.tool. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../paths/#Detector-Tool-Priority">detect.project.tool</a> <br /> (Advanced)</td>
-<td>default: DOCKER,DETECTOR,BAZEL <br /><br />  Acceptable Values: DETECTOR, DOCKER, BAZEL <br /><br />Detector Tool Priority: The tool priority for project name and version. The project name and version will be determined by the first tool in this list that provides them. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../paths/#Detect-Tools-Output-Path">detect.tools.output.path</a> <br /> (Advanced)</td>
-<td>Detect Tools Output Path: The path to the tools directory where detect should download and/or access things like the Signature Scanner that it shares over multiple runs. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../paths/">detect.bom.tool.search.continue</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.detector.search.continue in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../paths/">detect.bom.tool.search.depth</a> <br /> (Deprecated)</td>
-<td>default: 0 <br /><br /> Depth of subdirectories within the source directory to search for files that indicate whether a detector applies. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.detector.search.depth in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../paths/">detect.bom.tool.search.exclusion</a> <br /> (Deprecated)</td>
-<td>A comma-separated list of directory names to exclude from the bom tool search. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.detector.search.exclusion in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../paths/">detect.bom.tool.search.exclusion.defaults</a> <br /> (Deprecated)</td>
-<td>default: true <br /><br /> If true, the bom tool search will exclude the default directory names. See the detailed help for more information. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.detector.search.exclusion.defaults in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../paths/">detect.project.bom.tool</a> <br /> (Deprecated)</td>
-<td>The detector to choose when multiple detector types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.project.detector in the future.</strong></td>
-</tr>
 </tbody>
 </table>
 <p><a href="../pear/">pear</a></p>
@@ -1397,10 +1126,6 @@
 <td><a href="../polaris/#Polaris-Url">polaris.url</a></td>
 <td>Polaris Url: The url of your polaris instance. <br /><br /></td>
 </tr>
-<tr>
-<td><a href="../polaris/">detect.polaris.enabled</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> Set to false to disable the Synopsys Polaris Tool. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.tools and POLARIS in the future.</strong></td>
-</tr>
 </tbody>
 </table>
 <p><a href="../project/">project</a></p>
@@ -1448,140 +1173,6 @@
 <td><a href="../project/#Update-Project-Version">detect.project.version.update</a></td>
 <td>default: false <br /><br /> Update Project Version: If set to true, will update the Project Version with the configured properties. See detailed help for more information. <br /><br /></td>
 </tr>
-<tr>
-<td><a href="../project/#Aggregate-BDIO-File-Name">detect.bom.aggregate.name</a> <br /> (Advanced)</td>
-<td>Aggregate BDIO File Name: If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Clone-Latest-Project-Version">detect.clone.project.version.latest</a> <br /> (Advanced)</td>
-<td>Clone Latest Project Version: If set to true, detect will attempt to use the latest project version as the clone for this project. The project must exist and have at least one version. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Clone-Project-Version-Name">detect.clone.project.version.name</a> <br /> (Advanced)</td>
-<td>Clone Project Version Name: The name of the project version to clone this project version from. Respects the given Clone Categories in detect.project.clone.categories or as set on the Black Duck server. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Scan-Name">detect.code.location.name</a> <br /> (Advanced)</td>
-<td>Scan Name: An override for the name Detect will use for the scan file it creates. If supplied and multiple scans are found, Detect will append an index to each scan name. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Custom-Fields">detect.custom.fields.project</a> <br /> (Advanced)</td>
-<td>default:  <br /><br /> Custom Fields: A  list of custom fields with a label and comma-separated value starting from index 0. For example detect.custom.fields.project[0].label='example' and detect.custom.fields.project[0].value='one,two'. Note that these will not show up in the detect configuration log. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Custom-Fields">detect.custom.fields.version</a> <br /> (Advanced)</td>
-<td>default:  <br /><br /> Custom Fields: A  list of custom fields with a label and comma-separated value starting from index 0. For example detect.custom.fields.version[0].label='example' and detect.custom.fields.version[0].value='one,two'. Note that these will not show up in the detect configuration log. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Default-Project-Version-Name-Scheme">detect.default.project.version.scheme</a> <br /> (Advanced)</td>
-<td>default: text <br /><br /> Default Project Version Name Scheme: The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Default-Project-Version-Name-Text">detect.default.project.version.text</a> <br /> (Advanced)</td>
-<td>default: Default Detect Version <br /><br /> Default Project Version Name Text: The text to use as the default project version. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Default-Project-Version-Name-Timestamp-Format">detect.default.project.version.timeformat</a> <br /> (Advanced)</td>
-<td>default: yyyy-MM-dd\'T\'HH:mm:ss.SSS <br /><br /> Default Project Version Name Timestamp Format: The timestamp format to use as the default project version. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Parent-Project-Name">detect.parent.project.name</a> <br /> (Advanced)</td>
-<td>Parent Project Name: When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Parent-Project-Version-Name">detect.parent.project.version.name</a> <br /> (Advanced)</td>
-<td>Parent Project Version Name: When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Application-ID">detect.project.application.id</a> <br /> (Advanced)</td>
-<td>Application ID: Sets the 'Application ID' project setting. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Clone-Project-Categories">detect.project.clone.categories</a> <br /> (Advanced)</td>
-<td>default: COMPONENT_DATA,VULN_DATA <br /><br />  Acceptable Values: COMPONENT_DATA, VULN_DATA <br /><br />Clone Project Categories: An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Scan-Name-Prefix">detect.project.codelocation.prefix</a> <br /> (Advanced)</td>
-<td>default:  <br /><br /> Scan Name Prefix: A prefix to the name of the scans created by Detect. Useful for running against the same projects on multiple machines. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Scan-Name-Suffix">detect.project.codelocation.suffix</a> <br /> (Advanced)</td>
-<td>default:  <br /><br /> Scan Name Suffix: A suffix to the name of the scans created by Detect. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Unmap-All-Other-Scans-for-Project">detect.project.codelocation.unmap</a> <br /> (Advanced)</td>
-<td>default: false <br /><br /> Unmap All Other Scans for Project: If set to true, unmaps all other scans mapped to the project version produced by the current run of Detect. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Allow-Project-Level-Adjustments">detect.project.level.adjustments</a> <br /> (Advanced)</td>
-<td>default: true <br /><br /> Allow Project Level Adjustments: An override for the Project level matches. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Project-Tags">detect.project.tags</a> <br /> (Advanced)</td>
-<td>default:  <br /><br /> Project Tags: A comma-separated list of tags to add to the project. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Project-User-Groups">detect.project.user.groups</a> <br /> (Advanced)</td>
-<td>default:  <br /><br /> Project User Groups: A comma-separated list of names of user groups to add to the project. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../project/#Version-Distribution">detect.project.version.distribution</a> <br /> (Advanced)</td>
-<td>default: External <br /><br />  Acceptable Values: EXTERNAL, SAAS, INTERNAL, OPENSOURCE <br /><br />Version Distribution: An override for the Project Version distribution <br /><br /></td>
-</tr>
-</tbody>
-</table>
-<p><a href="../project info/">project info</a></p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="../project info/">detect.api.timeout</a> <br /> (Deprecated)</td>
-<td>default: 300000 <br /><br /> Timeout for response from Black Duck regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time. <br /><br /> <strong>DEPRECATED: This property is now deprecated. Please use --detect.report.timeout in the future. NOTE the new property is in SECONDS not MILLISECONDS.</strong></td>
-</tr>
-</tbody>
-</table>
-<p><a href="../proxy/">proxy</a></p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="../proxy/#Proxy-Host">blackduck.proxy.host</a> <br /> (Advanced)</td>
-<td>Proxy Host: Hostname for proxy server. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../proxy/#Bypass-Proxy-Hosts">blackduck.proxy.ignored.hosts</a> <br /> (Advanced)</td>
-<td>Bypass Proxy Hosts: A comma separated list of regular expression host patterns that should not use the proxy. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../proxy/#NTLM-Proxy-Domain">blackduck.proxy.ntlm.domain</a> <br /> (Advanced)</td>
-<td>NTLM Proxy Domain: NTLM Proxy domain. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../proxy/#NTLM-Proxy-Workstation">blackduck.proxy.ntlm.workstation</a> <br /> (Advanced)</td>
-<td>NTLM Proxy Workstation: NTLM Proxy workstation. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../proxy/#Proxy-Password">blackduck.proxy.password</a> <br /> (Advanced)</td>
-<td>Proxy Password: Proxy password. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../proxy/#Proxy-Port">blackduck.proxy.port</a> <br /> (Advanced)</td>
-<td>Proxy Port: Proxy port. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../proxy/#Proxy-Username">blackduck.proxy.username</a> <br /> (Advanced)</td>
-<td>Proxy Username: Proxy username. <br /><br /></td>
-</tr>
 </tbody>
 </table>
 <p><a href="../python/">python</a></p>
@@ -1628,10 +1219,6 @@
 <td><a href="../report/#Risk-Report-Output-Path">detect.risk.report.pdf.path</a></td>
 <td>default: . <br /><br /> Risk Report Output Path: The output directory for risk report in PDF. Default is the source directory. <br /><br /></td>
 </tr>
-<tr>
-<td><a href="../report/#SBT-Configurations-Excluded">detect.sbt.excluded.configurations</a> <br /> (Advanced)</td>
-<td>SBT Configurations Excluded: The names of the sbt configurations to exclude. <br /><br /></td>
-</tr>
 </tbody>
 </table>
 <p><a href="../ruby/">ruby</a></p>
@@ -1665,10 +1252,6 @@
 <tr>
 <td><a href="../sbt/#SBT-Report-Search-Depth">detect.sbt.report.search.depth</a></td>
 <td>default: 3 <br /><br /> SBT Report Search Depth: Depth the sbt detector will use to search for report files. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../sbt/#SBT-Configurations-Included">detect.sbt.included.configurations</a> <br /> (Advanced)</td>
-<td>SBT Configurations Included: The names of the sbt configurations to include. <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -1725,74 +1308,6 @@
 <td><a href="../signature scanner/#Upload-source-mode">detect.blackduck.signature.scanner.upload.source.mode</a></td>
 <td>default: false <br /><br /> Upload source mode: If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. <br /><br /></td>
 </tr>
-<tr>
-<td><a href="../signature scanner/#Signature-Scanner-Host-URL">detect.blackduck.signature.scanner.host.url</a> <br /> (Advanced)</td>
-<td>Signature Scanner Host URL: If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Black Duck's urls for different operating systems. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/#Signature-Scanner-Memory">detect.blackduck.signature.scanner.memory</a> <br /> (Advanced)</td>
-<td>default: 4096 <br /><br /> Signature Scanner Memory: The memory for the scanner to use. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/#Signature-Scanner-Local-Path-(Offline)">detect.blackduck.signature.scanner.offline.local.path</a> <br /> (Advanced)</td>
-<td>Signature Scanner Local Path (Offline): To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/">detect.blackduck.signature.scanner.disabled</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> Set to true to disable the Black Duck Signature Scanner. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.tools in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/#Snippet-Scanning">detect.blackduck.signature.scanner.snippet.mode</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> Snippet Scanning: If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode. <br /><br /> <strong>DEPRECATED: This property is now deprecated. Please use --detect.blackduck.signature.scanner.snippet.matching in the future. NOTE the new property is one of a particular set of values. You will need to consult the documentation for the Signature Scanner in Black Duck for details.</strong></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/">detect.hub.signature.scanner.arguments</a> <br /> (Deprecated)</td>
-<td>Additional arguments to use when running the Hub signature scanner. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.arguments in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/">detect.hub.signature.scanner.disabled</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> Set to true to disable the Hub Signature Scanner. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.tools in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/">detect.hub.signature.scanner.dry.run</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.dry.run in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/">detect.hub.signature.scanner.exclusion.name.patterns</a> <br /> (Deprecated)</td>
-<td>default: node_modules <br /><br /> A comma-separated list of directory name patterns Detect will search for and add to the Signature Scanner --exclude flag values. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.name.patterns in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/">detect.hub.signature.scanner.exclusion.patterns</a> <br /> (Deprecated)</td>
-<td>A comma-separated list of values to be used with the Signature Scanner --exclude flag. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.patterns in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/">detect.hub.signature.scanner.host.url</a> <br /> (Deprecated)</td>
-<td>If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.host.url in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/">detect.hub.signature.scanner.local.path</a> <br /> (Deprecated)</td>
-<td>To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.local.path in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/">detect.hub.signature.scanner.memory</a> <br /> (Deprecated)</td>
-<td>default: 4096 <br /><br /> The memory for the scanner to use. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.memory in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/">detect.hub.signature.scanner.offline.local.path</a> <br /> (Deprecated)</td>
-<td>To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.offline.local.path in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/">detect.hub.signature.scanner.parallel.processors</a> <br /> (Deprecated)</td>
-<td>default: 1 <br /><br /> The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.parallel.processors in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/">detect.hub.signature.scanner.paths</a> <br /> (Deprecated)</td>
-<td>These paths and only these paths will be scanned. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.paths in the future.</strong></td>
-</tr>
-<tr>
-<td><a href="../signature scanner/">detect.hub.signature.scanner.snippet.mode</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.snippet.mode in the future.</strong></td>
-</tr>
 </tbody>
 </table>
 <p><a href="../yarn/">yarn</a></p>
@@ -1834,7 +1349,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../../inspectors/" title="Inspectors" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../all-properties/" title="All properties" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -1843,19 +1358,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Inspectors
+                All properties
               </span>
             </div>
           </a>
         
         
-          <a href="../basic-properties/" title="Basic properties" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../bazel/" title="bazel" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Basic properties
+                bazel
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

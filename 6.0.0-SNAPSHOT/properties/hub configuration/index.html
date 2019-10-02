@@ -182,18 +182,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../common-tasks/" title="Common Tasks" class="md-nav__link">
-      Common Tasks
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
     <a href="../../detectors/" title="Detectors" class="md-nav__link">
       Detectors
     </a>
@@ -233,13 +221,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
     
-    <label class="md-nav__link" for="nav-6">
+    <label class="md-nav__link" for="nav-5">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-6">
+      <label class="md-nav__title" for="nav-5">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -253,6 +241,18 @@
   <li class="md-nav__item">
     <a href="../all-properties/" title="All properties" class="md-nav__link">
       All properties
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../basic-properties/" title="Basic properties" class="md-nav__link">
+      Basic properties
     </a>
   </li>
 
@@ -900,53 +900,10 @@
                 
                 <h1 id="hub-configuration">hub configuration</h1>
 <h2 id="deprecated">(Deprecated)</h2>
-<pre><code>--blackduck.hub.timeout=120
+<pre><code>--blackduck.hub.proxy.ntlm.workstation
 </code></pre>
 
-<p>The time to wait for rest connections to complete in seconds.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Integer</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>120</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="deprecated_1">(Deprecated)</h2>
-<pre><code>--blackduck.hub.proxy.ntlm.domain
-</code></pre>
-
-<p>NTLM Proxy domain.</p>
+<p>NTLM Proxy workstation.</p>
 <table>
 <thead>
 <tr>
@@ -985,179 +942,50 @@
 </tr>
 </tbody>
 </table>
+<h2 id="deprecated_1">(Deprecated)</h2>
+<pre><code>--blackduck.hub.proxy.host
+</code></pre>
+
+<p>Proxy host.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="deprecated_2">(Deprecated)</h2>
-<pre><code>--blackduck.hub.proxy.port
-</code></pre>
-
-<p>Proxy port.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="deprecated_3">(Deprecated)</h2>
-<pre><code>--blackduck.hub.proxy.password
-</code></pre>
-
-<p>Proxy password.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="deprecated_4">(Deprecated)</h2>
-<pre><code>--blackduck.hub.proxy.username
-</code></pre>
-
-<p>Proxy username.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="deprecated_5">(Deprecated)</h2>
-<pre><code>--blackduck.hub.trust.cert=false
-</code></pre>
-
-<p>If true, automatically trusts the certificate for the current run of Detect only.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="deprecated_6">(Deprecated)</h2>
 <pre><code>--blackduck.hub.password
 </code></pre>
 
@@ -1200,11 +1028,183 @@
 </tr>
 </tbody>
 </table>
-<h2 id="deprecated_7">(Deprecated)</h2>
-<pre><code>--blackduck.hub.proxy.host
+<h2 id="deprecated_3">(Deprecated)</h2>
+<pre><code>--blackduck.hub.timeout=120
 </code></pre>
 
-<p>Proxy host.</p>
+<p>The time to wait for rest connections to complete in seconds.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>120</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="deprecated_4">(Deprecated)</h2>
+<pre><code>--blackduck.hub.proxy.port
+</code></pre>
+
+<p>Proxy port.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="deprecated_5">(Deprecated)</h2>
+<pre><code>--blackduck.hub.proxy.password
+</code></pre>
+
+<p>Proxy password.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="deprecated_6">(Deprecated)</h2>
+<pre><code>--blackduck.hub.username
+</code></pre>
+
+<p>Hub username.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="deprecated_7">(Deprecated)</h2>
+<pre><code>--blackduck.hub.url
+</code></pre>
+
+<p>URL of the Hub server.</p>
 <table>
 <thead>
 <tr>
@@ -1287,10 +1287,10 @@
 </tbody>
 </table>
 <h2 id="deprecated_9">(Deprecated)</h2>
-<pre><code>--blackduck.hub.url
+<pre><code>--blackduck.hub.proxy.username
 </code></pre>
 
-<p>URL of the Hub server.</p>
+<p>Proxy username.</p>
 <table>
 <thead>
 <tr>
@@ -1373,10 +1373,10 @@
 </tbody>
 </table>
 <h2 id="deprecated_11">(Deprecated)</h2>
-<pre><code>--blackduck.hub.username
+<pre><code>--blackduck.hub.proxy.ntlm.domain
 </code></pre>
 
-<p>Hub username.</p>
+<p>NTLM Proxy domain.</p>
 <table>
 <thead>
 <tr>
@@ -1387,7 +1387,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>3.1.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1459,10 +1459,10 @@
 </tbody>
 </table>
 <h2 id="deprecated_13">(Deprecated)</h2>
-<pre><code>--blackduck.hub.proxy.ntlm.workstation
+<pre><code>--blackduck.hub.trust.cert=false
 </code></pre>
 
-<p>NTLM Proxy workstation.</p>
+<p>If true, automatically trusts the certificate for the current run of Detect only.</p>
 <table>
 <thead>
 <tr>
@@ -1473,15 +1473,15 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.1.0</td>
+<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>Boolean</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>None</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

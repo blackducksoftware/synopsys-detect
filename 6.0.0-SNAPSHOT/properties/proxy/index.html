@@ -182,18 +182,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../common-tasks/" title="Common Tasks" class="md-nav__link">
-      Common Tasks
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
     <a href="../../detectors/" title="Detectors" class="md-nav__link">
       Detectors
     </a>
@@ -233,13 +221,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
     
-    <label class="md-nav__link" for="nav-6">
+    <label class="md-nav__link" for="nav-5">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-6">
+      <label class="md-nav__title" for="nav-5">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -253,6 +241,18 @@
   <li class="md-nav__item">
     <a href="../all-properties/" title="All properties" class="md-nav__link">
       All properties
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../basic-properties/" title="Basic properties" class="md-nav__link">
+      Basic properties
     </a>
   </li>
 
@@ -578,15 +578,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#proxy-password-advanced" class="md-nav__link">
-    Proxy Password (Advanced)
+  <a href="#proxy-port-advanced" class="md-nav__link">
+    Proxy Port (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#proxy-host-advanced" class="md-nav__link">
-    Proxy Host (Advanced)
+  <a href="#ntlm-proxy-domain-advanced" class="md-nav__link">
+    NTLM Proxy Domain (Advanced)
   </a>
   
 </li>
@@ -599,8 +599,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ntlm-proxy-workstation-advanced" class="md-nav__link">
-    NTLM Proxy Workstation (Advanced)
+  <a href="#proxy-host-advanced" class="md-nav__link">
+    Proxy Host (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proxy-password-advanced" class="md-nav__link">
+    Proxy Password (Advanced)
   </a>
   
 </li>
@@ -613,15 +620,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#proxy-port-advanced" class="md-nav__link">
-    Proxy Port (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ntlm-proxy-domain-advanced" class="md-nav__link">
-    NTLM Proxy Domain (Advanced)
+  <a href="#ntlm-proxy-workstation-advanced" class="md-nav__link">
+    NTLM Proxy Workstation (Advanced)
   </a>
   
 </li>
@@ -735,15 +735,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#proxy-password-advanced" class="md-nav__link">
-    Proxy Password (Advanced)
+  <a href="#proxy-port-advanced" class="md-nav__link">
+    Proxy Port (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#proxy-host-advanced" class="md-nav__link">
-    Proxy Host (Advanced)
+  <a href="#ntlm-proxy-domain-advanced" class="md-nav__link">
+    NTLM Proxy Domain (Advanced)
   </a>
   
 </li>
@@ -756,8 +756,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ntlm-proxy-workstation-advanced" class="md-nav__link">
-    NTLM Proxy Workstation (Advanced)
+  <a href="#proxy-host-advanced" class="md-nav__link">
+    Proxy Host (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proxy-password-advanced" class="md-nav__link">
+    Proxy Password (Advanced)
   </a>
   
 </li>
@@ -770,15 +777,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#proxy-port-advanced" class="md-nav__link">
-    Proxy Port (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ntlm-proxy-domain-advanced" class="md-nav__link">
-    NTLM Proxy Domain (Advanced)
+  <a href="#ntlm-proxy-workstation-advanced" class="md-nav__link">
+    NTLM Proxy Workstation (Advanced)
   </a>
   
 </li>
@@ -801,11 +801,11 @@
                 
                 
                 <h1 id="proxy">proxy</h1>
-<h2 id="proxy-password-advanced">Proxy Password (Advanced)</h2>
-<pre><code>--blackduck.proxy.password
+<h2 id="proxy-port-advanced">Proxy Port (Advanced)</h2>
+<pre><code>--blackduck.proxy.port
 </code></pre>
 
-<p>Proxy password.</p>
+<p>Proxy port.</p>
 <table>
 <thead>
 <tr>
@@ -844,11 +844,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="proxy-host-advanced">Proxy Host (Advanced)</h2>
-<pre><code>--blackduck.proxy.host
+<h2 id="ntlm-proxy-domain-advanced">NTLM Proxy Domain (Advanced)</h2>
+<pre><code>--blackduck.proxy.ntlm.domain
 </code></pre>
 
-<p>Hostname for proxy server.</p>
+<p>NTLM Proxy domain.</p>
 <table>
 <thead>
 <tr>
@@ -930,11 +930,54 @@
 </tr>
 </tbody>
 </table>
-<h2 id="ntlm-proxy-workstation-advanced">NTLM Proxy Workstation (Advanced)</h2>
-<pre><code>--blackduck.proxy.ntlm.workstation
+<h2 id="proxy-host-advanced">Proxy Host (Advanced)</h2>
+<pre><code>--blackduck.proxy.host
 </code></pre>
 
-<p>NTLM Proxy workstation.</p>
+<p>Hostname for proxy server.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="proxy-password-advanced">Proxy Password (Advanced)</h2>
+<pre><code>--blackduck.proxy.password
+</code></pre>
+
+<p>Proxy password.</p>
 <table>
 <thead>
 <tr>
@@ -1017,54 +1060,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="proxy-port-advanced">Proxy Port (Advanced)</h2>
-<pre><code>--blackduck.proxy.port
+<h2 id="ntlm-proxy-workstation-advanced">NTLM Proxy Workstation (Advanced)</h2>
+<pre><code>--blackduck.proxy.ntlm.workstation
 </code></pre>
 
-<p>Proxy port.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.2.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="ntlm-proxy-domain-advanced">NTLM Proxy Domain (Advanced)</h2>
-<pre><code>--blackduck.proxy.ntlm.domain
-</code></pre>
-
-<p>NTLM Proxy domain.</p>
+<p>NTLM Proxy workstation.</p>
 <table>
 <thead>
 <tr>

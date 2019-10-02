@@ -182,18 +182,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../common-tasks/" title="Common Tasks" class="md-nav__link">
-      Common Tasks
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
     <a href="../../detectors/" title="Detectors" class="md-nav__link">
       Detectors
     </a>
@@ -233,13 +221,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
     
-    <label class="md-nav__link" for="nav-6">
+    <label class="md-nav__link" for="nav-5">
       Properties
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-6">
+      <label class="md-nav__title" for="nav-5">
         Properties
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -253,6 +241,18 @@
   <li class="md-nav__item">
     <a href="../all-properties/" title="All properties" class="md-nav__link">
       All properties
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../basic-properties/" title="Basic properties" class="md-nav__link">
+      Basic properties
     </a>
   </li>
 
@@ -458,8 +458,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#maven-executable" class="md-nav__link">
-    Maven Executable
+  <a href="#dependency-scope-excluded" class="md-nav__link">
+    Dependency Scope Excluded
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maven-build-command" class="md-nav__link">
+    Maven Build Command
   </a>
   
 </li>
@@ -472,8 +479,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-build-command" class="md-nav__link">
-    Maven Build Command
+  <a href="#maven-executable" class="md-nav__link">
+    Maven Executable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maven-include-plugins-advanced" class="md-nav__link">
+    Maven Include Plugins (Advanced)
   </a>
   
 </li>
@@ -493,8 +507,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-include-plugins-advanced" class="md-nav__link">
-    Maven Include Plugins (Advanced)
+  <a href="#dependency-scope-included-deprecated" class="md-nav__link">
+    Dependency Scope Included (Deprecated)
   </a>
   
 </li>
@@ -728,8 +742,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#maven-executable" class="md-nav__link">
-    Maven Executable
+  <a href="#dependency-scope-excluded" class="md-nav__link">
+    Dependency Scope Excluded
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maven-build-command" class="md-nav__link">
+    Maven Build Command
   </a>
   
 </li>
@@ -742,8 +763,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-build-command" class="md-nav__link">
-    Maven Build Command
+  <a href="#maven-executable" class="md-nav__link">
+    Maven Executable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maven-include-plugins-advanced" class="md-nav__link">
+    Maven Include Plugins (Advanced)
   </a>
   
 </li>
@@ -763,8 +791,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-include-plugins-advanced" class="md-nav__link">
-    Maven Include Plugins (Advanced)
+  <a href="#dependency-scope-included-deprecated" class="md-nav__link">
+    Dependency Scope Included (Deprecated)
   </a>
   
 </li>
@@ -787,12 +815,12 @@
                 
                 
                 <h1 id="maven">maven</h1>
-<h2 id="maven-executable">Maven Executable</h2>
-<pre><code>--detect.maven.path
+<h2 id="dependency-scope-excluded">Dependency Scope Excluded</h2>
+<pre><code>--detect.maven.excluded.scopes
 </code></pre>
 
-<p>The path to the Maven executable (mvn or mvnw).</p>
-<p>If set, Detect will use the given Maven executable instead of searching for one.</p>
+<p>A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).</p>
+<p>If set, Detect will include only dependencies outside of the given Maven scope.</p>
 <table>
 <thead>
 <tr>
@@ -803,51 +831,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="dependency-scope-included">Dependency Scope Included</h2>
-<pre><code>--detect.maven.scope
-</code></pre>
-
-<p>The name of a Maven scope. Output will be limited to dependencies with this scope.</p>
-<p>If set, Detect will include only dependencies of the given Maven scope.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
+<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -896,6 +880,137 @@
 <tr>
 <td>Type</td>
 <td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dependency-scope-included">Dependency Scope Included</h2>
+<pre><code>--detect.maven.included.scopes
+</code></pre>
+
+<p>A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).</p>
+<p>If set, Detect will include only dependencies of the given Maven scope.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="maven-executable">Maven Executable</h2>
+<pre><code>--detect.maven.path
+</code></pre>
+
+<p>The path to the Maven executable (mvn or mvnw).</p>
+<p>If set, Detect will use the given Maven executable instead of searching for one.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="maven-include-plugins-advanced">Maven Include Plugins (Advanced)</h2>
+<pre><code>--detect.maven.include.plugins
+</code></pre>
+
+<p>Whether or not detect will include the plugins section when parsing a pom.xml.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>5.6.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
 </tr>
 <tr>
 <td>Default Value</td>
@@ -1007,11 +1122,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="maven-include-plugins-advanced">Maven Include Plugins (Advanced)</h2>
-<pre><code>--detect.maven.include.plugins
+<h2 id="dependency-scope-included-deprecated">Dependency Scope Included (Deprecated)</h2>
+<pre><code>--detect.maven.scope
 </code></pre>
 
-<p>Whether or not detect will include the plugins section when parsing a pom.xml.</p>
+<p>The name of a Maven scope. Output will be limited to dependencies with this scope.</p>
+<p>If set, Detect will include only dependencies of the given Maven scope.</p>
 <table>
 <thead>
 <tr>
@@ -1022,11 +1138,11 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>5.6.0</td>
+<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>Boolean</td>
+<td>String</td>
 </tr>
 <tr>
 <td>Default Value</td>
