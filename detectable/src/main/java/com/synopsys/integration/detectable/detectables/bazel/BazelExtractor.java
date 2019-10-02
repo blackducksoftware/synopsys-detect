@@ -23,18 +23,9 @@
 package com.synopsys.integration.detectable.detectables.bazel;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.OperationNotSupportedException;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +34,8 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelCommandExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.PipelineJsonProcessor;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineLoader;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorEdit;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorExecuteBazelOnEach;
@@ -56,20 +47,20 @@ public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
     private final BazelCodeLocationBuilder codeLocationGenerator;
-    private final PipelineJsonProcessor pipelineJsonProcessor;
+    private final BazelPipelineLoader bazelPipelineLoader;
 
     public BazelExtractor(final ExecutableRunner executableRunner,
-        final BazelCodeLocationBuilder codeLocationGenerator, final PipelineJsonProcessor pipelineJsonProcessor) {
+        final BazelCodeLocationBuilder codeLocationGenerator, final BazelPipelineLoader bazelPipelineLoader) {
         this.executableRunner = executableRunner;
         this.codeLocationGenerator = codeLocationGenerator;
-        this.pipelineJsonProcessor = pipelineJsonProcessor;
+        this.bazelPipelineLoader = bazelPipelineLoader;
     }
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
-    public Extraction extract(final File bazelExe, final File workspaceDir, final String bazelTarget, final String bazelDependencyRule, final String pipelineStepsPath) {
-        logger.debug("Bazel extractAndPublishResults()");
+    public Extraction extract(final File bazelExe, final File workspaceDir, final WorkspaceRules workspaceRules, final String bazelTarget, final String bazelDependencyType) {
+        logger.debug("Bazel extraction:");
         try {
-            List<Step> pipelineSteps = getPipelineSteps(bazelDependencyRule, pipelineStepsPath);
+            List<Step> pipelineSteps = bazelPipelineLoader.loadPipelineSteps(workspaceRules, bazelDependencyType);
             final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
 
@@ -113,48 +104,12 @@ public class BazelExtractor {
         }
     }
 
-    @NotNull
-    private List<Step> getPipelineSteps(final String bazelDependencyRule, final String pipelineStepsPath) throws IOException, OperationNotSupportedException {
-        List<Step> pipelineSteps = null;
-        if (StringUtils.isNotBlank(pipelineStepsPath)) {
-            pipelineSteps = loadPipelineStepsFromFilesystem(pipelineStepsPath);
-            logger.debug(String.format("Read %d pipeline step(s) from %s", pipelineSteps.size(), pipelineStepsPath));
-        } else {
-            if (StringUtils.isNotBlank(bazelDependencyRule) && !"UNSPECIFIED".equalsIgnoreCase(bazelDependencyRule)) {
-                pipelineSteps = loadPipelineStepsFromClasspath(bazelDependencyRule);
-            } else {
-                // TODO look in the WORKSPACE file
-            }
-        }
-        if (pipelineSteps == null) {
-            throw new OperationNotSupportedException("Have not implemented built-in pipeline steps yet");
-        }
-        return pipelineSteps;
-    }
-
     private String cleanProjectName(final String bazelTarget) {
         String projectName = bazelTarget
                                  .replaceAll("^//", "")
-                   .replaceAll("^:", "")
-                   .replaceAll("/", "_")
-                   .replaceAll(":", "_");
+                                 .replaceAll("^:", "")
+                                 .replaceAll("/", "_")
+                                 .replaceAll(":", "_");
         return projectName;
-    }
-
-    private List<Step> loadPipelineStepsFromFilesystem(final String pipelineStepsJsonFilePath) throws IOException {
-        final File jsonFile = new File(pipelineStepsJsonFilePath);
-        logger.debug(String.format("Loading pipeline rules from filesystem: %s", jsonFile.getAbsolutePath()));
-        final String jsonString = FileUtils.readFileToString(jsonFile, StandardCharsets.UTF_8);
-        final List<Step> loadedSteps = pipelineJsonProcessor.fromJsonString(jsonString);
-        return loadedSteps;
-    }
-
-    private List<Step> loadPipelineStepsFromClasspath(final String bazelDependencyRuleName) throws IOException {
-        final String pipelineStepsJsonFilePath = String.format("/bazel/pipeline/%s.json", bazelDependencyRuleName);
-        logger.debug(String.format("Loading pipeline rules from classpath: %s", pipelineStepsJsonFilePath));
-        final InputStream in = this.getClass().getClassLoader().getResourceAsStream(pipelineStepsJsonFilePath);
-        final String jsonString = IOUtils.toString(in, StandardCharsets.UTF_8);
-        final List<Step> loadedSteps = pipelineJsonProcessor.fromJsonString(jsonString);
-        return loadedSteps;
     }
 }

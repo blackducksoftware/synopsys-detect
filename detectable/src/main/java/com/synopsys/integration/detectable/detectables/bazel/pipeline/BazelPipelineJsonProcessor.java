@@ -30,10 +30,10 @@ import org.jetbrains.annotations.NotNull;
 import com.google.gson.Gson;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 
-public class PipelineJsonProcessor {
+public class BazelPipelineJsonProcessor {
     private final Gson gson;
 
-    public PipelineJsonProcessor(final Gson gson) {
+    public BazelPipelineJsonProcessor(final Gson gson) {
         this.gson = gson;
     }
 
