@@ -31,25 +31,25 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class StepExecutorEdit implements StepExecutor {
+public class StepExecutorFilter implements StepExecutor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public boolean applies(final String stepType) {
-        return "edit".equalsIgnoreCase(stepType);
+        return "filter".equalsIgnoreCase(stepType);
     }
 
     @Override
     public List<String> process(final Step step, final List<String> input) throws IntegrationException {
-        final List<String> results = new ArrayList<>();
-        final String targetPattern = step.getArgs().get(0);
-        final String replacementString = step.getArgs().get(1);
-        logger.debug(String.format("Edit target pattern: %s; replacement string: %s", targetPattern, replacementString));
+        final List<String> output = new ArrayList<>();
+        final String regex = step.getArgs().get(0);
+        logger.debug(String.format("Filtering with regex %s", regex));
         for (final String inputItem : input) {
-            final String modifiedInputItem = inputItem.replaceAll(targetPattern, replacementString);
-            logger.debug(String.format("Edit changed %s to %s", inputItem, modifiedInputItem));
-            results.add(modifiedInputItem);
+            if (inputItem.matches(regex)) {
+                logger.debug(String.format("Filter keeping: %s", inputItem));
+                output.add(inputItem);
+            }
         }
-        return results;
+        return output;
     }
 }

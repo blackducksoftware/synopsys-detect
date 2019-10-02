@@ -13,6 +13,8 @@ import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 
 public class GenerateJson {
 
+    // TODO clean up this file
+
     @Test
     public void generateScenario1() {
         final List<Step> steps = new ArrayList<>();
@@ -61,6 +63,38 @@ public class GenerateJson {
         steps.add(step2);
         steps.add(step3);
         steps.add(step4);
+
+        final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        final String jsonString = gson.toJson(steps);
+        System.out.println(jsonString);
+    }
+
+    // Did not get this working:
+    @Test
+    public void generateScenario4() {
+        final List<Step> steps = new ArrayList<>();
+        steps.add(new Step("executeBazelOnEach", Arrays.asList("cquery", "--noimplicit_deps", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")));
+        steps.add(new Step("splitEach", Arrays.asList("\n")));
+        steps.add(new Step("filter", Arrays.asList(".*maven_coordinates=.*")));
+        steps.add(new Step("edit", Arrays.asList(".*maven_coodinates=", "")));
+        steps.add(new Step("edit", Arrays.asList("\".*", "")));
+
+        final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        final String jsonString = gson.toJson(steps);
+        System.out.println(jsonString);
+    }
+
+    // This works:
+    @Test
+    public void generateScenario4a() {
+        final List<Step> steps = new ArrayList<>();
+        steps.add(new Step("executeBazelOnEach", Arrays.asList("cquery", "--noimplicit_deps", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")));
+        steps.add(new Step("splitEach", Arrays.asList("\n")));
+        steps.add(new Step("filter", Arrays.asList(".*maven_coordinates=.*")));
+        steps.add(new Step("edit", Arrays.asList("^\\s*tags\\s*", "")));
+        steps.add(new Step("edit", Arrays.asList("^\\s*=\\s*\\[\\s*\"", "")));
+        steps.add(new Step("edit", Arrays.asList("maven_coordinates=", "")));
+        steps.add(new Step("edit", Arrays.asList("\".*", "")));
 
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
         final String jsonString = gson.toJson(steps);

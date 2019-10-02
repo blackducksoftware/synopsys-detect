@@ -70,6 +70,7 @@ public class BazelPipelineLoader {
         logger.debug(String.format("Loading pipeline steps for %s", bazelDependencyType));
         final String pipelineStepsJsonFilePath;
         if (bazelDependencyType.startsWith("file:")) {
+            // for developer use only
             pipelineStepsJsonFilePath = bazelDependencyType;
         } else {
             pipelineStepsJsonFilePath = String.format("/bazel/pipeline/%s.json", bazelDependencyType);

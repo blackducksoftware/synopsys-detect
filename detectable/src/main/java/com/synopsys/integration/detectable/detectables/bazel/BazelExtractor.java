@@ -39,8 +39,9 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipel
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorEdit;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorExecuteBazelOnEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorFilter;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorParseEachXml;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorSplit;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorSplitEach;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelVariableSubstitutor;
 
 public class BazelExtractor {
@@ -66,13 +67,15 @@ public class BazelExtractor {
 
             // TODO get step executor list programmatically
             final StepExecutor stepExecutorExecuteBazelOnEach = new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor);
-            final StepExecutor stepExecutorSplitEach = new StepExecutorSplit();
+            final StepExecutor stepExecutorSplitEach = new StepExecutorSplitEach();
+            final StepExecutor stepExecutorFilter = new StepExecutorFilter();
             final StepExecutor stepExecutorEdit = new StepExecutorEdit();
             final StepExecutor stepExecutorParseEachXml = new StepExecutorParseEachXml();
 
             List<String> pipelineData = new ArrayList<>();
             for (final Step step : pipelineSteps) {
                 // TODO get step executor list programmatically
+                logger.debug(String.format("Executing %s", step.getType()));
                 if (stepExecutorExecuteBazelOnEach.applies(step.getType())) {
                     pipelineData = stepExecutorExecuteBazelOnEach.process(step, pipelineData);
                 }
@@ -84,6 +87,9 @@ public class BazelExtractor {
                 }
                 if (stepExecutorParseEachXml.applies(step.getType())) {
                     pipelineData = stepExecutorParseEachXml.process(step, pipelineData);
+                }
+                if (stepExecutorFilter.applies(step.getType())) {
+                    pipelineData = stepExecutorFilter.process(step, pipelineData);
                 }
             }
             for (String artifactString : pipelineData) {

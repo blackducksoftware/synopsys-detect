@@ -11,14 +11,14 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorSplit;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorSplitEach;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class StepExecutorSplitEachTest {
+public class StepExecutorSplitEachEachTest {
 
     @Test
     public void test() throws IntegrationException {
-        final StepExecutor stepExecutorSplitEach = new StepExecutorSplit();
+        final StepExecutor stepExecutorSplitEach = new StepExecutorSplitEach();
         assertTrue(stepExecutorSplitEach.applies("splitEach"));
         final Step step = new Step("splitEach", Arrays.asList("\\s+"));
         final List<String> input = Arrays.asList("@org_apache_commons_commons_io//jar:jar\n@com_google_guava_guava//jar:jar");

@@ -26,10 +26,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class StepExecutorSplit implements StepExecutor {
+public class StepExecutorSplitEach implements StepExecutor {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Override
     public boolean applies(final String stepType) {
         return "splitEach".equalsIgnoreCase(stepType);
@@ -42,6 +47,7 @@ public class StepExecutorSplit implements StepExecutor {
             final String[] splitLines = inputItem.split(step.getArgs().get(0));
             results.addAll(Arrays.asList(splitLines));
         }
+        logger.debug(String.format("SplitEach returning %d lines", results.size()));
         return results;
     }
 }
