@@ -3,7 +3,7 @@
     "type": "executeBazelOnEach",
     "args": [
       "cquery",
-      "deps(//:${detect.bazel.target})",
+      "deps(${detect.bazel.target})",
       "--output",
       "textproto"
     ]
