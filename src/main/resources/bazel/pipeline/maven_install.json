@@ -24,21 +24,7 @@
   {
     "type": "edit",
     "args": [
-      "^\\s*tags\\s*",
-      ""
-    ]
-  },
-  {
-    "type": "edit",
-    "args": [
-      "^\\s*\u003d\\s*\\[\\s*\"",
-      ""
-    ]
-  },
-  {
-    "type": "edit",
-    "args": [
-      "maven_coordinates\u003d",
+      "^\\s*tags\\s*\\s*\u003d\\s*\\[\\s*\"maven_coordinates\u003d",
       ""
     ]
   },
