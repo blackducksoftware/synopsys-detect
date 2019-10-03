@@ -94,6 +94,7 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.profiling.DetectorProfiler;
 import com.synopsys.integration.detect.workflow.report.DetectConfigurationReporter;
+import com.synopsys.integration.detect.workflow.report.writer.DebugLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.ErrorLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
@@ -290,8 +291,9 @@ public class DetectBoot {
         //First print the entire configuration.
         final DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
         final InfoLogReportWriter infoLogReportWriter = new InfoLogReportWriter();
+        final DebugLogReportWriter debugLogReportWriter = new DebugLogReportWriter();
         if (!fullConfiguration) {
-            detectConfigurationReporter.print(infoLogReportWriter, detectOptions, true);
+            detectConfigurationReporter.print(infoLogReportWriter, debugLogReportWriter, detectOptions);
         }
 
         //Next check for options that are just plain bad, ie giving an detector type we don't know about.

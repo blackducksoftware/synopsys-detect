@@ -35,16 +35,15 @@ public class OnlinePhoneHomeManager extends PhoneHomeManager {
 
     public OnlinePhoneHomeManager(final Map<String, String> additionalMetaData, final DetectInfo detectInfo, final EventSystem eventSystem, final BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper) {
         super(additionalMetaData, detectInfo, eventSystem);
-
         this.blackDuckPhoneHomeHelper = blackDuckPhoneHomeHelper;
     }
 
     @Override
-    public PhoneHomeResponse phoneHome(final Map<String, String> metadata) {
+    public PhoneHomeResponse phoneHome(final Map<String, String> metadata, final String... artifactModules) {
         final Map<String, String> metaDataToSend = new HashMap<>();
         metaDataToSend.putAll(metadata);
         metaDataToSend.putAll(additionalMetaData);
-        return blackDuckPhoneHomeHelper.handlePhoneHome("synopsys-detect", detectInfo.getDetectVersion(), metaDataToSend);
+        return blackDuckPhoneHomeHelper.handlePhoneHome("synopsys-detect", detectInfo.getDetectVersion(), metaDataToSend, artifactModules);
     }
 
 }

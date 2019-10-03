@@ -11,7 +11,7 @@ import com.synopsys.integration.log.PrintStreamIntLogger
 buildscript {
     ext {
         springBootVersion = '2.1.5.RELEASE'
-        blackDuckCommonVersion = '44.2.12'
+        blackDuckCommonVersion = '44.2.14'
         polarisCommonVersion = '0.13.2'
     }
     repositories {

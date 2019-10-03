@@ -159,17 +159,15 @@ public class DetectOptionManager {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.OVERRIDE);
                 }
             } else {
-                if (isEqualToDefault(option.getDetectProperty(), fieldValue)) {
+                if (propertyWasSet) {
+                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.SUPPLIED);
+                    if (option.getDetectOptionHelp().isDeprecated) {
+                        option.requestDeprecation();
+                    }
+                } else if (isEqualToDefault(option.getDetectProperty(), fieldValue)) {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.DEFAULT);
                 } else {
-                    if (propertyWasSet) {
-                        option.setFinalValue(fieldValue, DetectOption.FinalValueType.SUPPLIED);
-                        if (option.getDetectOptionHelp().isDeprecated) {
-                            option.requestDeprecation();
-                        }
-                    } else {
-                        option.setFinalValue(fieldValue, DetectOption.FinalValueType.COPIED);
-                    }
+                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.COPIED);
                 }
             }
 

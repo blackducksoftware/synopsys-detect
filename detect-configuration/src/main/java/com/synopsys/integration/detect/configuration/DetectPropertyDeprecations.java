@@ -29,6 +29,12 @@ import java.util.Map;
 public class DetectPropertyDeprecations {
     static final Map<DetectProperty, DetectProperty> PROPERTY_OVERRIDES = new HashMap<>();
 
+    //You do NOT need to add your deprecated property to this override map.
+    //This is simply a helper when ONE property is replaced by ONE new property such that you can treat the new property the same as the old. (Only need to GET/SET the new property).
+    //In the case or CHAINING or COMPLEX behavior between the deprecated and current properties it is left up to the developer.
+    //For example, with PARALLEL_PROCESSORS, configuration manager calculates him based on two other properties.
+    //For example, with DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED and DETECT_HUB_SIGNATURE_SCANNER_DISABLED, even though it appears here, additional code in the config factory handles what should actually happen.
+
     static {
         PROPERTY_OVERRIDES.put(DetectProperty.LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION, DetectProperty.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION);
         PROPERTY_OVERRIDES.put(DetectProperty.DETECT_DISABLE_WITHOUT_BLACKDUCK, DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES);
@@ -58,8 +64,6 @@ public class DetectPropertyDeprecations {
         PROPERTY_OVERRIDES.put(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH);
         PROPERTY_OVERRIDES.put(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH);
         PROPERTY_OVERRIDES.put(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL);
-        PROPERTY_OVERRIDES.put(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, DetectProperty.DETECT_PARALLEL_PROCESSORS);
-        PROPERTY_OVERRIDES.put(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, DetectProperty.DETECT_PARALLEL_PROCESSORS);
         PROPERTY_OVERRIDES.put(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS);
         PROPERTY_OVERRIDES.put(DetectProperty.DETECT_MAVEN_SCOPE, DetectProperty.DETECT_MAVEN_INCLUDED_SCOPES);
 
