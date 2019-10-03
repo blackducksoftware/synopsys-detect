@@ -23,25 +23,25 @@
 package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detectable.detectables.bazel.BazelClasspathFileReader;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRules;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BazelPipelineLoader {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final BazelClasspathFileReader bazelClasspathFileReader;
     private final BazelPipelineJsonProcessor bazelPipelineJsonProcessor;
 
-    public BazelPipelineLoader(final BazelPipelineJsonProcessor bazelPipelineJsonProcessor) {
+    public BazelPipelineLoader(final BazelClasspathFileReader bazelClasspathFileReader, final BazelPipelineJsonProcessor bazelPipelineJsonProcessor) {
+        this.bazelClasspathFileReader = bazelClasspathFileReader;
         this.bazelPipelineJsonProcessor = bazelPipelineJsonProcessor;
     }
 
@@ -80,13 +80,9 @@ public class BazelPipelineLoader {
 
     @NotNull
     private List<Step> loadPipelineStepsAtPathFromClasspath(final String pipelineStepsJsonFilePath) throws IntegrationException {
-        final InputStream in = this.getClass().getClassLoader().getResourceAsStream(pipelineStepsJsonFilePath);
-        if (in == null) {
-            throw new IntegrationException("Unable to load pipeline steps");
-        }
         final String jsonString;
         try {
-            jsonString = IOUtils.toString(in, StandardCharsets.UTF_8);
+            jsonString = bazelClasspathFileReader.readFileFromClasspathToString(pipelineStepsJsonFilePath);
         } catch (IOException e) {
             throw new IntegrationException("Unable to read pipeline steps", e);
         }
