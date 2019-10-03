@@ -44,7 +44,7 @@ public class DetectConfigurationReporter {
                    .collect(Collectors.toList());
     }
 
-    public void print(final ReportWriter writer, final List<DetectOption> detectOptions, final boolean skipDefaults) throws IllegalArgumentException, SecurityException {
+    public void print(final ReportWriter writer, final ReportWriter detailedWriter, final List<DetectOption> detectOptions) throws IllegalArgumentException, SecurityException {
         writer.writeLine("Detect Configuration");
         writer.writeLine(StringUtils.repeat("-", 60));
 
@@ -56,10 +56,7 @@ public class DetectConfigurationReporter {
             String fieldValue = option.getFinalValue();
             final DetectOption.FinalValueType fieldType = option.getFinalValueType();
             if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(fieldValue) && !"metaClass".equals(key)) {
-                if (fieldType == DetectOption.FinalValueType.DEFAULT && skipDefaults) {
-                    continue;
-                }
-                atLeaseOneWritten = true;
+
                 final boolean containsPassword = key.toLowerCase().contains("password") || key.toLowerCase().contains("api.token") || key.toLowerCase().contains("access.token");
                 if (containsPassword) {
                     fieldValue = StringUtils.repeat("*", fieldValue.length());
@@ -93,7 +90,15 @@ public class DetectConfigurationReporter {
                 if (option.getWarnings().size() > 0) {
                     text += "\t *** DEPRECATED ***";
                 }
-                writer.writeLine(text);
+
+                if (fieldType == DetectOption.FinalValueType.DEFAULT) {
+                    detailedWriter.writeLine(text);
+                } else if (!(option.getDetectOptionHelp().isDeprecated && fieldType == DetectOption.FinalValueType.COPIED)) {
+                    writer.writeLine(text);
+                    atLeaseOneWritten = true;
+                } else {
+                    detailedWriter.writeLine(text);
+                }
             }
         }
         if (!atLeaseOneWritten) {
