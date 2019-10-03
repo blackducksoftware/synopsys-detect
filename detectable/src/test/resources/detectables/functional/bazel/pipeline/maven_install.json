@@ -1,0 +1,38 @@
+[
+  {
+    "type": "executeBazelOnEach",
+    "args": [
+      "cquery",
+      "--noimplicit_deps",
+      "kind(j.*import, deps(${detect.bazel.target}))",
+      "--output",
+      "build"
+    ]
+  },
+  {
+    "type": "splitEach",
+    "args": [
+      "\n"
+    ]
+  },
+  {
+    "type": "filter",
+    "args": [
+      ".*maven_coordinates\u003d.*"
+    ]
+  },
+  {
+    "type": "edit",
+    "args": [
+      "^\\s*tags\\s*\\s*\u003d\\s*\\[\\s*\"maven_coordinates\u003d",
+      ""
+    ]
+  },
+  {
+    "type": "edit",
+    "args": [
+      "\".*",
+      ""
+    ]
+  }
+]
