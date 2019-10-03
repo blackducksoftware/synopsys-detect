@@ -63,7 +63,7 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
-import com.synopsys.integration.detectable.detectables.bazel.BazelClasspathFileReader;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelClasspathFileReader;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineJsonProcessor;
@@ -245,8 +245,7 @@ public class DetectableBeanConfiguration {
     public BazelExtractor bazelExtractor() {
         final BazelCodeLocationBuilder codeLocationGenerator = new BazelCodeLocationBuilder(externalIdFactory);
         final BazelPipelineJsonProcessor bazelPipelineJsonProcessor = new BazelPipelineJsonProcessor(gson);
-        final BazelClasspathFileReader bazelClasspathFileReader = new BazelClasspathFileReader();
-        final BazelPipelineLoader bazelPipelineLoader = new BazelPipelineLoader(bazelClasspathFileReader, bazelPipelineJsonProcessor);
+        final BazelPipelineLoader bazelPipelineLoader = new BazelPipelineLoader(bazelPipelineJsonProcessor);
         return new BazelExtractor(executableRunner, codeLocationGenerator, bazelPipelineLoader);
     }
 

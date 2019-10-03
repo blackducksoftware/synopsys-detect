@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel.pipeline;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor;
 
 import java.util.ArrayList;
 import java.util.HashMap;

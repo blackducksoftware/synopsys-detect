@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline;
+package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline.stepexecutor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -9,8 +9,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorEdit;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorEdit;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorEditTest {

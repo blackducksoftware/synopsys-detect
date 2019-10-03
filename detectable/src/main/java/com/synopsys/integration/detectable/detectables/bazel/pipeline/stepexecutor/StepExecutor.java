@@ -20,24 +20,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.util.List;
 
-import org.apache.commons.io.IOUtils;
+import com.synopsys.integration.detectable.detectables.bazel.model.Step;
+import com.synopsys.integration.exception.IntegrationException;
 
-public class BazelClasspathFileReader {
+public interface StepExecutor {
 
-    public String readFileFromClasspathToString(final String filePath) throws IOException {
-        final String fileContent;
-        try (final InputStream in = this.getClass().getClassLoader().getResourceAsStream(filePath)) {
-            if (in == null) {
-                throw new IOException("Unable to read file from classpath");
-            }
-            fileContent = IOUtils.toString(in, StandardCharsets.UTF_8);
-        }
-        return fileContent;
-    }
+    boolean applies(final String stepType);
+    List<String> process(final Step step, final List<String> input) throws IntegrationException;
 }

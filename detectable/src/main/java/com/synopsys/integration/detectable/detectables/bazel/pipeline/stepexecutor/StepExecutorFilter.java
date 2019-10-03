@@ -20,15 +20,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel.pipeline;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.exception.IntegrationException;
 
-public interface StepExecutor {
+public class StepExecutorFilter implements StepExecutor {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    boolean applies(final String stepType);
-    List<String> process(final Step step, final List<String> input) throws IntegrationException;
+    @Override
+    public boolean applies(final String stepType) {
+        return "filter".equalsIgnoreCase(stepType);
+    }
+
+    @Override
+    public List<String> process(final Step step, final List<String> input) throws IntegrationException {
+        final List<String> output = new ArrayList<>();
+        final String regex = step.getArgs().get(0);
+        logger.trace(String.format("Filtering with regex %s", regex));
+        for (final String inputItem : input) {
+            if (inputItem.matches(regex)) {
+                logger.trace(String.format("Filter keeping: %s", inputItem));
+                output.add(inputItem);
+            }
+        }
+        return output;
+    }
 }

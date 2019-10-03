@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline;
+package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline.stepexecutor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,11 +14,11 @@ import org.mockito.Mockito;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelCommandExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorExecuteBazelOnEach;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorExecuteBazelOnEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelVariableSubstitutor;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorExecuteBazelOnEachTest {

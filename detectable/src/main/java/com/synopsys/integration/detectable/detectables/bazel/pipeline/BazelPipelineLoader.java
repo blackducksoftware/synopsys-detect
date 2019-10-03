@@ -30,39 +30,37 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.bazel.BazelClasspathFileReader;
-import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRules;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BazelPipelineLoader {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final BazelClasspathFileReader bazelClasspathFileReader;
     private final BazelPipelineJsonProcessor bazelPipelineJsonProcessor;
 
-    public BazelPipelineLoader(final BazelClasspathFileReader bazelClasspathFileReader, final BazelPipelineJsonProcessor bazelPipelineJsonProcessor) {
-        this.bazelClasspathFileReader = bazelClasspathFileReader;
+    public BazelPipelineLoader(final BazelPipelineJsonProcessor bazelPipelineJsonProcessor) {
         this.bazelPipelineJsonProcessor = bazelPipelineJsonProcessor;
     }
 
     @NotNull
-    public List<Step> loadPipelineSteps(final WorkspaceRules workspaceRules, final String providedBazelDependencyType) throws IntegrationException {
+    public List<Step> loadPipelineSteps(final BazelClasspathFileReader bazelClasspathFileReader, final String ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
         final String finalBazelDependencyType;
         if (StringUtils.isNotBlank(providedBazelDependencyType) && !"UNSPECIFIED".equalsIgnoreCase(providedBazelDependencyType)) {
             finalBazelDependencyType = providedBazelDependencyType;
+        } else if (ruleFromWorkspaceFile != null) {
+            finalBazelDependencyType = ruleFromWorkspaceFile;
         } else {
-            finalBazelDependencyType = workspaceRules.getDependencyRule();
+            throw new IntegrationException("Unable to determine Workspace dependency rule; try setting it via the property");
         }
-        final List<Step> pipelineSteps = loadPipelineStepsForTypeFromClasspath(finalBazelDependencyType);
+        final List<Step> pipelineSteps = loadPipelineStepsForTypeFromClasspath(bazelClasspathFileReader, finalBazelDependencyType);
         if (pipelineSteps == null) {
-            throw new IntegrationException("Unable to determine Workspace dependency rule");
+            throw new IntegrationException(String.format("Workspace dependency type %s is not supported", finalBazelDependencyType));
         }
         return pipelineSteps;
     }
 
-    private List<Step> loadPipelineStepsForTypeFromClasspath(final String bazelDependencyType) throws IntegrationException {
+    private List<Step> loadPipelineStepsForTypeFromClasspath(final BazelClasspathFileReader bazelClasspathFileReader, final String bazelDependencyType) throws IntegrationException {
         final String pipelineStepsJsonLoadPath = derivePipelineStepsLoadPath(bazelDependencyType);
-        final List<Step> loadedSteps = loadPipelineStepsAtPathFromClasspath(pipelineStepsJsonLoadPath);
+        final List<Step> loadedSteps = loadPipelineStepsAtPathFromClasspath(bazelClasspathFileReader, pipelineStepsJsonLoadPath);
         return loadedSteps;
     }
 
@@ -79,7 +77,7 @@ public class BazelPipelineLoader {
     }
 
     @NotNull
-    private List<Step> loadPipelineStepsAtPathFromClasspath(final String pipelineStepsJsonFilePath) throws IntegrationException {
+    private List<Step> loadPipelineStepsAtPathFromClasspath(final BazelClasspathFileReader bazelClasspathFileReader, final String pipelineStepsJsonFilePath) throws IntegrationException {
         final String jsonString;
         try {
             jsonString = bazelClasspathFileReader.readFileFromClasspathToString(pipelineStepsJsonFilePath);

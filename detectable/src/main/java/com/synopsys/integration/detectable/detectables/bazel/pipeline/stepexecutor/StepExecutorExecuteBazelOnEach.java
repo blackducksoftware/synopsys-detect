@@ -20,34 +20,46 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel.pipeline;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class StepExecutorSplitEach implements StepExecutor {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+public class StepExecutorExecuteBazelOnEach implements StepExecutor {
+    private final BazelCommandExecutor bazelCommandExecutor;
+    private final BazelVariableSubstitutor bazelVariableSubstitutor;
+
+    public StepExecutorExecuteBazelOnEach(final BazelCommandExecutor bazelCommandExecutor, final BazelVariableSubstitutor bazelVariableSubstitutor) {
+        this.bazelCommandExecutor = bazelCommandExecutor;
+        this.bazelVariableSubstitutor = bazelVariableSubstitutor;
+    }
 
     @Override
     public boolean applies(final String stepType) {
-        return "splitEach".equalsIgnoreCase(stepType);
+        return "executeBazelOnEach".equalsIgnoreCase(stepType);
     }
 
     @Override
     public List<String> process(final Step step, final List<String> input) throws IntegrationException {
-        final List<String> results = new ArrayList<>();
-        for (final String inputItem : input) {
-            final String[] splitLines = inputItem.split(step.getArgs().get(0));
-            results.addAll(Arrays.asList(splitLines));
+        final List<String> adjustedInput;
+        if (input.size() == 0) {
+            adjustedInput = new ArrayList<>(1);
+            adjustedInput.add(null);
+        } else {
+            adjustedInput = input;
         }
-        logger.trace(String.format("SplitEach returning %d lines", results.size()));
+        final List<String> results = new ArrayList<>();
+        for (final String inputItem : adjustedInput) {
+            final List<String> finalizedArgs = bazelVariableSubstitutor.substitute(step.getArgs(), inputItem);
+            final Optional<String> cmdOutput = bazelCommandExecutor.executeToString(finalizedArgs);
+            if (cmdOutput.isPresent()) {
+                results.add(cmdOutput.get());
+            }
+        }
         return results;
     }
 }

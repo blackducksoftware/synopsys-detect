@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,17 +34,13 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelCommandExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelClasspathFileReader;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineLoader;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorEdit;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorExecuteBazelOnEach;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorFilter;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorParseEachXml;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorSplitEach;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelVariableSubstitutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutors;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutors;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BazelExtractor {
@@ -64,7 +59,9 @@ public class BazelExtractor {
     public Extraction extract(final File bazelExe, final File workspaceDir, final WorkspaceRules workspaceRules, final String bazelTarget, final String bazelDependencyType) {
         logger.debug("Bazel extraction:");
         try {
-            List<Step> pipelineSteps = bazelPipelineLoader.loadPipelineSteps(workspaceRules, bazelDependencyType);
+            final String ruleFromWorkspaceFile = workspaceRules.getDependencyRule();
+            final BazelClasspathFileReader bazelClasspathFileReader = new BazelClasspathFileReader();
+            List<Step> pipelineSteps = bazelPipelineLoader.loadPipelineSteps(bazelClasspathFileReader, ruleFromWorkspaceFile, bazelDependencyType);
             final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
             final List<StepExecutor> stepExecutors = StepExecutors.create(bazelCommandExecutor, bazelVariableSubstitutor);

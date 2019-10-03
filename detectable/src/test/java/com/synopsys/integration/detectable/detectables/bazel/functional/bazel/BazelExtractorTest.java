@@ -26,6 +26,7 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRules;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.detectable.detectables.bazel.BazelCodeLocationBuilder;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelClasspathFileReader;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineJsonProcessor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineLoader;
 import com.synopsys.integration.exception.IntegrationException;
@@ -59,8 +60,9 @@ public class BazelExtractorTest {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final BazelCodeLocationBuilder codeLocationBuilder = new BazelCodeLocationBuilder(externalIdFactory);
         final WorkspaceRules workspaceRules = Mockito.mock(WorkspaceRules.class);
+        Mockito.when(workspaceRules.getDependencyRule()).thenReturn("maven_jar");
         final BazelPipelineLoader bazelPipelineLoader = Mockito.mock(BazelPipelineLoader.class);
-        Mockito.when(bazelPipelineLoader.loadPipelineSteps(workspaceRules, null)).thenReturn(steps);
+        Mockito.when(bazelPipelineLoader.loadPipelineSteps(Mockito.any(BazelClasspathFileReader.class), Mockito.matches("maven_jar"), Mockito.isNull())).thenReturn(steps);
         final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, codeLocationBuilder, bazelPipelineLoader);
         final File bazelExe = new File("/usr/bin/bazel");
 
@@ -126,8 +128,9 @@ public class BazelExtractorTest {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final BazelCodeLocationBuilder codeLocationBuilder = new BazelCodeLocationBuilder(externalIdFactory);
         final WorkspaceRules workspaceRules = Mockito.mock(WorkspaceRules.class);
+        Mockito.when(workspaceRules.getDependencyRule()).thenReturn("maven_install");
         final BazelPipelineLoader bazelPipelineLoader = Mockito.mock(BazelPipelineLoader.class);
-        Mockito.when(bazelPipelineLoader.loadPipelineSteps(workspaceRules, null)).thenReturn(steps);
+        Mockito.when(bazelPipelineLoader.loadPipelineSteps(Mockito.any(BazelClasspathFileReader.class), Mockito.matches("maven_install"), Mockito.isNull())).thenReturn(steps);
         final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, codeLocationBuilder, bazelPipelineLoader);
         final File bazelExe = new File("/usr/bin/bazel");
 

@@ -43,22 +43,23 @@ public class WorkspaceRules {
         this.workspaceFile = workspaceFile;
     }
 
-    public String getDependencyRule() throws IntegrationException {
+    public String getDependencyRule() {
         final List<String> workspaceFileLines;
-        workspaceFileLines = readWorkspaceFileLines(workspaceFile);
+        try {
+            workspaceFileLines = readWorkspaceFileLines(workspaceFile);
+        } catch (IOException e) {
+            logger.debug(String.format("Unable to parse dependency rule from %s: %s", workspaceFile.getAbsolutePath(), e.getMessage()));
+            return null;
+        }
         final String dependencyRule = parseDependencyRuleFromWorkspaceFileLines(workspaceFileLines);
         return dependencyRule;
     }
 
     @NotNull
-    private List<String> readWorkspaceFileLines(final File workspaceFile) throws IntegrationException {
+    private List<String> readWorkspaceFileLines(final File workspaceFile) throws IOException {
         final List<String> workspaceFileLines;
-        try {
-            // Assumes ascii or UTF-8, which is what other detectors do
-            workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new IntegrationException(String.format("Unable to parse dependency rule from %s: %s", workspaceFile.getAbsolutePath(), e.getMessage()), e);
-        }
+        // Assumes ascii or UTF-8, which is what other detectors do
+        workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
         return workspaceFileLines;
     }
 
