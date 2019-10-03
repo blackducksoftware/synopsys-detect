@@ -4,14 +4,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
@@ -28,17 +34,10 @@ import com.synopsys.integration.exception.IntegrationException;
 public class BazelExtractorTest {
 
     @Test
-    public void testDefault() throws ExecutableRunnerException, IntegrationException {
+    public void testMavenJar() throws ExecutableRunnerException, IntegrationException, IOException {
 
-        // TODO Load steps from src/main/resources
-        final List<Step> steps = new ArrayList<>();
-        steps.add(new Step("executeBazelOnEach", Arrays.asList("query", "filter('@.*:jar', deps(${detect.bazel.target}))")));
-        steps.add(new Step("splitEach", Arrays.asList("\\s+")));
-        steps.add(new Step("edit", Arrays.asList("^@", "")));
-        steps.add(new Step("edit", Arrays.asList("//.*", "")));
-        steps.add(new Step("edit", Arrays.asList("^", "//external:")));
-        steps.add(new Step("executeBazelOnEach", Arrays.asList("query", "kind(maven_jar, ${0})", "--output", "xml")));
-        steps.add(new Step("parseEachXml", Arrays.asList("/query/rule[@class='maven_jar']/string[@name='artifact']", "value")));
+        final File pipelineStepsJsonFile = new File("src/test/resources/detectables/functional/bazel/pipeline/maven_jar.json");
+        final List<Step> steps = loadPipeline(pipelineStepsJsonFile);
 
         final String commonsIoXml = "<?xml version=\"1.1\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
                                         + "<query version=\"2\">\n"
@@ -57,17 +56,12 @@ public class BazelExtractorTest {
                                     + "</query>";
 
         final File workspaceDir = new File(".");
-
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final BazelCodeLocationBuilder codeLocationBuilder = new BazelCodeLocationBuilder(externalIdFactory);
-
         final WorkspaceRules workspaceRules = Mockito.mock(WorkspaceRules.class);
-
         final BazelPipelineLoader bazelPipelineLoader = Mockito.mock(BazelPipelineLoader.class);
         Mockito.when(bazelPipelineLoader.loadPipelineSteps(workspaceRules, null)).thenReturn(steps);
-
         final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, codeLocationBuilder, bazelPipelineLoader);
         final File bazelExe = new File("/usr/bin/bazel");
 
@@ -120,5 +114,64 @@ public class BazelExtractorTest {
         }
         assertTrue(foundCommonsIo);
         assertTrue(foundGuava);
+    }
+
+
+    @Test
+    public void testMavenInstall() throws ExecutableRunnerException, IntegrationException, IOException {
+
+        final File pipelineStepsJsonFile = new File("src/test/resources/detectables/functional/bazel/pipeline/maven_install.json");
+        final List<Step> steps = loadPipeline(pipelineStepsJsonFile);
+        final File workspaceDir = new File(".");
+        final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        final BazelCodeLocationBuilder codeLocationBuilder = new BazelCodeLocationBuilder(externalIdFactory);
+        final WorkspaceRules workspaceRules = Mockito.mock(WorkspaceRules.class);
+        final BazelPipelineLoader bazelPipelineLoader = Mockito.mock(BazelPipelineLoader.class);
+        Mockito.when(bazelPipelineLoader.loadPipelineSteps(workspaceRules, null)).thenReturn(steps);
+        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, codeLocationBuilder, bazelPipelineLoader);
+        final File bazelExe = new File("/usr/bin/bazel");
+
+        // bazel cquery --noimplicit_deps "kind(j.*import, deps(//:ProjectRunner))" --output build
+        final List<String> bazelArgsGetDependencies = new ArrayList<>();
+        bazelArgsGetDependencies.add("cquery");
+        bazelArgsGetDependencies.add("--noimplicit_deps");
+        bazelArgsGetDependencies.add("kind(j.*import, deps(//:ProjectRunner))");
+        bazelArgsGetDependencies.add("--output");
+        bazelArgsGetDependencies.add("build");
+        final ExecutableOutput bazelCmdExecutableOutputGetDependencies = Mockito.mock(ExecutableOutput.class);
+        Mockito.when(bazelCmdExecutableOutputGetDependencies.getReturnCode()).thenReturn(0);
+        Mockito.when(bazelCmdExecutableOutputGetDependencies.getStandardOutput()).thenReturn(
+            "jvm_import(\n  name = \"com_google_guava_failureaccess\",\n" +
+                "  tags = [\"maven_coordinates=com.google.guava:failureaccess:1.0\"],\n" +
+                "  tags = [\"maven_coordinates=com.google.errorprone:error_prone_annotations:2.2.0\"],");
+        Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgsGetDependencies)).thenReturn(bazelCmdExecutableOutputGetDependencies);
+
+        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, workspaceRules, "//:ProjectRunner", null);
+
+        assertEquals(1, result.getCodeLocations().size());
+        final Set<Dependency> dependencies = result.getCodeLocations().get(0).getDependencyGraph().getRootDependencies();
+        assertEquals(2, dependencies.size());
+        boolean foundFailureAccess = false;
+        boolean foundErrorProneAnnotations = false;
+        for (final Dependency dep : dependencies) {
+            System.out.printf("externalId: %s\n", dep.externalId);
+            if ("failureaccess".equals(dep.externalId.name)) {
+                foundFailureAccess = true;
+            }
+            if ("error_prone_annotations".equals(dep.externalId.name)) {
+                foundErrorProneAnnotations = true;
+            }
+        }
+        assertTrue(foundFailureAccess);
+        assertTrue(foundErrorProneAnnotations);
+    }
+
+    @Nullable
+    private List<Step> loadPipeline(final File pipelineStepsJsonFile) throws IOException {
+        final String pipelineStepsJsonString = FileUtils.readFileToString(pipelineStepsJsonFile, StandardCharsets.UTF_8);
+        final Gson gson = new Gson();
+        final Type listType = new TypeToken<ArrayList<Step>>() {}.getType();
+        return gson.fromJson(pipelineStepsJsonString, listType);
     }
 }

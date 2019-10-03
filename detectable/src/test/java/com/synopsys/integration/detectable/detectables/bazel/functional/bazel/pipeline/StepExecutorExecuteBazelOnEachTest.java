@@ -48,6 +48,4 @@ public class StepExecutorExecuteBazelOnEachTest {
         assertEquals(1, output.size());
         assertEquals("@org_apache_commons_commons_io//jar:jar\n@com_google_guava_guava//jar:jar", output.get(0));
     }
-
-    // TODO Also need a test that DOES provide input
 }
