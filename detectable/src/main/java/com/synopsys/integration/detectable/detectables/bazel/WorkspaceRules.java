@@ -54,7 +54,7 @@ public class WorkspaceRules {
     private List<String> readWorkspaceFileLines(final File workspaceFile) throws IntegrationException {
         final List<String> workspaceFileLines;
         try {
-            // TODO: is this encoding assumption OK? This is what build.gradle parser does
+            // Assumes ascii or UTF-8, which is what other detectors do
             workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new IntegrationException(String.format("Unable to parse dependency rule from %s: %s", workspaceFile.getAbsolutePath(), e.getMessage()), e);
