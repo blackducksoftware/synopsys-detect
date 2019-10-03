@@ -25,6 +25,7 @@ package com.synopsys.integration.detectable.detectables.bazel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,7 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecut
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorParseEachXml;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorSplitEach;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelVariableSubstitutor;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -57,40 +59,22 @@ public class BazelExtractor {
         this.bazelPipelineLoader = bazelPipelineLoader;
     }
 
-    //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
     public Extraction extract(final File bazelExe, final File workspaceDir, final WorkspaceRules workspaceRules, final String bazelTarget, final String bazelDependencyType) {
         logger.debug("Bazel extraction:");
         try {
             List<Step> pipelineSteps = bazelPipelineLoader.loadPipelineSteps(workspaceRules, bazelDependencyType);
             final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
-
-            // TODO get step executor list programmatically
-            final StepExecutor stepExecutorExecuteBazelOnEach = new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor);
-            final StepExecutor stepExecutorSplitEach = new StepExecutorSplitEach();
-            final StepExecutor stepExecutorFilter = new StepExecutorFilter();
-            final StepExecutor stepExecutorEdit = new StepExecutorEdit();
-            final StepExecutor stepExecutorParseEachXml = new StepExecutorParseEachXml();
+            final List<StepExecutor> stepExecutors = new ArrayList<>();
+            stepExecutors.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor));
+            stepExecutors.add(new StepExecutorSplitEach());
+            stepExecutors.add(new StepExecutorFilter());
+            stepExecutors.add(new StepExecutorEdit());
+            stepExecutors.add(new StepExecutorParseEachXml());
 
             List<String> pipelineData = new ArrayList<>();
             for (final Step step : pipelineSteps) {
-                // TODO get step executor list programmatically
-                logger.debug(String.format("Executing %s", step.getType()));
-                if (stepExecutorExecuteBazelOnEach.applies(step.getType())) {
-                    pipelineData = stepExecutorExecuteBazelOnEach.process(step, pipelineData);
-                }
-                if (stepExecutorSplitEach.applies(step.getType())) {
-                    pipelineData = stepExecutorSplitEach.process(step, pipelineData);
-                }
-                if (stepExecutorEdit.applies(step.getType())) {
-                    pipelineData = stepExecutorEdit.process(step, pipelineData);
-                }
-                if (stepExecutorParseEachXml.applies(step.getType())) {
-                    pipelineData = stepExecutorParseEachXml.process(step, pipelineData);
-                }
-                if (stepExecutorFilter.applies(step.getType())) {
-                    pipelineData = stepExecutorFilter.process(step, pipelineData);
-                }
+                pipelineData = execute(stepExecutors, pipelineData, step);
             }
             for (String artifactString : pipelineData) {
                 BazelExternalId externalId = BazelExternalId.fromBazelArtifactString(artifactString, ":");
@@ -108,6 +92,26 @@ public class BazelExtractor {
             logger.debug(msg, e);
             return new Extraction.Builder().failure(msg).build();
         }
+    }
+
+    private List<String> execute(final List<StepExecutor> stepExecutors, List<String> pipelineData, final Step step) throws IntegrationException {
+        final Optional<StepExecutor> stepExecutorSelected = selectStepExecutor(stepExecutors, step);
+        if (!stepExecutorSelected.isPresent()) {
+            final String msg = String.format("Bazel processing failed. Unable to find an executor for step type: %s", step.getType());
+            logger.debug(msg);
+            throw new IntegrationException(msg);
+        }
+        pipelineData = stepExecutorSelected.get().process(step, pipelineData);
+        return pipelineData;
+    }
+
+    private Optional<StepExecutor> selectStepExecutor(final List<StepExecutor> stepExecutors, final Step step) {
+        for (final StepExecutor stepExecutorCandidate : stepExecutors) {
+            if (stepExecutorCandidate.applies(step.getType())) {
+                return Optional.of(stepExecutorCandidate);
+            }
+        }
+        return Optional.empty();
     }
 
     private String cleanProjectName(final String bazelTarget) {
