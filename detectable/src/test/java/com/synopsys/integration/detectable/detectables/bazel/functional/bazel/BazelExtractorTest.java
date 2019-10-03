@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
@@ -28,6 +26,7 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRules;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.detectable.detectables.bazel.BazelCodeLocationBuilder;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineJsonProcessor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineLoader;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -170,8 +169,7 @@ public class BazelExtractorTest {
     @Nullable
     private List<Step> loadPipeline(final File pipelineStepsJsonFile) throws IOException {
         final String pipelineStepsJsonString = FileUtils.readFileToString(pipelineStepsJsonFile, StandardCharsets.UTF_8);
-        final Gson gson = new Gson();
-        final Type listType = new TypeToken<ArrayList<Step>>() {}.getType();
-        return gson.fromJson(pipelineStepsJsonString, listType);
+        final BazelPipelineJsonProcessor bazelPipelineJsonProcessor = new BazelPipelineJsonProcessor(new Gson());
+        return bazelPipelineJsonProcessor.fromJsonString(pipelineStepsJsonString);
     }
 }

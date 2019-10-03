@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +45,7 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecut
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorParseEachXml;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutorSplitEach;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.StepExecutors;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BazelExtractor {
@@ -65,12 +67,7 @@ public class BazelExtractor {
             List<Step> pipelineSteps = bazelPipelineLoader.loadPipelineSteps(workspaceRules, bazelDependencyType);
             final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
-            final List<StepExecutor> stepExecutors = new ArrayList<>();
-            stepExecutors.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor));
-            stepExecutors.add(new StepExecutorSplitEach());
-            stepExecutors.add(new StepExecutorFilter());
-            stepExecutors.add(new StepExecutorEdit());
-            stepExecutors.add(new StepExecutorParseEachXml());
+            final List<StepExecutor> stepExecutors = StepExecutors.create(bazelCommandExecutor, bazelVariableSubstitutor);
 
             List<String> pipelineData = new ArrayList<>();
             for (final Step step : pipelineSteps) {
