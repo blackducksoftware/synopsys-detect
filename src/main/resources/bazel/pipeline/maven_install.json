@@ -3,29 +3,49 @@
     "type": "executeBazelOnEach",
     "args": [
       "cquery",
-      "deps(${detect.bazel.target})",
+      "--noimplicit_deps",
+      "kind(j.*import, deps(${detect.bazel.target}))",
       "--output",
-      "textproto"
+      "build"
     ]
   },
   {
-    "type": "parseEachTextProto",
+    "type": "splitEach",
     "args": [
-      ":results:target:rule:attribute",
-      "tags",
-      "string_list_value"
+      "\n"
     ]
   },
   {
     "type": "filter",
     "args": [
-      "^maven_coordinates\u003d"
+      ".*maven_coordinates\u003d.*"
     ]
   },
   {
     "type": "edit",
     "args": [
-      "^maven_coordinates\u003d",
+      "^\\s*tags\\s*",
+      ""
+    ]
+  },
+  {
+    "type": "edit",
+    "args": [
+      "^\\s*\u003d\\s*\\[\\s*\"",
+      ""
+    ]
+  },
+  {
+    "type": "edit",
+    "args": [
+      "maven_coordinates\u003d",
+      ""
+    ]
+  },
+  {
+    "type": "edit",
+    "args": [
+      "\".*",
       ""
     ]
   }
