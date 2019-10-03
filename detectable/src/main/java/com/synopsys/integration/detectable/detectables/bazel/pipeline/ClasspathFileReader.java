@@ -28,7 +28,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 
-public class BazelClasspathFileReader {
+public class ClasspathFileReader {
 
     public String readFileFromClasspathToString(final String filePath) throws IOException {
         final String fileContent;

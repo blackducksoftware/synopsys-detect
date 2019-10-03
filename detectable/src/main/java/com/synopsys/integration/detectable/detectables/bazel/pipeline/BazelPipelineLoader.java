@@ -42,7 +42,7 @@ public class BazelPipelineLoader {
     }
 
     @NotNull
-    public List<Step> loadPipelineSteps(final BazelClasspathFileReader bazelClasspathFileReader, final String ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
+    public List<Step> loadPipelineSteps(final ClasspathFileReader classpathFileReader, final String ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
         final String finalBazelDependencyType;
         if (StringUtils.isNotBlank(providedBazelDependencyType) && !"UNSPECIFIED".equalsIgnoreCase(providedBazelDependencyType)) {
             finalBazelDependencyType = providedBazelDependencyType;
@@ -51,16 +51,16 @@ public class BazelPipelineLoader {
         } else {
             throw new IntegrationException("Unable to determine Workspace dependency rule; try setting it via the property");
         }
-        final List<Step> pipelineSteps = loadPipelineStepsForTypeFromClasspath(bazelClasspathFileReader, finalBazelDependencyType);
+        final List<Step> pipelineSteps = loadPipelineStepsForTypeFromClasspath(classpathFileReader, finalBazelDependencyType);
         if (pipelineSteps == null) {
             throw new IntegrationException(String.format("Workspace dependency type %s is not supported", finalBazelDependencyType));
         }
         return pipelineSteps;
     }
 
-    private List<Step> loadPipelineStepsForTypeFromClasspath(final BazelClasspathFileReader bazelClasspathFileReader, final String bazelDependencyType) throws IntegrationException {
+    private List<Step> loadPipelineStepsForTypeFromClasspath(final ClasspathFileReader classpathFileReader, final String bazelDependencyType) throws IntegrationException {
         final String pipelineStepsJsonLoadPath = derivePipelineStepsLoadPath(bazelDependencyType);
-        final List<Step> loadedSteps = loadPipelineStepsAtPathFromClasspath(bazelClasspathFileReader, pipelineStepsJsonLoadPath);
+        final List<Step> loadedSteps = loadPipelineStepsAtPathFromClasspath(classpathFileReader, pipelineStepsJsonLoadPath);
         return loadedSteps;
     }
 
@@ -77,10 +77,10 @@ public class BazelPipelineLoader {
     }
 
     @NotNull
-    private List<Step> loadPipelineStepsAtPathFromClasspath(final BazelClasspathFileReader bazelClasspathFileReader, final String pipelineStepsJsonFilePath) throws IntegrationException {
+    private List<Step> loadPipelineStepsAtPathFromClasspath(final ClasspathFileReader classpathFileReader, final String pipelineStepsJsonFilePath) throws IntegrationException {
         final String jsonString;
         try {
-            jsonString = bazelClasspathFileReader.readFileFromClasspathToString(pipelineStepsJsonFilePath);
+            jsonString = classpathFileReader.readFileFromClasspathToString(pipelineStepsJsonFilePath);
         } catch (IOException e) {
             throw new IntegrationException("Unable to read pipeline steps", e);
         }

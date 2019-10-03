@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelClasspathFileReader;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.ClasspathFileReader;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineLoader;
@@ -60,8 +60,8 @@ public class BazelExtractor {
         logger.debug("Bazel extraction:");
         try {
             final String ruleFromWorkspaceFile = workspaceRules.getDependencyRule();
-            final BazelClasspathFileReader bazelClasspathFileReader = new BazelClasspathFileReader();
-            List<Step> pipelineSteps = bazelPipelineLoader.loadPipelineSteps(bazelClasspathFileReader, ruleFromWorkspaceFile, bazelDependencyType);
+            final ClasspathFileReader classpathFileReader = new ClasspathFileReader();
+            List<Step> pipelineSteps = bazelPipelineLoader.loadPipelineSteps(classpathFileReader, ruleFromWorkspaceFile, bazelDependencyType);
             final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
             final List<StepExecutor> stepExecutors = StepExecutors.create(bazelCommandExecutor, bazelVariableSubstitutor);

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelClasspathFileReader;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.ClasspathFileReader;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineJsonProcessor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineLoader;
@@ -34,11 +34,11 @@ public class BazelPipelineLoaderTest {
         final List<Step> testSteps = generateSteps();
         final BazelPipelineJsonProcessor bazelPipelineJsonProcessor = Mockito.mock(BazelPipelineJsonProcessor.class);
         Mockito.when(bazelPipelineJsonProcessor.fromJsonString(Mockito.anyString())).thenReturn(testSteps);
-        final BazelClasspathFileReader bazelClasspathFileReader = Mockito.mock(BazelClasspathFileReader.class);
-        Mockito.when(bazelClasspathFileReader.readFileFromClasspathToString("/bazel/pipeline/maven_install.json")).thenReturn("this value is ignored");
+        final ClasspathFileReader classpathFileReader = Mockito.mock(ClasspathFileReader.class);
+        Mockito.when(classpathFileReader.readFileFromClasspathToString("/bazel/pipeline/maven_install.json")).thenReturn("this value is ignored");
         final BazelPipelineLoader bazelPipelineLoader = new BazelPipelineLoader(bazelPipelineJsonProcessor);
 
-        final List<Step> loadedSteps = bazelPipelineLoader.loadPipelineSteps(bazelClasspathFileReader, "maven_install", providedBazelDependencyRule);
+        final List<Step> loadedSteps = bazelPipelineLoader.loadPipelineSteps(classpathFileReader, "maven_install", providedBazelDependencyRule);
 
         assertEquals(7, loadedSteps.size());
         assertEquals("edit", loadedSteps.get(6).getType());
