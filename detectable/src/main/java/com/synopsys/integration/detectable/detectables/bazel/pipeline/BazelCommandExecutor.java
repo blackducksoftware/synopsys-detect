@@ -51,7 +51,6 @@ public class BazelCommandExecutor {
     public Optional<String> executeToString(final List<String> args) throws IntegrationException {
         final ExecutableOutput targetDependenciesQueryResults = execute(args);
         final String targetDependenciesQueryOutput = targetDependenciesQueryResults.getStandardOutput();
-        logger.debug(String.format("bazel output: %s", targetDependenciesQueryOutput));
         if ((StringUtils.isBlank(targetDependenciesQueryOutput))) {
             logger.debug("bazel command produced no output");
             return Optional.empty();

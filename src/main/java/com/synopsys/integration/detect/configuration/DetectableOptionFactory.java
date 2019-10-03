@@ -68,8 +68,7 @@ public class DetectableOptionFactory {
     public BazelDetectableOptions createBazelDetectableOptions() {
         final String targetName = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.NONE);
         final String bazelDependencyRule = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_DEPENDENCY_RULE, PropertyAuthority.NONE);
-        final String fullRulesPath = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_ADVANCED_RULES_PATH, PropertyAuthority.NONE);
-        return new BazelDetectableOptions(targetName, bazelDependencyRule, fullRulesPath);
+        return new BazelDetectableOptions(targetName, bazelDependencyRule);
     }
 
     public BitbakeDetectableOptions createBitbakeDetectableOptions() {

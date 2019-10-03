@@ -75,7 +75,7 @@ public class WorkspaceRules {
                 break;
             }
         }
-        logger.debug(String.format("Found dependency rule: %s", parsedDependencyRule));
+        logger.debug(String.format("Found workspace dependency rule: %s", parsedDependencyRule));
         return parsedDependencyRule;
     }
 }

@@ -44,10 +44,10 @@ public class StepExecutorEdit implements StepExecutor {
         final List<String> results = new ArrayList<>();
         final String targetPattern = step.getArgs().get(0);
         final String replacementString = step.getArgs().get(1);
-        logger.debug(String.format("Edit target pattern: %s; replacement string: %s", targetPattern, replacementString));
+        logger.trace(String.format("Edit target pattern: %s; replacement string: %s", targetPattern, replacementString));
         for (final String inputItem : input) {
             final String modifiedInputItem = inputItem.replaceAll(targetPattern, replacementString);
-            logger.debug(String.format("Edit changed %s to %s", inputItem, modifiedInputItem));
+            logger.trace(String.format("Edit changed %s to %s", inputItem, modifiedInputItem));
             results.add(modifiedInputItem);
         }
         return results;

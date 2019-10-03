@@ -47,7 +47,7 @@ public class StepExecutorSplitEach implements StepExecutor {
             final String[] splitLines = inputItem.split(step.getArgs().get(0));
             results.addAll(Arrays.asList(splitLines));
         }
-        logger.debug(String.format("SplitEach returning %d lines", results.size()));
+        logger.trace(String.format("SplitEach returning %d lines", results.size()));
         return results;
     }
 }

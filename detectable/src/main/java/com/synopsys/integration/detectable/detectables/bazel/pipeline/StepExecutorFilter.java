@@ -43,10 +43,10 @@ public class StepExecutorFilter implements StepExecutor {
     public List<String> process(final Step step, final List<String> input) throws IntegrationException {
         final List<String> output = new ArrayList<>();
         final String regex = step.getArgs().get(0);
-        logger.debug(String.format("Filtering with regex %s", regex));
+        logger.trace(String.format("Filtering with regex %s", regex));
         for (final String inputItem : input) {
             if (inputItem.matches(regex)) {
-                logger.debug(String.format("Filter keeping: %s", inputItem));
+                logger.trace(String.format("Filter keeping: %s", inputItem));
                 output.add(inputItem);
             }
         }

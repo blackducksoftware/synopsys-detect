@@ -78,7 +78,7 @@ public class BazelExtractor {
             }
             for (String artifactString : pipelineData) {
                 BazelExternalId externalId = BazelExternalId.fromBazelArtifactString(artifactString, ":");
-                logger.info(String.format("Adding externalId: %s", externalId));
+                logger.debug(String.format("Adding externalId: %s", externalId));
                 codeLocationGenerator.addDependency(externalId);
             }
             final List<CodeLocation> codeLocations = codeLocationGenerator.build();

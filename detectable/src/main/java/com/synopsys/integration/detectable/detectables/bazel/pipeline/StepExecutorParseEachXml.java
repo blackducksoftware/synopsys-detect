@@ -74,7 +74,7 @@ public class StepExecutorParseEachXml implements StepExecutor {
     }
 
     private List<String> parseAttributeValuesWithGivenXPathQuery(final String xmlString, final String xPathExpression, final String targetAttributeName) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
-        logger.debug(String.format("xPathExpression: %s, targetAttributeName: %s", xPathExpression, targetAttributeName));
+        logger.trace(String.format("xPathExpression: %s, targetAttributeName: %s", xPathExpression, targetAttributeName));
         final List<String> parsedValues = new ArrayList<>();
         InputStream xmlInputStream = new ByteArrayInputStream(xmlString.getBytes());
 
@@ -85,7 +85,7 @@ public class StepExecutorParseEachXml implements StepExecutor {
         NodeList nodeList = (NodeList) xPath.compile(xPathExpression).evaluate(xmlDocument, XPathConstants.NODESET);
         for (int i=0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
-            logger.debug(String.format("parsed value: %s", node.getAttributes().getNamedItem(targetAttributeName).getTextContent()));
+            logger.trace(String.format("parsed value: %s", node.getAttributes().getNamedItem(targetAttributeName).getTextContent()));
             parsedValues.add(node.getAttributes().getNamedItem(targetAttributeName).getTextContent());
         }
         return parsedValues;
