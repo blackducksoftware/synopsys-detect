@@ -104,8 +104,17 @@ public class DetectConfigurationManager {
         }
     }
 
+    private Integer getFirst(final DetectProperty... properties) {
+        for (final DetectProperty property : properties) {
+            if (detectConfiguration.wasPropertyActuallySet(property)) {
+                return detectConfiguration.getIntegerProperty(property, PropertyAuthority.NONE);
+            }
+        }
+        return detectConfiguration.getIntegerProperty(properties[properties.length - 1], PropertyAuthority.NONE);
+    }
+
     private void resolveParallelProcessingProperties() {
-        int providedParallelProcessors = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_PARALLEL_PROCESSORS, PropertyAuthority.NONE);
+        int providedParallelProcessors = getFirst(DetectProperty.DETECT_PARALLEL_PROCESSORS, DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS);
         if (providedParallelProcessors <= 0) {
             providedParallelProcessors = Runtime.getRuntime().availableProcessors();
         }
