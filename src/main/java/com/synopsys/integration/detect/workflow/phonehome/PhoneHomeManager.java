@@ -53,7 +53,7 @@ public abstract class PhoneHomeManager {
         eventSystem.registerListener(Event.DetectorsProfiled, event -> startPhoneHome(event.getAggregateTimings()));
     }
 
-    public abstract PhoneHomeResponse phoneHome(final Map<String, String> metadata);
+    public abstract PhoneHomeResponse phoneHome(final Map<String, String> metadata, final String... artifactModules);
 
     public void startPhoneHome() {
         // detect will attempt to phone home twice - once upon startup and
@@ -65,15 +65,11 @@ public abstract class PhoneHomeManager {
         safelyPhoneHome(new HashMap<>());
     }
 
-    public void startPhoneHome(final Set<DetectorType> applicableDetectorTypes) {
-        final Map<String, String> metadata = new HashMap<>();
+    private void startPhoneHome(final Set<DetectorType> applicableDetectorTypes) {
         if (applicableDetectorTypes != null) {
-            final String applicableBomToolsString = applicableDetectorTypes.stream()
-                                                        .map(DetectorType::toString)
-                                                        .collect(Collectors.joining(","));
-            metadata.put("bomToolTypes", applicableBomToolsString);
+            final String[] artifactModules = applicableDetectorTypes.stream().map(DetectorType::toString).toArray(String[]::new);
+            safelyPhoneHome(new HashMap<>(), artifactModules);
         }
-        safelyPhoneHome(metadata);
     }
 
     public void startPhoneHome(final Map<DetectorType, Long> aggregateTimes) {
@@ -82,15 +78,15 @@ public abstract class PhoneHomeManager {
             final String applicableBomToolsString = aggregateTimes.keySet().stream()
                                                         .map(it -> String.format("%s:%s", it.toString(), aggregateTimes.get(it)))
                                                         .collect(Collectors.joining(","));
-            metadata.put("bomToolTypes", applicableBomToolsString);
+            metadata.put("detectorTimes", applicableBomToolsString);
         }
         safelyPhoneHome(metadata);
     }
 
-    private void safelyPhoneHome(final Map<String, String> metadata) {
+    private void safelyPhoneHome(final Map<String, String> metadata, final String... artifactModules) {
         endPhoneHome();
         try {
-            currentPhoneHomeResponse = phoneHome(metadata);
+            currentPhoneHomeResponse = phoneHome(metadata, artifactModules);
         } catch (final IllegalStateException e) {
             logger.debug(e.getMessage(), e);
         }
@@ -98,7 +94,8 @@ public abstract class PhoneHomeManager {
 
     public void endPhoneHome() {
         if (currentPhoneHomeResponse != null) {
-            currentPhoneHomeResponse.getImmediateResult();
+            final Boolean result = currentPhoneHomeResponse.getImmediateResult();
+            logger.trace(String.format("Phone home ended with result: %b", result));
         }
     }
 }
