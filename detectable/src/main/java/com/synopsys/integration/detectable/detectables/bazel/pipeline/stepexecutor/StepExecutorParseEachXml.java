@@ -44,14 +44,15 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
+import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorParseEachXml implements StepExecutor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public boolean applies(final String stepType) {
-        return "parseEachXml".equalsIgnoreCase(stepType);
+    public boolean applies(final StepType stepType) {
+        return stepType.equals(StepType.PARSE_EACH_XML);
     }
 
     @Override

@@ -27,15 +27,15 @@ import java.util.List;
 import com.synopsys.integration.util.Stringable;
 
 public class Step extends Stringable {
-    private final String type;
+    private final StepType type;
     private final List<String> args;
 
-    public Step(final String type, final List<String> args) {
+    public Step(final StepType type, final List<String> args) {
         this.type = type;
         this.args = args;
     }
 
-    public String getType() {
+    public StepType getType() {
         return type;
     }
 

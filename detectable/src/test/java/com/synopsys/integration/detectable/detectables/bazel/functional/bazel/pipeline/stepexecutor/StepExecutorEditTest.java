@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
+import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorEdit;
 import com.synopsys.integration.exception.IntegrationException;
@@ -18,8 +19,8 @@ public class StepExecutorEditTest {
     @Test
     public void testRemoveLeadingAtSign() throws IntegrationException {
         final StepExecutor stepExecutor = new StepExecutorEdit();
-        assertTrue(stepExecutor.applies("edit"));
-        final Step step = new Step("edit", Arrays.asList("^@", ""));
+        assertTrue(stepExecutor.applies(StepType.EDIT));
+        final Step step = new Step(StepType.EDIT, Arrays.asList("^@", ""));
         final List<String> input = Arrays.asList("@org_apache_commons_commons_io//jar:jar", "@com_google_guava_guava//jar:jar");
         final List<String> output = stepExecutor.process(step, input);
         assertEquals(2, output.size());
@@ -30,8 +31,8 @@ public class StepExecutorEditTest {
     @Test
     public void testRemoveTrailingJunk() throws IntegrationException {
         final StepExecutor stepExecutor = new StepExecutorEdit();
-        assertTrue(stepExecutor.applies("edit"));
-        final Step step = new Step("edit", Arrays.asList("//.*", ""));
+        assertTrue(stepExecutor.applies(StepType.EDIT));
+        final Step step = new Step(StepType.EDIT, Arrays.asList("//.*", ""));
         final List<String> input = Arrays.asList("org_apache_commons_commons_io//jar:jar", "com_google_guava_guava//jar:jar");
         final List<String> output = stepExecutor.process(step, input);
         assertEquals(2, output.size());
@@ -42,8 +43,8 @@ public class StepExecutorEditTest {
     @Test
     public void testInsertPrefix() throws IntegrationException {
         final StepExecutor stepExecutor = new StepExecutorEdit();
-        assertTrue(stepExecutor.applies("edit"));
-        final Step step = new Step("edit", Arrays.asList("^", "//external:"));
+        assertTrue(stepExecutor.applies(StepType.EDIT));
+        final Step step = new Step(StepType.EDIT, Arrays.asList("^", "//external:"));
         final List<String> input = Arrays.asList("org_apache_commons_commons_io", "com_google_guava_guava");
         final List<String> output = stepExecutor.process(step, input);
         assertEquals(2, output.size());
@@ -55,12 +56,12 @@ public class StepExecutorEditTest {
     public void testMavenInstallBuildOutputExtractMavenCoordinates() throws IntegrationException {
         final List<String> input = Arrays.asList("  tags = [\"maven_coordinates=com.google.guava:guava:27.0-jre\"],");
         final StepExecutor stepExecutor = new StepExecutorEdit();
-        assertTrue(stepExecutor.applies("edit"));
+        assertTrue(stepExecutor.applies(StepType.EDIT));
 
-        final Step stepOne = new Step("edit", Arrays.asList("^\\s*tags\\s*\\s*=\\s*\\[\\s*\"maven_coordinates=", ""));
+        final Step stepOne = new Step(StepType.EDIT, Arrays.asList("^\\s*tags\\s*\\s*=\\s*\\[\\s*\"maven_coordinates=", ""));
         final List<String> stepOneOutput = stepExecutor.process(stepOne, input);
 
-        final Step stepTwo = new Step("edit", Arrays.asList("\".*", ""));
+        final Step stepTwo = new Step(StepType.EDIT, Arrays.asList("\".*", ""));
         final List<String> output = stepExecutor.process(stepTwo, stepOneOutput);
 
         assertEquals(1, output.size());

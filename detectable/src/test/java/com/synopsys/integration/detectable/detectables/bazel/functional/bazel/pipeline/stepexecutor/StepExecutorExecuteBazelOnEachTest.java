@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
@@ -38,10 +39,10 @@ public class StepExecutorExecuteBazelOnEachTest {
         final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
         final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("//:ProjectRunner");
         final StepExecutor executor = new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor);
-        final Step step = new Step("executeBazelOnEach", Arrays.asList("query", "filter(\\\"@.*:jar\\\", deps(${detect.bazel.target}))"));
+        final Step step = new Step(StepType.EXECUTE_BAZEL_ON_EACH, Arrays.asList("query", "filter(\\\"@.*:jar\\\", deps(${detect.bazel.target}))"));
         final List<String> input = new ArrayList<>(0);
 
-        assertTrue(executor.applies("executeBazelOnEach"));
+        assertTrue(executor.applies(StepType.EXECUTE_BAZEL_ON_EACH));
 
         final List<String> output = executor.process(step, input);
 

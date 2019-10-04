@@ -20,16 +20,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor;
+package com.synopsys.integration.detectable.detectables.bazel.model;
 
-import java.util.List;
-
-import com.synopsys.integration.detectable.detectables.bazel.model.Step;
-import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
-import com.synopsys.integration.exception.IntegrationException;
-
-public interface StepExecutor {
-
-    boolean applies(final StepType stepType);
-    List<String> process(final Step step, final List<String> input) throws IntegrationException;
+public enum StepType {
+    EXECUTE_BAZEL_ON_EACH,
+    SPLIT_EACH,
+    FILTER,
+    EDIT,
+    PARSE_EACH_XML;
 }

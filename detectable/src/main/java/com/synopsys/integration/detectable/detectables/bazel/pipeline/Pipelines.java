@@ -30,6 +30,7 @@ import java.util.Map;
 
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
+import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class Pipelines {
@@ -37,29 +38,28 @@ public class Pipelines {
 
     public Pipelines() {
         final List<Step> mavenJarPipeline = new ArrayList<>();
-        mavenJarPipeline.add(new Step("executeBazelOnEach", Arrays.asList("query", "filter('@.*:jar', deps(${detect.bazel.target}))")));
-        mavenJarPipeline.add(new Step("splitEach", Arrays.asList("\\s+")));
-        mavenJarPipeline.add(new Step("edit", Arrays.asList("^@", "")));
-        mavenJarPipeline.add(new Step("edit", Arrays.asList("//.*", "")));
-        mavenJarPipeline.add(new Step("edit", Arrays.asList("^", "//external:")));
-        mavenJarPipeline.add(new Step("executeBazelOnEach", Arrays.asList("query", "kind(maven_jar, ${0})", "--output", "xml")));
-        mavenJarPipeline.add(new Step("parseEachXml", Arrays.asList("/query/rule[@class='maven_jar']/string[@name='artifact']", "value")));
+        mavenJarPipeline.add(new Step(StepType.EXECUTE_BAZEL_ON_EACH, Arrays.asList("query", "filter('@.*:jar', deps(${detect.bazel.target}))")));
+        mavenJarPipeline.add(new Step(StepType.SPLIT_EACH, Arrays.asList("\\s+")));
+        mavenJarPipeline.add(new Step(StepType.EDIT, Arrays.asList("^@", "")));
+        mavenJarPipeline.add(new Step(StepType.EDIT, Arrays.asList("//.*", "")));
+        mavenJarPipeline.add(new Step(StepType.EDIT, Arrays.asList("^", "//external:")));
+        mavenJarPipeline.add(new Step(StepType.EXECUTE_BAZEL_ON_EACH, Arrays.asList("query", "kind(maven_jar, ${0})", "--output", "xml")));
+        mavenJarPipeline.add(new Step(StepType.PARSE_EACH_XML, Arrays.asList("/query/rule[@class='maven_jar']/string[@name='artifact']", "value")));
         availablePipelines.put(WorkspaceRule.MAVEN_JAR, mavenJarPipeline);
 
         final List<Step> mavenInstallPipeline = new ArrayList<>();
-        mavenInstallPipeline.add(new Step("executeBazelOnEach", Arrays.asList("cquery", "--noimplicit_deps", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")));
-        mavenInstallPipeline.add(new Step("splitEach", Arrays.asList("\n")));
-        mavenInstallPipeline.add(new Step("filter", Arrays.asList(".*maven_coordinates=.*")));
-        mavenInstallPipeline.add(new Step("edit", Arrays.asList("^\\s*tags\\s*\\s*=\\s*\\[\\s*\"maven_coordinates=", "")));
-        mavenInstallPipeline.add(new Step("edit", Arrays.asList("\".*", "")));
+        mavenInstallPipeline.add(new Step(StepType.EXECUTE_BAZEL_ON_EACH, Arrays.asList("cquery", "--noimplicit_deps", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")));
+        mavenInstallPipeline.add(new Step(StepType.SPLIT_EACH, Arrays.asList("\n")));
+        mavenInstallPipeline.add(new Step(StepType.FILTER, Arrays.asList(".*maven_coordinates=.*")));
+        mavenInstallPipeline.add(new Step(StepType.EDIT, Arrays.asList("^\\s*tags\\s*\\s*=\\s*\\[\\s*\"maven_coordinates=", "")));
+        mavenInstallPipeline.add(new Step(StepType.EDIT, Arrays.asList("\".*", "")));
         availablePipelines.put(WorkspaceRule.MAVEN_INSTALL, mavenInstallPipeline);
     }
 
     public List<Step> get(final WorkspaceRule bazelDependencyType) throws IntegrationException {
-        final List<Step> pipeline = availablePipelines.get(bazelDependencyType);
-        if (pipeline == null) {
+        if (!availablePipelines.containsKey(bazelDependencyType)) {
             throw new IntegrationException(String.format("No pipeline found for dependency type %s", bazelDependencyType.getName()));
         }
-        return pipeline;
+        return availablePipelines.get(bazelDependencyType);
     }
 }

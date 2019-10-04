@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
+import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorExecuteBazelOnEach implements StepExecutor {
@@ -39,8 +40,8 @@ public class StepExecutorExecuteBazelOnEach implements StepExecutor {
     }
 
     @Override
-    public boolean applies(final String stepType) {
-        return "executeBazelOnEach".equalsIgnoreCase(stepType);
+    public boolean applies(final StepType stepType) {
+        return stepType.equals(StepType.EXECUTE_BAZEL_ON_EACH);
     }
 
     @Override

@@ -29,14 +29,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
+import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorFilter implements StepExecutor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public boolean applies(final String stepType) {
-        return "filter".equalsIgnoreCase(stepType);
+    public boolean applies(final StepType stepType) {
+        return stepType.equals(StepType.FILTER);
     }
 
     @Override

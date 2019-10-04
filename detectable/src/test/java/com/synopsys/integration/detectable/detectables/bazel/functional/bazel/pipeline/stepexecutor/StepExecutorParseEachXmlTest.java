@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
+import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorParseEachXml;
 import com.synopsys.integration.exception.IntegrationException;
@@ -35,9 +36,9 @@ public class StepExecutorParseEachXmlTest {
     public void test() throws IntegrationException {
         final StepExecutor stepExecutor = new StepExecutorParseEachXml();
 
-        assertTrue(stepExecutor.applies("parseEachXml"));
+        assertTrue(stepExecutor.applies(StepType.PARSE_EACH_XML));
 
-        final Step step = new Step("parseEachXml", Arrays.asList("/query/rule[@class='maven_jar']/string[@name='artifact']", "value"));
+        final Step step = new Step(StepType.PARSE_EACH_XML, Arrays.asList("/query/rule[@class='maven_jar']/string[@name='artifact']", "value"));
         final List<String> input = Arrays.asList(COMMONS_IO_XML, GUAVA_XML);
 
         final List<String> results = stepExecutor.process(step, input);
