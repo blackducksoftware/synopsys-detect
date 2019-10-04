@@ -5,17 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
@@ -23,11 +19,10 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
-import com.synopsys.integration.detectable.detectables.bazel.Workspace;
+import com.synopsys.integration.detectable.detectables.bazel.BazelWorkspace;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.detectable.detectables.bazel.BazelCodeLocationBuilder;
-import com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline.BazelPipelineJsonProcessor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.PipelineChooser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.exception.IntegrationException;
@@ -35,10 +30,9 @@ import com.synopsys.integration.exception.IntegrationException;
 public class BazelExtractorTest {
 
     @Test
-    public void testMavenJar() throws ExecutableRunnerException, IntegrationException, IOException {
-        // TODO generate in code?
-        final File pipelineStepsJsonFile = new File("src/test/resources/detectables/functional/bazel/pipeline/maven_jar.json");
-        final List<Step> steps = loadPipeline(pipelineStepsJsonFile);
+    public void testMavenJar() throws ExecutableRunnerException, IntegrationException {
+        final Pipelines pipelines = new Pipelines();
+        final List<Step> steps = pipelines.get(WorkspaceRule.MAVEN_JAR);
 
         final String commonsIoXml = "<?xml version=\"1.1\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
                                         + "<query version=\"2\">\n"
@@ -60,8 +54,8 @@ public class BazelExtractorTest {
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final BazelCodeLocationBuilder codeLocationBuilder = new BazelCodeLocationBuilder(externalIdFactory);
-        final Workspace workspace = Mockito.mock(Workspace.class);
-        Mockito.when(workspace.getDependencyRule()).thenReturn(WorkspaceRule.MAVEN_JAR);
+        final BazelWorkspace bazelWorkspace = Mockito.mock(BazelWorkspace.class);
+        Mockito.when(bazelWorkspace.getDependencyRule()).thenReturn(WorkspaceRule.MAVEN_JAR);
         final PipelineChooser pipelineChooser = Mockito.mock(PipelineChooser.class);
         Mockito.when(pipelineChooser.choose(Mockito.any(Pipelines.class), Mockito.eq(WorkspaceRule.MAVEN_JAR), Mockito.isNull())).thenReturn(steps);
         final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, codeLocationBuilder, pipelineChooser);
@@ -98,7 +92,7 @@ public class BazelExtractorTest {
         Mockito.when(bazelCmdExecutableOutputGetDependencyDetailsGuava.getStandardOutput()).thenReturn(guavaXml);
         Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgsGetDependencyDetailsGuava)).thenReturn(bazelCmdExecutableOutputGetDependencyDetailsGuava);
 
-        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, workspace, "//:ProjectRunner", null);
+        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", null);
 
         assertEquals(1, result.getCodeLocations().size());
         final Set<Dependency> dependencies = result.getCodeLocations().get(0).getDependencyGraph().getRootDependencies();
@@ -121,15 +115,14 @@ public class BazelExtractorTest {
 
     @Test
     public void testMavenInstall() throws ExecutableRunnerException, IntegrationException, IOException {
-        // TODO generate in code?
-        final File pipelineStepsJsonFile = new File("src/test/resources/detectables/functional/bazel/pipeline/maven_install.json");
-        final List<Step> steps = loadPipeline(pipelineStepsJsonFile);
+        final Pipelines pipelines = new Pipelines();
+        final List<Step> steps = pipelines.get(WorkspaceRule.MAVEN_INSTALL);
         final File workspaceDir = new File(".");
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final BazelCodeLocationBuilder codeLocationBuilder = new BazelCodeLocationBuilder(externalIdFactory);
-        final Workspace workspace = Mockito.mock(Workspace.class);
-        Mockito.when(workspace.getDependencyRule()).thenReturn(WorkspaceRule.MAVEN_INSTALL);
+        final BazelWorkspace bazelWorkspace = Mockito.mock(BazelWorkspace.class);
+        Mockito.when(bazelWorkspace.getDependencyRule()).thenReturn(WorkspaceRule.MAVEN_INSTALL);
         final PipelineChooser pipelineChooser = Mockito.mock(PipelineChooser.class);
         Mockito.when(pipelineChooser.choose(Mockito.any(Pipelines.class), Mockito.eq(WorkspaceRule.MAVEN_INSTALL), Mockito.isNull())).thenReturn(steps);
         final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, codeLocationBuilder, pipelineChooser);
@@ -150,7 +143,7 @@ public class BazelExtractorTest {
                 "  tags = [\"maven_coordinates=com.google.errorprone:error_prone_annotations:2.2.0\"],");
         Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgsGetDependencies)).thenReturn(bazelCmdExecutableOutputGetDependencies);
 
-        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, workspace, "//:ProjectRunner", null);
+        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", null);
 
         assertEquals(1, result.getCodeLocations().size());
         final Set<Dependency> dependencies = result.getCodeLocations().get(0).getDependencyGraph().getRootDependencies();
@@ -168,12 +161,5 @@ public class BazelExtractorTest {
         }
         assertTrue(foundFailureAccess);
         assertTrue(foundErrorProneAnnotations);
-    }
-
-    @Nullable
-    private List<Step> loadPipeline(final File pipelineStepsJsonFile) throws IOException, IntegrationException {
-        final String pipelineStepsJsonString = FileUtils.readFileToString(pipelineStepsJsonFile, StandardCharsets.UTF_8);
-        final BazelPipelineJsonProcessor bazelPipelineJsonProcessor = new BazelPipelineJsonProcessor(new Gson());
-        return bazelPipelineJsonProcessor.fromJsonString(pipelineStepsJsonString);
     }
 }

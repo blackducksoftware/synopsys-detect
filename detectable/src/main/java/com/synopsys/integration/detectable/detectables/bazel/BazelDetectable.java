@@ -42,14 +42,13 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 
 public class BazelDetectable extends Detectable {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final String WORKSPACE_FILENAME = "WORKSPACE";
     private final FileFinder fileFinder;
     private final BazelExtractor bazelExtractor;
     private final BazelResolver bazelResolver;
     private final BazelDetectableOptions bazelDetectableOptions;
     private File bazelExe;
-    private Workspace workspace;
+    private BazelWorkspace bazelWorkspace;
 
     public BazelDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final BazelExtractor bazelExtractor,
         final BazelResolver bazelResolver, final BazelDetectableOptions bazelDetectableOptions) {
@@ -69,7 +68,7 @@ public class BazelDetectable extends Detectable {
         if (workspaceFile == null) {
             return new FilesNotFoundDetectableResult(WORKSPACE_FILENAME);
         }
-        workspace = new Workspace(workspaceFile);
+        bazelWorkspace = new BazelWorkspace(workspaceFile);
         return new PassedDetectableResult();
     }
 
@@ -84,7 +83,7 @@ public class BazelDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), workspace, bazelDetectableOptions.getTargetName(), bazelDetectableOptions.getBazelDependencyRule());
+        Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), bazelWorkspace, bazelDetectableOptions.getTargetName(), bazelDetectableOptions.getBazelDependencyRule());
         return extractResult;
     }
 }

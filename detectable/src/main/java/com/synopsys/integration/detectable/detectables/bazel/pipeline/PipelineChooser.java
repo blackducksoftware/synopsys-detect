@@ -48,7 +48,7 @@ public class PipelineChooser {
         } else if (ruleFromWorkspaceFile != WorkspaceRule.UNKNOWN) {
             finalBazelDependencyType = ruleFromWorkspaceFile;
         } else {
-            throw new IntegrationException("Unable to determine Workspace dependency rule; try setting it via the property");
+            throw new IntegrationException("Unable to determine BazelWorkspace dependency rule; try setting it via the property");
         }
         return finalBazelDependencyType;
     }

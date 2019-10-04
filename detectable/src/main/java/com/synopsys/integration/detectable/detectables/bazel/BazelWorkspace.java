@@ -33,11 +33,11 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Workspace {
+public class BazelWorkspace {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final File workspaceFile;
 
-    public Workspace(final File workspaceFile) {
+    public BazelWorkspace(final File workspaceFile) {
         this.workspaceFile = workspaceFile;
     }
 
