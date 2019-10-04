@@ -2,12 +2,12 @@
 
 ##### Build:
 
-    bazel build //pipeline/samples/bazel/python:bin
+    bazel build //pipelineChooser/samples/bazel/python:bin
 
 ##### Run:
 
-    bazel run //pipeline/samples/bazel/python:bin
+    bazel run //pipelineChooser/samples/bazel/python:bin
 
 ##### Test:
 
-    bazel test //pipeline/samples/bazel/python:test
+    bazel test //pipelineChooser/samples/bazel/python:test

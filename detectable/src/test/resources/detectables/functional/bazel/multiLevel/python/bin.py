@@ -1,6 +1,6 @@
 # pylint: disable=superfluous-parens
 """A tiny example binary for the native Python rules of Bazel."""
-from pipeline.samples.bazel.python.lib import GetNumber
+from pipelineChooser.samples.bazel.python.lib import GetNumber
 from fib import Fib
 
 print("The number is %d" % GetNumber())

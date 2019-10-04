@@ -9,16 +9,14 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.ClasspathFileReader;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.PipelineChooser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class PipelineTest {
+public class PipelineChooserTest {
 
     @Test
     public void testDerivedBazelDependencyRule() throws IntegrationException, IOException {
@@ -36,11 +34,9 @@ public class PipelineTest {
     }
 
     private List<Step> run(final String providedBazelDependencyRule) throws IOException, IntegrationException {
-        final ClasspathFileReader classpathFileReader = Mockito.mock(ClasspathFileReader.class);
-        Mockito.when(classpathFileReader.readFileFromClasspathToString("file:custom-pipeline.json")).thenReturn("this value is ignored");
-        final Pipeline pipeline = new Pipeline();
+        final PipelineChooser pipelineChooser = new PipelineChooser();
         final Pipelines builtinPipelines = new Pipelines();
-        final List<Step> loadedSteps = pipeline.choose(builtinPipelines, WorkspaceRule.MAVEN_INSTALL, providedBazelDependencyRule);
+        final List<Step> loadedSteps = pipelineChooser.choose(builtinPipelines, WorkspaceRule.MAVEN_INSTALL, providedBazelDependencyRule);
         return loadedSteps;
     }
 

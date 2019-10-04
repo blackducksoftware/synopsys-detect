@@ -28,7 +28,7 @@ import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.detectable.detectables.bazel.BazelCodeLocationBuilder;
 import com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline.BazelPipelineJsonProcessor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.PipelineChooser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -36,7 +36,7 @@ public class BazelExtractorTest {
 
     @Test
     public void testMavenJar() throws ExecutableRunnerException, IntegrationException, IOException {
-
+        // TODO generate in code?
         final File pipelineStepsJsonFile = new File("src/test/resources/detectables/functional/bazel/pipeline/maven_jar.json");
         final List<Step> steps = loadPipeline(pipelineStepsJsonFile);
 
@@ -62,9 +62,9 @@ public class BazelExtractorTest {
         final BazelCodeLocationBuilder codeLocationBuilder = new BazelCodeLocationBuilder(externalIdFactory);
         final Workspace workspace = Mockito.mock(Workspace.class);
         Mockito.when(workspace.getDependencyRule()).thenReturn(WorkspaceRule.MAVEN_JAR);
-        final Pipeline pipeline = Mockito.mock(Pipeline.class);
-        Mockito.when(pipeline.choose(Mockito.any(Pipelines.class), Mockito.eq(WorkspaceRule.MAVEN_JAR), Mockito.isNull())).thenReturn(steps);
-        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, codeLocationBuilder, pipeline);
+        final PipelineChooser pipelineChooser = Mockito.mock(PipelineChooser.class);
+        Mockito.when(pipelineChooser.choose(Mockito.any(Pipelines.class), Mockito.eq(WorkspaceRule.MAVEN_JAR), Mockito.isNull())).thenReturn(steps);
+        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, codeLocationBuilder, pipelineChooser);
         final File bazelExe = new File("/usr/bin/bazel");
 
         // bazel query 'filter("@.*:jar", deps(//:ProjectRunner))'
@@ -121,7 +121,7 @@ public class BazelExtractorTest {
 
     @Test
     public void testMavenInstall() throws ExecutableRunnerException, IntegrationException, IOException {
-
+        // TODO generate in code?
         final File pipelineStepsJsonFile = new File("src/test/resources/detectables/functional/bazel/pipeline/maven_install.json");
         final List<Step> steps = loadPipeline(pipelineStepsJsonFile);
         final File workspaceDir = new File(".");
@@ -130,9 +130,9 @@ public class BazelExtractorTest {
         final BazelCodeLocationBuilder codeLocationBuilder = new BazelCodeLocationBuilder(externalIdFactory);
         final Workspace workspace = Mockito.mock(Workspace.class);
         Mockito.when(workspace.getDependencyRule()).thenReturn(WorkspaceRule.MAVEN_INSTALL);
-        final Pipeline pipeline = Mockito.mock(Pipeline.class);
-        Mockito.when(pipeline.choose(Mockito.any(Pipelines.class), Mockito.eq(WorkspaceRule.MAVEN_INSTALL), Mockito.isNull())).thenReturn(steps);
-        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, codeLocationBuilder, pipeline);
+        final PipelineChooser pipelineChooser = Mockito.mock(PipelineChooser.class);
+        Mockito.when(pipelineChooser.choose(Mockito.any(Pipelines.class), Mockito.eq(WorkspaceRule.MAVEN_INSTALL), Mockito.isNull())).thenReturn(steps);
+        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, codeLocationBuilder, pipelineChooser);
         final File bazelExe = new File("/usr/bin/bazel");
 
         // bazel cquery --noimplicit_deps "kind(j.*import, deps(//:ProjectRunner))" --output build

@@ -2,9 +2,9 @@ filegroup(
     name = "srcs",
     srcs = glob(["*.py"]) + [
         "BUILD",
-        "//pipeline/samples/bazel/python/fibonacci:srcs",
+        "//pipelineChooser/samples/bazel/python/fibonacci:srcs",
     ],
-    visibility = ["//pipeline/samples/bazel:__pkg__"],
+    visibility = ["//pipelineChooser/samples/bazel:__pkg__"],
 )
 
 py_binary(
@@ -12,7 +12,7 @@ py_binary(
     srcs = ["bin.py"],
     deps = [
         ":lib",
-        "//pipeline/samples/bazel/python/fibonacci",
+        "//pipelineChooser/samples/bazel/python/fibonacci",
     ],
 )
 
@@ -26,6 +26,6 @@ py_test(
     srcs = ["test.py"],
     deps = [
         ":lib",
-        "//pipeline/samples/bazel/python/fibonacci",
+        "//pipelineChooser/samples/bazel/python/fibonacci",
     ],
 )

@@ -2,21 +2,21 @@
 
 ##### Build:
 
-    bazel build //pipeline/samples/bazel/java:hello-world
-    bazel build //pipeline/samples/bazel/java:hello-resources
+    bazel build //pipelineChooser/samples/bazel/java:hello-world
+    bazel build //pipelineChooser/samples/bazel/java:hello-resources
     
 ##### Run:
 
-    bazel run //pipeline/samples/bazel/java:hello-world
-    bazel run //pipeline/samples/bazel/java:hello-resources
+    bazel run //pipelineChooser/samples/bazel/java:hello-world
+    bazel run //pipelineChooser/samples/bazel/java:hello-resources
     
 ##### Test:
 
 ###### All:
 
-    bazel test //pipeline/samples/bazel/java/...
+    bazel test //pipelineChooser/samples/bazel/java/...
 
 ###### Specific:
 
-    bazel test //pipeline/samples/bazel/java:hello
-    bazel test //pipeline/samples/bazel/java:custom
+    bazel test //pipelineChooser/samples/bazel/java:hello
+    bazel test //pipelineChooser/samples/bazel/java:custom

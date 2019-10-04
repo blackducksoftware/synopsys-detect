@@ -1,7 +1,7 @@
 """A tiny example binary for the native Python rules of Bazel."""
 
 import unittest
-from pipeline.samples.bazel.python.lib import GetNumber
+from pipelineChooser.samples.bazel.python.lib import GetNumber
 from fib import Fib
 
 

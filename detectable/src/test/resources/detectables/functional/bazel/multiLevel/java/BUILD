@@ -25,7 +25,7 @@ java_binary(
 java_library(
     name = "custom-greeting",
     srcs = ["src/main/java/com/example/myproject/Greeter.java"],
-    resources = ["//pipeline/samples/bazel/java:greeting"],
+    resources = ["//pipelineChooser/samples/bazel/java:greeting"],
 )
 
 java_test(
@@ -33,7 +33,7 @@ java_test(
     srcs = ["src/test/java/com/example/myproject/TestHello.java"],
     test_class = "com.example.myproject.TestHello",
     deps = [
-        "//pipeline/samples/bazel/java:hello-lib",
+        "//pipelineChooser/samples/bazel/java:hello-lib",
         "//3rdparty/jvm/junit:junit",
     ],
 )
@@ -43,7 +43,7 @@ java_test(
     srcs = ["src/test/java/com/example/myproject/TestCustomGreeting.java"],
     test_class = "com.example.myproject.TestCustomGreeting",
     deps = [
-        "//pipeline/samples/bazel/java:custom-greeting",
+        "//pipelineChooser/samples/bazel/java:custom-greeting",
         "//3rdparty/jvm/junit:junit",
     ],
 )

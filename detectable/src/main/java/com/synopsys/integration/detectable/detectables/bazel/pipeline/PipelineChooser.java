@@ -31,12 +31,12 @@ import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class Pipeline {
+public class PipelineChooser {
 
     @NotNull
     public List<Step> choose(final Pipelines pipelines, final WorkspaceRule ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
         final WorkspaceRule finalBazelDependencyType = deriveDependencyType(ruleFromWorkspaceFile, providedBazelDependencyType);
-        final List<Step> pipeline = pipelines.select(finalBazelDependencyType);
+        final List<Step> pipeline = pipelines.get(finalBazelDependencyType);
         return pipeline;
     }
 

@@ -55,7 +55,7 @@ public class Pipelines {
         availablePipelines.put(WorkspaceRule.MAVEN_INSTALL, mavenInstallPipeline);
     }
 
-    public List<Step> select(final WorkspaceRule bazelDependencyType) throws IntegrationException {
+    public List<Step> get(final WorkspaceRule bazelDependencyType) throws IntegrationException {
         final List<Step> pipeline = availablePipelines.get(bazelDependencyType);
         if (pipeline == null) {
             throw new IntegrationException(String.format("No pipeline found for dependency type %s", bazelDependencyType.getName()));
