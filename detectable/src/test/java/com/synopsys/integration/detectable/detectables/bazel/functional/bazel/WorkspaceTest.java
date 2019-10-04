@@ -6,17 +6,19 @@ import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRules;
+import com.synopsys.integration.detectable.detectables.bazel.Workspace;
+import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class WorkspaceRulesTest {
+public class WorkspaceTest {
 
     @Test
     public void test() throws IntegrationException {
         final File workspaceFile = new File("src/test/resources/detectables/functional/bazel/WORKSPACE");
-        final WorkspaceRules workspaceRules = new WorkspaceRules(workspaceFile);
+        final Workspace workspace = new Workspace(workspaceFile);
 
-        assertEquals("maven_install", workspaceRules.getDependencyRule());
+        assertEquals(WorkspaceRule.MAVEN_INSTALL, workspace.getDependencyRule());
+        assertEquals("maven_install", workspace.getDependencyRule().getName());
 
     }
 }

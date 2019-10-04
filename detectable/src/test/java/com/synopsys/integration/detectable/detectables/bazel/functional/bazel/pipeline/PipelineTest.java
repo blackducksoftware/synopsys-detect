@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.ClasspathFileReader;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineJsonProcessor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.exception.IntegrationException;
@@ -35,22 +35,12 @@ public class PipelineTest {
         assertEquals("edit", loadedSteps.get(4).getType());
     }
 
-    @Test
-    public void testLoadingPipelineFromFile() throws IOException, IntegrationException {
-        final List<Step> loadedSteps = run("file:custom-pipeline.json");
-        assertEquals(7, loadedSteps.size());
-        assertEquals("edit", loadedSteps.get(6).getType());
-    }
-
     private List<Step> run(final String providedBazelDependencyRule) throws IOException, IntegrationException {
-        final List<Step> customPipeline = generateCustomPipeline();
-        final BazelPipelineJsonProcessor bazelPipelineJsonProcessor = Mockito.mock(BazelPipelineJsonProcessor.class);
-        Mockito.when(bazelPipelineJsonProcessor.fromJsonString(Mockito.anyString())).thenReturn(customPipeline);
         final ClasspathFileReader classpathFileReader = Mockito.mock(ClasspathFileReader.class);
         Mockito.when(classpathFileReader.readFileFromClasspathToString("file:custom-pipeline.json")).thenReturn("this value is ignored");
-        final Pipeline pipeline = new Pipeline(bazelPipelineJsonProcessor);
+        final Pipeline pipeline = new Pipeline();
         final Pipelines builtinPipelines = new Pipelines();
-        final List<Step> loadedSteps = pipeline.choose(classpathFileReader, builtinPipelines, "maven_install", providedBazelDependencyRule);
+        final List<Step> loadedSteps = pipeline.choose(builtinPipelines, WorkspaceRule.MAVEN_INSTALL, providedBazelDependencyRule);
         return loadedSteps;
     }
 

@@ -33,25 +33,23 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.exception.IntegrationException;
-
-public class WorkspaceRules {
+public class Workspace {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final File workspaceFile;
 
-    public WorkspaceRules(final File workspaceFile) {
+    public Workspace(final File workspaceFile) {
         this.workspaceFile = workspaceFile;
     }
 
-    public String getDependencyRule() {
+    public WorkspaceRule getDependencyRule() {
         final List<String> workspaceFileLines;
         try {
             workspaceFileLines = readWorkspaceFileLines(workspaceFile);
         } catch (IOException e) {
             logger.debug(String.format("Unable to parse dependency rule from %s: %s", workspaceFile.getAbsolutePath(), e.getMessage()));
-            return null;
+            return WorkspaceRule.UNKNOWN;
         }
-        final String dependencyRule = parseDependencyRuleFromWorkspaceFileLines(workspaceFileLines);
+        final WorkspaceRule dependencyRule = parseDependencyRuleFromWorkspaceFileLines(workspaceFileLines);
         return dependencyRule;
     }
 
@@ -64,19 +62,17 @@ public class WorkspaceRules {
     }
 
     @Nullable
-    public String parseDependencyRuleFromWorkspaceFileLines(final List<String> workspaceFileLines) {
-        String parsedDependencyRule = null;
+    public WorkspaceRule parseDependencyRuleFromWorkspaceFileLines(final List<String> workspaceFileLines) {
         for (final String workspaceFileLine : workspaceFileLines) {
-            if (workspaceFileLine.matches("^\\s*maven_jar\\s*\\(")) {
-                parsedDependencyRule = "maven_jar";
-                break;
-            }
-            if (workspaceFileLine.matches("^\\s*maven_install\\s*\\(")) {
-                parsedDependencyRule = "maven_install";
-                break;
+            for (final WorkspaceRule workspaceRuleCandidate : WorkspaceRule.values()) {
+                if (workspaceFileLine.matches(String.format("^\\s*%s\\s*\\(", workspaceRuleCandidate.getName()))) {
+                    final WorkspaceRule parsedDependencyRule = workspaceRuleCandidate;
+                    logger.debug(String.format("Found workspace dependency rule: %s", parsedDependencyRule.getName()));
+                    return parsedDependencyRule;
+                }
             }
         }
-        logger.debug(String.format("Found workspace dependency rule: %s", parsedDependencyRule));
-        return parsedDependencyRule;
+        logger.debug("Unable to derive dependency rule from WORKSPACE file");
+        return WorkspaceRule.UNKNOWN;
     }
 }

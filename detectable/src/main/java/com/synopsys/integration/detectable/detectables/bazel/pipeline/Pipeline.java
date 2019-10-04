@@ -22,75 +22,34 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class Pipeline {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final BazelPipelineJsonProcessor bazelPipelineJsonProcessor;
 
-    public Pipeline(final BazelPipelineJsonProcessor bazelPipelineJsonProcessor) {
-        this.bazelPipelineJsonProcessor = bazelPipelineJsonProcessor;
+    @NotNull
+    public List<Step> choose(final Pipelines pipelines, final WorkspaceRule ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
+        final WorkspaceRule finalBazelDependencyType = deriveDependencyType(ruleFromWorkspaceFile, providedBazelDependencyType);
+        final List<Step> pipeline = pipelines.select(finalBazelDependencyType);
+        return pipeline;
     }
 
     @NotNull
-    public List<Step> choose(final ClasspathFileReader classpathFileReader, final Pipelines pipelines, final String ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
-        final String finalBazelDependencyType = deriveDependencyType(ruleFromWorkspaceFile, providedBazelDependencyType);
-        Optional<List<Step>> pipeline = pipelines.select(finalBazelDependencyType);
-        if (!pipeline.isPresent()) {
-            pipeline = Optional.of(loadPipelineStepsForTypeFromClasspath(classpathFileReader, finalBazelDependencyType));
-        }
-        return pipeline.get();
-    }
-
-    @NotNull
-    private String deriveDependencyType(final String ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
-        final String finalBazelDependencyType;
+    private WorkspaceRule deriveDependencyType(final WorkspaceRule ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
+        final WorkspaceRule finalBazelDependencyType;
         if (StringUtils.isNotBlank(providedBazelDependencyType) && !"UNSPECIFIED".equalsIgnoreCase(providedBazelDependencyType)) {
-            finalBazelDependencyType = providedBazelDependencyType;
-        } else if (ruleFromWorkspaceFile != null) {
+            finalBazelDependencyType = WorkspaceRule.lookup(providedBazelDependencyType);
+        } else if (ruleFromWorkspaceFile != WorkspaceRule.UNKNOWN) {
             finalBazelDependencyType = ruleFromWorkspaceFile;
         } else {
             throw new IntegrationException("Unable to determine Workspace dependency rule; try setting it via the property");
         }
         return finalBazelDependencyType;
-    }
-
-    private List<Step> loadPipelineStepsForTypeFromClasspath(final ClasspathFileReader classpathFileReader, final String bazelDependencyType) throws IntegrationException {
-        final String pipelineStepsJsonLoadPath = derivePipelineStepsLoadPath(bazelDependencyType);
-        final List<Step> loadedSteps = loadPipelineStepsAtPathFromClasspath(classpathFileReader, pipelineStepsJsonLoadPath);
-        return loadedSteps;
-    }
-
-    private String derivePipelineStepsLoadPath(final String bazelDependencyType) {
-        logger.debug(String.format("Loading pipeline steps for %s", bazelDependencyType));
-        final String pipelineStepsJsonFilePath;
-        if (bazelDependencyType.startsWith("file:")) {
-            // for developer use only
-            pipelineStepsJsonFilePath = bazelDependencyType;
-        } else {
-            pipelineStepsJsonFilePath = String.format("/bazel/pipeline/%s.json", bazelDependencyType);
-        }
-        return pipelineStepsJsonFilePath;
-    }
-
-    @NotNull
-    private List<Step> loadPipelineStepsAtPathFromClasspath(final ClasspathFileReader classpathFileReader, final String pipelineStepsJsonFilePath) throws IntegrationException {
-        final String jsonString;
-        try {
-            jsonString = classpathFileReader.readFileFromClasspathToString(pipelineStepsJsonFilePath);
-        } catch (IOException e) {
-            throw new IntegrationException("Unable to read pipeline steps", e);
-        }
-        return bazelPipelineJsonProcessor.fromJsonString(jsonString);
     }
 }

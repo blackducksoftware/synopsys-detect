@@ -49,7 +49,7 @@ public class BazelDetectable extends Detectable {
     private final BazelResolver bazelResolver;
     private final BazelDetectableOptions bazelDetectableOptions;
     private File bazelExe;
-    private WorkspaceRules workspaceRules;
+    private Workspace workspace;
 
     public BazelDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final BazelExtractor bazelExtractor,
         final BazelResolver bazelResolver, final BazelDetectableOptions bazelDetectableOptions) {
@@ -69,7 +69,7 @@ public class BazelDetectable extends Detectable {
         if (workspaceFile == null) {
             return new FilesNotFoundDetectableResult(WORKSPACE_FILENAME);
         }
-        workspaceRules = new WorkspaceRules(workspaceFile);
+        workspace = new Workspace(workspaceFile);
         return new PassedDetectableResult();
     }
 
@@ -84,7 +84,7 @@ public class BazelDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), workspaceRules, bazelDetectableOptions.getTargetName(), bazelDetectableOptions.getBazelDependencyRule());
+        Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), workspace, bazelDetectableOptions.getTargetName(), bazelDetectableOptions.getBazelDependencyRule());
         return extractResult;
     }
 }

@@ -57,13 +57,12 @@ public class BazelExtractor {
         this.pipeline = pipeline;
     }
 
-    public Extraction extract(final File bazelExe, final File workspaceDir, final WorkspaceRules workspaceRules, final String bazelTarget, final String bazelDependencyType) {
+    public Extraction extract(final File bazelExe, final File workspaceDir, final Workspace workspace, final String bazelTarget, final String bazelDependencyType) {
         logger.debug("Bazel extraction:");
         try {
-            final String ruleFromWorkspaceFile = workspaceRules.getDependencyRule();
-            final ClasspathFileReader classpathFileReader = new ClasspathFileReader();
+            final WorkspaceRule ruleFromWorkspaceFile = workspace.getDependencyRule();
             final Pipelines pipelines = new Pipelines();
-            final List<Step> pipelineSteps = pipeline.choose(classpathFileReader, pipelines, ruleFromWorkspaceFile, bazelDependencyType);
+            final List<Step> pipelineSteps = pipeline.choose(pipelines, ruleFromWorkspaceFile, bazelDependencyType);
             final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
             final List<StepExecutor> stepExecutors = StepExecutors.create(bazelCommandExecutor, bazelVariableSubstitutor);

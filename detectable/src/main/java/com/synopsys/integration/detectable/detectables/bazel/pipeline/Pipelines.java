@@ -27,12 +27,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
+import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class Pipelines {
-    private final Map<String, List<Step>> p = new HashMap<>();
+    private final Map<WorkspaceRule, List<Step>> availablePipelines = new HashMap<>();
 
     public Pipelines() {
         final List<Step> mavenJarPipeline = new ArrayList<>();
@@ -43,7 +44,7 @@ public class Pipelines {
         mavenJarPipeline.add(new Step("edit", Arrays.asList("^", "//external:")));
         mavenJarPipeline.add(new Step("executeBazelOnEach", Arrays.asList("query", "kind(maven_jar, ${0})", "--output", "xml")));
         mavenJarPipeline.add(new Step("parseEachXml", Arrays.asList("/query/rule[@class='maven_jar']/string[@name='artifact']", "value")));
-        p.put("maven_jar", mavenJarPipeline);
+        availablePipelines.put(WorkspaceRule.MAVEN_JAR, mavenJarPipeline);
 
         final List<Step> mavenInstallPipeline = new ArrayList<>();
         mavenInstallPipeline.add(new Step("executeBazelOnEach", Arrays.asList("cquery", "--noimplicit_deps", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")));
@@ -51,14 +52,14 @@ public class Pipelines {
         mavenInstallPipeline.add(new Step("filter", Arrays.asList(".*maven_coordinates=.*")));
         mavenInstallPipeline.add(new Step("edit", Arrays.asList("^\\s*tags\\s*\\s*=\\s*\\[\\s*\"maven_coordinates=", "")));
         mavenInstallPipeline.add(new Step("edit", Arrays.asList("\".*", "")));
-        p.put("maven_install", mavenInstallPipeline);
+        availablePipelines.put(WorkspaceRule.MAVEN_INSTALL, mavenInstallPipeline);
     }
 
-    public Optional<List<Step>> select(final String bazelDependencyType) {
-        final List<Step> pipeline = p.get(bazelDependencyType);
+    public List<Step> select(final WorkspaceRule bazelDependencyType) throws IntegrationException {
+        final List<Step> pipeline = availablePipelines.get(bazelDependencyType);
         if (pipeline == null) {
-            return Optional.empty();
+            throw new IntegrationException(String.format("No pipeline found for dependency type %s", bazelDependencyType.getName()));
         }
-        return Optional.of(pipeline);
+        return pipeline;
     }
 }

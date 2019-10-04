@@ -65,7 +65,6 @@ import com.synopsys.integration.detectable.detectable.inspector.PipInspectorReso
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineJsonProcessor;
 import com.synopsys.integration.detectable.detectables.bazel.BazelCodeLocationBuilder;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
@@ -243,8 +242,7 @@ public class DetectableBeanConfiguration {
     @Bean
     public BazelExtractor bazelExtractor() {
         final BazelCodeLocationBuilder codeLocationGenerator = new BazelCodeLocationBuilder(externalIdFactory);
-        final BazelPipelineJsonProcessor bazelPipelineJsonProcessor = new BazelPipelineJsonProcessor(gson);
-        final Pipeline pipeline = new Pipeline(bazelPipelineJsonProcessor);
+        final Pipeline pipeline = new Pipeline();
         return new BazelExtractor(executableRunner, codeLocationGenerator, pipeline);
     }
 
