@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -33,16 +34,26 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class BazelPipelineLoader {
+public class Pipeline {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final BazelPipelineJsonProcessor bazelPipelineJsonProcessor;
 
-    public BazelPipelineLoader(final BazelPipelineJsonProcessor bazelPipelineJsonProcessor) {
+    public Pipeline(final BazelPipelineJsonProcessor bazelPipelineJsonProcessor) {
         this.bazelPipelineJsonProcessor = bazelPipelineJsonProcessor;
     }
 
     @NotNull
-    public List<Step> loadPipelineSteps(final ClasspathFileReader classpathFileReader, final String ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
+    public List<Step> choose(final ClasspathFileReader classpathFileReader, final Pipelines pipelines, final String ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
+        final String finalBazelDependencyType = deriveDependencyType(ruleFromWorkspaceFile, providedBazelDependencyType);
+        Optional<List<Step>> pipeline = pipelines.select(finalBazelDependencyType);
+        if (!pipeline.isPresent()) {
+            pipeline = Optional.of(loadPipelineStepsForTypeFromClasspath(classpathFileReader, finalBazelDependencyType));
+        }
+        return pipeline.get();
+    }
+
+    @NotNull
+    private String deriveDependencyType(final String ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
         final String finalBazelDependencyType;
         if (StringUtils.isNotBlank(providedBazelDependencyType) && !"UNSPECIFIED".equalsIgnoreCase(providedBazelDependencyType)) {
             finalBazelDependencyType = providedBazelDependencyType;
@@ -51,11 +62,7 @@ public class BazelPipelineLoader {
         } else {
             throw new IntegrationException("Unable to determine Workspace dependency rule; try setting it via the property");
         }
-        final List<Step> pipelineSteps = loadPipelineStepsForTypeFromClasspath(classpathFileReader, finalBazelDependencyType);
-        if (pipelineSteps == null) {
-            throw new IntegrationException(String.format("Workspace dependency type %s is not supported", finalBazelDependencyType));
-        }
-        return pipelineSteps;
+        return finalBazelDependencyType;
     }
 
     private List<Step> loadPipelineStepsForTypeFromClasspath(final ClasspathFileReader classpathFileReader, final String bazelDependencyType) throws IntegrationException {

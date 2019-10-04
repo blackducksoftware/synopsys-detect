@@ -67,7 +67,7 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineJsonProcessor;
 import com.synopsys.integration.detectable.detectables.bazel.BazelCodeLocationBuilder;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineLoader;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeRecipesToLayerMapConverter;
@@ -244,8 +244,8 @@ public class DetectableBeanConfiguration {
     public BazelExtractor bazelExtractor() {
         final BazelCodeLocationBuilder codeLocationGenerator = new BazelCodeLocationBuilder(externalIdFactory);
         final BazelPipelineJsonProcessor bazelPipelineJsonProcessor = new BazelPipelineJsonProcessor(gson);
-        final BazelPipelineLoader bazelPipelineLoader = new BazelPipelineLoader(bazelPipelineJsonProcessor);
-        return new BazelExtractor(executableRunner, codeLocationGenerator, bazelPipelineLoader);
+        final Pipeline pipeline = new Pipeline(bazelPipelineJsonProcessor);
+        return new BazelExtractor(executableRunner, codeLocationGenerator, pipeline);
     }
 
     public FilePathGenerator filePathGenerator() {

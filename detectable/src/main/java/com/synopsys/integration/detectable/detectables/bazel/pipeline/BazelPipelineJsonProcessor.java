@@ -26,11 +26,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class BazelPipelineJsonProcessor {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Gson gson;
 
     public BazelPipelineJsonProcessor(final Gson gson) {
@@ -38,8 +42,12 @@ public class BazelPipelineJsonProcessor {
     }
 
     @NotNull
-    public List<Step> fromJsonString(final String json) {
+    public List<Step> fromJsonString(final String json) throws IntegrationException {
         final Step[] pipelineSteps = gson.fromJson(json, Step[].class);
+        if ((pipelineSteps == null) || (pipelineSteps.length == 0)) {
+            logger.debug(String.format("No pipeline steps found in:\n%s", json));
+            throw new IntegrationException("No pipeline steps found");
+        }
         return Arrays.asList(pipelineSteps);
     }
 }

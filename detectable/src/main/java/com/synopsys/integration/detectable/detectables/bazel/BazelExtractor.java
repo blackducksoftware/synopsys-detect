@@ -35,9 +35,10 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.ClasspathFileReader;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineLoader;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutors;
@@ -47,13 +48,13 @@ public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
     private final BazelCodeLocationBuilder codeLocationGenerator;
-    private final BazelPipelineLoader bazelPipelineLoader;
+    private final Pipeline pipeline;
 
     public BazelExtractor(final ExecutableRunner executableRunner,
-        final BazelCodeLocationBuilder codeLocationGenerator, final BazelPipelineLoader bazelPipelineLoader) {
+        final BazelCodeLocationBuilder codeLocationGenerator, final Pipeline pipeline) {
         this.executableRunner = executableRunner;
         this.codeLocationGenerator = codeLocationGenerator;
-        this.bazelPipelineLoader = bazelPipelineLoader;
+        this.pipeline = pipeline;
     }
 
     public Extraction extract(final File bazelExe, final File workspaceDir, final WorkspaceRules workspaceRules, final String bazelTarget, final String bazelDependencyType) {
@@ -61,7 +62,8 @@ public class BazelExtractor {
         try {
             final String ruleFromWorkspaceFile = workspaceRules.getDependencyRule();
             final ClasspathFileReader classpathFileReader = new ClasspathFileReader();
-            List<Step> pipelineSteps = bazelPipelineLoader.loadPipelineSteps(classpathFileReader, ruleFromWorkspaceFile, bazelDependencyType);
+            final Pipelines pipelines = new Pipelines();
+            final List<Step> pipelineSteps = pipeline.choose(classpathFileReader, pipelines, ruleFromWorkspaceFile, bazelDependencyType);
             final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
             final List<StepExecutor> stepExecutors = StepExecutors.create(bazelCommandExecutor, bazelVariableSubstitutor);

@@ -14,38 +14,48 @@ import org.mockito.Mockito;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.ClasspathFileReader;
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineJsonProcessor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.BazelPipelineLoader;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class BazelPipelineLoaderTest {
+public class PipelineTest {
 
     @Test
     public void testDerivedBazelDependencyRule() throws IntegrationException, IOException {
-        doTest(null);
+        final List<Step> loadedSteps = run(null);
+        assertEquals(5, loadedSteps.size());
+        assertEquals("edit", loadedSteps.get(4).getType());
     }
 
 
     @Test
     public void testProvidedBazelDependencyRule() throws IOException, IntegrationException {
-        doTest("maven_install");
+        final List<Step> loadedSteps = run("maven_install");
+        assertEquals(5, loadedSteps.size());
+        assertEquals("edit", loadedSteps.get(4).getType());
     }
 
-    private void doTest(final String providedBazelDependencyRule) throws IOException, IntegrationException {
-        final List<Step> testSteps = generateSteps();
-        final BazelPipelineJsonProcessor bazelPipelineJsonProcessor = Mockito.mock(BazelPipelineJsonProcessor.class);
-        Mockito.when(bazelPipelineJsonProcessor.fromJsonString(Mockito.anyString())).thenReturn(testSteps);
-        final ClasspathFileReader classpathFileReader = Mockito.mock(ClasspathFileReader.class);
-        Mockito.when(classpathFileReader.readFileFromClasspathToString("/bazel/pipeline/maven_install.json")).thenReturn("this value is ignored");
-        final BazelPipelineLoader bazelPipelineLoader = new BazelPipelineLoader(bazelPipelineJsonProcessor);
-
-        final List<Step> loadedSteps = bazelPipelineLoader.loadPipelineSteps(classpathFileReader, "maven_install", providedBazelDependencyRule);
-
+    @Test
+    public void testLoadingPipelineFromFile() throws IOException, IntegrationException {
+        final List<Step> loadedSteps = run("file:custom-pipeline.json");
         assertEquals(7, loadedSteps.size());
         assertEquals("edit", loadedSteps.get(6).getType());
     }
 
+    private List<Step> run(final String providedBazelDependencyRule) throws IOException, IntegrationException {
+        final List<Step> customPipeline = generateCustomPipeline();
+        final BazelPipelineJsonProcessor bazelPipelineJsonProcessor = Mockito.mock(BazelPipelineJsonProcessor.class);
+        Mockito.when(bazelPipelineJsonProcessor.fromJsonString(Mockito.anyString())).thenReturn(customPipeline);
+        final ClasspathFileReader classpathFileReader = Mockito.mock(ClasspathFileReader.class);
+        Mockito.when(classpathFileReader.readFileFromClasspathToString("file:custom-pipeline.json")).thenReturn("this value is ignored");
+        final Pipeline pipeline = new Pipeline(bazelPipelineJsonProcessor);
+        final Pipelines builtinPipelines = new Pipelines();
+        final List<Step> loadedSteps = pipeline.choose(classpathFileReader, builtinPipelines, "maven_install", providedBazelDependencyRule);
+        return loadedSteps;
+    }
+
     @NotNull
-    private List<Step> generateSteps() {
+    private List<Step> generateCustomPipeline() {
         final List<Step> testSteps = new ArrayList<>();
         testSteps.add(new Step("executeBazelOnEach", Arrays.asList("cquery", "--noimplicit_deps", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")));
         testSteps.add(new Step("splitEach", Arrays.asList("\n")));
