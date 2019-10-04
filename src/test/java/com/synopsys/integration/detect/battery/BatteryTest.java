@@ -8,15 +8,22 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONParser;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -27,7 +34,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
 
 public final class BatteryTest {
-    private final Map<DetectProperty, String> executablesWithSingleResourceFile = new HashMap<>();
+    private final Map<DetectProperty, List<String>> executablesWithResourceFiles = new HashMap<>();
     private final Map<DetectProperty, List<String>> executablesWithText = new HashMap<>();
     private final List<String> additionalProperties = new ArrayList<>();
     private final List<String> emptyFileNames = new ArrayList<>();
@@ -54,11 +61,20 @@ public final class BatteryTest {
     }
 
     public void executableFromResourceFile(final DetectProperty detectProperty, final String resourceFile) {
-        executablesWithSingleResourceFile.put(detectProperty, "/" + name + "/" + resourceFile);
+        executablesWithResourceFiles.put(detectProperty, Collections.singletonList(resourceFile));
+    }
+
+    public void executableFromResourceFiles(final DetectProperty detectProperty, final String... resourceFiles) {
+        executablesWithResourceFiles.put(detectProperty, Arrays.asList(resourceFiles));
     }
 
     public void executable(final DetectProperty detectProperty, final String... responses) {
         executablesWithText.put(detectProperty, Arrays.asList(responses));
+    }
+
+    public void git(final String origin, final String branch) {
+        sourceFileNamed(".git");
+        executable(DetectProperty.DETECT_GIT_PATH, origin, branch);
     }
 
     public void sourceFileNamed(final String filename) {
@@ -94,7 +110,7 @@ public final class BatteryTest {
             runDetect(executableArguments);
 
             assertBdio();
-        } catch (final ExecutableRunnerException | IOException e) {
+        } catch (final ExecutableRunnerException | IOException | JSONException e) {
             Assertions.assertNull(e, "An exception should not have been thrown!");
         }
     }
@@ -174,9 +190,13 @@ public final class BatteryTest {
     private List<String> createExecutables() throws IOException {
         final List<String> properties = new ArrayList<>();
 
-        for (final Map.Entry<DetectProperty, String> entry : executablesWithSingleResourceFile.entrySet()) {
-            final String command = createCommandTextFileFromResource(entry.getValue());
-            final String executable = createExecutableThatTypesFiles(entry.getKey(), command);
+        for (final Map.Entry<DetectProperty, List<String>> entry : executablesWithResourceFiles.entrySet()) {
+            final List<String> commands = new ArrayList<>();
+            for (final String filename : entry.getValue()) {
+                final String commandTextFileFromText = createCommandTextFileFromResource("/" + name + "/" + filename);
+                commands.add(commandTextFileFromText);
+            }
+            final String executable = createExecutableThatTypesFiles(entry.getKey(), commands);
             properties.add(executable);
         }
 
@@ -249,7 +269,7 @@ public final class BatteryTest {
         }
     }
 
-    private void assertBdio() throws IOException {
+    private void assertBdio() throws IOException, JSONException {
         final File[] bdio = bdioDirectory.listFiles();
         Assertions.assertTrue(bdio != null && bdio.length > 0, "Bdio output files could not be found.");
 
@@ -259,10 +279,27 @@ public final class BatteryTest {
             Assertions.assertTrue(expectedBdioFiles != null && expectedBdioFiles.length > 0, "Expected bdio resource files could not be found: " + expectedBdioFolder.getCanonicalPath());
             Assertions.assertEquals(expectedBdioFiles.length, bdio.length, "Detect did not create the expected number of bdio files.");
 
-            final File bdioExpected = expectedBdioFiles[0];
-            final File bdioActual = bdio[0];
+            final List<File> actualByName = Arrays.stream(bdio).sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
+            final List<File> expectedByName = Arrays.stream(expectedBdioFiles).sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
 
-            Assertions.assertEquals(bdioExpected.getName(), bdioActual.getName(), "Bdio file names were mismatched.");
+            for (int i = 0; i < expectedByName.size(); i++) {
+                final File expected = expectedByName.get(i);
+                final File actual = actualByName.get(i);
+                Assertions.assertEquals(expected.getName(), actual.getName(), "Bdio file names did not match when sorted.");
+
+                final String expectedJson = FileUtils.readFileToString(expected, Charset.defaultCharset());
+                final String actualJson = FileUtils.readFileToString(actual, Charset.defaultCharset());
+
+                final JSONArray expectedJsonArray = (JSONArray) JSONParser.parseJSON(expectedJson);
+                expectedJsonArray.getJSONObject(0).remove("creationInfo");
+                expectedJsonArray.getJSONObject(0).remove("@id");
+
+                final JSONArray actualJsonArray = (JSONArray) JSONParser.parseJSON(actualJson);
+                actualJsonArray.getJSONObject(0).remove("creationInfo");
+                actualJsonArray.getJSONObject(0).remove("@id");
+
+                JSONAssert.assertEquals(expectedJsonArray, actualJsonArray, false);
+            }
 
         } else {
             Assertions.assertEquals(bdio.length, bdioSizes.keySet().size(), "Detect did not create the expected number of bdio files.");
