@@ -28,7 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,21 +43,14 @@ public class BazelWorkspace {
     public WorkspaceRule getDependencyRule() {
         final List<String> workspaceFileLines;
         try {
-            workspaceFileLines = readWorkspaceFileLines(workspaceFile);
+            // Assumes ascii or UTF-8, like other detectors
+            workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
         } catch (IOException e) {
             logger.debug(String.format("Unable to parse dependency rule from %s: %s", workspaceFile.getAbsolutePath(), e.getMessage()));
             return WorkspaceRule.UNKNOWN;
         }
         final WorkspaceRule dependencyRule = parseDependencyRuleFromWorkspaceFileLines(workspaceFileLines);
         return dependencyRule;
-    }
-
-    @NotNull
-    private List<String> readWorkspaceFileLines(final File workspaceFile) throws IOException {
-        final List<String> workspaceFileLines;
-        // Assumes ascii or UTF-8, like other detectors
-        workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
-        return workspaceFileLines;
     }
 
     @Nullable
